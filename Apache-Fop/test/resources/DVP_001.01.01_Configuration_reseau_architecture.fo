@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format" xmlns:dyn="http://exslt.org/dynamic">
+	<fo:layout-master-set>
+		<fo:simple-page-master master-name="first"
+		  page-height="297mm" page-width="21cm"
+		  margin-top="1cm" margin-bottom="1cm"
+		  margin-left="1cm" margin-right="1cm">
+			<fo:region-body margin-top="5cm" margin-bottom="1cm"/>
+			<fo:region-before region-name="header-first" extent="5cm"/>
+			<fo:region-after extent="1cm"/>
+		</fo:simple-page-master>
+		<fo:simple-page-master master-name="all"
+		  page-height="297mm" page-width="21cm"
+		  margin-top="1cm" margin-bottom="1cm"
+		  margin-left="1cm" margin-right="1cm">
+			<fo:region-body margin-top="3cm" margin-bottom="1cm"/>
+			<fo:region-before region-name="header-all" extent="3cm"/>
+			<fo:region-after extent="1cm"/>
+		</fo:simple-page-master>
+		<fo:page-sequence-master master-name="document">
+			<fo:repeatable-page-master-alternatives>
+				<fo:conditional-page-master-reference page-position="first" master-reference="first"/>
+				<fo:conditional-page-master-reference page-position="rest" master-reference="all"/>
+			</fo:repeatable-page-master-alternatives>
+		</fo:page-sequence-master>
+	</fo:layout-master-set>
+	
+	<fo:page-sequence master-reference="document">
+		<fo:static-content flow-name="header-first">
+		    <fo:block padding-top="8pt" padding-bottom="1pt" padding-left="2pt" padding-right="2pt" text-align="center" font-size="8pt">
+  <fo:table border-color="black" border-style="solid" border-width="1pt" table-layout="fixed" width="100%" border-collapse="collapse" font-size="8pt">
+    <fo:table-column column-width="10%"/>
+    <fo:table-column column-width="63%"/>
+    <fo:table-column column-width="27%"/>
+    <fo:table-body>
+      <fo:table-row>
+        <fo:table-cell number-rows-spanned="2" display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" height="4cm">
+          <fo:block>
+            <fo:external-graphic src="//srvdev/X_TERTST/pai/sorties/040/01.01/dvp/template/images/rff.jpg" content-width="scale-to-fit" content-height="35mm"/>
+          </fo:block>
+        </fo:table-cell>
+        <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt">
+          <fo:block padding-top="2pt" padding-bottom="0pt" margin-left="4pt" margin-right="4pt" text-align="center" font-size="16pt" font-weight="bold">
+            001.01.01 - Paramètres site de configuration - Centres - Configuration réseau et constantes d'architecture
+          </fo:block>
+        </fo:table-cell>
+        <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt">
+          <fo:block>
+            <fo:external-graphic src="//srvdev/X_TERTST/pai/sorties/040/01.01/dvp/template/images/sncf.jpg" content-width="scale-to-fit" content-height="18mm"/>
+          </fo:block>
+        </fo:table-cell>
+      </fo:table-row>
+      <fo:table-row>
+        <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt">
+          <fo:block>
+            Version DIAG : 2.0.5
+          </fo:block>
+          <fo:block>
+            Version Parametrage : V4.6.1
+          </fo:block>
+          <fo:block>
+            Date : 09/05/14     à    :  09:50:08
+          </fo:block>
+        </fo:table-cell>
+        <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt">
+          <fo:block>
+            <fo:external-graphic src="//srvdev/X_TERTST/pai/sorties/040/01.01/dvp/template/images/ansaldo.jpg" content-width="scale-to-fit" content-height="18mm"/>
+          </fo:block>
+        </fo:table-cell>
+      </fo:table-row>
+    </fo:table-body>
+  </fo:table>
+</fo:block>
+
+		</fo:static-content>
+		
+		<!-- All pages header -->
+		<fo:static-content flow-name="header-all">
+                    <fo:block padding-top="8pt" padding-bottom="1pt" padding-left="2pt" padding-right="2pt" text-align="center" font-size="8pt">
+  <fo:table border-color="black" border-style="solid" border-width="1pt" table-layout="fixed" width="100%" border-collapse="collapse" font-size="8pt">
+    <fo:table-column column-width="6%"/>
+    <fo:table-column column-width="12%"/>
+    <fo:table-column column-width="82%"/>
+    <fo:table-body>
+      <fo:table-row>
+        <fo:table-cell number-rows-spanned="2" display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" height="2cm">
+          <fo:block>
+            <fo:external-graphic src="//srvdev/X_TERTST/pai/sorties/040/01.01/dvp/template/images/rff.jpg" content-width="scale-to-fit" content-height="18mm"/>
+          </fo:block>
+        </fo:table-cell>
+        <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt">
+          <fo:block>
+            <fo:external-graphic src="//srvdev/X_TERTST/pai/sorties/040/01.01/dvp/template/images/sncf.jpg" content-width="scale-to-fit" content-height="8mm"/>
+          </fo:block>
+        </fo:table-cell>
+        <fo:table-cell number-rows-spanned="2" display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt">
+          <fo:block padding-top="2pt" padding-bottom="0pt" margin-left="4pt" margin-right="4pt" text-align="center" font-size="16pt" font-weight="bold">
+            001.01.01 - Paramètres site de configuration - Centres - Configuration réseau et constantes d'architecture
+          </fo:block>
+        </fo:table-cell>
+      </fo:table-row>
+      <fo:table-row>
+        <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt">
+          <fo:block>
+            <fo:external-graphic src="//srvdev/X_TERTST/pai/sorties/040/01.01/dvp/template/images/ansaldo.jpg" content-width="scale-to-fit" content-height="8mm"/>
+          </fo:block>
+        </fo:table-cell>
+      </fo:table-row>
+    </fo:table-body>
+  </fo:table>
+</fo:block>
+	
+		</fo:static-content>
+		
+		<!-- Page footer -->
+		<fo:static-content flow-name="xsl-region-after">
+		    <fo:block padding-top="8pt" padding-bottom="1pt" padding-left="2pt" padding-right="2pt" text-align="center" font-size="8pt">
+  <fo:table border-color="black" border-style="solid" border-width="1pt" table-layout="fixed" width="100%" border-collapse="collapse" font-size="8pt">
+    <fo:table-column column-width="17%"/>
+    <fo:table-column column-width="23%"/>
+    <fo:table-column column-width="18%"/>
+    <fo:table-column column-width="28%"/>
+    <fo:table-column column-width="14%"/>
+    <fo:table-body>
+      <fo:table-row>
+        <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt">
+          <fo:block padding-top="2pt" padding-bottom="0pt" margin-left="4pt" margin-right="4pt" font-size="8pt">
+            DVP
+          </fo:block>
+        </fo:table-cell>
+        <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt">
+          <fo:block padding-top="2pt" padding-bottom="0pt" margin-left="4pt" margin-right="4pt" font-size="8pt">
+            GARE_DE_LYON
+          </fo:block>
+        </fo:table-cell>
+        <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt">
+          <fo:block padding-top="2pt" padding-bottom="0pt" margin-left="4pt" margin-right="4pt" font-size="8pt">
+            Version : 1.1
+          </fo:block>
+        </fo:table-cell>
+        <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt">
+          <fo:block padding-top="2pt" padding-bottom="0pt" margin-left="4pt" margin-right="4pt" font-size="8pt">
+            Doc : 10500 T 7111210-00
+          </fo:block>
+        </fo:table-cell>
+        <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt">
+          <fo:block padding-top="2pt" padding-bottom="0pt" margin-left="4pt" margin-right="4pt" font-size="8pt">
+            Page
+            <fo:page-number/>
+            /
+            <fo:page-number-citation ref-id="theEnd"/>
+          </fo:block>
+        </fo:table-cell>
+      </fo:table-row>
+    </fo:table-body>
+  </fo:table>
+</fo:block>
+
+		</fo:static-content>
+
+		<!-- Page body -->
+		<fo:flow flow-name="xsl-region-body">
+			<fo:block>&#160;</fo:block>
+<fo:block padding-before="12pt" text-align="center" font-size="12pt" font-weight="bold" keep-with-next.within-page="always">
+  SOMMAIRE
+</fo:block>
+<fo:block>&#160;</fo:block>
+<fo:block padding-top="2pt" padding-bottom="0pt" margin-left="4pt" margin-right="4pt" text-align-last="justify" font-size="8pt" font-weight="bold">
+  <fo:basic-link internal-destination="section1">
+    1. Identifiant poste : PARIS_GARE_DE_LYON
+    <fo:leader leader-length.minimum="12pt" leader-length.optimum="40pt" leader-length.maximum="100%" leader-pattern="dots"/>
+    <fo:basic-link internal-destination="section1">
+      <fo:page-number-citation ref-id="section1"/>
+    </fo:basic-link>
+  </fo:basic-link>
+</fo:block>
+
+<fo:block break-before="page"/>
+<fo:block padding-before="12pt" id="section1" font-size="12pt" font-weight="bold" keep-with-next.within-page="always">1. Identifiant poste : PARIS_GARE_DE_LYON</fo:block>
+<fo:block padding-before="10pt" margin-left="5pt" font-size="11pt" font-weight="bold" keep-with-next.within-page="always">1.1. Les constantes d'architecture</fo:block>
+<fo:table border-color="black" border-style="solid" border-width="1pt" table-layout="fixed" width="100%" border-collapse="collapse" font-size="8pt">
+  <fo:table-column column-width="50%"/>
+  <fo:table-column column-width="50%"/>
+  <fo:table-body>
+    <fo:table-row>
+      <fo:table-cell number-columns-spanned="2" display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" background-color="#A6A5C2" font-weight="bold"><fo:block>Identification des constantes d'architecture</fo:block></fo:table-cell>
+    </fo:table-row>
+    <fo:table-row>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" font-weight="bold"><fo:block>La durée de cycle logiciel</fo:block></fo:table-cell>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt"><fo:block>réservé</fo:block></fo:table-cell>
+    </fo:table-row>
+    <fo:table-row>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" font-weight="bold"><fo:block>Le nombre de cycle d'initialisation</fo:block></fo:table-cell>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt"><fo:block>réservé</fo:block></fo:table-cell>
+    </fo:table-row>
+  </fo:table-body>
+</fo:table>
+<fo:block padding-before="10pt" margin-left="5pt" font-size="11pt" font-weight="bold" keep-with-next.within-page="always">1.2. Configuration réseau</fo:block>
+<fo:block padding-before="8pt" margin-left="5pt" font-size="10pt" font-weight="bold" keep-with-next.within-page="always">
+  Réseau chaine A
+</fo:block>
+<fo:table border-color="black" border-style="solid" border-width="1pt" table-layout="fixed" width="100%" border-collapse="collapse" font-size="8pt">
+  <fo:table-column column-width="50%"/>
+  <fo:table-column column-width="50%"/>
+  <fo:table-body>
+    <fo:table-row>
+      <fo:table-cell number-columns-spanned="2" display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" background-color="#A6A5C2" font-weight="bold"><fo:block>Réseau chaine A</fo:block></fo:table-cell>
+    </fo:table-row>
+    <fo:table-row>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" font-weight="bold"><fo:block>Adresse IP réseau terrain</fo:block></fo:table-cell>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt"><fo:block>172.21.1.254</fo:block></fo:table-cell>
+    </fo:table-row>
+    <fo:table-row>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" font-weight="bold"><fo:block>Masque de sous réseau terrain</fo:block></fo:table-cell>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt"><fo:block>255.255.0.0</fo:block></fo:table-cell>
+    </fo:table-row>
+    <fo:table-row>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" font-weight="bold"><fo:block>Adresse IP réseau national</fo:block></fo:table-cell>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt"><fo:block>10.242.33.11</fo:block></fo:table-cell>
+    </fo:table-row>
+    <fo:table-row>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" font-weight="bold"><fo:block>Masque de sous réseau national</fo:block></fo:table-cell>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt"><fo:block>255.255.0.0</fo:block></fo:table-cell>
+    </fo:table-row>
+  </fo:table-body>
+</fo:table>
+<fo:block padding-before="8pt" margin-left="5pt" font-size="10pt" font-weight="bold" keep-with-next.within-page="always">
+  Réseau chaine B
+</fo:block>
+<fo:table border-color="black" border-style="solid" border-width="1pt" table-layout="fixed" width="100%" border-collapse="collapse" font-size="8pt">
+  <fo:table-column column-width="50%"/>
+  <fo:table-column column-width="50%"/>
+  <fo:table-body>
+    <fo:table-row>
+      <fo:table-cell number-columns-spanned="2" display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" background-color="#A6A5C2" font-weight="bold"><fo:block>Réseau chaine B</fo:block></fo:table-cell>
+    </fo:table-row>
+    <fo:table-row>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" font-weight="bold"><fo:block>Adresse IP réseau terrain</fo:block></fo:table-cell>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt"><fo:block>172.22.1.254</fo:block></fo:table-cell>
+    </fo:table-row>
+    <fo:table-row>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" font-weight="bold"><fo:block>Masque de sous réseau terrain</fo:block></fo:table-cell>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt"><fo:block>255.255.0.0</fo:block></fo:table-cell>
+    </fo:table-row>
+    <fo:table-row>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" font-weight="bold"><fo:block>Adresse IP réseau national</fo:block></fo:table-cell>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt"><fo:block>10.242.33.12</fo:block></fo:table-cell>
+    </fo:table-row>
+    <fo:table-row>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt" font-weight="bold"><fo:block>Masque de sous réseau national</fo:block></fo:table-cell>
+      <fo:table-cell display-align="center" padding-top="3pt" padding-bottom="1pt" padding-left="1pt" border-color="black" border-style="solid" border-width="0.5pt"><fo:block>255.255.0.0</fo:block></fo:table-cell>
+    </fo:table-row>
+  </fo:table-body>
+</fo:table>
+
+			<fo:block id="theEnd"/>
+		</fo:flow>
+	</fo:page-sequence>
+</fo:root>
