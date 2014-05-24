@@ -19,17 +19,17 @@
 
 package org.apache.fop.pdf;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Test case for {@link PDFArray}.
@@ -47,72 +47,75 @@ public class PDFArrayTestCase extends PDFObjectTestCase {
     /** A PDF object used solely for testing */
     private PDFNumber num;
 
+    @Override
     @Before
     public void setUp() {
-        intArray = new PDFArray(parent, new int[] {1, 2, 3, 4, 5});
-        intArrayOutput = "[1 2 3 4 5]";
+        this.intArray = new PDFArray(this.parent, new int[] { 1, 2, 3, 4, 5 });
+        this.intArrayOutput = "[1 2 3 4 5]";
 
-        doubleArray = new PDFArray(parent, new double[] {1.1, 2.2, 3.3, 4.4, 5.5});
-        doubleArrayOutput = "[1.1 2.2 3.3 4.4 5.5]";
+        this.doubleArray = new PDFArray(this.parent, new double[] { 1.1, 2.2,
+                3.3, 4.4, 5.5 });
+        this.doubleArrayOutput = "[1.1 2.2 3.3 4.4 5.5]";
 
-        List<Object> strList = new ArrayList<Object>();
+        final List<Object> strList = new ArrayList<Object>();
         strList.add("one");
         strList.add("two");
         strList.add("three");
-        collectionArray = new PDFArray(parent, strList);
-        collectionArrayOutput = "[(one) (two) (three)]";
+        this.collectionArray = new PDFArray(this.parent, strList);
+        this.collectionArrayOutput = "[(one) (two) (three)]";
 
         // Set arbitrary values here
-        num = new PDFNumber();
-        num.setNumber(20);
-        num.setObjectNumber(4);
-        objArray = new PDFArray(parent, new Object[] {"one", 2, 3.0f, num});
-        objArrayOutput = "[(one) 2 3 4 0 R]";
+        this.num = new PDFNumber();
+        this.num.setNumber(20);
+        this.num.setObjectNumber(4);
+        this.objArray = new PDFArray(this.parent, new Object[] { "one", 2,
+                3.0f, this.num });
+        this.objArrayOutput = "[(one) 2 3 4 0 R]";
 
         // set the document
-        intArray.setDocument(doc);
-        doubleArray.setDocument(doc);
-        collectionArray.setDocument(doc);
-        objArray.setDocument(doc);
+        this.intArray.setDocument(this.doc);
+        this.doubleArray.setDocument(this.doc);
+        this.collectionArray.setDocument(this.doc);
+        this.objArray.setDocument(this.doc);
 
         // Test the progenitor in the inheritance stack
-        objArray.setParent(parent);
-        pdfObjectUnderTest = objArray;
+        this.objArray.setParent(this.parent);
+        this.pdfObjectUnderTest = this.objArray;
     }
 
     private void intArrayContainsTests() {
         for (int i = 1; i <= 5; i++) {
-            assertTrue(intArray.contains(i));
+            assertTrue(this.intArray.contains(i));
         }
-        assertFalse(intArray.contains(6));
-        assertFalse(intArray.contains(0));
+        assertFalse(this.intArray.contains(6));
+        assertFalse(this.intArray.contains(0));
     }
 
     private void doubleArrayContainsTests() {
-        assertTrue(doubleArray.contains(1.1));
-        assertTrue(doubleArray.contains(2.2));
-        assertTrue(doubleArray.contains(3.3));
-        assertTrue(doubleArray.contains(4.4));
-        assertTrue(doubleArray.contains(5.5));
-        assertFalse(doubleArray.contains(10.0));
-        assertFalse(doubleArray.contains(0.0));
+        assertTrue(this.doubleArray.contains(1.1));
+        assertTrue(this.doubleArray.contains(2.2));
+        assertTrue(this.doubleArray.contains(3.3));
+        assertTrue(this.doubleArray.contains(4.4));
+        assertTrue(this.doubleArray.contains(5.5));
+        assertFalse(this.doubleArray.contains(10.0));
+        assertFalse(this.doubleArray.contains(0.0));
     }
 
     private void collectionArrayContainsTests() {
-        assertTrue(collectionArray.contains("one"));
-        assertTrue(collectionArray.contains("two"));
-        assertTrue(collectionArray.contains("three"));
-        assertFalse(collectionArray.contains("zero"));
-        assertFalse(collectionArray.contains("four"));
+        assertTrue(this.collectionArray.contains("one"));
+        assertTrue(this.collectionArray.contains("two"));
+        assertTrue(this.collectionArray.contains("three"));
+        assertFalse(this.collectionArray.contains("zero"));
+        assertFalse(this.collectionArray.contains("four"));
     }
 
     private void objectArrayContainsTests() {
-        assertTrue(objArray.contains("one"));
-        assertTrue(objArray.contains(2));
-        assertTrue(objArray.contains(3.0f));
-        assertTrue(objArray.contains(num));
-        assertFalse(objArray.contains("four"));
-        assertFalse(objArray.contains(0.0));
+        assertTrue(this.objArray.contains("one"));
+        assertTrue(this.objArray.contains(2));
+        assertTrue(this.objArray.contains(3.0f));
+        assertTrue(this.objArray.contains(this.num));
+        assertFalse(this.objArray.contains("four"));
+        assertFalse(this.objArray.contains(0.0));
     }
 
     /**
@@ -132,15 +135,15 @@ public class PDFArrayTestCase extends PDFObjectTestCase {
      */
     @Test
     public void testLength() {
-        assertEquals(5, intArray.length());
-        assertEquals(5, doubleArray.length());
-        assertEquals(3, collectionArray.length());
-        assertEquals(4, objArray.length());
+        assertEquals(5, this.intArray.length());
+        assertEquals(5, this.doubleArray.length());
+        assertEquals(3, this.collectionArray.length());
+        assertEquals(4, this.objArray.length());
 
         // Test the count is incremented when an object is added (this only
         // needs to be tested once)
-        intArray.add(6);
-        assertEquals(6, intArray.length());
+        this.intArray.add(6);
+        assertEquals(6, this.intArray.length());
     }
 
     /**
@@ -148,19 +151,20 @@ public class PDFArrayTestCase extends PDFObjectTestCase {
      */
     @Test
     public void testSet() {
-        PDFName name = new PDFName("zero test");
-        objArray.set(0, name);
-        assertEquals(name, objArray.get(0));
+        final PDFName name = new PDFName("zero test");
+        this.objArray.set(0, name);
+        assertEquals(name, this.objArray.get(0));
 
-        objArray.set(1, "test");
-        assertEquals("test", objArray.get(1));
-        // This goes through the set(int, double) code path rather than set(int, Object)
-        objArray.set(2, 5);
-        assertEquals(5.0, objArray.get(2));
+        this.objArray.set(1, "test");
+        assertEquals("test", this.objArray.get(1));
+        // This goes through the set(int, double) code path rather than set(int,
+        // Object)
+        this.objArray.set(2, 5);
+        assertEquals(5.0, this.objArray.get(2));
         try {
-            objArray.set(4, 2);
+            this.objArray.set(4, 2);
             fail("out of bounds");
-        } catch (IndexOutOfBoundsException e) {
+        } catch (final IndexOutOfBoundsException e) {
             // Pass
         }
     }
@@ -172,66 +176,70 @@ public class PDFArrayTestCase extends PDFObjectTestCase {
     public void testGet() {
         // Test some arbitrary values
         for (int i = 1; i <= 5; i++) {
-            assertEquals(i, intArray.get(i - 1));
+            assertEquals(i, this.intArray.get(i - 1));
         }
 
-        assertEquals(1.1, doubleArray.get(0));
-        assertEquals(2.2, doubleArray.get(1));
-        assertEquals(3.3, doubleArray.get(2));
-        assertEquals(4.4, doubleArray.get(3));
-        assertEquals(5.5, doubleArray.get(4));
+        assertEquals(1.1, this.doubleArray.get(0));
+        assertEquals(2.2, this.doubleArray.get(1));
+        assertEquals(3.3, this.doubleArray.get(2));
+        assertEquals(4.4, this.doubleArray.get(3));
+        assertEquals(5.5, this.doubleArray.get(4));
 
-        assertEquals("one", collectionArray.get(0));
-        assertEquals("two", collectionArray.get(1));
-        assertEquals("three", collectionArray.get(2));
+        assertEquals("one", this.collectionArray.get(0));
+        assertEquals("two", this.collectionArray.get(1));
+        assertEquals("three", this.collectionArray.get(2));
 
-        assertEquals("one", objArray.get(0));
-        assertEquals(2, objArray.get(1));
-        assertEquals(0, Double.compare(3.0, (Float) objArray.get(2)));
-        assertEquals(num, objArray.get(3));
+        assertEquals("one", this.objArray.get(0));
+        assertEquals(2, this.objArray.get(1));
+        assertEquals(0, Double.compare(3.0, (Float) this.objArray.get(2)));
+        assertEquals(this.num, this.objArray.get(3));
     }
 
     /**
-     * Tests add() - tests that objects are appended to the end of the array as expected.
+     * Tests add() - tests that objects are appended to the end of the array as
+     * expected.
      */
     @Test
     public void testAdd() {
-        intArray.add(new Integer(6));
-        doubleArray.add(6.6);
+        this.intArray.add(new Integer(6));
+        this.doubleArray.add(6.6);
         // Test some arbitrary values
         for (int i = 1; i <= 6; i++) {
-            assertEquals(i, intArray.get(i - 1));
+            assertEquals(i, this.intArray.get(i - 1));
         }
 
-        assertEquals(1.1, doubleArray.get(0));
-        assertEquals(2.2, doubleArray.get(1));
-        assertEquals(3.3, doubleArray.get(2));
-        assertEquals(4.4, doubleArray.get(3));
-        assertEquals(5.5, doubleArray.get(4));
-        assertEquals(6.6, doubleArray.get(5));
+        assertEquals(1.1, this.doubleArray.get(0));
+        assertEquals(2.2, this.doubleArray.get(1));
+        assertEquals(3.3, this.doubleArray.get(2));
+        assertEquals(4.4, this.doubleArray.get(3));
+        assertEquals(5.5, this.doubleArray.get(4));
+        assertEquals(6.6, this.doubleArray.get(5));
 
-        collectionArray.add(1);
-        assertEquals("one", collectionArray.get(0));
-        assertEquals("two", collectionArray.get(1));
-        assertEquals("three", collectionArray.get(2));
-        assertEquals(1.0, collectionArray.get(3));
+        this.collectionArray.add(1);
+        assertEquals("one", this.collectionArray.get(0));
+        assertEquals("two", this.collectionArray.get(1));
+        assertEquals("three", this.collectionArray.get(2));
+        assertEquals(1.0, this.collectionArray.get(3));
 
-        objArray.add("four");
-        assertEquals("one", objArray.get(0));
-        assertEquals(2, objArray.get(1));
-        assertEquals(0, Double.compare(3.0, (Float) objArray.get(2)));
-        assertEquals("four", objArray.get(4));
+        this.objArray.add("four");
+        assertEquals("one", this.objArray.get(0));
+        assertEquals(2, this.objArray.get(1));
+        assertEquals(0, Double.compare(3.0, (Float) this.objArray.get(2)));
+        assertEquals("four", this.objArray.get(4));
     }
 
     /**
-     * Tests output() - tests that this object is properly streamed to the PDF document.
-     * @throws IOException error caused by I/O
+     * Tests output() - tests that this object is properly streamed to the PDF
+     * document.
+     * 
+     * @throws IOException
+     *             error caused by I/O
      */
     @Test
     public void testOutput() throws IOException {
-        testOutputStreams(intArrayOutput, intArray);
-        testOutputStreams(doubleArrayOutput, doubleArray);
-        testOutputStreams(collectionArrayOutput, collectionArray);
-        testOutputStreams(objArrayOutput, objArray);
+        testOutputStreams(this.intArrayOutput, this.intArray);
+        testOutputStreams(this.doubleArrayOutput, this.doubleArray);
+        testOutputStreams(this.collectionArrayOutput, this.collectionArray);
+        testOutputStreams(this.objArrayOutput, this.objArray);
     }
 }

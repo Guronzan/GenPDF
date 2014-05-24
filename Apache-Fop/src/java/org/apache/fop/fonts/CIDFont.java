@@ -32,32 +32,37 @@ public abstract class CIDFont extends CustomFont {
     // ---- Required ----
     /**
      * Returns the type of the CID font.
+     * 
      * @return the type of the CID font
      */
     public abstract CIDFontType getCIDType();
 
     /**
      * Returns the name of the issuer of the font.
-     * @return a String identifying an issuer of character collections -
-     * for example, Adobe
+     * 
+     * @return a String identifying an issuer of character collections - for
+     *         example, Adobe
      */
     public abstract String getRegistry();
 
     /**
      * Returns a font name for use within a registry.
-     * @return a String that uniquely names a character collection issued by
-     * a specific registry - for example, Japan1.
+     * 
+     * @return a String that uniquely names a character collection issued by a
+     *         specific registry - for example, Japan1.
      */
     public abstract String getOrdering();
 
     /**
      * Returns the supplement number of the character collection.
+     * 
      * @return the supplement number
      */
     public abstract int getSupplement();
 
     /**
      * Returns the subset information for this font.
+     * 
      * @return the subset information
      */
     public abstract CIDSubset getCIDSubset();
@@ -65,6 +70,7 @@ public abstract class CIDFont extends CustomFont {
     // ---- Optional ----
     /**
      * Returns the default width for this font.
+     * 
      * @return the default width
      */
     public int getDefaultWidth() {
@@ -72,6 +78,7 @@ public abstract class CIDFont extends CustomFont {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isMultiByte() {
         return true;
     }

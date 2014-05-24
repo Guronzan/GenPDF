@@ -28,8 +28,10 @@ public interface LayoutEngineCheck extends Check {
 
     /**
      * Called to perform the check.
-     * @param result the results from the processing run
+     * 
+     * @param result
+     *            the results from the processing run
      */
-    void check(LayoutResult result);
+    void check(final LayoutResult result);
 
 }

@@ -25,32 +25,37 @@ import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.extensions.ExtensionAttachment;
 
 /**
- * This class represents an AFP-specific extension element to embed Invoke Medium Map (IMM)
- * fields at the beginning of a page group or just prior to a Page. The element is optional
- * and expected as a direct child of an fo:page-sequence or fo:simple-page-master
+ * This class represents an AFP-specific extension element to embed Invoke
+ * Medium Map (IMM) fields at the beginning of a page group or just prior to a
+ * Page. The element is optional and expected as a direct child of an
+ * fo:page-sequence or fo:simple-page-master
  */
 public class AFPInvokeMediumMapElement extends AbstractAFPExtensionObject {
 
     /**
      * Constructs the AFP extension object (called by Maker).
-     * @param parent the parent formatting object
+     * 
+     * @param parent
+     *            the parent formatting object
      */
-    public AFPInvokeMediumMapElement(FONode parent) {
+    public AFPInvokeMediumMapElement(final FONode parent) {
         super(parent, AFPElementMapping.INVOKE_MEDIUM_MAP);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
         super.startOfNode();
-        if (parent.getNameId() != Constants.FO_PAGE_SEQUENCE
-                && parent.getNameId() != Constants.FO_SIMPLE_PAGE_MASTER) {
+        if (this.parent.getNameId() != Constants.FO_PAGE_SEQUENCE
+                && this.parent.getNameId() != Constants.FO_SIMPLE_PAGE_MASTER) {
 
-            invalidChildError(getLocator(), parent.getName(), getNamespaceURI(), getName(),
-                "rule.childOfPageSequence");
+            invalidChildError(getLocator(), this.parent.getName(),
+                    getNamespaceURI(), getName(), "rule.childOfPageSequence");
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     protected ExtensionAttachment instantiateExtensionAttachment() {
         return new AFPInvokeMediumMap();
     }

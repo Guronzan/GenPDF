@@ -33,18 +33,22 @@ public class ImageEncoderJPEG implements ImageEncoder {
 
     /**
      * Main constructor
-     * @param jpeg the JPEG image
+     * 
+     * @param jpeg
+     *            the JPEG image
      */
-    public ImageEncoderJPEG(ImageRawJPEG jpeg) {
+    public ImageEncoderJPEG(final ImageRawJPEG jpeg) {
         this.jpeg = jpeg;
     }
 
     /** {@inheritDoc} */
-    public void writeTo(OutputStream out) throws IOException {
-        jpeg.writeTo(out);
+    @Override
+    public void writeTo(final OutputStream out) throws IOException {
+        this.jpeg.writeTo(out);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getImplicitFilter() {
         return "<< >> /DCTDecode";
     }

@@ -19,8 +19,6 @@
 
 package org.apache.fop.fo.pagination.bookmarks;
 
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.FObj;
@@ -28,11 +26,12 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.ValidationException;
 import org.apache.fop.fo.properties.CommonAccessibility;
 import org.apache.fop.fo.properties.CommonAccessibilityHolder;
+import org.xml.sax.Locator;
 
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_bookmark-title">
- * <code>fo:bookmark-title</code></a> object, first introduced in the
- * XSL 1.1 WD.
+ * <code>fo:bookmark-title</code></a> object, first introduced in the XSL 1.1
+ * WD.
  */
 public class BookmarkTitle extends FObj implements CommonAccessibilityHolder {
 
@@ -41,52 +40,59 @@ public class BookmarkTitle extends FObj implements CommonAccessibilityHolder {
     private String title = "";
 
     /**
-     * Create a new BookmarkTitle object that is a child
-     * of the given {@link FONode}.
+     * Create a new BookmarkTitle object that is a child of the given
+     * {@link FONode}.
      *
-     * @param parent the {@link FONode} parent
+     * @param parent
+     *            the {@link FONode} parent
      */
-    public BookmarkTitle(FONode parent) {
+    public BookmarkTitle(final FONode parent) {
         super(parent);
     }
 
     @Override
-    public void bind(PropertyList pList) throws FOPException {
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        commonAccessibility = CommonAccessibility.getInstance(pList);
+        this.commonAccessibility = CommonAccessibility.getInstance(pList);
     }
 
     /**
-     * Add the characters to this BookmarkTitle.
-     * The text data inside the BookmarkTitle xml element
-     * is used for the BookmarkTitle string.
+     * Add the characters to this BookmarkTitle. The text data inside the
+     * BookmarkTitle xml element is used for the BookmarkTitle string.
      *
-     * @param data the character data
-     * @param start the start position in the data array
-     * @param length the length of the character array
-     * @param pList currently applicable PropertyList
-     * @param locator location in fo source file.
+     * @param data
+     *            the character data
+     * @param start
+     *            the start position in the data array
+     * @param length
+     *            the length of the character array
+     * @param pList
+     *            currently applicable PropertyList
+     * @param locator
+     *            location in fo source file.
      */
-    protected void characters(char[] data, int start, int length,
-                                 PropertyList pList,
-                                 Locator locator) {
-        title += new String(data, start, length);
+    @Override
+    protected void characters(final char[] data, final int start,
+            final int length, final PropertyList pList, final Locator locator) {
+        this.title += new String(data, start, length);
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL/FOP: empty
+     * {@inheritDoc} <br>
+     * XSL/FOP: empty
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-        throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             invalidChildError(loc, nsURI, localName);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public CommonAccessibility getCommonAccessibility() {
-        return commonAccessibility;
+        return this.commonAccessibility;
     }
 
     /**
@@ -95,18 +101,21 @@ public class BookmarkTitle extends FObj implements CommonAccessibilityHolder {
      * @return the bookmark title
      */
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "bookmark-title";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_BOOKMARK_TITLE}
      */
+    @Override
     public int getNameId() {
         return FO_BOOKMARK_TITLE;
     }

@@ -21,28 +21,33 @@ package org.apache.fop.pdf;
 
 /**
  * PDF Action which executes some JavaScript code.
+ * 
  * @since PDF 1.3
  */
 public class PDFJavaScriptLaunchAction extends PDFAction {
 
-    private String script;
+    private final String script;
 
     /**
      * Creates a new /Launch action.
-     * @param script  the script to run when the launch action is triggered
+     * 
+     * @param script
+     *            the script to run when the launch action is triggered
      */
-    public PDFJavaScriptLaunchAction(String script) {
+    public PDFJavaScriptLaunchAction(final String script) {
         this.script = script;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getAction() {
-        return this.referencePDF();
+        return referencePDF();
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toPDFString() {
-        StringBuffer sb = new StringBuffer(64);
+        final StringBuffer sb = new StringBuffer(64);
         sb.append("<<\n/S /JavaScript\n/JS (");
         sb.append(this.script);
         sb.append(")\n>>");
@@ -50,7 +55,8 @@ public class PDFJavaScriptLaunchAction extends PDFAction {
     }
 
     /** {@inheritDoc} */
-    protected boolean contentEquals(PDFObject obj) {
+    @Override
+    protected boolean contentEquals(final PDFObject obj) {
         if (this == obj) {
             return true;
         }
@@ -59,9 +65,9 @@ public class PDFJavaScriptLaunchAction extends PDFAction {
             return false;
         }
 
-        PDFJavaScriptLaunchAction launch = (PDFJavaScriptLaunchAction) obj;
+        final PDFJavaScriptLaunchAction launch = (PDFJavaScriptLaunchAction) obj;
 
-        if (!launch.script.toString().equals(script.toString())) {
+        if (!launch.script.toString().equals(this.script.toString())) {
             return false;
         }
 

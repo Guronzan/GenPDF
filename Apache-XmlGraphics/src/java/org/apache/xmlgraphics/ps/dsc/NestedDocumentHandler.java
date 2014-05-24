@@ -24,25 +24,31 @@ import java.io.IOException;
 import org.apache.xmlgraphics.ps.dsc.events.DSCEvent;
 
 /**
- * Interface that is used to delegate the handling of nested documents (EPS files, data sections)
- * in a PostScript document. The implementation receives a parser instance so it can step forward
- * until the end of the nested document is reached at which point control is given back to the
- * original consumer.
+ * Interface that is used to delegate the handling of nested documents (EPS
+ * files, data sections) in a PostScript document. The implementation receives a
+ * parser instance so it can step forward until the end of the nested document
+ * is reached at which point control is given back to the original consumer.
  * <p>
- * It is suggested to use the more generally usable {@link DSCListener} instead. This
- * interface may be deprecated in the future.
+ * It is suggested to use the more generally usable {@link DSCListener} instead.
+ * This interface may be deprecated in the future.
  */
 public interface NestedDocumentHandler {
 
     /**
-     * Handle a DSC event. Implementations may issue additional calls to the DSC parser and may
-     * modify its state. When returning from the call, state information such as filters should
-     * be restored.
-     * @param event the DSC event to handle
-     * @param parser the DSC parser to work with
-     * @throws IOException In case of an I/O error
-     * @throws DSCException In case of a violation of the DSC spec
+     * Handle a DSC event. Implementations may issue additional calls to the DSC
+     * parser and may modify its state. When returning from the call, state
+     * information such as filters should be restored.
+     * 
+     * @param event
+     *            the DSC event to handle
+     * @param parser
+     *            the DSC parser to work with
+     * @throws IOException
+     *             In case of an I/O error
+     * @throws DSCException
+     *             In case of a violation of the DSC spec
      */
-    void handle(DSCEvent event, DSCParser parser) throws IOException, DSCException;
+    void handle(final DSCEvent event, final DSCParser parser)
+            throws IOException, DSCException;
 
 }

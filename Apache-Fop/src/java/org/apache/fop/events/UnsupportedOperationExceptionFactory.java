@@ -29,13 +29,16 @@ import org.apache.fop.events.EventExceptionManager.ExceptionFactory;
 public class UnsupportedOperationExceptionFactory implements ExceptionFactory {
 
     /** {@inheritDoc} */
-    public Throwable createException(Event event) {
-        String msg = EventFormatter.format(event, Locale.ENGLISH);
-        UnsupportedOperationException ex = new UnsupportedOperationException(msg);
+    @Override
+    public Throwable createException(final Event event) {
+        final String msg = EventFormatter.format(event, Locale.ENGLISH);
+        final UnsupportedOperationException ex = new UnsupportedOperationException(
+                msg);
         return ex;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class<UnsupportedOperationException> getExceptionClass() {
         return UnsupportedOperationException.class;
     }

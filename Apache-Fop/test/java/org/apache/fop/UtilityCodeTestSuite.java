@@ -19,10 +19,6 @@
 
 package org.apache.fop;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
 import org.apache.fop.events.BasicEventTestCase;
 import org.apache.fop.pdf.FileIDGeneratorTestCase;
 import org.apache.fop.pdf.PDFDocumentGraphics2DTestCase;
@@ -36,26 +32,20 @@ import org.apache.fop.util.ColorUtilTestCase;
 import org.apache.fop.util.ElementListUtilsTestCase;
 import org.apache.fop.util.HexEncoderTestCase;
 import org.apache.fop.util.XMLResourceBundleTestCase;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Test suite for FOP's utility classes.
  */
 @RunWith(Suite.class)
-@SuiteClasses({
-    ColorUtilTestCase.class,
-    BorderPropsTestCase.class,
-    ElementListUtilsTestCase.class,
-    BasicEventTestCase.class,
-    XMLResourceBundleTestCase.class,
-    URIResolutionTestCase.class,
-    FileIDGeneratorTestCase.class,
-    PDFFactoryTestCase.class,
-    PDFEncryptionJCETestCase.class,
-    BitmapImageUtilTestCase.class,
-    PDFDocumentGraphics2DTestCase.class,
-    PDFNumberTestCase.class,
-    PDFObjectTestCase.class,
-    HexEncoderTestCase.class
-})
+@SuiteClasses({ ColorUtilTestCase.class, BorderPropsTestCase.class,
+        ElementListUtilsTestCase.class, BasicEventTestCase.class,
+        XMLResourceBundleTestCase.class, URIResolutionTestCase.class,
+        FileIDGeneratorTestCase.class, PDFFactoryTestCase.class,
+        PDFEncryptionJCETestCase.class, BitmapImageUtilTestCase.class,
+        PDFDocumentGraphics2DTestCase.class, PDFNumberTestCase.class,
+        PDFObjectTestCase.class, HexEncoderTestCase.class })
 public class UtilityCodeTestSuite {
 }

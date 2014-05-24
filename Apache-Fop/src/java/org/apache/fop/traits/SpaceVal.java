@@ -26,50 +26,63 @@ import org.apache.fop.fo.properties.SpaceProperty;
 import org.apache.fop.fonts.Font;
 
 /**
- * Store a single Space property value in simplified form, with all
- * Length values resolved. See section 4.3 in the specs.
+ * Store a single Space property value in simplified form, with all Length
+ * values resolved. See section 4.3 in the specs.
  */
 public class SpaceVal {
 
     private final MinOptMax space;
     private final boolean conditional;
     private final boolean forcing;
-    private final int precedence; //  Numeric only, if forcing, set to 0
+    private final int precedence; // Numeric only, if forcing, set to 0
 
     /**
      * Constructor for SpaceVal objects based on Space objects.
-     * @param spaceprop Space object to use
-     * @param context Percentage evaluation context
+     * 
+     * @param spaceprop
+     *            Space object to use
+     * @param context
+     *            Percentage evaluation context
      */
-    public SpaceVal(SpaceProperty spaceprop, PercentBaseContext context) {
-        space = createSpaceProperty(spaceprop, context);
-        conditional = (spaceprop.getConditionality().getEnum() == Constants.EN_DISCARD);
-        Property precProp = spaceprop.getPrecedence();
+    public SpaceVal(final SpaceProperty spaceprop,
+            final PercentBaseContext context) {
+        this.space = createSpaceProperty(spaceprop, context);
+        this.conditional = spaceprop.getConditionality().getEnum() == Constants.EN_DISCARD;
+        final Property precProp = spaceprop.getPrecedence();
         if (precProp.getNumber() != null) {
-            precedence = precProp.getNumber().intValue();
-            forcing = false;
+            this.precedence = precProp.getNumber().intValue();
+            this.forcing = false;
         } else {
-            forcing = (precProp.getEnum() == Constants.EN_FORCE);
-            precedence = 0;
+            this.forcing = precProp.getEnum() == Constants.EN_FORCE;
+            this.precedence = 0;
         }
     }
 
-    private static MinOptMax createSpaceProperty(SpaceProperty spaceprop,
-                                                 PercentBaseContext context) {
-        int min = spaceprop.getMinimum(context).getLength().getValue(context);
-        int opt = spaceprop.getOptimum(context).getLength().getValue(context);
-        int max = spaceprop.getMaximum(context).getLength().getValue(context);
+    private static MinOptMax createSpaceProperty(final SpaceProperty spaceprop,
+            final PercentBaseContext context) {
+        final int min = spaceprop.getMinimum(context).getLength()
+                .getValue(context);
+        final int opt = spaceprop.getOptimum(context).getLength()
+                .getValue(context);
+        final int max = spaceprop.getMaximum(context).getLength()
+                .getValue(context);
         return MinOptMax.getInstance(min, opt, max);
     }
 
     /**
      * Constructor for SpaceVal objects based on the full set of properties.
-     * @param space space to use
-     * @param conditional Conditionality value
-     * @param forcing Forcing value
-     * @param precedence Precedence value
+     * 
+     * @param space
+     *            space to use
+     * @param conditional
+     *            Conditionality value
+     * @param forcing
+     *            Forcing value
+     * @param precedence
+     *            Precedence value
      */
-    public SpaceVal(MinOptMax space, boolean conditional, boolean forcing, int precedence) {
+    public SpaceVal(final MinOptMax space, final boolean conditional,
+            final boolean forcing, final int precedence) {
         this.space = space;
         this.conditional = conditional;
         this.forcing = forcing;
@@ -77,29 +90,37 @@ public class SpaceVal {
     }
 
     /**
-     * @param wordSpacing property
-     * @param letterSpacing space value
-     * @param fs font
+     * @param wordSpacing
+     *            property
+     * @param letterSpacing
+     *            space value
+     * @param fs
+     *            font
      * @return space value
      */
-    public static SpaceVal makeWordSpacing(Property wordSpacing, SpaceVal letterSpacing, Font fs) {
+    public static SpaceVal makeWordSpacing(final Property wordSpacing,
+            final SpaceVal letterSpacing, final Font fs) {
         if (wordSpacing.getEnum() == Constants.EN_NORMAL) {
             // give word spaces the possibility to shrink by a third,
             // and stretch by a half;
-            int spaceCharIPD = fs.getCharWidth(' ');
-            MinOptMax space = MinOptMax.getInstance(-spaceCharIPD / 3, 0, spaceCharIPD / 2);
-            //TODO Adding 2 letter spaces here is not 100% correct. Spaces don't have letter spacing
-            return new SpaceVal(space.plus(letterSpacing.getSpace().mult(2)), true, true, 0);
+            final int spaceCharIPD = fs.getCharWidth(' ');
+            final MinOptMax space = MinOptMax.getInstance(-spaceCharIPD / 3, 0,
+                    spaceCharIPD / 2);
+            // TODO Adding 2 letter spaces here is not 100% correct. Spaces
+            // don't have letter spacing
+            return new SpaceVal(space.plus(letterSpacing.getSpace().mult(2)),
+                    true, true, 0);
         } else {
             return new SpaceVal(wordSpacing.getSpace(), null);
         }
     }
 
     /**
-     * @param letterSpacing property
+     * @param letterSpacing
+     *            property
      * @return space value
      */
-    public static SpaceVal makeLetterSpacing(Property letterSpacing) {
+    public static SpaceVal makeLetterSpacing(final Property letterSpacing) {
         if (letterSpacing.getEnum() == Constants.EN_NORMAL) {
             // letter spaces are set to zero (or use different values?)
             return new SpaceVal(MinOptMax.ZERO, true, true, 0);
@@ -110,39 +131,43 @@ public class SpaceVal {
 
     /**
      * Returns the Conditionality value.
+     * 
      * @return the Conditionality value
      */
     public boolean isConditional() {
-        return conditional;
+        return this.conditional;
     }
 
     /**
      * Returns the Forcing value.
+     * 
      * @return the Forcing value
      */
     public boolean isForcing() {
-        return forcing;
+        return this.forcing;
     }
 
     /**
      * Returns the Precedence value.
+     * 
      * @return the Precedence value
      */
     public int getPrecedence() {
-        return precedence;
+        return this.precedence;
     }
 
     /**
      * Returns the Space value.
+     * 
      * @return the Space value
      */
     public MinOptMax getSpace() {
-        return space;
+        return this.space;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "SpaceVal: " + getSpace().toString();
     }
 }
-

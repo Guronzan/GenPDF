@@ -27,9 +27,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
+import org.apache.fop.apps.FOUserAgent;
+import org.apache.fop.fo.expr.PropertyException;
 import org.apache.xmlgraphics.java2d.color.CIELabColorSpace;
 import org.apache.xmlgraphics.java2d.color.ColorSpaceOrigin;
 import org.apache.xmlgraphics.java2d.color.ColorSpaces;
@@ -40,19 +41,18 @@ import org.apache.xmlgraphics.java2d.color.RenderingIntent;
 import org.apache.xmlgraphics.java2d.color.profile.NamedColorProfile;
 import org.apache.xmlgraphics.java2d.color.profile.NamedColorProfileParser;
 
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.fo.expr.PropertyException;
-
 /**
  * Generic Color helper class.
  * <p>
  * This class supports parsing string values into color values and creating
  * color values for strings. It provides a list of standard color names.
  */
+@Slf4j
 public final class ColorUtil {
 
-    //ColorWithFallback is used to preserve the sRGB fallback exclusively for the purpose
-    //of regenerating textual color functions as specified in XSL-FO.
+    // ColorWithFallback is used to preserve the sRGB fallback exclusively for
+    // the purpose
+    // of regenerating textual color functions as specified in XSL-FO.
 
     /** The name for the uncalibrated CMYK pseudo-profile */
     public static final String CMYK_PSEUDO_PROFILE = "#CMYK";
@@ -66,12 +66,10 @@ public final class ColorUtil {
      * This map is used to predefine given colors, as well as speeding up
      * parsing of already parsed colors.
      * <p>
-     * Important: The use of this color map assumes that all Color instances are immutable!
+     * Important: The use of this color map assumes that all Color instances are
+     * immutable!
      */
     private static Map<String, Color> colorMap = null;
-
-    /** Logger instance */
-    protected static final Log log = LogFactory.getLog(ColorUtil.class);
 
     static {
         initializeColorMap();
@@ -101,7 +99,8 @@ public final class ColorUtil {
      * <li>cmyk(c,m,y,k) (0..1)</li>
      * </ul>
      *
-     * @param foUserAgent FOUserAgent object
+     * @param foUserAgent
+     *            FOUserAgent object
      * @param value
      *            the string to parse.
      * @return a Color representing the string if possible
@@ -109,8 +108,8 @@ public final class ColorUtil {
      *             if the string is not parsable or does not follow any of the
      *             given formats.
      */
-    public static Color parseColorString(FOUserAgent foUserAgent, String value)
-            throws PropertyException {
+    public static Color parseColorString(final FOUserAgent foUserAgent,
+            final String value) throws PropertyException {
         if (value == null) {
             return null;
         }
@@ -160,8 +159,8 @@ public final class ColorUtil {
      */
     private static Color parseAsSystemColor(String value)
             throws PropertyException {
-        int poss = value.indexOf("(");
-        int pose = value.indexOf(")");
+        final int poss = value.indexOf("(");
+        final int pose = value.indexOf(")");
         if (poss != -1 && pose != -1) {
             value = value.substring(poss + 1, pose);
         } else {
@@ -186,30 +185,30 @@ public final class ColorUtil {
         float red = 0.0f;
         float green = 0.0f;
         float blue = 0.0f;
-        int poss = value.indexOf("[");
-        int pose = value.indexOf("]");
+        final int poss = value.indexOf("[");
+        final int pose = value.indexOf("]");
         try {
             if (poss != -1 && pose != -1) {
                 value = value.substring(poss + 1, pose);
-                String[] args = value.split(",");
+                final String[] args = value.split(",");
                 if (args.length != 3) {
                     throw new PropertyException(
-                            "Invalid number of arguments for a java.awt.Color: " + value);
+                            "Invalid number of arguments for a java.awt.Color: "
+                                    + value);
                 }
 
                 red = Float.parseFloat(args[0].trim().substring(2)) / 255f;
                 green = Float.parseFloat(args[1].trim().substring(2)) / 255f;
                 blue = Float.parseFloat(args[2].trim().substring(2)) / 255f;
-                if ((red < 0.0 || red > 1.0)
-                        || (green < 0.0 || green > 1.0)
-                        || (blue < 0.0 || blue > 1.0)) {
+                if (red < 0.0 || red > 1.0 || green < 0.0 || green > 1.0
+                        || blue < 0.0 || blue > 1.0) {
                     throw new PropertyException("Color values out of range");
                 }
             } else {
                 throw new IllegalArgumentException(
-                            "Invalid format for a java.awt.Color: " + value);
+                        "Invalid format for a java.awt.Color: " + value);
             }
-        } catch (RuntimeException re) {
+        } catch (final RuntimeException re) {
             throw new PropertyException(re);
         }
         return new Color(red, green, blue);
@@ -226,26 +225,27 @@ public final class ColorUtil {
      */
     private static Color parseAsRGB(String value) throws PropertyException {
         Color parsedColor;
-        int poss = value.indexOf("(");
-        int pose = value.indexOf(")");
+        final int poss = value.indexOf("(");
+        final int pose = value.indexOf(")");
         if (poss != -1 && pose != -1) {
             value = value.substring(poss + 1, pose);
             try {
-                String[] args = value.split(",");
+                final String[] args = value.split(",");
                 if (args.length != 3) {
                     throw new PropertyException(
                             "Invalid number of arguments: rgb(" + value + ")");
                 }
-                float red = parseComponent255(args[0], value);
-                float green = parseComponent255(args[1], value);
-                float blue = parseComponent255(args[2], value);
-                //Convert to ints to synchronize the behaviour with toRGBFunctionCall()
-                int r = (int)(red * 255 + 0.5);
-                int g = (int)(green * 255 + 0.5);
-                int b = (int)(blue * 255 + 0.5);
+                final float red = parseComponent255(args[0], value);
+                final float green = parseComponent255(args[1], value);
+                final float blue = parseComponent255(args[2], value);
+                // Convert to ints to synchronize the behaviour with
+                // toRGBFunctionCall()
+                final int r = (int) (red * 255 + 0.5);
+                final int g = (int) (green * 255 + 0.5);
+                final int b = (int) (blue * 255 + 0.5);
                 parsedColor = new Color(r, g, b);
-            } catch (RuntimeException re) {
-                //wrap in a PropertyException
+            } catch (final RuntimeException re) {
+                // wrap in a PropertyException
                 throw new PropertyException(re);
             }
         } else {
@@ -255,45 +255,48 @@ public final class ColorUtil {
         return parsedColor;
     }
 
-    private static float parseComponent255(String str, String function)
+    private static float parseComponent255(String str, final String function)
             throws PropertyException {
         float component;
         str = str.trim();
         if (str.endsWith("%")) {
-            component = Float.parseFloat(str.substring(0,
-                    str.length() - 1)) / 100f;
+            component = Float.parseFloat(str.substring(0, str.length() - 1)) / 100f;
         } else {
             component = Float.parseFloat(str) / 255f;
         }
-        if ((component < 0.0 || component > 1.0)) {
-            throw new PropertyException("Color value out of range for " + function + ": "
-                    + str + ". Valid range: [0..255] or [0%..100%]");
+        if (component < 0.0 || component > 1.0) {
+            throw new PropertyException("Color value out of range for "
+                    + function + ": " + str
+                    + ". Valid range: [0..255] or [0%..100%]");
         }
         return component;
     }
 
-    private static float parseComponent1(String argument, String function)
-            throws PropertyException {
+    private static float parseComponent1(final String argument,
+            final String function) throws PropertyException {
         return parseComponent(argument, 0f, 1f, function);
     }
 
-    private static float parseComponent(String argument, float min, float max, String function)
-            throws PropertyException {
-        float component = Float.parseFloat(argument.trim());
-        if ((component < min || component > max)) {
-            throw new PropertyException("Color value out of range for " + function + ": "
-                    + argument + ". Valid range: [" + min + ".." + max + "]");
+    private static float parseComponent(final String argument, final float min,
+            final float max, final String function) throws PropertyException {
+        final float component = Float.parseFloat(argument.trim());
+        if (component < min || component > max) {
+            throw new PropertyException("Color value out of range for "
+                    + function + ": " + argument + ". Valid range: [" + min
+                    + ".." + max + "]");
         }
         return component;
     }
 
-    private static Color parseFallback(String[] args, String value) throws PropertyException {
-        float red = parseComponent1(args[0], value);
-        float green = parseComponent1(args[1], value);
-        float blue = parseComponent1(args[2], value);
-        //Sun's classlib rounds differently with this constructor than when converting to sRGB
-        //via CIE XYZ.
-        Color sRGB = new Color(red, green, blue);
+    private static Color parseFallback(final String[] args, final String value)
+            throws PropertyException {
+        final float red = parseComponent1(args[0], value);
+        final float green = parseComponent1(args[1], value);
+        final float blue = parseComponent1(args[2], value);
+        // Sun's classlib rounds differently with this constructor than when
+        // converting to sRGB
+        // via CIE XYZ.
+        final Color sRGB = new Color(red, green, blue);
         return sRGB;
     }
 
@@ -306,26 +309,26 @@ public final class ColorUtil {
      * @throws PropertyException
      *             if the format is wrong.
      */
-    private static Color parseWithHash(String value) throws PropertyException {
+    private static Color parseWithHash(final String value)
+            throws PropertyException {
         Color parsedColor;
         try {
-            int len = value.length();
+            final int len = value.length();
             int alpha;
             if (len == 5 || len == 9) {
-                alpha = Integer.parseInt(
-                        value.substring((len == 5) ? 3 : 7), 16);
+                alpha = Integer.parseInt(value.substring(len == 5 ? 3 : 7), 16);
             } else {
                 alpha = 0xFF;
             }
             int red = 0;
             int green = 0;
             int blue = 0;
-            if ((len == 4) || (len == 5)) {
-                //multiply by 0x11 = 17 = 255/15
+            if (len == 4 || len == 5) {
+                // multiply by 0x11 = 17 = 255/15
                 red = Integer.parseInt(value.substring(1, 2), 16) * 0x11;
                 green = Integer.parseInt(value.substring(2, 3), 16) * 0x11;
                 blue = Integer.parseInt(value.substring(3, 4), 16) * 0X11;
-            } else if ((len == 7) || (len == 9)) {
+            } else if (len == 7 || len == 9) {
                 red = Integer.parseInt(value.substring(1, 3), 16);
                 green = Integer.parseInt(value.substring(3, 5), 16);
                 blue = Integer.parseInt(value.substring(5, 7), 16);
@@ -333,7 +336,7 @@ public final class ColorUtil {
                 throw new NumberFormatException();
             }
             parsedColor = new Color(red, green, blue, alpha);
-        } catch (RuntimeException re) {
+        } catch (final RuntimeException re) {
             throw new PropertyException("Unknown color format: " + value
                     + ". Must be #RGB. #RGBA, #RRGGBB, or #RRGGBBAA");
         }
@@ -343,28 +346,31 @@ public final class ColorUtil {
     /**
      * Parse a color specified using the fop-rgb-icc() function.
      *
-     * @param value the function call
+     * @param value
+     *            the function call
      * @return a color if possible
-     * @throws PropertyException if the format is wrong.
+     * @throws PropertyException
+     *             if the format is wrong.
      */
-    private static Color parseAsFopRgbIcc(FOUserAgent foUserAgent, String value)
-            throws PropertyException {
+    private static Color parseAsFopRgbIcc(final FOUserAgent foUserAgent,
+            final String value) throws PropertyException {
         Color parsedColor;
-        int poss = value.indexOf("(");
-        int pose = value.indexOf(")");
+        final int poss = value.indexOf("(");
+        final int pose = value.indexOf(")");
         if (poss != -1 && pose != -1) {
-            String[] args = value.substring(poss + 1, pose).split(",");
+            final String[] args = value.substring(poss + 1, pose).split(",");
 
             try {
                 if (args.length < 5) {
-                    throw new PropertyException("Too few arguments for rgb-icc() function");
+                    throw new PropertyException(
+                            "Too few arguments for rgb-icc() function");
                 }
 
-                //Set up fallback sRGB value
-                Color sRGB = parseFallback(args, value);
+                // Set up fallback sRGB value
+                final Color sRGB = parseFallback(args, value);
 
                 /* Get and verify ICC profile name */
-                String iccProfileName = args[3].trim();
+                final String iccProfileName = args[3].trim();
                 if (iccProfileName == null || "".equals(iccProfileName)) {
                     throw new PropertyException("ICC profile name missing");
                 }
@@ -373,7 +379,8 @@ public final class ColorUtil {
                 if (isPseudoProfile(iccProfileName)) {
                     if (CMYK_PSEUDO_PROFILE.equalsIgnoreCase(iccProfileName)) {
                         colorSpace = ColorSpaces.getDeviceCMYKColorSpace();
-                    } else if (SEPARATION_PSEUDO_PROFILE.equalsIgnoreCase(iccProfileName)) {
+                    } else if (SEPARATION_PSEUDO_PROFILE
+                            .equalsIgnoreCase(iccProfileName)) {
                         colorSpace = new NamedColorSpace(args[5], sRGB,
                                 SEPARATION_PSEUDO_PROFILE, null);
                     } else {
@@ -383,7 +390,8 @@ public final class ColorUtil {
                     /* Get and verify ICC profile source */
                     iccProfileSrc = args[4].trim();
                     if (iccProfileSrc == null || "".equals(iccProfileSrc)) {
-                        throw new PropertyException("ICC profile source missing");
+                        throw new PropertyException(
+                                "ICC profile source missing");
                     }
                     iccProfileSrc = unescapeString(iccProfileSrc);
                 }
@@ -392,44 +400,56 @@ public final class ColorUtil {
                 if (colorSpace instanceof NamedColorSpace) {
                     componentStart++;
                 }
-                float[] iccComponents = new float[args.length - componentStart - 1];
+                float[] iccComponents = new float[args.length - componentStart
+                                                  - 1];
                 for (int ix = componentStart; ++ix < args.length;) {
-                    iccComponents[ix - componentStart - 1] = Float.parseFloat(args[ix].trim());
+                    iccComponents[ix - componentStart - 1] = Float
+                            .parseFloat(args[ix].trim());
                 }
-                if (colorSpace instanceof NamedColorSpace && iccComponents.length == 0) {
-                    iccComponents = new float[] {1.0f}; //full tint if not specified
+                if (colorSpace instanceof NamedColorSpace
+                        && iccComponents.length == 0) {
+                    iccComponents = new float[] { 1.0f }; // full tint if not
+                    // specified
                 }
 
-                /* Ask FOP factory to get ColorSpace for the specified ICC profile source */
+                /*
+                 * Ask FOP factory to get ColorSpace for the specified ICC
+                 * profile source
+                 */
                 if (foUserAgent != null && iccProfileSrc != null) {
-                    RenderingIntent renderingIntent = RenderingIntent.AUTO;
-                    //TODO connect to fo:color-profile/@rendering-intent
-                    colorSpace = foUserAgent.getFactory().getColorSpaceCache().get(
-                            iccProfileName,
-                            foUserAgent.getBaseURL(), iccProfileSrc,
-                            renderingIntent);
+                    final RenderingIntent renderingIntent = RenderingIntent.AUTO;
+                    // TODO connect to fo:color-profile/@rendering-intent
+                    colorSpace = foUserAgent
+                            .getFactory()
+                            .getColorSpaceCache()
+                            .get(iccProfileName, foUserAgent.getBaseURL(),
+                                    iccProfileSrc, renderingIntent);
                 }
                 if (colorSpace != null) {
                     // ColorSpace is available
                     if (ColorSpaces.isDeviceColorSpace(colorSpace)) {
-                        //Device-specific colors are handled differently:
-                        //sRGB is the primary color with the CMYK as the alternative
-                        Color deviceColor = new Color(colorSpace, iccComponents, 1.0f);
-                        float[] rgbComps = sRGB.getRGBColorComponents(null);
-                        parsedColor = new ColorWithAlternatives(
-                                rgbComps[0], rgbComps[1], rgbComps[2],
-                                new Color[] {deviceColor});
+                        // Device-specific colors are handled differently:
+                        // sRGB is the primary color with the CMYK as the
+                        // alternative
+                        final Color deviceColor = new Color(colorSpace,
+                                iccComponents, 1.0f);
+                        final float[] rgbComps = sRGB
+                                .getRGBColorComponents(null);
+                        parsedColor = new ColorWithAlternatives(rgbComps[0],
+                                rgbComps[1], rgbComps[2],
+                                new Color[] { deviceColor });
                     } else {
-                        parsedColor = new ColorWithFallback(
-                                colorSpace, iccComponents, 1.0f, null, sRGB);
+                        parsedColor = new ColorWithFallback(colorSpace,
+                                iccComponents, 1.0f, null, sRGB);
                     }
                 } else {
-                    // ICC profile could not be loaded - use rgb replacement values */
+                    // ICC profile could not be loaded - use rgb replacement
+                    // values */
                     log.warn("Color profile '" + iccProfileSrc
                             + "' not found. Using sRGB replacement values.");
                     parsedColor = sRGB;
                 }
-            } catch (RuntimeException re) {
+            } catch (final RuntimeException re) {
                 throw new PropertyException(re);
             }
         } else {
@@ -442,28 +462,31 @@ public final class ColorUtil {
     /**
      * Parse a color specified using the fop-rgb-named-color() function.
      *
-     * @param value the function call
+     * @param value
+     *            the function call
      * @return a color if possible
-     * @throws PropertyException if the format is wrong.
+     * @throws PropertyException
+     *             if the format is wrong.
      */
-    private static Color parseAsFopRgbNamedColor(FOUserAgent foUserAgent, String value)
-            throws PropertyException {
+    private static Color parseAsFopRgbNamedColor(final FOUserAgent foUserAgent,
+            final String value) throws PropertyException {
         Color parsedColor;
-        int poss = value.indexOf("(");
-        int pose = value.indexOf(")");
+        final int poss = value.indexOf("(");
+        final int pose = value.indexOf(")");
         if (poss != -1 && pose != -1) {
-            String[] args = value.substring(poss + 1, pose).split(",");
+            final String[] args = value.substring(poss + 1, pose).split(",");
 
             try {
                 if (args.length != 6) {
-                    throw new PropertyException("rgb-named-color() function must have 6 arguments");
+                    throw new PropertyException(
+                            "rgb-named-color() function must have 6 arguments");
                 }
 
-                //Set up fallback sRGB value
-                Color sRGB = parseFallback(args, value);
+                // Set up fallback sRGB value
+                final Color sRGB = parseFallback(args, value);
 
                 /* Get and verify ICC profile name */
-                String iccProfileName = args[3].trim();
+                final String iccProfileName = args[3].trim();
                 if (iccProfileName == null || "".equals(iccProfileName)) {
                     throw new PropertyException("ICC profile name missing");
                 }
@@ -476,58 +499,70 @@ public final class ColorUtil {
                     /* Get and verify ICC profile source */
                     iccProfileSrc = args[4].trim();
                     if (iccProfileSrc == null || "".equals(iccProfileSrc)) {
-                        throw new PropertyException("ICC profile source missing");
+                        throw new PropertyException(
+                                "ICC profile source missing");
                     }
                     iccProfileSrc = unescapeString(iccProfileSrc);
                 }
 
                 // color name
-                String colorName = unescapeString(args[5].trim());
+                final String colorName = unescapeString(args[5].trim());
 
-                /* Ask FOP factory to get ColorSpace for the specified ICC profile source */
+                /*
+                 * Ask FOP factory to get ColorSpace for the specified ICC
+                 * profile source
+                 */
                 if (foUserAgent != null && iccProfileSrc != null) {
-                    RenderingIntent renderingIntent = RenderingIntent.AUTO;
-                    //TODO connect to fo:color-profile/@rendering-intent
-                    colorSpace = (ICC_ColorSpace)foUserAgent.getFactory().getColorSpaceCache().get(
-                            iccProfileName,
-                            foUserAgent.getBaseURL(), iccProfileSrc,
-                            renderingIntent);
+                    final RenderingIntent renderingIntent = RenderingIntent.AUTO;
+                    // TODO connect to fo:color-profile/@rendering-intent
+                    colorSpace = (ICC_ColorSpace) foUserAgent
+                            .getFactory()
+                            .getColorSpaceCache()
+                            .get(iccProfileName, foUserAgent.getBaseURL(),
+                                    iccProfileSrc, renderingIntent);
                 }
                 if (colorSpace != null) {
-                    ICC_Profile profile = colorSpace.getProfile();
+                    final ICC_Profile profile = colorSpace.getProfile();
                     if (NamedColorProfileParser.isNamedColorProfile(profile)) {
-                        NamedColorProfileParser parser = new NamedColorProfileParser();
-                        NamedColorProfile ncp = parser.parseProfile(profile,
-                                    iccProfileName, iccProfileSrc);
-                        NamedColorSpace ncs = ncp.getNamedColor(colorName);
+                        final NamedColorProfileParser parser = new NamedColorProfileParser();
+                        final NamedColorProfile ncp = parser.parseProfile(
+                                profile, iccProfileName, iccProfileSrc);
+                        final NamedColorSpace ncs = ncp
+                                .getNamedColor(colorName);
                         if (ncs != null) {
                             parsedColor = new ColorWithFallback(ncs,
-                                    new float[] {1.0f}, 1.0f, null, sRGB);
+                                    new float[] { 1.0f }, 1.0f, null, sRGB);
                         } else {
-                            log.warn("Color '" + colorName
-                                    + "' does not exist in named color profile: " + iccProfileSrc);
+                            log.warn("Color '"
+                                    + colorName
+                                    + "' does not exist in named color profile: "
+                                    + iccProfileSrc);
                             parsedColor = sRGB;
                         }
                     } else {
-                        log.warn("ICC profile is no named color profile: " + iccProfileSrc);
+                        log.warn("ICC profile is no named color profile: "
+                                + iccProfileSrc);
                         parsedColor = sRGB;
                     }
                 } else {
-                    // ICC profile could not be loaded - use rgb replacement values */
+                    // ICC profile could not be loaded - use rgb replacement
+                    // values */
                     log.warn("Color profile '" + iccProfileSrc
                             + "' not found. Using sRGB replacement values.");
                     parsedColor = sRGB;
                 }
-            } catch (IOException ioe) {
-                //wrap in a PropertyException
+            } catch (final IOException ioe) {
+                // wrap in a PropertyException
                 throw new PropertyException(ioe);
-            } catch (RuntimeException re) {
+            } catch (final RuntimeException re) {
                 throw new PropertyException(re);
-                //wrap in a PropertyException
+                // wrap in a PropertyException
             }
         } else {
-            throw new PropertyException("Unknown color format: " + value
-                    + ". Must be fop-rgb-named-color(r,g,b,NCNAME,src,color-name)");
+            throw new PropertyException(
+                    "Unknown color format: "
+                            + value
+                            + ". Must be fop-rgb-named-color(r,g,b,NCNAME,src,color-name)");
         }
         return parsedColor;
     }
@@ -535,45 +570,52 @@ public final class ColorUtil {
     /**
      * Parse a color specified using the cie-lab-color() function.
      *
-     * @param value the function call
+     * @param value
+     *            the function call
      * @return a color if possible
-     * @throws PropertyException if the format is wrong.
+     * @throws PropertyException
+     *             if the format is wrong.
      */
-    private static Color parseAsCIELabColor(FOUserAgent foUserAgent, String value)
-            throws PropertyException {
+    private static Color parseAsCIELabColor(final FOUserAgent foUserAgent,
+            final String value) throws PropertyException {
         Color parsedColor;
-        int poss = value.indexOf("(");
-        int pose = value.indexOf(")");
+        final int poss = value.indexOf("(");
+        final int pose = value.indexOf(")");
         if (poss != -1 && pose != -1) {
             try {
-                String[] args = value.substring(poss + 1, pose).split(",");
+                final String[] args = value.substring(poss + 1, pose)
+                        .split(",");
 
                 if (args.length != 6) {
-                    throw new PropertyException("cie-lab-color() function must have 6 arguments");
+                    throw new PropertyException(
+                            "cie-lab-color() function must have 6 arguments");
                 }
 
-                //Set up fallback sRGB value
-                float red = parseComponent255(args[0], value);
-                float green = parseComponent255(args[1], value);
-                float blue = parseComponent255(args[2], value);
-                Color sRGB = new Color(red, green, blue);
+                // Set up fallback sRGB value
+                final float red = parseComponent255(args[0], value);
+                final float green = parseComponent255(args[1], value);
+                final float blue = parseComponent255(args[2], value);
+                final Color sRGB = new Color(red, green, blue);
 
-                float l = parseComponent(args[3], 0f, 100f, value);
-                float a = parseComponent(args[4], -127f, 127f, value);
-                float b = parseComponent(args[5], -127f, 127f, value);
+                final float l = parseComponent(args[3], 0f, 100f, value);
+                final float a = parseComponent(args[4], -127f, 127f, value);
+                final float b = parseComponent(args[5], -127f, 127f, value);
 
-                //Assuming the XSL-FO spec uses the D50 white point
-                CIELabColorSpace cs = ColorSpaces.getCIELabColorSpaceD50();
-                //use toColor() to have components normalized
-                Color labColor = cs.toColor(l, a, b, 1.0f);
-                //Convert to ColorWithFallback
+                // Assuming the XSL-FO spec uses the D50 white point
+                final CIELabColorSpace cs = ColorSpaces
+                        .getCIELabColorSpaceD50();
+                // use toColor() to have components normalized
+                final Color labColor = cs.toColor(l, a, b, 1.0f);
+                // Convert to ColorWithFallback
                 parsedColor = new ColorWithFallback(labColor, sRGB);
-            } catch (RuntimeException re) {
+            } catch (final RuntimeException re) {
                 throw new PropertyException(re);
             }
         } else {
-            throw new PropertyException("Unknown color format: " + value
-                    + ". Must be cie-lab-color(r,g,b,Lightness,a-value,b-value)");
+            throw new PropertyException(
+                    "Unknown color format: "
+                            + value
+                            + ". Must be cie-lab-color(r,g,b,Lightness,a-value,b-value)");
         }
         return parsedColor;
     }
@@ -583,7 +625,8 @@ public final class ColorUtil {
             iccProfileSrc = iccProfileSrc.substring(1);
         }
         if (iccProfileSrc.endsWith("\"") || iccProfileSrc.endsWith("'")) {
-            iccProfileSrc = iccProfileSrc.substring(0, iccProfileSrc.length() - 1);
+            iccProfileSrc = iccProfileSrc.substring(0,
+                    iccProfileSrc.length() - 1);
         }
         return iccProfileSrc;
     }
@@ -599,26 +642,28 @@ public final class ColorUtil {
      */
     private static Color parseAsCMYK(String value) throws PropertyException {
         Color parsedColor;
-        int poss = value.indexOf("(");
-        int pose = value.indexOf(")");
+        final int poss = value.indexOf("(");
+        final int pose = value.indexOf(")");
         if (poss != -1 && pose != -1) {
             value = value.substring(poss + 1, pose);
-            String[] args = value.split(",");
+            final String[] args = value.split(",");
             try {
                 if (args.length != 4) {
                     throw new PropertyException(
                             "Invalid number of arguments: cmyk(" + value + ")");
                 }
-                float cyan = parseComponent1(args[0], value);
-                float magenta = parseComponent1(args[1], value);
-                float yellow = parseComponent1(args[2], value);
-                float black = parseComponent1(args[3], value);
-                float[] comps = new float[] {cyan, magenta, yellow, black};
-                Color cmykColor = DeviceCMYKColorSpace.createCMYKColor(comps);
-                float[] rgbComps = cmykColor.getRGBColorComponents(null);
-                parsedColor = new ColorWithAlternatives(rgbComps[0], rgbComps[1], rgbComps[2],
-                        new Color[] {cmykColor});
-            } catch (RuntimeException re) {
+                final float cyan = parseComponent1(args[0], value);
+                final float magenta = parseComponent1(args[1], value);
+                final float yellow = parseComponent1(args[2], value);
+                final float black = parseComponent1(args[3], value);
+                final float[] comps = new float[] { cyan, magenta, yellow,
+                        black };
+                final Color cmykColor = DeviceCMYKColorSpace
+                        .createCMYKColor(comps);
+                final float[] rgbComps = cmykColor.getRGBColorComponents(null);
+                parsedColor = new ColorWithAlternatives(rgbComps[0],
+                        rgbComps[1], rgbComps[2], new Color[] { cmykColor });
+            } catch (final RuntimeException re) {
                 throw new PropertyException(re);
             }
         } else {
@@ -638,25 +683,24 @@ public final class ColorUtil {
      *            the color to represent.
      * @return a re-parsable string representadion.
      */
-    public static String colorToString(Color color) {
-        ColorSpace cs = color.getColorSpace();
+    public static String colorToString(final Color color) {
+        final ColorSpace cs = color.getColorSpace();
         if (color instanceof ColorWithAlternatives) {
-            return toFunctionCall((ColorWithAlternatives)color);
+            return toFunctionCall((ColorWithAlternatives) color);
         } else if (cs != null && cs.getType() == ColorSpace.TYPE_CMYK) {
-            StringBuffer sbuf = new StringBuffer(24);
-            float[] cmyk = color.getColorComponents(null);
-            sbuf.append("cmyk(").append(cmyk[0])
-                    .append(",").append(cmyk[1])
-                    .append(",").append(cmyk[2])
-                    .append(",").append(cmyk[3]).append(")");
+            final StringBuffer sbuf = new StringBuffer(24);
+            final float[] cmyk = color.getColorComponents(null);
+            sbuf.append("cmyk(").append(cmyk[0]).append(",").append(cmyk[1])
+                    .append(",").append(cmyk[2]).append(",").append(cmyk[3])
+            .append(")");
             return sbuf.toString();
         } else {
             return toRGBFunctionCall(color);
         }
     }
 
-    private static String toRGBFunctionCall(Color color) {
-        StringBuffer sbuf = new StringBuffer();
+    private static String toRGBFunctionCall(final Color color) {
+        final StringBuffer sbuf = new StringBuffer();
         sbuf.append('#');
         String s = Integer.toHexString(color.getRed());
         if (s.length() == 1) {
@@ -683,10 +727,10 @@ public final class ColorUtil {
         return sbuf.toString();
     }
 
-    private static Color getsRGBFallback(ColorWithAlternatives color) {
+    private static Color getsRGBFallback(final ColorWithAlternatives color) {
         Color fallbackColor;
         if (color instanceof ColorWithFallback) {
-            fallbackColor = ((ColorWithFallback)color).getFallbackColor();
+            fallbackColor = ((ColorWithFallback) color).getFallbackColor();
             if (!fallbackColor.getColorSpace().isCS_sRGB()) {
                 fallbackColor = toSRGBColor(fallbackColor);
             }
@@ -696,23 +740,26 @@ public final class ColorUtil {
         return fallbackColor;
     }
 
-    private static Color toSRGBColor(Color color) {
+    private static Color toSRGBColor(final Color color) {
         float[] comps;
-        ColorSpace sRGB = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+        final ColorSpace sRGB = ColorSpace.getInstance(ColorSpace.CS_sRGB);
         comps = color.getRGBColorComponents(null);
-        float[] allComps = color.getComponents(null);
-        float alpha = allComps[allComps.length - 1]; //Alpha is on last component
+        final float[] allComps = color.getComponents(null);
+        final float alpha = allComps[allComps.length - 1]; // Alpha is on last
+        // component
         return new Color(sRGB, comps, alpha);
     }
 
     /**
-     * Create string representation of a fop-rgb-icc (or fop-rgb-named-color) function call from
-     * the given color.
-     * @param color the color to turn into a function call
-     * @return the string representing the internal fop-rgb-icc() or fop-rgb-named-color()
-     *           function call
+     * Create string representation of a fop-rgb-icc (or fop-rgb-named-color)
+     * function call from the given color.
+     *
+     * @param color
+     *            the color to turn into a function call
+     * @return the string representing the internal fop-rgb-icc() or
+     *         fop-rgb-named-color() function call
      */
-    private static String toFunctionCall(ColorWithAlternatives color) {
+    private static String toFunctionCall(final ColorWithAlternatives color) {
         ColorSpace cs = color.getColorSpace();
         if (cs.isCS_sRGB() && !color.hasAlternativeColors()) {
             return toRGBFunctionCall(color);
@@ -723,31 +770,31 @@ public final class ColorUtil {
 
         Color specColor = color;
         if (color.hasAlternativeColors()) {
-            Color alt = color.getAlternativeColors()[0];
+            final Color alt = color.getAlternativeColors()[0];
             if (ColorSpaces.isDeviceColorSpace(alt.getColorSpace())) {
                 cs = alt.getColorSpace();
                 specColor = alt;
             }
         }
-        ColorSpaceOrigin origin = ColorSpaces.getColorSpaceOrigin(cs);
+        final ColorSpaceOrigin origin = ColorSpaces.getColorSpaceOrigin(cs);
         String functionName;
 
-        Color fallbackColor = getsRGBFallback(color);
-        float[] rgb = fallbackColor.getColorComponents(null);
+        final Color fallbackColor = getsRGBFallback(color);
+        final float[] rgb = fallbackColor.getColorComponents(null);
         assert rgb.length == 3;
-        StringBuffer sb = new StringBuffer(40);
+        final StringBuffer sb = new StringBuffer(40);
         sb.append("(");
         sb.append(rgb[0]).append(",");
         sb.append(rgb[1]).append(",");
         sb.append(rgb[2]).append(",");
-        String profileName = origin.getProfileName();
+        final String profileName = origin.getProfileName();
         sb.append(profileName).append(",");
         if (origin.getProfileURI() != null) {
             sb.append("\"").append(origin.getProfileURI()).append("\"");
         }
 
         if (cs instanceof NamedColorSpace) {
-            NamedColorSpace ncs = (NamedColorSpace)cs;
+            final NamedColorSpace ncs = (NamedColorSpace) cs;
             if (SEPARATION_PSEUDO_PROFILE.equalsIgnoreCase(profileName)) {
                 functionName = "fop-rgb-icc";
             } else {
@@ -756,8 +803,8 @@ public final class ColorUtil {
             sb.append(",").append(ncs.getColorName());
         } else {
             functionName = "fop-rgb-icc";
-            float[] colorComponents = specColor.getColorComponents(null);
-            for (float colorComponent : colorComponents) {
+            final float[] colorComponents = specColor.getColorComponents(null);
+            for (final float colorComponent : colorComponents) {
                 sb.append(",");
                 sb.append(colorComponent);
             }
@@ -766,14 +813,15 @@ public final class ColorUtil {
         return functionName + sb.toString();
     }
 
-    private static String toCIELabFunctionCall(ColorWithAlternatives color) {
-        Color fallbackColor = getsRGBFallback(color);
-        StringBuffer sb = new StringBuffer("cie-lab-color(");
+    private static String toCIELabFunctionCall(final ColorWithAlternatives color) {
+        final Color fallbackColor = getsRGBFallback(color);
+        final StringBuffer sb = new StringBuffer("cie-lab-color(");
         sb.append(fallbackColor.getRed()).append(',');
         sb.append(fallbackColor.getGreen()).append(',');
         sb.append(fallbackColor.getBlue());
-        CIELabColorSpace cs = (CIELabColorSpace)color.getColorSpace();
-        float[] lab = cs.toNativeComponents(color.getColorComponents(null));
+        final CIELabColorSpace cs = (CIELabColorSpace) color.getColorSpace();
+        final float[] lab = cs.toNativeComponents(color
+                .getColorComponents(null));
         for (int i = 0; i < 3; i++) {
             sb.append(',').append(lab[i]);
         }
@@ -781,15 +829,16 @@ public final class ColorUtil {
         return sb.toString();
     }
 
-    private static Color createColor(int r, int g, int b) {
+    private static Color createColor(final int r, final int g, final int b) {
         return new Color(r, g, b);
     }
 
     /**
      * Initializes the colorMap with some predefined values.
      */
-    private static void initializeColorMap() {                  // CSOK: MethodLength
-        colorMap = Collections.synchronizedMap(new java.util.HashMap<String, Color>());
+    private static void initializeColorMap() { // CSOK: MethodLength
+        colorMap = Collections
+                .synchronizedMap(new java.util.HashMap<String, Color>());
 
         colorMap.put("aliceblue", createColor(240, 248, 255));
         colorMap.put("antiquewhite", createColor(250, 235, 215));
@@ -944,40 +993,52 @@ public final class ColorUtil {
 
     /**
      * Lightens up a color for groove, ridge, inset and outset border effects.
-     * @param col the color to lighten up
-     * @param factor factor by which to lighten up (negative values darken the color)
+     *
+     * @param col
+     *            the color to lighten up
+     * @param factor
+     *            factor by which to lighten up (negative values darken the
+     *            color)
      * @return the modified color
      */
-    public static Color lightenColor(Color col, float factor) {
-        return org.apache.xmlgraphics.java2d.color.ColorUtil.lightenColor(col, factor);
+    public static Color lightenColor(final Color col, final float factor) {
+        return org.apache.xmlgraphics.java2d.color.ColorUtil.lightenColor(col,
+                factor);
     }
 
     /**
-     * Indicates whether the given color profile name is one of the pseudo-profiles supported
-     * by FOP (ex. #CMYK).
-     * @param colorProfileName the color profile name to check
+     * Indicates whether the given color profile name is one of the
+     * pseudo-profiles supported by FOP (ex. #CMYK).
+     *
+     * @param colorProfileName
+     *            the color profile name to check
      * @return true if the color profile name is of a built-in pseudo-profile
      */
-    public static boolean isPseudoProfile(String colorProfileName) {
+    public static boolean isPseudoProfile(final String colorProfileName) {
         return CMYK_PSEUDO_PROFILE.equalsIgnoreCase(colorProfileName)
                 || SEPARATION_PSEUDO_PROFILE.equalsIgnoreCase(colorProfileName);
     }
 
     /**
      * Indicates whether the color is a gray value.
-     * @param col the color
+     *
+     * @param col
+     *            the color
      * @return true if it is a gray value
      */
-    public static boolean isGray(Color col) {
+    public static boolean isGray(final Color col) {
         return org.apache.xmlgraphics.java2d.color.ColorUtil.isGray(col);
     }
 
     /**
      * Creates an uncalibrated CMYK color with the given gray value.
-     * @param black the gray component (0 - 1)
+     *
+     * @param black
+     *            the gray component (0 - 1)
      * @return the CMYK color
      */
-    public static Color toCMYKGrayColor(float black) {
-        return org.apache.xmlgraphics.java2d.color.ColorUtil.toCMYKGrayColor(black);
+    public static Color toCMYKGrayColor(final float black) {
+        return org.apache.xmlgraphics.java2d.color.ColorUtil
+                .toCMYKGrayColor(black);
     }
 }

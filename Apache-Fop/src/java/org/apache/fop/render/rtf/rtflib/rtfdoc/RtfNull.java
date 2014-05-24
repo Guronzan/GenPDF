@@ -30,14 +30,17 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * <p>Null container.</p>
+ * <p>
+ * Null container.
+ * </p>
  *
- * <p>This work was authored by Christopher Scott (scottc@westinghouse.com).</p>
+ * <p>
+ * This work was authored by Christopher Scott (scottc@westinghouse.com).
+ * </p>
  */
-public class RtfNull
-extends RtfContainer {
+public class RtfNull extends RtfContainer {
 
-    RtfNull(RtfPage parent, Writer w) throws IOException {
-        super((RtfContainer)parent, w);
+    RtfNull(final RtfPage parent, final Writer w) throws IOException {
+        super(parent, w);
     }
 }

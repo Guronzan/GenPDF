@@ -31,23 +31,24 @@ import org.apache.fop.render.intermediate.IFDocumentHandler;
 public class AFPDocumentHandlerMaker extends AbstractIFDocumentHandlerMaker {
 
     private static final String[] MIMES = new String[] {
-            MimeConstants.MIME_AFP,
-            MimeConstants.MIME_AFP_ALT
-    };
+        MimeConstants.MIME_AFP, MimeConstants.MIME_AFP_ALT };
 
     /** {@inheritDoc} */
-    public IFDocumentHandler makeIFDocumentHandler(FOUserAgent ua) {
-        AFPDocumentHandler handler = new AFPDocumentHandler();
+    @Override
+    public IFDocumentHandler makeIFDocumentHandler(final FOUserAgent ua) {
+        final AFPDocumentHandler handler = new AFPDocumentHandler();
         handler.setContext(new IFContext(ua));
         return handler;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

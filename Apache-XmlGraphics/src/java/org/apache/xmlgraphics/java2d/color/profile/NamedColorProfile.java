@@ -27,20 +27,25 @@ import org.apache.xmlgraphics.java2d.color.RenderingIntent;
  */
 public class NamedColorProfile {
 
-    private String profileName;
-    private String copyright;
-    private NamedColorSpace[] namedColors;
+    private final String profileName;
+    private final String copyright;
+    private final NamedColorSpace[] namedColors;
     private RenderingIntent renderingIntent = RenderingIntent.PERCEPTUAL;
 
     /**
      * Creates a new named color profile.
-     * @param profileName the profile name
-     * @param copyright the copyright
-     * @param namedColors the array of named colors
-     * @param intent the rendering intent
+     * 
+     * @param profileName
+     *            the profile name
+     * @param copyright
+     *            the copyright
+     * @param namedColors
+     *            the array of named colors
+     * @param intent
+     *            the rendering intent
      */
-    public NamedColorProfile(String profileName, String copyright, NamedColorSpace[] namedColors,
-            RenderingIntent intent) {
+    public NamedColorProfile(final String profileName, final String copyright,
+            final NamedColorSpace[] namedColors, final RenderingIntent intent) {
         this.profileName = profileName;
         this.copyright = copyright;
         this.namedColors = namedColors;
@@ -49,8 +54,8 @@ public class NamedColorProfile {
 
     /**
      * Returns the color profile's rendering intent.
-     * @return the rendering intent
-     * (See {@link java.awt.color.ICC_Profile}.ic*)
+     * 
+     * @return the rendering intent (See {@link java.awt.color.ICC_Profile}.ic*)
      */
     public RenderingIntent getRenderingIntent() {
         return this.renderingIntent;
@@ -58,20 +63,23 @@ public class NamedColorProfile {
 
     /**
      * Returns the array of named colors.
+     * 
      * @return the array of named colors
      */
     public NamedColorSpace[] getNamedColors() {
-        NamedColorSpace[] copy = new NamedColorSpace[this.namedColors.length];
+        final NamedColorSpace[] copy = new NamedColorSpace[this.namedColors.length];
         System.arraycopy(this.namedColors, 0, copy, 0, this.namedColors.length);
         return copy;
     }
 
     /**
      * Returns a named color.
-     * @param name the color name
+     * 
+     * @param name
+     *            the color name
      * @return the named color (or null if it is not available)
      */
-    public NamedColorSpace getNamedColor(String name) {
+    public NamedColorSpace getNamedColor(final String name) {
         if (this.namedColors != null) {
             for (int i = 0, c = this.namedColors.length; i < c; i++) {
                 if (this.namedColors[i].getColorName().equals(name)) {
@@ -84,6 +92,7 @@ public class NamedColorProfile {
 
     /**
      * Returns the profile name.
+     * 
      * @return the profile name
      */
     public String getProfileName() {
@@ -92,6 +101,7 @@ public class NamedColorProfile {
 
     /**
      * Returns the profile copyright.
+     * 
      * @return the profile copyright
      */
     public String getCopyright() {
@@ -101,9 +111,9 @@ public class NamedColorProfile {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("Named color profile: ");
+        final StringBuffer sb = new StringBuffer("Named color profile: ");
         sb.append(getProfileName());
-        sb.append(", ").append(namedColors.length).append(" colors");
+        sb.append(", ").append(this.namedColors.length).append(" colors");
         return sb.toString();
     }
 

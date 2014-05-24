@@ -29,9 +29,11 @@ public class DummyFOEventHandler extends FOEventHandler {
 
     /**
      * Main constructor.
-     * @param foUserAgent the user agent
+     * 
+     * @param foUserAgent
+     *            the user agent
      */
-    public DummyFOEventHandler(FOUserAgent foUserAgent) {
+    public DummyFOEventHandler(final FOUserAgent foUserAgent) {
         super(foUserAgent);
     }
 

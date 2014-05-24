@@ -35,29 +35,37 @@ public interface PSEventProducer extends EventProducer {
 
         /**
          * Returns an event producer.
-         * @param broadcaster the event broadcaster to use
+         * 
+         * @param broadcaster
+         *            the event broadcaster to use
          * @return the event producer
          */
-        public static PSEventProducer get(EventBroadcaster broadcaster) {
-            return (PSEventProducer)broadcaster.getEventProducerFor(
-                    PSEventProducer.class);
+        public static PSEventProducer get(final EventBroadcaster broadcaster) {
+            return (PSEventProducer) broadcaster
+                    .getEventProducerFor(PSEventProducer.class);
         }
     }
 
     /**
      * A PostScript dictionary could not be parsed.
-     * @param source the event source
-     * @param content the PostScript content
-     * @param e the original exception
+     * 
+     * @param source
+     *            the event source
+     * @param content
+     *            the PostScript content
+     * @param e
+     *            the original exception
      * @event.severity ERROR
      */
-    void postscriptDictionaryParseError(Object source, String content, Exception e);
+    void postscriptDictionaryParseError(final Object source,
+            final String content, final Exception e);
 
     /**
      * PostScript Level 3 features are necessary.
      *
-     * @param source the event source
+     * @param source
+     *            the event source
      * @event.severity FATAL
      */
-    void postscriptLevel3Needed(Object source);
+    void postscriptLevel3Needed(final Object source);
 }

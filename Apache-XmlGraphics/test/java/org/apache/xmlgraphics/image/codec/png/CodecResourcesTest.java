@@ -24,7 +24,6 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.xmlgraphics.image.codec.util.MemoryCacheSeekableStream;
 import org.apache.xmlgraphics.image.codec.util.SeekableStream;
 
@@ -35,16 +34,18 @@ public class CodecResourcesTest extends TestCase {
 
     public void testResources() throws Exception {
 
-        InputStream in = new java.io.FileInputStream("test/images/barcode.eps");
-        SeekableStream seekStream = new MemoryCacheSeekableStream(in);
+        final InputStream in = new java.io.FileInputStream(
+                "test/images/barcode.eps");
+        final SeekableStream seekStream = new MemoryCacheSeekableStream(in);
         try {
             new PNGImage(seekStream, null);
             fail("Exception expected");
-        } catch (RuntimeException re) {
-            String msg = re.getMessage();
+        } catch (final RuntimeException re) {
+            final String msg = re.getMessage();
             if ("PNGImageDecoder0".equals(msg)) {
                 re.printStackTrace();
-                fail("Message resource don't seem to be present! Message is: " + msg);
+                fail("Message resource don't seem to be present! Message is: "
+                        + msg);
             } else if (msg.toLowerCase().indexOf("magic") < 0) {
                 fail("Message not as expected! Message is: " + msg);
             }

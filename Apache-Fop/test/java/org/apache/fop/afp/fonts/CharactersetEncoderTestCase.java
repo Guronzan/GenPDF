@@ -39,8 +39,9 @@ public class CharactersetEncoderTestCase {
 
     @Before
     public void setUp() {
-        singlebyteEncoder = CharactersetEncoder.newInstance("cp500", CharacterSetType.SINGLE_BYTE);
-        doublebyteEncoder = CharactersetEncoder.newInstance("cp937",
+        this.singlebyteEncoder = CharactersetEncoder.newInstance("cp500",
+                CharacterSetType.SINGLE_BYTE);
+        this.doublebyteEncoder = CharactersetEncoder.newInstance("cp937",
                 CharacterSetType.DOUBLE_BYTE_LINE_DATA);
     }
 
@@ -51,17 +52,12 @@ public class CharactersetEncoderTestCase {
             + "\u5167\u63D0\u51FA\u7570\u8B70\uFF0C\u8996\u540C\u610F\u627F\u8A8D\u672C\u4EA4\u6613"
             + "\u3002";
 
-    private final byte[] test6CJKChars = {
-            (byte) 0x61, (byte) 0x99,
-            (byte) 0x50, (byte) 0xf4,
-            (byte) 0x50, (byte) 0xd4,
-            (byte) 0x56, (byte) 0x99,
-            (byte) 0x4c, (byte) 0xc9,
-            (byte) 0x4c, (byte) 0x44 };
+    private final byte[] test6CJKChars = { (byte) 0x61, (byte) 0x99,
+            (byte) 0x50, (byte) 0xf4, (byte) 0x50, (byte) 0xd4, (byte) 0x56,
+            (byte) 0x99, (byte) 0x4c, (byte) 0xc9, (byte) 0x4c, (byte) 0x44 };
 
     private final String testEngText = "Hello World!";
-    private final byte[] testEngChars = {
-            (byte) 0xc8, // H
+    private final byte[] testEngChars = { (byte) 0xc8, // H
             (byte) 0x85, // e
             (byte) 0x93, // l
             (byte) 0x93, // l
@@ -72,46 +68,49 @@ public class CharactersetEncoderTestCase {
             (byte) 0x99, // r
             (byte) 0x93, // l
             (byte) 0x84, // d
-            (byte) 0x4f  // !
+            (byte) 0x4f // !
     };
 
     /**
-     * Tests canEncode() - tests that canEncode() responds properly to various input characters.
+     * Tests canEncode() - tests that canEncode() responds properly to various
+     * input characters.
      */
     @Test
     public void testCanEncode() {
         // Both SBCS and DBCS should support Latin characters
         for (char c = '!'; c < '~'; c++) {
-            assertTrue(singlebyteEncoder.canEncode(c));
-            assertTrue(doublebyteEncoder.canEncode(c));
+            assertTrue(this.singlebyteEncoder.canEncode(c));
+            assertTrue(this.doublebyteEncoder.canEncode(c));
         }
         // ONLY the double byte characters can handle CJK text
-        for (char c : testCJKText.toCharArray()) {
-            assertFalse(singlebyteEncoder.canEncode(c));
-            assertTrue(doublebyteEncoder.canEncode(c));
+        for (final char c : this.testCJKText.toCharArray()) {
+            assertFalse(this.singlebyteEncoder.canEncode(c));
+            assertTrue(this.doublebyteEncoder.canEncode(c));
         }
-        // Ensure that double byte encoder doesn't just return true all the time...
-        assertFalse(doublebyteEncoder.canEncode('\u00BB'));
+        // Ensure that double byte encoder doesn't just return true all the
+        // time...
+        assertFalse(this.doublebyteEncoder.canEncode('\u00BB'));
     }
 
     @Test
     public void testEncode() throws CharacterCodingException, IOException {
-        CharactersetEncoder.EncodedChars encChars; // = doublebyteEncoder.encode(testCJKText);
-        ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-        // JAVA 1.5 has a bug in the JVM in which these err for some reason... JAVA 1.6 no issues
-        /*encChars.writeTo(bOut, 0, encChars.getLength());
-        byte[] bytes = bOut.toByteArray();
-        for (int i = 0; i < 12; i++) {
-            assertEquals(test6CJKChars[i], bytes[i]);
-        }
-        bOut.reset();*/
+        CharactersetEncoder.EncodedChars encChars; // =
+                                                   // doublebyteEncoder.encode(testCJKText);
+        final ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+        // JAVA 1.5 has a bug in the JVM in which these err for some reason...
+        // JAVA 1.6 no issues
+        /*
+         * encChars.writeTo(bOut, 0, encChars.getLength()); byte[] bytes =
+         * bOut.toByteArray(); for (int i = 0; i < 12; i++) {
+         * assertEquals(test6CJKChars[i], bytes[i]); } bOut.reset();
+         */
 
-        encChars = singlebyteEncoder.encode(testEngText);
+        encChars = this.singlebyteEncoder.encode(this.testEngText);
         encChars.writeTo(bOut, 0, encChars.getLength());
-        byte[] engBytes = bOut.toByteArray();
-        for (int i = 0; i < testEngChars.length; i++) {
-            assertEquals(testEngChars[i], engBytes[i]);
+        final byte[] engBytes = bOut.toByteArray();
+        for (int i = 0; i < this.testEngChars.length; i++) {
+            assertEquals(this.testEngChars[i], engBytes[i]);
         }
-        assertEquals(testEngChars.length, engBytes.length);
+        assertEquals(this.testEngChars.length, engBytes.length);
     }
 }

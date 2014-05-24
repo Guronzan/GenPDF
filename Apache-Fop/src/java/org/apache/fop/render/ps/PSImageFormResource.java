@@ -22,35 +22,41 @@ package org.apache.fop.render.ps;
 import org.apache.xmlgraphics.ps.PSResource;
 
 /**
- * PostScript Resource class representing a FOP form. This is used by PSRenderer to keep track
- * of images.
+ * PostScript Resource class representing a FOP form. This is used by PSRenderer
+ * to keep track of images.
  */
 public class PSImageFormResource extends PSResource {
 
-    private String uri;
+    private final String uri;
 
     /**
      * Create a new Form Resource.
-     * @param id An ID for the form
-     * @param uri the URI to the image
+     * 
+     * @param id
+     *            An ID for the form
+     * @param uri
+     *            the URI to the image
      */
-    public PSImageFormResource(int id, String uri) {
+    public PSImageFormResource(final int id, final String uri) {
         this("FOPForm:" + Integer.toString(id), uri);
     }
 
     /**
-    /**
-     * Create a new Form Resource.
-     * @param name the name of the resource
-     * @param uri the URI to the image
+     * /** Create a new Form Resource.
+     * 
+     * @param name
+     *            the name of the resource
+     * @param uri
+     *            the URI to the image
      */
-    public PSImageFormResource(String name, String uri) {
+    public PSImageFormResource(final String name, final String uri) {
         super(PSResource.TYPE_FORM, name);
         this.uri = uri;
     }
 
     /**
      * Returns the image URI.
+     * 
      * @return the image URI
      */
     public String getImageURI() {

@@ -49,22 +49,27 @@ public class XMPBasicAdapter extends XMPSchemaAdapter {
 
     /**
      * Constructs a new adapter for XMP Basic around the given metadata object.
-     * @param meta the underlying metadata
+     * 
+     * @param meta
+     *            the underlying metadata
      */
-    public XMPBasicAdapter(Metadata meta, String namespace) {
+    public XMPBasicAdapter(final Metadata meta, final String namespace) {
         super(meta, XMPSchemaRegistry.getInstance().getSchema(namespace));
     }
 
     /**
      * Sets the base URL for relative URLs in the document content.
-     * @param value the base URL
+     * 
+     * @param value
+     *            the base URL
      */
-    public void setBaseUrl(String value) {
+    public void setBaseUrl(final String value) {
         setValue(BASE_URL, value);
     }
 
     /**
      * Returns the base URL for relative URLs in the document content.
+     * 
      * @return the base URL
      */
     public String getBaseUrl() {
@@ -73,9 +78,11 @@ public class XMPBasicAdapter extends XMPSchemaAdapter {
 
     /**
      * Sets the date and time the resource was originally created.
-     * @param creationDate the creation date
+     * 
+     * @param creationDate
+     *            the creation date
      */
-    public void setCreateDate(Date creationDate) {
+    public void setCreateDate(final Date creationDate) {
         setDateValue(CREATE_DATE, creationDate);
     }
 
@@ -86,9 +93,11 @@ public class XMPBasicAdapter extends XMPSchemaAdapter {
 
     /**
      * Sets the first known tool used to create the resource.
-     * @param value the creator tool
+     * 
+     * @param value
+     *            the creator tool
      */
-    public void setCreatorTool(String value) {
+    public void setCreatorTool(final String value) {
         setValue(CREATOR_TOOL, value);
     }
 
@@ -98,35 +107,43 @@ public class XMPBasicAdapter extends XMPSchemaAdapter {
     }
 
     /**
-     * Adds an identifier that unambiguously identify the resource within a given context.
-     * @param value the identifier value
+     * Adds an identifier that unambiguously identify the resource within a
+     * given context.
+     * 
+     * @param value
+     *            the identifier value
      */
-    public void addIdentifier(String value) {
+    public void addIdentifier(final String value) {
         addStringToBag(IDENTIFIER, value);
     }
 
     /**
-     * Sets a qualified identifier that unambiguously identify the resource within a given context.
-     * As qualifier, <code>xmpidq:Scheme</code> is used.
-     * @param value the identifier value
-     * @param qualifier the qualifier value (for xmpidq:Scheme)
+     * Sets a qualified identifier that unambiguously identify the resource
+     * within a given context. As qualifier, <code>xmpidq:Scheme</code> is used.
+     * 
+     * @param value
+     *            the identifier value
+     * @param qualifier
+     *            the qualifier value (for xmpidq:Scheme)
      */
-    public void setIdentifier(String value, String qualifier) {
-        PropertyAccess pa = findQualifiedStructure(IDENTIFIER,
+    public void setIdentifier(final String value, final String qualifier) {
+        final PropertyAccess pa = findQualifiedStructure(IDENTIFIER,
                 XMPBasicSchema.SCHEME_QUALIFIER, qualifier);
         if (pa != null) {
             pa.setProperty(new XMPProperty(XMPConstants.RDF_VALUE, value));
         } else {
-            XMPStructure struct = new XMPStructure();
+            final XMPStructure struct = new XMPStructure();
             struct.setProperty(new XMPProperty(XMPConstants.RDF_VALUE, value));
-            struct.setProperty(new XMPProperty(XMPBasicSchema.SCHEME_QUALIFIER, qualifier));
+            struct.setProperty(new XMPProperty(XMPBasicSchema.SCHEME_QUALIFIER,
+                    qualifier));
             addObjectToArray(IDENTIFIER, struct, XMPArrayType.BAG);
         }
     }
 
     /**
-     * Returns an array of all identifiers that unambiguously identify the resource within a
-     * given context.
+     * Returns an array of all identifiers that unambiguously identify the
+     * resource within a given context.
+     * 
      * @return a String array of all identifiers (or null if not set)
      */
     public String[] getIdentifiers() {
@@ -134,21 +151,26 @@ public class XMPBasicAdapter extends XMPSchemaAdapter {
     }
 
     /**
-     * Returns an identifier that matches a given qualifier.
-     * As qualifier, <code>xmpidq:Scheme</code> is used.
-     * @param qualifier the qualifier
+     * Returns an identifier that matches a given qualifier. As qualifier,
+     * <code>xmpidq:Scheme</code> is used.
+     * 
+     * @param qualifier
+     *            the qualifier
      * @return the identifier (or null if no matching value was found)
      */
-    public String getIdentifier(String qualifier) {
-        Object value = findQualifiedValue(IDENTIFIER, XMPBasicSchema.SCHEME_QUALIFIER, qualifier);
-        return (value != null ? value.toString() : null);
+    public String getIdentifier(final String qualifier) {
+        final Object value = findQualifiedValue(IDENTIFIER,
+                XMPBasicSchema.SCHEME_QUALIFIER, qualifier);
+        return value != null ? value.toString() : null;
     }
 
     /**
      * Sets the date and time the resource was last modified.
-     * @param modifyDate the modification date
+     * 
+     * @param modifyDate
+     *            the modification date
      */
-    public void setModifyDate(Date modifyDate) {
+    public void setModifyDate(final Date modifyDate) {
         setDateValue(MODIFY_DATE, modifyDate);
     }
 
@@ -159,9 +181,11 @@ public class XMPBasicAdapter extends XMPSchemaAdapter {
 
     /**
      * Sets the date and time any metadata for this resource was last changed.
-     * @param metadataDate the modification date for the metadata
+     * 
+     * @param metadataDate
+     *            the modification date for the metadata
      */
-    public void setMetadataDate(Date metadataDate) {
+    public void setMetadataDate(final Date metadataDate) {
         setDateValue(METADATA_DATE, metadataDate);
     }
 

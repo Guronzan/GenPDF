@@ -25,27 +25,24 @@ import org.apache.fop.traits.MinOptMax;
  * An instance of this class represents a piece of content with adjustable
  * width: for example a space between words of justified text.
  *
- * A KnuthGlue is a feasible breaking point only if it immediately follows
- * a KnuthBox.
+ * A KnuthGlue is a feasible breaking point only if it immediately follows a
+ * KnuthBox.
  *
- * The represented piece of content is suppressed if either the KnuthGlue
- * is a chosen breaking point or there isn't any KnuthBox between the
- * previous breaking point and the KnuthGlue itself.
+ * The represented piece of content is suppressed if either the KnuthGlue is a
+ * chosen breaking point or there isn't any KnuthBox between the previous
+ * breaking point and the KnuthGlue itself.
  *
- * So, an unsuppressible piece of content with adjustable width, for example
- * a leader or a word with adjustable letter space, cannot be represented
- * by a single KnuthGlue; it can be represented using the sequence:
- *   KnuthBox(width = 0)
- *   KnuthPenalty(width = 0, penalty = infinity)
- *   KnuthGlue(...)
- *   KnuthBox(width = 0)
- * where the infinity penalty avoids choosing the KnuthGlue as a breaking point
- * and the 0-width KnuthBoxes prevent suppression.
+ * So, an unsuppressible piece of content with adjustable width, for example a
+ * leader or a word with adjustable letter space, cannot be represented by a
+ * single KnuthGlue; it can be represented using the sequence: KnuthBox(width =
+ * 0) KnuthPenalty(width = 0, penalty = infinity) KnuthGlue(...) KnuthBox(width
+ * = 0) where the infinity penalty avoids choosing the KnuthGlue as a breaking
+ * point and the 0-width KnuthBoxes prevent suppression.
  *
  * Besides the inherited methods and attributes, this class has two attributes
  * used to store the stretchability (difference between max and opt width) and
- * the shrinkability (difference between opt and min width), and the methods
- * to get these values.
+ * the shrinkability (difference between opt and min width), and the methods to
+ * get these values.
  */
 public class KnuthGlue extends KnuthElement {
 
@@ -56,14 +53,19 @@ public class KnuthGlue extends KnuthElement {
     /**
      * Creates a new <code>KnuthGlue</code>.
      *
-     * @param minOptMax a <code>MinOptMax</code> where the {@link MinOptMax#getOpt() opt-value} is
-     *                  mapped to the width, the {@link MinOptMax#getStretch()
-     *                  stretchability} is mapped to the stretchability and the the {@link
-     *                  MinOptMax#getShrink() shrinkability} is mapped to the shrinkability
-     * @param pos       the Position stored in this glue
-     * @param auxiliary is this glue auxiliary?
+     * @param minOptMax
+     *            a <code>MinOptMax</code> where the {@link MinOptMax#getOpt()
+     *            opt-value} is mapped to the width, the
+     *            {@link MinOptMax#getStretch() stretchability} is mapped to the
+     *            stretchability and the the {@link MinOptMax#getShrink()
+     *            shrinkability} is mapped to the shrinkability
+     * @param pos
+     *            the Position stored in this glue
+     * @param auxiliary
+     *            is this glue auxiliary?
      */
-    public KnuthGlue(MinOptMax minOptMax, Position pos, boolean auxiliary) {
+    public KnuthGlue(final MinOptMax minOptMax, final Position pos,
+            final boolean auxiliary) {
         super(minOptMax.getOpt(), pos, auxiliary);
         this.stretch = minOptMax.getStretch();
         this.shrink = minOptMax.getShrink();
@@ -73,14 +75,19 @@ public class KnuthGlue extends KnuthElement {
     /**
      * Creates a new <code>KnuthGlue</code>.
      *
-     * @param width     the width of this glue
-     * @param stretch   the stretchability of this glue
-     * @param shrink    the shrinkability of this glue
-     * @param pos       the Position stored in this glue
-     * @param auxiliary is this glue auxiliary?
+     * @param width
+     *            the width of this glue
+     * @param stretch
+     *            the stretchability of this glue
+     * @param shrink
+     *            the shrinkability of this glue
+     * @param pos
+     *            the Position stored in this glue
+     * @param auxiliary
+     *            is this glue auxiliary?
      */
-    public KnuthGlue(int width, int stretch, int shrink, Position pos,
-                     boolean auxiliary) {
+    public KnuthGlue(final int width, final int stretch, final int shrink,
+            final Position pos, final boolean auxiliary) {
         super(width, pos, auxiliary);
         this.stretch = stretch;
         this.shrink = shrink;
@@ -90,15 +97,22 @@ public class KnuthGlue extends KnuthElement {
     /**
      * Creates a new <code>KnuthGlue</code>.
      *
-     * @param width     the width of this glue
-     * @param stretch   the stretchability of this glue
-     * @param shrink    the shrinkability of this glue
-     * @param adjustmentClass the adjsutment class
-     * @param pos       the Position stored in this glue
-     * @param auxiliary is this glue auxiliary?
+     * @param width
+     *            the width of this glue
+     * @param stretch
+     *            the stretchability of this glue
+     * @param shrink
+     *            the shrinkability of this glue
+     * @param adjustmentClass
+     *            the adjsutment class
+     * @param pos
+     *            the Position stored in this glue
+     * @param auxiliary
+     *            is this glue auxiliary?
      */
-    public KnuthGlue(int width, int stretch, int shrink, Adjustment adjustmentClass,
-                     Position pos, boolean auxiliary) {
+    public KnuthGlue(final int width, final int stretch, final int shrink,
+            final Adjustment adjustmentClass, final Position pos,
+            final boolean auxiliary) {
         super(width, pos, auxiliary);
         this.stretch = stretch;
         this.shrink = shrink;
@@ -106,28 +120,32 @@ public class KnuthGlue extends KnuthElement {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isGlue() {
         return true;
     }
 
     /** @return the stretchability of this glue. */
+    @Override
     public int getStretch() {
-        return stretch;
+        return this.stretch;
     }
 
     /** @return the shrinkability of this glue. */
+    @Override
     public int getShrink() {
-        return shrink;
+        return this.shrink;
     }
 
     /** @return the adjustment class (or role) of this glue. */
     public Adjustment getAdjustmentClass() {
-        return adjustmentClass;
+        return this.adjustmentClass;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer(64);
+        final StringBuffer buffer = new StringBuffer(64);
         if (isAuxiliary()) {
             buffer.append("aux. ");
         }

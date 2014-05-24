@@ -30,7 +30,9 @@ import org.w3c.dom.NodeList;
 
 /**
  * A factory class for creating checks that belong to a same family.
- * @param <C> a family of checks
+ * 
+ * @param <C>
+ *            a family of checks
  */
 public abstract class ChecksFactory<C extends Check> {
 
@@ -42,52 +44,60 @@ public abstract class ChecksFactory<C extends Check> {
         /**
          * Creates a {@link Check} instance from the given XML element.
          *
-         * @param element an element representing a check
+         * @param element
+         *            an element representing a check
          * @return the corresponding check
          */
-        C createCheck(Element element);
+        C createCheck(final Element element);
     }
 
-    private final Map<String, CheckFactory<C>> checkFactories
-            = new HashMap<String, CheckFactory<C>>();
+    private final Map<String, CheckFactory<C>> checkFactories = new HashMap<String, CheckFactory<C>>();
 
     /** Default constructor. */
-    protected ChecksFactory() { }
+    protected ChecksFactory() {
+    }
 
     /**
      * Registers a factory for a new kind of check.
      *
-     * @param elementName the name of the element under which the check is identified in
-     * the XML test case
-     * @param factory the corresponding factory
+     * @param elementName
+     *            the name of the element under which the check is identified in
+     *            the XML test case
+     * @param factory
+     *            the corresponding factory
      */
-    protected void registerCheckFactory(String elementName, CheckFactory<C> factory) {
-        checkFactories.put(elementName, factory);
+    protected void registerCheckFactory(final String elementName,
+            final CheckFactory<C> factory) {
+        this.checkFactories.put(elementName, factory);
     }
 
     /**
      * Creates a new {@link Check} instance corresponding to the given element.
      *
-     * @param element an element in the XML test case that identifies a particular check
+     * @param element
+     *            an element in the XML test case that identifies a particular
+     *            check
      * @return the corresponding check
-     * @throws IllegalArgumentException if not check corresponding to the given element
-     * has been found
+     * @throws IllegalArgumentException
+     *             if not check corresponding to the given element has been
+     *             found
      */
-    public final C createCheck(Element element) {
-        String name = element.getTagName();
-        CheckFactory<C> factory = checkFactories.get(name);
+    public final C createCheck(final Element element) {
+        final String name = element.getTagName();
+        final CheckFactory<C> factory = this.checkFactories.get(name);
         if (factory == null) {
-            throw new IllegalArgumentException("No check class found for " + name);
+            throw new IllegalArgumentException("No check class found for "
+                    + name);
         } else {
             return factory.createCheck(element);
         }
     }
 
-    public final List<C> createCheckList(Element container) {
-        List<C> checks = new ArrayList<C>();
-        NodeList nodes = container.getChildNodes();
+    public final List<C> createCheckList(final Element container) {
+        final List<C> checks = new ArrayList<C>();
+        final NodeList nodes = container.getChildNodes();
         for (int i = 0; i < nodes.getLength(); i++) {
-            Node node = nodes.item(i);
+            final Node node = nodes.item(i);
             if (node instanceof Element) {
                 checks.add(createCheck((Element) node));
             }

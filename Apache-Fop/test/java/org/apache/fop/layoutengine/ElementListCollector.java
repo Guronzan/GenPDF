@@ -24,18 +24,18 @@ import java.util.List;
 import org.apache.fop.layoutmgr.ElementListObserver.Observer;
 
 /**
- * This class collects element list generated during a FOP processing run. These lists are later
- * used to perform automated checks.
+ * This class collects element list generated during a FOP processing run. These
+ * lists are later used to perform automated checks.
  */
 public class ElementListCollector implements Observer {
 
-    private List elementLists = new java.util.ArrayList();
+    private final List elementLists = new java.util.ArrayList();
 
     /**
      * Resets the collector.
      */
     public void reset() {
-        elementLists.clear();
+        this.elementLists.clear();
     }
 
     /**
@@ -46,26 +46,34 @@ public class ElementListCollector implements Observer {
     }
 
     /** @see org.apache.fop.layoutmgr.ElementListObserver.Observer */
-    public void observe(List elementList, String category, String id) {
-        elementLists.add(new ElementList(elementList, category, id));
+    @Override
+    public void observe(final List elementList, final String category,
+            final String id) {
+        this.elementLists.add(new ElementList(elementList, category, id));
     }
 
     /**
-     * Data object representing an element list along with additional information.
+     * Data object representing an element list along with additional
+     * information.
      */
     public static class ElementList {
 
-        private List elementList;
-        private String category;
-        private String id;
+        private final List elementList;
+        private final String category;
+        private final String id;
 
         /**
          * Creates a new ElementList instance
-         * @param elementList the element list
-         * @param category the category for the element list
-         * @param id an optional ID
+         * 
+         * @param elementList
+         *            the element list
+         * @param category
+         *            the category for the element list
+         * @param id
+         *            an optional ID
          */
-        public ElementList(List elementList, String category, String id) {
+        public ElementList(final List elementList, final String category,
+                final String id) {
             this.elementList = elementList;
             this.category = category;
             this.id = id;
@@ -73,17 +81,17 @@ public class ElementListCollector implements Observer {
 
         /** @return the element list */
         public List getElementList() {
-            return elementList;
+            return this.elementList;
         }
 
         /** @return the category */
         public String getCategory() {
-            return category;
+            return this.category;
         }
 
         /** @return the ID, may be null */
         public String getID() {
-            return id;
+            return this.id;
         }
     }
 

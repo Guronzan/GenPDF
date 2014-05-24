@@ -42,41 +42,51 @@ public class IFTester {
 
     private final TransformerFactory tfactory;
 
-    private File backupDir;
+    private final File backupDir;
 
     /**
      * Main constructor.
      *
-     * @param transformerFactory the factory used to serialize the intermediate format files
-     * @param backupDir an optional directory in which to write the serialized
-     * IF files (may be null)
+     * @param transformerFactory
+     *            the factory used to serialize the intermediate format files
+     * @param backupDir
+     *            an optional directory in which to write the serialized IF
+     *            files (may be null)
      */
-    public IFTester(TransformerFactory transformerFactory, File backupDir) {
+    public IFTester(final TransformerFactory transformerFactory,
+            final File backupDir) {
         this.tfactory = transformerFactory;
         this.backupDir = backupDir;
     }
 
     /**
      * Runs the intermediate format checks.
-     * @param testName the name of the test case
-     * @param checksRoot the root element containing the IF checks
-     * @param ifDocument the IF XML
-     * @throws TransformerException if an error occurs while transforming the content
+     * 
+     * @param testName
+     *            the name of the test case
+     * @param checksRoot
+     *            the root element containing the IF checks
+     * @param ifDocument
+     *            the IF XML
+     * @throws TransformerException
+     *             if an error occurs while transforming the content
      */
-    public void doIFChecks(String testName, Element checksRoot, Document ifDocument)
-            throws TransformerException {
+    public void doIFChecks(final String testName, final Element checksRoot,
+            final Document ifDocument) throws TransformerException {
         if (this.backupDir != null) {
-            Transformer transformer = tfactory.newTransformer();
-            Source src = new DOMSource(ifDocument);
-            File targetFile = new File(this.backupDir, testName + ".if.xml");
-            Result res = new StreamResult(targetFile);
+            final Transformer transformer = this.tfactory.newTransformer();
+            final Source src = new DOMSource(ifDocument);
+            final File targetFile = new File(this.backupDir, testName
+                    + ".if.xml");
+            final Result res = new StreamResult(targetFile);
             transformer.transform(src, res);
         }
-        List<IFCheck> checks = ifChecksFactory.createCheckList(checksRoot);
+        final List<IFCheck> checks = this.ifChecksFactory
+                .createCheckList(checksRoot);
         if (checks.size() == 0) {
             throw new RuntimeException("No available IF check");
         }
-        for (IFCheck check : checks) {
+        for (final IFCheck check : checks) {
             check.check(ifDocument);
         }
     }

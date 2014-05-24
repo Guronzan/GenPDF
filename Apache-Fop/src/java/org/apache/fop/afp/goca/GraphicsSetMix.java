@@ -39,32 +39,36 @@ public class GraphicsSetMix extends AbstractGraphicsDrawingOrder {
     /**
      * Main constructor
      *
-     * @param mode the mix mode value
+     * @param mode
+     *            the mix mode value
      */
-    public GraphicsSetMix(byte mode) {
+    public GraphicsSetMix(final byte mode) {
         this.mode = mode;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[] {
-           0x0C, // GSMX order code
-           mode // MODE (mix mode value)
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[] { 0x0C, // GSMX order code
+                this.mode // MODE (mix mode value)
         };
         os.write(data);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "GraphicsSetMix{mode=" + mode + "}";
+        return "GraphicsSetMix{mode=" + this.mode + "}";
     }
 
     /** {@inheritDoc} */
+    @Override
     byte getOrderCode() {
         return 0x0C;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 2;
     }

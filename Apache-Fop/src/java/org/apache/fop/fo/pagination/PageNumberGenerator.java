@@ -24,43 +24,68 @@ import org.apache.fop.complexscripts.util.NumberConverter;
 // CSOFF: LineLengthCheck
 
 /**
- * <p>This class uses the 'format', 'groupingSeparator', 'groupingSize',
- * and 'letterValue' properties on fo:page-sequence to return a String
- * corresponding to the supplied integer page number.</p>
+ * <p>
+ * This class uses the 'format', 'groupingSeparator', 'groupingSize', and
+ * 'letterValue' properties on fo:page-sequence to return a String corresponding
+ * to the supplied integer page number.
+ * </p>
  *
- * <p>In addition, (now) uses 'language' parameter and new 'fox:page-number-features'
- * parameter to express applicable language and number conversion features.</p>
+ * <p>
+ * In addition, (now) uses 'language' parameter and new
+ * 'fox:page-number-features' parameter to express applicable language and
+ * number conversion features.
+ * </p>
  *
- * <p>This work was authored by Glenn Adams (gadams@apache.org), based on a
- * rewrite of prior work to use the new <code>NumberConverter</code> utility class.</p>
+ * <p>
+ * This work was authored by Glenn Adams (gadams@apache.org), based on a rewrite
+ * of prior work to use the new <code>NumberConverter</code> utility class.
+ * </p>
+ * 
  * @see NumberConverter
  */
 public class PageNumberGenerator {
 
-    private NumberConverter converter;
+    private final NumberConverter converter;
 
     /**
-     * Main constructor. For further information on the parameters see {@link NumberConverter}.
-     * @param format format for the page number (may be null or empty, which is treated as null)
-     * @param groupingSeparator grouping separator (if zero, then no grouping separator applies)
-     * @param groupingSize grouping size (if zero or negative, then no grouping size applies)
-     * @param letterValue letter value
-     * @param features features (feature sub-parameters)
-     * @param language (may be null or empty, which is treated as null)
-     * @param country (may be null or empty, which is treated as null)
+     * Main constructor. For further information on the parameters see
+     * {@link NumberConverter}.
+     * 
+     * @param format
+     *            format for the page number (may be null or empty, which is
+     *            treated as null)
+     * @param groupingSeparator
+     *            grouping separator (if zero, then no grouping separator
+     *            applies)
+     * @param groupingSize
+     *            grouping size (if zero or negative, then no grouping size
+     *            applies)
+     * @param letterValue
+     *            letter value
+     * @param features
+     *            features (feature sub-parameters)
+     * @param language
+     *            (may be null or empty, which is treated as null)
+     * @param country
+     *            (may be null or empty, which is treated as null)
      */
-    public PageNumberGenerator ( String format, int groupingSeparator, int groupingSize, int letterValue, String features, String language, String country ) {
-        this.converter = new NumberConverter ( format, groupingSeparator, groupingSize, letterValue, features, language, country );
+    public PageNumberGenerator(final String format,
+            final int groupingSeparator, final int groupingSize,
+            final int letterValue, final String features,
+            final String language, final String country) {
+        this.converter = new NumberConverter(format, groupingSeparator,
+                groupingSize, letterValue, features, language, country);
     }
 
     /**
      * Formats a page number.
-     * @param number page number to format
+     * 
+     * @param number
+     *            page number to format
      * @return the formatted page number as a String
      */
-    public String makeFormattedPageNumber ( int number ) {
-        return converter.convert ( number );
+    public String makeFormattedPageNumber(final int number) {
+        return this.converter.convert(number);
     }
 
 }
-

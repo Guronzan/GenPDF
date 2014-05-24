@@ -26,7 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-
+import org.apache.fop.render.ImageHandler;
+import org.apache.fop.render.RenderingContext;
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
@@ -34,72 +35,71 @@ import org.apache.xmlgraphics.image.loader.impl.ImageRawEPS;
 import org.apache.xmlgraphics.ps.PSGenerator;
 import org.apache.xmlgraphics.ps.PSImageUtils;
 
-import org.apache.fop.render.ImageHandler;
-import org.apache.fop.render.RenderingContext;
-
 /**
  * Image handler implementation which handles EPS images for PostScript output.
  */
 public class PSImageHandlerEPS implements ImageHandler {
 
-    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {
-        ImageFlavor.RAW_EPS
-    };
+    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] { ImageFlavor.RAW_EPS };
 
     /** {@inheritDoc} */
-    public void handleImage(RenderingContext context, Image image, Rectangle pos)
-                throws IOException {
-        PSRenderingContext psContext = (PSRenderingContext)context;
-        PSGenerator gen = psContext.getGenerator();
-        ImageRawEPS eps = (ImageRawEPS)image;
+    @Override
+    public void handleImage(final RenderingContext context, final Image image,
+            final Rectangle pos) throws IOException {
+        final PSRenderingContext psContext = (PSRenderingContext) context;
+        final PSGenerator gen = psContext.getGenerator();
+        final ImageRawEPS eps = (ImageRawEPS) image;
 
-        float x = (float)pos.getX() / 1000f;
-        float y = (float)pos.getY() / 1000f;
-        float w = (float)pos.getWidth() / 1000f;
-        float h = (float)pos.getHeight() / 1000f;
+        final float x = (float) pos.getX() / 1000f;
+        final float y = (float) pos.getY() / 1000f;
+        final float w = (float) pos.getWidth() / 1000f;
+        final float h = (float) pos.getHeight() / 1000f;
 
-        ImageInfo info = image.getInfo();
+        final ImageInfo info = image.getInfo();
         Rectangle2D bbox = eps.getBoundingBox();
         if (bbox == null) {
             bbox = new Rectangle2D.Double();
             bbox.setFrame(new Point2D.Double(), info.getSize().getDimensionPt());
         }
-        InputStream in = eps.createInputStream();
+        final InputStream in = eps.createInputStream();
         try {
             String resourceName = info.getOriginalURI();
             if (resourceName == null) {
                 resourceName = "inline image";
             }
-            PSImageUtils.renderEPS(in, resourceName,
-                    new Rectangle2D.Float(x, y, w, h),
-                    bbox,
-                    gen);
+            PSImageUtils.renderEPS(in, resourceName, new Rectangle2D.Float(x,
+                    y, w, h), bbox, gen);
         } finally {
             IOUtils.closeQuietly(in);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getPriority() {
         return 200;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class getSupportedImageClass() {
         return ImageRawEPS.class;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor[] getSupportedImageFlavors() {
         return FLAVORS;
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible(RenderingContext targetContext, Image image) {
+    @Override
+    public boolean isCompatible(final RenderingContext targetContext,
+            final Image image) {
         if (targetContext instanceof PSRenderingContext) {
-            PSRenderingContext psContext = (PSRenderingContext)targetContext;
+            final PSRenderingContext psContext = (PSRenderingContext) targetContext;
             return !psContext.isCreateForms()
-                && (image == null || image instanceof ImageRawEPS);
+                    && (image == null || image instanceof ImageRawEPS);
         }
         return false;
     }

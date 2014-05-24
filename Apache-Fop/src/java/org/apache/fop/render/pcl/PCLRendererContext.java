@@ -23,27 +23,31 @@ import org.apache.fop.render.ImageHandlerUtil;
 import org.apache.fop.render.RendererContext;
 
 /**
- * Wrapper on the RendererContext to access the information structure for drawing
- * the XML document.
+ * Wrapper on the RendererContext to access the information structure for
+ * drawing the XML document.
  */
 public class PCLRendererContext extends RendererContext.RendererContextWrapper {
 
     /**
      * Wrap the render context to allow easier access to its values.
      *
-     * @param context the renderer context
+     * @param context
+     *            the renderer context
      * @return the PCL-specific renderer context wrapper
      */
-    public static PCLRendererContext wrapRendererContext(RendererContext context) {
-        PCLRendererContext pcli = new PCLRendererContext(context);
+    public static PCLRendererContext wrapRendererContext(
+            final RendererContext context) {
+        final PCLRendererContext pcli = new PCLRendererContext(context);
         return pcli;
     }
 
     /**
      * Main constructor
-     * @param context the RendererContent instance
+     * 
+     * @param context
+     *            the RendererContent instance
      */
-    public PCLRendererContext(RendererContext context) {
+    public PCLRendererContext(final RendererContext context) {
         super(context);
     }
 
@@ -55,32 +59,36 @@ public class PCLRendererContext extends RendererContext.RendererContextWrapper {
     /** @return true if clipping is disabled inside the PCLGraphics2D. */
     public boolean isClippingDisabled() {
         return getForeignAttributes() != null
-             && "true".equalsIgnoreCase((String)getForeignAttributes().get(
-                     PCLConstants.DISABLE_CLIPPING));
+                && "true".equalsIgnoreCase((String) getForeignAttributes().get(
+                        PCLConstants.DISABLE_CLIPPING));
     }
 
     /**
      * Indicates whether the background should not be erased prior to painting.
+     * 
      * @return true if the background shouldn't be erased
      */
     public boolean isSourceTransparency() {
         return getForeignAttributes() != null
-             && "true".equalsIgnoreCase((String)getForeignAttributes().get(
-                     PCLConstants.SRC_TRANSPARENCY));
+                && "true".equalsIgnoreCase((String) getForeignAttributes().get(
+                        PCLConstants.SRC_TRANSPARENCY));
     }
 
     /**
-     * Indicates whether an RGB canvas should be used rather than one with grayscales.
-     * This can be used to work around limitations of Apache Batik if you get error while
-     * processing SVG graphics. Note, however, that RGB mode will use more memory.
+     * Indicates whether an RGB canvas should be used rather than one with
+     * grayscales. This can be used to work around limitations of Apache Batik
+     * if you get error while processing SVG graphics. Note, however, that RGB
+     * mode will use more memory.
+     * 
      * @return true if an EGB canvas should be used
      */
     public boolean isColorCanvas() {
-        Boolean prop = (Boolean)context.getProperty(PCLRendererContextConstants.PCL_COLOR_CANVAS);
+        final Boolean prop = (Boolean) this.context
+                .getProperty(PCLRendererContextConstants.PCL_COLOR_CANVAS);
         return Boolean.TRUE.equals(prop)
-            || (getForeignAttributes() != null
-                    && "true".equalsIgnoreCase((String)getForeignAttributes().get(
-                            PCLConstants.COLOR_CANVAS)));
+                || getForeignAttributes() != null
+                && "true".equalsIgnoreCase((String) getForeignAttributes().get(
+                        PCLConstants.COLOR_CANVAS));
     }
 
 }

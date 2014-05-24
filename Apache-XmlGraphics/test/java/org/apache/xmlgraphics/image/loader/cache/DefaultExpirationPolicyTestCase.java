@@ -28,15 +28,18 @@ public class DefaultExpirationPolicyTestCase extends TestCase {
 
     /**
      * Never expire.
-     * @throws Exception if an error occurs
+     * 
+     * @throws Exception
+     *             if an error occurs
      */
     public void testNeverExpire() throws Exception {
         ExpirationPolicy policy;
-        policy = new DefaultExpirationPolicy(DefaultExpirationPolicy.EXPIRATION_NEVER);
+        policy = new DefaultExpirationPolicy(
+                DefaultExpirationPolicy.EXPIRATION_NEVER);
 
-        MockTimeStampProvider provider = new MockTimeStampProvider();
+        final MockTimeStampProvider provider = new MockTimeStampProvider();
 
-        long ts = 1000000;
+        final long ts = 1000000;
         assertFalse(policy.isExpired(provider, ts));
         provider.setTimeStamp(ts + Integer.MAX_VALUE);
         assertFalse(policy.isExpired(provider, ts));
@@ -44,15 +47,17 @@ public class DefaultExpirationPolicyTestCase extends TestCase {
 
     /**
      * Normal expiration
-     * @throws Exception if an error occurs
+     * 
+     * @throws Exception
+     *             if an error occurs
      */
     public void testNormalExpiration() throws Exception {
         ExpirationPolicy policy;
         policy = new DefaultExpirationPolicy(2);
 
-        MockTimeStampProvider provider = new MockTimeStampProvider();
+        final MockTimeStampProvider provider = new MockTimeStampProvider();
 
-        long ts = 1000000;
+        final long ts = 1000000;
         provider.setTimeStamp(ts);
         assertFalse(policy.isExpired(provider, ts));
         provider.setTimeStamp(ts + 1000);

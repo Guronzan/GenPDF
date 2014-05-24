@@ -29,26 +29,38 @@ package org.apache.fop.render.rtf.rtflib.rtfdoc;
 import java.io.IOException;
 
 /**
- * <p>Interface for RtfElements that can contain RtfTables.</p>
+ * <p>
+ * Interface for RtfElements that can contain RtfTables.
+ * </p>
  *
- * <p>This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch)
- * and Boris Poudérous.</p>
+ * <p>
+ * This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch)
+ * and Boris Poudérous.
+ * </p>
  */
 public interface IRtfTableContainer {
-   /**
-    * Close current table, if any, and start a new one
-    * @param tc Table Columns Info
-    * @return new table object
-    * @throws IOException for I/O problems
-    */
-    RtfTable newTable(ITableColumnsInfo tc) throws IOException;
+    /**
+     * Close current table, if any, and start a new one
+     * 
+     * @param tc
+     *            Table Columns Info
+     * @return new table object
+     * @throws IOException
+     *             for I/O problems
+     */
+    RtfTable newTable(final ITableColumnsInfo tc) throws IOException;
 
-   /**
-    * Close current table, if any, and start a new one
-    * @param attrs for the Table attributes
-    * @param tc to process number-columns-spanned attribute
-    * @return new table object
-    * @throws IOException for I/O problems
-    */
-    RtfTable newTable(RtfAttributes attrs, ITableColumnsInfo tc) throws IOException;
+    /**
+     * Close current table, if any, and start a new one
+     * 
+     * @param attrs
+     *            for the Table attributes
+     * @param tc
+     *            to process number-columns-spanned attribute
+     * @return new table object
+     * @throws IOException
+     *             for I/O problems
+     */
+    RtfTable newTable(final RtfAttributes attrs, final ITableColumnsInfo tc)
+            throws IOException;
 }

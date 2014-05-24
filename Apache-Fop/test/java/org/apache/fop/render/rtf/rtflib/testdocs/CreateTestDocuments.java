@@ -17,7 +17,6 @@
 
 /* $Id: CreateTestDocuments.java 679326 2008-07-24 09:35:34Z vhennebert $ */
 
-
 /*
  * This file is part of the RTF library of the FOP project, which was originally
  * created by Bertrand Delacretaz <bdelacretaz@codeconsult.ch> and by other
@@ -29,11 +28,14 @@ package org.apache.fop.render.rtf.rtflib.testdocs;
 
 import java.io.File;
 import java.io.IOException;
+
 //import org.apache.fop.render.rtf.rtflib.jfor.main.JForVersionInfo;
 
-/**  Create test RTF documents from classes found in this package.
- *  @author Bertrand Delacretaz bdelacretaz@codeconsult.ch
- *  @author Andreas Putz a.putz@skynamics.com
+/**
+ * Create test RTF documents from classes found in this package.
+ * 
+ * @author Bertrand Delacretaz bdelacretaz@codeconsult.ch
+ * @author Andreas Putz a.putz@skynamics.com
  */
 
 public class CreateTestDocuments {
@@ -44,24 +46,15 @@ public class CreateTestDocuments {
     public static final String TESTDOCS_PACKAGE = "org.apache.fop.render.rtf.rtflib.testdocs";
 
     /** List of all TestDocument subclasses from this package */
-    private static final String [] CLASS_NAMES = {
-        "SimpleDocument",
-        "TextAttributes",
-        "SimpleTable",
-        "SimpleLists",
-        "ListInTable",
-        "Whitespace",
-        "MergedTableCells",
-        "NestedTable",
-        "ExternalGraphic",
-        "BasicLink",
-        "ParagraphAlignment"
-    };
+    private static final String[] CLASS_NAMES = { "SimpleDocument",
+            "TextAttributes", "SimpleTable", "SimpleLists", "ListInTable",
+            "Whitespace", "MergedTableCells", "NestedTable", "ExternalGraphic",
+            "BasicLink", "ParagraphAlignment" };
 
-    CreateTestDocuments(File outDir)
-    throws Exception {
+    CreateTestDocuments(final File outDir) throws Exception {
         if (!outDir.isDirectory() || !outDir.canWrite()) {
-            throw new IOException("output directory (" + outDir + ") must exist and be writable");
+            throw new IOException("output directory (" + outDir
+                    + ") must exist and be writable");
         }
 
         for (int i = 0; i < CLASS_NAMES.length; i++) {
@@ -70,37 +63,42 @@ public class CreateTestDocuments {
     }
 
     /** instantiate one TestDocument and let it generate its document */
-    void createOneTestDocument(String className, File outDir)
+    void createOneTestDocument(String className, final File outDir)
             throws Exception {
         className = TESTDOCS_PACKAGE + "." + className;
         TestDocument td = null;
         try {
-            td = (TestDocument)Class.forName(className).newInstance();
-        } catch (Exception e) {
+            td = (TestDocument) Class.forName(className).newInstance();
+        } catch (final Exception e) {
             throw new Exception("unable to instantiate '" + className
                     + " as a TestDocument object: " + e);
         }
         td.setOutputDir(outDir);
         try {
             td.generateOutput();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.err.println("Error while generating test RTF document:");
             e.printStackTrace();
         }
     }
 
-    /** execute this to create test documents from all classes listed in classNames array
-     * @param args String array of arguments
-     * @throws Exception for errors
+    /**
+     * execute this to create test documents from all classes listed in
+     * classNames array
+     * 
+     * @param args
+     *            String array of arguments
+     * @throws Exception
+     *             for errors
      */
-    public static void main(String[] args)
-    throws Exception {
+    public static void main(final String[] args) throws Exception {
         if (args.length < 1) {
             System.err.println("usage: CreateTestDocuments <output directory>");
             System.exit(1);
         }
 
-//        System.err.println("CreateTestDocuments - using " + JForVersionInfo.getLongVersionInfo());
+        // System.err.println("CreateTestDocuments - using " +
+        // JForVersionInfo.getLongVersionInfo());
         System.err.println("Generates documents to test the RTF library.");
         final File outDir = new File(args[0]);
         new CreateTestDocuments(outDir);

@@ -24,14 +24,15 @@ package org.apache.fop.pdf;
  */
 public class PDFUri extends PDFAction {
 
-    private String uri;
+    private final String uri;
 
     /**
      * create a Uri instance.
      *
-     * @param uri the uri to which the link should point
+     * @param uri
+     *            the uri to which the link should point
      */
-    public PDFUri(String uri) {
+    public PDFUri(final String uri) {
         this.uri = uri;
     }
 
@@ -40,6 +41,7 @@ public class PDFUri extends PDFAction {
      *
      * @return the action to place next to /A within a Link
      */
+    @Override
     public String getAction() {
         if (hasObjectNumber()) {
             return referencePDF();
@@ -49,12 +51,13 @@ public class PDFUri extends PDFAction {
     }
 
     private String getDictString() {
-        return "<< /URI (" + uri + ")\n/S /URI >>";
+        return "<< /URI (" + this.uri + ")\n/S /URI >>";
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toPDFString() {
-        //TODO Convert this class into a dictionary
+        // TODO Convert this class into a dictionary
         return getDictString();
     }
 

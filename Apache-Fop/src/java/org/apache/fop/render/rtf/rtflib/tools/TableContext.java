@@ -21,51 +21,50 @@ package org.apache.fop.render.rtf.rtflib.tools;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.impl.SimpleLog;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.render.rtf.rtflib.rtfdoc.ITableColumnsInfo;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfAttributes;
 
-
 /**
- * <p>Used when handling fo:table to hold information to build the table.</p>
+ * <p>
+ * Used when handling fo:table to hold information to build the table.
+ * </p>
  *
- * <p>This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch),
- * Ed Trembicki-Guy (guye@dnb.com),
- * Boris Poudérous (boris.pouderous@eads-telecom.com), and
- * Peter Herweg (pherweg@web.de).</p>
+ * <p>
+ * This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch),
+ * Ed Trembicki-Guy (guye@dnb.com), Boris Poudérous
+ * (boris.pouderous@eads-telecom.com), and Peter Herweg (pherweg@web.de).
+ * </p>
  *
- *  This class was originally developed for the JFOR project and
- *  is now integrated into FOP.
+ * This class was originally developed for the JFOR project and is now
+ * integrated into FOP.
  */
-
+@Slf4j
 public class TableContext implements ITableColumnsInfo {
-    private final Log log = new SimpleLog("FOP/RTF");
     private final BuilderContext context;
     private final List colWidths = new java.util.ArrayList();
     private int colIndex;
 
     /**
-     * This ArrayList contains one element for each column in the table.
-     * value == 0 means there is no row-spanning
-     * value >  0 means there is row-spanning
+     * This ArrayList contains one element for each column in the table. value
+     * == 0 means there is no row-spanning value > 0 means there is row-spanning
      * Each value in the list is decreased by 1 after each finished table-row
      */
     private final List colRowSpanningNumber = new java.util.ArrayList();
 
     /**
      * If there has a vertical merged cell to be created, its attributes are
-     * inherited from the corresponding MERGE_START-cell.
-     * For this purpose the attributes of a cell are stored in this array, as soon
-     * as a number-rows-spanned attribute has been found.
+     * inherited from the corresponding MERGE_START-cell. For this purpose the
+     * attributes of a cell are stored in this array, as soon as a
+     * number-rows-spanned attribute has been found.
      */
     private final List colRowSpanningAttrs = new java.util.ArrayList();
 
     /**
-     * This ArrayList contains one element for each column in the table.
-     * value == true means, it's the first of multiple spanned columns
-     * value == false meanst, it's NOT the first of multiple spanned columns
+     * This ArrayList contains one element for each column in the table. value
+     * == true means, it's the first of multiple spanned columns value == false
+     * meanst, it's NOT the first of multiple spanned columns
      */
     private final List colFirstSpanningCol = new java.util.ArrayList();
 
@@ -73,9 +72,10 @@ public class TableContext implements ITableColumnsInfo {
 
     /**
      *
-     * @param value Specifies, if next row belongs to header
+     * @param value
+     *            Specifies, if next row belongs to header
      */
-    public void setNextRowBelongsToHeader(boolean value) {
+    public void setNextRowBelongsToHeader(final boolean value) {
         this.bNextRowBelongsToHeader = value;
     }
 
@@ -84,23 +84,26 @@ public class TableContext implements ITableColumnsInfo {
      * @return true, if next row belongs to header
      */
     public boolean getNextRowBelongsToHeader() {
-        return bNextRowBelongsToHeader;
+        return this.bNextRowBelongsToHeader;
     }
 
     /**
      *
-     * @param ctx BuilderContext
+     * @param ctx
+     *            BuilderContext
      */
-    public TableContext(BuilderContext ctx) {
-        context = ctx;
+    public TableContext(final BuilderContext ctx) {
+        this.context = ctx;
     }
 
     /**
      * Adds a column and sets its width.
-     * @param width Width of next column
+     *
+     * @param width
+     *            Width of next column
      */
-    public void setNextColumnWidth(Float width) {
-        colWidths.add(width);
+    public void setNextColumnWidth(final Float width) {
+        this.colWidths.add(width);
     }
 
     /**
@@ -108,7 +111,7 @@ public class TableContext implements ITableColumnsInfo {
      * @return RtfAttributes of current row-spanning cell
      */
     public RtfAttributes getColumnRowSpanningAttrs() {
-        return (RtfAttributes)colRowSpanningAttrs.get(colIndex);
+        return (RtfAttributes) this.colRowSpanningAttrs.get(this.colIndex);
     }
 
     /**
@@ -116,156 +119,167 @@ public class TableContext implements ITableColumnsInfo {
      * @return Number of currently spanned rows
      */
     public Integer getColumnRowSpanningNumber() {
-        return (Integer)colRowSpanningNumber.get(colIndex);
+        return (Integer) this.colRowSpanningNumber.get(this.colIndex);
     }
 
     /**
      *
      * @return true, if it's the first of multiple spanning columns
      */
+    @Override
     public boolean getFirstSpanningCol() {
-        Boolean b = (Boolean) colFirstSpanningCol.get(colIndex);
+        final Boolean b = (Boolean) this.colFirstSpanningCol.get(this.colIndex);
         return b.booleanValue();
     }
 
     /**
      *
-     * @param iRowSpanning number of rows to span
-     * @param attrs RtfAttributes of row-spanning cell
+     * @param iRowSpanning
+     *            number of rows to span
+     * @param attrs
+     *            RtfAttributes of row-spanning cell
      */
-    public void setCurrentColumnRowSpanning(
-            Integer iRowSpanning,  RtfAttributes attrs) {
+    public void setCurrentColumnRowSpanning(final Integer iRowSpanning,
+            final RtfAttributes attrs) {
 
-        if (colIndex < colRowSpanningNumber.size()) {
-            colRowSpanningNumber.set(colIndex, iRowSpanning);
-            colRowSpanningAttrs.set(colIndex, attrs);
+        if (this.colIndex < this.colRowSpanningNumber.size()) {
+            this.colRowSpanningNumber.set(this.colIndex, iRowSpanning);
+            this.colRowSpanningAttrs.set(this.colIndex, attrs);
         } else {
-            colRowSpanningNumber.add(iRowSpanning);
-            colRowSpanningAttrs.add(colIndex, attrs);
+            this.colRowSpanningNumber.add(iRowSpanning);
+            this.colRowSpanningAttrs.add(this.colIndex, attrs);
         }
     }
 
     /**
      *
-     * @param iRowSpanning number of rows to span in next column
-     * @param attrs RtfAttributes of row-spanning cell
+     * @param iRowSpanning
+     *            number of rows to span in next column
+     * @param attrs
+     *            RtfAttributes of row-spanning cell
      */
-    public void setNextColumnRowSpanning(Integer iRowSpanning,
-            RtfAttributes attrs) {
-        colRowSpanningNumber.add(iRowSpanning);
-        colRowSpanningAttrs.add(colIndex, attrs);
+    public void setNextColumnRowSpanning(final Integer iRowSpanning,
+            final RtfAttributes attrs) {
+        this.colRowSpanningNumber.add(iRowSpanning);
+        this.colRowSpanningAttrs.add(this.colIndex, attrs);
     }
 
     /**
      *
-     * @param bFirstSpanningCol specifies, if it's the first of
-     *                          multiple spanned columns
+     * @param bFirstSpanningCol
+     *            specifies, if it's the first of multiple spanned columns
      */
-    public void setCurrentFirstSpanningCol(
-            boolean bFirstSpanningCol) {
+    public void setCurrentFirstSpanningCol(final boolean bFirstSpanningCol) {
 
-        if (colIndex < colRowSpanningNumber.size()) {
-            while (colIndex >= colFirstSpanningCol.size()) {
+        if (this.colIndex < this.colRowSpanningNumber.size()) {
+            while (this.colIndex >= this.colFirstSpanningCol.size()) {
                 setNextFirstSpanningCol(false);
             }
-            colFirstSpanningCol.set(colIndex, new Boolean(bFirstSpanningCol));
+            this.colFirstSpanningCol.set(this.colIndex, new Boolean(
+                    bFirstSpanningCol));
         } else {
-            colFirstSpanningCol.add(new Boolean(bFirstSpanningCol));
+            this.colFirstSpanningCol.add(new Boolean(bFirstSpanningCol));
         }
     }
 
     /**
      *
-     * @param bFirstSpanningCol specifies, if it's the first of
-     *                          multiple spanned columns
+     * @param bFirstSpanningCol
+     *            specifies, if it's the first of multiple spanned columns
      */
-    public void setNextFirstSpanningCol(
-            boolean bFirstSpanningCol) {
-        colFirstSpanningCol.add(new Boolean(bFirstSpanningCol));
+    public void setNextFirstSpanningCol(final boolean bFirstSpanningCol) {
+        this.colFirstSpanningCol.add(new Boolean(bFirstSpanningCol));
     }
 
     /**
-     * Added by Peter Herweg on 2002-06-29
-     * This function is called after each finished table-row.
-     * It decreases all values in colRowSpanningNumber by 1. If a value
-     * reaches 0 row-spanning is finished, and the value won't be decreased anymore.
+     * Added by Peter Herweg on 2002-06-29 This function is called after each
+     * finished table-row. It decreases all values in colRowSpanningNumber by 1.
+     * If a value reaches 0 row-spanning is finished, and the value won't be
+     * decreased anymore.
      */
     public void decreaseRowSpannings() {
-        for (int z = 0; z < colRowSpanningNumber.size(); ++z) {
-            Integer i = (Integer)colRowSpanningNumber.get(z);
+        for (int z = 0; z < this.colRowSpanningNumber.size(); ++z) {
+            Integer i = (Integer) this.colRowSpanningNumber.get(z);
 
             if (i.intValue() > 0) {
                 i = new Integer(i.intValue() - 1);
             }
 
-            colRowSpanningNumber.set(z, i);
+            this.colRowSpanningNumber.set(z, i);
 
             if (i.intValue() == 0) {
-                colRowSpanningAttrs.set(z, null);
-                colFirstSpanningCol.set(z, new Boolean(false));
+                this.colRowSpanningAttrs.set(z, null);
+                this.colFirstSpanningCol.set(z, Boolean.FALSE);
             }
         }
     }
 
     /**
-     * Reset the column iteration index, meant to be called when creating a new row
-     * The 'public' modifier has been added by Boris Poudérous for
+     * Reset the column iteration index, meant to be called when creating a new
+     * row The 'public' modifier has been added by Boris Poudérous for
      * 'number-columns-spanned' processing
      */
+    @Override
     public void selectFirstColumn() {
-        colIndex = 0;
+        this.colIndex = 0;
     }
 
     /**
-     * Increment the column iteration index
-     * The 'public' modifier has been added by Boris Poudérous for
-     * 'number-columns-spanned' processing
+     * Increment the column iteration index The 'public' modifier has been added
+     * by Boris Poudérous for 'number-columns-spanned' processing
      */
+    @Override
     public void selectNextColumn() {
-        colIndex++;
+        this.colIndex++;
     }
 
     /**
      * Get current column width according to column iteration index
-     * @return INVALID_COLUMN_WIDTH if we cannot find the value
-     * The 'public' modifier has been added by Boris Poudérous for
-     * 'number-columns-spanned' processing
+     *
+     * @return INVALID_COLUMN_WIDTH if we cannot find the value The 'public'
+     *         modifier has been added by Boris Poudérous for
+     *         'number-columns-spanned' processing
      */
+    @Override
     public float getColumnWidth() {
-        if (colIndex < 0) {
+        if (this.colIndex < 0) {
             throw new IllegalStateException("colIndex must not be negative!");
-        } else if (colIndex >= getNumberOfColumns()) {
-            log.warn("Column width for column " + (colIndex + 1) + " is not defined, using "
-                    + INVALID_COLUMN_WIDTH);
-            while (colIndex >= getNumberOfColumns()) {
+        } else if (this.colIndex >= getNumberOfColumns()) {
+            log.warn("Column width for column " + (this.colIndex + 1)
+                    + " is not defined, using " + INVALID_COLUMN_WIDTH);
+            while (this.colIndex >= getNumberOfColumns()) {
                 setNextColumnWidth(new Float(INVALID_COLUMN_WIDTH));
             }
         }
-        return ((Float)colWidths.get(colIndex)).floatValue();
+        return ((Float) this.colWidths.get(this.colIndex)).floatValue();
     }
 
     /**
      * Set current column index.
-     * @param index New column index
+     *
+     * @param index
+     *            New column index
      */
-    public void setColumnIndex(int index) {
-        colIndex = index;
+    public void setColumnIndex(final int index) {
+        this.colIndex = index;
     }
 
     /**
      * @return Index of current column
      */
+    @Override
     public int getColumnIndex() {
-        return colIndex;
+        return this.colIndex;
     }
+
     /** - end - */
 
     /**
      * @return Number of columns
      */
+    @Override
     public int getNumberOfColumns() {
-        return colWidths.size();
+        return this.colWidths.size();
     }
     /** - end - */
 }
-

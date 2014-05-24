@@ -17,7 +17,6 @@
 
 /* $Id: SimpleDocument.java 1297404 2012-03-06 10:17:54Z vhennebert $ */
 
-
 /*
  * This file is part of the RTF library of the FOP project, which was originally
  * created by Bertrand Delacretaz <bdelacretaz@codeconsult.ch> and by other
@@ -30,19 +29,22 @@ package org.apache.fop.render.rtf.rtflib.testdocs;
 import java.io.IOException;
 
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfDocumentArea;
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfParagraph;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
 
-/**  Generates a simple RTF test document for the jfor rtflib package.
- *  @author Bertrand Delacretaz bdelacretaz@codeconsult.ch
+/**
+ * Generates a simple RTF test document for the jfor rtflib package.
+ * 
+ * @author Bertrand Delacretaz bdelacretaz@codeconsult.ch
  */
 
-class SimpleDocument
-extends TestDocument {
+class SimpleDocument extends TestDocument {
     /** generate the body of the test document */
-    protected void generateDocument(RtfDocumentArea rda, RtfSection sect)
-    throws IOException {
-        sect.newParagraph().newText("First paragraph of the simple RTF test document.");
+    @Override
+    protected void generateDocument(final RtfDocumentArea rda,
+            final RtfSection sect) throws IOException {
+        sect.newParagraph().newText(
+                "First paragraph of the simple RTF test document.");
 
         final RtfParagraph para = sect.newParagraph();
         para.newText("Second paragraph of simple RTF test document.\n");

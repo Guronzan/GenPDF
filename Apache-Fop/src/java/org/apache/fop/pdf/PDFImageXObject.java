@@ -30,10 +30,9 @@ import java.io.OutputStream;
  * PDF XObject
  *
  * A derivative of the PDF Object, is a PDF Stream that has not only a
- * dictionary but a stream of image data.
- * The dictionary just provides information like the stream length.
- * This outputs the image dictionary and the image data.
- * This is used as a reference for inserting the same image in the
+ * dictionary but a stream of image data. The dictionary just provides
+ * information like the stream length. This outputs the image dictionary and the
+ * image data. This is used as a reference for inserting the same image in the
  * document in another place.
  */
 public class PDFImageXObject extends PDFXObject {
@@ -41,40 +40,46 @@ public class PDFImageXObject extends PDFXObject {
     private PDFImage pdfimage;
 
     /**
-     * create an XObject with the given number and name and load the
-     * image in the object
+     * create an XObject with the given number and name and load the image in
+     * the object
      *
-     * @param xnumber the pdf object X number
-     * @param img the pdf image that contains the image data
+     * @param xnumber
+     *            the pdf object X number
+     * @param img
+     *            the pdf image that contains the image data
      */
-    public PDFImageXObject(int xnumber, PDFImage img) {
+    public PDFImageXObject(final int xnumber, final PDFImage img) {
         super();
         put("Name", new PDFName("Im" + xnumber));
-        pdfimage = img;
+        this.pdfimage = img;
     }
 
     /**
-     * Output the image as PDF.
-     * This sets up the image dictionary and adds the image data stream.
+     * Output the image as PDF. This sets up the image dictionary and adds the
+     * image data stream.
      *
-     * @param stream the output stream to write the data
-     * @throws IOException if there is an error writing the data
+     * @param stream
+     *            the output stream to write the data
+     * @throws IOException
+     *             if there is an error writing the data
      * @return the length of the data written
      */
-    public int output(OutputStream stream) throws IOException {
-        int length = super.output(stream);
+    @Override
+    public int output(final OutputStream stream) throws IOException {
+        final int length = super.output(stream);
 
         // let it gc
         // this object is retained as a reference to inserting
         // the same image but the image data is no longer needed
-        pdfimage = null;
+        this.pdfimage = null;
         return length;
     }
 
     /** {@inheritDoc} */
-    protected void populateStreamDict(Object lengthEntry) {
+    @Override
+    protected void populateStreamDict(final Object lengthEntry) {
         super.populateStreamDict(lengthEntry);
-        if (pdfimage.isPS()) {
+        if (this.pdfimage.isPS()) {
             populateDictionaryFromPS();
         } else {
             populateDictionaryFromImage();
@@ -88,38 +93,40 @@ public class PDFImageXObject extends PDFXObject {
 
     private void populateDictionaryFromImage() {
         put("Subtype", new PDFName("Image"));
-        put("Width", new Integer(pdfimage.getWidth()));
-        put("Height", new Integer(pdfimage.getHeight()));
-        put("BitsPerComponent", new Integer(pdfimage.getBitsPerComponent()));
+        put("Width", new Integer(this.pdfimage.getWidth()));
+        put("Height", new Integer(this.pdfimage.getHeight()));
+        put("BitsPerComponent",
+                new Integer(this.pdfimage.getBitsPerComponent()));
 
-        PDFICCStream pdfICCStream = pdfimage.getICCStream();
+        final PDFICCStream pdfICCStream = this.pdfimage.getICCStream();
         if (pdfICCStream != null) {
-            put("ColorSpace", new PDFArray(this,
-                    new Object[] {new PDFName("ICCBased"), pdfICCStream}));
+            put("ColorSpace", new PDFArray(this, new Object[] {
+                    new PDFName("ICCBased"), pdfICCStream }));
         } else {
-            PDFDeviceColorSpace cs = pdfimage.getColorSpace();
+            final PDFDeviceColorSpace cs = this.pdfimage.getColorSpace();
             put("ColorSpace", new PDFName(cs.getName()));
         }
 
-        if (pdfimage.isInverted()) {
-            /* PhotoShop generates CMYK values that's inverse,
-             * this will invert the values - too bad if it's not
-             * a PhotoShop image...
+        if (this.pdfimage.isInverted()) {
+            /*
+             * PhotoShop generates CMYK values that's inverse, this will invert
+             * the values - too bad if it's not a PhotoShop image...
              */
             final Float zero = new Float(0.0f);
             final Float one = new Float(1.0f);
-            PDFArray decode = new PDFArray(this);
-            for (int i = 0, c = pdfimage.getColorSpace().getNumComponents(); i < c; i++) {
+            final PDFArray decode = new PDFArray(this);
+            for (int i = 0, c = this.pdfimage.getColorSpace()
+                    .getNumComponents(); i < c; i++) {
                 decode.add(one);
                 decode.add(zero);
             }
             put("Decode", decode);
         }
 
-        if (pdfimage.isTransparent()) {
-            PDFColor transp = pdfimage.getTransparentColor();
-            PDFArray mask = new PDFArray(this);
-            if (pdfimage.getColorSpace().isGrayColorSpace()) {
+        if (this.pdfimage.isTransparent()) {
+            final PDFColor transp = this.pdfimage.getTransparentColor();
+            final PDFArray mask = new PDFArray(this);
+            if (this.pdfimage.getColorSpace().isGrayColorSpace()) {
                 mask.add(new Integer(transp.red255()));
                 mask.add(new Integer(transp.red255()));
             } else {
@@ -132,43 +139,49 @@ public class PDFImageXObject extends PDFXObject {
             }
             put("Mask", mask);
         }
-        PDFReference ref = pdfimage.getSoftMaskReference();
+        final PDFReference ref = this.pdfimage.getSoftMaskReference();
         if (ref != null) {
             put("SMask", ref);
         }
-        //Important: do this at the end so previous values can be overwritten.
-        pdfimage.populateXObjectDictionary(getDictionary());
+        // Important: do this at the end so previous values can be overwritten.
+        this.pdfimage.populateXObjectDictionary(getDictionary());
     }
 
     /** {@inheritDoc} */
-    protected void outputRawStreamData(OutputStream out) throws IOException {
-        pdfimage.outputContents(out);
+    @Override
+    protected void outputRawStreamData(final OutputStream out)
+            throws IOException {
+        this.pdfimage.outputContents(out);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected int getSizeHint() throws IOException {
         return 0;
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void prepareImplicitFilters() {
-        PDFFilter pdfFilter = pdfimage.getPDFFilter();
+        final PDFFilter pdfFilter = this.pdfimage.getPDFFilter();
         if (pdfFilter != null) {
             getFilterList().ensureFilterInPlace(pdfFilter);
         }
     }
 
     /**
-     * {@inheritDoc}
-     * This class uses the PDFImage instance to determine the default filter.
+     * {@inheritDoc} This class uses the PDFImage instance to determine the
+     * default filter.
      */
+    @Override
     protected String getDefaultFilterName() {
-        return pdfimage.getFilterHint();
+        return this.pdfimage.getFilterHint();
     }
 
     /** {@inheritDoc} */
+    @Override
     protected boolean multipleFiltersAllowed() {
-        return pdfimage.multipleFiltersAllowed();
+        return this.pdfimage.multipleFiltersAllowed();
     }
 
 }

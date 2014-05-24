@@ -27,17 +27,11 @@ import org.junit.runners.Suite.SuiteClasses;
  * Test suite for font configuration.
  */
 @RunWith(Suite.class)
-@SuiteClasses({
-    FontBaseBadTestCase.class,
-    FontAttributesMissingTestCase.class,
-    FontTripletAttributeMissingTestCase.class,
-    FontMetricsUrlBadTestCase.class,
-    FontEmbedUrlBadTestCase.class,
-    FontMetricsUrlMalformedTestCase.class,
-    FontsDirectoryRecursiveTestCase.class,
-    FontsAutoDetectTestCase.class,
-    FontsSubstitutionTestCase.class,
-    FOURIResolverTestCase.class
-})
+@SuiteClasses({ FontBaseBadTestCase.class, FontAttributesMissingTestCase.class,
+        FontTripletAttributeMissingTestCase.class,
+        FontMetricsUrlBadTestCase.class, FontEmbedUrlBadTestCase.class,
+        FontMetricsUrlMalformedTestCase.class,
+        FontsDirectoryRecursiveTestCase.class, FontsAutoDetectTestCase.class,
+        FontsSubstitutionTestCase.class, FOURIResolverTestCase.class })
 public class UserConfigTestSuite {
 }

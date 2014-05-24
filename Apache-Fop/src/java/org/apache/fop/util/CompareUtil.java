@@ -20,7 +20,8 @@
 package org.apache.fop.util;
 
 /**
- * A utility class that provides helper methods for implementing equals and hashCode.
+ * A utility class that provides helper methods for implementing equals and
+ * hashCode.
  */
 public final class CompareUtil {
 
@@ -30,21 +31,24 @@ public final class CompareUtil {
     /**
      * Compares two objects for equality.
      *
-     * @param o1 an object
-     * @param o2 another object
+     * @param o1
+     *            an object
+     * @param o2
+     *            another object
      * @return true if either o1 and o2 are null or if o1.equals(o2)
      */
-    public static boolean equal(Object o1, Object o2) {
+    public static boolean equal(final Object o1, final Object o2) {
         return o1 == null ? o2 == null : o1 == o2 || o1.equals(o2);
     }
 
     /**
      * Returns the hash code of the given object.
      *
-     * @param object an object
+     * @param object
+     *            an object
      * @return object.hashCode(), or 0 if object is null
      */
-    public static int getHashCode(Object object) {
+    public static int getHashCode(final Object object) {
         return object == null ? 0 : object.hashCode();
     }
 
@@ -52,11 +56,13 @@ public final class CompareUtil {
      * Compares two numbers for equality. Uses the same comparison algorithm as
      * the {@link Double#equals(Object)} method.
      *
-     * @param n1 a number
-     * @param n2 another number
+     * @param n1
+     *            a number
+     * @param n2
+     *            another number
      * @return true if the two numbers are equal, false otherwise
      */
-    public static boolean equal(double n1, double n2) {
+    public static boolean equal(final double n1, final double n2) {
         return Double.doubleToLongBits(n1) == Double.doubleToLongBits(n2);
     }
 
@@ -64,12 +70,13 @@ public final class CompareUtil {
      * Returns a hash code for the given number. Applies the same algorithm as
      * the {@link Double#hashCode()} method.
      *
-     * @param number a number
+     * @param number
+     *            a number
      * @return a hash code for that number
      */
-    public static int getHashCode(double number) {
-        long bits = Double.doubleToLongBits(number);
-        return (int) (bits ^ (bits >>> 32));
+    public static int getHashCode(final double number) {
+        final long bits = Double.doubleToLongBits(number);
+        return (int) (bits ^ bits >>> 32);
     }
 
 }

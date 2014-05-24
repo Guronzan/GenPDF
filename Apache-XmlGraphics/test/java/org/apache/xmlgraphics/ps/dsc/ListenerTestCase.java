@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 import junit.framework.TestCase;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlgraphics.ps.DSCConstants;
@@ -34,11 +35,12 @@ import org.apache.xmlgraphics.ps.dsc.events.DSCEvent;
 /**
  * Tests the listener functionality on the DSC parser.
  */
+@Slf4j
 public class ListenerTestCase extends TestCase {
 
     /**
      * Tests {@link DSCParser#setFilter(DSCFilter)}.
-     * 
+     *
      * @throws Exception
      *             if an error occurs
      */
@@ -69,7 +71,7 @@ public class ListenerTestCase extends TestCase {
 
     /**
      * Tests listeners on DSCParser.
-     * 
+     *
      * @throws Exception
      *             if an error occurs
      */
@@ -121,8 +123,8 @@ public class ListenerTestCase extends TestCase {
             int count = 0;
             while (parser.hasNext()) {
                 final DSCEvent event = parser.nextEvent();
-                System.out.println(event);
-                count++;
+                log.info(event.toString());
+                ++count;
             }
             assertEquals(12, count);
             assertEquals(new Integer(1), results.get("level"));

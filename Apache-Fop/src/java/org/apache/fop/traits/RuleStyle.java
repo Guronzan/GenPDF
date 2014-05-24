@@ -28,13 +28,13 @@ public final class RuleStyle extends TraitEnum {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] RULE_STYLE_NAMES = new String[]
-            {"none", "dotted", "dashed",
-             "solid", "double", "groove", "ridge"};
+    private static final String[] RULE_STYLE_NAMES = new String[] { "none",
+            "dotted", "dashed", "solid", "double", "groove", "ridge" };
 
-    private static final int[] RULE_STYLE_VALUES = new int[]
-            {Constants.EN_NONE, Constants.EN_DOTTED, Constants.EN_DASHED,
-             Constants.EN_SOLID, Constants.EN_DOUBLE, Constants.EN_GROOVE, Constants.EN_RIDGE};
+    private static final int[] RULE_STYLE_VALUES = new int[] {
+            Constants.EN_NONE, Constants.EN_DOTTED, Constants.EN_DASHED,
+            Constants.EN_SOLID, Constants.EN_DOUBLE, Constants.EN_GROOVE,
+            Constants.EN_RIDGE };
 
     /** rule-style: none */
     public static final RuleStyle NONE = new RuleStyle(0);
@@ -51,19 +51,21 @@ public final class RuleStyle extends TraitEnum {
     /** rule-style: ridge */
     public static final RuleStyle RIDGE = new RuleStyle(6);
 
-    private static final RuleStyle[] STYLES = new RuleStyle[] {
-        NONE, DOTTED, DASHED, SOLID, DOUBLE, GROOVE, RIDGE};
+    private static final RuleStyle[] STYLES = new RuleStyle[] { NONE, DOTTED,
+            DASHED, SOLID, DOUBLE, GROOVE, RIDGE };
 
-    private RuleStyle(int index) {
+    private RuleStyle(final int index) {
         super(RULE_STYLE_NAMES[index], RULE_STYLE_VALUES[index]);
     }
 
     /**
      * Returns the enumeration/singleton object based on its name.
-     * @param name the name of the enumeration value
+     * 
+     * @param name
+     *            the name of the enumeration value
      * @return the enumeration object
      */
-    public static RuleStyle valueOf(String name) {
+    public static RuleStyle valueOf(final String name) {
         for (int i = 0; i < STYLES.length; i++) {
             if (STYLES[i].getName().equalsIgnoreCase(name)) {
                 return STYLES[i];
@@ -74,10 +76,12 @@ public final class RuleStyle extends TraitEnum {
 
     /**
      * Returns the enumeration/singleton object based on its name.
-     * @param enumValue the enumeration value
+     * 
+     * @param enumValue
+     *            the enumeration value
      * @return the enumeration object
      */
-    public static RuleStyle valueOf(int enumValue) {
+    public static RuleStyle valueOf(final int enumValue) {
         for (int i = 0; i < STYLES.length; i++) {
             if (STYLES[i].getEnumValue() == enumValue) {
                 return STYLES[i];
@@ -91,6 +95,7 @@ public final class RuleStyle extends TraitEnum {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "RuleStyle:" + getName();
     }

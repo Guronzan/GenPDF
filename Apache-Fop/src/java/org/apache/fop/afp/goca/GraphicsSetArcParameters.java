@@ -27,25 +27,31 @@ public class GraphicsSetArcParameters extends AbstractGraphicsCoord {
     /**
      * Constructor
      *
-     * @param xmaj x coordinate of the major axis point
-     * @param ymin y coordinate of the minor axis point
-     * @param xmin x coordinate of the minor axis point
-     * @param ymaj y coordinate of the major axis point
+     * @param xmaj
+     *            x coordinate of the major axis point
+     * @param ymin
+     *            y coordinate of the minor axis point
+     * @param xmin
+     *            x coordinate of the minor axis point
+     * @param ymaj
+     *            y coordinate of the major axis point
      */
-    public GraphicsSetArcParameters(int xmaj, int ymin, int xmin, int ymaj) {
+    public GraphicsSetArcParameters(final int xmaj, final int ymin,
+            final int xmin, final int ymaj) {
         super(xmaj, ymin, xmin, ymaj);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected byte getOrderCode() {
         return 0x22;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return getName() + "{xmaj=" + coords[0]
-            + ",ymin=" + coords[1]
-            + ",xmin=" + coords[2]
-            + ",ymaj=" + coords[3] + "}";
+        return getName() + "{xmaj=" + this.coords[0] + ",ymin="
+                + this.coords[1] + ",xmin=" + this.coords[2] + ",ymaj="
+                + this.coords[3] + "}";
     }
 }

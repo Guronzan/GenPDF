@@ -27,10 +27,11 @@ import java.awt.Color;
 public interface ColorConverter {
 
     /**
-     * @param color to convert
-    * @return converted color
-    */
+     * @param color
+     *            to convert
+     * @return converted color
+     */
 
-    Color convert(Color color);
+    Color convert(final Color color);
 
 }

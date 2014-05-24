@@ -24,6 +24,8 @@ import java.util.Date;
 
 import javax.xml.transform.TransformerException;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.xmlgraphics.xmp.Metadata;
 import org.apache.xmlgraphics.xmp.XMPConstants;
 import org.apache.xmlgraphics.xmp.XMPParser;
@@ -35,51 +37,57 @@ import org.xml.sax.SAXException;
 /**
  * This example shows how to parse an XMP metadata file.
  */
+@Slf4j
 public class MergeMetadata {
 
-    private static void mergeMetadata() throws TransformerException, SAXException {
-        URL url = MergeMetadata.class.getResource("pdf-example.xmp");
-        Metadata meta1 = XMPParser.parseXMP(url);
+    private static void mergeMetadata() throws TransformerException,
+    SAXException {
+        final URL url = MergeMetadata.class.getResource("pdf-example.xmp");
+        final Metadata meta1 = XMPParser.parseXMP(url);
 
-        Metadata meta2 = new Metadata();
+        final Metadata meta2 = new Metadata();
         DublinCoreAdapter dc = new DublinCoreAdapter(meta2);
         dc.setTitle("de", "Der Herr der Ringe");
         dc.setTitle("en", "Lord of the Rings");
-        dc.addCreator("J.R.R. Tolkien"); //Will replace creator from pdf-example.xmp
+        dc.addCreator("J.R.R. Tolkien"); // Will replace creator from
+        // pdf-example.xmp
         dc.addDate(new Date());
 
         meta2.mergeInto(meta1);
 
-        Metadata meta = meta1;
+        final Metadata meta = meta1;
         XMPProperty prop;
         dc = new DublinCoreAdapter(meta);
-        String[] creators = dc.getCreators();
-        for (int i = 0, c = creators.length; i < c; i++) {
-            System.out.println("Creator: " + creators[i]);
+        final String[] creators = dc.getCreators();
+        for (final String creator : creators) {
+            log.info("Creator: " + creator);
         }
-        System.out.println("Title: " + dc.getTitle());
-        System.out.println("Title de: " + dc.getTitle("de"));
-        System.out.println("Title en: " + dc.getTitle("en"));
+        log.info("Title: " + dc.getTitle());
+        log.info("Title de: " + dc.getTitle("de"));
+        log.info("Title en: " + dc.getTitle("en"));
         prop = meta.getProperty(XMPConstants.XMP_BASIC_NAMESPACE, "CreateDate");
-        System.out.println("Creation Date: " + prop.getValue());
-        prop = meta.getProperty(XMPConstants.XMP_BASIC_NAMESPACE, "CreatorTool");
-        System.out.println("Creator Tool: " + prop.getValue());
+        log.info("Creation Date: " + prop.getValue());
+        prop = meta
+                .getProperty(XMPConstants.XMP_BASIC_NAMESPACE, "CreatorTool");
+        log.info("Creator Tool: " + prop.getValue());
         prop = meta.getProperty(XMPConstants.ADOBE_PDF_NAMESPACE, "Producer");
-        System.out.println("Producer: " + prop.getValue());
+        log.info("Producer: " + prop.getValue());
         prop = meta.getProperty(XMPConstants.ADOBE_PDF_NAMESPACE, "PDFVersion");
-        System.out.println("PDF version: " + prop.getValue());
+        log.info("PDF version: " + prop.getValue());
 
         XMPSerializer.writeXMPPacket(meta, System.out, false);
     }
 
     /**
      * Command-line interface.
-     * @param args the command-line arguments
+     *
+     * @param args
+     *            the command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
             mergeMetadata();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }

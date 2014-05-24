@@ -29,16 +29,18 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.xmlgraphics.image.loader.ImageSize;
+import org.apache.xmlgraphics.util.UnitConv;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import org.apache.xmlgraphics.image.loader.ImageSize;
-import org.apache.xmlgraphics.util.UnitConv;
-
 /**
  * Helper and convenience methods for ImageIO.
  */
+@Slf4j
 public final class ImageIOUtil {
 
     private ImageIOUtil() {
@@ -49,28 +51,34 @@ public final class ImageIOUtil {
 
     /**
      * Extracts the resolution information from the standard ImageIO metadata.
-     * @param iiometa the metadata provided by ImageIO
-     * @param size the image size object
+     *
+     * @param iiometa
+     *            the metadata provided by ImageIO
+     * @param size
+     *            the image size object
      */
-    public static void extractResolution(IIOMetadata iiometa, ImageSize size) {
+    public static void extractResolution(final IIOMetadata iiometa,
+            final ImageSize size) {
         if (iiometa != null && iiometa.isStandardMetadataFormatSupported()) {
-            Element metanode = (Element)iiometa.getAsTree(
-                    IIOMetadataFormatImpl.standardMetadataFormatName);
-            Element dim = getChild(metanode, "Dimension");
+            final Element metanode = (Element) iiometa
+                    .getAsTree(IIOMetadataFormatImpl.standardMetadataFormatName);
+            final Element dim = getChild(metanode, "Dimension");
             if (dim != null) {
                 Element child;
                 double dpiHorz = size.getDpiHorizontal();
                 double dpiVert = size.getDpiVertical();
                 child = getChild(dim, "HorizontalPixelSize");
                 if (child != null) {
-                    float value = Float.parseFloat(child.getAttribute("value"));
+                    final float value = Float.parseFloat(child
+                            .getAttribute("value"));
                     if (value != 0 && !Float.isInfinite(value)) {
                         dpiHorz = UnitConv.IN2MM / value;
                     }
                 }
                 child = getChild(dim, "VerticalPixelSize");
                 if (child != null) {
-                    float value = Float.parseFloat(child.getAttribute("value"));
+                    final float value = Float.parseFloat(child
+                            .getAttribute("value"));
                     if (value != 0 && !Float.isInfinite(value)) {
                         dpiVert = UnitConv.IN2MM / value;
                     }
@@ -82,15 +90,19 @@ public final class ImageIOUtil {
     }
 
     /**
-     * Returns a child element of another element or null if there's no such child.
-     * @param el the parent element
-     * @param name the name of the requested child
+     * Returns a child element of another element or null if there's no such
+     * child.
+     *
+     * @param el
+     *            the parent element
+     * @param name
+     *            the name of the requested child
      * @return the child or null if there's no such child
      */
-    public static Element getChild(Element el, String name) {
-        NodeList nodes = el.getElementsByTagName(name);
+    public static Element getChild(final Element el, final String name) {
+        final NodeList nodes = el.getElementsByTagName(name);
         if (nodes.getLength() > 0) {
-            return (Element)nodes.item(0);
+            return (Element) nodes.item(0);
         } else {
             return null;
         }
@@ -98,29 +110,34 @@ public final class ImageIOUtil {
 
     /**
      * Dumps the content of an IIOMetadata instance to System.out.
-     * @param iiometa the metadata
+     *
+     * @param iiometa
+     *            the metadata
      */
-    public static void dumpMetadataToSystemOut(IIOMetadata iiometa) {
-        String[] metanames = iiometa.getMetadataFormatNames();
-        for (int j = 0; j < metanames.length; j++) {
-            System.out.println("--->" + metanames[j]);
-            dumpNodeToSystemOut(iiometa.getAsTree(metanames[j]));
+    public static void dumpMetadataToSystemOut(final IIOMetadata iiometa) {
+        final String[] metanames = iiometa.getMetadataFormatNames();
+        for (final String metaname : metanames) {
+            log.info("--->" + metaname);
+            dumpNodeToSystemOut(iiometa.getAsTree(metaname));
         }
     }
 
     /**
      * Serializes a W3C DOM node to a String and dumps it to System.out.
-     * @param node a W3C DOM node
+     *
+     * @param node
+     *            a W3C DOM node
      */
-    private static void dumpNodeToSystemOut(Node node) {
+    private static void dumpNodeToSystemOut(final Node node) {
         try {
-            Transformer trans = TransformerFactory.newInstance().newTransformer();
+            final Transformer trans = TransformerFactory.newInstance()
+                    .newTransformer();
             trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             trans.setOutputProperty(OutputKeys.INDENT, "yes");
-            Source src = new DOMSource(node);
-            Result res = new StreamResult(System.out);
+            final Source src = new DOMSource(node);
+            final Result res = new StreamResult(System.out);
             trans.transform(src, res);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }

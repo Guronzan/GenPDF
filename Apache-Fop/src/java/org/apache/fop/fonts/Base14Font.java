@@ -19,7 +19,6 @@
 
 package org.apache.fop.fonts;
 
-
 /**
  * Base class for all Base 14 fonts.
  */

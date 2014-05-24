@@ -24,8 +24,8 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 
 /**
- * This implements the GraphicsDevice interface as appropriate for
- * a PSGraphics2D. This is quite simple since we only have one
+ * This implements the GraphicsDevice interface as appropriate for a
+ * PSGraphics2D. This is quite simple since we only have one
  * GraphicsConfiguration for now.
  */
 class PSGraphicsDevice extends GraphicsDevice {
@@ -36,28 +36,30 @@ class PSGraphicsDevice extends GraphicsDevice {
     /**
      * Create a new PostScript graphics device.
      *
-     * @param gc The graphics configuration we should reference
+     * @param gc
+     *            The graphics configuration we should reference
      */
-    PSGraphicsDevice(GraphicsConfiguration gc) {
+    PSGraphicsDevice(final GraphicsConfiguration gc) {
         this.gc = gc;
     }
 
     /** {@inheritDoc} */
     @Override
-    public GraphicsConfiguration getBestConfiguration(GraphicsConfigTemplate gct) {
-        return gc;
+    public GraphicsConfiguration getBestConfiguration(
+            final GraphicsConfigTemplate gct) {
+        return this.gc;
     }
 
     /** {@inheritDoc} */
     @Override
     public GraphicsConfiguration[] getConfigurations() {
-        return new GraphicsConfiguration[] {gc};
+        return new GraphicsConfiguration[] { this.gc };
     }
 
     /** {@inheritDoc} */
     @Override
     public GraphicsConfiguration getDefaultConfiguration() {
-        return gc;
+        return this.gc;
     }
 
     /** {@inheritDoc} */
@@ -73,4 +75,3 @@ class PSGraphicsDevice extends GraphicsDevice {
     }
 
 }
-

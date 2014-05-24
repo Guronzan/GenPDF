@@ -46,7 +46,7 @@ public class ImageFlavorTestCase extends TestCase {
         assertNull(f1.getNamespace());
     }
 
-    public void testRefinedFlavors() throws Exception {
+    public void testRefinedFlavors() {
         ImageFlavor f1, f2;
 
         f1 = ImageFlavor.RENDERED_IMAGE;

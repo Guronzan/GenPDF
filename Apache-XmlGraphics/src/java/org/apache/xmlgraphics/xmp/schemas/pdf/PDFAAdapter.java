@@ -24,8 +24,8 @@ import org.apache.xmlgraphics.xmp.XMPSchemaAdapter;
 import org.apache.xmlgraphics.xmp.XMPSchemaRegistry;
 
 /**
- * Schema adapter implementation for both the old (deprecated) and the current PDF/A schema.
- * The old namespace is still needed to make Adobe Acrobat happy.
+ * Schema adapter implementation for both the old (deprecated) and the current
+ * PDF/A schema. The old namespace is still needed to make Adobe Acrobat happy.
  */
 public class PDFAAdapter extends XMPSchemaAdapter {
 
@@ -35,19 +35,24 @@ public class PDFAAdapter extends XMPSchemaAdapter {
 
     /**
      * Constructs a new adapter for PDF/A around the given metadata object.
-     * @param meta the underlying metadata
-     * @param namespace the namespace to access the schema (must be one of the PDF/A schema
-     *                  namespaces)
+     * 
+     * @param meta
+     *            the underlying metadata
+     * @param namespace
+     *            the namespace to access the schema (must be one of the PDF/A
+     *            schema namespaces)
      */
-    public PDFAAdapter(Metadata meta, String namespace) {
+    public PDFAAdapter(final Metadata meta, final String namespace) {
         super(meta, XMPSchemaRegistry.getInstance().getSchema(namespace));
     }
 
     /**
      * Sets the PDF/A version identifier ("part").
-     * @param value the version identifier ("1" for PDF/A-1)
+     * 
+     * @param value
+     *            the version identifier ("1" for PDF/A-1)
      */
-    public void setPart(int value) {
+    public void setPart(final int value) {
         setValue(PART, Integer.toString(value));
     }
 
@@ -58,9 +63,11 @@ public class PDFAAdapter extends XMPSchemaAdapter {
 
     /**
      * Sets the PDF/A amendment identifier ("amd").
-     * @param value the amendment identifiert
+     * 
+     * @param value
+     *            the amendment identifiert
      */
-    public void setAmendment(String value) {
+    public void setAmendment(final String value) {
         setValue(AMD, value);
     }
 
@@ -71,9 +78,11 @@ public class PDFAAdapter extends XMPSchemaAdapter {
 
     /**
      * Sets the PDF/A conformance level.
-     * @param value the conformance level ("A" or "B" for PDF/A-1)
+     * 
+     * @param value
+     *            the conformance level ("A" or "B" for PDF/A-1)
      */
-    public void setConformance(String value) {
+    public void setConformance(final String value) {
         setValue(CONFORMANCE, value);
     }
 

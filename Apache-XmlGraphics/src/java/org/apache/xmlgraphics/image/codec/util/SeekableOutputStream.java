@@ -30,55 +30,61 @@ import java.io.RandomAccessFile;
  */
 public class SeekableOutputStream extends OutputStream {
 
-    private RandomAccessFile file;
+    private final RandomAccessFile file;
 
     /**
      * Constructs a <code>SeekableOutputStream</code> from a
-     * <code>RandomAccessFile</code>.  Unless otherwise indicated,
-     * all method invocations are fowarded to the underlying
-     * <code>RandomAccessFile</code>.
+     * <code>RandomAccessFile</code>. Unless otherwise indicated, all method
+     * invocations are fowarded to the underlying <code>RandomAccessFile</code>.
      *
-     * @param file The <code>RandomAccessFile</code> to which calls
-     *             will be forwarded.
-     * @exception IllegalArgumentException if <code>file</code> is
-     *            <code>null</code>.
+     * @param file
+     *            The <code>RandomAccessFile</code> to which calls will be
+     *            forwarded.
+     * @exception IllegalArgumentException
+     *                if <code>file</code> is <code>null</code>.
      */
-    public SeekableOutputStream(RandomAccessFile file) {
+    public SeekableOutputStream(final RandomAccessFile file) {
         if (file == null) {
             throw new IllegalArgumentException("SeekableOutputStream0");
         }
         this.file = file;
     }
 
-    public void write(int b) throws IOException {
-        file.write(b);
+    @Override
+    public void write(final int b) throws IOException {
+        this.file.write(b);
     }
 
-    public void write(byte[] b) throws IOException {
-        file.write(b);
+    @Override
+    public void write(final byte[] b) throws IOException {
+        this.file.write(b);
     }
 
-    public void write(byte[] b, int off, int len) throws IOException {
-        file.write(b, off, len);
+    @Override
+    public void write(final byte[] b, final int off, final int len)
+            throws IOException {
+        this.file.write(b, off, len);
     }
 
     /**
      * Invokes <code>getFD().sync()</code> on the underlying
      * <code>RandomAccessFile</code>.
      */
+    @Override
     public void flush() throws IOException {
-        file.getFD().sync();
+        this.file.getFD().sync();
     }
 
+    @Override
     public void close() throws IOException {
-        file.close();
+        this.file.close();
     }
 
     public long getFilePointer() throws IOException {
-        return file.getFilePointer();
+        return this.file.getFilePointer();
     }
 
-    public void seek(long pos) throws IOException {
-        file.seek(pos);
+    public void seek(final long pos) throws IOException {
+        this.file.seek(pos);
     }
 }

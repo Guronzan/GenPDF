@@ -51,7 +51,7 @@ import org.apache.xmlgraphics.image.loader.util.SoftMapCache;
  */
 @Slf4j
 public abstract class AbstractImageSessionContext implements
-        ImageSessionContext {
+ImageSessionContext {
 
     private static boolean noSourceReuse = false;
 
@@ -65,7 +65,7 @@ public abstract class AbstractImageSessionContext implements
 
     /**
      * Attempts to resolve the given URI.
-     * 
+     *
      * @param uri
      *            URI to access
      * @return A {@link javax.xml.transform.Source} object, or null if the URI
@@ -102,7 +102,7 @@ public abstract class AbstractImageSessionContext implements
         if (f != null) {
             boolean directFileAccess = true;
             assert source instanceof StreamSource
-                    || source instanceof SAXSource;
+            || source instanceof SAXSource;
             InputStream in = ImageUtil.getInputStream(source);
             if (in == null) {
                 try {
@@ -210,7 +210,7 @@ public abstract class AbstractImageSessionContext implements
     }
 
     private static class ObservingImageInputStreamInvocationHandler implements
-            InvocationHandler {
+    InvocationHandler {
 
         private final ImageInputStream iin;
         private InputStream in;
@@ -283,9 +283,9 @@ public abstract class AbstractImageSessionContext implements
     }
 
     private final SoftMapCache sessionSources = new SoftMapCache(false); // no
-                                                                         // need
-                                                                         // for
-                                                                         // synchronization
+    // need
+    // for
+    // synchronization
 
     /** {@inheritDoc} */
     @Override
@@ -343,7 +343,7 @@ public abstract class AbstractImageSessionContext implements
      * Indicates whether a Source is reusable. A Source object is reusable if
      * it's an {@link ImageSource} (containing an {@link ImageInputStream}) or a
      * {@link DOMSource}.
-     * 
+     *
      * @param src
      *            the Source object
      * @return true if the Source is reusable

@@ -25,45 +25,53 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 //Batik
 import org.apache.batik.transcoder.Transcoder;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
-
 //FOP
 import org.apache.fop.svg.PDFTranscoder;
 
 /**
  * This class demonstrates the conversion of an SVG file to PDF using FOP.
  */
+@Slf4j
 public class ExampleSVG2PDF {
 
     /**
      * Converts an FO file to a PDF file using FOP
-     * @param svg the SVG file
-     * @param pdf the target PDF file
-     * @throws IOException In case of an I/O problem
-     * @throws TranscoderException In case of a transcoding problem
+     *
+     * @param svg
+     *            the SVG file
+     * @param pdf
+     *            the target PDF file
+     * @throws IOException
+     *             In case of an I/O problem
+     * @throws TranscoderException
+     *             In case of a transcoding problem
      */
-    public void convertSVG2PDF(File svg, File pdf) throws IOException, TranscoderException {
+    public void convertSVG2PDF(final File svg, final File pdf)
+            throws IOException, TranscoderException {
 
-        //Create transcoder
-        Transcoder transcoder = new PDFTranscoder();
-        //Transcoder transcoder = new org.apache.fop.render.ps.PSTranscoder();
+        // Create transcoder
+        final Transcoder transcoder = new PDFTranscoder();
+        // Transcoder transcoder = new org.apache.fop.render.ps.PSTranscoder();
 
-        //Setup input
-        InputStream in = new java.io.FileInputStream(svg);
+        // Setup input
+        final InputStream in = new java.io.FileInputStream(svg);
         try {
-            TranscoderInput input = new TranscoderInput(in);
+            final TranscoderInput input = new TranscoderInput(in);
 
-            //Setup output
+            // Setup output
             OutputStream out = new java.io.FileOutputStream(pdf);
             out = new java.io.BufferedOutputStream(out);
             try {
-                TranscoderOutput output = new TranscoderOutput(out);
+                final TranscoderOutput output = new TranscoderOutput(out);
 
-                //Do the transformation
+                // Do the transformation
                 transcoder.transcode(input, output);
             } finally {
                 out.close();
@@ -73,35 +81,36 @@ public class ExampleSVG2PDF {
         }
     }
 
-
     /**
      * Main method.
-     * @param args command-line arguments
+     *
+     * @param args
+     *            command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
-            System.out.println("FOP ExampleSVG2PDF\n");
-            System.out.println("Preparing...");
+            log.info("FOP ExampleSVG2PDF\n");
+            log.info("Preparing...");
 
-            //Setup directories
-            File baseDir = new File(".");
-            File outDir = new File(baseDir, "out");
+            // Setup directories
+            final File baseDir = new File(".");
+            final File outDir = new File(baseDir, "out");
             outDir.mkdirs();
 
-            //Setup input and output files
-            File svgfile = new File(baseDir, "xml/svg/helloworld.svg");
-            File pdffile = new File(outDir, "ResultSVG2PDF.pdf");
+            // Setup input and output files
+            final File svgfile = new File(baseDir, "xml/svg/helloworld.svg");
+            final File pdffile = new File(outDir, "ResultSVG2PDF.pdf");
 
-            System.out.println("Input: SVG (" + svgfile + ")");
-            System.out.println("Output: PDF (" + pdffile + ")");
-            System.out.println();
-            System.out.println("Transforming...");
+            log.info("Input: SVG (" + svgfile + ")");
+            log.info("Output: PDF (" + pdffile + ")");
+            log.info("");
+            log.info("Transforming...");
 
-            ExampleSVG2PDF app = new ExampleSVG2PDF();
+            final ExampleSVG2PDF app = new ExampleSVG2PDF();
             app.convertSVG2PDF(svgfile, pdffile);
 
-            System.out.println("Success!");
-        } catch (Exception e) {
+            log.info("Success!");
+        } catch (final Exception e) {
             e.printStackTrace(System.err);
             System.exit(-1);
         }

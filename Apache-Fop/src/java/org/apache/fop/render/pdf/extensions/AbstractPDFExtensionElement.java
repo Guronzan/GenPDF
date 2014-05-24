@@ -28,46 +28,52 @@ import org.apache.fop.fo.extensions.ExtensionAttachment;
  */
 public abstract class AbstractPDFExtensionElement extends FONode {
 
-    /**Extension attachment. */
+    /** Extension attachment. */
     protected PDFExtensionAttachment attachment;
 
     /**
      * Default constructor
      *
-     * @param parent parent of this node
+     * @param parent
+     *            parent of this node
      * @see org.apache.fop.fo.FONode#FONode(FONode)
      */
-    public AbstractPDFExtensionElement(FONode parent) {
+    public AbstractPDFExtensionElement(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNamespaceURI() {
         return PDFElementMapping.NAMESPACE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNormalNamespacePrefix() {
         return "pdf";
     }
 
     /**
      * Returns the extension attachment.
-     * @return the extension attachment if one is created by the extension element, null otherwise.
+     * 
+     * @return the extension attachment if one is created by the extension
+     *         element, null otherwise.
      * @see org.apache.fop.fo.FONode#getExtensionAttachment()
      */
+    @Override
     public ExtensionAttachment getExtensionAttachment() {
-        if (attachment == null) {
-            this.attachment = (PDFExtensionAttachment)instantiateExtensionAttachment();
+        if (this.attachment == null) {
+            this.attachment = (PDFExtensionAttachment) instantiateExtensionAttachment();
         }
         return this.attachment;
     }
 
     /**
      * Instantiates extension attachment object.
+     * 
      * @return extension attachment
      */
     protected abstract ExtensionAttachment instantiateExtensionAttachment();
 
 }
-

@@ -20,13 +20,14 @@
 package org.apache.fop.pdf;
 
 /**
- * An abstraction that controls the mutability of the PDF version for a document.
+ * An abstraction that controls the mutability of the PDF version for a
+ * document.
  */
 public abstract class VersionController {
 
     private Version version;
 
-    private VersionController(Version version) {
+    private VersionController(final Version version) {
         this.version = version;
     }
 
@@ -36,86 +37,95 @@ public abstract class VersionController {
      * @return the PDF version
      */
     public Version getPDFVersion() {
-        return version;
+        return this.version;
     }
 
     /**
      * Sets the PDF version of the document.
      *
-     * @param version the PDF version
-     * @throws IllegalStateException if the PDF version is not allowed to change.
+     * @param version
+     *            the PDF version
+     * @throws IllegalStateException
+     *             if the PDF version is not allowed to change.
      */
-    public abstract void setPDFVersion(Version version);
+    public abstract void setPDFVersion(final Version version);
 
     @Override
     public String toString() {
-        return version.toString();
+        return this.version.toString();
     }
 
     /**
-     * A class representing the version of a PDF document. This class doesn't allow the version to
-     * change once it has been set, it is immutable. Any attempt to set the version will result in
-     * an exception being thrown.
+     * A class representing the version of a PDF document. This class doesn't
+     * allow the version to change once it has been set, it is immutable. Any
+     * attempt to set the version will result in an exception being thrown.
      */
     private static final class FixedVersion extends VersionController {
 
-        private FixedVersion(Version version) {
+        private FixedVersion(final Version version) {
             super(version);
         }
 
         @Override
-        public void setPDFVersion(Version version) {
-            throw new IllegalStateException("Cannot change the version of this PDF document.");
+        public void setPDFVersion(final Version version) {
+            throw new IllegalStateException(
+                    "Cannot change the version of this PDF document.");
         }
     }
 
     /**
-     * A class representing the version of a PDF document. This class allows the version to be
-     * changed once it has been set (it is mutable) ONLY if the new version is greater. If the PDF
-     * version is changed after it has been instantiated, the version will be set in the document
-     * catalog.
+     * A class representing the version of a PDF document. This class allows the
+     * version to be changed once it has been set (it is mutable) ONLY if the
+     * new version is greater. If the PDF version is changed after it has been
+     * instantiated, the version will be set in the document catalog.
      */
     private static final class DynamicVersion extends VersionController {
 
-        private PDFDocument doc;
+        private final PDFDocument doc;
 
-        private DynamicVersion(Version version, PDFDocument doc) {
+        private DynamicVersion(final Version version, final PDFDocument doc) {
             super(version);
             this.doc = doc;
         }
 
         @Override
-        public void setPDFVersion(Version version) {
+        public void setPDFVersion(final Version version) {
             if (super.version.compareTo(version) < 0) {
                 super.version = version;
-                doc.getRoot().setVersion(version);
+                this.doc.getRoot().setVersion(version);
             }
         }
     }
 
     /**
-     * Returns a controller that disallows subsequent change to the document's version. The minimum
-     * allowed version is v1.4.
+     * Returns a controller that disallows subsequent change to the document's
+     * version. The minimum allowed version is v1.4.
      *
-     * @param version the PDF version (must be &gt;= v1.4)
+     * @param version
+     *            the PDF version (must be &gt;= v1.4)
      * @return the fixed PDF version controller
      */
-    public static VersionController getFixedVersionController(Version version) {
+    public static VersionController getFixedVersionController(
+            final Version version) {
         if (version.compareTo(Version.V1_4) < 0) {
-            throw new IllegalArgumentException("The PDF version cannot be set below version 1.4");
+            throw new IllegalArgumentException(
+                    "The PDF version cannot be set below version 1.4");
         }
         return new FixedVersion(version);
     }
 
     /**
-     * Returns a controller that allows subsequent changes to the document's version.
+     * Returns a controller that allows subsequent changes to the document's
+     * version.
      *
-     * @param initialVersion the initial PDF version
-     * @param doc the document whose version is being set
+     * @param initialVersion
+     *            the initial PDF version
+     * @param doc
+     *            the document whose version is being set
      * @return the dynamic PDF version controller
      */
-    public static VersionController getDynamicVersionController(Version initialVersion,
-            PDFDocument doc) {
+    public static VersionController getDynamicVersionController(
+            final Version initialVersion, final PDFDocument doc) {
         return new DynamicVersion(initialVersion, doc);
     }
 }

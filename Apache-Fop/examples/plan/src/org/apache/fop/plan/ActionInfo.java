@@ -32,49 +32,49 @@ public class ActionInfo {
     private String owner;
     private String label;
     private int type = TASK;
-    private String dependant = "";
+    private final String dependant = "";
 
-    public void setType(int t) {
-        type = t;
+    public void setType(final int t) {
+        this.type = t;
     }
 
     public int getType() {
-        return type;
+        return this.type;
     }
 
-    public void setLabel(String str) {
-        label = str;
+    public void setLabel(final String str) {
+        this.label = str;
     }
 
-    public void setOwner(String str) {
-        owner = str;
+    public void setOwner(final String str) {
+        this.owner = str;
     }
 
-    public void setStartDate(Date sd) {
-        startDate = sd;
-        if (endDate == null) {
-            endDate = startDate;
+    public void setStartDate(final Date sd) {
+        this.startDate = sd;
+        if (this.endDate == null) {
+            this.endDate = this.startDate;
         }
     }
 
-    public void setEndDate(Date ed) {
-        endDate = ed;
+    public void setEndDate(final Date ed) {
+        this.endDate = ed;
     }
 
     public String getLabel() {
-        return label;
+        return this.label;
     }
 
     public String getOwner() {
-        return owner;
+        return this.owner;
     }
 
     public Date getStartDate() {
-        return startDate;
+        return this.startDate;
     }
 
     public Date getEndDate() {
-        return endDate;
+        return this.endDate;
     }
 
 }

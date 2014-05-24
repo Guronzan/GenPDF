@@ -41,15 +41,18 @@ public class PSResource implements Comparable {
     /** A CIDFont resource. */
     public static final String TYPE_CIDFONT = "cidfont";
 
-    private String type;
-    private String name;
+    private final String type;
+    private final String name;
 
     /**
      * Main constructor
-     * @param type type of the resource
-     * @param name name of the resource
+     * 
+     * @param type
+     *            type of the resource
+     * @param name
+     *            name of the resource
      */
-    public PSResource(String type, String name) {
+    public PSResource(final String type, final String name) {
         this.type = type;
         this.name = name;
     }
@@ -66,17 +69,19 @@ public class PSResource implements Comparable {
 
     /** @return the <resource> specification as defined in DSC v3.0 spec. */
     public String getResourceSpecification() {
-        StringBuffer sb = new StringBuffer();
-        sb.append(getType()).append(" ").append(PSGenerator.convertStringToDSC(getName()));
+        final StringBuffer sb = new StringBuffer();
+        sb.append(getType()).append(" ")
+                .append(PSGenerator.convertStringToDSC(getName()));
         return sb.toString();
     }
 
     /** {@inheritDoc} */
-    public boolean equals(Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
         if (obj == this) {
             return true;
         } else if (obj instanceof PSResource) {
-            PSResource other = (PSResource)obj;
+            final PSResource other = (PSResource) obj;
             return other.toString().equals(toString());
         } else {
             return false;
@@ -84,24 +89,27 @@ public class PSResource implements Comparable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode() {
         return toString().hashCode();
     }
 
     /** {@inheritDoc} */
-    public int compareTo(Object o) {
-        PSResource other = (PSResource)o;
+    @Override
+    public int compareTo(final Object o) {
+        final PSResource other = (PSResource) o;
         if (this == other) {
             return 0;
         }
-        int result = this.getType().compareTo(other.getType());
+        int result = getType().compareTo(other.getType());
         if (result == 0) {
-            result = this.getName().compareTo(other.getName());
+            result = getName().compareTo(other.getName());
         }
         return result;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return getResourceSpecification();
     }

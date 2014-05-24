@@ -27,8 +27,8 @@ import org.apache.fop.layoutmgr.LayoutManager;
 import org.apache.fop.layoutmgr.Position;
 
 /**
- * This class represents a Position specific to TableContentLayoutManager. Used for normal
- * content cases.
+ * This class represents a Position specific to TableContentLayoutManager. Used
+ * for normal content cases.
  */
 class TableContentPosition extends Position {
 
@@ -40,7 +40,7 @@ class TableContentPosition extends Position {
     /** the list of CellParts making up this position */
     protected List cellParts;
     /** effective row this position belongs to */
-    private EffRow row;
+    private final EffRow row;
     /** flags for the position */
     protected int flags;
 
@@ -48,12 +48,16 @@ class TableContentPosition extends Position {
 
     /**
      * Creates a new TableContentPosition.
-     * @param lm applicable layout manager
-     * @param cellParts the list of CellPart instances
-     * @param row effective row this position belongs to
+     * 
+     * @param lm
+     *            applicable layout manager
+     * @param cellParts
+     *            the list of CellPart instances
+     * @param row
+     *            effective row this position belongs to
      */
-    protected TableContentPosition(LayoutManager lm, List cellParts,
-            EffRow row) {
+    protected TableContentPosition(final LayoutManager lm,
+            final List cellParts, final EffRow row) {
         super(lm);
         this.cellParts = cellParts;
         this.row = row;
@@ -61,66 +65,74 @@ class TableContentPosition extends Position {
     }
 
     /**
-     * Sets the row corresponding to this position if it starts a new page. In which case,
-     * if the delay mechanism is on, this is the delayed row that starts the page, and not
-     * the current row being extended.
+     * Sets the row corresponding to this position if it starts a new page. In
+     * which case, if the delay mechanism is on, this is the delayed row that
+     * starts the page, and not the current row being extended.
      *
-     * @param newPageRow the row that will start the page if this position is the first
-     * one on that page
+     * @param newPageRow
+     *            the row that will start the page if this position is the first
+     *            one on that page
      */
-    void setNewPageRow(EffRow newPageRow) {
+    void setNewPageRow(final EffRow newPageRow) {
         this.newPageRow = newPageRow;
     }
 
     EffRow getNewPageRow() {
-        return newPageRow;
+        return this.newPageRow;
     }
 
     EffRow getRow() {
-        return row;
+        return this.row;
     }
 
     TablePart getTablePart() {
-        return ((CellPart) cellParts.get(0)).pgu.getTablePart();
+        return ((CellPart) this.cellParts.get(0)).pgu.getTablePart();
     }
 
     /**
      * Returns a flag for this GridUnit.
-     * @param which the requested flag
+     * 
+     * @param which
+     *            the requested flag
      * @return the value of the flag
      */
-    public boolean getFlag(int which) {
-        return (flags & (1 << which)) != 0;
+    public boolean getFlag(final int which) {
+        return (this.flags & 1 << which) != 0;
     }
 
     /**
      * Sets a flag on a GridUnit.
-     * @param which the flag to set
-     * @param value the new value for the flag
+     * 
+     * @param which
+     *            the flag to set
+     * @param value
+     *            the new value for the flag
      */
-    public void setFlag(int which, boolean value) {
+    public void setFlag(final int which, final boolean value) {
         if (value) {
-            flags |= (1 << which); //set flag
+            this.flags |= 1 << which; // set flag
         } else {
-            flags &= ~(1 << which); //clear flag
+            this.flags &= ~(1 << which); // clear flag
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean generatesAreas() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("TableContentPosition:");
+        final StringBuffer sb = new StringBuffer("TableContentPosition:");
         sb.append(getIndex());
         sb.append("[");
-        sb.append(row.getIndex()).append("/");
+        sb.append(this.row.getIndex()).append("/");
         sb.append(getFlag(FIRST_IN_ROWGROUP) ? "F" : "-");
         sb.append(getFlag(LAST_IN_ROWGROUP) ? "L" : "-").append("]");
         sb.append("(");
-        sb.append(cellParts);
+        sb.append(this.cellParts);
         sb.append(")");
         return sb.toString();
     }

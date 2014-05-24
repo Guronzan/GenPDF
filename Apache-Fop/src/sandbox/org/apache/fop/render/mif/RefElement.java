@@ -20,30 +20,29 @@
 package org.apache.fop.render.mif;
 
 /**
- * Reference MIF Element.
- * This element is a lookup reference set that contains
- * a list of resources used in the MIF Document.
- * When a lookup is performed it will either create a new
- * element or return an existing element that is valid.
- * THe key depends on the type of reference, it should be able
- * to uniquely identify the element.
+ * Reference MIF Element. This element is a lookup reference set that contains a
+ * list of resources used in the MIF Document. When a lookup is performed it
+ * will either create a new element or return an existing element that is valid.
+ * THe key depends on the type of reference, it should be able to uniquely
+ * identify the element.
  */
 public class RefElement extends MIFElement {
 
     /**
-     * @param name a name
+     * @param name
+     *            a name
      * @see org.apache.fop.render.mif.MIFElement#MIFElement(String)
      */
-    public RefElement(String name) {
+    public RefElement(final String name) {
         super(name);
     }
 
     /**
-     * @param key a key
+     * @param key
+     *            a key
      * @return an mif element
      */
-    public MIFElement lookupElement(Object key) {
+    public MIFElement lookupElement(final Object key) {
         return null;
     }
 }
-

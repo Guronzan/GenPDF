@@ -20,10 +20,10 @@
 package org.apache.fop.pdf;
 
 /**
- * CCF Filter class. Right now it is just used as a dummy filter flag so
- * we can write TIFF images to the PDF. The encode method just returns the
- * data passed to it. In the future an actual CCITT Group 4 compression should be
- * added to the encode method so other images can be compressed.
+ * CCF Filter class. Right now it is just used as a dummy filter flag so we can
+ * write TIFF images to the PDF. The encode method just returns the data passed
+ * to it. In the future an actual CCITT Group 4 compression should be added to
+ * the encode method so other images can be compressed.
  *
  */
 public class CCFFilter extends NullFilter {
@@ -33,6 +33,7 @@ public class CCFFilter extends NullFilter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return "/CCITTFaxDecode";
     }
@@ -40,17 +41,19 @@ public class CCFFilter extends NullFilter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public PDFObject getDecodeParms() {
         return this.decodeParms;
     }
 
     /**
      * Sets the CCF decoding parameters
-     * @param decodeParms The decoding parameters
+     * 
+     * @param decodeParms
+     *            The decoding parameters
      */
-    public void setDecodeParms(PDFObject decodeParms) {
+    public void setDecodeParms(final PDFObject decodeParms) {
         this.decodeParms = decodeParms;
     }
 
 }
-

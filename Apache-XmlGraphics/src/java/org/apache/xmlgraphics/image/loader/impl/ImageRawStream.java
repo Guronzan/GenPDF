@@ -26,27 +26,32 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
 import org.apache.xmlgraphics.image.loader.MimeEnabledImageFlavor;
 
 /**
- * This class is an implementation of the Image interface exposing an InputStream for loading the
- * raw/undecoded image.
+ * This class is an implementation of the Image interface exposing an
+ * InputStream for loading the raw/undecoded image.
  */
 public class ImageRawStream extends AbstractImage {
 
-    private ImageFlavor flavor;
+    private final ImageFlavor flavor;
     private InputStreamFactory streamFactory;
 
     /**
      * Main constructor.
-     * @param info the image info object
-     * @param flavor the image flavor for the raw image
-     * @param streamFactory the InputStreamFactory that is used to create InputStream instances
+     * 
+     * @param info
+     *            the image info object
+     * @param flavor
+     *            the image flavor for the raw image
+     * @param streamFactory
+     *            the InputStreamFactory that is used to create InputStream
+     *            instances
      */
-    public ImageRawStream(ImageInfo info, ImageFlavor flavor, InputStreamFactory streamFactory) {
+    public ImageRawStream(final ImageInfo info, final ImageFlavor flavor,
+            final InputStreamFactory streamFactory) {
         super(info);
         this.flavor = flavor;
         setInputStreamFactory(streamFactory);
@@ -54,43 +59,53 @@ public class ImageRawStream extends AbstractImage {
 
     /**
      * Constructor for a simple InputStream as parameter.
-     * @param info the image info object
-     * @param flavor the image flavor for the raw image
-     * @param in the InputStream with the raw content
+     * 
+     * @param info
+     *            the image info object
+     * @param flavor
+     *            the image flavor for the raw image
+     * @param in
+     *            the InputStream with the raw content
      */
-    public ImageRawStream(ImageInfo info, ImageFlavor flavor, InputStream in) {
+    public ImageRawStream(final ImageInfo info, final ImageFlavor flavor,
+            final InputStream in) {
         this(info, flavor, new SingleStreamFactory(in));
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getFlavor() {
         return this.flavor;
     }
 
     /**
      * Returns the MIME type of the stream data.
+     * 
      * @return the MIME type
      */
     public String getMimeType() {
         if (getFlavor() instanceof MimeEnabledImageFlavor) {
             return getFlavor().getMimeType();
         } else {
-            //Undetermined
+            // Undetermined
             return "application/octet-stream";
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isCacheable() {
         return !this.streamFactory.isUsedOnceOnly();
     }
 
     /**
-     * Sets the InputStreamFactory to be used by this image. This method allows to replace the
-     * original factory.
-     * @param factory the new InputStreamFactory
+     * Sets the InputStreamFactory to be used by this image. This method allows
+     * to replace the original factory.
+     * 
+     * @param factory
+     *            the new InputStreamFactory
      */
-    public void setInputStreamFactory(InputStreamFactory factory) {
+    public void setInputStreamFactory(final InputStreamFactory factory) {
         if (this.streamFactory != null) {
             this.streamFactory.close();
         }
@@ -99,6 +114,7 @@ public class ImageRawStream extends AbstractImage {
 
     /**
      * Returns a new InputStream to access the raw image.
+     * 
      * @return the InputStream
      */
     public InputStream createInputStream() {
@@ -106,13 +122,16 @@ public class ImageRawStream extends AbstractImage {
     }
 
     /**
-     * Writes the content of the image to an OutputStream. The OutputStream in NOT closed at the
-     * end.
-     * @param out the OutputStream
-     * @throws IOException if an I/O error occurs
+     * Writes the content of the image to an OutputStream. The OutputStream in
+     * NOT closed at the end.
+     * 
+     * @param out
+     *            the OutputStream
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public void writeTo(OutputStream out) throws IOException {
-        InputStream in = createInputStream();
+    public void writeTo(final OutputStream out) throws IOException {
+        final InputStream in = createInputStream();
         try {
             IOUtils.copy(in, out);
         } finally {
@@ -122,11 +141,14 @@ public class ImageRawStream extends AbstractImage {
 
     /**
      * Writes the content of the image to a File.
-     * @param target the file to be written
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param target
+     *            the file to be written
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public void writeTo(File target) throws IOException {
-        OutputStream out = new java.io.FileOutputStream(target);
+    public void writeTo(final File target) throws IOException {
+        final OutputStream out = new java.io.FileOutputStream(target);
         try {
             writeTo(out);
         } finally {
@@ -135,61 +157,70 @@ public class ImageRawStream extends AbstractImage {
     }
 
     /**
-     * Represents a factory for InputStream objects. Make sure the class is thread-safe!
+     * Represents a factory for InputStream objects. Make sure the class is
+     * thread-safe!
      */
     public interface InputStreamFactory {
 
         /**
          * Indicates whether this factory is only usable once or many times.
+         * 
          * @return true if the factory can only be used once
          */
         boolean isUsedOnceOnly();
 
         /**
          * Creates and returns a new InputStream.
+         * 
          * @return the new InputStream
          */
         InputStream createInputStream();
 
         /**
-         * Closes the factory and releases any resources held open during the lifetime of this
-         * object.
+         * Closes the factory and releases any resources held open during the
+         * lifetime of this object.
          */
         void close();
 
     }
 
     /**
-     * InputStream factory that can return a pre-constructed InputStream exactly once.
+     * InputStream factory that can return a pre-constructed InputStream exactly
+     * once.
      */
     private static class SingleStreamFactory implements InputStreamFactory {
 
         private InputStream in;
 
-        public SingleStreamFactory(InputStream in) {
+        public SingleStreamFactory(final InputStream in) {
             this.in = in;
         }
 
+        @Override
         public synchronized InputStream createInputStream() {
             if (this.in != null) {
-                InputStream tempin = this.in;
-                this.in = null; //Don't close, just remove the reference
+                final InputStream tempin = this.in;
+                this.in = null; // Don't close, just remove the reference
                 return tempin;
             } else {
-                throw new IllegalStateException("Can only create an InputStream once!");
+                throw new IllegalStateException(
+                        "Can only create an InputStream once!");
             }
         }
 
+        @Override
         public synchronized void close() {
             IOUtils.closeQuietly(this.in);
             this.in = null;
         }
 
+        @Override
         public boolean isUsedOnceOnly() {
             return true;
         }
 
         /** {@inheritDoc} */
+        @Override
         protected void finalize() {
             close();
         }
@@ -201,27 +232,32 @@ public class ImageRawStream extends AbstractImage {
      */
     public static class ByteArrayStreamFactory implements InputStreamFactory {
 
-        private byte[] data;
+        private final byte[] data;
 
         /**
          * Main constructor.
-         * @param data the byte array
+         * 
+         * @param data
+         *            the byte array
          */
-        public ByteArrayStreamFactory(byte[] data) {
+        public ByteArrayStreamFactory(final byte[] data) {
             this.data = data;
         }
 
         /** {@inheritDoc} */
+        @Override
         public InputStream createInputStream() {
-            return new ByteArrayInputStream(data);
+            return new ByteArrayInputStream(this.data);
         }
 
         /** {@inheritDoc} */
+        @Override
         public void close() {
-            //nop
+            // nop
         }
 
         /** {@inheritDoc} */
+        @Override
         public boolean isUsedOnceOnly() {
             return false;
         }

@@ -19,27 +19,30 @@
 
 package org.apache.fop.render.intermediate.extensions;
 
-
 /**
  * This class is a named destination element for use in the intermediate format.
  */
 public class NamedDestination {
 
-    private String name;
+    private final String name;
     private AbstractAction action;
 
     /**
      * Creates a new named destination.
-     * @param name the destination's name
-     * @param action the action performed when the destination is selected
+     * 
+     * @param name
+     *            the destination's name
+     * @param action
+     *            the action performed when the destination is selected
      */
-    public NamedDestination(String name, AbstractAction action) {
+    public NamedDestination(final String name, final AbstractAction action) {
         this.name = name;
         this.action = action;
     }
 
     /**
      * Returns the destination's name.
+     * 
      * @return the name
      */
     public String getName() {
@@ -48,6 +51,7 @@ public class NamedDestination {
 
     /**
      * Returns the action performed when the destination is selected.
+     * 
      * @return the action
      */
     public AbstractAction getAction() {
@@ -56,9 +60,11 @@ public class NamedDestination {
 
     /**
      * Sets the action performed when the destination is selected.
-     * @param action the action
+     * 
+     * @param action
+     *            the action
      */
-    public void setAction(AbstractAction action) {
+    public void setAction(final AbstractAction action) {
         this.action = action;
     }
 

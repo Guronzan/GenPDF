@@ -38,8 +38,9 @@ public class DublinCoreSchema extends XMPSchema {
 
     static {
         dcMergeRuleSet = new MergeRuleSet();
-        //Dates are added up not replaced
-        dcMergeRuleSet.addRule(new QName(NAMESPACE, "date"), new ArrayAddPropertyMerger());
+        // Dates are added up not replaced
+        dcMergeRuleSet.addRule(new QName(NAMESPACE, "date"),
+                new ArrayAddPropertyMerger());
     }
 
     /** Creates a new schema instance for Dublin Core. */
@@ -48,15 +49,19 @@ public class DublinCoreSchema extends XMPSchema {
     }
 
     /**
-     * Creates and returns an adapter for this schema around the given metadata object.
-     * @param meta the metadata object
+     * Creates and returns an adapter for this schema around the given metadata
+     * object.
+     * 
+     * @param meta
+     *            the metadata object
      * @return the newly instantiated adapter
      */
-    public static DublinCoreAdapter getAdapter(Metadata meta) {
+    public static DublinCoreAdapter getAdapter(final Metadata meta) {
         return new DublinCoreAdapter(meta);
     }
 
     /** @see org.apache.xmlgraphics.xmp.XMPSchema#getDefaultMergeRuleSet() */
+    @Override
     public MergeRuleSet getDefaultMergeRuleSet() {
         return dcMergeRuleSet;
     }

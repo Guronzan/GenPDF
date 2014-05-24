@@ -26,8 +26,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * This extension allows to include an AFP form map resource. It is implemented as an extension
- * attachment ({@link org.apache.fop.fo.extensions.ExtensionAttachment}).
+ * This extension allows to include an AFP form map resource. It is implemented
+ * as an extension attachment (
+ * {@link org.apache.fop.fo.extensions.ExtensionAttachment}).
  */
 public class AFPIncludeFormMap extends AFPExtensionAttachment {
 
@@ -50,6 +51,7 @@ public class AFPIncludeFormMap extends AFPExtensionAttachment {
 
     /**
      * Returns the URI of the form map.
+     * 
      * @return the form map URI
      */
     public URI getSrc() {
@@ -58,28 +60,33 @@ public class AFPIncludeFormMap extends AFPExtensionAttachment {
 
     /**
      * Sets the URI of the form map.
-     * @param value the form map URI
+     * 
+     * @param value
+     *            the form map URI
      */
-    public void setSrc(URI value) {
+    public void setSrc(final URI value) {
         this.src = value;
     }
 
     /** {@inheritDoc} */
-    public void toSAX(ContentHandler handler) throws SAXException {
-        AttributesImpl atts = new AttributesImpl();
-        if (name != null && name.length() > 0) {
-            atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", name);
+    @Override
+    public void toSAX(final ContentHandler handler) throws SAXException {
+        final AttributesImpl atts = new AttributesImpl();
+        if (this.name != null && this.name.length() > 0) {
+            atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", this.name);
         }
         if (this.src != null) {
-            atts.addAttribute(null, ATT_SRC, ATT_SRC, "CDATA", this.src.toASCIIString());
+            atts.addAttribute(null, ATT_SRC, ATT_SRC, "CDATA",
+                    this.src.toASCIIString());
         }
-        handler.startElement(CATEGORY, elementName, elementName, atts);
-        handler.endElement(CATEGORY, elementName, elementName);
+        handler.startElement(CATEGORY, this.elementName, this.elementName, atts);
+        handler.endElement(CATEGORY, this.elementName, this.elementName);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return getClass().getName() + "(element-name=" + getElementName()
-            + " name=" + getName() + " src=" + getSrc() + ")";
+                + " name=" + getName() + " src=" + getSrc() + ")";
     }
 }

@@ -19,8 +19,8 @@
 
 package org.apache.fop.complexscripts.bidi;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -33,13 +33,8 @@ import static org.junit.Assert.fail;
  *
  * @author Glenn Adams
  */
+@Slf4j
 public class BidiAlgorithmTestCase {
-
-    /**
-     * logging instance
-     */
-    private static final Log log = LogFactory
-            .getLog(BidiAlgorithmTestCase.class); // CSOK: ConstantNameCheck
 
     /**
      * Concatenated array of <test-set,test-sequence> tuples specifying which
@@ -72,7 +67,7 @@ public class BidiAlgorithmTestCase {
     private int passedSequences;
 
     @Test
-    public void testBidiAlgorithm() throws Exception {
+    public void testBidiAlgorithm() {
         final String ldPfx = BidiTestData.LD_PFX;
         final int ldCount = BidiTestData.LD_CNT;
         for (int i = 0; i < ldCount; ++i) {
@@ -93,8 +88,7 @@ public class BidiAlgorithmTestCase {
         }
     }
 
-    private void testBidiAlgorithm(final int testSet, final int[] da)
-            throws Exception {
+    private void testBidiAlgorithm(final int testSet, final int[] da) {
         if (da.length < 1) {
             fail("test data is empty");
         } else if (da.length < da[0] * 2 + 1) {

@@ -22,7 +22,8 @@ package org.apache.fop.config;
 /**
  * this font has a missing font triplet attribute
  */
-public class FontTripletAttributeMissingTestCase extends BaseDestructiveUserConfigTest {
+public class FontTripletAttributeMissingTestCase extends
+        BaseDestructiveUserConfigTest {
 
     @Override
     public String getUserConfigFilename() {

@@ -34,7 +34,6 @@ import org.apache.fop.AbstractFOPTest;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 import org.xml.sax.SAXException;
 
 /**
@@ -46,7 +45,8 @@ public class BasePDFTest extends AbstractFOPTest {
     protected final FopFactory fopFactory = FopFactory.newInstance();
 
     /** the JAXP TransformerFactory */
-    protected final TransformerFactory tFactory = TransformerFactory.newInstance();
+    protected final TransformerFactory tFactory = TransformerFactory
+            .newInstance();
 
     /**
      * Main constructor
@@ -62,8 +62,8 @@ public class BasePDFTest extends AbstractFOPTest {
         final File uc = getUserConfigFile();
 
         try {
-            fopFactory.setUserConfig(uc);
-        } catch (Exception e) {
+            this.fopFactory.setUserConfig(uc);
+        } catch (final Exception e) {
             throw new RuntimeException("fopFactory.setUserConfig ("
                     + uc.getAbsolutePath() + ") failed: " + e.getMessage());
         }
@@ -71,37 +71,45 @@ public class BasePDFTest extends AbstractFOPTest {
 
     /**
      * Convert a test FO file to PDF
-     * @param foFile the FO file
-     * @param ua the preconfigured user agent
-     * @param dumpPdfFile if true, dumps the generated PDF file to a file name (foFile).pdf
+     * 
+     * @param foFile
+     *            the FO file
+     * @param ua
+     *            the preconfigured user agent
+     * @param dumpPdfFile
+     *            if true, dumps the generated PDF file to a file name
+     *            (foFile).pdf
      * @return the generated PDF data
-     * @throws Exception if the conversion fails
+     * @throws Exception
+     *             if the conversion fails
      */
-    protected byte[] convertFO(File foFile, FOUserAgent ua, boolean dumpPdfFile)
-             throws Exception {
-        ByteArrayOutputStream baout = new ByteArrayOutputStream();
-        Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, ua, baout);
-        Transformer transformer = tFactory.newTransformer();
-        Source src = new StreamSource(foFile);
-        SAXResult res = new SAXResult(fop.getDefaultHandler());
+    protected byte[] convertFO(final File foFile, final FOUserAgent ua,
+            final boolean dumpPdfFile) throws Exception {
+        final ByteArrayOutputStream baout = new ByteArrayOutputStream();
+        final Fop fop = this.fopFactory.newFop(
+                org.apache.xmlgraphics.util.MimeConstants.MIME_PDF, ua, baout);
+        final Transformer transformer = this.tFactory.newTransformer();
+        final Source src = new StreamSource(foFile);
+        final SAXResult res = new SAXResult(fop.getDefaultHandler());
         try {
             transformer.transform(src, res);
             final byte[] result = baout.toByteArray();
             if (dumpPdfFile) {
-                final File outFile = new File(foFile.getParentFile(), foFile.getName() + ".pdf");
+                final File outFile = new File(foFile.getParentFile(),
+                        foFile.getName() + ".pdf");
                 FileUtils.writeByteArrayToFile(outFile, result);
             }
             return result;
-        } catch (TransformerException e) {
+        } catch (final TransformerException e) {
             throw extractOriginalException(e);
         }
     }
 
-    private static Exception extractOriginalException(Exception e) {
+    private static Exception extractOriginalException(final Exception e) {
         if (e.getCause() != null) {
-            return extractOriginalException((Exception)e.getCause());
+            return extractOriginalException((Exception) e.getCause());
         } else if (e instanceof SAXException) {
-            SAXException se = (SAXException)e;
+            final SAXException se = (SAXException) e;
             if (se.getException() != null) {
                 return extractOriginalException(se.getException());
             }
@@ -111,6 +119,7 @@ public class BasePDFTest extends AbstractFOPTest {
 
     /**
      * get FOP config File
+     * 
      * @return user config file to be used for testing
      */
     protected File getUserConfigFile() {

@@ -19,14 +19,16 @@
 
 package org.apache.fop.fo;
 
-import org.xml.sax.Locator;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.apps.FOPException;
+import org.xml.sax.Locator;
 
 /**
- * Abstract base class for representation of mixed content formatting objects
- * (= those that can contain both child {@link FONode}s and <code>#PCDATA</code>).
+ * Abstract base class for representation of mixed content formatting objects (=
+ * those that can contain both child {@link FONode}s and <code>#PCDATA</code>).
  */
+@Slf4j
 public abstract class FObjMixed extends FObj {
 
     /** Represents accumulated, pending FO text. See {@link #flushText()}. */
@@ -35,33 +37,35 @@ public abstract class FObjMixed extends FObj {
     /** Used for white-space handling; start CharIterator at node ... */
     protected FONode currentTextNode;
 
-    /** Used in creating pointers between subsequent {@link FOText} nodes
-     *  in the same {@link org.apache.fop.fo.flow.Block}
-     *  (for handling text-transform) */
+    /**
+     * Used in creating pointers between subsequent {@link FOText} nodes in the
+     * same {@link org.apache.fop.fo.flow.Block} (for handling text-transform)
+     */
     protected FOText lastFOTextProcessed = null;
 
     /**
      * Base constructor
      *
-     * @param parent FONode that is the parent of this object
+     * @param parent
+     *            FONode that is the parent of this object
      */
-    protected FObjMixed(FONode parent) {
+    protected FObjMixed(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void characters(char[] data, int start, int length,
-                                 PropertyList pList,
-                                 Locator locator) throws FOPException {
-        if (ft == null) {
-            ft = new FOText(this);
-            ft.setLocator(locator);
+    protected void characters(final char[] data, final int start,
+            final int length, final PropertyList pList, final Locator locator)
+                    throws FOPException {
+        if (this.ft == null) {
+            this.ft = new FOText(this);
+            this.ft.setLocator(locator);
             if (!inMarker()) {
-                ft.bind(pList);
+                this.ft.bind(pList);
             }
         }
-        ft.characters(data, start, length, null, null);
+        this.ft.characters(data, start, length, null, null);
     }
 
     /** {@inheritDoc} */
@@ -77,42 +81,43 @@ public abstract class FObjMixed extends FObj {
     }
 
     /**
-     * Handles white-space for the node that is passed in,
-     * starting at its current text-node
-     * (used by {@link org.apache.fop.fo.flow.RetrieveMarker}
-     *  to trigger 'end-of-node' white-space handling)
+     * Handles white-space for the node that is passed in, starting at its
+     * current text-node (used by {@link org.apache.fop.fo.flow.RetrieveMarker}
+     * to trigger 'end-of-node' white-space handling)
      *
-     * @param fobj  the node for which to handle white-space
-     * @param nextChild the next child to be added
+     * @param fobj
+     *            the node for which to handle white-space
+     * @param nextChild
+     *            the next child to be added
      */
-    protected static void handleWhiteSpaceFor(FObjMixed fobj, FONode nextChild) {
+    protected static void handleWhiteSpaceFor(final FObjMixed fobj,
+            final FONode nextChild) {
         fobj.getBuilderContext().getXMLWhiteSpaceHandler()
-            .handleWhiteSpace(fobj, fobj.currentTextNode, nextChild);
+        .handleWhiteSpace(fobj, fobj.currentTextNode, nextChild);
     }
 
     /**
-     * Creates block-pointers between subsequent FOText nodes
-     * in the same Block. (used for handling text-transform)
+     * Creates block-pointers between subsequent FOText nodes in the same Block.
+     * (used for handling text-transform)
      *
      * TODO: !! Revisit: does not take into account fo:characters !!
      *
-     * @throws FOPException if there is a problem during processing
+     * @throws FOPException
+     *             if there is a problem during processing
      */
     private void flushText() throws FOPException {
-        if (ft != null) {
-            FOText lft = ft;
+        if (this.ft != null) {
+            final FOText lft = this.ft;
             /* make sure nested calls to itself have no effect */
-            ft = null;
+            this.ft = null;
             if (getNameId() == FO_BLOCK) {
                 lft.createBlockPointers((org.apache.fop.fo.flow.Block) this);
                 this.lastFOTextProcessed = lft;
-            } else if (getNameId() != FO_MARKER
-                    && getNameId() != FO_TITLE
+            } else if (getNameId() != FO_MARKER && getNameId() != FO_TITLE
                     && getNameId() != FO_BOOKMARK_TITLE) {
-                FONode fo = parent;
+                FONode fo = this.parent;
                 int foNameId = fo.getNameId();
-                while (foNameId != FO_BLOCK
-                        && foNameId != FO_MARKER
+                while (foNameId != FO_BLOCK && foNameId != FO_MARKER
                         && foNameId != FO_TITLE
                         && foNameId != FO_BOOKMARK_TITLE
                         && foNameId != FO_PAGE_SEQUENCE) {
@@ -122,26 +127,25 @@ public abstract class FObjMixed extends FObj {
                 if (foNameId == FO_BLOCK) {
                     lft.createBlockPointers((org.apache.fop.fo.flow.Block) fo);
                     ((FObjMixed) fo).lastFOTextProcessed = lft;
-                } else if (foNameId == FO_PAGE_SEQUENCE
-                            && lft.willCreateArea()) {
+                } else if (foNameId == FO_PAGE_SEQUENCE && lft.willCreateArea()) {
                     log.error("Could not create block pointers."
                             + " FOText w/o Block ancestor.");
                 }
             }
-            this.addChildNode(lft);
+            addChildNode(lft);
         }
     }
 
     private void sendCharacters() throws FOPException {
 
         if (this.currentTextNode != null) {
-            FONodeIterator nodeIter
-                    = this.getChildNodes(this.currentTextNode);
+            final FONodeIterator nodeIter = this
+                    .getChildNodes(this.currentTextNode);
             FONode node;
             while (nodeIter.hasNext()) {
                 node = nodeIter.nextNode();
-                assert (node instanceof FOText
-                        || node.getNameId() == FO_CHARACTER);
+                assert node instanceof FOText
+                        || node.getNameId() == FO_CHARACTER;
                 if (node.getNameId() == FO_CHARACTER) {
                     node.startOfNode();
                 }
@@ -153,7 +157,7 @@ public abstract class FObjMixed extends FObj {
 
     /** {@inheritDoc} */
     @Override
-    protected void addChildNode(FONode child) throws FOPException {
+    protected void addChildNode(final FONode child) throws FOPException {
 
         flushText();
         if (!inMarker()) {
@@ -173,11 +177,12 @@ public abstract class FObjMixed extends FObj {
 
     /** {@inheritDoc} */
     @Override
-    public void removeChild(FONode child) {
+    public void removeChild(final FONode child) {
         super.removeChild(child);
         if (child == this.currentTextNode) {
             // reset to following sibling
-            this.currentTextNode = child.siblings != null ? child.siblings[1] : null;
+            this.currentTextNode = child.siblings != null ? child.siblings[1]
+                    : null;
         }
     }
 

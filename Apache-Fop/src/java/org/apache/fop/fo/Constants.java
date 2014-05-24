@@ -20,13 +20,14 @@
 package org.apache.fop.fo;
 
 /**
- * Definition of constants used throughout FOP.
- * There are sets of constants describing:
+ * Definition of constants used throughout FOP. There are sets of constants
+ * describing:
  * <ul>
  * <li>Input and output formats</li>
  * <li>Formatting objects (<em>FO_XXX</em>)</li>
  * <li>Formatting properties (<em>PR_XXX</em>)</li>
- * <li>Enumerated values used in formatting properties and traits (<em>EN_XXX</em>)</li>
+ * <li>Enumerated values used in formatting properties and traits (
+ * <em>EN_XXX</em>)</li>
  * </ul>
  */
 public interface Constants {
@@ -204,18 +205,18 @@ public interface Constants {
 
     // Masks
     /**
-     * For compound properties the property constant value is shifted by this amount.
-     * The low order bits hold the constant for the component property.
+     * For compound properties the property constant value is shifted by this
+     * amount. The low order bits hold the constant for the component property.
      */
     int COMPOUND_SHIFT = 9;
     /**
-     * Mask that when applied to a compound property returns the constant of
-     * the component property.
+     * Mask that when applied to a compound property returns the constant of the
+     * component property.
      */
     int PROPERTY_MASK = (1 << COMPOUND_SHIFT) - 1;
     /**
-     * Mask that when applied to a compound property returns the constant of
-     * the compound property.
+     * Mask that when applied to a compound property returns the constant of the
+     * compound property.
      */
     int COMPOUND_MASK = ~PROPERTY_MASK;
     /** Number of compund properties defined */
@@ -762,9 +763,15 @@ public interface Constants {
     int PR_Z_INDEX = 269;
     /** Property constant - FOP proprietary: Custom extension for line alignment */
     int PR_X_BLOCK_PROGRESSION_UNIT = 270;
-    /** Property constant - FOP proprietary: limit for widow content in lists and tables */
+    /**
+     * Property constant - FOP proprietary: limit for widow content in lists and
+     * tables
+     */
     int PR_X_WIDOW_CONTENT_LIMIT = 271;
-    /** Property constant - FOP proprietary: limit for orphan content in lists and tables */
+    /**
+     * Property constant - FOP proprietary: limit for orphan content in lists
+     * and tables
+     */
     int PR_X_ORPHAN_CONTENT_LIMIT = 272;
     /**
      * Property constant - FOP proprietary: disable balancing of columns in
@@ -776,7 +783,10 @@ public interface Constants {
      * Used for accessibility.
      */
     int PR_X_ALT_TEXT = 274;
-    /** Property constant - FOP proprietary prototype (in XSL-FO 2.0 Requirements) */
+    /**
+     * Property constant - FOP proprietary prototype (in XSL-FO 2.0
+     * Requirements)
+     */
     int PR_X_XML_BASE = 275;
     /**
      * Property constant - FOP proprietary extension (see NumberConverter) used
@@ -1186,9 +1196,15 @@ public interface Constants {
     int EN_STATUS_BAR = 185;
     /** Enumeration constant -- for page-position, XSL 1.1 */
     int EN_ONLY = 186;
-    /** Enumeration constant -- for instream-foreign-object and external-graphic, XSL 1.1 */
+    /**
+     * Enumeration constant -- for instream-foreign-object and external-graphic,
+     * XSL 1.1
+     */
     int EN_SCALE_DOWN_TO_FIT = 187;
-    /** Enumeration constant -- for instream-foreign-object and external-graphic, XSL 1.1 */
+    /**
+     * Enumeration constant -- for instream-foreign-object and external-graphic,
+     * XSL 1.1
+     */
     int EN_SCALE_UP_TO_FIT = 188;
     /** Enumeration constant -- for fo:basic-link show-destination */
     int EN_REPLACE = 189;

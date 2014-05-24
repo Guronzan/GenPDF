@@ -19,10 +19,10 @@
 
 package org.apache.fop.config;
 
-import static org.junit.Assert.fail;
-
 import org.apache.fop.apps.FOPException;
 import org.junit.Test;
+
+import static org.junit.Assert.fail;
 
 /**
  * Super class for several user configuration failure cases.
@@ -37,12 +37,13 @@ public abstract class BaseDestructiveUserConfigTest extends BaseUserConfigTest {
         try {
             initConfig();
             convertFO();
-            fail( getName() + ": Expected Configuration Exception" );
-        } catch (FOPException e) {
+            fail(getName() + ": Expected Configuration Exception");
+        } catch (final FOPException e) {
             // this *should* happen!
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
-            fail( getName() + ": Expected FOPException but got: " + e.getMessage() );
+            fail(getName() + ": Expected FOPException but got: "
+                    + e.getMessage());
         }
     }
 }

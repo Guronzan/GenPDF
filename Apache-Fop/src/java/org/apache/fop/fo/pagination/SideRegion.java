@@ -33,22 +33,25 @@ public abstract class SideRegion extends Region {
 
     /**
      * Creates a new side region.
-     * @param parent the parent node
+     * 
+     * @param parent
+     *            the parent node
      * @see org.apache.fop.fo.FONode#FONode(FONode)
      */
-    protected SideRegion(FONode parent) {
+    protected SideRegion(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        extent = pList.get(PR_EXTENT).getLength();
+        this.extent = pList.get(PR_EXTENT).getLength();
     }
 
     /** @return the "extent" property. */
     public Length getExtent() {
-        return extent;
+        return this.extent;
     }
 
 }

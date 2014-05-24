@@ -28,6 +28,7 @@ public abstract class AbstractFOPTest {
 
     /**
      * Returns the base directory to use for the tests.
+     * 
      * @return the base directory
      */
     protected static File getBaseDir() {

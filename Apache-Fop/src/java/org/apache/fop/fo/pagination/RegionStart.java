@@ -34,61 +34,71 @@ import org.apache.fop.fo.FONode;
 public class RegionStart extends RegionSE {
 
     /**
-     * Create a RegionStart instance that is a child of the
-     * given parent {@link FONode}.
-     * @param parent    the {@link FONode} that is to be the parent
+     * Create a RegionStart instance that is a child of the given parent
+     * {@link FONode}.
+     * 
+     * @param parent
+     *            the {@link FONode} that is to be the parent
      */
-    public RegionStart(FONode parent) {
+    public RegionStart(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public Rectangle getViewportRectangle (FODimension reldims) {
-        /* Special rules apply to resolving extent as values are resolved relative
-         * to the page size and reference orientation.
+    @Override
+    public Rectangle getViewportRectangle(final FODimension reldims) {
+        /*
+         * Special rules apply to resolving extent as values are resolved
+         * relative to the page size and reference orientation.
          */
-        PercentBaseContext pageWidthContext = getPageWidthContext(LengthBase.CUSTOM_BASE);
-        PercentBaseContext pageHeightContext = getPageHeightContext(LengthBase.CUSTOM_BASE);
+        final PercentBaseContext pageWidthContext = getPageWidthContext(LengthBase.CUSTOM_BASE);
+        final PercentBaseContext pageHeightContext = getPageHeightContext(LengthBase.CUSTOM_BASE);
         PercentBaseContext neighbourContext;
         Rectangle vpRect;
         // [TBD] WRITING MODE ALERT
-        switch ( getWritingMode().getEnumValue() ) {
+        switch (getWritingMode().getEnumValue()) {
         case Constants.EN_RL_TB:
             neighbourContext = pageHeightContext;
-            vpRect = new Rectangle(reldims.ipd - getExtent().getValue(pageWidthContext), 0,
-                    getExtent().getValue(pageWidthContext), reldims.bpd);
+            vpRect = new Rectangle(reldims.ipd
+                    - getExtent().getValue(pageWidthContext), 0, getExtent()
+                    .getValue(pageWidthContext), reldims.bpd);
             break;
         case Constants.EN_TB_LR:
         case Constants.EN_TB_RL:
             neighbourContext = pageWidthContext;
-            vpRect = new Rectangle(0, 0, reldims.bpd, getExtent().getValue(pageHeightContext));
+            vpRect = new Rectangle(0, 0, reldims.bpd, getExtent().getValue(
+                    pageHeightContext));
             break;
         case Constants.EN_LR_TB:
         default:
             neighbourContext = pageHeightContext;
-            vpRect = new Rectangle(0, 0, getExtent().getValue(pageWidthContext), reldims.bpd);
+            vpRect = new Rectangle(0, 0,
+                    getExtent().getValue(pageWidthContext), reldims.bpd);
             break;
         }
-        adjustIPD(vpRect, layoutMaster.getWritingMode(), neighbourContext);
+        adjustIPD(vpRect, this.layoutMaster.getWritingMode(), neighbourContext);
         return vpRect;
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String getDefaultRegionName() {
         return "xsl-region-start";
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "region-start";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_REGION_START}
      */
+    @Override
     public int getNameId() {
         return FO_REGION_START;
     }
 }
-

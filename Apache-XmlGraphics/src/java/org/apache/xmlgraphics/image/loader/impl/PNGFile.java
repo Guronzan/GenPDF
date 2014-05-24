@@ -19,6 +19,7 @@
 
 package org.apache.xmlgraphics.image.loader.impl;
 
+import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_Profile;
 import java.awt.image.ColorModel;
@@ -56,7 +57,7 @@ class PNGFile implements PNGConstants {
     private int redTransparentAlpha;
     private int greenTransparentAlpha;
     private int blueTransparentAlpha;
-    private List<InputStream> streamVec = new ArrayList<InputStream>();
+    private final List<InputStream> streamVec = new ArrayList<InputStream>();
     private int paletteEntries;
     private byte[] redPalette;
     private byte[] greenPalette;
@@ -69,17 +70,17 @@ class PNGFile implements PNGConstants {
         if (!stream.markSupported()) {
             stream = new BufferedInputStream(stream);
         }
-        DataInputStream distream = new DataInputStream(stream);
-        long magic = distream.readLong();
+        final DataInputStream distream = new DataInputStream(stream);
+        final long magic = distream.readLong();
         if (magic != PNG_SIGNATURE) {
-            String msg = PropertyUtil.getString("PNGImageDecoder0");
+            final String msg = PropertyUtil.getString("PNGImageDecoder0");
             throw new ImageException(msg);
         }
         // only some chunks are worth parsing in the current implementation
         do {
             try {
                 PNGChunk chunk;
-                String chunkType = PNGChunk.getChunkType(distream);
+                final String chunkType = PNGChunk.getChunkType(distream);
                 if (chunkType.equals(PNGChunk.ChunkType.IHDR.name())) {
                     chunk = PNGChunk.readChunk(distream);
                     parse_IHDR_chunk(chunk);
@@ -88,7 +89,8 @@ class PNGFile implements PNGConstants {
                     parse_PLTE_chunk(chunk);
                 } else if (chunkType.equals(PNGChunk.ChunkType.IDAT.name())) {
                     chunk = PNGChunk.readChunk(distream);
-                    streamVec.add(new ByteArrayInputStream(chunk.getData()));
+                    this.streamVec
+                            .add(new ByteArrayInputStream(chunk.getData()));
                 } else if (chunkType.equals(PNGChunk.ChunkType.IEND.name())) {
                     // chunk = PNGChunk.readChunk(distream);
                     PNGChunk.skipChunk(distream);
@@ -100,62 +102,76 @@ class PNGFile implements PNGConstants {
                     // chunk = PNGChunk.readChunk(distream);
                     PNGChunk.skipChunk(distream);
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
-                String msg = PropertyUtil.getString("PNGImageDecoder2");
+                final String msg = PropertyUtil.getString("PNGImageDecoder2");
                 throw new RuntimeException(msg);
             }
         } while (true);
     }
 
-    public ImageRawPNG getImageRawPNG(ImageInfo info) throws ImageException {
-        InputStream seqStream = new SequenceInputStream(Collections.enumeration(streamVec));
-        switch (colorType) {
+    public ImageRawPNG getImageRawPNG(final ImageInfo info)
+            throws ImageException {
+        final InputStream seqStream = new SequenceInputStream(
+                Collections.enumeration(this.streamVec));
+        switch (this.colorType) {
         case PNG_COLOR_GRAY:
-            if (hasPalette) {
-                throw new ImageException("Corrupt PNG: color palette is not allowed!");
+            if (this.hasPalette) {
+                throw new ImageException(
+                        "Corrupt PNG: color palette is not allowed!");
             }
-            colorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_GRAY), false, false,
-                    ColorModel.OPAQUE, DataBuffer.TYPE_BYTE);
+            this.colorModel = new ComponentColorModel(
+                    ColorSpace.getInstance(ColorSpace.CS_GRAY), false, false,
+                    Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
             break;
         case PNG_COLOR_RGB:
-            // actually a check of the sRGB chunk would be necessary to confirm if it's really sRGB
-            colorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), false, false,
-                    ColorModel.OPAQUE, DataBuffer.TYPE_BYTE);
+            // actually a check of the sRGB chunk would be necessary to confirm
+            // if it's really sRGB
+            this.colorModel = new ComponentColorModel(
+                    ColorSpace.getInstance(ColorSpace.CS_sRGB), false, false,
+                    Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
             break;
         case PNG_COLOR_PALETTE:
-            if (hasAlphaPalette) {
-                colorModel = new IndexColorModel(bitDepth, paletteEntries, redPalette, greenPalette,
-                        bluePalette, alphaPalette);
+            if (this.hasAlphaPalette) {
+                this.colorModel = new IndexColorModel(this.bitDepth,
+                        this.paletteEntries, this.redPalette,
+                        this.greenPalette, this.bluePalette, this.alphaPalette);
             } else {
-                colorModel = new IndexColorModel(bitDepth, paletteEntries, redPalette, greenPalette,
-                        bluePalette);
+                this.colorModel = new IndexColorModel(this.bitDepth,
+                        this.paletteEntries, this.redPalette,
+                        this.greenPalette, this.bluePalette);
             }
             break;
         case PNG_COLOR_GRAY_ALPHA:
-            if (hasPalette) {
-                throw new ImageException("Corrupt PNG: color palette is not allowed!");
+            if (this.hasPalette) {
+                throw new ImageException(
+                        "Corrupt PNG: color palette is not allowed!");
             }
-            colorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_GRAY), true, false,
-                    ColorModel.TRANSLUCENT, DataBuffer.TYPE_BYTE);
+            this.colorModel = new ComponentColorModel(
+                    ColorSpace.getInstance(ColorSpace.CS_GRAY), true, false,
+                    Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE);
             break;
         case PNG_COLOR_RGB_ALPHA:
-            // actually a check of the sRGB chunk would be necessary to confirm if it's really sRGB
-            colorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), true, false,
-                    ColorModel.TRANSLUCENT, DataBuffer.TYPE_BYTE);
+            // actually a check of the sRGB chunk would be necessary to confirm
+            // if it's really sRGB
+            this.colorModel = new ComponentColorModel(
+                    ColorSpace.getInstance(ColorSpace.CS_sRGB), true, false,
+                    Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE);
             break;
         default:
-            throw new ImageException("Unsupported color type: " + colorType);
+            throw new ImageException("Unsupported color type: "
+                    + this.colorType);
         }
         // the iccProfile is still null for now
-        ImageRawPNG rawImage = new ImageRawPNG(info, seqStream, colorModel, bitDepth, iccProfile);
-        if (isTransparent) {
-            if (colorType == PNG_COLOR_GRAY) {
-                rawImage.setGrayTransparentAlpha(grayTransparentAlpha);
-            } else if (colorType == PNG_COLOR_RGB) {
-                rawImage.setRGBTransparentAlpha(redTransparentAlpha, greenTransparentAlpha,
-                        blueTransparentAlpha);
-            } else if (colorType == PNG_COLOR_PALETTE) {
+        final ImageRawPNG rawImage = new ImageRawPNG(info, seqStream,
+                this.colorModel, this.bitDepth, this.iccProfile);
+        if (this.isTransparent) {
+            if (this.colorType == PNG_COLOR_GRAY) {
+                rawImage.setGrayTransparentAlpha(this.grayTransparentAlpha);
+            } else if (this.colorType == PNG_COLOR_RGB) {
+                rawImage.setRGBTransparentAlpha(this.redTransparentAlpha,
+                        this.greenTransparentAlpha, this.blueTransparentAlpha);
+            } else if (this.colorType == PNG_COLOR_PALETTE) {
                 rawImage.setTransparent();
             } else {
                 //
@@ -164,75 +180,80 @@ class PNGFile implements PNGConstants {
         return rawImage;
     }
 
-    private void parse_IHDR_chunk(PNGChunk chunk) {
-        int width = chunk.getInt4(0);
-        int height = chunk.getInt4(4);
-        bitDepth = chunk.getInt1(8);
-        if (bitDepth != 8) {
+    private void parse_IHDR_chunk(final PNGChunk chunk) {
+        final int width = chunk.getInt4(0);
+        final int height = chunk.getInt4(4);
+        this.bitDepth = chunk.getInt1(8);
+        if (this.bitDepth != 8) {
             // this is a limitation of the current implementation
-            throw new RuntimeException("Unsupported bit depth: " + bitDepth);
+            throw new RuntimeException("Unsupported bit depth: "
+                    + this.bitDepth);
         }
-        colorType = chunk.getInt1(9);
-        int compressionMethod = chunk.getInt1(10);
+        this.colorType = chunk.getInt1(9);
+        final int compressionMethod = chunk.getInt1(10);
         if (compressionMethod != 0) {
-            throw new RuntimeException("Unsupported PNG compression method: " + compressionMethod);
+            throw new RuntimeException("Unsupported PNG compression method: "
+                    + compressionMethod);
         }
-        int filterMethod = chunk.getInt1(11);
+        final int filterMethod = chunk.getInt1(11);
         if (filterMethod != 0) {
-            throw new RuntimeException("Unsupported PNG filter method: " + filterMethod);
+            throw new RuntimeException("Unsupported PNG filter method: "
+                    + filterMethod);
         }
-        int interlaceMethod = chunk.getInt1(12);
+        final int interlaceMethod = chunk.getInt1(12);
         if (interlaceMethod != 0) {
             // this is a limitation of the current implementation
-            throw new RuntimeException("Unsupported PNG interlace method: " + interlaceMethod);
+            throw new RuntimeException("Unsupported PNG interlace method: "
+                    + interlaceMethod);
         }
     }
 
-    private void parse_PLTE_chunk(PNGChunk chunk) {
-        paletteEntries = chunk.getLength() / 3;
-        redPalette = new byte[paletteEntries];
-        greenPalette = new byte[paletteEntries];
-        bluePalette = new byte[paletteEntries];
-        hasPalette = true;
+    private void parse_PLTE_chunk(final PNGChunk chunk) {
+        this.paletteEntries = chunk.getLength() / 3;
+        this.redPalette = new byte[this.paletteEntries];
+        this.greenPalette = new byte[this.paletteEntries];
+        this.bluePalette = new byte[this.paletteEntries];
+        this.hasPalette = true;
 
         int pltIndex = 0;
-        for (int i = 0; i < paletteEntries; i++) {
-            redPalette[i] = chunk.getByte(pltIndex++);
-            greenPalette[i] = chunk.getByte(pltIndex++);
-            bluePalette[i] = chunk.getByte(pltIndex++);
+        for (int i = 0; i < this.paletteEntries; i++) {
+            this.redPalette[i] = chunk.getByte(pltIndex++);
+            this.greenPalette[i] = chunk.getByte(pltIndex++);
+            this.bluePalette[i] = chunk.getByte(pltIndex++);
         }
     }
 
-    private void parse_tRNS_chunk(PNGChunk chunk) {
-        if (colorType == PNG_COLOR_PALETTE) {
-            int entries = chunk.getLength();
-            if (entries > paletteEntries) {
+    private void parse_tRNS_chunk(final PNGChunk chunk) {
+        if (this.colorType == PNG_COLOR_PALETTE) {
+            final int entries = chunk.getLength();
+            if (entries > this.paletteEntries) {
                 // Error -- mustn't have more alpha than RGB palette entries
-                String msg = PropertyUtil.getString("PNGImageDecoder14");
+                final String msg = PropertyUtil.getString("PNGImageDecoder14");
                 throw new RuntimeException(msg);
             }
             // Load beginning of palette from the chunk
-            alphaPalette = new byte[paletteEntries];
+            this.alphaPalette = new byte[this.paletteEntries];
             for (int i = 0; i < entries; i++) {
-                alphaPalette[i] = chunk.getByte(i);
+                this.alphaPalette[i] = chunk.getByte(i);
             }
             // Fill rest of palette with 255
-            for (int i = entries; i < paletteEntries; i++) {
-                alphaPalette[i] = (byte) 255;
+            for (int i = entries; i < this.paletteEntries; i++) {
+                this.alphaPalette[i] = (byte) 255;
             }
-            hasAlphaPalette = true;
-        } else if (colorType == PNG_COLOR_GRAY) {
-            grayTransparentAlpha = chunk.getInt2(0);
-        } else if (colorType == PNG_COLOR_RGB) {
-            redTransparentAlpha = chunk.getInt2(0);
-            greenTransparentAlpha = chunk.getInt2(2);
-            blueTransparentAlpha = chunk.getInt2(4);
-        } else if (colorType == PNG_COLOR_GRAY_ALPHA || colorType == PNG_COLOR_RGB_ALPHA) {
+            this.hasAlphaPalette = true;
+        } else if (this.colorType == PNG_COLOR_GRAY) {
+            this.grayTransparentAlpha = chunk.getInt2(0);
+        } else if (this.colorType == PNG_COLOR_RGB) {
+            this.redTransparentAlpha = chunk.getInt2(0);
+            this.greenTransparentAlpha = chunk.getInt2(2);
+            this.blueTransparentAlpha = chunk.getInt2(4);
+        } else if (this.colorType == PNG_COLOR_GRAY_ALPHA
+                || this.colorType == PNG_COLOR_RGB_ALPHA) {
             // Error -- GA or RGBA image can't have a tRNS chunk.
-            String msg = PropertyUtil.getString("PNGImageDecoder15");
+            final String msg = PropertyUtil.getString("PNGImageDecoder15");
             throw new RuntimeException(msg);
         }
-        isTransparent = true;
+        this.isTransparent = true;
     }
 
 }

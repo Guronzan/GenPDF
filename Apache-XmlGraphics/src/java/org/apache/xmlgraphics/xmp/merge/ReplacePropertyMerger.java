@@ -23,15 +23,17 @@ import org.apache.xmlgraphics.xmp.Metadata;
 import org.apache.xmlgraphics.xmp.XMPProperty;
 
 /**
- * The most basic PropertyMerger which simply overwrites any existing value in the target metadata.
+ * The most basic PropertyMerger which simply overwrites any existing value in
+ * the target metadata.
  */
 public class ReplacePropertyMerger implements PropertyMerger {
 
     /**
-     * @see org.apache.xmlgraphics.xmp.merge.PropertyMerger#merge(
-     *          org.apache.xmlgraphics.xmp.XMPProperty, org.apache.xmlgraphics.xmp.Metadata)
+     * @see org.apache.xmlgraphics.xmp.merge.PropertyMerger#merge(org.apache.xmlgraphics.xmp.XMPProperty,
+     *      org.apache.xmlgraphics.xmp.Metadata)
      */
-    public void merge(XMPProperty sourceProp, Metadata target) {
+    @Override
+    public void merge(final XMPProperty sourceProp, final Metadata target) {
         target.setProperty(sourceProp);
     }
 

@@ -28,18 +28,18 @@ import org.junit.Test;
 public class InlineViewportTestCase extends ViewportTest {
 
     @Test
-    public void testNonClip() throws Exception {
-        InlineViewport v = new InlineViewport(null);
+    public void testNonClip() {
+        final InlineViewport v = new InlineViewport(null);
         v.setIPD(50);
         v.setBPD(25);
         checkNonClip(v);
     }
 
     @Test
-    public void testClip() throws Exception {
-        InlineViewport v = new InlineViewport(null);
-        int ipd = 50;
-        int bpd = 25;
+    public void testClip() {
+        final InlineViewport v = new InlineViewport(null);
+        final int ipd = 50;
+        final int bpd = 25;
         v.setIPD(ipd);
         v.setBPD(bpd);
         v.setClip(true);

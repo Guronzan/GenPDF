@@ -30,8 +30,7 @@ public interface ArabicTestConstants {
     String srcFilesDir = "test/resources/complexscripts/arab/data";
     String datFilesDir = "test/resources/complexscripts/arab/data";
 
-    String[] srcFiles = {
-        "arab-001",     // unpointed word forms
+    String[] srcFiles = { "arab-001", // unpointed word forms
     };
 
     final String WF_FILE_SRC_EXT = "txt";
@@ -39,11 +38,10 @@ public interface ArabicTestConstants {
 
     String ttxFontsDir = "test/resources/complexscripts/arab/ttx";
 
-    String[] ttxFonts = {
-        "arab-001.ttx", // simplified arabic
-        "arab-002.ttx", // traditional arabic
-        "arab-003.ttx", // lateef
-        "arab-004.ttx", // scheherazade
+    String[] ttxFonts = { "arab-001.ttx", // simplified arabic
+            "arab-002.ttx", // traditional arabic
+            "arab-003.ttx", // lateef
+            "arab-004.ttx", // scheherazade
     };
 
 }

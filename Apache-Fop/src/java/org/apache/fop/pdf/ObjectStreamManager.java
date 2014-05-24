@@ -25,9 +25,10 @@ import java.util.List;
 import org.apache.fop.pdf.xref.CompressedObjectReference;
 
 /**
- * Manages a collection of object streams, creating new streams as necessary to keep the
- * number of objects in each stream at the recommended value. Streams are related to each
- * other through the use of the Extends entry in the stream dictionary.
+ * Manages a collection of object streams, creating new streams as necessary to
+ * keep the number of objects in each stream at the recommended value. Streams
+ * are related to each other through the use of the Extends entry in the stream
+ * dictionary.
  */
 class ObjectStreamManager {
 
@@ -41,29 +42,29 @@ class ObjectStreamManager {
 
     private ObjectStream currentObjectStream;
 
-    ObjectStreamManager(PDFDocument pdfDocument) {
+    ObjectStreamManager(final PDFDocument pdfDocument) {
         this.pdfDocument = pdfDocument;
         createObjectStream();
-        compressedObjectReferences = new ArrayList<CompressedObjectReference>();
+        this.compressedObjectReferences = new ArrayList<CompressedObjectReference>();
     }
 
-    void add(CompressedObject compressedObject) {
-        if (numObjectsInStream++ == OBJECT_STREAM_CAPACITY) {
+    void add(final CompressedObject compressedObject) {
+        if (this.numObjectsInStream++ == OBJECT_STREAM_CAPACITY) {
             createObjectStream();
-            numObjectsInStream = 1;
+            this.numObjectsInStream = 1;
         }
-        compressedObjectReferences.add(currentObjectStream.addObject(compressedObject));
+        this.compressedObjectReferences.add(this.currentObjectStream
+                .addObject(compressedObject));
     }
 
     private void createObjectStream() {
-        currentObjectStream = currentObjectStream == null
-                ? new ObjectStream()
-                : new ObjectStream(currentObjectStream);
-        pdfDocument.assignObjectNumber(currentObjectStream);
-        pdfDocument.addTrailerObject(currentObjectStream);
+        this.currentObjectStream = this.currentObjectStream == null ? new ObjectStream()
+        : new ObjectStream(this.currentObjectStream);
+                this.pdfDocument.assignObjectNumber(this.currentObjectStream);
+                this.pdfDocument.addTrailerObject(this.currentObjectStream);
     }
 
     List<CompressedObjectReference> getCompressedObjectReferences() {
-        return compressedObjectReferences;
+        return this.compressedObjectReferences;
     }
 }

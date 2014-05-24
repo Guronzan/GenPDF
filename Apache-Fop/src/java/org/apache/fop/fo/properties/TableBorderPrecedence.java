@@ -39,9 +39,11 @@ public class TableBorderPrecedence extends NumberProperty.Maker {
 
     /**
      * Construct a table border preference property maker.
-     * @param propId the border's property id
+     * 
+     * @param propId
+     *            the border's property id
      */
-    public TableBorderPrecedence(int propId) {
+    public TableBorderPrecedence(final int propId) {
         super(propId);
     }
 
@@ -50,8 +52,10 @@ public class TableBorderPrecedence extends NumberProperty.Maker {
      *
      * {@inheritDoc}
      */
-    public Property make(PropertyList propertyList) throws PropertyException {
-        FObj fo = propertyList.getFObj();
+    @Override
+    public Property make(final PropertyList propertyList)
+            throws PropertyException {
+        final FObj fo = propertyList.getFObj();
         switch (fo.getNameId()) {
         case Constants.FO_TABLE:
             return num6;

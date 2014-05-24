@@ -36,32 +36,39 @@ public abstract class AbstractStructuredObject extends AbstractAFPObject {
     /**
      * Helper method to write the start of the Object.
      *
-     * @param os The stream to write to
-     * @throws IOException throws an I/O exception if one occurred
+     * @param os
+     *            The stream to write to
+     * @throws IOException
+     *             throws an I/O exception if one occurred
      */
-    protected void writeStart(OutputStream os) throws IOException {
+    protected void writeStart(final OutputStream os) throws IOException {
     }
 
     /**
      * Helper method to write the end of the Object.
      *
-     * @param os The stream to write to
-     * @throws IOException an I/O exception if one occurred
+     * @param os
+     *            The stream to write to
+     * @throws IOException
+     *             an I/O exception if one occurred
      */
-    protected void writeEnd(OutputStream os) throws IOException {
+    protected void writeEnd(final OutputStream os) throws IOException {
     }
 
     /**
      * Helper method to write the contents of the Object.
      *
-     * @param os The stream to write to
-     * @throws IOException throws an I/O exception if one occurred
+     * @param os
+     *            The stream to write to
+     * @throws IOException
+     *             throws an I/O exception if one occurred
      */
-    protected void writeContent(OutputStream os) throws IOException {
+    protected void writeContent(final OutputStream os) throws IOException {
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
         writeStart(os);
         writeContent(os);
         writeEnd(os);

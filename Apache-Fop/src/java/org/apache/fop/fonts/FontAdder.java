@@ -34,11 +34,16 @@ public class FontAdder {
 
     /**
      * Main constructor
-     * @param manager a font manager
-     * @param resolver a font resolver
-     * @param listener a font event handler
+     * 
+     * @param manager
+     *            a font manager
+     * @param resolver
+     *            a font resolver
+     * @param listener
+     *            a font event handler
      */
-    public FontAdder(FontManager manager, FontResolver resolver, FontEventListener listener) {
+    public FontAdder(final FontManager manager, final FontResolver resolver,
+            final FontEventListener listener) {
         this.manager = manager;
         this.resolver = resolver;
         this.listener = listener;
@@ -46,21 +51,26 @@ public class FontAdder {
 
     /**
      * Iterates over font url list adding to font info list
-     * @param fontURLList font file list
-     * @param fontInfoList a configured font info list
+     * 
+     * @param fontURLList
+     *            font file list
+     * @param fontInfoList
+     *            a configured font info list
      */
-    public void add(List<URL> fontURLList, List<EmbedFontInfo> fontInfoList) {
-        FontCache cache = manager.getFontCache();
-        FontInfoFinder finder = new FontInfoFinder();
-        finder.setEventListener(listener);
+    public void add(final List<URL> fontURLList,
+            final List<EmbedFontInfo> fontInfoList) {
+        final FontCache cache = this.manager.getFontCache();
+        final FontInfoFinder finder = new FontInfoFinder();
+        finder.setEventListener(this.listener);
 
-        for (URL fontURL : fontURLList) {
-            EmbedFontInfo[] embedFontInfos = finder.find(fontURL, resolver, cache);
+        for (final URL fontURL : fontURLList) {
+            final EmbedFontInfo[] embedFontInfos = finder.find(fontURL,
+                    this.resolver, cache);
             if (embedFontInfos == null) {
                 continue;
             }
             for (int i = 0, c = embedFontInfos.length; i < c; i++) {
-                EmbedFontInfo fontInfo = embedFontInfos[i];
+                final EmbedFontInfo fontInfo = embedFontInfos[i];
                 if (fontInfo != null) {
                     fontInfoList.add(fontInfo);
                 }

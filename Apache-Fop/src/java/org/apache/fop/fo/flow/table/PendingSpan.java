@@ -20,7 +20,8 @@
 package org.apache.fop.fo.flow.table;
 
 /**
- * Used for determining initial values for column-numbers in case of row-spanning cells.
+ * Used for determining initial values for column-numbers in case of
+ * row-spanning cells.
  */
 class PendingSpan {
 
@@ -32,24 +33,26 @@ class PendingSpan {
     /**
      * Constructor
      *
-     * @param rows  number of rows spanned
+     * @param rows
+     *            number of rows spanned
      */
-    public PendingSpan(int rows) {
-        rowsLeft = rows;
+    public PendingSpan(final int rows) {
+        this.rowsLeft = rows;
     }
 
     /** @return number of rows spanned */
     public int getRowsLeft() {
-        return rowsLeft;
+        return this.rowsLeft;
     }
 
     /**
      * Decrement rows spanned.
+     * 
      * @return number of rows spanned after decrementing
      */
     public int decrRowsLeft() {
-        if ( rowsLeft > 0 ) {
-            return --rowsLeft;
+        if (this.rowsLeft > 0) {
+            return --this.rowsLeft;
         } else {
             return 0;
         }

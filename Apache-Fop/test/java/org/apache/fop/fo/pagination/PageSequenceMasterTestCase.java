@@ -19,6 +19,12 @@
 
 package org.apache.fop.fo.pagination;
 
+import org.apache.fop.apps.FOPException;
+import org.apache.fop.fo.FONode;
+import org.apache.fop.layoutmgr.BlockLevelEventProducer;
+import org.junit.Test;
+import org.xml.sax.Locator;
+
 import static org.junit.Assert.fail;
 
 import static org.mockito.Matchers.anyBoolean;
@@ -30,13 +36,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.apache.fop.apps.FOPException;
-import org.apache.fop.fo.FONode;
-import org.apache.fop.layoutmgr.BlockLevelEventProducer;
-import org.junit.Test;
-import org.xml.sax.Locator;
-
-
 /**
  * Unit Test for PageSequenceMaster
  *
@@ -44,118 +43,132 @@ import org.xml.sax.Locator;
 public class PageSequenceMasterTestCase {
 
     /**
-     * Test that block level events are produced in line with
-     *  XSL:FO - 6.4.8 fo:page-sequence-master -
-     * "It is an error if the entire sequence of sub-sequence-specifiers children is exhausted
-     *  while some areas returned by an fo:flow are not placed. Implementations may recover,
-     *  if possible, by re-using the sub-sequence-specifier that was last used to generate a page."
+     * Test that block level events are produced in line with XSL:FO - 6.4.8
+     * fo:page-sequence-master - "It is an error if the entire sequence of
+     * sub-sequence-specifiers children is exhausted while some areas returned
+     * by an fo:flow are not placed. Implementations may recover, if possible,
+     * by re-using the sub-sequence-specifier that was last used to generate a
+     * page."
      *
-     * @throws Exception exception
+     * @throws Exception
+     *             exception
      */
     @Test
-     public void testGetNextSimplePageMasterExhausted() throws Exception {
+    public void testGetNextSimplePageMasterExhausted() throws Exception {
 
-         //Test when the last sub-sequence specifier is not repeatable
+        // Test when the last sub-sequence specifier is not repeatable
         testGetNextSimplePageMasterExhausted(true);
 
-         //Test when the last sub-sequence specifier is repeatable
+        // Test when the last sub-sequence specifier is repeatable
         testGetNextSimplePageMasterExhausted(false);
 
-     }
+    }
 
-     private void testGetNextSimplePageMasterExhausted(boolean canResume) throws Exception {
+    private void testGetNextSimplePageMasterExhausted(final boolean canResume)
+            throws Exception {
 
-         SimplePageMaster spm = mock(SimplePageMaster.class);
-         SubSequenceSpecifier mockSinglePageMasterReference
-                 = mock(SubSequenceSpecifier.class);
-         BlockLevelEventProducer mockBlockLevelEventProducer = mock(BlockLevelEventProducer.class);
+        final SimplePageMaster spm = mock(SimplePageMaster.class);
+        final SubSequenceSpecifier mockSinglePageMasterReference = mock(SubSequenceSpecifier.class);
+        final BlockLevelEventProducer mockBlockLevelEventProducer = mock(BlockLevelEventProducer.class);
 
-         // subject under test
-         PageSequenceMaster pageSequenceMaster = createPageSequenceMaster(
-                 mockBlockLevelEventProducer);
-         pageSequenceMaster.addSubsequenceSpecifier(mockSinglePageMasterReference);
+        // subject under test
+        final PageSequenceMaster pageSequenceMaster = createPageSequenceMaster(mockBlockLevelEventProducer);
+        pageSequenceMaster
+                .addSubsequenceSpecifier(mockSinglePageMasterReference);
 
-         //Setup to mock the exhaustion of the last sub-sequence specifier
-         when(mockSinglePageMasterReference.getNextPageMaster(anyBoolean(), anyBoolean(),
-                 anyBoolean(), anyBoolean())).thenReturn(null, spm);
+        // Setup to mock the exhaustion of the last sub-sequence specifier
+        when(
+                mockSinglePageMasterReference.getNextPageMaster(anyBoolean(),
+                        anyBoolean(), anyBoolean(), anyBoolean())).thenReturn(
+                null, spm);
 
-         //Need this for the method to return normally
-         when(mockSinglePageMasterReference.canProcess(anyString())).thenReturn(true);
+        // Need this for the method to return normally
+        when(mockSinglePageMasterReference.canProcess(anyString())).thenReturn(
+                true);
 
-         when(mockSinglePageMasterReference.isReusable()).thenReturn(canResume);
+        when(mockSinglePageMasterReference.isReusable()).thenReturn(canResume);
 
-         pageSequenceMaster.getNextSimplePageMaster(false, false, false, false, null);
+        pageSequenceMaster.getNextSimplePageMaster(false, false, false, false,
+                null);
 
-         verify(mockBlockLevelEventProducer).pageSequenceMasterExhausted((Locator)anyObject(),
-                 anyString(), eq(canResume), (Locator)anyObject());
-     }
+        verify(mockBlockLevelEventProducer).pageSequenceMasterExhausted(
+                (Locator) anyObject(), anyString(), eq(canResume),
+                (Locator) anyObject());
+    }
 
-     /**
-      * Test that PageProductionException is thrown if the final simple-page-master
-      * cannot handle the main-flow of the page sequence
-      * @throws Exception exception
-      */
+    /**
+     * Test that PageProductionException is thrown if the final
+     * simple-page-master cannot handle the main-flow of the page sequence
+     * 
+     * @throws Exception
+     *             exception
+     */
     @Test
-      public void testGetNextSimplePageMasterException() throws Exception {
+    public void testGetNextSimplePageMasterException() throws Exception {
 
-          final String mainFlowRegionName = "main";
-          final String emptyFlowRegionName = "empty";
+        final String mainFlowRegionName = "main";
+        final String emptyFlowRegionName = "empty";
 
-          //  This will represent a page master that does not map to the main flow
-          //  of the page sequence
-          SimplePageMaster mockEmptySPM = mock(SimplePageMaster.class);
-          Region mockRegion = mock(Region.class);
-          SinglePageMasterReference mockSinglePageMasterReference
-                  = mock(SinglePageMasterReference.class);
-          BlockLevelEventProducer mockBlockLevelEventProducer = mock(BlockLevelEventProducer.class);
+        // This will represent a page master that does not map to the main flow
+        // of the page sequence
+        final SimplePageMaster mockEmptySPM = mock(SimplePageMaster.class);
+        final Region mockRegion = mock(Region.class);
+        final SinglePageMasterReference mockSinglePageMasterReference = mock(SinglePageMasterReference.class);
+        final BlockLevelEventProducer mockBlockLevelEventProducer = mock(BlockLevelEventProducer.class);
 
-          LayoutMasterSet mockLayoutMasterSet = mock(LayoutMasterSet.class);
-          //The layout master set should return the empty page master
-          when(mockLayoutMasterSet.getSimplePageMaster(anyString())).thenReturn(mockEmptySPM);
-          when(mockEmptySPM.getRegion(anyInt())).thenReturn(mockRegion);
+        final LayoutMasterSet mockLayoutMasterSet = mock(LayoutMasterSet.class);
+        // The layout master set should return the empty page master
+        when(mockLayoutMasterSet.getSimplePageMaster(anyString())).thenReturn(
+                mockEmptySPM);
+        when(mockEmptySPM.getRegion(anyInt())).thenReturn(mockRegion);
 
-          when(mockRegion.getRegionName()).thenReturn(emptyFlowRegionName);
+        when(mockRegion.getRegionName()).thenReturn(emptyFlowRegionName);
 
-          when(mockSinglePageMasterReference.getNextPageMaster(anyBoolean(), anyBoolean(),
-                  anyBoolean(), anyBoolean()))
-                  .thenReturn(null, mockEmptySPM);
+        when(
+                mockSinglePageMasterReference.getNextPageMaster(anyBoolean(),
+                        anyBoolean(), anyBoolean(), anyBoolean())).thenReturn(
+                null, mockEmptySPM);
 
-          PageSequenceMaster pageSequenceMaster = createPageSequenceMaster(mockLayoutMasterSet,
-                  mockBlockLevelEventProducer);
+        final PageSequenceMaster pageSequenceMaster = createPageSequenceMaster(
+                mockLayoutMasterSet, mockBlockLevelEventProducer);
 
-          pageSequenceMaster.startOfNode();
-          pageSequenceMaster.addSubsequenceSpecifier(mockSinglePageMasterReference);
+        pageSequenceMaster.startOfNode();
+        pageSequenceMaster
+                .addSubsequenceSpecifier(mockSinglePageMasterReference);
 
-          try {
-              pageSequenceMaster.getNextSimplePageMaster(false, false, false, false,
-                      mainFlowRegionName);
-              fail("The next simple page master does not refer to the main flow");
-         } catch (PageProductionException ppe) {
-             //Passed test
-         }
-      }
+        try {
+            pageSequenceMaster.getNextSimplePageMaster(false, false, false,
+                    false, mainFlowRegionName);
+            fail("The next simple page master does not refer to the main flow");
+        } catch (final PageProductionException ppe) {
+            // Passed test
+        }
+    }
 
+    private PageSequenceMaster createPageSequenceMaster(
+            final BlockLevelEventProducer blockLevelEventProducer)
+            throws FOPException {
 
-     private PageSequenceMaster createPageSequenceMaster(
-             BlockLevelEventProducer blockLevelEventProducer) throws FOPException {
+        return createPageSequenceMaster(mock(LayoutMasterSet.class),
+                blockLevelEventProducer);
+    }
 
-         return createPageSequenceMaster(mock(LayoutMasterSet.class), blockLevelEventProducer);
-     }
+    private PageSequenceMaster createPageSequenceMaster(
+            final LayoutMasterSet layoutMasterSet,
+            final BlockLevelEventProducer blockLevelEventProducer)
+            throws FOPException {
+        final FONode mockParent = mock(FONode.class);
+        final Root mockRoot = mock(Root.class);
 
-     private PageSequenceMaster createPageSequenceMaster(LayoutMasterSet layoutMasterSet,
-             BlockLevelEventProducer blockLevelEventProducer) throws FOPException {
-         FONode mockParent = mock(FONode.class);
-         Root mockRoot = mock(Root.class);
+        // Stub generic components
+        when(mockParent.getRoot()).thenReturn(mockRoot);
+        when(mockRoot.getLayoutMasterSet()).thenReturn(layoutMasterSet);
 
-         //Stub generic components
-         when(mockParent.getRoot()).thenReturn(mockRoot);
-         when(mockRoot.getLayoutMasterSet()).thenReturn(layoutMasterSet);
+        final PageSequenceMaster psm = new PageSequenceMaster(mockParent,
+                blockLevelEventProducer);
+        psm.startOfNode();
 
-         PageSequenceMaster psm =  new PageSequenceMaster(mockParent, blockLevelEventProducer);
-         psm.startOfNode();
-
-         return psm;
-     }
+        return psm;
+    }
 
 }
-

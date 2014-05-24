@@ -34,7 +34,7 @@ import static org.junit.Assert.assertEquals;
 public class AdvancedMessageFormatTestCase {
 
     @Test
-    public void testFormatting() throws Exception {
+    public void testFormatting() {
         String msg;
         AdvancedMessageFormat format;
 
@@ -78,7 +78,7 @@ public class AdvancedMessageFormatTestCase {
     }
 
     @Test
-    public void testObjectFormatting() throws Exception {
+    public void testObjectFormatting() {
         String msg;
         AdvancedMessageFormat format;
 
@@ -96,7 +96,7 @@ public class AdvancedMessageFormatTestCase {
     }
 
     @Test
-    public void testIfFormatting() throws Exception {
+    public void testIfFormatting() {
         String msg;
         AdvancedMessageFormat format;
 
@@ -146,7 +146,7 @@ public class AdvancedMessageFormatTestCase {
     }
 
     @Test
-    public void testEqualsFormatting() throws Exception {
+    public void testEqualsFormatting() {
         String msg;
         AdvancedMessageFormat format;
 

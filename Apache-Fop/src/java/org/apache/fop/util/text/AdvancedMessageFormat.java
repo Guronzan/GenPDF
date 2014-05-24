@@ -76,7 +76,7 @@ public class AdvancedMessageFormat {
 
     /**
      * Construct a new message format.
-     * 
+     *
      * @param pattern
      *            the message format pattern.
      */
@@ -96,64 +96,64 @@ public class AdvancedMessageFormat {
         int i = start;
         final int len = pattern.length();
         loop: while (i < len) {
-                char ch = pattern.charAt(i);
-                switch (ch) {
-                case '{':
-                    if (sb.length() > 0) {
-                        parent.addChild(new TextPart(sb.toString()));
-                        sb.setLength(0);
-                    }
-                    i++;
-                    int nesting = 1;
-                    while (i < len) {
-                        ch = pattern.charAt(i);
-                        if (ch == '{') {
-                            nesting++;
-                        } else if (ch == '}') {
-                            nesting--;
-                            if (nesting == 0) {
-                                i++;
-                                break;
-                            }
-                        }
-                        sb.append(ch);
-                        i++;
-                    }
-                    parent.addChild(parseField(sb.toString()));
+            char ch = pattern.charAt(i);
+            switch (ch) {
+            case '{':
+                if (sb.length() > 0) {
+                    parent.addChild(new TextPart(sb.toString()));
                     sb.setLength(0);
-                    break;
-                case ']':
-                    i++;
-                    break loop; // Current composite is finished
-                case '[':
-                    if (sb.length() > 0) {
-                        parent.addChild(new TextPart(sb.toString()));
-                        sb.setLength(0);
+                }
+                i++;
+                int nesting = 1;
+                while (i < len) {
+                    ch = pattern.charAt(i);
+                    if (ch == '{') {
+                        nesting++;
+                    } else if (ch == '}') {
+                        nesting--;
+                        if (nesting == 0) {
+                            i++;
+                            break;
+                        }
                     }
-                    i++;
-                    final CompositePart composite = new CompositePart(true);
-                    parent.addChild(composite);
-                    i += parseInnerPattern(pattern, composite, sb, i);
-                    break;
-                case '|':
-                    if (sb.length() > 0) {
-                        parent.addChild(new TextPart(sb.toString()));
-                        sb.setLength(0);
-                    }
-                    parent.newSection();
-                    i++;
-                    break;
-                case '\\':
-                    if (i < len - 1) {
-                        i++;
-                        ch = pattern.charAt(i);
-                    }
-                    // no break here! Must be right before "default" section
-                default:
                     sb.append(ch);
                     i++;
                 }
+                parent.addChild(parseField(sb.toString()));
+                sb.setLength(0);
+                break;
+            case ']':
+                i++;
+                break loop; // Current composite is finished
+            case '[':
+                if (sb.length() > 0) {
+                    parent.addChild(new TextPart(sb.toString()));
+                    sb.setLength(0);
+                }
+                i++;
+                final CompositePart composite = new CompositePart(true);
+                parent.addChild(composite);
+                i += parseInnerPattern(pattern, composite, sb, i);
+                break;
+            case '|':
+                if (sb.length() > 0) {
+                    parent.addChild(new TextPart(sb.toString()));
+                    sb.setLength(0);
+                }
+                parent.newSection();
+                i++;
+                break;
+            case '\\':
+                if (i < len - 1) {
+                    i++;
+                    ch = pattern.charAt(i);
+                }
+                // no break here! Must be right before "default" section
+            default:
+                sb.append(ch);
+                i++;
             }
+        }
         if (sb.length() > 0) {
             parent.addChild(new TextPart(sb.toString()));
             sb.setLength(0);
@@ -191,7 +191,7 @@ public class AdvancedMessageFormat {
 
     /**
      * Formats a message with the given parameters.
-     * 
+     *
      * @param params
      *            a Map of named parameters (Contents: <String, Object>)
      * @return the formatted message
@@ -204,7 +204,7 @@ public class AdvancedMessageFormat {
 
     /**
      * Formats a message with the given parameters.
-     * 
+     *
      * @param params
      *            a Map of named parameters (Contents: <String, Object>)
      * @param target
@@ -224,7 +224,7 @@ public class AdvancedMessageFormat {
 
         /**
          * Writes the formatted part to a string buffer.
-         * 
+         *
          * @param sb
          *            the target string buffer
          * @param params
@@ -235,7 +235,7 @@ public class AdvancedMessageFormat {
         /**
          * Indicates whether there is any content that is generated by this
          * message part.
-         * 
+         *
          * @param params
          *            the parameters to work with
          * @return true if the part has content
@@ -252,7 +252,7 @@ public class AdvancedMessageFormat {
         /**
          * Creates a new part by parsing the values parameter to configure the
          * part.
-         * 
+         *
          * @param fieldName
          *            the field name
          * @param values
@@ -263,7 +263,7 @@ public class AdvancedMessageFormat {
 
         /**
          * Returns the name of the message part format.
-         * 
+         *
          * @return the name of the message part format
          */
         String getFormat();
@@ -277,7 +277,7 @@ public class AdvancedMessageFormat {
         /**
          * Formats an object to a string and writes the result to a string
          * buffer.
-         * 
+         *
          * @param sb
          *            the target string buffer
          * @param obj
@@ -287,7 +287,7 @@ public class AdvancedMessageFormat {
 
         /**
          * Indicates whether a given object is supported.
-         * 
+         *
          * @param obj
          *            the object
          * @return true if the object is supported by the formatter
@@ -304,7 +304,7 @@ public class AdvancedMessageFormat {
 
         /**
          * Executes the function.
-         * 
+         *
          * @param params
          *            the message parameters
          * @return the function result
@@ -313,7 +313,7 @@ public class AdvancedMessageFormat {
 
         /**
          * Returns the name of the function.
-         * 
+         *
          * @return the name of the function
          */
         Object getName();
@@ -384,7 +384,7 @@ public class AdvancedMessageFormat {
      * unless there is an {@link ObjectFormatter} that supports the object.
      * {@link ObjectFormatter}s are registered through the service provider
      * mechanism defined by the JAR specification.
-     * 
+     *
      * @param obj
      *            the object to be formatted
      * @param target

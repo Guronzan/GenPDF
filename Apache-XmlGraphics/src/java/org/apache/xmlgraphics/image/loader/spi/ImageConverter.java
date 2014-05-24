@@ -27,43 +27,60 @@ import org.apache.xmlgraphics.image.loader.ImageException;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 
 /**
- * Defines an image converter that can convert one image representation into another.
+ * Defines an image converter that can convert one image representation into
+ * another.
  */
 public interface ImageConverter {
 
-    /** Used if the conversion penalty is negligible (for example a simple cast). */
+    /**
+     * Used if the conversion penalty is negligible (for example a simple cast).
+     */
     int NO_CONVERSION_PENALTY = 0;
     /** Used if the conversion penalty is minimal */
     int MINIMAL_CONVERSION_PENALTY = 1;
-    /** Default/Medium conversion penalty (if there's some effort to convert the image format) */
+    /**
+     * Default/Medium conversion penalty (if there's some effort to convert the
+     * image format)
+     */
     int MEDIUM_CONVERSION_PENALTY = 10;
 
     /**
      * Converts an image into a different representation.
-     * <p>Consumers can get the effective MIME type (if any) from the
-     * associated {@link ImageFlavor}.
-     * @param src the source image
-     * @param hints the conversion hints
+     * <p>
+     * Consumers can get the effective MIME type (if any) from the associated
+     * {@link ImageFlavor}.
+     * 
+     * @param src
+     *            the source image
+     * @param hints
+     *            the conversion hints
      * @return the converted image
-     * @throws ImageException if an error occurs while converting the image
-     * @throws IOException if an I/O error occurs while converting the image
+     * @throws ImageException
+     *             if an error occurs while converting the image
+     * @throws IOException
+     *             if an I/O error occurs while converting the image
      */
-    Image convert(Image src, Map hints) throws ImageException, IOException;
+    Image convert(final Image src, final Map hints) throws ImageException,
+            IOException;
 
     /**
      * Returns the flavor that this converter converts images into.
+     * 
      * @return the target flavor
      */
     ImageFlavor getTargetFlavor();
 
     /**
      * Returns the flavor that this converter expects.
+     * 
      * @return the source flavor
      */
     ImageFlavor getSourceFlavor();
 
     /**
-     * Returns the conversion penalty for the conversion that this implementation supports.
+     * Returns the conversion penalty for the conversion that this
+     * implementation supports.
+     * 
      * @return the conversion penalty (must be a non-negative integer)
      */
     int getConversionPenalty();

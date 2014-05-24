@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.xmlgraphics.java2d.color.CIELabColorSpace;
 import org.apache.xmlgraphics.java2d.color.ColorSpaces;
 import org.apache.xmlgraphics.java2d.color.DeviceCMYKColorSpace;
@@ -34,28 +33,33 @@ import org.apache.xmlgraphics.java2d.color.NamedColorSpace;
 import org.apache.xmlgraphics.java2d.ps.EPSDocumentGraphics2D;
 
 /**
- * This example demonstrates how colors are handled when generating PostScript/EPS.
+ * This example demonstrates how colors are handled when generating
+ * PostScript/EPS.
  */
 public class EPSColorsExample {
 
     /**
-     * Creates an EPS file. The contents are painted using a Graphics2D implementation that
-     * generates an EPS file.
-     * @param outputFile the target file
-     * @throws IOException In case of an I/O error
+     * Creates an EPS file. The contents are painted using a Graphics2D
+     * implementation that generates an EPS file.
+     * 
+     * @param outputFile
+     *            the target file
+     * @throws IOException
+     *             In case of an I/O error
      */
-    public static void generateEPSusingJava2D(File outputFile) throws IOException {
+    public static void generateEPSusingJava2D(final File outputFile)
+            throws IOException {
         OutputStream out = new java.io.FileOutputStream(outputFile);
         out = new java.io.BufferedOutputStream(out);
         try {
-            //Instantiate the EPSDocumentGraphics2D instance
-            EPSDocumentGraphics2D g2d = new EPSDocumentGraphics2D(false);
+            // Instantiate the EPSDocumentGraphics2D instance
+            final EPSDocumentGraphics2D g2d = new EPSDocumentGraphics2D(false);
             g2d.setGraphicContext(new org.apache.xmlgraphics.java2d.GraphicContext());
 
-            //Set up the document size
-            g2d.setupDocument(out, 400, 200); //400pt x 200pt
+            // Set up the document size
+            g2d.setupDocument(out, 400, 200); // 400pt x 200pt
 
-            //Paint a bounding box
+            // Paint a bounding box
             g2d.drawRect(0, 0, 400, 200);
 
             g2d.setFont(new Font("sans-serif", Font.BOLD, 14));
@@ -66,35 +70,39 @@ public class EPSColorsExample {
             g2d.drawString("(Lab)", 110, 84);
             g2d.drawString("(Named)", 160, 84);
 
-            //We're creating a few boxes all filled with some variant of the
-            //"Postgelb" (postal yellow) color as used by Swiss Post.
+            // We're creating a few boxes all filled with some variant of the
+            // "Postgelb" (postal yellow) color as used by Swiss Post.
 
-            Color colRGB = new Color(255, 204, 0);
+            final Color colRGB = new Color(255, 204, 0);
             g2d.setColor(colRGB);
             g2d.fillRect(10, 30, 40, 40);
 
-            //Just convert RGB to CMYK and use that
-            float[] compsRGB = colRGB.getColorComponents(null);
-            DeviceCMYKColorSpace cmykCS = ColorSpaces.getDeviceCMYKColorSpace();
-            float[] compsCMYK = cmykCS.fromRGB(compsRGB);
-            Color colCMYK = DeviceCMYKColorSpace.createCMYKColor(compsCMYK);
+            // Just convert RGB to CMYK and use that
+            final float[] compsRGB = colRGB.getColorComponents(null);
+            final DeviceCMYKColorSpace cmykCS = ColorSpaces
+                    .getDeviceCMYKColorSpace();
+            final float[] compsCMYK = cmykCS.fromRGB(compsRGB);
+            final Color colCMYK = DeviceCMYKColorSpace
+                    .createCMYKColor(compsCMYK);
             g2d.setColor(colCMYK);
             g2d.fillRect(60, 30, 40, 40);
 
-            //Try CIELab (not implemented, yet)
-            CIELabColorSpace d50 = ColorSpaces.getCIELabColorSpaceD50();
-            Color colLab = d50.toColor(83.25f, 16.45f, 96.89f, 1.0f);
+            // Try CIELab (not implemented, yet)
+            final CIELabColorSpace d50 = ColorSpaces.getCIELabColorSpaceD50();
+            final Color colLab = d50.toColor(83.25f, 16.45f, 96.89f, 1.0f);
             g2d.setColor(colLab);
             g2d.fillRect(110, 30, 40, 40);
 
-            //Try named color (Separation, not implemented, yet)
-            float[] c1xyz = d50.toCIEXYZNative(83.25f, 16.45f, 96.89f);
-            NamedColorSpace postgelb = new NamedColorSpace("Postgelb", c1xyz);
-            Color colNamed = new Color(postgelb, new float[] {1.0f}, 1.0f);
+            // Try named color (Separation, not implemented, yet)
+            final float[] c1xyz = d50.toCIEXYZNative(83.25f, 16.45f, 96.89f);
+            final NamedColorSpace postgelb = new NamedColorSpace("Postgelb",
+                    c1xyz);
+            final Color colNamed = new Color(postgelb, new float[] { 1.0f },
+                    1.0f);
             g2d.setColor(colNamed);
             g2d.fillRect(160, 30, 40, 40);
 
-            //Cleanup
+            // Cleanup
             g2d.finish();
         } finally {
             IOUtils.closeQuietly(out);
@@ -103,9 +111,11 @@ public class EPSColorsExample {
 
     /**
      * Command-line interface
-     * @param args command-line arguments
+     * 
+     * @param args
+     *            command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
             File targetDir;
             if (args.length >= 1) {
@@ -114,10 +124,11 @@ public class EPSColorsExample {
                 targetDir = new File(".");
             }
             if (!targetDir.exists()) {
-                System.err.println("Target Directory does not exist: " + targetDir);
+                System.err.println("Target Directory does not exist: "
+                        + targetDir);
             }
             generateEPSusingJava2D(new File(targetDir, "eps-example-colors.eps"));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }

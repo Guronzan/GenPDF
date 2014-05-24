@@ -29,21 +29,24 @@ import org.apache.fop.render.intermediate.IFDocumentHandler;
  */
 public class SVGDocumentHandlerMaker extends AbstractIFDocumentHandlerMaker {
 
-    private static final String[] MIMES = new String[] {SVGConstants.MIME_TYPE};
+    private static final String[] MIMES = new String[] { SVGConstants.MIME_TYPE };
 
     /** {@inheritDoc} */
-    public IFDocumentHandler makeIFDocumentHandler(FOUserAgent ua) {
-        SVGDocumentHandler handler = new SVGDocumentHandler();
+    @Override
+    public IFDocumentHandler makeIFDocumentHandler(final FOUserAgent ua) {
+        final SVGDocumentHandler handler = new SVGDocumentHandler();
         handler.setContext(new IFContext(ua));
         return handler;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

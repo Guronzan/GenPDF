@@ -28,26 +28,25 @@ import java.io.OutputStream;
  *
  * @version $Id: ASCIIHexOutputStream.java 1345683 2012-06-03 14:50:33Z gadams $
  */
-public class ASCIIHexOutputStream extends FilterOutputStream
-        implements Finalizable {
+public class ASCIIHexOutputStream extends FilterOutputStream implements
+        Finalizable {
 
-    private static final int EOL   = 0x0A; //"\n"
-    private static final int EOD   = 0x3E; //">"
-    private static final int ZERO  = 0x30; //"0"
-    private static final int NINE  = 0x39; //"9"
-    private static final int A     = 0x41; //"A"
+    private static final int EOL = 0x0A; // "\n"
+    private static final int EOD = 0x3E; // ">"
+    private static final int ZERO = 0x30; // "0"
+    private static final int NINE = 0x39; // "9"
+    private static final int A = 0x41; // "A"
     private static final int ADIFF = A - NINE - 1;
 
     private int posinline = 0;
 
-
     /** @see java.io.FilterOutputStream **/
-    public ASCIIHexOutputStream(OutputStream out) {
+    public ASCIIHexOutputStream(final OutputStream out) {
         super(out);
     }
 
-
     /** @see java.io.FilterOutputStream **/
+    @Override
     public void write(int b) throws IOException {
         b &= 0xFF;
 
@@ -55,48 +54,44 @@ public class ASCIIHexOutputStream extends FilterOutputStream
         if (digit1 > NINE) {
             digit1 += ADIFF;
         }
-        out.write(digit1);
+        this.out.write(digit1);
 
         int digit2 = (b & 0x0F) + ZERO;
         if (digit2 > NINE) {
             digit2 += ADIFF;
         }
-        out.write(digit2);
+        this.out.write(digit2);
 
-        posinline++;
+        this.posinline++;
         checkLineWrap();
     }
 
-
     private void checkLineWrap() throws IOException {
-        //Maximum line length is 80 characters
-        if (posinline >= 40) {
-            out.write(EOL);
-            posinline = 0;
+        // Maximum line length is 80 characters
+        if (this.posinline >= 40) {
+            this.out.write(EOL);
+            this.posinline = 0;
         }
     }
 
-
     /** @see Finalizable **/
+    @Override
     public void finalizeStream() throws IOException {
         checkLineWrap();
-        //Write closing character ">"
+        // Write closing character ">"
         super.write(EOD);
 
         flush();
-        if (out instanceof Finalizable) {
-            ((Finalizable) out).finalizeStream();
+        if (this.out instanceof Finalizable) {
+            ((Finalizable) this.out).finalizeStream();
         }
     }
 
-
     /** @see java.io.FilterOutputStream **/
+    @Override
     public void close() throws IOException {
         finalizeStream();
         super.close();
     }
 
-
 }
-
-

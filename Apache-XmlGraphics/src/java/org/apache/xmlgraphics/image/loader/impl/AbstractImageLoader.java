@@ -35,28 +35,34 @@ import org.apache.xmlgraphics.image.loader.spi.ImageLoader;
 public abstract class AbstractImageLoader implements ImageLoader {
 
     /** {@inheritDoc} */
-    public Image loadImage(ImageInfo info, ImageSessionContext session)
-                throws ImageException, IOException {
+    @Override
+    public Image loadImage(final ImageInfo info,
+            final ImageSessionContext session) throws ImageException,
+            IOException {
         return loadImage(info, null, session);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getUsagePenalty() {
         return NO_LOADING_PENALTY;
     }
 
     /**
      * Indicates whether an embedded color profile should be ignored.
-     * @param hints a Map of hints that can be used by implementations to customize the loading
-     *                  process (may be null).
+     * 
+     * @param hints
+     *            a Map of hints that can be used by implementations to
+     *            customize the loading process (may be null).
      * @return true if any color profile should be ignored
      */
-    protected boolean ignoreColorProfile(Map hints) {
+    protected boolean ignoreColorProfile(final Map hints) {
         if (hints == null) {
             return false;
         }
-        Boolean b = (Boolean)hints.get(ImageProcessingHints.IGNORE_COLOR_PROFILE);
-        return (b != null) && b.booleanValue();
+        final Boolean b = (Boolean) hints
+                .get(ImageProcessingHints.IGNORE_COLOR_PROFILE);
+        return b != null && b.booleanValue();
     }
 
 }

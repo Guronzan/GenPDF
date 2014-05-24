@@ -33,53 +33,59 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.commons.io.IOUtils;
+import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.xmlgraphics.image.writer.ImageWriterUtil;
 import org.apache.xmlgraphics.java2d.ps.PSDocumentGraphics2D;
 
 /**
- * This example demonstrates the usage of PostScript tiling patterns. The class also generated
- * a PNG file so the output can be compared.
+ * This example demonstrates the usage of PostScript tiling patterns. The class
+ * also generated a PNG file so the output can be compared.
  */
+@Slf4j
 public class TilingPatternExample {
 
-    private BufferedImage tile;
-    private TexturePaint paint;
+    private final BufferedImage tile;
+    private final TexturePaint paint;
 
     /**
      * Default constructor.
      */
     public TilingPatternExample() {
-        //Created TexturePaint instance
+        // Created TexturePaint instance
         this.tile = new BufferedImage(40, 20, BufferedImage.TYPE_INT_RGB);
-        Graphics2D tileg2d = tile.createGraphics();
+        final Graphics2D tileg2d = this.tile.createGraphics();
         tileg2d.setBackground(Color.WHITE);
-        tileg2d.clearRect(0, 0, tile.getWidth(), tile.getHeight());
+        tileg2d.clearRect(0, 0, this.tile.getWidth(), this.tile.getHeight());
         tileg2d.setColor(Color.BLUE);
-        tileg2d.fillOval(2, 2, tile.getWidth() - 2, tile.getHeight() - 2);
+        tileg2d.fillOval(2, 2, this.tile.getWidth() - 2,
+                this.tile.getHeight() - 2);
         tileg2d.dispose();
-        Rectangle2D rect = new Rectangle2D.Double(
-                2, 2,
-                tile.getWidth() / 2.0, tile.getHeight() / 2.0);
-        this.paint = new TexturePaint(tile, rect);
+        final Rectangle2D rect = new Rectangle2D.Double(2, 2,
+                this.tile.getWidth() / 2.0, this.tile.getHeight() / 2.0);
+        this.paint = new TexturePaint(this.tile, rect);
     }
 
     /**
-     * Creates a PostScript file. The contents are painted using a Graphics2D implementation.
-     * @param outputFile the target file
-     * @throws IOException In case of an I/O error
+     * Creates a PostScript file. The contents are painted using a Graphics2D
+     * implementation.
+     *
+     * @param outputFile
+     *            the target file
+     * @throws IOException
+     *             In case of an I/O error
      */
-    public void generatePSusingJava2D(File outputFile) throws IOException {
+    public void generatePSusingJava2D(final File outputFile) throws IOException {
         OutputStream out = new java.io.FileOutputStream(outputFile);
         out = new java.io.BufferedOutputStream(out);
         try {
-            //Instantiate the PSDocumentGraphics2D instance
-            PSDocumentGraphics2D g2d = new PSDocumentGraphics2D(false);
+            // Instantiate the PSDocumentGraphics2D instance
+            final PSDocumentGraphics2D g2d = new PSDocumentGraphics2D(false);
             g2d.setGraphicContext(new org.apache.xmlgraphics.java2d.GraphicContext());
 
-            //Set up the document size
-            g2d.setupDocument(out, 400, 200); //400pt x 200pt
+            // Set up the document size
+            g2d.setupDocument(out, 400, 200); // 400pt x 200pt
 
             paintTileAlone(g2d);
             paintShapes(g2d);
@@ -89,16 +95,18 @@ public class TilingPatternExample {
 
             paintText(g2d);
 
-            //Cleanup
+            // Cleanup
             g2d.finish();
         } finally {
             IOUtils.closeQuietly(out);
         }
     }
 
-    private void generatePNGusingJava2D(File outputFile) throws IOException {
-        BufferedImage image = new BufferedImage(400, 200, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = image.createGraphics();
+    private void generatePNGusingJava2D(final File outputFile)
+            throws IOException {
+        final BufferedImage image = new BufferedImage(400, 200,
+                BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D g2d = image.createGraphics();
         paintTileAlone(g2d);
         paintShapes(g2d);
         paintText(g2d);
@@ -107,35 +115,39 @@ public class TilingPatternExample {
         ImageWriterUtil.saveAsPNG(image, outputFile);
     }
 
-    private void paintTileAlone(Graphics2D g2d) {
-        AffineTransform at = new AffineTransform();
+    private void paintTileAlone(final Graphics2D g2d) {
+        final AffineTransform at = new AffineTransform();
         at.translate(5, 5);
         g2d.drawRenderedImage(this.tile, at);
     }
 
-    private void paintShapes(Graphics2D g2d) {
-        g2d.setPaint(paint);
+    private void paintShapes(final Graphics2D g2d) {
+        g2d.setPaint(this.paint);
         Rectangle rect = new Rectangle(10, 50, 30, 30);
         g2d.fill(rect);
         rect = new Rectangle(10, 90, 40, 20);
         g2d.fill(rect);
-        Polygon poly = new Polygon(new int[] {50, 100, 150}, new int[] {100, 20, 100}, 3);
+        final Polygon poly = new Polygon(new int[] { 50, 100, 150 }, new int[] {
+                100, 20, 100 }, 3);
         g2d.fill(poly);
     }
 
-    private void paintText(Graphics2D g2d) {
-        g2d.setPaint(paint);
-        Font font = new Font("serif", Font.BOLD, 80);
-        GlyphVector gv = font.createGlyphVector(g2d.getFontRenderContext(), "Java");
+    private void paintText(final Graphics2D g2d) {
+        g2d.setPaint(this.paint);
+        final Font font = new Font("serif", Font.BOLD, 80);
+        final GlyphVector gv = font.createGlyphVector(
+                g2d.getFontRenderContext(), "Java");
         g2d.translate(100, 180);
         g2d.fill(gv.getOutline());
     }
 
     /**
      * Command-line interface
-     * @param args command-line arguments
+     *
+     * @param args
+     *            command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
             File targetDir;
             if (args.length >= 1) {
@@ -144,16 +156,17 @@ public class TilingPatternExample {
                 targetDir = new File(".");
             }
             if (!targetDir.exists()) {
-                System.err.println("Target Directory does not exist: " + targetDir);
+                System.err.println("Target Directory does not exist: "
+                        + targetDir);
             }
-            File outputFile = new File(targetDir, "tiling-example.ps");
-            File pngFile = new File(targetDir, "tiling-example.png");
-            TilingPatternExample app = new TilingPatternExample();
+            final File outputFile = new File(targetDir, "tiling-example.ps");
+            final File pngFile = new File(targetDir, "tiling-example.png");
+            final TilingPatternExample app = new TilingPatternExample();
             app.generatePSusingJava2D(outputFile);
-            System.out.println("File written: " + outputFile.getCanonicalPath());
+            log.info("File written: " + outputFile.getCanonicalPath());
             app.generatePNGusingJava2D(pngFile);
-            System.out.println("File written: " + pngFile.getCanonicalPath());
-        } catch (Exception e) {
+            log.info("File written: " + pngFile.getCanonicalPath());
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }

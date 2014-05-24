@@ -19,15 +19,15 @@
 
 package org.apache.fop.pdf;
 
-import static org.junit.Assert.assertFalse;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
 
 public class PDFFilterListTestCase {
 
     @Test
     public void testFilterList() {
-        PDFFilterList filterList = new PDFFilterList();
+        final PDFFilterList filterList = new PDFFilterList();
         assertFalse(filterList.isInitialized());
     }
 }

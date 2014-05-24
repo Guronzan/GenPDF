@@ -24,20 +24,25 @@ import java.io.IOException;
 import org.apache.xmlgraphics.java2d.TextHandler;
 
 /**
- * Interface which the Graphics2D class delegates text painting to for Postscript.
+ * Interface which the Graphics2D class delegates text painting to for
+ * Postscript.
  */
 public interface PSTextHandler extends TextHandler {
     /**
-     * Is called by when the "Setup" or "Prolog" of the PostScript document is generated.
-     * Subclasses can do font registration, for example.
-     * @throws IOException In case of an I/O error
+     * Is called by when the "Setup" or "Prolog" of the PostScript document is
+     * generated. Subclasses can do font registration, for example.
+     * 
+     * @throws IOException
+     *             In case of an I/O error
      */
     void writeSetup() throws IOException;
 
     /**
-     * Is called by when a "PageSetup" section of the PostScript document is generated.
-     * Subclasses can do some font initialization if necessary.
-     * @throws IOException In case of an I/O error
+     * Is called by when a "PageSetup" section of the PostScript document is
+     * generated. Subclasses can do some font initialization if necessary.
+     * 
+     * @throws IOException
+     *             In case of an I/O error
      */
     void writePageSetup() throws IOException;
 }

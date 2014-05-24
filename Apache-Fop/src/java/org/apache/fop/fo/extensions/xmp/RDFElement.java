@@ -19,9 +19,8 @@
 
 package org.apache.fop.fo.extensions.xmp;
 
-import org.apache.xmlgraphics.xmp.XMPConstants;
-
 import org.apache.fop.fo.FONode;
+import org.apache.xmlgraphics.xmp.XMPConstants;
 
 /**
  * Represents the top-level "RDF" element used by XMP metadata.
@@ -30,23 +29,28 @@ public class RDFElement extends AbstractMetadataElement {
 
     /**
      * Main constructor.
-     * @param parent the parent formatting object
+     * 
+     * @param parent
+     *            the parent formatting object
      */
-    public RDFElement(FONode parent) {
+    public RDFElement(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "RDF";
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNormalNamespacePrefix() {
         return "rdf";
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNamespaceURI() {
         return XMPConstants.RDF_NAMESPACE;
     }

@@ -82,10 +82,10 @@ public class ImageObject extends AbstractDataObject {
         if (MimeConstants.MIME_AFP_IOCA_FS45.equals(imageObjectInfo
                 .getMimeType())) {
             imageDataDescriptor
-            .setFunctionSet(ImageDataDescriptor.FUNCTION_SET_FS45);
+                    .setFunctionSet(ImageDataDescriptor.FUNCTION_SET_FS45);
         } else if (imageObjectInfo.getBitsPerPixel() == 1) {
             imageDataDescriptor
-            .setFunctionSet(ImageDataDescriptor.FUNCTION_SET_FS10);
+                    .setFunctionSet(ImageDataDescriptor.FUNCTION_SET_FS10);
         }
         getObjectEnvironmentGroup().setDataDescriptor(imageDataDescriptor);
         getObjectEnvironmentGroup().setMapImageObject(

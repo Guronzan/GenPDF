@@ -24,8 +24,8 @@ package org.apache.fop.pdf;
  */
 public class PDFEncryptionParams {
 
-    private String userPassword = ""; //May not be null
-    private String ownerPassword = ""; //May not be null
+    private String userPassword = ""; // May not be null
+    private String ownerPassword = ""; // May not be null
 
     private boolean allowPrint = true;
     private boolean allowCopyContent = true;
@@ -40,18 +40,24 @@ public class PDFEncryptionParams {
 
     /**
      * Creates a new instance.
-     * @param userPassword the user password
-     * @param ownerPassword the owner password
-     * @param allowPrint true if printing is allowed
-     * @param allowCopyContent true if copying content is allowed
-     * @param allowEditContent true if editing content is allowed
-     * @param allowEditAnnotations true if editing annotations is allowed
+     * 
+     * @param userPassword
+     *            the user password
+     * @param ownerPassword
+     *            the owner password
+     * @param allowPrint
+     *            true if printing is allowed
+     * @param allowCopyContent
+     *            true if copying content is allowed
+     * @param allowEditContent
+     *            true if editing content is allowed
+     * @param allowEditAnnotations
+     *            true if editing annotations is allowed
      */
-    public PDFEncryptionParams(String userPassword, String ownerPassword,
-                               boolean allowPrint,
-                               boolean allowCopyContent,
-                               boolean allowEditContent,
-                               boolean allowEditAnnotations) {
+    public PDFEncryptionParams(final String userPassword,
+            final String ownerPassword, final boolean allowPrint,
+            final boolean allowCopyContent, final boolean allowEditContent,
+            final boolean allowEditAnnotations) {
         setUserPassword(userPassword);
         setOwnerPassword(ownerPassword);
         setAllowPrint(allowPrint);
@@ -64,15 +70,16 @@ public class PDFEncryptionParams {
      * Default constructor initializing to default values.
      */
     public PDFEncryptionParams() {
-        //nop
+        // nop
     }
 
     /**
      * Creates a copy of the given encryption parameters.
      *
-     * @param source source encryption parameters
+     * @param source
+     *            source encryption parameters
      */
-    public PDFEncryptionParams(PDFEncryptionParams source) {
+    public PDFEncryptionParams(final PDFEncryptionParams source) {
         setUserPassword(source.getUserPassword());
         setOwnerPassword(source.getOwnerPassword());
         setAllowPrint(source.isAllowPrint());
@@ -88,154 +95,182 @@ public class PDFEncryptionParams {
 
     /**
      * Indicates whether copying content is allowed.
+     * 
      * @return true if copying is allowed
      */
     public boolean isAllowCopyContent() {
-        return allowCopyContent;
+        return this.allowCopyContent;
     }
 
     /**
      * Indicates whether editing annotations is allowed.
+     * 
      * @return true is editing annotations is allowed
      */
     public boolean isAllowEditAnnotations() {
-        return allowEditAnnotations;
+        return this.allowEditAnnotations;
     }
 
     /**
      * Indicates whether editing content is allowed.
+     * 
      * @return true if editing content is allowed
      */
     public boolean isAllowEditContent() {
-        return allowEditContent;
+        return this.allowEditContent;
     }
 
     /**
      * Indicates whether printing is allowed.
+     * 
      * @return true if printing is allowed
      */
     public boolean isAllowPrint() {
-        return allowPrint;
+        return this.allowPrint;
     }
 
     /**
      * Indicates whether revision 3 filling in forms is allowed.
+     * 
      * @return true if revision 3 filling in forms is allowed
      */
     public boolean isAllowFillInForms() {
-        return allowFillInForms;
+        return this.allowFillInForms;
     }
 
     /**
      * Indicates whether revision 3 extracting text and graphics is allowed.
+     * 
      * @return true if revision 3 extracting text and graphics is allowed
      */
     public boolean isAllowAccessContent() {
-        return allowAccessContent;
+        return this.allowAccessContent;
     }
 
     /**
      * Indicates whether revision 3 assembling document is allowed.
+     * 
      * @return true if revision 3 assembling document is allowed
      */
     public boolean isAllowAssembleDocument() {
-        return allowAssembleDocument;
+        return this.allowAssembleDocument;
     }
 
     /**
      * Indicates whether revision 3 printing to high quality is allowed.
+     * 
      * @return true if revision 3 printing to high quality is allowed
      */
     public boolean isAllowPrintHq() {
-        return allowPrintHq;
+        return this.allowPrintHq;
     }
 
     /**
      * Returns the owner password.
+     * 
      * @return the owner password, an empty string if no password applies
      */
     public String getOwnerPassword() {
-        return ownerPassword;
+        return this.ownerPassword;
     }
 
     /**
      * Returns the user password.
+     * 
      * @return the user password, an empty string if no password applies
      */
     public String getUserPassword() {
-        return userPassword;
+        return this.userPassword;
     }
 
     /**
      * Sets the permission for copying content.
-     * @param allowCopyContent true if copying content is allowed
+     * 
+     * @param allowCopyContent
+     *            true if copying content is allowed
      */
-    public void setAllowCopyContent(boolean allowCopyContent) {
+    public void setAllowCopyContent(final boolean allowCopyContent) {
         this.allowCopyContent = allowCopyContent;
     }
 
     /**
      * Sets the permission for editing annotations.
-     * @param allowEditAnnotations true if editing annotations is allowed
+     * 
+     * @param allowEditAnnotations
+     *            true if editing annotations is allowed
      */
-    public void setAllowEditAnnotations(boolean allowEditAnnotations) {
+    public void setAllowEditAnnotations(final boolean allowEditAnnotations) {
         this.allowEditAnnotations = allowEditAnnotations;
     }
 
     /**
      * Sets the permission for editing content.
-     * @param allowEditContent true if editing annotations is allowed
+     * 
+     * @param allowEditContent
+     *            true if editing annotations is allowed
      */
-    public void setAllowEditContent(boolean allowEditContent) {
+    public void setAllowEditContent(final boolean allowEditContent) {
         this.allowEditContent = allowEditContent;
     }
 
     /**
      * Sets the permission for printing.
-     * @param allowPrint true if printing is allowed
+     * 
+     * @param allowPrint
+     *            true if printing is allowed
      */
-    public void setAllowPrint(boolean allowPrint) {
+    public void setAllowPrint(final boolean allowPrint) {
         this.allowPrint = allowPrint;
     }
 
     /**
      * Sets whether revision 3 filling in forms is allowed.
-     * @param allowFillInForms true if revision 3 filling in forms is allowed.
+     * 
+     * @param allowFillInForms
+     *            true if revision 3 filling in forms is allowed.
      */
-    public void setAllowFillInForms(boolean allowFillInForms) {
+    public void setAllowFillInForms(final boolean allowFillInForms) {
         this.allowFillInForms = allowFillInForms;
     }
 
     /**
      * Sets whether revision 3 extracting text and graphics is allowed.
-     * @param allowAccessContent true if revision 3 extracting text and graphics is allowed
+     * 
+     * @param allowAccessContent
+     *            true if revision 3 extracting text and graphics is allowed
      */
-    public void setAllowAccessContent(boolean allowAccessContent) {
+    public void setAllowAccessContent(final boolean allowAccessContent) {
         this.allowAccessContent = allowAccessContent;
     }
 
     /**
      * Sets whether revision 3 assembling document is allowed.
-     * @param allowAssembleDocument true if revision 3 assembling document is allowed
+     * 
+     * @param allowAssembleDocument
+     *            true if revision 3 assembling document is allowed
      */
-    public void setAllowAssembleDocument(boolean allowAssembleDocument) {
+    public void setAllowAssembleDocument(final boolean allowAssembleDocument) {
         this.allowAssembleDocument = allowAssembleDocument;
     }
 
     /**
      * Sets whether revision 3 printing to high quality is allowed.
-     * @param allowPrintHq true if revision 3 printing to high quality is allowed
+     * 
+     * @param allowPrintHq
+     *            true if revision 3 printing to high quality is allowed
      */
-    public void setAllowPrintHq(boolean allowPrintHq) {
+    public void setAllowPrintHq(final boolean allowPrintHq) {
         this.allowPrintHq = allowPrintHq;
     }
 
     /**
      * Sets the owner password.
-     * @param ownerPassword The owner password to set, null or an empty String
-     * if no password is applicable
+     * 
+     * @param ownerPassword
+     *            The owner password to set, null or an empty String if no
+     *            password is applicable
      */
-    public void setOwnerPassword(String ownerPassword) {
+    public void setOwnerPassword(final String ownerPassword) {
         if (ownerPassword == null) {
             this.ownerPassword = "";
         } else {
@@ -245,10 +280,12 @@ public class PDFEncryptionParams {
 
     /**
      * Sets the user password.
-     * @param userPassword The user password to set, null or an empty String
-     * if no password is applicable
+     * 
+     * @param userPassword
+     *            The user password to set, null or an empty String if no
+     *            password is applicable
      */
-    public void setUserPassword(String userPassword) {
+    public void setUserPassword(final String userPassword) {
         if (userPassword == null) {
             this.userPassword = "";
         } else {
@@ -258,18 +295,20 @@ public class PDFEncryptionParams {
 
     /**
      * Returns the encryption length.
+     * 
      * @return the encryption length
      */
     public int getEncryptionLengthInBits() {
-        return encryptionLengthInBits;
+        return this.encryptionLengthInBits;
     }
 
     /**
      * Sets the encryption length.
      *
-     * @param encryptionLength the encryption length
+     * @param encryptionLength
+     *            the encryption length
      */
-    public void setEncryptionLengthInBits(int encryptionLength) {
+    public void setEncryptionLengthInBits(final int encryptionLength) {
         this.encryptionLengthInBits = encryptionLength;
     }
 

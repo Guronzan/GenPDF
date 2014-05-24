@@ -32,7 +32,7 @@ public class CrossReferenceTableTestCase extends CrossReferenceObjectTest {
 
     @Test
     public void testWithNoOffset() throws IOException {
-        List<Long> emptyList = Collections.emptyList();
+        final List<Long> emptyList = Collections.emptyList();
         runTest(emptyList);
     }
 
@@ -46,34 +46,34 @@ public class CrossReferenceTableTestCase extends CrossReferenceObjectTest {
         runTest(Arrays.asList(0xffL, 0xffffL, 0x7fffffffL));
     }
 
-    private void runTest(List<Long> offsets) throws IOException {
+    private void runTest(final List<Long> offsets) throws IOException {
         this.offsets = offsets;
         runTest();
     }
 
     @Override
     protected CrossReferenceObject createCrossReferenceObject() {
-        return new CrossReferenceTable(trailerDictionary, STARTXREF, offsets);
+        return new CrossReferenceTable(this.trailerDictionary, STARTXREF,
+                this.offsets);
     }
 
     @Override
     protected byte[] createExpectedCrossReferenceData() throws IOException {
-        StringBuilder expected = new StringBuilder(256);
-        expected.append("xref\n0 ")
-                .append(offsets.size() + 1)
-                .append("\n0000000000 65535 f \n");
-        for (Long objectReference : offsets) {
+        final StringBuilder expected = new StringBuilder(256);
+        expected.append("xref\n0 ").append(this.offsets.size() + 1)
+        .append("\n0000000000 65535 f \n");
+        for (final Long objectReference : this.offsets) {
             final String padding = "0000000000";
-            String s = String.valueOf(objectReference).toString();
-            String loc = padding.substring(s.length()) + s;
+            final String s = String.valueOf(objectReference).toString();
+            final String loc = padding.substring(s.length()) + s;
             expected.append(loc).append(" 00000 n \n");
         }
-        expected.append("trailer\n<<\n")
-                .append("  /Root 1 0 R\n")
-                .append("  /Info 2 0 R\n")
-                .append("  /ID [<0123456789ABCDEF> <0123456789ABCDEF>]\n")
-                .append("  /Size ").append(Integer.toString(offsets.size() + 1)).append('\n')
-                .append(">>\n");
+        expected.append("trailer\n<<\n").append("  /Root 1 0 R\n")
+        .append("  /Info 2 0 R\n")
+        .append("  /ID [<0123456789ABCDEF> <0123456789ABCDEF>]\n")
+        .append("  /Size ")
+                .append(Integer.toString(this.offsets.size() + 1)).append('\n')
+        .append(">>\n");
         return getBytes(expected);
     }
 

@@ -33,109 +33,109 @@ import lombok.extern.slf4j.Slf4j;
  * ReferenceQueue.
  */
 @Slf4j
- public class SoftMapCache {
+public class SoftMapCache {
 
     private Map map;
-     private final ReferenceQueue refQueue = new ReferenceQueue();
+    private final ReferenceQueue refQueue = new ReferenceQueue();
 
-     /**
-      * Creates a new soft cache.
-      * 
+    /**
+     * Creates a new soft cache.
+     *
      * @param synched
      *            true if the Map containing the values should by synchronized
-      */
-     public SoftMapCache(final boolean synched) {
-         this.map = new java.util.HashMap();
-         if (synched) {
-             this.map = Collections.synchronizedMap(this.map);
-         }
-     }
+     */
+    public SoftMapCache(final boolean synched) {
+        this.map = new java.util.HashMap();
+        if (synched) {
+            this.map = Collections.synchronizedMap(this.map);
+        }
+    }
 
-     /**
-      * Returns the value associated with the given key. If the value is not
+    /**
+     * Returns the value associated with the given key. If the value is not
      * found or the value has been collected, null is returned.
-     * 
+     *
      * @param key
      *            the key
      * @return the requested value or null
-      */
-     public Object get(final Object key) {
-         final Reference ref = (Reference) this.map.get(key);
-         return getReference(key, ref);
-     }
+     */
+    public Object get(final Object key) {
+        final Reference ref = (Reference) this.map.get(key);
+        return getReference(key, ref);
+    }
 
-     /**
-      * Removed the value associated with the given key. The value that is
+    /**
+     * Removed the value associated with the given key. The value that is
      * removed is returned as the methods result. If the value is not found or
      * the value has been collected, null is returned.
-     * 
+     *
      * @param key
      *            the key
      * @return the requested value or null
-      */
-     public Object remove(final Object key) {
-         final Reference ref = (Reference) this.map.remove(key);
-         return getReference(key, ref);
-     }
+     */
+    public Object remove(final Object key) {
+        final Reference ref = (Reference) this.map.remove(key);
+        return getReference(key, ref);
+    }
 
-     private Object getReference(final Object key, final Reference ref) {
-         Object value = null;
-         if (ref != null) {
-             value = ref.get();
-             if (value == null) {
-                 // Remove key if its value has been garbage collected
-                 if (log.isTraceEnabled()) {
-                     log.trace("Image has been collected: " + key);
-                 }
-                 checkReferenceQueue();
-             }
-         }
-         return value;
-     }
+    private Object getReference(final Object key, final Reference ref) {
+        Object value = null;
+        if (ref != null) {
+            value = ref.get();
+            if (value == null) {
+                // Remove key if its value has been garbage collected
+                if (log.isTraceEnabled()) {
+                    log.trace("Image has been collected: " + key);
+                }
+                checkReferenceQueue();
+            }
+        }
+        return value;
+    }
 
-     /**
-      * Put a new value in the cache overwriting any existing value with the same
+    /**
+     * Put a new value in the cache overwriting any existing value with the same
      * key.
-     * 
+     *
      * @param key
      *            The key
      * @param value
      *            the value
-      */
-     public void put(final Object key, final Object value) {
-         this.map.put(key, wrapInReference(value, key));
-     }
+     */
+    public void put(final Object key, final Object value) {
+        this.map.put(key, wrapInReference(value, key));
+    }
 
-     /**
-      * Clears the cache.
-      */
-     public void clear() {
-         this.map.clear();
-     }
+    /**
+     * Clears the cache.
+     */
+    public void clear() {
+        this.map.clear();
+    }
 
-     /**
-      * Triggers some house-keeping, i.e. processes any pending objects in the
+    /**
+     * Triggers some house-keeping, i.e. processes any pending objects in the
      * reference queue.
-      */
-     public void doHouseKeeping() {
-         checkReferenceQueue();
-     }
+     */
+    public void doHouseKeeping() {
+        checkReferenceQueue();
+    }
 
-     private Reference wrapInReference(final Object obj, final Object key) {
-         return new SoftReferenceWithKey(obj, key, this.refQueue);
-     }
+    private Reference wrapInReference(final Object obj, final Object key) {
+        return new SoftReferenceWithKey(obj, key, this.refQueue);
+    }
 
-     /**
-      * Checks the reference queue if any references have been cleared and
+    /**
+     * Checks the reference queue if any references have been cleared and
      * removes them from the cache.
-      */
-     private void checkReferenceQueue() {
-         SoftReferenceWithKey ref;
-         while ((ref = (SoftReferenceWithKey) this.refQueue.poll()) != null) {
-             if (log.isTraceEnabled()) {
-                 log.trace("Removing ImageInfo from ref queue: " + ref.getKey());
-             }
-             this.map.remove(ref.getKey());
-         }
-     }
- }
+     */
+    private void checkReferenceQueue() {
+        SoftReferenceWithKey ref;
+        while ((ref = (SoftReferenceWithKey) this.refQueue.poll()) != null) {
+            if (log.isTraceEnabled()) {
+                log.trace("Removing ImageInfo from ref queue: " + ref.getKey());
+            }
+            this.map.remove(ref.getKey());
+        }
+    }
+}

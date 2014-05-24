@@ -24,32 +24,38 @@ import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
 
 /**
- * This class extends the ICCColorSpace class by providing
- * convenience methods to convert to sRGB using various
- * methods, forcing a given intent, such as perceptual or
- * relative colorimetric. It also additionally holds the name
- * and source URI of the color profile.
+ * This class extends the ICCColorSpace class by providing convenience methods
+ * to convert to sRGB using various methods, forcing a given intent, such as
+ * perceptual or relative colorimetric. It also additionally holds the name and
+ * source URI of the color profile.
  */
-public class ICCColorSpaceWithIntent extends ICC_ColorSpace implements ColorSpaceOrigin {
+public class ICCColorSpaceWithIntent extends ICC_ColorSpace implements
+        ColorSpaceOrigin {
 
     private static final long serialVersionUID = -3338065900662625221L;
 
     static final ColorSpace SRGB = ColorSpace.getInstance(ColorSpace.CS_sRGB);
 
-    private RenderingIntent intent;
-    private String profileName;
-    private String profileURI;
+    private final RenderingIntent intent;
+    private final String profileName;
+    private final String profileURI;
 
     /**
      * Creates a new ICC-based color space.
-     * @param p the color profile
-     * @param intent the overriding rendering intent (use {@link RenderingIntent#AUTO}
-     *          to preserve the profile's)
-     * @param profileName the color profile name
-     * @param profileURI the source URI of the color profile
+     * 
+     * @param p
+     *            the color profile
+     * @param intent
+     *            the overriding rendering intent (use
+     *            {@link RenderingIntent#AUTO} to preserve the profile's)
+     * @param profileName
+     *            the color profile name
+     * @param profileURI
+     *            the source URI of the color profile
      */
-    public ICCColorSpaceWithIntent(ICC_Profile p, RenderingIntent intent,
-            String profileName, String profileURI) {
+    public ICCColorSpaceWithIntent(final ICC_Profile p,
+            final RenderingIntent intent, final String profileName,
+            final String profileURI) {
         super(p);
 
         this.intent = intent;
@@ -58,8 +64,9 @@ public class ICCColorSpaceWithIntent extends ICC_ColorSpace implements ColorSpac
          * Apply the requested intent into the profile
          */
         if (intent != RenderingIntent.AUTO) {
-            byte[] hdr = p.getData(ICC_Profile.icSigHead);
-            hdr[ICC_Profile.icHdrRenderingIntent] = (byte)intent.getIntegerValue();
+            final byte[] hdr = p.getData(ICC_Profile.icSigHead);
+            hdr[ICC_Profile.icHdrRenderingIntent] = (byte) intent
+                    .getIntegerValue();
         }
 
         this.profileName = profileName;
@@ -67,14 +74,15 @@ public class ICCColorSpaceWithIntent extends ICC_ColorSpace implements ColorSpac
     }
 
     /**
-     * Returns the sRGB value obtained by forcing the
-     * conversion method to the intent passed to the
-     * constructor.
-     * @param values the color values in the local color space
+     * Returns the sRGB value obtained by forcing the conversion method to the
+     * intent passed to the constructor.
+     * 
+     * @param values
+     *            the color values in the local color space
      * @return the sRGB values
      */
-    public float[] intendedToRGB(float[] values) {
-        switch(intent) {
+    public float[] intendedToRGB(final float[] values) {
+        switch (this.intent) {
         case ABSOLUTE_COLORIMETRIC:
             return absoluteColorimetricToRGB(values);
         case PERCEPTUAL:
@@ -85,57 +93,65 @@ public class ICCColorSpaceWithIntent extends ICC_ColorSpace implements ColorSpac
         case SATURATION:
             return saturationToRGB(values);
         default:
-            throw new RuntimeException("invalid intent:" + intent );
+            throw new RuntimeException("invalid intent:" + this.intent);
         }
     }
 
     /**
-     * Perceptual conversion is the method implemented by the
-     * base class's toRGB method
-     * @param values the color values in the local color space
+     * Perceptual conversion is the method implemented by the base class's toRGB
+     * method
+     * 
+     * @param values
+     *            the color values in the local color space
      * @return the sRGB values
      */
-    private float[] perceptualToRGB(float[] values) {
+    private float[] perceptualToRGB(final float[] values) {
         return toRGB(values);
     }
 
     /**
-     * Relative colorimetric needs to happen through CIEXYZ
-     * conversion.
-     * @param values the color values in the local color space
+     * Relative colorimetric needs to happen through CIEXYZ conversion.
+     * 
+     * @param values
+     *            the color values in the local color space
      * @return the sRGB values
      */
-    private float[] relativeColorimetricToRGB(float[] values) {
-        float[] ciexyz = toCIEXYZ(values);
+    private float[] relativeColorimetricToRGB(final float[] values) {
+        final float[] ciexyz = toCIEXYZ(values);
         return SRGB.fromCIEXYZ(ciexyz);
     }
 
     /**
-     * Absolute colorimetric. NOT IMPLEMENTED.
-     * Temporarily returns same as perceptual.
-     * @param values the color values in the local color space
+     * Absolute colorimetric. NOT IMPLEMENTED. Temporarily returns same as
+     * perceptual.
+     * 
+     * @param values
+     *            the color values in the local color space
      * @return the sRGB values
      */
-    private float[] absoluteColorimetricToRGB(float[] values) {
+    private float[] absoluteColorimetricToRGB(final float[] values) {
         return perceptualToRGB(values);
     }
 
     /**
-     * Saturation. NOT IMPLEMENTED. Temporarily returns same
-     * as perceptual.
-     * @param values the color values in the local color space
+     * Saturation. NOT IMPLEMENTED. Temporarily returns same as perceptual.
+     * 
+     * @param values
+     *            the color values in the local color space
      * @return the sRGB values
      */
-    private float[] saturationToRGB(float[] values) {
+    private float[] saturationToRGB(final float[] values) {
         return perceptualToRGB(values);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getProfileName() {
         return this.profileName;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getProfileURI() {
         return this.profileURI;
     }

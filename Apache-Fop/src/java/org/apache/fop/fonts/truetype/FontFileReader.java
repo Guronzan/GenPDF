@@ -26,22 +26,24 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 
 /**
- * Reads a TrueType font file into a byte array and
- * provides file like functions for array access.
+ * Reads a TrueType font file into a byte array and provides file like functions
+ * for array access.
  */
 public class FontFileReader {
 
-    private int fsize;      // file size
-    private int current;    // current position in file
+    private int fsize; // file size
+    private int current; // current position in file
     private byte[] file;
 
     /**
      * Initializes class and reads stream. Init does not close stream.
      *
-     * @param in InputStream to read from new array with size + inc
-     * @throws IOException In case of an I/O problem
+     * @param in
+     *            InputStream to read from new array with size + inc
+     * @throws IOException
+     *             In case of an I/O problem
      */
-    private void init(InputStream in) throws java.io.IOException {
+    private void init(final InputStream in) throws java.io.IOException {
         this.file = IOUtils.toByteArray(in);
         this.fsize = this.file.length;
         this.current = 0;
@@ -50,12 +52,14 @@ public class FontFileReader {
     /**
      * Constructor
      *
-     * @param fileName filename to read
-     * @throws IOException In case of an I/O problem
+     * @param fileName
+     *            filename to read
+     * @throws IOException
+     *             In case of an I/O problem
      */
-    public FontFileReader(String fileName) throws IOException {
+    public FontFileReader(final String fileName) throws IOException {
         final File f = new File(fileName);
-        InputStream in = new java.io.FileInputStream(f);
+        final InputStream in = new java.io.FileInputStream(f);
         try {
             init(in);
         } finally {
@@ -63,40 +67,44 @@ public class FontFileReader {
         }
     }
 
-
     /**
      * Constructor
      *
-     * @param in InputStream to read from
-     * @throws IOException In case of an I/O problem
+     * @param in
+     *            InputStream to read from
+     * @throws IOException
+     *             In case of an I/O problem
      */
-    public FontFileReader(InputStream in) throws IOException {
+    public FontFileReader(final InputStream in) throws IOException {
         init(in);
     }
-
 
     /**
      * Set current file position to offset
      *
-     * @param offset The new offset to set
-     * @throws IOException In case of an I/O problem
+     * @param offset
+     *            The new offset to set
+     * @throws IOException
+     *             In case of an I/O problem
      */
-    public void seekSet(long offset) throws IOException {
-        if (offset > fsize || offset < 0) {
-            throw new java.io.EOFException("Reached EOF, file size=" + fsize
-                                           + " offset=" + offset);
+    public void seekSet(final long offset) throws IOException {
+        if (offset > this.fsize || offset < 0) {
+            throw new java.io.EOFException("Reached EOF, file size="
+                    + this.fsize + " offset=" + offset);
         }
-        current = (int)offset;
+        this.current = (int) offset;
     }
 
     /**
      * Skip a given number of bytes.
      *
-     * @param add The number of bytes to advance
-     * @throws IOException In case of an I/O problem
+     * @param add
+     *            The number of bytes to advance
+     * @throws IOException
+     *             In case of an I/O problem
      */
-    public void skip(long add) throws IOException {
-        seekSet(current + add);
+    public void skip(final long add) throws IOException {
+        seekSet(this.current + add);
     }
 
     /**
@@ -105,7 +113,7 @@ public class FontFileReader {
      * @return int The current position.
      */
     public int getCurrentPos() {
-        return current;
+        return this.current;
     }
 
     /**
@@ -114,21 +122,23 @@ public class FontFileReader {
      * @return int The filesize
      */
     public int getFileSize() {
-        return fsize;
+        return this.fsize;
     }
 
     /**
      * Read 1 byte.
      *
      * @return One byte
-     * @throws IOException If EOF is reached
+     * @throws IOException
+     *             If EOF is reached
      */
     private byte read() throws IOException {
-        if (current >= fsize) {
-            throw new java.io.EOFException("Reached EOF, file size=" + fsize);
+        if (this.current >= this.fsize) {
+            throw new java.io.EOFException("Reached EOF, file size="
+                    + this.fsize);
         }
 
-        final byte ret = file[current++];
+        final byte ret = this.file[this.current++];
         return ret;
     }
 
@@ -136,7 +146,8 @@ public class FontFileReader {
      * Read 1 signed byte.
      *
      * @return One byte
-     * @throws IOException If EOF is reached
+     * @throws IOException
+     *             If EOF is reached
      */
     public final byte readTTFByte() throws IOException {
         return read();
@@ -146,15 +157,16 @@ public class FontFileReader {
      * Read 1 unsigned byte.
      *
      * @return One unsigned byte
-     * @throws IOException If EOF is reached
+     * @throws IOException
+     *             If EOF is reached
      */
     public final int readTTFUByte() throws IOException {
         final byte buf = read();
 
         if (buf < 0) {
-            return (int)(256 + buf);
+            return 256 + buf;
         } else {
-            return (int)buf;
+            return buf;
         }
     }
 
@@ -162,11 +174,12 @@ public class FontFileReader {
      * Read 2 bytes signed.
      *
      * @return One signed short
-     * @throws IOException If EOF is reached
+     * @throws IOException
+     *             If EOF is reached
      */
     public final short readTTFShort() throws IOException {
         final int ret = (readTTFUByte() << 8) + readTTFUByte();
-        final short sret = (short)ret;
+        final short sret = (short) ret;
         return sret;
     }
 
@@ -174,39 +187,46 @@ public class FontFileReader {
      * Read 2 bytes unsigned.
      *
      * @return One unsigned short
-     * @throws IOException If EOF is reached
+     * @throws IOException
+     *             If EOF is reached
      */
     public final int readTTFUShort() throws IOException {
         final int ret = (readTTFUByte() << 8) + readTTFUByte();
-        return (int)ret;
+        return ret;
     }
 
     /**
      * Write a USHort at a given position.
      *
-     * @param pos The absolute position to write to
-     * @param val The value to write
-     * @throws IOException If EOF is reached
+     * @param pos
+     *            The absolute position to write to
+     * @param val
+     *            The value to write
+     * @throws IOException
+     *             If EOF is reached
      */
-    public final void writeTTFUShort(long pos, int val) throws IOException {
-        if ((pos + 2) > fsize) {
+    public final void writeTTFUShort(final long pos, final int val)
+            throws IOException {
+        if (pos + 2 > this.fsize) {
             throw new java.io.EOFException("Reached EOF");
         }
-        final byte b1 = (byte)((val >> 8) & 0xff);
-        final byte b2 = (byte)(val & 0xff);
+        final byte b1 = (byte) (val >> 8 & 0xff);
+        final byte b2 = (byte) (val & 0xff);
         final int fileIndex = (int) pos;
-        file[fileIndex] = b1;
-        file[fileIndex + 1] = b2;
+        this.file[fileIndex] = b1;
+        this.file[fileIndex + 1] = b2;
     }
 
     /**
      * Read 2 bytes signed at position pos without changing current position.
      *
-     * @param pos The absolute position to read from
+     * @param pos
+     *            The absolute position to read from
      * @return One signed short
-     * @throws IOException If EOF is reached
+     * @throws IOException
+     *             If EOF is reached
      */
-    public final short readTTFShort(long pos) throws IOException {
+    public final short readTTFShort(final long pos) throws IOException {
         final long cp = getCurrentPos();
         seekSet(pos);
         final short ret = readTTFShort();
@@ -217,14 +237,16 @@ public class FontFileReader {
     /**
      * Read 2 bytes unsigned at position pos without changing current position.
      *
-     * @param pos The absolute position to read from
+     * @param pos
+     *            The absolute position to read from
      * @return One unsigned short
-     * @throws IOException If EOF is reached
+     * @throws IOException
+     *             If EOF is reached
      */
-    public final int readTTFUShort(long pos) throws IOException {
-        long cp = getCurrentPos();
+    public final int readTTFUShort(final long pos) throws IOException {
+        final long cp = getCurrentPos();
         seekSet(pos);
-        int ret = readTTFUShort();
+        final int ret = readTTFUShort();
         seekSet(cp);
         return ret;
     }
@@ -233,22 +255,24 @@ public class FontFileReader {
      * Read 4 bytes.
      *
      * @return One signed integer
-     * @throws IOException If EOF is reached
+     * @throws IOException
+     *             If EOF is reached
      */
     public final int readTTFLong() throws IOException {
-        long ret = readTTFUByte();    // << 8;
+        long ret = readTTFUByte(); // << 8;
         ret = (ret << 8) + readTTFUByte();
         ret = (ret << 8) + readTTFUByte();
         ret = (ret << 8) + readTTFUByte();
 
-        return (int)ret;
+        return (int) ret;
     }
 
     /**
      * Read 4 bytes.
      *
      * @return One unsigned integer
-     * @throws IOException If EOF is reached
+     * @throws IOException
+     *             If EOF is reached
      */
     public final long readTTFULong() throws IOException {
         long ret = readTTFUByte();
@@ -263,40 +287,43 @@ public class FontFileReader {
      * Read a NUL terminated ISO-8859-1 string.
      *
      * @return A String
-     * @throws IOException If EOF is reached
+     * @throws IOException
+     *             If EOF is reached
      */
     public final String readTTFString() throws IOException {
-        int i = current;
-        while (file[i++] != 0) {
-            if (i >= fsize) {
+        int i = this.current;
+        while (this.file[i++] != 0) {
+            if (i >= this.fsize) {
                 throw new java.io.EOFException("Reached EOF, file size="
-                                               + fsize);
+                        + this.fsize);
             }
         }
 
-        byte[] tmp = new byte[i - current - 1];
-        System.arraycopy(file, current, tmp, 0, i - current - 1);
+        final byte[] tmp = new byte[i - this.current - 1];
+        System.arraycopy(this.file, this.current, tmp, 0, i - this.current - 1);
         return new String(tmp, "ISO-8859-1");
     }
-
 
     /**
      * Read an ISO-8859-1 string of len bytes.
      *
-     * @param len The length of the string to read
+     * @param len
+     *            The length of the string to read
      * @return A String
-     * @throws IOException If EOF is reached
+     * @throws IOException
+     *             If EOF is reached
      */
-    public final String readTTFString(int len) throws IOException {
-        if ((len + current) > fsize) {
-            throw new java.io.EOFException("Reached EOF, file size=" + fsize);
+    public final String readTTFString(final int len) throws IOException {
+        if (len + this.current > this.fsize) {
+            throw new java.io.EOFException("Reached EOF, file size="
+                    + this.fsize);
         }
 
-        byte[] tmp = new byte[len];
-        System.arraycopy(file, current, tmp, 0, len);
-        current += len;
+        final byte[] tmp = new byte[len];
+        System.arraycopy(this.file, this.current, tmp, 0, len);
+        this.current += len;
         final String encoding;
-        if ((tmp.length > 0) && (tmp[0] == 0)) {
+        if (tmp.length > 0 && tmp[0] == 0) {
             encoding = "UTF-16BE";
         } else {
             encoding = "ISO-8859-1";
@@ -307,47 +334,58 @@ public class FontFileReader {
     /**
      * Read an ISO-8859-1 string of len bytes.
      *
-     * @param len The length of the string to read
-     * @param encodingID the string encoding id (presently ignored; always uses UTF-16BE)
+     * @param len
+     *            The length of the string to read
+     * @param encodingID
+     *            the string encoding id (presently ignored; always uses
+     *            UTF-16BE)
      * @return A String
-     * @throws IOException If EOF is reached
+     * @throws IOException
+     *             If EOF is reached
      */
-    public final String readTTFString(int len, int encodingID) throws IOException {
-        if ((len + current) > fsize) {
-            throw new java.io.EOFException("Reached EOF, file size=" + fsize);
+    public final String readTTFString(final int len, final int encodingID)
+            throws IOException {
+        if (len + this.current > this.fsize) {
+            throw new java.io.EOFException("Reached EOF, file size="
+                    + this.fsize);
         }
 
-        byte[] tmp = new byte[len];
-        System.arraycopy(file, current, tmp, 0, len);
-        current += len;
+        final byte[] tmp = new byte[len];
+        System.arraycopy(this.file, this.current, tmp, 0, len);
+        this.current += len;
         final String encoding;
-        encoding = "UTF-16BE"; //Use this for all known encoding IDs for now
+        encoding = "UTF-16BE"; // Use this for all known encoding IDs for now
         return new String(tmp, encoding);
     }
 
     /**
      * Return a copy of the internal array
      *
-     * @param offset The absolute offset to start reading from
-     * @param length The number of bytes to read
+     * @param offset
+     *            The absolute offset to start reading from
+     * @param length
+     *            The number of bytes to read
      * @return An array of bytes
-     * @throws IOException if out of bounds
+     * @throws IOException
+     *             if out of bounds
      */
-    public byte[] getBytes(int offset,
-                           int length) throws IOException {
-        if ((offset + length) > fsize) {
+    public byte[] getBytes(final int offset, final int length)
+            throws IOException {
+        if (offset + length > this.fsize) {
             throw new java.io.IOException("Reached EOF");
         }
 
-        byte[] ret = new byte[length];
-        System.arraycopy(file, offset, ret, 0, length);
+        final byte[] ret = new byte[length];
+        System.arraycopy(this.file, offset, ret, 0, length);
         return ret;
     }
+
     /**
      * Returns the full byte array representation of the file.
+     *
      * @return byte array.
      */
     public byte[] getAllBytes() {
-        return file;
+        return this.file;
     }
 }

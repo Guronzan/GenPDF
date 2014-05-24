@@ -23,19 +23,23 @@ import org.apache.fop.fo.FObj;
 
 /**
  * This interface is used by the layout managers to provide relevant information
- * back to the property percentage resolution logic, that is
- * the percentages based property getValue() functions expect an object implementing
- * this interface as an argument.
+ * back to the property percentage resolution logic, that is the percentages
+ * based property getValue() functions expect an object implementing this
+ * interface as an argument.
  */
 public interface PercentBaseContext {
 
     /**
-     * Returns the base length for the given length base.
-     * Length base should be one of the constants defined in {@link LengthBase}.
-     * @param lengthBase Indicates which type of the base length value is to be returned
-     * @param fobj The FO object against which the percentage should be evaluated
+     * Returns the base length for the given length base. Length base should be
+     * one of the constants defined in {@link LengthBase}.
+     * 
+     * @param lengthBase
+     *            Indicates which type of the base length value is to be
+     *            returned
+     * @param fobj
+     *            The FO object against which the percentage should be evaluated
      * @return The base length value of the given kind
      */
-    int getBaseLength(int lengthBase, FObj fobj);
+    int getBaseLength(final int lengthBase, final FObj fobj);
 
 }

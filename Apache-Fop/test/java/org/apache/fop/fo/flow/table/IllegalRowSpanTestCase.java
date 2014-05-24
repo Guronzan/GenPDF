@@ -22,8 +22,8 @@ package org.apache.fop.fo.flow.table;
 import org.junit.Test;
 
 /**
- * Testcase checking that cells spanning further than their parent element aren't
- * accepted.
+ * Testcase checking that cells spanning further than their parent element
+ * aren't accepted.
  */
 public class IllegalRowSpanTestCase extends ErrorCheckTest {
 

@@ -29,16 +29,16 @@ public interface Viewport {
     /**
      * Returns true if this area will clip overflowing content.
      *
-     * @return {@code true} if the overflow trait has the value "hidden", "scroll" or
-     * "error-if-overflow"
+     * @return {@code true} if the overflow trait has the value "hidden",
+     *         "scroll" or "error-if-overflow"
      */
     boolean hasClip();
 
     /**
      * Returns the clipping rectangle of this viewport area.
      *
-     * @return the clipping rectangle expressed in the viewport's coordinate system, or
-     * null if clipping is disabled
+     * @return the clipping rectangle expressed in the viewport's coordinate
+     *         system, or null if clipping is disabled
      */
     Rectangle getClipRectangle();
 }

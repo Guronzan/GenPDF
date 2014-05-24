@@ -26,37 +26,48 @@ import org.xml.sax.Attributes;
 /**
  * This implementation ignores all structure tree events.
  */
-public final class DummyStructureTreeEventHandler implements StructureTreeEventHandler {
+public final class DummyStructureTreeEventHandler implements
+        StructureTreeEventHandler {
 
     /** The singleton instance of this class. */
     public static final StructureTreeEventHandler INSTANCE = new DummyStructureTreeEventHandler();
 
-    private DummyStructureTreeEventHandler() { }
-
-    /** {@inheritDoc} */
-    public void startPageSequence(Locale locale, String role) {
+    private DummyStructureTreeEventHandler() {
     }
 
     /** {@inheritDoc} */
+    @Override
+    public void startPageSequence(final Locale locale, final String role) {
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void endPageSequence() {
     }
 
     /** {@inheritDoc} */
-    public StructureTreeElement startNode(String name, Attributes attributes) {
+    @Override
+    public StructureTreeElement startNode(final String name,
+            final Attributes attributes) {
         return null;
     }
 
     /** {@inheritDoc} */
-    public void endNode(String name) {
+    @Override
+    public void endNode(final String name) {
     }
 
     /** {@inheritDoc} */
-    public StructureTreeElement startImageNode(String name, Attributes attributes) {
+    @Override
+    public StructureTreeElement startImageNode(final String name,
+            final Attributes attributes) {
         return null;
     }
 
     /** {@inheritDoc} */
-    public StructureTreeElement startReferencedNode(String name, Attributes attributes) {
+    @Override
+    public StructureTreeElement startReferencedNode(final String name,
+            final Attributes attributes) {
         return null;
     }
 

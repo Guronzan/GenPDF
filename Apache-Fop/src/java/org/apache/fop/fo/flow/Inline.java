@@ -19,13 +19,12 @@
 
 package org.apache.fop.fo.flow;
 
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.datatypes.Length;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.ValidationException;
+import org.xml.sax.Locator;
 
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_inline">
@@ -39,12 +38,12 @@ public class Inline extends InlineLevel {
     private Length baselineShift;
     private int dominantBaseline;
     // Unused but valid items, commented out for performance:
-    //     private CommonRelativePosition commonRelativePosition;
-    //     private LengthRangeProperty blockProgressionDimension;
-    //     private Length height;
-    //     private LengthRangeProperty inlineProgressionDimension;
-    //     private Length width;
-    //     private int wrapOption;
+    // private CommonRelativePosition commonRelativePosition;
+    // private LengthRangeProperty blockProgressionDimension;
+    // private Length height;
+    // private LengthRangeProperty inlineProgressionDimension;
+    // private Length width;
+    // private int wrapOption;
     // End of property values
     // used for FO validation
     private boolean blockOrInlineItemFound = false;
@@ -53,107 +52,117 @@ public class Inline extends InlineLevel {
     /**
      * Base constructor
      *
-     * @param parent {@link FONode} that is the parent of this object
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public Inline(FONode parent) {
+    public Inline(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        alignmentAdjust = pList.get(PR_ALIGNMENT_ADJUST).getLength();
-        alignmentBaseline = pList.get(PR_ALIGNMENT_BASELINE).getEnum();
-        baselineShift = pList.get(PR_BASELINE_SHIFT).getLength();
-        dominantBaseline = pList.get(PR_DOMINANT_BASELINE).getEnum();
+        this.alignmentAdjust = pList.get(PR_ALIGNMENT_ADJUST).getLength();
+        this.alignmentBaseline = pList.get(PR_ALIGNMENT_BASELINE).getEnum();
+        this.baselineShift = pList.get(PR_BASELINE_SHIFT).getLength();
+        this.dominantBaseline = pList.get(PR_DOMINANT_BASELINE).getEnum();
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
-       super.startOfNode();
+        super.startOfNode();
 
-       /* Check to see if this node can have block-level children.
-        * See validateChildNode() below.
-        */
-       int lvlLeader = findAncestor(FO_LEADER);
-       int lvlFootnote = findAncestor(FO_FOOTNOTE);
-       int lvlInCntr = findAncestor(FO_INLINE_CONTAINER);
+        /*
+         * Check to see if this node can have block-level children. See
+         * validateChildNode() below.
+         */
+        final int lvlLeader = findAncestor(FO_LEADER);
+        final int lvlFootnote = findAncestor(FO_FOOTNOTE);
+        final int lvlInCntr = findAncestor(FO_INLINE_CONTAINER);
 
-       if (lvlLeader > 0) {
-           if (lvlInCntr < 0
-               || (lvlInCntr > 0 && lvlInCntr > lvlLeader)) {
-               canHaveBlockLevelChildren = false;
-           }
-       } else if (lvlFootnote > 0) {
-           if (lvlInCntr < 0 || lvlInCntr > lvlFootnote) {
-               canHaveBlockLevelChildren = false;
-           }
-       }
+        if (lvlLeader > 0) {
+            if (lvlInCntr < 0 || lvlInCntr > 0 && lvlInCntr > lvlLeader) {
+                this.canHaveBlockLevelChildren = false;
+            }
+        } else if (lvlFootnote > 0) {
+            if (lvlInCntr < 0 || lvlInCntr > lvlFootnote) {
+                this.canHaveBlockLevelChildren = false;
+            }
+        }
 
-       getFOEventHandler().startInline(this);
+        getFOEventHandler().startInline(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
         super.endOfNode();
         getFOEventHandler().endInline(this);
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL Content Model: marker* (#PCDATA|%inline;|%block;)*
-     * <br><i>Additionally: " An fo:inline that is a descendant of an fo:leader
-     *  or fo:footnote may not have block-level children, unless it has a
-     *  nearer ancestor that is an fo:inline-container." (paraphrased)</i>
+     * {@inheritDoc} <br>
+     * XSL Content Model: marker* (#PCDATA|%inline;|%block;)* <br>
+     * <i>Additionally: " An fo:inline that is a descendant of an fo:leader or
+     * fo:footnote may not have block-level children, unless it has a nearer
+     * ancestor that is an fo:inline-container." (paraphrased)</i>
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-                throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             if (localName.equals("marker")) {
-                if (blockOrInlineItemFound) {
-                   nodesOutOfOrderError(loc, "fo:marker",
-                        "(#PCDATA|%inline;|%block;)");
+                if (this.blockOrInlineItemFound) {
+                    nodesOutOfOrderError(loc, "fo:marker",
+                            "(#PCDATA|%inline;|%block;)");
                 }
             } else if (!isBlockOrInlineItem(nsURI, localName)) {
                 invalidChildError(loc, nsURI, localName);
-            } else if (!canHaveBlockLevelChildren && isBlockItem(nsURI, localName)
-                       && !isNeutralItem(nsURI, localName)) {
-                invalidChildError(loc, getName(), nsURI, localName, "rule.inlineContent");
+            } else if (!this.canHaveBlockLevelChildren
+                    && isBlockItem(nsURI, localName)
+                    && !isNeutralItem(nsURI, localName)) {
+                invalidChildError(loc, getName(), nsURI, localName,
+                        "rule.inlineContent");
             } else {
-                blockOrInlineItemFound = true;
+                this.blockOrInlineItemFound = true;
             }
         }
     }
 
     /** @return the "alignment-adjust" property */
     public Length getAlignmentAdjust() {
-        return alignmentAdjust;
+        return this.alignmentAdjust;
     }
 
     /** @return the "alignment-baseline" property */
     public int getAlignmentBaseline() {
-        return alignmentBaseline;
+        return this.alignmentBaseline;
     }
 
     /** @return the "baseline-shift" property */
     public Length getBaselineShift() {
-        return baselineShift;
+        return this.baselineShift;
     }
 
     /** @return the "dominant-baseline" property */
     public int getDominantBaseline() {
-        return dominantBaseline;
+        return this.dominantBaseline;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "inline";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_INLINE}
      */
+    @Override
     public int getNameId() {
         return FO_INLINE;
     }

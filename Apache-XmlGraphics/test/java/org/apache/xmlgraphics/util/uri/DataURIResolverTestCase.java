@@ -62,7 +62,7 @@ public class DataURIResolverTestCase extends TestCase {
      *             if an error occurs
      */
     public void testNonMatchingContract() throws Exception {
-        URIResolver resolver = new DataURIResolver();
+        final URIResolver resolver = new DataURIResolver();
         Source src;
 
         src = resolver.resolve("http://xmlgraphics.apache.org/fop/index.html",
@@ -74,7 +74,8 @@ public class DataURIResolverTestCase extends TestCase {
         assertNull(src);
     }
 
-    private static boolean byteCmp(byte[] src, int srcOffset, byte[] cmp) {
+    private static boolean byteCmp(final byte[] src, final int srcOffset,
+            final byte[] cmp) {
         for (int i = 0, c = cmp.length; i < c; i++) {
             if (src[srcOffset + i] != cmp[i]) {
                 return false;
@@ -90,11 +91,11 @@ public class DataURIResolverTestCase extends TestCase {
      *             if an error occurs
      */
     public void testDataURLHandling() throws Exception {
-        URIResolver resolver = new DataURIResolver();
+        final URIResolver resolver = new DataURIResolver();
         actualURLHAndlingTest(resolver);
     }
 
-    static final void actualURLHAndlingTest(URIResolver resolver)
+    static final void actualURLHAndlingTest(final URIResolver resolver)
             throws Exception {
         Source src;
 
@@ -102,8 +103,8 @@ public class DataURIResolverTestCase extends TestCase {
         assertNotNull(src);
         StreamSource streamSource = (StreamSource) src;
         byte[] data = IOUtils.toByteArray(streamSource.getInputStream());
-        assertTrue("Decoded data doesn't match the test data", byteCmp(
-                TESTDATA, 0, data));
+        assertTrue("Decoded data doesn't match the test data",
+                byteCmp(TESTDATA, 0, data));
 
         src = resolver
                 .resolve(
@@ -114,8 +115,8 @@ public class DataURIResolverTestCase extends TestCase {
         assertNotNull(streamSource.getInputStream());
         assertNull(streamSource.getReader());
         data = IOUtils.toByteArray(streamSource.getInputStream());
-        assertTrue("Decoded data doesn't match the test data", byteCmp(
-                TESTDATA, 0, data));
+        assertTrue("Decoded data doesn't match the test data",
+                byteCmp(TESTDATA, 0, data));
 
         src = resolver.resolve("data:,FOP", null);
         assertNotNull(src);
@@ -131,7 +132,8 @@ public class DataURIResolverTestCase extends TestCase {
         text = IOUtils.toString(streamSource.getReader());
         assertEquals("A brief note", text);
 
-        src = resolver.resolve("data:text/plain;charset=iso-8859-7,%be%f9%be", null);
+        src = resolver.resolve("data:text/plain;charset=iso-8859-7,%be%f9%be",
+                null);
         assertNotNull(src);
         streamSource = (StreamSource) src;
         text = IOUtils.toString(streamSource.getReader());

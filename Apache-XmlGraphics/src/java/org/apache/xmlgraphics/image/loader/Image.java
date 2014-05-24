@@ -23,44 +23,54 @@ import java.awt.color.ColorSpace;
 import java.awt.color.ICC_Profile;
 
 /**
- * Represents an instance of an image (bitmap or vector graphic). The image may or may not be loaded
- * into memory. Implementing classes will expose additional methods to access the actual image data.
+ * Represents an instance of an image (bitmap or vector graphic). The image may
+ * or may not be loaded into memory. Implementing classes will expose additional
+ * methods to access the actual image data.
  */
 public interface Image {
 
     /**
-     * Returns an object with basic information (URI, MIME type, intrinsic size) about the image.
+     * Returns an object with basic information (URI, MIME type, intrinsic size)
+     * about the image.
+     * 
      * @return the image information object
      */
     ImageInfo getInfo();
 
     /**
-     * Returns the image's intrinsic size. This is a shortcut for getInfo().getSize().
+     * Returns the image's intrinsic size. This is a shortcut for
+     * getInfo().getSize().
+     * 
      * @return the image's intrinsic size
      */
     ImageSize getSize();
 
     /**
      * Returns the flavor of the image.
+     * 
      * @return the image flavor
      */
     ImageFlavor getFlavor();
 
     /**
      * Indicates whether the Image instance is cacheable in memory.
+     * 
      * @return true if the Image is cacheable
      */
     boolean isCacheable();
 
     /**
      * Returns the ICC color profile if one is associated with the image.
+     * 
      * @return the ICC color profile or null if there's no profile
      */
     ICC_Profile getICCProfile();
 
     /**
      * Returns the image's color space if the information is available.
-     * @return the color space or null if the color space is unknown or undefined
+     * 
+     * @return the color space or null if the color space is unknown or
+     *         undefined
      */
     ColorSpace getColorSpace();
 

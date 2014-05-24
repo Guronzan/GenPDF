@@ -27,8 +27,9 @@ import org.apache.fop.util.CompareUtil;
 
 /**
  * Base class used for handling properties of the fo:space-before and
- * fo:space-after variety. It is extended by org.apache.fop.fo.properties.GenericSpace,
- * which is extended by many other properties.
+ * fo:space-after variety. It is extended by
+ * org.apache.fop.fo.properties.GenericSpace, which is extended by many other
+ * properties.
  */
 public class SpaceProperty extends LengthRangeProperty {
     private Property precedence;
@@ -40,16 +41,19 @@ public class SpaceProperty extends LengthRangeProperty {
     public static class Maker extends CompoundPropertyMaker {
 
         /**
-         * @param propId the id of the property for which a Maker should be created
+         * @param propId
+         *            the id of the property for which a Maker should be created
          */
-        public Maker(int propId) {
+        public Maker(final int propId) {
             super(propId);
         }
 
         /**
          * Create a new empty instance of SpaceProperty.
+         * 
          * @return the new instance.
          */
+        @Override
         public Property makeNewProperty() {
             return new SpaceProperty();
         }
@@ -57,9 +61,10 @@ public class SpaceProperty extends LengthRangeProperty {
         /**
          * {@inheritDoc}
          */
-        public Property convertProperty(Property p,
-                                        PropertyList propertyList,
-                                        FObj fo) throws PropertyException {
+        @Override
+        public Property convertProperty(final Property p,
+                final PropertyList propertyList, final FObj fo)
+                throws PropertyException {
             if (p instanceof SpaceProperty) {
                 return p;
             }
@@ -67,13 +72,12 @@ public class SpaceProperty extends LengthRangeProperty {
         }
     }
 
-
-
     /**
      * {@inheritDoc}
      */
-    public void setComponent(int cmpId, Property cmpnValue,
-                             boolean bIsDefault) {
+    @Override
+    public void setComponent(final int cmpId, final Property cmpnValue,
+            final boolean bIsDefault) {
         if (cmpId == CP_PRECEDENCE) {
             setPrecedence(cmpnValue, bIsDefault);
         } else if (cmpId == CP_CONDITIONALITY) {
@@ -86,7 +90,8 @@ public class SpaceProperty extends LengthRangeProperty {
     /**
      * {@inheritDoc}
      */
-    public Property getComponent(int cmpId) {
+    @Override
+    public Property getComponent(final int cmpId) {
         if (cmpId == CP_PRECEDENCE) {
             return getPrecedence();
         } else if (cmpId == CP_CONDITIONALITY) {
@@ -98,20 +103,25 @@ public class SpaceProperty extends LengthRangeProperty {
 
     /**
      *
-     * @param precedence precedence Property to set
-     * @param bIsDefault (is not used anywhere)
+     * @param precedence
+     *            precedence Property to set
+     * @param bIsDefault
+     *            (is not used anywhere)
      */
-    protected void setPrecedence(Property precedence, boolean bIsDefault) {
+    protected void setPrecedence(final Property precedence,
+            final boolean bIsDefault) {
         this.precedence = precedence;
     }
 
     /**
      *
-     * @param conditionality conditionality Property to set
-     * @param bIsDefault (is not used anywhere)
+     * @param conditionality
+     *            conditionality Property to set
+     * @param bIsDefault
+     *            (is not used anywhere)
      */
-    protected void setConditionality(Property conditionality,
-                                     boolean bIsDefault) {
+    protected void setConditionality(final Property conditionality,
+            final boolean bIsDefault) {
         this.conditionality = conditionality;
     }
 
@@ -131,6 +141,7 @@ public class SpaceProperty extends LengthRangeProperty {
 
     /**
      * Indicates if the length can be discarded on certain conditions.
+     * 
      * @return true if the length can be discarded.
      */
     public boolean isDiscard() {
@@ -138,26 +149,29 @@ public class SpaceProperty extends LengthRangeProperty {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "Space["
-        + "min:" + getMinimum(null).getObject()
-        + ", max:" + getMaximum(null).getObject()
-        + ", opt:" + getOptimum(null).getObject()
-        + ", precedence:" + precedence.getObject()
-        + ", conditionality:" + conditionality.getObject() + "]";
+        return "Space[" + "min:" + getMinimum(null).getObject() + ", max:"
+                + getMaximum(null).getObject() + ", opt:"
+                + getOptimum(null).getObject() + ", precedence:"
+                + this.precedence.getObject() + ", conditionality:"
+                + this.conditionality.getObject() + "]";
     }
 
     /**
      * @return the Space (datatype) object contained here
      */
+    @Override
     public SpaceProperty getSpace() {
         return this;
     }
 
     /**
      * Space extends LengthRange.
+     * 
      * @return the Space (datatype) object contained here
      */
+    @Override
     public LengthRangeProperty getLengthRange() {
         return this;
     }
@@ -165,6 +179,7 @@ public class SpaceProperty extends LengthRangeProperty {
     /**
      * @return the Space (datatype) object contained here
      */
+    @Override
     public Object getObject() {
         return this;
     }
@@ -173,23 +188,23 @@ public class SpaceProperty extends LengthRangeProperty {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + CompareUtil.getHashCode(precedence);
-        result = prime * result + CompareUtil.getHashCode(conditionality);
+        result = prime * result + CompareUtil.getHashCode(this.precedence);
+        result = prime * result + CompareUtil.getHashCode(this.conditionality);
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
         if (!(obj instanceof SpaceProperty)) {
             return false;
         }
-        SpaceProperty other = (SpaceProperty) obj;
+        final SpaceProperty other = (SpaceProperty) obj;
         return super.equals(obj)
-                && CompareUtil.equal(precedence, other.precedence)
-                && CompareUtil.equal(conditionality, other.conditionality);
+                && CompareUtil.equal(this.precedence, other.precedence)
+                && CompareUtil.equal(this.conditionality, other.conditionality);
     }
 
 }

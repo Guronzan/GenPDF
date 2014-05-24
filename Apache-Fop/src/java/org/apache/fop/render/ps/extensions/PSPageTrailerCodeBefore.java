@@ -19,7 +19,6 @@
 
 package org.apache.fop.render.ps.extensions;
 
-
 public class PSPageTrailerCodeBefore extends PSExtensionAttachment {
 
     /** The element name */
@@ -27,9 +26,11 @@ public class PSPageTrailerCodeBefore extends PSExtensionAttachment {
 
     /**
      * Default constructor
-     * @param content the actual comment
+     * 
+     * @param content
+     *            the actual comment
      */
-    public PSPageTrailerCodeBefore(String content) {
+    public PSPageTrailerCodeBefore(final String content) {
         super(content);
     }
 
@@ -43,6 +44,7 @@ public class PSPageTrailerCodeBefore extends PSExtensionAttachment {
     /**
      * @return element name
      */
+    @Override
     protected String getElement() {
         return ELEMENT;
     }

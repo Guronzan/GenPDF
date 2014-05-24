@@ -23,8 +23,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- * A reference to an indirect object stored in an object stream. Contains the relevant
- * information to add to a cross-reference stream.
+ * A reference to an indirect object stored in an object stream. Contains the
+ * relevant information to add to a cross-reference stream.
  */
 public class CompressedObjectReference implements ObjectReference {
 
@@ -37,30 +37,35 @@ public class CompressedObjectReference implements ObjectReference {
     /**
      * Creates a new reference.
      *
-     * @param objectNumber the number of the compressed object being referenced
-     * @param objectStreamNumber the number of the object stream in which the compressed
-     * object is to be found
-     * @param index the index of the compressed object in the object stream
+     * @param objectNumber
+     *            the number of the compressed object being referenced
+     * @param objectStreamNumber
+     *            the number of the object stream in which the compressed object
+     *            is to be found
+     * @param index
+     *            the index of the compressed object in the object stream
      */
-    public CompressedObjectReference(int objectNumber, int objectStreamNumber, int index) {
+    public CompressedObjectReference(final int objectNumber,
+            final int objectStreamNumber, final int index) {
         this.objectNumber = objectNumber;
         this.objectStreamNumber = objectStreamNumber;
         this.index = index;
     }
 
-    public void output(DataOutputStream out) throws IOException {
+    @Override
+    public void output(final DataOutputStream out) throws IOException {
         out.write(2);
-        out.writeLong(objectStreamNumber);
+        out.writeLong(this.objectStreamNumber);
         out.write(0);
-        out.write(index);
+        out.write(this.index);
     }
 
     public int getObjectNumber() {
-        return objectNumber;
+        return this.objectNumber;
     }
 
     public int getObjectStreamNumber() {
-        return objectStreamNumber;
+        return this.objectStreamNumber;
     }
 
 }

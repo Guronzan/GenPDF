@@ -33,29 +33,31 @@ public class PDFEmbeddedFile extends PDFStream {
     public PDFEmbeddedFile() {
         super();
         put("Type", new PDFName("EmbeddedFile"));
-        PDFDictionary params = new PDFDictionary();
+        final PDFDictionary params = new PDFDictionary();
         params.put("CreationDate", PDFInfo.formatDateTime(new Date()));
         put("Params", params);
     }
 
     /**
      * Determine if should encode on the fly.
+     * 
      * @return true if should encode on the fly
      */
     protected boolean isEncodingOnTheFly() {
-        //Acrobat doesn't like an indirect /Length object in this case,
-        //but only when the embedded file is a PDF file.
+        // Acrobat doesn't like an indirect /Length object in this case,
+        // but only when the embedded file is a PDF file.
         return false;
     }
 
     /** {@inheritDoc} */
-    protected void populateStreamDict(Object lengthEntry) {
+    @Override
+    protected void populateStreamDict(final Object lengthEntry) {
         super.populateStreamDict(lengthEntry);
         try {
-            PDFDictionary dict = (PDFDictionary)get("Params");
-            dict.put("Size", new Integer(data.getSize()));
-        } catch (IOException ioe) {
-            //ignore and just skip this entry as it's optional
+            final PDFDictionary dict = (PDFDictionary) get("Params");
+            dict.put("Size", new Integer(this.data.getSize()));
+        } catch (final IOException ioe) {
+            // ignore and just skip this entry as it's optional
         }
     }
 

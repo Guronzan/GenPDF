@@ -23,26 +23,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-
 /**
  * Test suite for FOP's utility classes.
  */
 @RunWith(Suite.class)
-@SuiteClasses({
-        PDFArrayTestCase.class,
-        PDFDictionaryTestCase.class,
-        PDFNumberTestCase.class,
-        PDFObjectTestCase.class,
-        PDFNameTestCase.class,
-        AbstractPDFStreamTestCase.class,
-        PDFDestsTestCase.class,
-        PDFDocumentTestCase.class,
-        PDFNullTestCase.class,
-        PDFNumsArrayTestCase.class,
-        PDFRectangleTestCase.class,
-        PDFReferenceTestCase.class,
-        VersionTestCase.class,
-        VersionControllerTestCase.class
-})
+@SuiteClasses({ PDFArrayTestCase.class, PDFDictionaryTestCase.class,
+    PDFNumberTestCase.class, PDFObjectTestCase.class,
+    PDFNameTestCase.class, AbstractPDFStreamTestCase.class,
+    PDFDestsTestCase.class, PDFDocumentTestCase.class,
+    PDFNullTestCase.class, PDFNumsArrayTestCase.class,
+    PDFRectangleTestCase.class, PDFReferenceTestCase.class,
+    VersionTestCase.class, VersionControllerTestCase.class })
 public class PDFLibraryTestSuite {
 }

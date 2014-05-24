@@ -26,34 +26,41 @@ import org.apache.fop.fonts.truetype.TTFTableOutputStream;
 /**
  * Streams a TrueType table according to the PostScript format.
  */
-public class PSTTFTableOutputStream implements TTFTableOutputStream  {
+public class PSTTFTableOutputStream implements TTFTableOutputStream {
 
-    private PSTTFGenerator ttfGen;
+    private final PSTTFGenerator ttfGen;
 
     /**
      * Constructor.
-     * @param ttfGen the helper object to stream TrueType data
+     * 
+     * @param ttfGen
+     *            the helper object to stream TrueType data
      */
-    public PSTTFTableOutputStream(PSTTFGenerator ttfGen) {
+    public PSTTFTableOutputStream(final PSTTFGenerator ttfGen) {
         this.ttfGen = ttfGen;
     }
 
-    public void streamTable(byte[] ttfData, int offset, int size) throws IOException {
+    @Override
+    public void streamTable(final byte[] ttfData, final int offset,
+            final int size) throws IOException {
         int offsetPosition = offset;
         // Need to split the table into MAX_BUFFER_SIZE chunks
         for (int i = 0; i < size / PSTTFGenerator.MAX_BUFFER_SIZE; i++) {
-            streamString(ttfData, offsetPosition, PSTTFGenerator.MAX_BUFFER_SIZE);
+            streamString(ttfData, offsetPosition,
+                    PSTTFGenerator.MAX_BUFFER_SIZE);
             offsetPosition += PSTTFGenerator.MAX_BUFFER_SIZE;
         }
         if (size % PSTTFGenerator.MAX_BUFFER_SIZE > 0) {
-            streamString(ttfData, offsetPosition, size % PSTTFGenerator.MAX_BUFFER_SIZE);
+            streamString(ttfData, offsetPosition, size
+                    % PSTTFGenerator.MAX_BUFFER_SIZE);
         }
     }
 
-    private void streamString(byte[] byteArray, int offset, int length) throws IOException {
-        ttfGen.startString();
-        ttfGen.streamBytes(byteArray, offset, length);
-        ttfGen.endString();
+    private void streamString(final byte[] byteArray, final int offset,
+            final int length) throws IOException {
+        this.ttfGen.startString();
+        this.ttfGen.streamBytes(byteArray, offset, length);
+        this.ttfGen.endString();
     }
 
 }

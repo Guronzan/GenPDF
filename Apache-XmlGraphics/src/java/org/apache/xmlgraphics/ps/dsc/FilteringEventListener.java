@@ -28,20 +28,24 @@ import org.apache.xmlgraphics.ps.dsc.events.DSCEvent;
  */
 public class FilteringEventListener implements DSCListener {
 
-    private DSCFilter filter;
+    private final DSCFilter filter;
 
     /**
      * Main constructor.
-     * @param filter the filter
+     * 
+     * @param filter
+     *            the filter
      */
-    public FilteringEventListener(DSCFilter filter) {
+    public FilteringEventListener(final DSCFilter filter) {
         this.filter = filter;
     }
 
     /** {@inheritDoc} */
-    public void processEvent(DSCEvent event, DSCParser parser) throws IOException, DSCException {
-        if (!filter.accept(event)) {
-            parser.next(); //skip
+    @Override
+    public void processEvent(final DSCEvent event, final DSCParser parser)
+            throws IOException, DSCException {
+        if (!this.filter.accept(event)) {
+            parser.next(); // skip
         }
     }
 

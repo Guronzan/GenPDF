@@ -23,7 +23,6 @@ import java.awt.geom.RectangularShape;
 
 import org.apache.fop.fonts.NamedCharacter;
 
-
 /**
  * Holds the metrics of a single character from an AFM file.
  */
@@ -37,30 +36,36 @@ public class AFMCharMetrics {
 
     /**
      * Returns the character code.
+     * 
      * @return the charCode (-1 if not part of the encoding)
      */
     public int getCharCode() {
-        return charCode;
+        return this.charCode;
     }
 
     /**
-     * Indicates whether the character has a character code, i.e. is part of the default encoding.
+     * Indicates whether the character has a character code, i.e. is part of the
+     * default encoding.
+     * 
      * @return true if there is a character code.
      */
     public boolean hasCharCode() {
-        return charCode >= 0;
+        return this.charCode >= 0;
     }
 
     /**
      * Sets the character code.
-     * @param charCode the charCode to set
+     * 
+     * @param charCode
+     *            the charCode to set
      */
-    public void setCharCode(int charCode) {
+    public void setCharCode(final int charCode) {
         this.charCode = charCode;
     }
 
     /**
      * Returns the named character represented by this instance.
+     * 
      * @return the named character (or null if no named character is associated)
      */
     public NamedCharacter getCharacter() {
@@ -69,94 +74,113 @@ public class AFMCharMetrics {
 
     /**
      * Sets the named character represented by this instance.
-     * @param ch the named character
+     * 
+     * @param ch
+     *            the named character
      */
-    public void setCharacter(NamedCharacter ch) {
+    public void setCharacter(final NamedCharacter ch) {
         this.character = ch;
     }
 
     /**
      * Sets the named character represented by this instance.
-     * @param charName the character name (as defined in the Adobe glyph list)
-     * @param unicodeSequence the Unicode sequence
+     * 
+     * @param charName
+     *            the character name (as defined in the Adobe glyph list)
+     * @param unicodeSequence
+     *            the Unicode sequence
      */
-    public void setCharacter(String charName, String unicodeSequence) {
+    public void setCharacter(final String charName, final String unicodeSequence) {
         setCharacter(new NamedCharacter(charName, unicodeSequence));
     }
 
     /**
      * Returns the Unicode sequence for this character.
-     * @return the Unicode characters
-     *                  (or null if no such Unicode sequence exists for this character)
+     * 
+     * @return the Unicode characters (or null if no such Unicode sequence
+     *         exists for this character)
      */
     public String getUnicodeSequence() {
-        return (getCharacter() != null ? getCharacter().getUnicodeSequence() : null);
+        return getCharacter() != null ? getCharacter().getUnicodeSequence()
+                : null;
     }
 
     /**
      * Returns the PostScript character name.
+     * 
      * @return the charName (or null if no character name is associated)
      */
     public String getCharName() {
-        return (getCharacter() != null ? getCharacter().getName() : null);
+        return getCharacter() != null ? getCharacter().getName() : null;
     }
 
     /**
      * Returns the progression dimension in x-direction.
+     * 
      * @return the widthX
      */
     public double getWidthX() {
-        return widthX;
+        return this.widthX;
     }
 
     /**
      * Sets the progression dimension in x-direction
-     * @param widthX the widthX to set
+     * 
+     * @param widthX
+     *            the widthX to set
      */
-    public void setWidthX(double widthX) {
+    public void setWidthX(final double widthX) {
         this.widthX = widthX;
     }
 
     /**
      * Returns the progression dimension in y-direction.
+     * 
      * @return the widthY
      */
     public double getWidthY() {
-        return widthY;
+        return this.widthY;
     }
 
     /**
      * Sets the progression dimension in y-direction
-     * @param widthY the widthY to set
+     * 
+     * @param widthY
+     *            the widthY to set
      */
-    public void setWidthY(double widthY) {
+    public void setWidthY(final double widthY) {
         this.widthY = widthY;
     }
 
     /**
      * Returns the character's bounding box.
+     * 
      * @return the bounding box (or null if it isn't available)
      */
     public RectangularShape getBBox() {
-        return bBox;
+        return this.bBox;
     }
 
     /**
      * Sets the character's bounding box.
-     * @param box the bounding box
+     * 
+     * @param box
+     *            the bounding box
      */
-    public void setBBox(RectangularShape box) {
-        bBox = box;
+    public void setBBox(final RectangularShape box) {
+        this.bBox = box;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("AFM Char: ");
+        final StringBuffer sb = new StringBuffer("AFM Char: ");
         sb.append(getCharCode());
         sb.append(" (");
         if (getUnicodeSequence() != null) {
             for (int i = 0, c = getUnicodeSequence().length(); i < c; i++) {
-                sb.append("0x").append(Integer.toHexString(getUnicodeSequence().charAt(i)));
+                sb.append("0x").append(
+                        Integer.toHexString(getUnicodeSequence().charAt(i)));
                 sb.append(", ");
             }
         }

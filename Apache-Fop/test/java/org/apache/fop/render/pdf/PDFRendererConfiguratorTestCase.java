@@ -19,10 +19,6 @@
 
 package org.apache.fop.render.pdf;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 
 import org.apache.fop.apps.FOPException;
@@ -32,6 +28,10 @@ import org.apache.fop.events.Event;
 import org.apache.fop.events.EventListener;
 import org.apache.fop.pdf.PDFEncryptionParams;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests that encryption length is properly set up.
@@ -50,24 +50,29 @@ public class PDFRendererConfiguratorTestCase {
 
         private final int correctedEncryptionLength;
 
-        EncryptionEventFilter(int specifiedEncryptionLength, int correctedEncryptionLength) {
+        EncryptionEventFilter(final int specifiedEncryptionLength,
+                final int correctedEncryptionLength) {
             this.specifiedEncryptionLength = specifiedEncryptionLength;
             this.correctedEncryptionLength = correctedEncryptionLength;
         }
 
-        public void processEvent(Event event) {
-            assertEquals(PDFEventProducer.class.getName() + ".incorrectEncryptionLength",
-                    event.getEventID());
-            assertEquals(specifiedEncryptionLength, event.getParam("originalValue"));
-            assertEquals(correctedEncryptionLength, event.getParam("correctedValue"));
-            eventTriggered = true;
+        @Override
+        public void processEvent(final Event event) {
+            assertEquals(PDFEventProducer.class.getName()
+                    + ".incorrectEncryptionLength", event.getEventID());
+            assertEquals(this.specifiedEncryptionLength,
+                    event.getParam("originalValue"));
+            assertEquals(this.correctedEncryptionLength,
+                    event.getParam("correctedValue"));
+            PDFRendererConfiguratorTestCase.this.eventTriggered = true;
         }
     }
 
     /**
      * Non-multiple of 8 should be rounded.
      *
-     * @throws Exception if an error occurs
+     * @throws Exception
+     *             if an error occurs
      */
     @Test
     public void testRoundUp() throws Exception {
@@ -77,7 +82,8 @@ public class PDFRendererConfiguratorTestCase {
     /**
      * Non-multiple of 8 should be rounded.
      *
-     * @throws Exception if an error occurs
+     * @throws Exception
+     *             if an error occurs
      */
     @Test
     public void testRoundDown() throws Exception {
@@ -87,7 +93,8 @@ public class PDFRendererConfiguratorTestCase {
     /**
      * Encryption length must be at least 40.
      *
-     * @throws Exception if an error occurs
+     * @throws Exception
+     *             if an error occurs
      */
     @Test
     public void testBelow40() throws Exception {
@@ -97,7 +104,8 @@ public class PDFRendererConfiguratorTestCase {
     /**
      * Encryption length must be at most 128.
      *
-     * @throws Exception if an error occurs
+     * @throws Exception
+     *             if an error occurs
      */
     @Test
     public void testAbove128() throws Exception {
@@ -107,13 +115,15 @@ public class PDFRendererConfiguratorTestCase {
     /**
      * A correct value must be properly set up.
      *
-     * @throws Exception if an error occurs
+     * @throws Exception
+     *             if an error occurs
      */
     @Test
     public void testCorrectValue() throws Exception {
         givenAConfigurationFile("correct", new EventListener() {
 
-            public void processEvent(Event event) {
+            @Override
+            public void processEvent(final Event event) {
                 fail("No event was expected");
             }
         });
@@ -122,32 +132,38 @@ public class PDFRendererConfiguratorTestCase {
 
     }
 
-    private void runTest(String configFilename,
+    private void runTest(final String configFilename,
             final int specifiedEncryptionLength,
             final int correctedEncryptionLength) throws Exception {
-        givenAConfigurationFile(configFilename,
-                new EncryptionEventFilter(specifiedEncryptionLength, correctedEncryptionLength));
+        givenAConfigurationFile(configFilename, new EncryptionEventFilter(
+                specifiedEncryptionLength, correctedEncryptionLength));
         whenCreatingAndConfiguringDocumentHandler();
-        assertTrue(eventTriggered);
+        assertTrue(this.eventTriggered);
     }
 
-    private void givenAConfigurationFile(String filename, EventListener eventListener)
-            throws Exception {
-        FopFactory fopFactory = FopFactory.newInstance();
-        fopFactory.setUserConfig(new File("test/resources/org/apache/fop/render/pdf/"
-                + filename + ".xconf"));
-        foUserAgent = fopFactory.newFOUserAgent();
-        foUserAgent.getEventBroadcaster().addEventListener(eventListener);
+    private void givenAConfigurationFile(final String filename,
+            final EventListener eventListener) throws Exception {
+        final FopFactory fopFactory = FopFactory.newInstance();
+        fopFactory.setUserConfig(new File(
+                "test/resources/org/apache/fop/render/pdf/" + filename
+                        + ".xconf"));
+        this.foUserAgent = fopFactory.newFOUserAgent();
+        this.foUserAgent.getEventBroadcaster().addEventListener(eventListener);
     }
 
-    private void whenCreatingAndConfiguringDocumentHandler() throws FOPException {
-        PDFDocumentHandlerMaker maker = new PDFDocumentHandlerMaker();
-        documentHandler = (PDFDocumentHandler) maker.makeIFDocumentHandler(foUserAgent);
-        new PDFRendererConfigurator(foUserAgent).configure(documentHandler);
+    private void whenCreatingAndConfiguringDocumentHandler()
+            throws FOPException {
+        final PDFDocumentHandlerMaker maker = new PDFDocumentHandlerMaker();
+        this.documentHandler = (PDFDocumentHandler) maker
+                .makeIFDocumentHandler(this.foUserAgent);
+        new PDFRendererConfigurator(this.foUserAgent)
+                .configure(this.documentHandler);
     }
 
-    private void thenEncryptionLengthShouldBe(int expectedEncryptionLength) {
-        PDFEncryptionParams encryptionParams = documentHandler.getPDFUtil().getEncryptionParams();
-        assertEquals(expectedEncryptionLength, encryptionParams.getEncryptionLengthInBits());
+    private void thenEncryptionLengthShouldBe(final int expectedEncryptionLength) {
+        final PDFEncryptionParams encryptionParams = this.documentHandler
+                .getPDFUtil().getEncryptionParams();
+        assertEquals(expectedEncryptionLength,
+                encryptionParams.getEncryptionLengthInBits());
     }
 }

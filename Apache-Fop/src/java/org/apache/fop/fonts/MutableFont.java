@@ -22,8 +22,6 @@ package org.apache.fop.fonts;
 import java.util.Map;
 import java.util.Set;
 
-
-
 /**
  * This interface is used to set the values of a font during configuration time.
  */
@@ -31,124 +29,166 @@ public interface MutableFont {
 
     /**
      * Sets the "PostScript" font name (Example: "Helvetica-BoldOblique").
-     * @param name font name
+     * 
+     * @param name
+     *            font name
      */
-    void setFontName(String name);
+    void setFontName(final String name);
 
     /**
-     * Sets the font's full name (usually the one that the operating system displays). Example:
-     * "Helvetica Bold Oblique".
-     * @param name font' full name
+     * Sets the font's full name (usually the one that the operating system
+     * displays). Example: "Helvetica Bold Oblique".
+     * 
+     * @param name
+     *            font' full name
      */
-    void setFullName(String name);
+    void setFullName(final String name);
 
     /**
      * Sets the font's family names (Example: "Helvetica").
-     * @param names the font's family names (a Set of Strings)
+     * 
+     * @param names
+     *            the font's family names (a Set of Strings)
      */
-    void setFamilyNames(Set<String> names);
+    void setFamilyNames(final Set<String> names);
 
     /**
      * Sets the path to the embeddable font file.
-     * @param path URI to the file
+     * 
+     * @param path
+     *            URI to the file
      */
-    void setEmbedFileName(String path);
+    void setEmbedFileName(final String path);
 
     /**
      * Sets the resource name of the embeddable font file.
-     * @param name resource name
+     * 
+     * @param name
+     *            resource name
      */
-    void setEmbedResourceName(String name);
+    void setEmbedResourceName(final String name);
 
     /**
      * Sets the embedding mode.
-     * @param embeddingMode the embedding mode
+     * 
+     * @param embeddingMode
+     *            the embedding mode
      */
-    void setEmbeddingMode(EmbeddingMode embeddingMode);
+    void setEmbeddingMode(final EmbeddingMode embeddingMode);
 
     /**
      * Sets the capital height value.
-     * @param capHeight capital height
+     * 
+     * @param capHeight
+     *            capital height
      */
-    void setCapHeight(int capHeight);
+    void setCapHeight(final int capHeight);
 
     /**
      * Sets the ascent value.
-     * @param ascender ascent height
+     * 
+     * @param ascender
+     *            ascent height
      */
-    void setAscender(int ascender);
+    void setAscender(final int ascender);
 
     /**
      * Sets the descent value.
-     * @param descender descent value
+     * 
+     * @param descender
+     *            descent value
      */
-    void setDescender(int descender);
+    void setDescender(final int descender);
 
     /**
      * Sets the font's bounding box
-     * @param bbox bounding box
+     * 
+     * @param bbox
+     *            bounding box
      */
-    void setFontBBox(int[] bbox);
+    void setFontBBox(final int[] bbox);
 
     /**
      * Sets the font's flags
-     * @param flags flags
+     * 
+     * @param flags
+     *            flags
      */
-    void setFlags(int flags);
+    void setFlags(final int flags);
 
     /**
      * Sets the font's StemV value.
-     * @param stemV StemV
+     * 
+     * @param stemV
+     *            StemV
      */
-    void setStemV(int stemV);
+    void setStemV(final int stemV);
 
     /**
      * Sets the font's italic angle.
-     * @param italicAngle italic angle
+     * 
+     * @param italicAngle
+     *            italic angle
      */
-    void setItalicAngle(int italicAngle);
+    void setItalicAngle(final int italicAngle);
 
     /**
      * Sets the font's default width
-     * @param width default width
+     * 
+     * @param width
+     *            default width
      */
-    void setMissingWidth(int width);
+    void setMissingWidth(final int width);
 
     /**
      * Sets the font type.
-     * @param fontType font type
+     * 
+     * @param fontType
+     *            font type
      */
-    void setFontType(FontType fontType);
+    void setFontType(final FontType fontType);
 
     /**
      * Sets the index of the first character in the character table.
-     * @param index index of first character
+     * 
+     * @param index
+     *            index of first character
      */
-    void setFirstChar(int index);
+    void setFirstChar(final int index);
 
     /**
      * Sets the index of the last character in the character table.
-     * @param index index of the last character
+     * 
+     * @param index
+     *            index of the last character
      */
-    void setLastChar(int index);
+    void setLastChar(final int index);
 
     /**
      * Enables/disabled kerning.
-     * @param enabled True if kerning should be enabled if available
+     * 
+     * @param enabled
+     *            True if kerning should be enabled if available
      */
-    void setKerningEnabled(boolean enabled);
+    void setKerningEnabled(final boolean enabled);
 
     /**
      * Enables/disabled advanced typographic features.
-     * @param enabled true if advanced typographic features should be enabled if available
+     * 
+     * @param enabled
+     *            true if advanced typographic features should be enabled if
+     *            available
      */
-    void setAdvancedEnabled(boolean enabled);
+    void setAdvancedEnabled(final boolean enabled);
 
     /**
      * Adds an entry to the kerning table.
-     * @param key Kerning key
-     * @param value Kerning value
+     * 
+     * @param key
+     *            Kerning key
+     * @param value
+     *            Kerning value
      */
-    void putKerningEntry(Integer key, Map<Integer, Integer> value);
+    void putKerningEntry(final Integer key, final Map<Integer, Integer> value);
 
 }

@@ -22,10 +22,9 @@ package org.apache.fop.render.pdf;
 import java.io.OutputStream;
 import java.util.Map;
 
-import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
+import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.pdf.PDFDocument;
 import org.apache.fop.pdf.PDFPage;
@@ -37,40 +36,43 @@ import org.apache.fop.render.RendererContext;
 import org.apache.fop.render.RendererContextConstants;
 
 /**
- * PDF XML handler for SVG (uses Apache Batik).
- * This handler handles XML for foreign objects when rendering to PDF.
- * It renders SVG to the PDF document using the PDFGraphics2D.
- * The properties from the PDF renderer are subject to change.
+ * PDF XML handler for SVG (uses Apache Batik). This handler handles XML for
+ * foreign objects when rendering to PDF. It renders SVG to the PDF document
+ * using the PDFGraphics2D. The properties from the PDF renderer are subject to
+ * change.
  */
-public class PDFSVGHandler extends AbstractGenericSVGHandler
-            implements PDFRendererContextConstants {
-
-    /** logging instance */
-    private static Log log = LogFactory.getLog(PDFSVGHandler.class);
+@Slf4j
+public class PDFSVGHandler extends AbstractGenericSVGHandler implements
+PDFRendererContextConstants {
 
     /**
      * Get the pdf information from the render context.
      *
-     * @param context the renderer context
+     * @param context
+     *            the renderer context
      * @return the pdf information retrieved from the context
      */
-    public static PDFInfo getPDFInfo(RendererContext context) {
-        PDFInfo pdfi = new PDFInfo();
-        pdfi.pdfDoc = (PDFDocument)context.getProperty(PDF_DOCUMENT);
-        pdfi.outputStream = (OutputStream)context.getProperty(OUTPUT_STREAM);
-        //pdfi.pdfState = (PDFState)context.getProperty(PDF_STATE);
-        pdfi.pdfPage = (PDFPage)context.getProperty(PDF_PAGE);
-        pdfi.pdfContext = (PDFResourceContext)context.getProperty(PDF_CONTEXT);
-        //pdfi.currentStream = (PDFStream)context.getProperty(PDF_STREAM);
-        pdfi.width = ((Integer)context.getProperty(WIDTH)).intValue();
-        pdfi.height = ((Integer)context.getProperty(HEIGHT)).intValue();
-        pdfi.fi = (FontInfo)context.getProperty(PDF_FONT_INFO);
-        pdfi.currentFontName = (String)context.getProperty(PDF_FONT_NAME);
-        pdfi.currentFontSize = ((Integer)context.getProperty(PDF_FONT_SIZE)).intValue();
-        pdfi.currentXPosition = ((Integer)context.getProperty(XPOS)).intValue();
-        pdfi.currentYPosition = ((Integer)context.getProperty(YPOS)).intValue();
-        pdfi.cfg = (Configuration)context.getProperty(HANDLER_CONFIGURATION);
-        Map foreign = (Map)context.getProperty(RendererContextConstants.FOREIGN_ATTRIBUTES);
+    public static PDFInfo getPDFInfo(final RendererContext context) {
+        final PDFInfo pdfi = new PDFInfo();
+        pdfi.pdfDoc = (PDFDocument) context.getProperty(PDF_DOCUMENT);
+        pdfi.outputStream = (OutputStream) context.getProperty(OUTPUT_STREAM);
+        // pdfi.pdfState = (PDFState)context.getProperty(PDF_STATE);
+        pdfi.pdfPage = (PDFPage) context.getProperty(PDF_PAGE);
+        pdfi.pdfContext = (PDFResourceContext) context.getProperty(PDF_CONTEXT);
+        // pdfi.currentStream = (PDFStream)context.getProperty(PDF_STREAM);
+        pdfi.width = ((Integer) context.getProperty(WIDTH)).intValue();
+        pdfi.height = ((Integer) context.getProperty(HEIGHT)).intValue();
+        pdfi.fi = (FontInfo) context.getProperty(PDF_FONT_INFO);
+        pdfi.currentFontName = (String) context.getProperty(PDF_FONT_NAME);
+        pdfi.currentFontSize = ((Integer) context.getProperty(PDF_FONT_SIZE))
+                .intValue();
+        pdfi.currentXPosition = ((Integer) context.getProperty(XPOS))
+                .intValue();
+        pdfi.currentYPosition = ((Integer) context.getProperty(YPOS))
+                .intValue();
+        pdfi.cfg = (Configuration) context.getProperty(HANDLER_CONFIGURATION);
+        final Map foreign = (Map) context
+                .getProperty(RendererContextConstants.FOREIGN_ATTRIBUTES);
         pdfi.paintAsBitmap = ImageHandlerUtil.isConversionModeBitmap(foreign);
         return pdfi;
     }
@@ -80,37 +82,38 @@ public class PDFSVGHandler extends AbstractGenericSVGHandler
      */
     public static class PDFInfo {
         /** see PDF_DOCUMENT */
-        public PDFDocument pdfDoc;                              // CSOK: VisibilityModifier
+        public PDFDocument pdfDoc; // CSOK: VisibilityModifier
         /** see OUTPUT_STREAM */
-        public OutputStream outputStream;                       // CSOK: VisibilityModifier
+        public OutputStream outputStream; // CSOK: VisibilityModifier
         /** see PDF_PAGE */
-        public PDFPage pdfPage;                                 // CSOK: VisibilityModifier
+        public PDFPage pdfPage; // CSOK: VisibilityModifier
         /** see PDF_CONTEXT */
-        public PDFResourceContext pdfContext;                   // CSOK: VisibilityModifier
+        public PDFResourceContext pdfContext; // CSOK: VisibilityModifier
         /** see PDF_STREAM */
-        //public PDFStream currentStream;
+        // public PDFStream currentStream;
         /** see PDF_WIDTH */
-        public int width;                                       // CSOK: VisibilityModifier
+        public int width; // CSOK: VisibilityModifier
         /** see PDF_HEIGHT */
-        public int height;                                      // CSOK: VisibilityModifier
+        public int height; // CSOK: VisibilityModifier
         /** see PDF_FONT_INFO */
-        public FontInfo fi;                                     // CSOK: VisibilityModifier
+        public FontInfo fi; // CSOK: VisibilityModifier
         /** see PDF_FONT_NAME */
-        public String currentFontName;                          // CSOK: VisibilityModifier
+        public String currentFontName; // CSOK: VisibilityModifier
         /** see PDF_FONT_SIZE */
-        public int currentFontSize;                             // CSOK: VisibilityModifier
+        public int currentFontSize; // CSOK: VisibilityModifier
         /** see PDF_XPOS */
-        public int currentXPosition;                            // CSOK: VisibilityModifier
+        public int currentXPosition; // CSOK: VisibilityModifier
         /** see PDF_YPOS */
-        public int currentYPosition;                            // CSOK: VisibilityModifier
+        public int currentYPosition; // CSOK: VisibilityModifier
         /** see PDF_HANDLER_CONFIGURATION */
-        public Configuration cfg;                               // CSOK: VisibilityModifier
+        public Configuration cfg; // CSOK: VisibilityModifier
         /** true if SVG should be rendered as a bitmap instead of natively */
-        public boolean paintAsBitmap;                           // CSOK: VisibilityModifier
+        public boolean paintAsBitmap; // CSOK: VisibilityModifier
     }
 
     /** {@inheritDoc} */
-    public boolean supportsRenderer(Renderer renderer) {
+    @Override
+    public boolean supportsRenderer(final Renderer renderer) {
         return false;
     }
 }

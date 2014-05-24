@@ -22,55 +22,64 @@ package org.apache.xmlgraphics.image.loader;
 import java.util.Map;
 
 /**
- * Represents an image that may not have been fully loaded. Usually, the loading only goes as far
- * as necessary to know the intrinsic size of the image. The image will only fully loaded later
- * when the image needs to be presented in a particular format so the consuming component can
- * actually process it. The "preloading" is done so a layout engine can work with the image without
+ * Represents an image that may not have been fully loaded. Usually, the loading
+ * only goes as far as necessary to know the intrinsic size of the image. The
+ * image will only fully loaded later when the image needs to be presented in a
+ * particular format so the consuming component can actually process it. The
+ * "preloading" is done so a layout engine can work with the image without
  * having to fully load it (in memory).
  */
 public class ImageInfo {
 
     /**
-     * Key to register the "original object" among the custom objects of an ImageInfo instance.
+     * Key to register the "original object" among the custom objects of an
+     * ImageInfo instance.
+     * 
      * @see #getOriginalImage()
      */
     public static final Object ORIGINAL_IMAGE = Image.class;
 
     /**
-     * Key to register information about additional (sub-)images in the image file after the
-     * selected one. Valid values for this key is either a positive Integer or the constant
-     * {@link Boolean#TRUE} or {@link Boolean#FALSE}. A value of TRUE indicates that there are
-     * more subimages available but the exact number of additional images has not been determined
-     * for performance reasons.
+     * Key to register information about additional (sub-)images in the image
+     * file after the selected one. Valid values for this key is either a
+     * positive Integer or the constant {@link Boolean#TRUE} or
+     * {@link Boolean#FALSE}. A value of TRUE indicates that there are more
+     * subimages available but the exact number of additional images has not
+     * been determined for performance reasons.
      */
     public static final Object HAS_MORE_IMAGES = "HAS_MORE_IMAGES";
 
     /** Original URI the image was accessed with */
-    private String originalURI;
+    private final String originalURI;
     /** MIME type of the image */
-    private String mimeType;
+    private final String mimeType;
 
     /** the image size */
     private ImageSize size;
 
     /**
-     * Map of custom objects that components further down the processing pipeline might need.
-     * Example: The DOM of an XML document.
+     * Map of custom objects that components further down the processing
+     * pipeline might need. Example: The DOM of an XML document.
      */
-    private Map customObjects = new java.util.HashMap();
+    private final Map customObjects = new java.util.HashMap();
 
     /**
      * Main constructor.
-     * @param originalURI the original URI that was specified by the user (not the resolved URI!)
-     * @param mimeType the MIME type of the image
+     * 
+     * @param originalURI
+     *            the original URI that was specified by the user (not the
+     *            resolved URI!)
+     * @param mimeType
+     *            the MIME type of the image
      */
-    public ImageInfo(String originalURI, String mimeType) {
+    public ImageInfo(final String originalURI, final String mimeType) {
         this.originalURI = originalURI;
         this.mimeType = mimeType;
     }
 
     /**
      * Returns the original URI of the image.
+     * 
      * @return the original URI
      */
     public String getOriginalURI() {
@@ -79,6 +88,7 @@ public class ImageInfo {
 
     /**
      * Returns the image's MIME type.
+     * 
      * @return the MIME type
      */
     public String getMimeType() {
@@ -87,6 +97,7 @@ public class ImageInfo {
 
     /**
      * Returns the image's intrinsic size.
+     * 
      * @return the image size
      */
     public ImageSize getSize() {
@@ -95,14 +106,17 @@ public class ImageInfo {
 
     /**
      * Sets the image's intrinsic size.
-     * @param size the size
+     * 
+     * @param size
+     *            the size
      */
-    public void setSize(ImageSize size) {
+    public void setSize(final ImageSize size) {
         this.size = size;
     }
 
     /**
      * Returns a Map of custom objects associated with this instance.
+     * 
      * @return the Map of custom objects
      */
     public Map getCustomObjects() {
@@ -110,20 +124,23 @@ public class ImageInfo {
     }
 
     /**
-     * Returns the original Image instance if such an Image instance is created while building
-     * this ImageInfo object. Some images cannot be "preloaded". They have to be fully loaded
-     * in order to determine the intrinsic image size. This method allows access to that fully
-     * loaded image so no additional re-loading has to be done later.
+     * Returns the original Image instance if such an Image instance is created
+     * while building this ImageInfo object. Some images cannot be "preloaded".
+     * They have to be fully loaded in order to determine the intrinsic image
+     * size. This method allows access to that fully loaded image so no
+     * additional re-loading has to be done later.
      * <p>
      * This method is short for: (Image)this.customObjects.get(ORIGINAL_IMAGE);
+     * 
      * @return the original Image instance or null if none is set
      * @see #ORIGINAL_IMAGE
      */
     public Image getOriginalImage() {
-        return (Image)this.customObjects.get(ORIGINAL_IMAGE);
+        return (Image) this.customObjects.get(ORIGINAL_IMAGE);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return getOriginalURI() + " (" + getMimeType() + ")";
     }

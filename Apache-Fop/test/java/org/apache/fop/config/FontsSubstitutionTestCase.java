@@ -22,7 +22,6 @@ package org.apache.fop.config;
 import java.io.File;
 
 import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.fonts.CustomFontCollection;
 import org.apache.fop.fonts.Font;
 import org.apache.fop.fonts.FontCollection;
@@ -35,26 +34,26 @@ import org.apache.fop.render.PrintRenderer;
 /**
  * Tests the font substitution mechanism
  */
-public class FontsSubstitutionTestCase extends
-        BaseConstructiveUserConfigTest {
+public class FontsSubstitutionTestCase extends BaseConstructiveUserConfigTest {
 
     @Override
-    protected byte[] convertFO(File foFile, FOUserAgent ua, boolean dumpPdfFile)
-            throws Exception {
-        PrintRenderer renderer = (PrintRenderer) ua.getRendererFactory()
-                .createRenderer(ua, MimeConstants.MIME_PDF);
-        FontInfo fontInfo = new FontInfo();
+    protected byte[] convertFO(final File foFile, final FOUserAgent ua,
+            final boolean dumpPdfFile) throws Exception {
+        final PrintRenderer renderer = (PrintRenderer) ua.getRendererFactory()
+                .createRenderer(ua,
+                        org.apache.xmlgraphics.util.MimeConstants.MIME_PDF);
+        final FontInfo fontInfo = new FontInfo();
         renderer.setupFontInfo(fontInfo);
-        FontManager fontManager = ua.getFactory().getFontManager();
-        FontCollection[] fontCollections = new FontCollection[] {
+        final FontManager fontManager = ua.getFactory().getFontManager();
+        final FontCollection[] fontCollections = new FontCollection[] {
                 new Base14FontCollection(fontManager.isBase14KerningEnabled()),
-                new CustomFontCollection(renderer.getFontResolver(), renderer.getFontList(),
-                                         ua.isComplexScriptFeaturesEnabled())
-        };
+                new CustomFontCollection(renderer.getFontResolver(),
+                        renderer.getFontList(),
+                        ua.isComplexScriptFeaturesEnabled()) };
         fontManager.setup(fontInfo, fontCollections);
-        FontTriplet triplet = new FontTriplet("Times", "italic",
+        final FontTriplet triplet = new FontTriplet("Times", "italic",
                 Font.WEIGHT_NORMAL);
-        String internalFontKey = fontInfo.getInternalFontKey(triplet);
+        final String internalFontKey = fontInfo.getInternalFontKey(triplet);
         // Times italic should now be mapped to the 15th font (custom font)
         // not the original base 14 (F6)
         if (!"F15".equals(internalFontKey)) {

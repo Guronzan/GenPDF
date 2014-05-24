@@ -64,7 +64,7 @@ public final class PageExtractor implements DSCParserConstants {
      */
     public static void extractPages(final InputStream in,
             final OutputStream out, final int from, final int to)
-                    throws IOException, DSCException {
+            throws IOException, DSCException {
         if (from <= 0) {
             throw new IllegalArgumentException(
                     "'from' page number must be 1 or higher");

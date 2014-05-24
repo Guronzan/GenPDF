@@ -31,50 +31,57 @@ import org.apache.fop.layoutmgr.LayoutManager;
 /**
  * LayoutManager for the fo:page-number-citation-last formatting object
  */
-public class PageNumberCitationLastLayoutManager extends AbstractPageNumberCitationLayoutManager {
+public class PageNumberCitationLastLayoutManager extends
+        AbstractPageNumberCitationLayoutManager {
 
     /**
      * Constructor
      *
-     * @param node the formatting object that creates this area
-     * TODO better retrieval of font info
+     * @param node
+     *            the formatting object that creates this area TODO better
+     *            retrieval of font info
      */
-    public PageNumberCitationLastLayoutManager(PageNumberCitationLast node) {
+    public PageNumberCitationLastLayoutManager(final PageNumberCitationLast node) {
         super(node);
-        fobj = node;
+        this.fobj = node;
     }
 
     /** {@inheritDoc} */
-    public InlineArea get(LayoutContext context) {
-        curArea = getPageNumberCitationLastInlineArea(parentLayoutManager);
-        return curArea;
+    @Override
+    public InlineArea get(final LayoutContext context) {
+        this.curArea = getPageNumberCitationLastInlineArea(this.parentLayoutManager);
+        return this.curArea;
     }
 
     /**
-     * if id can be resolved then simply return a word, otherwise
-     * return a resolvable area
+     * if id can be resolved then simply return a word, otherwise return a
+     * resolvable area
      */
-    private InlineArea getPageNumberCitationLastInlineArea(LayoutManager parentLM) {
+    private InlineArea getPageNumberCitationLastInlineArea(
+            final LayoutManager parentLM) {
         TextArea text = null;
-        int level = getBidiLevel();
-        if (!getPSLM().associateLayoutManagerID(fobj.getRefId())) {
-            text = new UnresolvedPageNumber(fobj.getRefId(), font, UnresolvedPageNumber.LAST);
-            getPSLM().addUnresolvedArea(fobj.getRefId(), (Resolvable)text);
-            String str = "MMM"; // reserve three spaces for page number
-            int width = getStringWidth(str);
+        final int level = getBidiLevel();
+        if (!getPSLM().associateLayoutManagerID(this.fobj.getRefId())) {
+            text = new UnresolvedPageNumber(this.fobj.getRefId(), this.font,
+                    UnresolvedPageNumber.LAST);
+            getPSLM()
+                    .addUnresolvedArea(this.fobj.getRefId(), (Resolvable) text);
+            final String str = "MMM"; // reserve three spaces for page number
+            final int width = getStringWidth(str);
             text.setBidiLevel(level);
             text.setIPD(width);
-            resolved = false;
+            this.resolved = false;
         } else {
-            PageViewport page = getPSLM().getLastPVWithID(fobj.getRefId());
-            String str = page.getPageNumberString();
+            final PageViewport page = getPSLM().getLastPVWithID(
+                    this.fobj.getRefId());
+            final String str = page.getPageNumberString();
             // get page string from parent, build area
             text = new TextArea();
-            int width = getStringWidth(str);
+            final int width = getStringWidth(str);
             text.setBidiLevel(level);
             text.addWord(str, 0, level);
             text.setIPD(width);
-            resolved = true;
+            this.resolved = true;
         }
 
         updateTextAreaTraits(text);

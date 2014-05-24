@@ -29,31 +29,36 @@ public class CIDFontType extends ValuedEnum {
     /**
      * CID Font Type 0 (based on Type 1 format)
      */
-    public static final CIDFontType CIDTYPE0 = new CIDFontType("CIDFontType0", 0);
+    public static final CIDFontType CIDTYPE0 = new CIDFontType("CIDFontType0",
+            0);
 
     /**
      * CID Font Type 2 (based on TrueType format)
      */
-    public static final CIDFontType CIDTYPE2 = new CIDFontType("CIDFontType2", 2);
-
+    public static final CIDFontType CIDTYPE2 = new CIDFontType("CIDFontType2",
+            2);
 
     /**
      * Construct a CID font type.
-     * @param name a type name
-     * @param value a type value
+     * 
+     * @param name
+     *            a type name
+     * @param value
+     *            a type value
      * @see org.apache.avalon.framework.Enum#Enum(String)
      */
-    protected CIDFontType(String name, int value) {
+    protected CIDFontType(final String name, final int value) {
         super(name, value);
     }
 
-
     /**
      * Returns the CIDFontType by name.
-     * @param name Name of the CID font type to look up
+     * 
+     * @param name
+     *            Name of the CID font type to look up
      * @return FontType the CID font type
      */
-    public static CIDFontType byName(String name) {
+    public static CIDFontType byName(final String name) {
         if (name.equalsIgnoreCase(CIDFontType.CIDTYPE0.getName())) {
             return CIDFontType.CIDTYPE0;
         } else if (name.equalsIgnoreCase(CIDFontType.CIDTYPE2.getName())) {
@@ -63,19 +68,21 @@ public class CIDFontType extends ValuedEnum {
         }
     }
 
-
     /**
      * Returns the CID FontType by value.
-     * @param value Value of the CID font type to look up
+     * 
+     * @param value
+     *            Value of the CID font type to look up
      * @return FontType the CID font type
      */
-    public static CIDFontType byValue(int value) {
+    public static CIDFontType byValue(final int value) {
         if (value == CIDFontType.CIDTYPE0.getValue()) {
             return CIDFontType.CIDTYPE0;
         } else if (value == CIDFontType.CIDTYPE2.getValue()) {
             return CIDFontType.CIDTYPE2;
         } else {
-            throw new IllegalArgumentException("Invalid CID font type: " + value);
+            throw new IllegalArgumentException("Invalid CID font type: "
+                    + value);
         }
     }
 

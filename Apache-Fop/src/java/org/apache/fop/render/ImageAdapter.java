@@ -23,25 +23,33 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 
 /**
- * This interface represents an optional feature that can be provided by
- * a renderer. It is exposed by calling the getImageAdapter() method
- * on the renderer. Renderers that support this feature allow painting
- * of images (RendererImage instances).
+ * This interface represents an optional feature that can be provided by a
+ * renderer. It is exposed by calling the getImageAdapter() method on the
+ * renderer. Renderers that support this feature allow painting of images
+ * (RendererImage instances).
  */
 public interface ImageAdapter {
 
     /**
      * Paints an image at the given position.
-     * @param image the image which will be painted
-     * @param context the renderer context for the current renderer
-     * @param x X position of the image (in millipoints)
-     * @param y Y position of the image (in millipoints)
-     * @param width width of the image (in millipoints)
-     * @param height height of the image (in millipoints)
-     * @throws IOException In case of an I/O error while writing the output format
+     * 
+     * @param image
+     *            the image which will be painted
+     * @param context
+     *            the renderer context for the current renderer
+     * @param x
+     *            X position of the image (in millipoints)
+     * @param y
+     *            Y position of the image (in millipoints)
+     * @param width
+     *            width of the image (in millipoints)
+     * @param height
+     *            height of the image (in millipoints)
+     * @throws IOException
+     *             In case of an I/O error while writing the output format
      */
-    void paintImage(RenderedImage image,
-            RendererContext context,
-            int x, int y, int width, int height) throws IOException;
+    void paintImage(final RenderedImage image, final RendererContext context,
+            final int x, final int y, final int width, final int height)
+            throws IOException;
 
 }

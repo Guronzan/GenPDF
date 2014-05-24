@@ -19,41 +19,48 @@
 
 package org.apache.fop.render.ps;
 
-import org.w3c.dom.Element;
-
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.SVGTextElementBridge;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.TextPainter;
+import org.w3c.dom.Element;
 
 /**
- * <p>Bridge class for the &lt;text> element.
- * This bridge will use the direct text painter if the text
- * for the element is simple.</p>
+ * <p>
+ * Bridge class for the &lt;text> element. This bridge will use the direct text
+ * painter if the text for the element is simple.
+ * </p>
  */
 public class PSTextElementBridge extends SVGTextElementBridge {
 
-    private TextPainter textPainter;
+    private final TextPainter textPainter;
 
     /**
      * Constructs a new bridge for the &lt;text> element.
-     * @param textPainter the text painter to use
+     * 
+     * @param textPainter
+     *            the text painter to use
      */
-    public PSTextElementBridge(TextPainter textPainter) {
+    public PSTextElementBridge(final TextPainter textPainter) {
         this.textPainter = textPainter;
     }
 
     /**
-     * Create a text element bridge.
-     * This set the text painter on the node if the text is simple.
-     * @param ctx the bridge context
-     * @param e the svg element
+     * Create a text element bridge. This set the text painter on the node if
+     * the text is simple.
+     * 
+     * @param ctx
+     *            the bridge context
+     * @param e
+     *            the svg element
      * @return the text graphics node created by the super class
      */
-    public GraphicsNode createGraphicsNode(BridgeContext ctx, Element e) {
-        GraphicsNode node = super.createGraphicsNode(ctx, e);
-        ((TextNode)node).setTextPainter(getTextPainter());
+    @Override
+    public GraphicsNode createGraphicsNode(final BridgeContext ctx,
+            final Element e) {
+        final GraphicsNode node = super.createGraphicsNode(ctx, e);
+        ((TextNode) node).setTextPainter(getTextPainter());
         return node;
     }
 

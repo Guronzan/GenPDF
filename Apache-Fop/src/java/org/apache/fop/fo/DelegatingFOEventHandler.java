@@ -19,8 +19,6 @@
 
 package org.apache.fop.fo;
 
-import org.xml.sax.SAXException;
-
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FormattingResults;
 import org.apache.fop.fo.extensions.ExternalDocument;
@@ -54,6 +52,7 @@ import org.apache.fop.fo.pagination.PageSequence;
 import org.apache.fop.fo.pagination.Root;
 import org.apache.fop.fo.pagination.StaticContent;
 import org.apache.fop.fonts.FontInfo;
+import org.xml.sax.SAXException;
 
 /**
  * This class delegates all FO events to another FOEventHandler instance.
@@ -65,346 +64,348 @@ public abstract class DelegatingFOEventHandler extends FOEventHandler {
     /**
      * Creates a new instance that delegates events to the given object.
      *
-     * @param delegate the object to which all FO events will be forwarded
+     * @param delegate
+     *            the object to which all FO events will be forwarded
      */
-    public DelegatingFOEventHandler(FOEventHandler delegate) {
+    public DelegatingFOEventHandler(final FOEventHandler delegate) {
         super(delegate.getUserAgent());
         this.delegate = delegate;
     }
 
     @Override
     public FOUserAgent getUserAgent() {
-        return delegate.getUserAgent();
+        return this.delegate.getUserAgent();
     }
 
     @Override
     public FontInfo getFontInfo() {
-        return delegate.getFontInfo();
+        return this.delegate.getFontInfo();
     }
 
     @Override
     public void startDocument() throws SAXException {
-        delegate.startDocument();
+        this.delegate.startDocument();
     }
 
     @Override
     public void endDocument() throws SAXException {
-        delegate.endDocument();
+        this.delegate.endDocument();
     }
 
     @Override
-    public void startRoot(Root root) {
-        delegate.startRoot(root);
+    public void startRoot(final Root root) {
+        this.delegate.startRoot(root);
     }
 
     @Override
-    public void endRoot(Root root) {
-        delegate.endRoot(root);
+    public void endRoot(final Root root) {
+        this.delegate.endRoot(root);
     }
 
     @Override
-    public void startPageSequence(PageSequence pageSeq) {
-        delegate.startPageSequence(pageSeq);
+    public void startPageSequence(final PageSequence pageSeq) {
+        this.delegate.startPageSequence(pageSeq);
     }
 
     @Override
-    public void endPageSequence(PageSequence pageSeq) {
-        delegate.endPageSequence(pageSeq);
+    public void endPageSequence(final PageSequence pageSeq) {
+        this.delegate.endPageSequence(pageSeq);
     }
 
     @Override
-    public void startPageNumber(PageNumber pagenum) {
-        delegate.startPageNumber(pagenum);
+    public void startPageNumber(final PageNumber pagenum) {
+        this.delegate.startPageNumber(pagenum);
     }
 
     @Override
-    public void endPageNumber(PageNumber pagenum) {
-        delegate.endPageNumber(pagenum);
+    public void endPageNumber(final PageNumber pagenum) {
+        this.delegate.endPageNumber(pagenum);
     }
 
     @Override
-    public void startPageNumberCitation(PageNumberCitation pageCite) {
-        delegate.startPageNumberCitation(pageCite);
+    public void startPageNumberCitation(final PageNumberCitation pageCite) {
+        this.delegate.startPageNumberCitation(pageCite);
     }
 
     @Override
-    public void endPageNumberCitation(PageNumberCitation pageCite) {
-        delegate.endPageNumberCitation(pageCite);
+    public void endPageNumberCitation(final PageNumberCitation pageCite) {
+        this.delegate.endPageNumberCitation(pageCite);
     }
 
     @Override
-    public void startPageNumberCitationLast(PageNumberCitationLast pageLast) {
-        delegate.startPageNumberCitationLast(pageLast);
+    public void startPageNumberCitationLast(
+            final PageNumberCitationLast pageLast) {
+        this.delegate.startPageNumberCitationLast(pageLast);
     }
 
     @Override
-    public void endPageNumberCitationLast(PageNumberCitationLast pageLast) {
-        delegate.endPageNumberCitationLast(pageLast);
+    public void endPageNumberCitationLast(final PageNumberCitationLast pageLast) {
+        this.delegate.endPageNumberCitationLast(pageLast);
     }
 
     @Override
-    public void startFlow(Flow fl) {
-        delegate.startFlow(fl);
+    public void startFlow(final Flow fl) {
+        this.delegate.startFlow(fl);
     }
 
     @Override
-    public void endFlow(Flow fl) {
-        delegate.endFlow(fl);
+    public void endFlow(final Flow fl) {
+        this.delegate.endFlow(fl);
     }
 
     @Override
-    public void startBlock(Block bl) {
-        delegate.startBlock(bl);
+    public void startBlock(final Block bl) {
+        this.delegate.startBlock(bl);
     }
 
     @Override
-    public void endBlock(Block bl) {
-        delegate.endBlock(bl);
+    public void endBlock(final Block bl) {
+        this.delegate.endBlock(bl);
     }
 
     @Override
-    public void startBlockContainer(BlockContainer blc) {
-        delegate.startBlockContainer(blc);
+    public void startBlockContainer(final BlockContainer blc) {
+        this.delegate.startBlockContainer(blc);
     }
 
     @Override
-    public void endBlockContainer(BlockContainer blc) {
-        delegate.endBlockContainer(blc);
+    public void endBlockContainer(final BlockContainer blc) {
+        this.delegate.endBlockContainer(blc);
     }
 
     @Override
-    public void startInline(Inline inl) {
-        delegate.startInline(inl);
+    public void startInline(final Inline inl) {
+        this.delegate.startInline(inl);
     }
 
     @Override
-    public void endInline(Inline inl) {
-        delegate.endInline(inl);
+    public void endInline(final Inline inl) {
+        this.delegate.endInline(inl);
     }
 
     @Override
-    public void startTable(Table tbl) {
-        delegate.startTable(tbl);
+    public void startTable(final Table tbl) {
+        this.delegate.startTable(tbl);
     }
 
     @Override
-    public void endTable(Table tbl) {
-        delegate.endTable(tbl);
+    public void endTable(final Table tbl) {
+        this.delegate.endTable(tbl);
     }
 
     @Override
-    public void startColumn(TableColumn tc) {
-        delegate.startColumn(tc);
+    public void startColumn(final TableColumn tc) {
+        this.delegate.startColumn(tc);
     }
 
     @Override
-    public void endColumn(TableColumn tc) {
-        delegate.endColumn(tc);
+    public void endColumn(final TableColumn tc) {
+        this.delegate.endColumn(tc);
     }
 
     @Override
-    public void startHeader(TableHeader header) {
-        delegate.startHeader(header);
+    public void startHeader(final TableHeader header) {
+        this.delegate.startHeader(header);
     }
 
     @Override
-    public void endHeader(TableHeader header) {
-        delegate.endHeader(header);
+    public void endHeader(final TableHeader header) {
+        this.delegate.endHeader(header);
     }
 
     @Override
-    public void startFooter(TableFooter footer) {
-        delegate.startFooter(footer);
+    public void startFooter(final TableFooter footer) {
+        this.delegate.startFooter(footer);
     }
 
     @Override
-    public void endFooter(TableFooter footer) {
-        delegate.endFooter(footer);
+    public void endFooter(final TableFooter footer) {
+        this.delegate.endFooter(footer);
     }
 
     @Override
-    public void startBody(TableBody body) {
-        delegate.startBody(body);
+    public void startBody(final TableBody body) {
+        this.delegate.startBody(body);
     }
 
     @Override
-    public void endBody(TableBody body) {
-        delegate.endBody(body);
+    public void endBody(final TableBody body) {
+        this.delegate.endBody(body);
     }
 
     @Override
-    public void startRow(TableRow tr) {
-        delegate.startRow(tr);
+    public void startRow(final TableRow tr) {
+        this.delegate.startRow(tr);
     }
 
     @Override
-    public void endRow(TableRow tr) {
-        delegate.endRow(tr);
+    public void endRow(final TableRow tr) {
+        this.delegate.endRow(tr);
     }
 
     @Override
-    public void startCell(TableCell tc) {
-        delegate.startCell(tc);
+    public void startCell(final TableCell tc) {
+        this.delegate.startCell(tc);
     }
 
     @Override
-    public void endCell(TableCell tc) {
-        delegate.endCell(tc);
+    public void endCell(final TableCell tc) {
+        this.delegate.endCell(tc);
     }
 
     @Override
-    public void startList(ListBlock lb) {
-        delegate.startList(lb);
+    public void startList(final ListBlock lb) {
+        this.delegate.startList(lb);
     }
 
     @Override
-    public void endList(ListBlock lb) {
-        delegate.endList(lb);
+    public void endList(final ListBlock lb) {
+        this.delegate.endList(lb);
     }
 
     @Override
-    public void startListItem(ListItem li) {
-        delegate.startListItem(li);
+    public void startListItem(final ListItem li) {
+        this.delegate.startListItem(li);
     }
 
     @Override
-    public void endListItem(ListItem li) {
-        delegate.endListItem(li);
+    public void endListItem(final ListItem li) {
+        this.delegate.endListItem(li);
     }
 
     @Override
-    public void startListLabel(ListItemLabel listItemLabel) {
-        delegate.startListLabel(listItemLabel);
+    public void startListLabel(final ListItemLabel listItemLabel) {
+        this.delegate.startListLabel(listItemLabel);
     }
 
     @Override
-    public void endListLabel(ListItemLabel listItemLabel) {
-        delegate.endListLabel(listItemLabel);
+    public void endListLabel(final ListItemLabel listItemLabel) {
+        this.delegate.endListLabel(listItemLabel);
     }
 
     @Override
-    public void startListBody(ListItemBody listItemBody) {
-        delegate.startListBody(listItemBody);
+    public void startListBody(final ListItemBody listItemBody) {
+        this.delegate.startListBody(listItemBody);
     }
 
     @Override
-    public void endListBody(ListItemBody listItemBody) {
-        delegate.endListBody(listItemBody);
+    public void endListBody(final ListItemBody listItemBody) {
+        this.delegate.endListBody(listItemBody);
     }
 
     @Override
-    public void startStatic(StaticContent staticContent) {
-        delegate.startStatic(staticContent);
+    public void startStatic(final StaticContent staticContent) {
+        this.delegate.startStatic(staticContent);
     }
 
     @Override
-    public void endStatic(StaticContent statisContent) {
-        delegate.endStatic(statisContent);
+    public void endStatic(final StaticContent statisContent) {
+        this.delegate.endStatic(statisContent);
     }
 
     @Override
     public void startMarkup() {
-        delegate.startMarkup();
+        this.delegate.startMarkup();
     }
 
     @Override
     public void endMarkup() {
-        delegate.endMarkup();
+        this.delegate.endMarkup();
     }
 
     @Override
-    public void startLink(BasicLink basicLink) {
-        delegate.startLink(basicLink);
+    public void startLink(final BasicLink basicLink) {
+        this.delegate.startLink(basicLink);
     }
 
     @Override
-    public void endLink(BasicLink basicLink) {
-        delegate.endLink(basicLink);
+    public void endLink(final BasicLink basicLink) {
+        this.delegate.endLink(basicLink);
     }
 
     @Override
-    public void image(ExternalGraphic eg) {
-        delegate.image(eg);
+    public void image(final ExternalGraphic eg) {
+        this.delegate.image(eg);
     }
 
     @Override
     public void pageRef() {
-        delegate.pageRef();
+        this.delegate.pageRef();
     }
 
     @Override
-    public void startInstreamForeignObject(InstreamForeignObject ifo) {
-        delegate.startInstreamForeignObject(ifo);
+    public void startInstreamForeignObject(final InstreamForeignObject ifo) {
+        this.delegate.startInstreamForeignObject(ifo);
     }
 
     @Override
-    public void endInstreamForeignObject(InstreamForeignObject ifo) {
-        delegate.endInstreamForeignObject(ifo);
+    public void endInstreamForeignObject(final InstreamForeignObject ifo) {
+        this.delegate.endInstreamForeignObject(ifo);
     }
 
     @Override
-    public void startFootnote(Footnote footnote) {
-        delegate.startFootnote(footnote);
+    public void startFootnote(final Footnote footnote) {
+        this.delegate.startFootnote(footnote);
     }
 
     @Override
-    public void endFootnote(Footnote footnote) {
-        delegate.endFootnote(footnote);
+    public void endFootnote(final Footnote footnote) {
+        this.delegate.endFootnote(footnote);
     }
 
     @Override
-    public void startFootnoteBody(FootnoteBody body) {
-        delegate.startFootnoteBody(body);
+    public void startFootnoteBody(final FootnoteBody body) {
+        this.delegate.startFootnoteBody(body);
     }
 
     @Override
-    public void endFootnoteBody(FootnoteBody body) {
-        delegate.endFootnoteBody(body);
+    public void endFootnoteBody(final FootnoteBody body) {
+        this.delegate.endFootnoteBody(body);
     }
 
     @Override
-    public void startLeader(Leader l) {
-        delegate.startLeader(l);
+    public void startLeader(final Leader l) {
+        this.delegate.startLeader(l);
     }
 
     @Override
-    public void endLeader(Leader l) {
-        delegate.endLeader(l);
+    public void endLeader(final Leader l) {
+        this.delegate.endLeader(l);
     }
 
     @Override
-    public void startWrapper(Wrapper wrapper) {
-        delegate.startWrapper(wrapper);
+    public void startWrapper(final Wrapper wrapper) {
+        this.delegate.startWrapper(wrapper);
     }
 
     @Override
-    public void endWrapper(Wrapper wrapper) {
-        delegate.endWrapper(wrapper);
+    public void endWrapper(final Wrapper wrapper) {
+        this.delegate.endWrapper(wrapper);
     }
 
     @Override
-    public void character(Character c) {
-        delegate.character(c);
+    public void character(final Character c) {
+        this.delegate.character(c);
     }
 
     @Override
-    public void characters(FOText foText) {
-        delegate.characters(foText);
+    public void characters(final FOText foText) {
+        this.delegate.characters(foText);
     }
 
     @Override
-    public void startExternalDocument(ExternalDocument document) {
-        delegate.startExternalDocument(document);
+    public void startExternalDocument(final ExternalDocument document) {
+        this.delegate.startExternalDocument(document);
     }
 
     @Override
-    public void endExternalDocument(ExternalDocument document) {
-        delegate.endExternalDocument(document);
+    public void endExternalDocument(final ExternalDocument document) {
+        this.delegate.endExternalDocument(document);
     }
 
     @Override
     public FormattingResults getResults() {
-        return delegate.getResults();
+        return this.delegate.getResults();
     }
 
 }

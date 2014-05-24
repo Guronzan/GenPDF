@@ -24,9 +24,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * Element for postscript setpagedevice instruction
- * This is a an extension which provides a pass-through value
- * dictionary object for the postscript setpagedevice instruction.
+ * Element for postscript setpagedevice instruction This is a an extension which
+ * provides a pass-through value dictionary object for the postscript
+ * setpagedevice instruction.
  */
 public class PSSetPageDevice extends PSExtensionAttachment {
     /** element name */
@@ -41,18 +41,23 @@ public class PSSetPageDevice extends PSExtensionAttachment {
 
     /**
      * default constructor
-     * @param content set page device dictionary
+     * 
+     * @param content
+     *            set page device dictionary
      */
-    public PSSetPageDevice(String content) {
+    public PSSetPageDevice(final String content) {
         super(content);
     }
 
     /**
      * constructor
-     * @param name name attribute of this setpagedevice content
-     * @param content set page device dictionary
+     * 
+     * @param name
+     *            name attribute of this setpagedevice content
+     * @param content
+     *            set page device dictionary
      */
-    public PSSetPageDevice(String name, String content) {
+    public PSSetPageDevice(final String name, final String content) {
         this(content);
         this.name = name;
     }
@@ -65,14 +70,16 @@ public class PSSetPageDevice extends PSExtensionAttachment {
 
     /** @return the name */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
      * Sets the name of the setup code object.
-     * @param name The name to set.
+     * 
+     * @param name
+     *            The name to set.
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -80,33 +87,40 @@ public class PSSetPageDevice extends PSExtensionAttachment {
      * @return a string representation of this object
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
-        return "PSSetPageDevice(name=" + getName() + ", content='" + getContent() + "')";
+        return "PSSetPageDevice(name=" + getName() + ", content='"
+                + getContent() + "')";
     }
 
     /**
      * @return a string representation of this object
      * @see org.apache.fop.render.ps.extensions.PSExtensionAttachment#getElement()
      */
+    @Override
     protected String getElement() {
         return ELEMENT;
     }
 
     /**
      * Generates SAX events representing the object's state.
-     * @param handler ContentHandler instance to send the SAX events to
-     * @throws SAXException if there's a problem generating the SAX events
+     * 
+     * @param handler
+     *            ContentHandler instance to send the SAX events to
+     * @throws SAXException
+     *             if there's a problem generating the SAX events
      * @see org.apache.xmlgraphics.util.XMLizable#toSAX(org.xml.sax.ContentHandler)
      */
-    public void toSAX(ContentHandler handler) throws SAXException {
-        AttributesImpl atts = new AttributesImpl();
-        if (name != null && name.length() > 0) {
-            atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", name);
+    @Override
+    public void toSAX(final ContentHandler handler) throws SAXException {
+        final AttributesImpl atts = new AttributesImpl();
+        if (this.name != null && this.name.length() > 0) {
+            atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", this.name);
         }
-        String element = getElement();
+        final String element = getElement();
         handler.startElement(CATEGORY, element, element, atts);
-        if (content != null && content.length() > 0) {
-            char[] chars = content.toCharArray();
+        if (this.content != null && this.content.length() > 0) {
+            final char[] chars = this.content.toCharArray();
             handler.characters(chars, 0, chars.length);
         }
         handler.endElement(CATEGORY, element, element);

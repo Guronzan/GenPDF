@@ -47,13 +47,16 @@ public abstract class AbstractResourcesDSCComment extends AbstractDSCComment {
 
     /**
      * Creates a new instance.
-     * @param resources a Collection of PSResource instances
+     * 
+     * @param resources
+     *            a Collection of PSResource instances
      */
-    public AbstractResourcesDSCComment(Collection resources) {
+    public AbstractResourcesDSCComment(final Collection resources) {
         addResources(resources);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasValues() {
         return true;
     }
@@ -66,18 +69,22 @@ public abstract class AbstractResourcesDSCComment extends AbstractDSCComment {
 
     /**
      * Adds a new resource.
-     * @param res the resource
+     * 
+     * @param res
+     *            the resource
      */
-    public void addResource(PSResource res) {
+    public void addResource(final PSResource res) {
         prepareResourceSet();
         this.resources.add(res);
     }
 
     /**
      * Adds a collection of resources.
-     * @param resources a Collection of PSResource instances.
+     * 
+     * @param resources
+     *            a Collection of PSResource instances.
      */
-    public void addResources(Collection resources) {
+    public void addResources(final Collection resources) {
         if (resources != null) {
             prepareResourceSet();
             this.resources.addAll(resources);
@@ -86,6 +93,7 @@ public abstract class AbstractResourcesDSCComment extends AbstractDSCComment {
 
     /**
      * Returns the set of resources associated with this DSC comment.
+     * 
      * @return the set of resources
      */
     public Set getResources() {
@@ -107,56 +115,60 @@ public abstract class AbstractResourcesDSCComment extends AbstractDSCComment {
     }
 
     /** {@inheritDoc} */
-    public void parseValue(String value) {
-        List params = splitParams(value);
+    @Override
+    public void parseValue(final String value) {
+        final List params = splitParams(value);
         String currentResourceType = null;
-        Iterator iter = params.iterator();
+        final Iterator iter = params.iterator();
         while (iter.hasNext()) {
-            String name = (String)iter.next();
+            final String name = (String) iter.next();
             if (RESOURCE_TYPES.contains(name)) {
                 currentResourceType = name;
             }
             if (currentResourceType == null) {
                 throw new IllegalArgumentException(
-                        "<resources> must begin with a resource type. Found: " + name);
+                        "<resources> must begin with a resource type. Found: "
+                                + name);
             }
             if (PSResource.TYPE_FONT.equals(currentResourceType)) {
-                String fontname = (String)iter.next();
+                final String fontname = (String) iter.next();
                 addResource(new PSResource(name, fontname));
             } else if (PSResource.TYPE_FORM.equals(currentResourceType)) {
-                String formname = (String)iter.next();
+                final String formname = (String) iter.next();
                 addResource(new PSResource(name, formname));
             } else if (PSResource.TYPE_PROCSET.equals(currentResourceType)) {
-                String procname = (String)iter.next();
-                String version = (String)iter.next();
-                String revision = (String)iter.next();
-                addResource(new PSProcSet(procname,
-                        Float.parseFloat(version), Integer.parseInt(revision)));
+                final String procname = (String) iter.next();
+                final String version = (String) iter.next();
+                final String revision = (String) iter.next();
+                addResource(new PSProcSet(procname, Float.parseFloat(version),
+                        Integer.parseInt(revision)));
             } else if (PSResource.TYPE_FILE.equals(currentResourceType)) {
-                String filename = (String)iter.next();
+                final String filename = (String) iter.next();
                 addResource(new PSResource(name, filename));
             } else {
-                throw new IllegalArgumentException("Invalid resource type: " + currentResourceType);
+                throw new IllegalArgumentException("Invalid resource type: "
+                        + currentResourceType);
             }
         }
     }
 
     /** {@inheritDoc} */
-    public void generate(PSGenerator gen) throws IOException {
-        if (resources == null || resources.size() == 0) {
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
+        if (this.resources == null || this.resources.size() == 0) {
             return;
         }
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         sb.append("%%").append(getName()).append(": ");
         boolean first = true;
-        Iterator i = resources.iterator();
+        final Iterator i = this.resources.iterator();
         while (i.hasNext()) {
             if (!first) {
                 gen.writeln(sb.toString());
                 sb.setLength(0);
                 sb.append("%%+ ");
             }
-            PSResource res = (PSResource)i.next();
+            final PSResource res = (PSResource) i.next();
             sb.append(res.getResourceSpecification());
             first = false;
         }

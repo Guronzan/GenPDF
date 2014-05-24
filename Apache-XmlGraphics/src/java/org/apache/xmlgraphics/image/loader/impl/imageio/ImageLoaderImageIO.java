@@ -78,6 +78,7 @@ public class ImageLoaderImageIO extends AbstractImageLoader {
     private static final String JPEG_METADATA_NODE = "javax_imageio_jpeg_image_1.0";
 
     private static final Set providersIgnoringICC = new HashSet(); // CSOK:
+
     // ConstantName
 
     /**
@@ -249,8 +250,8 @@ public class ImageLoaderImageIO extends AbstractImageLoader {
                                     value);
                             transparentColor = new Color(Integer.parseInt(st
                                     .nextToken()), Integer.parseInt(st
-                                            .nextToken()), Integer.parseInt(st
-                                                    .nextToken()));
+                                    .nextToken()), Integer.parseInt(st
+                                    .nextToken()));
                         }
                     }
                 }
@@ -406,8 +407,8 @@ public class ImageLoaderImageIO extends AbstractImageLoader {
     static {
         // TODO: This list could be kept in a resource file.
         providersIgnoringICC
-                .add("Standard PNG image reader/Sun Microsystems, Inc./1.0");
+        .add("Standard PNG image reader/Sun Microsystems, Inc./1.0");
         providersIgnoringICC
-                .add("Standard JPEG Image Reader/Sun Microsystems, Inc./0.5");
+        .add("Standard JPEG Image Reader/Sun Microsystems, Inc./0.5");
     }
 }

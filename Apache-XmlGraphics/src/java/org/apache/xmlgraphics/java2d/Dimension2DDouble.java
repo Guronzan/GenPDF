@@ -42,41 +42,50 @@ public class Dimension2DDouble extends Dimension2D implements Serializable {
 
     /**
      * Main constructor.
-     * @param width initial width
-     * @param height initial height
+     * 
+     * @param width
+     *            initial width
+     * @param height
+     *            initial height
      */
-    public Dimension2DDouble(double width, double height) {
+    public Dimension2DDouble(final double width, final double height) {
         this.width = width;
         this.height = height;
     }
 
     /** {@inheritDoc} */
+    @Override
     public double getWidth() {
-        return width;
+        return this.width;
     }
 
     /** {@inheritDoc} */
+    @Override
     public double getHeight() {
-        return height;
+        return this.height;
     }
 
     /** {@inheritDoc} */
-    public void setSize(double w, double h) {
+    @Override
+    public void setSize(final double w, final double h) {
         this.width = w;
         this.height = h;
     }
 
     /** {@inheritDoc} */
-    public boolean equals(Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
         if (obj instanceof Dimension2DDouble) {
-            final Dimension2DDouble other = (Dimension2DDouble)obj;
-            if (Double.doubleToLongBits(height) != Double.doubleToLongBits(other.height)) {
+            final Dimension2DDouble other = (Dimension2DDouble) obj;
+            if (Double.doubleToLongBits(this.height) != Double
+                    .doubleToLongBits(other.height)) {
                 return false;
             }
-            if (Double.doubleToLongBits(width) != Double.doubleToLongBits(other.width)) {
+            if (Double.doubleToLongBits(this.width) != Double
+                    .doubleToLongBits(other.width)) {
                 return false;
             }
             return true;
@@ -86,13 +95,16 @@ public class Dimension2DDouble extends Dimension2D implements Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode() {
-        double sum = width + height;
-        return (int)(sum * (sum + 1) / 2 + width);
+        final double sum = this.width + this.height;
+        return (int) (sum * (sum + 1) / 2 + this.width);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return getClass().getName() + "[width=" + width + ",height=" + height + "]";
+        return getClass().getName() + "[width=" + this.width + ",height="
+                + this.height + "]";
     }
 }

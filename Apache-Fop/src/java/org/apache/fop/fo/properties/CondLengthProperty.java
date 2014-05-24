@@ -34,8 +34,7 @@ import org.apache.fop.util.CompareUtil;
 public class CondLengthProperty extends Property implements CompoundDatatype {
 
     /** cache holding canonical instances (for absolute conditional lengths) */
-    private static final PropertyCache<CondLengthProperty> CACHE
-            = new PropertyCache<CondLengthProperty>();
+    private static final PropertyCache<CondLengthProperty> CACHE = new PropertyCache<CondLengthProperty>();
 
     /** components */
     private Property length;
@@ -50,16 +49,19 @@ public class CondLengthProperty extends Property implements CompoundDatatype {
     public static class Maker extends CompoundPropertyMaker {
 
         /**
-         * @param propId the id of the property for which a Maker should be created
+         * @param propId
+         *            the id of the property for which a Maker should be created
          */
-        public Maker(int propId) {
+        public Maker(final int propId) {
             super(propId);
         }
 
         /**
          * Create a new empty instance of CondLengthProperty.
+         * 
          * @return the new instance.
          */
+        @Override
         public Property makeNewProperty() {
             return new CondLengthProperty();
         }
@@ -67,8 +69,10 @@ public class CondLengthProperty extends Property implements CompoundDatatype {
         /**
          * {@inheritDoc}
          */
-        public Property convertProperty(Property p, PropertyList propertyList, FObj fo)
-                    throws PropertyException {
+        @Override
+        public Property convertProperty(final Property p,
+                final PropertyList propertyList, final FObj fo)
+                throws PropertyException {
             if (p instanceof KeepProperty) {
                 return p;
             }
@@ -79,28 +83,30 @@ public class CondLengthProperty extends Property implements CompoundDatatype {
     /**
      * {@inheritDoc}
      */
-    public void setComponent(int cmpId, Property cmpnValue,
-                             boolean bIsDefault) {
-        if (isCached) {
+    @Override
+    public void setComponent(final int cmpId, final Property cmpnValue,
+            final boolean bIsDefault) {
+        if (this.isCached) {
             throw new IllegalStateException(
                     "CondLengthProperty.setComponent() called on a cached value!");
         }
 
         if (cmpId == CP_LENGTH) {
-            length = cmpnValue;
+            this.length = cmpnValue;
         } else if (cmpId == CP_CONDITIONALITY) {
-            conditionality = (EnumProperty)cmpnValue;
+            this.conditionality = (EnumProperty) cmpnValue;
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public Property getComponent(int cmpId) {
+    @Override
+    public Property getComponent(final int cmpId) {
         if (cmpId == CP_LENGTH) {
-            return length;
+            return this.length;
         } else if (cmpId == CP_CONDITIONALITY) {
-            return conditionality;
+            return this.conditionality;
         } else {
             return null;
         }
@@ -108,6 +114,7 @@ public class CondLengthProperty extends Property implements CompoundDatatype {
 
     /**
      * Returns the conditionality.
+     * 
      * @return the conditionality
      */
     public Property getConditionality() {
@@ -116,6 +123,7 @@ public class CondLengthProperty extends Property implements CompoundDatatype {
 
     /**
      * Returns the length.
+     * 
      * @return the length
      */
     public Property getLengthComponent() {
@@ -124,6 +132,7 @@ public class CondLengthProperty extends Property implements CompoundDatatype {
 
     /**
      * Indicates if the length can be discarded on certain conditions.
+     * 
      * @return true if the length can be discarded.
      */
     public boolean isDiscard() {
@@ -132,6 +141,7 @@ public class CondLengthProperty extends Property implements CompoundDatatype {
 
     /**
      * Returns the computed length value.
+     * 
      * @return the length in millipoints
      */
     public int getLengthValue() {
@@ -140,29 +150,35 @@ public class CondLengthProperty extends Property implements CompoundDatatype {
 
     /**
      * Returns the computed length value.
-     * @param context The context for the length calculation (for percentage based lengths)
+     * 
+     * @param context
+     *            The context for the length calculation (for percentage based
+     *            lengths)
      * @return the length in millipoints
      */
-    public int getLengthValue(PercentBaseContext context) {
+    public int getLengthValue(final PercentBaseContext context) {
         return this.length.getLength().getValue(context);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "CondLength[" + length.getObject().toString()
-                + ", " + (isDiscard()
-                        ? conditionality.toString().toLowerCase()
-                        : conditionality.toString()) + "]";
+        return "CondLength["
+                + this.length.getObject().toString()
+                + ", "
+                + (isDiscard() ? this.conditionality.toString().toLowerCase()
+                                : this.conditionality.toString()) + "]";
     }
 
     /**
      * @return this.condLength
      */
+    @Override
     public CondLengthProperty getCondLength() {
         if (this.length.getLength().isAbsolute()) {
-            CondLengthProperty clp = CACHE.fetch(this);
+            final CondLengthProperty clp = CACHE.fetch(this);
             if (clp == this) {
-                isCached = true;
+                this.isCached = true;
             }
             return clp;
         } else {
@@ -172,39 +188,49 @@ public class CondLengthProperty extends Property implements CompoundDatatype {
 
     /**
      * TODO: Should we allow this?
+     * 
      * @return this.condLength cast as a Length
      */
+    @Override
     public Length getLength() {
-        return length.getLength();
+        return this.length.getLength();
     }
 
     /**
      * @return this.condLength cast as an Object
      */
+    @Override
     public Object getObject() {
         return this;
     }
 
     /** {@inheritDoc} */
-    public boolean equals(Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
 
         if (obj instanceof CondLengthProperty) {
-            CondLengthProperty clp = (CondLengthProperty)obj;
-            return (CompareUtil.equal(this.length, clp.length)
-                    && CompareUtil.equal(this.conditionality, clp.conditionality));
+            final CondLengthProperty clp = (CondLengthProperty) obj;
+            return CompareUtil.equal(this.length, clp.length)
+                    && CompareUtil.equal(this.conditionality,
+                            clp.conditionality);
         }
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode() {
         if (this.hash == -1) {
             int hash = 17;
-            hash = 37 * hash + (length == null ? 0 : length.hashCode());
-            hash = 37 * hash + (conditionality == null ? 0 : conditionality.hashCode());
+            hash = 37 * hash
+                    + (this.length == null ? 0 : this.length.hashCode());
+            hash = 37
+                    * hash
+                    + (this.conditionality == null ? 0 : this.conditionality
+                            .hashCode());
             this.hash = hash;
         }
         return this.hash;

@@ -22,8 +22,8 @@ package org.apache.fop.layoutmgr.table;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.area.Area;
 import org.apache.fop.area.Block;
 import org.apache.fop.area.Trait;
@@ -59,12 +59,8 @@ import org.apache.fop.util.ListUtil;
  * LayoutManager for a table-cell FO. A cell contains blocks. These blocks fill
  * the cell.
  */
+@Slf4j
 public class TableCellLayoutManager extends BlockStackingLayoutManager {
-
-    /**
-     * logging instance
-     */
-    private static Log log = LogFactory.getLog(TableCellLayoutManager.class);
 
     private final PrimaryGridUnit primaryGridUnit;
 
@@ -79,7 +75,7 @@ public class TableCellLayoutManager extends BlockStackingLayoutManager {
 
     /**
      * Create a new Cell layout manager.
-     * 
+     *
      * @param node
      *            table-cell FO for which to create the LM
      * @param pgu
@@ -379,7 +375,7 @@ public class TableCellLayoutManager extends BlockStackingLayoutManager {
                 adjustYOffset(this.curBlockArea, borderBeforeWidth);
                 final Block[][] blocks = new Block[getTableCell()
                         .getNumberRowsSpanned()][getTableCell()
-                                                                                          .getNumberColumnsSpanned()];
+                                                                            .getNumberColumnsSpanned()];
                 GridUnit[] gridUnits = (GridUnit[]) this.primaryGridUnit
                         .getRows().get(startRow);
                 for (int x = 0; x < getTableCell().getNumberColumnsSpanned(); x++) {
@@ -643,21 +639,21 @@ public class TableCellLayoutManager extends BlockStackingLayoutManager {
     @Override
     public Keep getKeepWithNext() {
         return Keep.KEEP_AUTO; // TODO FIX ME (table-cell has no
-                               // keep-with-next!)
+        // keep-with-next!)
     }
 
     /** {@inheritDoc} */
     @Override
     public Keep getKeepWithPrevious() {
         return Keep.KEEP_AUTO; // TODO FIX ME (table-cell has no
-                               // keep-with-previous!)
+        // keep-with-previous!)
     }
 
     // --------- Property Resolution related functions --------- //
 
     /**
      * Returns the IPD of the content area
-     * 
+     *
      * @return the IPD of the content area
      */
     @Override
@@ -667,7 +663,7 @@ public class TableCellLayoutManager extends BlockStackingLayoutManager {
 
     /**
      * Returns the BPD of the content area
-     * 
+     *
      * @return the BPD of the content area
      */
     @Override

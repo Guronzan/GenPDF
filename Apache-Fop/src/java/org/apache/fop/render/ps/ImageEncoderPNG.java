@@ -33,7 +33,6 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.xmlgraphics.image.loader.impl.ImageRawPNG;
 import org.apache.xmlgraphics.image.loader.impl.ImageRawStream;
 import org.apache.xmlgraphics.ps.ImageEncoder;
@@ -47,51 +46,70 @@ public class ImageEncoderPNG implements ImageEncoder {
 
     /**
      * Main constructor
-     * @param image the PNG image
+     * 
+     * @param image
+     *            the PNG image
      */
-    public ImageEncoderPNG(ImageRawPNG image) {
+    public ImageEncoderPNG(final ImageRawPNG image) {
         this.image = image;
-        ColorModel cm = ((ImageRawPNG) this.image).getColorModel();
+        final ColorModel cm = this.image.getColorModel();
         if (cm instanceof IndexColorModel) {
-            numberOfInterleavedComponents = 1;
+            this.numberOfInterleavedComponents = 1;
         } else {
-            // this can be 1 (gray), 2 (gray + alpha), 3 (rgb) or 4 (rgb + alpha)
-            // numberOfInterleavedComponents = (cm.hasAlpha() ? 1 : 0) + cm.getNumColorComponents();
-            numberOfInterleavedComponents = cm.getNumComponents();
+            // this can be 1 (gray), 2 (gray + alpha), 3 (rgb) or 4 (rgb +
+            // alpha)
+            // numberOfInterleavedComponents = (cm.hasAlpha() ? 1 : 0) +
+            // cm.getNumColorComponents();
+            this.numberOfInterleavedComponents = cm.getNumComponents();
         }
     }
 
     /** {@inheritDoc} */
-    public void writeTo(OutputStream out) throws IOException {
+    @Override
+    public void writeTo(final OutputStream out) throws IOException {
         // TODO: refactor this code with equivalent PDF code
-        InputStream in = ((ImageRawStream) image).createInputStream();
+        final InputStream in = ((ImageRawStream) this.image)
+                .createInputStream();
         try {
-            if (numberOfInterleavedComponents == 1 || numberOfInterleavedComponents == 3) {
+            if (this.numberOfInterleavedComponents == 1
+                    || this.numberOfInterleavedComponents == 3) {
                 // means we have Gray, RGB, or Palette
                 IOUtils.copy(in, out);
             } else {
                 // means we have Gray + alpha or RGB + alpha
-                int numBytes = numberOfInterleavedComponents - 1; // 1 for Gray, 3 for RGB
-                int numColumns = image.getSize().getWidthPx();
-                InflaterInputStream infStream = new InflaterInputStream(in, new Inflater());
-                DataInputStream dataStream = new DataInputStream(infStream);
+                final int numBytes = this.numberOfInterleavedComponents - 1; // 1
+                                                                             // for
+                                                                             // Gray,
+                                                                             // 3
+                                                                             // for
+                                                                             // RGB
+                final int numColumns = this.image.getSize().getWidthPx();
+                final InflaterInputStream infStream = new InflaterInputStream(
+                        in, new Inflater());
+                final DataInputStream dataStream = new DataInputStream(
+                        infStream);
                 int offset = 0;
-                int bytesPerRow = numberOfInterleavedComponents * numColumns;
+                final int bytesPerRow = this.numberOfInterleavedComponents
+                        * numColumns;
                 int filter;
-                // here we need to inflate the PNG pixel data, which includes alpha, separate the alpha
+                // here we need to inflate the PNG pixel data, which includes
+                // alpha, separate the alpha
                 // channel and then deflate the RGB channels back again
-                // TODO: not using the baos below and using the original out instead (as happens in PDF)
-                // would be preferable but that does not work with the rest of the postscript code; this
+                // TODO: not using the baos below and using the original out
+                // instead (as happens in PDF)
+                // would be preferable but that does not work with the rest of
+                // the postscript code; this
                 // needs to be revisited
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                DeflaterOutputStream dos = new DeflaterOutputStream(/* out */baos, new Deflater());
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                final DeflaterOutputStream dos = new DeflaterOutputStream(
+                        /* out */baos, new Deflater());
                 while ((filter = dataStream.read()) != -1) {
-                    byte[] bytes = new byte[bytesPerRow];
+                    final byte[] bytes = new byte[bytesPerRow];
                     dataStream.readFully(bytes, 0, bytesPerRow);
                     dos.write((byte) filter);
                     for (int j = 0; j < numColumns; j++) {
                         dos.write(bytes, offset, numBytes);
-                        offset += numberOfInterleavedComponents;
+                        offset += this.numberOfInterleavedComponents;
                     }
                     offset = 0;
                 }
@@ -104,10 +122,14 @@ public class ImageEncoderPNG implements ImageEncoder {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getImplicitFilter() {
-        String filter = "<< /Predictor 15 /Columns " + image.getSize().getWidthPx();
-        filter += " /Colors " + (numberOfInterleavedComponents > 2 ? 3 : 1);
-        filter += " /BitsPerComponent " + image.getBitDepth() + " >> /FlateDecode";
+        String filter = "<< /Predictor 15 /Columns "
+                + this.image.getSize().getWidthPx();
+        filter += " /Colors "
+                + (this.numberOfInterleavedComponents > 2 ? 3 : 1);
+        filter += " /BitsPerComponent " + this.image.getBitDepth()
+                + " >> /FlateDecode";
         return filter;
     }
 }

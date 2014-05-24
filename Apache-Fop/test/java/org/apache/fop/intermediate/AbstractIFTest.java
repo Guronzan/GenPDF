@@ -33,17 +33,15 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.w3c.dom.Document;
-
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.render.intermediate.IFContext;
 import org.apache.fop.render.intermediate.IFDocumentHandler;
 import org.apache.fop.render.intermediate.IFSerializer;
+import org.w3c.dom.Document;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * A common super-class for intermediate format test cases.
@@ -55,28 +53,36 @@ abstract class AbstractIFTest extends AbstractIntermediateTest {
     static {
         Schema ifSchema = null;
         try {
-            SchemaFactory sFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            final SchemaFactory sFactory = SchemaFactory
+                    .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             sFactory.setErrorHandler(new ErrorHandler() {
 
-                public void error(SAXParseException exception) throws SAXException {
+                @Override
+                public void error(final SAXParseException exception)
+                        throws SAXException {
                     throw exception;
                 }
 
-                public void fatalError(SAXParseException exception) throws SAXException {
+                @Override
+                public void fatalError(final SAXParseException exception)
+                        throws SAXException {
                     throw exception;
                 }
 
-                public void warning(SAXParseException exception) throws SAXException {
+                @Override
+                public void warning(final SAXParseException exception)
+                        throws SAXException {
                     throw exception;
                 }
 
             });
-            File ifSchemaFile = new File(
-                "src/documentation/intermediate-format-ng/fop-intermediate-format-ng.xsd");
+            final File ifSchemaFile = new File(
+                    "src/documentation/intermediate-format-ng/fop-intermediate-format-ng.xsd");
             ifSchema = sFactory.newSchema(ifSchemaFile);
-        } catch (IllegalArgumentException iae) {
-            System.err.println("No suitable SchemaFactory for XML Schema validation found!");
-        } catch (SAXException e) {
+        } catch (final IllegalArgumentException iae) {
+            System.err
+                    .println("No suitable SchemaFactory for XML Schema validation found!");
+        } catch (final SAXException e) {
             throw new ExceptionInInitializerError(e);
         }
         IF_SCHEMA = ifSchema;
@@ -85,10 +91,12 @@ abstract class AbstractIFTest extends AbstractIntermediateTest {
     /**
      * Creates a new test case.
      *
-     * @param testFile the file containing the document and the tests
-     * @throws IOException if an I/O error occurs while loading the test case
+     * @param testFile
+     *            the file containing the document and the tests
+     * @throws IOException
+     *             if an I/O error occurs while loading the test case
      */
-    public AbstractIFTest(File testFile) throws IOException {
+    public AbstractIFTest(final File testFile) throws IOException {
         super(testFile);
     }
 
@@ -98,52 +106,61 @@ abstract class AbstractIFTest extends AbstractIntermediateTest {
     }
 
     @Override
-    protected Document buildIntermediateDocument(Templates templates) throws Exception {
-        Transformer transformer = templates.newTransformer();
+    protected Document buildIntermediateDocument(final Templates templates)
+            throws Exception {
+        final Transformer transformer = templates.newTransformer();
         setErrorListener(transformer);
 
-        //Set up XMLRenderer to render to a DOM
-        DOMResult domResult = new DOMResult();
+        // Set up XMLRenderer to render to a DOM
+        final DOMResult domResult = new DOMResult();
 
-        FOUserAgent userAgent = createUserAgent();
+        final FOUserAgent userAgent = createUserAgent();
 
-        //Create an instance of the target renderer so the XMLRenderer can use its font setup
-        IFDocumentHandler targetHandler = userAgent.getRendererFactory().createDocumentHandler(
-                userAgent, getTargetMIME());
+        // Create an instance of the target renderer so the XMLRenderer can use
+        // its font setup
+        final IFDocumentHandler targetHandler = userAgent.getRendererFactory()
+                .createDocumentHandler(userAgent, getTargetMIME());
 
-        //Setup painter
-        IFSerializer serializer = new IFSerializer();
+        // Setup painter
+        final IFSerializer serializer = new IFSerializer();
         serializer.setContext(new IFContext(userAgent));
         serializer.mimicDocumentHandler(targetHandler);
         serializer.setResult(domResult);
 
         userAgent.setDocumentHandlerOverride(serializer);
 
-        Fop fop = fopFactory.newFop(userAgent);
-        Result res = new SAXResult(fop.getDefaultHandler());
-        transformer.transform(new DOMSource(testDoc), res);
+        final Fop fop = this.fopFactory.newFop(userAgent);
+        final Result res = new SAXResult(fop.getDefaultHandler());
+        transformer.transform(new DOMSource(this.testDoc), res);
 
         return (Document) domResult.getNode();
     }
 
     @Override
-    protected void validate(Document doc) throws SAXException, IOException {
+    protected void validate(final Document doc) throws SAXException,
+            IOException {
         if (IF_SCHEMA == null) {
-            return; //skip validation;
+            return; // skip validation;
         }
-        Validator validator = IF_SCHEMA.newValidator();
+        final Validator validator = IF_SCHEMA.newValidator();
         validator.setErrorHandler(new ErrorHandler() {
 
-            public void error(SAXParseException exception) throws SAXException {
+            @Override
+            public void error(final SAXParseException exception)
+                    throws SAXException {
                 throw exception;
             }
 
-            public void fatalError(SAXParseException exception) throws SAXException {
+            @Override
+            public void fatalError(final SAXParseException exception)
+                    throws SAXException {
                 throw exception;
             }
 
-            public void warning(SAXParseException exception) throws SAXException {
-                //ignore
+            @Override
+            public void warning(final SAXParseException exception)
+                    throws SAXException {
+                // ignore
             }
 
         });

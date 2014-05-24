@@ -22,28 +22,28 @@ package org.apache.fop.area.inline;
 import org.apache.fop.area.Area;
 
 /**
- * Image area for external-graphic.
- * This area holds information for rendering an image.
- * The url of the image is used as a key to reference the image cache.
+ * Image area for external-graphic. This area holds information for rendering an
+ * image. The url of the image is used as a key to reference the image cache.
  */
 public class Image extends Area {
 
     private static final long serialVersionUID = 4800834714349695386L;
 
-    private String url;
+    private final String url;
 
     /**
      * Create a new image with the given url.
      *
-     * @param url the url of the image
+     * @param url
+     *            the url of the image
      */
-    public Image(String url) {
+    public Image(final String url) {
         this.url = url;
     }
 
     /**
-     * Get the url of this image.
-     * This url is used as a key to locate the actual image data.
+     * Get the url of this image. This url is used as a key to locate the actual
+     * image data.
      *
      * @return the url of this image
      */
@@ -51,4 +51,3 @@ public class Image extends Area {
         return this.url;
     }
 }
-

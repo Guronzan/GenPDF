@@ -35,20 +35,18 @@ public class BoxPropShorthandParser extends GenericShorthandParser {
     }
 
     /**
-     * Stores 1 to 4 values of same type.
-     * Set the given property based on the number of values set.
-     * Example: padding, border-width, border-color, border-style, margin
-     * {@inheritDoc}
-     * int, Property, PropertyMaker, PropertyList)
+     * Stores 1 to 4 values of same type. Set the given property based on the
+     * number of values set. Example: padding, border-width, border-color,
+     * border-style, margin {@inheritDoc} int, Property, PropertyMaker,
+     * PropertyList)
      */
-    protected Property convertValueForProperty(int propId,
-                                               Property property,
-                                               PropertyMaker maker,
-                                               PropertyList propertyList)
-                throws PropertyException {
-        String name = FOPropertyMapping.getPropertyName(propId);
+    @Override
+    protected Property convertValueForProperty(final int propId,
+            final Property property, final PropertyMaker maker,
+            final PropertyList propertyList) throws PropertyException {
+        final String name = FOPropertyMapping.getPropertyName(propId);
         Property p = null;
-        int count = property.getList().size();
+        final int count = property.getList().size();
         if (name.indexOf("-top") >= 0) {
             p = getElement(property, 0);
         } else if (name.indexOf("-right") >= 0) {
@@ -56,7 +54,7 @@ public class BoxPropShorthandParser extends GenericShorthandParser {
         } else if (name.indexOf("-bottom") >= 0) {
             p = getElement(property, count > 2 ? 2 : 0);
         } else if (name.indexOf("-left") >= 0) {
-            p = getElement(property, count > 3 ? 3 : (count > 1 ? 1 : 0));
+            p = getElement(property, count > 3 ? 3 : count > 1 ? 1 : 0);
         }
         // if p not null, try to convert it to a value of the correct type
         if (p != null) {

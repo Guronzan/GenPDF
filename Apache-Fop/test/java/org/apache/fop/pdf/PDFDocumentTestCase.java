@@ -19,12 +19,12 @@
 
 package org.apache.fop.pdf;
 
-import static org.junit.Assert.assertEquals;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for {@link PDFDocument}
@@ -32,15 +32,17 @@ import java.io.IOException;
 public class PDFDocumentTestCase {
 
     /**
-     * Test flushTextBuffer() - ensure that the text given will stream to the PDF document as
-     * expected.
-     * @throws IOException when an I/O error occurs
+     * Test flushTextBuffer() - ensure that the text given will stream to the
+     * PDF document as expected.
+     * 
+     * @throws IOException
+     *             when an I/O error occurs
      */
     @Test
     public void testFlushTextBuffer() throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        StringBuilder textBuffer = new StringBuilder();
-        String testString = "This is a test string, just some arbitrary data.";
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final StringBuilder textBuffer = new StringBuilder();
+        final String testString = "This is a test string, just some arbitrary data.";
         textBuffer.append(testString);
 
         PDFDocument.flushTextBuffer(textBuffer, out);
@@ -51,11 +53,11 @@ public class PDFDocumentTestCase {
         assertEquals("", textBuffer.toString());
         out.reset();
 
-        String[] strArray = { "Try ", "with ", "multiple ", "strings." };
-        for (String str : strArray) {
+        final String[] strArray = { "Try ", "with ", "multiple ", "strings." };
+        for (final String str : strArray) {
             textBuffer.append(str);
         }
-        String fullString = textBuffer.toString();
+        final String fullString = textBuffer.toString();
         PDFDocument.flushTextBuffer(textBuffer, out);
         assertEquals(fullString, out.toString());
     }

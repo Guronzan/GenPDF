@@ -30,24 +30,28 @@ import org.apache.fop.render.RendererConfigurator;
  */
 public class TIFFRendererMaker extends AbstractRendererMaker {
 
-    private static final String[] MIMES = new String[] {MimeConstants.MIME_TIFF};
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_TIFF };
 
     /** {@inheritDoc} */
-    public Renderer makeRenderer(FOUserAgent userAgent) {
+    @Override
+    public Renderer makeRenderer(final FOUserAgent userAgent) {
         return new TIFFRenderer(userAgent);
     }
 
     /** {@inheritDoc} */
-    public RendererConfigurator getConfigurator(FOUserAgent userAgent) {
+    @Override
+    public RendererConfigurator getConfigurator(final FOUserAgent userAgent) {
         return new TIFFRendererConfigurator(userAgent);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

@@ -53,9 +53,11 @@ public class AFPLineDataInfo {
 
     /**
      * Copy constructor.
-     * @param template the object to copy
+     * 
+     * @param template
+     *            the object to copy
      */
-    public AFPLineDataInfo(AFPLineDataInfo template) {
+    public AFPLineDataInfo(final AFPLineDataInfo template) {
         this.x1 = template.x1;
         this.y1 = template.y1;
         this.x2 = template.x2;
@@ -71,15 +73,16 @@ public class AFPLineDataInfo {
      * @return the X1 coordinate
      */
     public int getX1() {
-        return x1;
+        return this.x1;
     }
 
     /**
      * Sets the X1 coordinate
      *
-     * @param x1 the X1 coordinate
+     * @param x1
+     *            the X1 coordinate
      */
-    public void setX1(int x1) {
+    public void setX1(final int x1) {
         this.x1 = x1;
     }
 
@@ -89,15 +92,16 @@ public class AFPLineDataInfo {
      * @return the Y1 coordinate
      */
     public int getY1() {
-        return y1;
+        return this.y1;
     }
 
     /**
      * Sets the Y1 coordinate
      *
-     * @param y1 the Y1 coordinate
+     * @param y1
+     *            the Y1 coordinate
      */
-    public void setY1(int y1) {
+    public void setY1(final int y1) {
         this.y1 = y1;
     }
 
@@ -107,15 +111,16 @@ public class AFPLineDataInfo {
      * @return the X2 coordinate
      */
     public int getX2() {
-        return x2;
+        return this.x2;
     }
 
     /**
      * Sets the X2 coordinate
      *
-     * @param x2 the X2 coordinate
+     * @param x2
+     *            the X2 coordinate
      */
-    public void setX2(int x2) {
+    public void setX2(final int x2) {
         this.x2 = x2;
     }
 
@@ -125,15 +130,16 @@ public class AFPLineDataInfo {
      * @return the Y2 coordinate
      */
     public int getY2() {
-        return y2;
+        return this.y2;
     }
 
     /**
      * Sets the Y2 coordinate
      *
-     * @param y2 the Y2 coordinate
+     * @param y2
+     *            the Y2 coordinate
      */
-    public void setY2(int y2) {
+    public void setY2(final int y2) {
         this.y2 = y2;
     }
 
@@ -143,15 +149,16 @@ public class AFPLineDataInfo {
      * @return the line thickness
      */
     public int getThickness() {
-        return thickness;
+        return this.thickness;
     }
 
     /**
      * Sets the line thickness
      *
-     * @param thickness the line thickness
+     * @param thickness
+     *            the line thickness
      */
-    public void setThickness(int thickness) {
+    public void setThickness(final int thickness) {
         this.thickness = thickness;
     }
 
@@ -161,15 +168,16 @@ public class AFPLineDataInfo {
      * @return the line color
      */
     public Color getColor() {
-        return color;
+        return this.color;
     }
 
     /**
      * Sets the line color
      *
-     * @param color the line color
+     * @param color
+     *            the line color
      */
-    public void setColor(Color color) {
+    public void setColor(final Color color) {
         this.color = color;
     }
 
@@ -179,28 +187,25 @@ public class AFPLineDataInfo {
      * @return the line rotation
      */
     public int getRotation() {
-        return rotation;
+        return this.rotation;
     }
 
     /**
      * Sets the line rotation
      *
-     * @param rotation the line rotation
+     * @param rotation
+     *            the line rotation
      */
-    public void setRotation(int rotation) {
+    public void setRotation(final int rotation) {
         this.rotation = rotation;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "AFPLineDataInfo{x1=" + x1
-        + ", y1=" + y1
-        + ", x2=" + x2
-        + ", y2=" + y2
-        + ", thickness=" + thickness
-        + ", color=" + color
-        + ", rotation=" + rotation
-        + "}";
+        return "AFPLineDataInfo{x1=" + this.x1 + ", y1=" + this.y1 + ", x2="
+                + this.x2 + ", y2=" + this.y2 + ", thickness=" + this.thickness
+                + ", color=" + this.color + ", rotation=" + this.rotation + "}";
     }
 
 }

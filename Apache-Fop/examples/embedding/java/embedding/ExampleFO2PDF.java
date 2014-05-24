@@ -26,81 +26,95 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 //JAXP
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Source;
-import javax.xml.transform.Result;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamSource;
 
+import lombok.extern.slf4j.Slf4j;
 
+import org.apache.fop.apps.FOPException;
 // FOP
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
-import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FormattingResults;
-import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.apps.PageSequenceResults;
 
 /**
  * This class demonstrates the conversion of an FO file to PDF using FOP.
  */
+@Slf4j
 public class ExampleFO2PDF {
 
     // configure fopFactory as desired
-    private FopFactory fopFactory = FopFactory.newInstance();
+    private final FopFactory fopFactory = FopFactory.newInstance();
 
     /**
      * Converts an FO file to a PDF file using FOP
-     * @param fo the FO file
-     * @param pdf the target PDF file
-     * @throws IOException In case of an I/O problem
-     * @throws FOPException In case of a FOP problem
+     *
+     * @param fo
+     *            the FO file
+     * @param pdf
+     *            the target PDF file
+     * @throws IOException
+     *             In case of an I/O problem
+     * @throws FOPException
+     *             In case of a FOP problem
      */
-    public void convertFO2PDF(File fo, File pdf) throws IOException, FOPException {
+    public void convertFO2PDF(final File fo, final File pdf)
+            throws IOException, FOPException {
 
         OutputStream out = null;
 
         try {
-            FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+            final FOUserAgent foUserAgent = this.fopFactory.newFOUserAgent();
             // configure foUserAgent as desired
 
-            // Setup output stream.  Note: Using BufferedOutputStream
+            // Setup output stream. Note: Using BufferedOutputStream
             // for performance reasons (helpful with FileOutputStreams).
             out = new FileOutputStream(pdf);
             out = new BufferedOutputStream(out);
 
             // Construct fop with desired output format
-            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);
+            final Fop fop = this.fopFactory.newFop(
+                    org.apache.xmlgraphics.util.MimeConstants.MIME_PDF,
+                    foUserAgent, out);
 
             // Setup JAXP using identity transformer
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer(); // identity transformer
+            final TransformerFactory factory = TransformerFactory.newInstance();
+            final Transformer transformer = factory.newTransformer(); // identity
+            // transformer
 
             // Setup input stream
-            Source src = new StreamSource(fo);
+            final Source src = new StreamSource(fo);
 
-            // Resulting SAX events (the generated FO) must be piped through to FOP
-            Result res = new SAXResult(fop.getDefaultHandler());
+            // Resulting SAX events (the generated FO) must be piped through to
+            // FOP
+            final Result res = new SAXResult(fop.getDefaultHandler());
 
             // Start XSLT transformation and FOP processing
             transformer.transform(src, res);
 
             // Result processing
-            FormattingResults foResults = fop.getResults();
-            java.util.List pageSequences = foResults.getPageSequences();
-            for (java.util.Iterator it = pageSequences.iterator(); it.hasNext();) {
-                PageSequenceResults pageSequenceResults = (PageSequenceResults)it.next();
-                System.out.println("PageSequence "
-                        + (String.valueOf(pageSequenceResults.getID()).length() > 0
-                                ? pageSequenceResults.getID() : "<no id>")
-                        + " generated " + pageSequenceResults.getPageCount() + " pages.");
+            final FormattingResults foResults = fop.getResults();
+            final java.util.List pageSequences = foResults.getPageSequences();
+            for (final java.util.Iterator it = pageSequences.iterator(); it
+                    .hasNext();) {
+                final PageSequenceResults pageSequenceResults = (PageSequenceResults) it
+                        .next();
+                log.info("PageSequence "
+                        + (String.valueOf(pageSequenceResults.getID()).length() > 0 ? pageSequenceResults
+                                .getID() : "<no id>") + " generated "
+                                + pageSequenceResults.getPageCount() + " pages.");
             }
-            System.out.println("Generated " + foResults.getPageCount() + " pages in total.");
+            log.info("Generated " + foResults.getPageCount()
+                    + " pages in total.");
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace(System.err);
             System.exit(-1);
         } finally {
@@ -108,36 +122,38 @@ public class ExampleFO2PDF {
         }
     }
 
-
     /**
      * Main method.
-     * @param args command-line arguments
+     *
+     * @param args
+     *            command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
-            System.out.println("FOP ExampleFO2PDF\n");
-            System.out.println("Preparing...");
+            log.info("FOP ExampleFO2PDF\n");
+            log.info("Preparing...");
 
-            //Setup directories
-            File baseDir = new File(".");
-            File outDir = new File(baseDir, "out");
+            // Setup directories
+            final File baseDir = new File(".");
+            final File outDir = new File(baseDir, "out");
             outDir.mkdirs();
 
-            //Setup input and output files
-            File fofile = new File(baseDir, "xml/fo/helloworld.fo");
-            //File fofile = new File(baseDir, "../fo/pagination/franklin_2pageseqs.fo");
-            File pdffile = new File(outDir, "ResultFO2PDF.pdf");
+            // Setup input and output files
+            final File fofile = new File(baseDir, "xml/fo/helloworld.fo");
+            // File fofile = new File(baseDir,
+            // "../fo/pagination/franklin_2pageseqs.fo");
+            final File pdffile = new File(outDir, "ResultFO2PDF.pdf");
 
-            System.out.println("Input: XSL-FO (" + fofile + ")");
-            System.out.println("Output: PDF (" + pdffile + ")");
-            System.out.println();
-            System.out.println("Transforming...");
+            log.info("Input: XSL-FO (" + fofile + ")");
+            log.info("Output: PDF (" + pdffile + ")");
+            log.info("");
+            log.info("Transforming...");
 
-            ExampleFO2PDF app = new ExampleFO2PDF();
+            final ExampleFO2PDF app = new ExampleFO2PDF();
             app.convertFO2PDF(fofile, pdffile);
 
-            System.out.println("Success!");
-        } catch (Exception e) {
+            log.info("Success!");
+        } catch (final Exception e) {
             e.printStackTrace(System.err);
             System.exit(-1);
         }

@@ -34,80 +34,93 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.NullOutputStream;
-
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 
 /**
- * Debug tool to create and process large FO files by replicating them a specified number of times.
+ * Debug tool to create and process large FO files by replicating them a
+ * specified number of times.
  */
+@Slf4j
 public class MemoryEater {
 
-    private SAXTransformerFactory tFactory
-            = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
-    private FopFactory fopFactory = FopFactory.newInstance();
-    private Templates replicatorTemplates;
+    private final SAXTransformerFactory tFactory = (SAXTransformerFactory) SAXTransformerFactory
+            .newInstance();
+    private final FopFactory fopFactory = FopFactory.newInstance();
+    private final Templates replicatorTemplates;
 
     private Stats stats;
 
-    public MemoryEater() throws TransformerConfigurationException, MalformedURLException {
-        File xsltFile = new File("test/xsl/fo-replicator.xsl");
-        Source xslt = new StreamSource(xsltFile);
-        replicatorTemplates = tFactory.newTemplates(xslt);
+    public MemoryEater() throws TransformerConfigurationException,
+    MalformedURLException {
+        final File xsltFile = new File("test/xsl/fo-replicator.xsl");
+        final Source xslt = new StreamSource(xsltFile);
+        this.replicatorTemplates = this.tFactory.newTemplates(xslt);
     }
 
-    private void eatMemory(File foFile, int runRepeats, int replicatorRepeats) throws Exception {
-        stats = new Stats();
+    private void eatMemory(final File foFile, final int runRepeats,
+            final int replicatorRepeats) throws Exception {
+        this.stats = new Stats();
         for (int i = 0; i < runRepeats; i++) {
             eatMemory(i, foFile, replicatorRepeats);
-            stats.progress(i, runRepeats);
+            this.stats.progress(i, runRepeats);
         }
-        stats.dumpFinalStats();
-        System.out.println(stats.getGoogleChartURL());
+        this.stats.dumpFinalStats();
+        log.info(this.stats.getGoogleChartURL());
     }
 
-    private void eatMemory(int callIndex, File foFile, int replicatorRepeats) throws Exception {
-        Source src = new StreamSource(foFile);
+    private void eatMemory(final int callIndex, final File foFile,
+            final int replicatorRepeats) throws Exception {
+        final Source src = new StreamSource(foFile);
 
-        Transformer transformer = replicatorTemplates.newTransformer();
+        final Transformer transformer = this.replicatorTemplates
+                .newTransformer();
         transformer.setParameter("repeats", new Integer(replicatorRepeats));
 
-        OutputStream out = new NullOutputStream(); //write to /dev/nul
+        final OutputStream out = new NullOutputStream(); // write to /dev/nul
         try {
-            FOUserAgent userAgent = fopFactory.newFOUserAgent();
-            userAgent.setBaseURL(foFile.getParentFile().toURI().toURL().toExternalForm());
-            Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, userAgent, out);
-            Result res = new SAXResult(fop.getDefaultHandler());
+            final FOUserAgent userAgent = this.fopFactory.newFOUserAgent();
+            userAgent.setBaseURL(foFile.getParentFile().toURI().toURL()
+                    .toExternalForm());
+            final Fop fop = this.fopFactory.newFop(
+                    org.apache.xmlgraphics.util.MimeConstants.MIME_PDF,
+                    userAgent, out);
+            final Result res = new SAXResult(fop.getDefaultHandler());
 
             transformer.transform(src, res);
 
-            stats.notifyPagesProduced(fop.getResults().getPageCount());
+            this.stats.notifyPagesProduced(fop.getResults().getPageCount());
             if (callIndex == 0) {
-                System.out.println(foFile.getName() + " generates "
+                log.info(foFile.getName() + " generates "
                         + fop.getResults().getPageCount() + " pages.");
             }
-            stats.checkStats();
+            this.stats.checkStats();
         } finally {
             IOUtils.closeQuietly(out);
         }
     }
 
     private static void prompt() throws IOException {
-        BufferedReader in = new BufferedReader(new java.io.InputStreamReader(System.in));
+        final BufferedReader in = new BufferedReader(
+                new java.io.InputStreamReader(System.in));
         System.out.print("Press return to continue...");
         in.readLine();
     }
 
     /**
      * Main method.
-     * @param args the command-line arguments
+     *
+     * @param args
+     *            the command-line arguments
      */
-    public static void main(String[] args) {
-        boolean doPrompt = true; //true if you want a chance to start the monitoring console
+    public static void main(final String[] args) {
+        final boolean doPrompt = true; // true if you want a chance to start the
+        // monitoring console
         try {
             int replicatorRepeats = 2;
             int runRepeats = 1;
@@ -117,27 +130,28 @@ public class MemoryEater {
             if (args.length > 1) {
                 runRepeats = Integer.parseInt(args[1]);
             }
-            File testFile = new File("examples/fo/basic/readme.fo");
+            final File testFile = new File("examples/fo/basic/readme.fo");
 
-            System.out.println("MemoryEater! About to replicate the test file "
-                    + replicatorRepeats + " times and run it " + runRepeats + " times...");
+            log.info("MemoryEater! About to replicate the test file "
+                    + replicatorRepeats + " times and run it " + runRepeats
+                    + " times...");
             if (doPrompt) {
                 prompt();
             }
 
-            System.out.println("Processing...");
-            long start = System.currentTimeMillis();
+            log.info("Processing...");
+            final long start = System.currentTimeMillis();
 
-            MemoryEater app = new MemoryEater();
+            final MemoryEater app = new MemoryEater();
             app.eatMemory(testFile, runRepeats, replicatorRepeats);
 
-            long duration = System.currentTimeMillis() - start;
-            System.out.println("Success! Job took " + duration + " ms");
+            final long duration = System.currentTimeMillis() - start;
+            log.info("Success! Job took " + duration + " ms");
 
             if (doPrompt) {
                 prompt();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }

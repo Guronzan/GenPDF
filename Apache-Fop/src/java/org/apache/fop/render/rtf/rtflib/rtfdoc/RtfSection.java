@@ -31,23 +31,19 @@ import java.io.Writer;
 import java.util.List;
 
 /**
- * <p>Models a section in an RTF document</p>
+ * <p>
+ * Models a section in an RTF document
+ * </p>
  *
- * <p>This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch).</p>
+ * <p>
+ * This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch).
+ * </p>
  */
 
-public class RtfSection
-extends RtfContainer
-implements
-    IRtfParagraphContainer,
-    IRtfTableContainer,
-    IRtfListContainer,
-    IRtfExternalGraphicContainer,
-    IRtfBeforeContainer,
-    IRtfParagraphKeepTogetherContainer,
-    IRtfAfterContainer,
-    IRtfJforCmdContainer,
-    IRtfTextrunContainer {
+public class RtfSection extends RtfContainer implements IRtfParagraphContainer,
+        IRtfTableContainer, IRtfListContainer, IRtfExternalGraphicContainer,
+        IRtfBeforeContainer, IRtfParagraphKeepTogetherContainer,
+        IRtfAfterContainer, IRtfJforCmdContainer, IRtfTextrunContainer {
     private RtfParagraph paragraph;
     private RtfTable table;
     private RtfList list;
@@ -57,181 +53,228 @@ implements
     private RtfJforCmd jforCmd;
 
     /** Create an RTF container as a child of given container */
-    RtfSection(RtfDocumentArea parent, Writer w) throws IOException {
+    RtfSection(final RtfDocumentArea parent, final Writer w) throws IOException {
         super(parent, w);
     }
 
     /**
-     * Start a new external graphic after closing current paragraph, list and table
+     * Start a new external graphic after closing current paragraph, list and
+     * table
+     * 
      * @return new RtfExternalGraphic object
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     public RtfExternalGraphic newImage() throws IOException {
         closeAll();
-        externalGraphic = new RtfExternalGraphic(this, writer);
-        return externalGraphic;
+        this.externalGraphic = new RtfExternalGraphic(this, this.writer);
+        return this.externalGraphic;
     }
 
     /**
      * Start a new paragraph after closing current paragraph, list and table
-     * @param attrs attributes for new RtfParagraph
+     * 
+     * @param attrs
+     *            attributes for new RtfParagraph
      * @return new RtfParagraph object
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    public RtfParagraph newParagraph(RtfAttributes attrs) throws IOException {
+    @Override
+    public RtfParagraph newParagraph(final RtfAttributes attrs)
+            throws IOException {
         closeAll();
-        paragraph = new RtfParagraph(this, writer, attrs);
-        return paragraph;
+        this.paragraph = new RtfParagraph(this, this.writer, attrs);
+        return this.paragraph;
     }
 
     /**
-     * Close current paragraph if any and start a new one with default attributes
+     * Close current paragraph if any and start a new one with default
+     * attributes
+     * 
      * @return new RtfParagraph
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     public RtfParagraph newParagraph() throws IOException {
         return newParagraph(null);
     }
 
     /**
      * Close current paragraph if any and start a new one
+     * 
      * @return new RtfParagraphKeepTogether
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    public RtfParagraphKeepTogether newParagraphKeepTogether() throws IOException {
-        return new RtfParagraphKeepTogether(this, writer);
+    @Override
+    public RtfParagraphKeepTogether newParagraphKeepTogether()
+            throws IOException {
+        return new RtfParagraphKeepTogether(this, this.writer);
     }
 
     /**
      * Start a new table after closing current paragraph, list and table
-     * @param tc Table context used for number-columns-spanned attribute (added by
-     * Boris Poudérous on july 2002)
+     * 
+     * @param tc
+     *            Table context used for number-columns-spanned attribute (added
+     *            by Boris Poudérous on july 2002)
      * @return new RtfTable object
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    public RtfTable newTable(ITableColumnsInfo tc) throws IOException {
+    @Override
+    public RtfTable newTable(final ITableColumnsInfo tc) throws IOException {
         closeAll();
-        table = new RtfTable(this, writer, tc);
-        return table;
+        this.table = new RtfTable(this, this.writer, tc);
+        return this.table;
     }
 
     /**
      * Start a new table after closing current paragraph, list and table
-     * @param attrs attributes of new RtfTable
-     * @param tc Table context used for number-columns-spanned attribute (added by
-     * Boris Poudérous on july 2002)
+     * 
+     * @param attrs
+     *            attributes of new RtfTable
+     * @param tc
+     *            Table context used for number-columns-spanned attribute (added
+     *            by Boris Poudérous on july 2002)
      * @return new RtfTable object
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    public RtfTable newTable(RtfAttributes attrs, ITableColumnsInfo tc) throws IOException {
+    @Override
+    public RtfTable newTable(final RtfAttributes attrs,
+            final ITableColumnsInfo tc) throws IOException {
         closeAll();
-        table = new RtfTable(this, writer, attrs, tc);
-        return table;
+        this.table = new RtfTable(this, this.writer, attrs, tc);
+        return this.table;
     }
 
     /**
      * Start a new list after closing current paragraph, list and table
-     * @param attrs attributes of new RftList object
+     * 
+     * @param attrs
+     *            attributes of new RftList object
      * @return new RtfList
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    public RtfList newList(RtfAttributes attrs) throws IOException {
+    @Override
+    public RtfList newList(final RtfAttributes attrs) throws IOException {
         closeAll();
-        list = new RtfList(this, writer, attrs);
-        return list;
+        this.list = new RtfList(this, this.writer, attrs);
+        return this.list;
     }
 
     /**
      * IRtfBeforeContainer
-     * @param attrs attributes of new RtfBefore object
+     * 
+     * @param attrs
+     *            attributes of new RtfBefore object
      * @return new RtfBefore object
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    public RtfBefore newBefore(RtfAttributes attrs) throws IOException {
+    @Override
+    public RtfBefore newBefore(final RtfAttributes attrs) throws IOException {
         closeAll();
-        before = new RtfBefore(this, writer, attrs);
-        return before;
+        this.before = new RtfBefore(this, this.writer, attrs);
+        return this.before;
     }
 
     /**
      * IRtfAfterContainer
-     * @param attrs attributes of new RtfAfter object
+     * 
+     * @param attrs
+     *            attributes of new RtfAfter object
      * @return new RtfAfter object
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    public RtfAfter newAfter(RtfAttributes attrs) throws IOException {
+    @Override
+    public RtfAfter newAfter(final RtfAttributes attrs) throws IOException {
         closeAll();
-        after = new RtfAfter(this, writer, attrs);
-        return after;
+        this.after = new RtfAfter(this, this.writer, attrs);
+        return this.after;
     }
 
     /**
      *
-     * @param attrs attributes of new RtfJforCmd
+     * @param attrs
+     *            attributes of new RtfJforCmd
      * @return the new RtfJforCmd
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    public RtfJforCmd newJforCmd(RtfAttributes attrs) throws IOException {
-        jforCmd  = new RtfJforCmd(this, writer, attrs);
-        return jforCmd;
+    @Override
+    public RtfJforCmd newJforCmd(final RtfAttributes attrs) throws IOException {
+        this.jforCmd = new RtfJforCmd(this, this.writer, attrs);
+        return this.jforCmd;
     }
 
-
-
     /**
-     * Can be overridden to write RTF prefix code, what comes before our children
-     * @throws IOException for I/O problems
+     * Can be overridden to write RTF prefix code, what comes before our
+     * children
+     * 
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeRtfPrefix() throws IOException {
-        writeAttributes(attrib, RtfPage.PAGE_ATTR);
+        writeAttributes(this.attrib, RtfPage.PAGE_ATTR);
         newLine();
         writeControlWord("sectd");
     }
 
     /**
      * Can be overridden to write RTF suffix code, what comes after our children
-     * @throws IOException for I/O problems
+     * 
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeRtfSuffix() throws IOException {
-        // write suffix /sect only if this section is not last section (see bug #51484)
-        List siblings = parent.getChildren();
-        if ( ( siblings.indexOf ( this ) + 1 ) < siblings.size() ) {
+        // write suffix /sect only if this section is not last section (see bug
+        // #51484)
+        final List siblings = this.parent.getChildren();
+        if (siblings.indexOf(this) + 1 < siblings.size()) {
             writeControlWord("sect");
         }
     }
 
     private void closeCurrentTable() throws IOException {
-        if (table != null) {
-            table.close();
+        if (this.table != null) {
+            this.table.close();
         }
     }
 
     private void closeCurrentParagraph() throws IOException {
-        if (paragraph != null) {
-            paragraph.close();
+        if (this.paragraph != null) {
+            this.paragraph.close();
         }
     }
 
     private void closeCurrentList() throws IOException {
-        if (list != null) {
-            list.close();
+        if (this.list != null) {
+            this.list.close();
         }
     }
 
     private void closeCurrentExternalGraphic() throws IOException {
-        if (externalGraphic != null) {
-            externalGraphic.close();
+        if (this.externalGraphic != null) {
+            this.externalGraphic.close();
         }
     }
 
     private void closeCurrentBefore() throws IOException {
-        if (before != null) {
-            before.close();
+        if (this.before != null) {
+            this.before.close();
         }
     }
 
-    private void closeAll()
-    throws IOException {
+    private void closeAll() throws IOException {
         closeCurrentTable();
         closeCurrentParagraph();
         closeCurrentList();
@@ -241,11 +284,13 @@ implements
 
     /**
      * Returns the current RtfTextrun.
+     * 
      * @return Current RtfTextrun
-     * @throws IOException Thrown when an IO-problem occurs.
+     * @throws IOException
+     *             Thrown when an IO-problem occurs.
      */
-    public RtfTextrun getTextrun()
-    throws IOException {
-        return RtfTextrun.getTextrun(this, writer, null);
+    @Override
+    public RtfTextrun getTextrun() throws IOException {
+        return RtfTextrun.getTextrun(this, this.writer, null);
     }
 }

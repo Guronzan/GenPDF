@@ -20,19 +20,22 @@
 package org.apache.xmlgraphics.java2d.color;
 
 /**
- * Interface used to decorate {@link java.awt.color.ColorSpaces} subclasses
- * to report the origin of the associated color profile.
+ * Interface used to decorate {@link java.awt.color.ColorSpaces} subclasses to
+ * report the origin of the associated color profile.
  */
 public interface ColorSpaceOrigin {
 
     /**
-     * Returns the name of the profile used to identify the color space in a particular context.
+     * Returns the name of the profile used to identify the color space in a
+     * particular context.
+     * 
      * @return the profile name
      */
     String getProfileName();
 
     /**
      * Returns the URI identifying the associate color profile.
+     * 
      * @return the profile URI
      */
     String getProfileURI();

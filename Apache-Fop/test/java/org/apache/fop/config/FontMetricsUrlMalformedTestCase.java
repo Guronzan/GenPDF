@@ -22,7 +22,8 @@ package org.apache.fop.config;
 /**
  * this font has a malformed metrics-url
  */
-public class FontMetricsUrlMalformedTestCase extends BaseDestructiveUserConfigTest {
+public class FontMetricsUrlMalformedTestCase extends
+        BaseDestructiveUserConfigTest {
 
     @Override
     public String getUserConfigFilename() {

@@ -23,37 +23,42 @@ import org.apache.xmlgraphics.ps.PSResource;
 import org.apache.xmlgraphics.ps.dsc.ResourceTracker;
 
 /**
- * A DSC resource corresponding to a font. This class handles the possible other resources
- * that a font may depend on. For example, a CID-keyed font depends on a CIDFont resource, a
- * CMap resource, and the ProcSet CIDInit resource.
+ * A DSC resource corresponding to a font. This class handles the possible other
+ * resources that a font may depend on. For example, a CID-keyed font depends on
+ * a CIDFont resource, a CMap resource, and the ProcSet CIDInit resource.
  */
 abstract class PSFontResource {
 
     static PSFontResource createFontResource(final PSResource fontResource) {
         return new PSFontResource() {
 
+            @Override
             String getName() {
                 return fontResource.getName();
             }
 
-            void notifyResourceUsageOnPage(ResourceTracker resourceTracker) {
+            @Override
+            void notifyResourceUsageOnPage(final ResourceTracker resourceTracker) {
                 resourceTracker.notifyResourceUsageOnPage(fontResource);
             }
         };
     }
 
     static PSFontResource createFontResource(final PSResource fontResource,
-            final PSResource procsetCIDInitResource, final PSResource cmapResource,
-            final PSResource cidFontResource) {
+            final PSResource procsetCIDInitResource,
+            final PSResource cmapResource, final PSResource cidFontResource) {
         return new PSFontResource() {
 
+            @Override
             String getName() {
                 return fontResource.getName();
             }
 
-            void notifyResourceUsageOnPage(ResourceTracker resourceTracker) {
+            @Override
+            void notifyResourceUsageOnPage(final ResourceTracker resourceTracker) {
                 resourceTracker.notifyResourceUsageOnPage(fontResource);
-                resourceTracker.notifyResourceUsageOnPage(procsetCIDInitResource);
+                resourceTracker
+                        .notifyResourceUsageOnPage(procsetCIDInitResource);
                 resourceTracker.notifyResourceUsageOnPage(cmapResource);
                 resourceTracker.notifyResourceUsageOnPage(cidFontResource);
             }
@@ -68,10 +73,12 @@ abstract class PSFontResource {
     abstract String getName();
 
     /**
-     * Notifies the given resource tracker of all the resources needed by this font.
+     * Notifies the given resource tracker of all the resources needed by this
+     * font.
      *
      * @param resourceTracker
      */
-    abstract void notifyResourceUsageOnPage(ResourceTracker resourceTracker);
+    abstract void notifyResourceUsageOnPage(
+            final ResourceTracker resourceTracker);
 
 }

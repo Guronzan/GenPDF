@@ -26,34 +26,37 @@ import org.apache.fop.fo.FObj;
  */
 public class SimplePercentBaseContext implements PercentBaseContext {
 
-    private PercentBaseContext parentContext;
-    private int lengthBase;
-    private int lengthBaseValue;
+    private final PercentBaseContext parentContext;
+    private final int lengthBase;
+    private final int lengthBaseValue;
 
     /**
-     * @param parentContext the context to be used for all percentages other than lengthBase
-     * @param lengthBase the particular percentage length base for which this context provides
-     *                   a value
-     * @param lengthBaseValue the value to be returned for requests to the given lengthBase
+     * @param parentContext
+     *            the context to be used for all percentages other than
+     *            lengthBase
+     * @param lengthBase
+     *            the particular percentage length base for which this context
+     *            provides a value
+     * @param lengthBaseValue
+     *            the value to be returned for requests to the given lengthBase
      */
-    public SimplePercentBaseContext(PercentBaseContext parentContext,
-                             int lengthBase,
-                             int lengthBaseValue) {
+    public SimplePercentBaseContext(final PercentBaseContext parentContext,
+            final int lengthBase, final int lengthBaseValue) {
         this.parentContext = parentContext;
         this.lengthBase = lengthBase;
         this.lengthBaseValue = lengthBaseValue;
     }
 
     /**
-     * Returns the value for the given lengthBase.
-     * {@inheritDoc}
+     * Returns the value for the given lengthBase. {@inheritDoc}
      */
-    public int getBaseLength(int lengthBase, FObj fobj) {
+    @Override
+    public int getBaseLength(final int lengthBase, final FObj fobj) {
         // if its for us return our value otherwise delegate to parent context
         if (lengthBase == this.lengthBase) {
-            return lengthBaseValue;
-        } else if (parentContext != null) {
-            return parentContext.getBaseLength(lengthBase, fobj);
+            return this.lengthBaseValue;
+        } else if (this.parentContext != null) {
+            return this.parentContext.getBaseLength(lengthBase, fobj);
         }
         return -1;
     }

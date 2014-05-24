@@ -37,12 +37,12 @@ import org.apache.fop.layoutmgr.Position;
 import org.apache.fop.traits.MinOptMax;
 
 /**
- * Class modelling the commonalities of layoutmanagers for objects
- * which stack children in the inline direction, such as Inline or
- * Line. It should not be instantiated directly.
+ * Class modelling the commonalities of layoutmanagers for objects which stack
+ * children in the inline direction, such as Inline or Line. It should not be
+ * instantiated directly.
  */
-public abstract class InlineStackingLayoutManager extends AbstractLayoutManager implements
-        InlineLevelLayoutManager, BreakOpportunity {
+public abstract class InlineStackingLayoutManager extends AbstractLayoutManager
+        implements InlineLevelLayoutManager, BreakOpportunity {
 
     /**
      * Size of border and padding in BPD (ie, before and after).
@@ -55,58 +55,67 @@ public abstract class InlineStackingLayoutManager extends AbstractLayoutManager 
     protected LayoutContext childLC;
 
     /**
-     * Create an inline stacking layout manager.
-     * This is used for fo's that create areas that
-     * contain inline areas.
+     * Create an inline stacking layout manager. This is used for fo's that
+     * create areas that contain inline areas.
      *
-     * @param node the formatting object that creates the area
+     * @param node
+     *            the formatting object that creates the area
      */
-    protected InlineStackingLayoutManager(FObj node) {
+    protected InlineStackingLayoutManager(final FObj node) {
         super(node);
-        extraBPD = MinOptMax.ZERO;
+        this.extraBPD = MinOptMax.ZERO;
     }
 
     /**
      * Set the iterator.
      *
-     * @param iter the iterator for this LM
+     * @param iter
+     *            the iterator for this LM
      */
-    public void setLMiter(ListIterator iter) {
-        childLMiter = iter;
+    public void setLMiter(final ListIterator iter) {
+        this.childLMiter = iter;
     }
 
     /**
      * Returns the extra IPD needed for any leading or trailing fences for the
      * current area.
-     * @param bNotFirst true if not the first area for this layout manager
-     * @param bNotLast true if not the last area for this layout manager
+     * 
+     * @param bNotFirst
+     *            true if not the first area for this layout manager
+     * @param bNotLast
+     *            true if not the last area for this layout manager
      * @return the extra IPD as a MinOptMax spec
      */
-    protected MinOptMax getExtraIPD(boolean bNotFirst, boolean bNotLast) {
+    protected MinOptMax getExtraIPD(final boolean bNotFirst,
+            final boolean bNotLast) {
         return MinOptMax.ZERO;
     }
 
-
     /**
      * Indication if the current area has a leading fence.
-     * @param bNotFirst true if not the first area for this layout manager
+     * 
+     * @param bNotFirst
+     *            true if not the first area for this layout manager
      * @return the leading fence flag
      */
-    protected boolean hasLeadingFence(boolean bNotFirst) {
+    protected boolean hasLeadingFence(final boolean bNotFirst) {
         return false;
     }
 
     /**
      * Indication if the current area has a trailing fence.
-     * @param bNotLast true if not the last area for this layout manager
+     * 
+     * @param bNotLast
+     *            true if not the last area for this layout manager
      * @return the trailing fence flag
      */
-    protected boolean hasTrailingFence(boolean bNotLast) {
+    protected boolean hasTrailingFence(final boolean bNotLast) {
         return false;
     }
 
     /**
      * Get the space at the start of the inline area.
+     * 
      * @return the space property describing the space
      */
     protected SpaceProperty getSpaceStart() {
@@ -115,6 +124,7 @@ public abstract class InlineStackingLayoutManager extends AbstractLayoutManager 
 
     /**
      * Get the space at the end of the inline area.
+     * 
      * @return the space property describing the space
      */
     protected SpaceProperty getSpaceEnd() {
@@ -123,52 +133,65 @@ public abstract class InlineStackingLayoutManager extends AbstractLayoutManager 
 
     /**
      * Returns the current area.
+     * 
      * @return the current area
      */
     protected Area getCurrentArea() {
-        return currentArea;
+        return this.currentArea;
     }
 
     /**
      * Set the current area.
-     * @param area the current area
+     * 
+     * @param area
+     *            the current area
      */
-    protected void setCurrentArea(Area area) {
-        currentArea = area;
+    protected void setCurrentArea(final Area area) {
+        this.currentArea = area;
     }
 
     /**
      * Trait setter to be overridden by subclasses.
-     * @param bNotFirst true if this is not the first child area added
-     * @param bNotLast true if this is not the last child area added
+     * 
+     * @param bNotFirst
+     *            true if this is not the first child area added
+     * @param bNotLast
+     *            true if this is not the last child area added
      */
-    protected void setTraits(boolean bNotFirst, boolean bNotLast) {
+    protected void setTraits(final boolean bNotFirst, final boolean bNotLast) {
     }
 
     /**
      * Set the current child layout context
-     * @param lc the child layout context
+     * 
+     * @param lc
+     *            the child layout context
      */
-    protected void setChildContext(LayoutContext lc) {
-        childLC = lc;
+    protected void setChildContext(final LayoutContext lc) {
+        this.childLC = lc;
     }
 
     /**
      * Current child layout context
+     * 
      * @return the current child layout context
      */
     protected LayoutContext getContext() {
-        return childLC;
+        return this.childLC;
     }
 
     /**
      * Adds a space to the area.
      *
-     * @param parentArea the area to which to add the space
-     * @param spaceRange the space range specifier
-     * @param spaceAdjust the factor by which to stretch or shrink the space
+     * @param parentArea
+     *            the area to which to add the space
+     * @param spaceRange
+     *            the space range specifier
+     * @param spaceAdjust
+     *            the factor by which to stretch or shrink the space
      */
-    protected void addSpace(Area parentArea, MinOptMax spaceRange, double spaceAdjust) {
+    protected void addSpace(final Area parentArea, final MinOptMax spaceRange,
+            final double spaceAdjust) {
         if (spaceRange != null) {
             int iAdjust = spaceRange.getOpt();
             if (spaceAdjust > 0.0) {
@@ -179,12 +202,12 @@ public abstract class InlineStackingLayoutManager extends AbstractLayoutManager 
                 iAdjust += (int) (spaceRange.getShrink() * spaceAdjust);
             }
             if (iAdjust != 0) {
-                //getLogger().debug("Add leading space: " + iAdjust);
-                Space ls = new Space();
+                // getLogger().debug("Add leading space: " + iAdjust);
+                final Space ls = new Space();
                 ls.setIPD(iAdjust);
-                int level = parentArea.getBidiLevel();
-                if ( level >= 0 ) {
-                    ls.setBidiLevel ( level );
+                final int level = parentArea.getBidiLevel();
+                if (level >= 0) {
+                    ls.setBidiLevel(level);
                 }
                 parentArea.addChildArea(ls);
             }
@@ -192,19 +215,22 @@ public abstract class InlineStackingLayoutManager extends AbstractLayoutManager 
     }
 
     /** {@inheritDoc} */
-    public List addALetterSpaceTo(List oldList) {
+    @Override
+    public List addALetterSpaceTo(final List oldList) {
         return addALetterSpaceTo(oldList, 0);
     }
 
     /** {@inheritDoc} */
-    public List addALetterSpaceTo(List oldList, int thisDepth) {
+    @Override
+    public List addALetterSpaceTo(List oldList, final int thisDepth) {
         // old list contains only a box, or the sequence: box penalty glue box
 
         ListIterator oldListIterator = oldList.listIterator(oldList.size());
         KnuthElement element = (KnuthElement) oldListIterator.previous();
-        int depth = thisDepth + 1;
+        final int depth = thisDepth + 1;
 
-        // The last element may not have a layout manager (its position == null);
+        // The last element may not have a layout manager (its position ==
+        // null);
         // this may happen if it is a padding box; see bug 39571.
         Position pos = element.getPosition();
         InlineLevelLayoutManager lm = null;
@@ -224,11 +250,13 @@ public abstract class InlineStackingLayoutManager extends AbstractLayoutManager 
             if (pos != null) {
                 lm = (InlineLevelLayoutManager) pos.getLM(thisDepth);
             }
-            // in old elements the position at thisDepth is a position for this LM
+            // in old elements the position at thisDepth is a position for this
+            // LM
             // only wrap new elements
             if (lm != this) {
                 // new element, wrap position
-                element.setPosition(notifyPos(new NonLeafPosition(this, element.getPosition())));
+                element.setPosition(notifyPos(new NonLeafPosition(this, element
+                        .getPosition())));
             }
         }
 
@@ -236,26 +264,29 @@ public abstract class InlineStackingLayoutManager extends AbstractLayoutManager 
     }
 
     /** {@inheritDoc} */
-    public String getWordChars(Position pos) {
-        Position newPos = pos.getPosition();
+    @Override
+    public String getWordChars(final Position pos) {
+        final Position newPos = pos.getPosition();
         return ((InlineLevelLayoutManager) newPos.getLM()).getWordChars(newPos);
     }
 
     /** {@inheritDoc} */
-    public void hyphenate(Position pos, HyphContext hc) {
-        Position newPos = pos.getPosition();
-        ((InlineLevelLayoutManager)
-         newPos.getLM()).hyphenate(newPos, hc);
+    @Override
+    public void hyphenate(final Position pos, final HyphContext hc) {
+        final Position newPos = pos.getPosition();
+        ((InlineLevelLayoutManager) newPos.getLM()).hyphenate(newPos, hc);
     }
 
     /** {@inheritDoc} */
-    public boolean applyChanges(List oldList) {
+    @Override
+    public boolean applyChanges(final List oldList) {
         return applyChanges(oldList, 0);
     }
 
     /** {@inheritDoc} */
-    public boolean applyChanges(List oldList, int depth) {
-        ListIterator oldListIterator = oldList.listIterator();
+    @Override
+    public boolean applyChanges(final List oldList, int depth) {
+        final ListIterator oldListIterator = oldList.listIterator();
         KnuthElement oldElement;
         depth += 1;
 
@@ -266,7 +297,7 @@ public abstract class InlineStackingLayoutManager extends AbstractLayoutManager 
         boolean bSomethingChanged = false;
         while (oldListIterator.hasNext()) {
             oldElement = (KnuthElement) oldListIterator.next();
-            Position pos = oldElement.getPosition();
+            final Position pos = oldElement.getPosition();
             if (pos == null) {
                 currLM = null;
             } else {
@@ -282,30 +313,27 @@ public abstract class InlineStackingLayoutManager extends AbstractLayoutManager 
                 if (prevLM == this || currLM == this) {
                     prevLM = currLM;
                 } else if (oldListIterator.hasNext()) {
-                    bSomethingChanged
-                        = prevLM.applyChanges(oldList.subList(fromIndex,
-                                                              oldListIterator.previousIndex()),
-                                                              depth)
-                        || bSomethingChanged;
+                    bSomethingChanged = prevLM.applyChanges(
+                            oldList.subList(fromIndex,
+                                    oldListIterator.previousIndex()), depth)
+                            || bSomethingChanged;
                     prevLM = currLM;
                     fromIndex = oldListIterator.previousIndex();
                 } else if (currLM == prevLM) {
-                    bSomethingChanged
-                        = (prevLM != null)
-                            && prevLM.applyChanges(oldList.subList(fromIndex,
-                                                                   oldList.size()), depth)
-                            || bSomethingChanged;
+                    bSomethingChanged = prevLM != null
+                    && prevLM.applyChanges(
+                                    oldList.subList(fromIndex, oldList.size()),
+                                    depth) || bSomethingChanged;
                 } else {
-                    bSomethingChanged
-                        = prevLM.applyChanges(oldList.subList(fromIndex,
-                                                              oldListIterator.previousIndex()),
-                                                              depth)
+                    bSomethingChanged = prevLM.applyChanges(
+                            oldList.subList(fromIndex,
+                                    oldListIterator.previousIndex()), depth)
                             || bSomethingChanged;
                     if (currLM != null) {
-                        bSomethingChanged
-                            = currLM.applyChanges(oldList.subList(oldListIterator.previousIndex(),
-                                                                  oldList.size()), depth)
-                            || bSomethingChanged;
+                        bSomethingChanged = currLM.applyChanges(oldList
+                                .subList(oldListIterator.previousIndex(),
+                                        oldList.size()), depth)
+                                || bSomethingChanged;
                     }
                 }
             }
@@ -317,27 +345,30 @@ public abstract class InlineStackingLayoutManager extends AbstractLayoutManager 
     /**
      * {@inheritDoc}
      */
-    public List getChangedKnuthElements(List oldList, int alignment) {
+    @Override
+    public List getChangedKnuthElements(final List oldList, final int alignment) {
         return getChangedKnuthElements(oldList, alignment, 0);
     }
 
     /** {@inheritDoc} */
-    public List getChangedKnuthElements(List oldList, int alignment, int depth) {
+    @Override
+    public List getChangedKnuthElements(final List oldList,
+            final int alignment, int depth) {
         // "unwrap" the Positions stored in the elements
-        ListIterator oldListIterator = oldList.listIterator();
+        final ListIterator oldListIterator = oldList.listIterator();
         KnuthElement oldElement;
         depth += 1;
 
         KnuthElement returnedElement;
-        LinkedList returnedList = new LinkedList();
-        LinkedList returnList = new LinkedList();
+        final LinkedList returnedList = new LinkedList();
+        final LinkedList returnList = new LinkedList();
         InlineLevelLayoutManager prevLM = null;
         InlineLevelLayoutManager currLM;
         int fromIndex = 0;
 
         while (oldListIterator.hasNext()) {
             oldElement = (KnuthElement) oldListIterator.next();
-            Position pos = oldElement.getPosition();
+            final Position pos = oldElement.getPosition();
             if (pos == null) {
                 currLM = null;
             } else {
@@ -349,27 +380,26 @@ public abstract class InlineStackingLayoutManager extends AbstractLayoutManager 
 
             if (currLM != prevLM || !oldListIterator.hasNext()) {
                 if (oldListIterator.hasNext()) {
-                    returnedList.addAll
-                        (prevLM.getChangedKnuthElements
-                         (oldList.subList(fromIndex, oldListIterator.previousIndex()),
-                          alignment, depth));
+                    returnedList.addAll(prevLM.getChangedKnuthElements(
+                            oldList.subList(fromIndex,
+                                    oldListIterator.previousIndex()),
+                            alignment, depth));
                     prevLM = currLM;
                     fromIndex = oldListIterator.previousIndex();
                 } else if (currLM == prevLM) {
-                    returnedList.addAll
-                        (prevLM.getChangedKnuthElements
-                         (oldList.subList(fromIndex, oldList.size()),
-                          alignment, depth));
+                    returnedList.addAll(prevLM.getChangedKnuthElements(
+                            oldList.subList(fromIndex, oldList.size()),
+                            alignment, depth));
                 } else {
-                    returnedList.addAll
-                        (prevLM.getChangedKnuthElements
-                         (oldList.subList(fromIndex, oldListIterator.previousIndex()),
-                          alignment, depth));
+                    returnedList.addAll(prevLM.getChangedKnuthElements(
+                            oldList.subList(fromIndex,
+                                    oldListIterator.previousIndex()),
+                            alignment, depth));
                     if (currLM != null) {
-                        returnedList.addAll
-                            (currLM.getChangedKnuthElements
-                             (oldList.subList(oldListIterator.previousIndex(), oldList.size()),
-                              alignment, depth));
+                        returnedList.addAll(currLM.getChangedKnuthElements(
+                                oldList.subList(
+                                        oldListIterator.previousIndex(),
+                                        oldList.size()), alignment, depth));
                     }
                 }
             }
@@ -377,17 +407,18 @@ public abstract class InlineStackingLayoutManager extends AbstractLayoutManager 
 
         // this is a new list
         // "wrap" the Position stored in each element of returnedList
-        ListIterator listIter = returnedList.listIterator();
+        final ListIterator listIter = returnedList.listIterator();
         while (listIter.hasNext()) {
             returnedElement = (KnuthElement) listIter.next();
-            returnedElement.setPosition
-                (notifyPos(new NonLeafPosition(this, returnedElement.getPosition())));
+            returnedElement.setPosition(notifyPos(new NonLeafPosition(this,
+                    returnedElement.getPosition())));
             returnList.add(returnedElement);
         }
 
         return returnList;
     }
 
+    @Override
     public int getBreakBefore() {
         return BreakOpportunityHelper.getBreakBefore(this);
     }

@@ -36,26 +36,29 @@ import org.apache.xmlgraphics.java2d.Graphics2DImagePainter;
 public class ImageConverterBitmap2G2D extends AbstractImageConverter {
 
     /** {@inheritDoc} */
-    public Image convert(Image src, Map hints) {
+    @Override
+    public Image convert(final Image src, final Map hints) {
         checkSourceFlavor(src);
-        final ImageRendered rendImage = (ImageRendered)src;
+        final ImageRendered rendImage = (ImageRendered) src;
 
-        Graphics2DImagePainter painter = new Graphics2DImagePainter() {
+        final Graphics2DImagePainter painter = new Graphics2DImagePainter() {
 
+            @Override
             public Dimension getImageSize() {
                 return rendImage.getSize().getDimensionMpt();
             }
 
-            public void paint(Graphics2D g2d, Rectangle2D area) {
-                RenderedImage ri = rendImage.getRenderedImage();
-                double w = area.getWidth();
-                double h = area.getHeight();
+            @Override
+            public void paint(final Graphics2D g2d, final Rectangle2D area) {
+                final RenderedImage ri = rendImage.getRenderedImage();
+                final double w = area.getWidth();
+                final double h = area.getHeight();
 
-                AffineTransform at = new AffineTransform();
+                final AffineTransform at = new AffineTransform();
                 at.translate(area.getX(), area.getY());
-                //Scale image to fit
-                double sx = w / ri.getWidth();
-                double sy = h / ri.getHeight();
+                // Scale image to fit
+                final double sx = w / ri.getWidth();
+                final double sy = h / ri.getHeight();
                 if (sx != 1.0 || sy != 1.0) {
                     at.scale(sx, sy);
                 }
@@ -64,16 +67,19 @@ public class ImageConverterBitmap2G2D extends AbstractImageConverter {
 
         };
 
-        ImageGraphics2D g2dImage = new ImageGraphics2D(src.getInfo(), painter);
+        final ImageGraphics2D g2dImage = new ImageGraphics2D(src.getInfo(),
+                painter);
         return g2dImage;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getSourceFlavor() {
         return ImageFlavor.RENDERED_IMAGE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getTargetFlavor() {
         return ImageFlavor.GRAPHICS2D;
     }

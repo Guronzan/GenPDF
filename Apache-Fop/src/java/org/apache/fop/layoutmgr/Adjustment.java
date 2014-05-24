@@ -33,41 +33,48 @@ public final class Adjustment {
     /**
      * Adjustment class: adjustment for space-before.
      */
-    public static final Adjustment SPACE_BEFORE_ADJUSTMENT = new Adjustment("space-before");
+    public static final Adjustment SPACE_BEFORE_ADJUSTMENT = new Adjustment(
+            "space-before");
 
     /**
      * Adjustment class: adjustment for space-after.
      */
-    public static final Adjustment SPACE_AFTER_ADJUSTMENT = new Adjustment("space-after");
+    public static final Adjustment SPACE_AFTER_ADJUSTMENT = new Adjustment(
+            "space-after");
 
     /**
      * Adjustment class: adjustment for number of lines.
      */
-    public static final Adjustment LINE_NUMBER_ADJUSTMENT = new Adjustment("line-number");
+    public static final Adjustment LINE_NUMBER_ADJUSTMENT = new Adjustment(
+            "line-number");
 
     /**
      * Adjustment class: adjustment for line height.
      */
-    public static final Adjustment LINE_HEIGHT_ADJUSTMENT = new Adjustment("line-height");
+    public static final Adjustment LINE_HEIGHT_ADJUSTMENT = new Adjustment(
+            "line-height");
 
     private final String name;
 
-    private Adjustment(String name) {
+    private Adjustment(final String name) {
         this.name = name;
     }
 
     /** {@inheritDoc} */
-    public boolean equals(Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
         return this == obj;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode() {
         return super.hashCode();
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return name;
+        return this.name;
     }
 }

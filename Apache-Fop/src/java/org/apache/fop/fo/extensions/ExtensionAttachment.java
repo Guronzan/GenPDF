@@ -20,18 +20,20 @@
 package org.apache.fop.fo.extensions;
 
 /**
- * This interface is implemented by objects that are returned by special extension element
- * through the FONode.getExtensionAttachment() method. Such objects are carried in the FO tree
- * and made available to the layout managers that support processing extension attachments or
- * support passing them on to the area tree where they can be picked up by renderers.
+ * This interface is implemented by objects that are returned by special
+ * extension element through the FONode.getExtensionAttachment() method. Such
+ * objects are carried in the FO tree and made available to the layout managers
+ * that support processing extension attachments or support passing them on to
+ * the area tree where they can be picked up by renderers.
  * <p>
  * NOTE: Classes which implement this interface need to be Serializable!
  */
 public interface ExtensionAttachment {
 
     /**
-     * This method returns a category URI that allows a processor (layout manager or renderer)
-     * to determine if it supports this object.
+     * This method returns a category URI that allows a processor (layout
+     * manager or renderer) to determine if it supports this object.
+     * 
      * @return the category URI
      */
     String getCategory();

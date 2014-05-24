@@ -25,8 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.area.Area;
 import org.apache.fop.area.Block;
@@ -46,19 +45,14 @@ import org.apache.fop.layoutmgr.PositionIterator;
 import org.apache.fop.layoutmgr.SpaceSpecifier;
 
 /**
- * Content Layout Manager.
- * For use with objects that contain inline areas such as
- * leader use-content and title.
+ * Content Layout Manager. For use with objects that contain inline areas such
+ * as leader use-content and title.
  */
-public class ContentLayoutManager extends AbstractBaseLayoutManager
-        implements InlineLevelLayoutManager {
+@Slf4j
+public class ContentLayoutManager extends AbstractBaseLayoutManager implements
+InlineLevelLayoutManager {
 
-    /**
-     * logging instance
-     */
-    private static Log log = LogFactory.getLog(ContentLayoutManager.class);
-
-    private Area holder;
+    private final Area holder;
     private int stackSize;
     private LayoutManager parentLM;
     private InlineLevelLayoutManager childLM = null;
@@ -66,75 +60,85 @@ public class ContentLayoutManager extends AbstractBaseLayoutManager
     /**
      * Constructs a new ContentLayoutManager
      *
-     * @param area  The parent area
-     * @param parentLM the parent layout manager
+     * @param area
+     *            The parent area
+     * @param parentLM
+     *            the parent layout manager
      */
-    public ContentLayoutManager(Area area, LayoutManager parentLM) {
-        holder = area;
+    public ContentLayoutManager(final Area area, final LayoutManager parentLM) {
+        this.holder = area;
         this.parentLM = parentLM;
     }
 
     /**
-     * Constructor using a fo:title formatting object and its PageSequenceLayoutManager parent.
-     * throws IllegalStateException if the foTitle has no children.
-     * TODO: convert IllegalStateException to FOPException;
-     * also in makeLayoutManager and makeContentLayoutManager and callers.
-     * @param pslm the PageSequenceLayoutManager parent of this LM
-     * @param foTitle the Title FO for which this LM is made
+     * Constructor using a fo:title formatting object and its
+     * PageSequenceLayoutManager parent. throws IllegalStateException if the
+     * foTitle has no children. TODO: convert IllegalStateException to
+     * FOPException; also in makeLayoutManager and makeContentLayoutManager and
+     * callers.
+     *
+     * @param pslm
+     *            the PageSequenceLayoutManager parent of this LM
+     * @param foTitle
+     *            the Title FO for which this LM is made
      */
-    public ContentLayoutManager(PageSequenceLayoutManager pslm, Title foTitle) {
+    public ContentLayoutManager(final PageSequenceLayoutManager pslm,
+            final Title foTitle) {
         // get breaks then add areas to title
         this.parentLM = pslm;
-        holder = new LineArea();
+        this.holder = new LineArea();
 
-        //        setUserAgent(foTitle.getUserAgent());
+        // setUserAgent(foTitle.getUserAgent());
 
         // use special layout manager to add the inline areas
         // to the Title.
         try {
-            LayoutManager lm = pslm.getLayoutManagerMaker().makeLayoutManager(foTitle);
+            final LayoutManager lm = pslm.getLayoutManagerMaker()
+                    .makeLayoutManager(foTitle);
             addChildLM(lm);
             fillArea(lm);
-        } catch (IllegalStateException e) {
+        } catch (final IllegalStateException e) {
             log.warn("Title has no content");
             throw e;
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void initialize() {
         // Empty
     }
 
-    private void fillArea(LayoutManager curLM) {
+    private void fillArea(final LayoutManager curLM) {
 
-        int ipd = 1000000;
+        final int ipd = 1000000;
 
-        LayoutContext childLC = new LayoutContext(LayoutContext.NEW_AREA);
+        final LayoutContext childLC = new LayoutContext(LayoutContext.NEW_AREA);
         childLC.setLeadingSpace(new SpaceSpecifier(false));
         childLC.setTrailingSpace(new SpaceSpecifier(false));
         childLC.setRefIPD(ipd);
 
-        int lineHeight = 14000;
-        int lead = 12000;
-        int follow = 2000;
+        final int lineHeight = 14000;
+        final int lead = 12000;
+        final int follow = 2000;
 
-        int halfLeading = (lineHeight - lead - follow) / 2;
+        final int halfLeading = (lineHeight - lead - follow) / 2;
         // height before baseline
-        int lineLead = lead + halfLeading;
+        final int lineLead = lead + halfLeading;
         // maximum size of top and bottom alignment
-        int maxtb = follow + halfLeading;
+        final int maxtb = follow + halfLeading;
         // max size of middle alignment below baseline
         int middlefollow = maxtb;
 
-        stackSize = 0;
+        this.stackSize = 0;
 
-        List contentList = getNextKnuthElements(childLC, Constants.EN_START);
-        ListIterator contentIter = contentList.listIterator();
+        final List contentList = getNextKnuthElements(childLC,
+                Constants.EN_START);
+        final ListIterator contentIter = contentList.listIterator();
         while (contentIter.hasNext()) {
-            KnuthElement element = (KnuthElement) contentIter.next();
+            final KnuthElement element = (KnuthElement) contentIter.next();
             if (element instanceof KnuthInlineBox) {
-                KnuthInlineBox box = (KnuthInlineBox) element;
+                final KnuthInlineBox box = (KnuthInlineBox) element;
                 // TODO handle alignment here?
             }
         }
@@ -143,54 +147,63 @@ public class ContentLayoutManager extends AbstractBaseLayoutManager
             middlefollow = maxtb - lineLead;
         }
 
-        LayoutContext lc = new LayoutContext(0);
+        final LayoutContext lc = new LayoutContext(0);
 
         lc.setFlags(LayoutContext.RESOLVE_LEADING_SPACE, true);
         lc.setLeadingSpace(new SpaceSpecifier(false));
         lc.setTrailingSpace(new SpaceSpecifier(false));
-        KnuthPossPosIter contentPosIter = new KnuthPossPosIter(contentList, 0, contentList.size());
+        final KnuthPossPosIter contentPosIter = new KnuthPossPosIter(
+                contentList, 0, contentList.size());
         curLM.addAreas(contentPosIter, lc);
     }
 
     /** {@inheritDoc} */
-    public void addAreas(PositionIterator posIter, LayoutContext context) {
+    @Override
+    public void addAreas(final PositionIterator posIter,
+            final LayoutContext context) {
         // add the content areas
-        // the area width has already been adjusted, and it must remain unchanged
-        // so save its value before calling addAreas, and set it again afterwards
-        int savedIPD = ((InlineArea)holder).getIPD();
+        // the area width has already been adjusted, and it must remain
+        // unchanged
+        // so save its value before calling addAreas, and set it again
+        // afterwards
+        final int savedIPD = ((InlineArea) this.holder).getIPD();
         // set to zero the ipd adjustment ratio, to avoid spaces in the pattern
         // to be modified
-        LayoutContext childContext = new LayoutContext(context);
+        final LayoutContext childContext = new LayoutContext(context);
         childContext.setIPDAdjust(0.0);
-        childLM.addAreas(posIter, childContext);
-        ((InlineArea)holder).setIPD(savedIPD);
+        this.childLM.addAreas(posIter, childContext);
+        ((InlineArea) this.holder).setIPD(savedIPD);
     }
 
     /** @return stack size */
     public int getStackingSize() {
-        return stackSize;
+        return this.stackSize;
     }
 
     /** {@inheritDoc} */
-    public Area getParentArea(Area childArea) {
-        return holder;
+    @Override
+    public Area getParentArea(final Area childArea) {
+        return this.holder;
     }
 
     /**
      * {@inheritDoc}
      **/
-    public void addChildArea(Area childArea) {
-        holder.addChildArea(childArea);
+    @Override
+    public void addChildArea(final Area childArea) {
+        this.holder.addChildArea(childArea);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setParent(LayoutManager lm) {
-        parentLM = lm;
+    @Override
+    public void setParent(final LayoutManager lm) {
+        this.parentLM = lm;
     }
 
     /** {@inheritDoc} */
+    @Override
     public LayoutManager getParent() {
         return this.parentLM;
     }
@@ -198,6 +211,7 @@ public class ContentLayoutManager extends AbstractBaseLayoutManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isFinished() {
         return false;
     }
@@ -205,78 +219,86 @@ public class ContentLayoutManager extends AbstractBaseLayoutManager
     /**
      * {@inheritDoc}
      */
-    public void setFinished(boolean isFinished) {
-        //to be done
+    @Override
+    public void setFinished(final boolean isFinished) {
+        // to be done
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean createNextChildLMs(int pos) {
+    @Override
+    public boolean createNextChildLMs(final int pos) {
         return false;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public List getChildLMs() {
-        List childLMs = new ArrayList(1);
-        childLMs.add(childLM);
+        final List childLMs = new ArrayList(1);
+        childLMs.add(this.childLM);
         return childLMs;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void addChildLM(LayoutManager lm) {
+    @Override
+    public void addChildLM(final LayoutManager lm) {
         if (lm == null) {
             return;
         }
         lm.setParent(this);
-        childLM = (InlineLevelLayoutManager)lm;
-        log.trace(this.getClass().getName()
-                  + ": Adding child LM " + lm.getClass().getName());
+        this.childLM = (InlineLevelLayoutManager) lm;
+        log.trace(this.getClass().getName() + ": Adding child LM "
+                + lm.getClass().getName());
     }
 
     /**
      * {@inheritDoc}
      */
-    public void addChildLMs(List newLMs) {
+    @Override
+    public void addChildLMs(final List newLMs) {
         if (newLMs == null || newLMs.size() == 0) {
             return;
         }
-        ListIterator iter = newLMs.listIterator();
+        final ListIterator iter = newLMs.listIterator();
         while (iter.hasNext()) {
-            LayoutManager lm = (LayoutManager) iter.next();
+            final LayoutManager lm = (LayoutManager) iter.next();
             addChildLM(lm);
         }
     }
 
     /** {@inheritDoc} */
-    public List getNextKnuthElements(LayoutContext context, int alignment) {
-        List contentList = new LinkedList();
+    @Override
+    public List getNextKnuthElements(final LayoutContext context,
+            final int alignment) {
+        final List contentList = new LinkedList();
         List returnedList;
 
-        childLM.initialize();
-        while (!childLM.isFinished()) {
+        this.childLM.initialize();
+        while (!this.childLM.isFinished()) {
             // get KnuthElements from childLM
-            returnedList = childLM.getNextKnuthElements(context, alignment);
+            returnedList = this.childLM
+                    .getNextKnuthElements(context, alignment);
 
             if (returnedList != null) {
                 // move elements to contentList, and accumulate their size
-               KnuthElement contentElement;
-               while (returnedList.size() > 0) {
-                    Object obj = returnedList.remove(0);
+                KnuthElement contentElement;
+                while (returnedList.size() > 0) {
+                    final Object obj = returnedList.remove(0);
                     if (obj instanceof KnuthSequence) {
-                        KnuthSequence ks = (KnuthSequence)obj;
-                        for (Iterator it = ks.iterator(); it.hasNext();) {
-                            contentElement = (KnuthElement)it.next();
-                            stackSize += contentElement.getWidth();
+                        final KnuthSequence ks = (KnuthSequence) obj;
+                        for (final Iterator it = ks.iterator(); it.hasNext();) {
+                            contentElement = (KnuthElement) it.next();
+                            this.stackSize += contentElement.getWidth();
                             contentList.add(contentElement);
                         }
                     } else {
-                        contentElement = (KnuthElement)obj;
-                        stackSize += contentElement.getWidth();
+                        contentElement = (KnuthElement) obj;
+                        this.stackSize += contentElement.getWidth();
                         contentList.add(contentElement);
                     }
                 }
@@ -288,70 +310,85 @@ public class ContentLayoutManager extends AbstractBaseLayoutManager
     }
 
     /** {@inheritDoc} */
-    public List addALetterSpaceTo(List oldList) {
+    @Override
+    public List addALetterSpaceTo(final List oldList) {
         return oldList;
     }
 
     /** {@inheritDoc} */
-    public List addALetterSpaceTo(List oldList, int depth) {
+    @Override
+    public List addALetterSpaceTo(final List oldList, final int depth) {
         return addALetterSpaceTo(oldList);
     }
 
     /** {@inheritDoc} */
-    public String getWordChars(Position pos) {
+    @Override
+    public String getWordChars(final Position pos) {
         return "";
     }
 
     /** {@inheritDoc} */
-    public void hyphenate(Position pos, HyphContext hc) {
+    @Override
+    public void hyphenate(final Position pos, final HyphContext hc) {
     }
 
     /** {@inheritDoc} */
-    public boolean applyChanges(List oldList) {
+    @Override
+    public boolean applyChanges(final List oldList) {
         return false;
     }
 
     /** {@inheritDoc} */
-    public boolean applyChanges(List oldList, int depth) {
+    @Override
+    public boolean applyChanges(final List oldList, final int depth) {
         return applyChanges(oldList);
     }
 
     /** {@inheritDoc} */
-    public List getChangedKnuthElements(List oldList, int alignment) {
+    @Override
+    public List getChangedKnuthElements(final List oldList, final int alignment) {
         return null;
     }
 
     /** {@inheritDoc} */
-    public List getChangedKnuthElements(List oldList, int alignment, int depth) {
+    @Override
+    public List getChangedKnuthElements(final List oldList,
+            final int alignment, final int depth) {
         return getChangedKnuthElements(oldList, alignment);
     }
 
     /** {@inheritDoc} */
+    @Override
     public PageSequenceLayoutManager getPSLM() {
-        return parentLM.getPSLM();
+        return this.parentLM.getPSLM();
     }
 
     // --------- Property Resolution related functions --------- //
 
     /**
      * Returns the IPD of the content area
+     *
      * @return the IPD of the content area
      */
+    @Override
     public int getContentAreaIPD() {
-        return holder.getIPD();
+        return this.holder.getIPD();
     }
 
     /**
      * Returns the BPD of the content area
+     *
      * @return the BPD of the content area
      */
+    @Override
     public int getContentAreaBPD() {
-        return holder.getBPD();
+        return this.holder.getBPD();
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean getGeneratesReferenceArea() {
         return false;
     }
@@ -359,23 +396,25 @@ public class ContentLayoutManager extends AbstractBaseLayoutManager
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean getGeneratesBlockArea() {
-        return getGeneratesLineArea() || holder instanceof Block;
+        return getGeneratesLineArea() || this.holder instanceof Block;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean getGeneratesLineArea() {
-        return holder instanceof LineArea;
+        return this.holder instanceof LineArea;
     }
 
     /**
      * {@inheritDoc}
      */
-    public Position notifyPos(Position pos) {
+    @Override
+    public Position notifyPos(final Position pos) {
         return pos;
     }
 
 }
-

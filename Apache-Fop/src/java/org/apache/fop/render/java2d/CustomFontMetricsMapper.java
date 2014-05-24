@@ -36,16 +36,17 @@ import org.apache.fop.fonts.Typeface;
 
 /**
  * FontMetricsMapper that delegates most methods to an underlying
- * {@link org.apache.fop.fonts.FontMetrics} instance. This class was designed to allow
- * the underlying {@link Font} to be loaded from a
- * user-configured file not registered in the current graphics environment.
+ * {@link org.apache.fop.fonts.FontMetrics} instance. This class was designed to
+ * allow the underlying {@link Font} to be loaded from a user-configured file
+ * not registered in the current graphics environment.
  */
-public class CustomFontMetricsMapper extends Typeface implements FontMetricsMapper {
+public class CustomFontMetricsMapper extends Typeface implements
+        FontMetricsMapper {
 
     /**
      * Font metrics for the font this class models.
      */
-    private Typeface typeface;
+    private final Typeface typeface;
 
     /**
      * The font required by the Java2D renderer.
@@ -58,11 +59,15 @@ public class CustomFontMetricsMapper extends Typeface implements FontMetricsMapp
     private float size = 1;
 
     /**
-     * Construction of this class results in the immediate construction
-     * of the underlying {@link java.awt.Font}.
-     * @param fontMetrics the metrics of the custom font
-     * @throws FontFormatException if a bad font is loaded
-     * @throws IOException if an I/O error occurs
+     * Construction of this class results in the immediate construction of the
+     * underlying {@link java.awt.Font}.
+     * 
+     * @param fontMetrics
+     *            the metrics of the custom font
+     * @throws FontFormatException
+     *             if a bad font is loaded
+     * @throws IOException
+     *             if an I/O error occurs
      */
     public CustomFontMetricsMapper(final CustomFont fontMetrics)
             throws FontFormatException, IOException {
@@ -71,32 +76,38 @@ public class CustomFontMetricsMapper extends Typeface implements FontMetricsMapp
     }
 
     /**
-     * Construction of this class results in the immediate construction
-     * of the underlying {@link java.awt.Font}.
-     * @param fontMetrics the font
-     * @param fontSource the font source to access the font
-     * @throws FontFormatException if a bad font is loaded
-     * @throws IOException if an I/O error occurs
+     * Construction of this class results in the immediate construction of the
+     * underlying {@link java.awt.Font}.
+     * 
+     * @param fontMetrics
+     *            the font
+     * @param fontSource
+     *            the font source to access the font
+     * @throws FontFormatException
+     *             if a bad font is loaded
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public CustomFontMetricsMapper(final LazyFont fontMetrics, final Source fontSource)
-            throws FontFormatException, IOException {
+    public CustomFontMetricsMapper(final LazyFont fontMetrics,
+            final Source fontSource) throws FontFormatException, IOException {
         this.typeface = fontMetrics;
         initialize(fontSource);
     }
 
-    private static final int TYPE1_FONT = 1; //Defined in Java 1.5
+    private static final int TYPE1_FONT = 1; // Defined in Java 1.5
 
     /**
      * Loads the java.awt.Font
+     * 
      * @param source
      * @throws FontFormatException
      * @throws IOException
      */
-    private void initialize(final Source source)
-                throws FontFormatException, IOException {
+    private void initialize(final Source source) throws FontFormatException,
+            IOException {
         int type = Font.TRUETYPE_FONT;
-        if (FontType.TYPE1.equals(typeface.getFontType())) {
-            type = TYPE1_FONT; //Font.TYPE1_FONT; only available in Java 1.5
+        if (FontType.TYPE1.equals(this.typeface.getFontType())) {
+            type = TYPE1_FONT; // Font.TYPE1_FONT; only available in Java 1.5
         }
 
         InputStream is = null;
@@ -114,94 +125,111 @@ public class CustomFontMetricsMapper extends Typeface implements FontMetricsMapp
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getEncodingName() {
-        return null; //Not applicable to Java2D rendering
+        return null; // Not applicable to Java2D rendering
     }
 
     /** {@inheritDoc} */
+    @Override
     public final boolean hasChar(final char c) {
-        return font.canDisplay(c);
+        return this.font.canDisplay(c);
     }
 
     /** {@inheritDoc} */
+    @Override
     public final char mapChar(final char c) {
-        return typeface.mapChar(c);
+        return this.typeface.mapChar(c);
     }
 
     /** {@inheritDoc} */
+    @Override
     public final Font getFont(final int size) {
         if (this.size == size) {
-            return font;
+            return this.font;
         }
 
         this.size = size / 1000f;
-        font = font.deriveFont(this.size);
-        return font;
+        this.font = this.font.deriveFont(this.size);
+        return this.font;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getAscender(final int size) {
-        return typeface.getAscender(size);
+        return this.typeface.getAscender(size);
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getCapHeight(final int size) {
-        return typeface.getCapHeight(size);
+        return this.typeface.getCapHeight(size);
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getDescender(final int size) {
-        return typeface.getDescender(size);
+        return this.typeface.getDescender(size);
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getEmbedFontName() {
-        return typeface.getEmbedFontName();
+        return this.typeface.getEmbedFontName();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final Set<String> getFamilyNames() {
-        return typeface.getFamilyNames();
+        return this.typeface.getFamilyNames();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getFontName() {
-        return typeface.getFontName();
+        return this.typeface.getFontName();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final FontType getFontType() {
-        return typeface.getFontType();
+        return this.typeface.getFontType();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getFullName() {
-        return typeface.getFullName();
+        return this.typeface.getFullName();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final Map getKerningInfo() {
-        return typeface.getKerningInfo();
+        return this.typeface.getKerningInfo();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getWidth(final int i, final int size) {
-        return typeface.getWidth(i, size);
+        return this.typeface.getWidth(i, size);
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int[] getWidths() {
-        return typeface.getWidths();
+        return this.typeface.getWidths();
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getXHeight(final int size) {
-        return typeface.getXHeight(size);
+        return this.typeface.getXHeight(size);
     }
 
     /** {@inheritDoc} */
+    @Override
     public final boolean hasKerningInfo() {
-        return typeface.hasKerningInfo();
+        return this.typeface.hasKerningInfo();
     }
 
 }

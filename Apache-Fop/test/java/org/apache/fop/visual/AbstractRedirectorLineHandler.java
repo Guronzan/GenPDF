@@ -20,20 +20,22 @@
 package org.apache.fop.visual;
 
 /**
- * Abstract base implementation for a RedirectorLineHandler which provides empty notifyStart()
- * and notifyEnd() methods.
+ * Abstract base implementation for a RedirectorLineHandler which provides empty
+ * notifyStart() and notifyEnd() methods.
  */
-public abstract class AbstractRedirectorLineHandler
-        implements RedirectorLineHandler {
+public abstract class AbstractRedirectorLineHandler implements
+        RedirectorLineHandler {
 
     /** @see org.apache.fop.visual.RedirectorLineHandler#notifyStart() */
+    @Override
     public void notifyStart() {
-        //nop
+        // nop
     }
 
     /** @see org.apache.fop.visual.RedirectorLineHandler#notifyEnd() */
+    @Override
     public void notifyEnd() {
-        //nop
+        // nop
     }
 
 }

@@ -20,7 +20,8 @@
 package org.apache.fop.fo.properties;
 
 /**
- * Classes that implement this interface support the common accessibility properties.
+ * Classes that implement this interface support the common accessibility
+ * properties.
  *
  * @see CommonAccessibility
  */

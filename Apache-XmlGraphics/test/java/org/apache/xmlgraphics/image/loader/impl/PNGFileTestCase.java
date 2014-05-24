@@ -24,8 +24,6 @@ import java.awt.image.ComponentColorModel;
 import java.awt.image.IndexColorModel;
 import java.io.IOException;
 
-import org.junit.Test;
-
 import org.apache.xmlgraphics.image.loader.ImageContext;
 import org.apache.xmlgraphics.image.loader.ImageException;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
@@ -33,6 +31,7 @@ import org.apache.xmlgraphics.image.loader.ImageSessionContext;
 import org.apache.xmlgraphics.image.loader.MockImageContext;
 import org.apache.xmlgraphics.image.loader.MockImageSessionContext;
 import org.apache.xmlgraphics.util.MimeConstants;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -73,30 +72,34 @@ public class PNGFileTestCase implements PNGConstants {
 
     @Test
     public void testCorruptPNG() {
-        ImageContext context = MockImageContext.newSafeInstance();
-        ImageSessionContext session = new MockImageSessionContext(context);
-        ImageInfo info = new ImageInfo("corrupt-image.png", MimeConstants.MIME_PNG);
-        ImageLoaderRawPNG ilrpng = new ImageLoaderRawPNG();
+        final ImageContext context = MockImageContext.newSafeInstance();
+        final ImageSessionContext session = new MockImageSessionContext(context);
+        final ImageInfo info = new ImageInfo("corrupt-image.png",
+                MimeConstants.MIME_PNG);
+        final ImageLoaderRawPNG ilrpng = new ImageLoaderRawPNG();
         try {
-            ImageRawPNG irpng = (ImageRawPNG) ilrpng.loadImage(info, null, session);
+            final ImageRawPNG irpng = (ImageRawPNG) ilrpng.loadImage(info,
+                    null, session);
             fail("An exception should have been thrown above");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // do nothing; this was expected
         }
     }
 
-    private void testColorTypePNG(String imageName, int colorType) throws ImageException, IOException {
+    private void testColorTypePNG(final String imageName, final int colorType)
+            throws ImageException, IOException {
         testColorTypePNG(imageName, colorType, false);
     }
 
-    private void testColorTypePNG(String imageName, int colorType, boolean isTransparent)
-            throws ImageException, IOException {
-        ImageContext context = MockImageContext.newSafeInstance();
-        ImageSessionContext session = new MockImageSessionContext(context);
-        ImageInfo info = new ImageInfo(imageName, MimeConstants.MIME_PNG);
-        ImageLoaderRawPNG ilrpng = new ImageLoaderRawPNG();
-        ImageRawPNG irpng = (ImageRawPNG) ilrpng.loadImage(info, null, session);
-        ColorModel cm = irpng.getColorModel();
+    private void testColorTypePNG(final String imageName, final int colorType,
+            final boolean isTransparent) throws ImageException, IOException {
+        final ImageContext context = MockImageContext.newSafeInstance();
+        final ImageSessionContext session = new MockImageSessionContext(context);
+        final ImageInfo info = new ImageInfo(imageName, MimeConstants.MIME_PNG);
+        final ImageLoaderRawPNG ilrpng = new ImageLoaderRawPNG();
+        final ImageRawPNG irpng = (ImageRawPNG) ilrpng.loadImage(info, null,
+                session);
+        final ColorModel cm = irpng.getColorModel();
         if (colorType == PNG_COLOR_PALETTE) {
             assertTrue(cm instanceof IndexColorModel);
         } else {

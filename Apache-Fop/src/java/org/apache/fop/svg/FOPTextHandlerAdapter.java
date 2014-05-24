@@ -22,10 +22,13 @@ package org.apache.fop.svg;
 import org.apache.xmlgraphics.java2d.StrokingTextHandler;
 
 /**
- * The <code>FOPTextHandlerAdapter</code> class is an adapter class to permit use of
- * FOPTextHandler without incurring deprecation warnings caused by the underlying
- * org.apache.xmlgraphics.java2d.TextHandler.drawString(String...) method.
+ * The <code>FOPTextHandlerAdapter</code> class is an adapter class to permit
+ * use of FOPTextHandler without incurring deprecation warnings caused by the
+ * underlying org.apache.xmlgraphics.java2d.TextHandler.drawString(String...)
+ * method.
+ * 
  * @see org.apache.xmlgraphics.java2d.TextHandler
  */
-public abstract class FOPTextHandlerAdapter extends StrokingTextHandler implements FOPTextHandler {
+public abstract class FOPTextHandlerAdapter extends StrokingTextHandler
+        implements FOPTextHandler {
 }

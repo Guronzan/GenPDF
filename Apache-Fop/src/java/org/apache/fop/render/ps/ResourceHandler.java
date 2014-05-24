@@ -28,8 +28,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.ResourceEventProducer;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.fonts.FontInfo;
@@ -74,10 +74,8 @@ import org.apache.xmlgraphics.ps.dsc.tools.DSCTools;
  * PSRenderer and adds all used fonts and images as resources to the PostScript
  * file.
  */
+@Slf4j
 public class ResourceHandler implements DSCParserConstants, PSSupportedFlavors {
-
-    /** logging instance */
-    private static Log log = LogFactory.getLog(ResourceHandler.class);
 
     private final FOUserAgent userAgent;
     private final FontInfo fontInfo;

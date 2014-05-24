@@ -22,7 +22,6 @@ package org.apache.fop.fo.expr;
 import org.apache.fop.fo.FOPropertyMapping;
 import org.apache.fop.fo.properties.Property;
 
-
 /**
  * Class modelling the from-parent Property Value function. See Sec. 5.10.4 of
  * the XSL-FO spec.
@@ -30,6 +29,7 @@ import org.apache.fop.fo.properties.Property;
 public class FromParentFunction extends FunctionBase {
 
     /** {@inheritDoc} */
+    @Override
     public int getRequiredArgsCount() {
         return 0;
     }
@@ -42,33 +42,37 @@ public class FromParentFunction extends FunctionBase {
 
     @Override
     /** {@inheritDoc} */
-    public Property getOptionalArgDefault(int index, PropertyInfo pi) throws PropertyException {
-        if ( index == 0 ) {
-            return getPropertyName ( pi );
+    public Property getOptionalArgDefault(final int index, final PropertyInfo pi)
+            throws PropertyException {
+        if (index == 0) {
+            return getPropertyName(pi);
         } else {
-            return super.getOptionalArgDefault ( index, pi );
+            return super.getOptionalArgDefault(index, pi);
         }
     }
 
     /** {@inheritDoc} */
-    public Property eval(Property[] args, PropertyInfo pInfo) throws PropertyException {
-        String propName = args[0].getString();
+    @Override
+    public Property eval(final Property[] args, final PropertyInfo pInfo)
+            throws PropertyException {
+        final String propName = args[0].getString();
         if (propName == null) {
-            throw new PropertyException("Incorrect parameter to from-parent function");
+            throw new PropertyException(
+                    "Incorrect parameter to from-parent function");
         }
         // NOTE: special cases for shorthand property
         // Should return COMPUTED VALUE
         /*
-         * For now, this is the same as inherited-property-value(propName)
-         * (The only difference I can see is that this could work for
-         * non-inherited properties too. Perhaps the result is different for
-         * a property line line-height which "inherits specified"???
+         * For now, this is the same as inherited-property-value(propName) (The
+         * only difference I can see is that this could work for non-inherited
+         * properties too. Perhaps the result is different for a property line
+         * line-height which "inherits specified"???
          */
-        int propId = FOPropertyMapping.getPropertyId(propName);
+        final int propId = FOPropertyMapping.getPropertyId(propName);
         if (propId < 0) {
             throw new PropertyException(
                     "Unknown property name used with inherited-property-value function: "
-                        + propName);
+                            + propName);
         }
         return pInfo.getPropertyList().getFromParent(propId);
     }

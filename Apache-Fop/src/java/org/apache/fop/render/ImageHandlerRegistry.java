@@ -25,37 +25,32 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.util.Service;
 
 /**
- * This class holds references to various image handlers. It also
- * supports automatic discovery of additional handlers available through
- * the class path.
+ * This class holds references to various image handlers. It also supports
+ * automatic discovery of additional handlers available through the class path.
  */
+@Slf4j
 public class ImageHandlerRegistry {
 
-    /** the logger */
-    private static Log log = LogFactory.getLog(ImageHandlerRegistry.class);
-
-    private static final Comparator<ImageHandler> HANDLER_COMPARATOR
-            = new Comparator<ImageHandler>() {
-        public int compare(ImageHandler o1, ImageHandler o2) {
-            ImageHandler h1 = o1;
-            ImageHandler h2 = o2;
+    private static final Comparator<ImageHandler> HANDLER_COMPARATOR = new Comparator<ImageHandler>() {
+        @Override
+        public int compare(final ImageHandler o1, final ImageHandler o2) {
+            final ImageHandler h1 = o1;
+            final ImageHandler h2 = o2;
             return h1.getPriority() - h2.getPriority();
         }
     };
 
     /** Map containing image handlers for various {@link Image} subclasses. */
-    private Map<Class<? extends Image>, ImageHandler> handlers
-            = new java.util.HashMap<Class<? extends Image>, ImageHandler>();
+    private final Map<Class<? extends Image>, ImageHandler> handlers = new java.util.HashMap<Class<? extends Image>, ImageHandler>();
     /** List containing the same handlers as above but ordered by priority */
-    private List<ImageHandler> handlerList = new java.util.LinkedList<ImageHandler>();
+    private final List<ImageHandler> handlerList = new java.util.LinkedList<ImageHandler>();
 
     private int handlerRegistrations;
 
@@ -67,43 +62,47 @@ public class ImageHandlerRegistry {
     }
 
     /**
-     * Add an PDFImageHandler. The handler itself is inspected to find out what it supports.
-     * @param classname the fully qualified class name
+     * Add an PDFImageHandler. The handler itself is inspected to find out what
+     * it supports.
+     *
+     * @param classname
+     *            the fully qualified class name
      */
-    public void addHandler(String classname) {
+    public void addHandler(final String classname) {
         try {
-            ImageHandler handlerInstance
-                = (ImageHandler)Class.forName(classname).newInstance();
+            final ImageHandler handlerInstance = (ImageHandler) Class.forName(
+                    classname).newInstance();
             addHandler(handlerInstance);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Could not find "
-                                               + classname);
-        } catch (InstantiationException e) {
+        } catch (final ClassNotFoundException e) {
+            throw new IllegalArgumentException("Could not find " + classname);
+        } catch (final InstantiationException e) {
             throw new IllegalArgumentException("Could not instantiate "
-                                               + classname);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Could not access "
-                                               + classname);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(classname
-                                               + " is not an "
-                                               + ImageHandler.class.getName());
+                    + classname);
+        } catch (final IllegalAccessException e) {
+            throw new IllegalArgumentException("Could not access " + classname);
+        } catch (final ClassCastException e) {
+            throw new IllegalArgumentException(classname + " is not an "
+                    + ImageHandler.class.getName());
         }
     }
 
     /**
-     * Add an image handler. The handler itself is inspected to find out what it supports.
-     * @param handler the ImageHandler instance
+     * Add an image handler. The handler itself is inspected to find out what it
+     * supports.
+     *
+     * @param handler
+     *            the ImageHandler instance
      */
-    public synchronized void addHandler(ImageHandler handler) {
-        Class<? extends Image> imageClass = handler.getSupportedImageClass();
-        //List
+    public synchronized void addHandler(final ImageHandler handler) {
+        final Class<? extends Image> imageClass = handler
+                .getSupportedImageClass();
+        // List
         this.handlers.put(imageClass, handler);
 
-        //Sorted insert (sort by priority)
-        ListIterator<ImageHandler> iter = this.handlerList.listIterator();
+        // Sorted insert (sort by priority)
+        final ListIterator<ImageHandler> iter = this.handlerList.listIterator();
         while (iter.hasNext()) {
-            ImageHandler h = iter.next();
+            final ImageHandler h = iter.next();
             if (HANDLER_COMPARATOR.compare(handler, h) < 0) {
                 iter.previous();
                 break;
@@ -114,16 +113,23 @@ public class ImageHandlerRegistry {
     }
 
     /**
-     * Returns an {@link ImageHandler} which handles an specific image type given the MIME type
-     * of the image.
-     * @param targetContext the target rendering context that is used for identifying compatibility
-     * @param image the Image to be handled
-     * @return the image handler responsible for handling the image or null if none is available
+     * Returns an {@link ImageHandler} which handles an specific image type
+     * given the MIME type of the image.
+     *
+     * @param targetContext
+     *            the target rendering context that is used for identifying
+     *            compatibility
+     * @param image
+     *            the Image to be handled
+     * @return the image handler responsible for handling the image or null if
+     *         none is available
      */
-    public ImageHandler getHandler(RenderingContext targetContext, Image image) {
-        for (ImageHandler h : this.handlerList) {
+    public ImageHandler getHandler(final RenderingContext targetContext,
+            final Image image) {
+        for (final ImageHandler h : this.handlerList) {
             if (h.isCompatible(targetContext, image)) {
-                //Return the first handler in the prioritized list that is compatible
+                // Return the first handler in the prioritized list that is
+                // compatible
                 return h;
             }
         }
@@ -131,19 +137,23 @@ public class ImageHandlerRegistry {
     }
 
     /**
-     * Returns the ordered array of supported image flavors. The array needs to be ordered by
-     * priority so the image loader framework can return the preferred image type.
-     * @param context the rendering context
+     * Returns the ordered array of supported image flavors. The array needs to
+     * be ordered by priority so the image loader framework can return the
+     * preferred image type.
+     *
+     * @param context
+     *            the rendering context
      * @return the array of image flavors
      */
-    public synchronized ImageFlavor[] getSupportedFlavors(RenderingContext context) {
-        //Extract all ImageFlavors into a single array
-        List<ImageFlavor> flavors = new java.util.ArrayList<ImageFlavor>();
-        for (ImageHandler handler : this.handlerList) {
+    public synchronized ImageFlavor[] getSupportedFlavors(
+            final RenderingContext context) {
+        // Extract all ImageFlavors into a single array
+        final List<ImageFlavor> flavors = new java.util.ArrayList<ImageFlavor>();
+        for (final ImageHandler handler : this.handlerList) {
             if (handler.isCompatible(context, null)) {
-                ImageFlavor[] f = handler.getSupportedImageFlavors();
-                for (int i = 0; i < f.length; i++) {
-                    flavors.add(f[i]);
+                final ImageFlavor[] f = handler.getSupportedImageFlavors();
+                for (final ImageFlavor element : f) {
+                    flavors.add(element);
                 }
             }
         }
@@ -151,22 +161,22 @@ public class ImageHandlerRegistry {
     }
 
     /**
-     * Discovers ImageHandler implementations through the classpath and dynamically
-     * registers them.
+     * Discovers ImageHandler implementations through the classpath and
+     * dynamically registers them.
      */
     private void discoverHandlers() {
         // add mappings from available services
-        Iterator providers = Service.providers(ImageHandler.class);
+        final Iterator providers = Service.providers(ImageHandler.class);
         if (providers != null) {
             while (providers.hasNext()) {
-                ImageHandler handler = (ImageHandler)providers.next();
+                final ImageHandler handler = (ImageHandler) providers.next();
                 try {
                     if (log.isDebugEnabled()) {
                         log.debug("Dynamically adding ImageHandler: "
                                 + handler.getClass().getName());
                     }
                     addHandler(handler);
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                     log.error("Error while adding ImageHandler", e);
                 }
 

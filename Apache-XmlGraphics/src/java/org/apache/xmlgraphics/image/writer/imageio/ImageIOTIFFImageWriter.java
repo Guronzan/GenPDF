@@ -30,12 +30,12 @@ import org.apache.xmlgraphics.image.writer.ImageWriterParams;
 /**
  * ImageWriter that encodes TIFF images using Image I/O.
  *
- * @version $Id: ImageIOTIFFImageWriter.java 1345683 2012-06-03 14:50:33Z gadams $
+ * @version $Id: ImageIOTIFFImageWriter.java 1345683 2012-06-03 14:50:33Z gadams
+ *          $
  */
 public class ImageIOTIFFImageWriter extends ImageIOImageWriter {
 
-    private static final String SUN_TIFF_NATIVE_FORMAT
-            = "com_sun_media_imageio_plugins_tiff_image_1.0";
+    private static final String SUN_TIFF_NATIVE_FORMAT = "com_sun_media_imageio_plugins_tiff_image_1.0";
 
     /**
      * Main constructor.
@@ -45,31 +45,41 @@ public class ImageIOTIFFImageWriter extends ImageIOImageWriter {
     }
 
     /**
-     * @see org.apache.xmlgraphics.image.writer.imageio.ImageIOImageWriter#updateMetadata(javax.imageio.metadata.IIOMetadata, org.apache.xmlgraphics.image.writer.ImageWriterParams)
+     * @see org.apache.xmlgraphics.image.writer.imageio.ImageIOImageWriter#updateMetadata(javax.imageio.metadata.IIOMetadata,
+     *      org.apache.xmlgraphics.image.writer.ImageWriterParams)
      */
-    protected IIOMetadata updateMetadata(IIOMetadata meta, ImageWriterParams params) {
-        IIOMetadata ret = super.updateMetadata(meta, params);
+    @Override
+    protected IIOMetadata updateMetadata(final IIOMetadata meta,
+            final ImageWriterParams params) {
+        final IIOMetadata ret = super.updateMetadata(meta, params);
 
-        //We set the resolution manually using the native format since it appears that
-        //it doesn't work properly through the standard metadata. Haven't figured out why
-        //that happens.
+        // We set the resolution manually using the native format since it
+        // appears that
+        // it doesn't work properly through the standard metadata. Haven't
+        // figured out why
+        // that happens.
         if (params.getResolution() != null) {
-            if (SUN_TIFF_NATIVE_FORMAT.equals(meta.getNativeMetadataFormatName())) {
+            if (SUN_TIFF_NATIVE_FORMAT.equals(meta
+                    .getNativeMetadataFormatName())) {
 
-                //IIOMetadataNode root = (IIOMetadataNode)meta.getAsTree(SUN_TIFF_NATIVE_FORMAT);
-                IIOMetadataNode root = new IIOMetadataNode(SUN_TIFF_NATIVE_FORMAT);
+                // IIOMetadataNode root =
+                // (IIOMetadataNode)meta.getAsTree(SUN_TIFF_NATIVE_FORMAT);
+                final IIOMetadataNode root = new IIOMetadataNode(
+                        SUN_TIFF_NATIVE_FORMAT);
 
                 IIOMetadataNode ifd = getChildNode(root, "TIFFIFD");
                 if (ifd == null) {
                     ifd = new IIOMetadataNode("TIFFIFD");
                     ifd.setAttribute("tagSets",
-                                "com.sun.media.imageio.plugins.tiff.BaselineTIFFTagSet");
+                            "com.sun.media.imageio.plugins.tiff.BaselineTIFFTagSet");
                     root.appendChild(ifd);
                 }
-                ifd.appendChild(createResolutionField(282, "XResolution", params));
-                ifd.appendChild(createResolutionField(283, "YResolution", params));
+                ifd.appendChild(createResolutionField(282, "XResolution",
+                        params));
+                ifd.appendChild(createResolutionField(283, "YResolution",
+                        params));
 
-                //ResolutionUnit
+                // ResolutionUnit
                 IIOMetadataNode field, arrayNode, valueNode;
                 field = new IIOMetadataNode("TIFFField");
                 field.setAttribute("number", Integer.toString(296));
@@ -83,9 +93,9 @@ public class ImageIOTIFFImageWriter extends ImageIOImageWriter {
 
                 try {
                     meta.mergeTree(SUN_TIFF_NATIVE_FORMAT, root);
-                } catch (IIOInvalidTreeException e) {
+                } catch (final IIOInvalidTreeException e) {
                     throw new RuntimeException("Cannot update image metadata: "
-                                + e.getMessage(), e);
+                            + e.getMessage(), e);
                 }
             }
         }
@@ -93,7 +103,8 @@ public class ImageIOTIFFImageWriter extends ImageIOImageWriter {
         return ret;
     }
 
-    private IIOMetadataNode createResolutionField(int number, String name, ImageWriterParams params) {
+    private IIOMetadataNode createResolutionField(final int number,
+            final String name, final ImageWriterParams params) {
         IIOMetadataNode field, arrayNode, valueNode;
         field = new IIOMetadataNode("TIFFField");
         field.setAttribute("number", Integer.toString(number));
@@ -104,10 +115,10 @@ public class ImageIOTIFFImageWriter extends ImageIOImageWriter {
         arrayNode.appendChild(valueNode);
 
         // Set target resolution
-        float pixSzMM = 25.4f / params.getResolution().floatValue();
+        final float pixSzMM = 25.4f / params.getResolution().floatValue();
         // num Pixs in 100 Meters
-        int numPix = (int)(((1000 * 100) / pixSzMM) + 0.5);
-        int denom = 100 * 100;  // Centimeters per 100 Meters;
+        final int numPix = (int) (1000 * 100 / pixSzMM + 0.5);
+        final int denom = 100 * 100; // Centimeters per 100 Meters;
         valueNode.setAttribute("value", numPix + "/" + denom);
         return field;
     }

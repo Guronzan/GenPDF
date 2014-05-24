@@ -19,11 +19,10 @@
 
 package org.apache.fop.intermediate;
 
-import org.w3c.dom.Element;
-
 import org.apache.fop.check.ChecksFactory;
 import org.apache.fop.layoutengine.EvalCheck;
 import org.apache.fop.layoutengine.TrueCheck;
+import org.w3c.dom.Element;
 
 /**
  * A factory class for creating {@link IFCheck} instances.
@@ -33,14 +32,16 @@ final class IFChecksFactory extends ChecksFactory<IFCheck> {
     IFChecksFactory() {
         registerCheckFactory("true", new CheckFactory<IFCheck>() {
 
-            public IFCheck createCheck(Element element) {
+            @Override
+            public IFCheck createCheck(final Element element) {
                 return new TrueCheck(element);
             }
 
         });
         registerCheckFactory("eval", new CheckFactory<IFCheck>() {
 
-            public IFCheck createCheck(Element element) {
+            @Override
+            public IFCheck createCheck(final Element element) {
                 return new EvalCheck(element);
             }
 

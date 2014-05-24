@@ -23,28 +23,31 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.IOUtils;
-
-import org.apache.xmlgraphics.image.writer.ImageWriter;
-import org.apache.xmlgraphics.image.writer.ImageWriterParams;
-import org.apache.xmlgraphics.image.writer.ImageWriterRegistry;
-
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.area.PageViewport;
 import org.apache.fop.render.java2d.Java2DRenderer;
+import org.apache.xmlgraphics.image.writer.ImageWriter;
+import org.apache.xmlgraphics.image.writer.ImageWriterParams;
+import org.apache.xmlgraphics.image.writer.ImageWriterRegistry;
 
 /**
  * PNG Renderer This class actually does not render itself, instead it extends
  * <code>org.apache.fop.render.java2D.Java2DRenderer</code> and just encode
  * rendering results into PNG format using Batik's image codec
  */
+@Slf4j
 public class PNGRenderer extends Java2DRenderer {
 
     /**
-     * @param userAgent the user agent that contains configuration details. This cannot be null.
+     * @param userAgent
+     *            the user agent that contains configuration details. This
+     *            cannot be null.
      */
-    public PNGRenderer(FOUserAgent userAgent) {
+    public PNGRenderer(final FOUserAgent userAgent) {
         super(userAgent);
     }
 
@@ -61,37 +64,41 @@ public class PNGRenderer extends Java2DRenderer {
     private MultiFileRenderingUtil multiFileUtil;
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return MIME_TYPE;
     }
 
     /** {@inheritDoc} */
-    public void startRenderer(OutputStream outputStream) throws IOException {
+    @Override
+    public void startRenderer(final OutputStream outputStream)
+            throws IOException {
         log.info("rendering areas to PNG");
-        multiFileUtil = new MultiFileRenderingUtil(PNG_FILE_EXTENSION,
-                    getUserAgent().getOutputFile());
+        this.multiFileUtil = new MultiFileRenderingUtil(PNG_FILE_EXTENSION,
+                getUserAgent().getOutputFile());
         this.firstOutputStream = outputStream;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stopRenderer() throws IOException {
 
         super.stopRenderer();
 
-        for (int i = 0; i < pageViewportList.size(); i++) {
+        for (int i = 0; i < this.pageViewportList.size(); i++) {
 
-            OutputStream os = getCurrentOutputStream(i);
+            final OutputStream os = getCurrentOutputStream(i);
             if (os == null) {
-                BitmapRendererEventProducer eventProducer
-                    = BitmapRendererEventProducer.Provider.get(
-                            getUserAgent().getEventBroadcaster());
+                final BitmapRendererEventProducer eventProducer = BitmapRendererEventProducer.Provider
+                        .get(getUserAgent().getEventBroadcaster());
                 eventProducer.stoppingAfterFirstPageNoFilename(this);
                 break;
             }
             try {
                 // Do the rendering: get the image for this page
-                PageViewport pv = (PageViewport)pageViewportList.get(i);
-                RenderedImage image = (RenderedImage)getPageImage(pv);
+                final PageViewport pv = (PageViewport) this.pageViewportList
+                        .get(i);
+                final RenderedImage image = getPageImage(pv);
 
                 // Encode this image
                 if (log.isDebugEnabled()) {
@@ -99,24 +106,25 @@ public class PNGRenderer extends Java2DRenderer {
                 }
                 writeImage(os, image);
             } finally {
-                //Only close self-created OutputStreams
-                if (os != firstOutputStream) {
+                // Only close self-created OutputStreams
+                if (os != this.firstOutputStream) {
                     IOUtils.closeQuietly(os);
                 }
             }
         }
     }
 
-    private void writeImage(OutputStream os, RenderedImage image) throws IOException {
-        ImageWriterParams params = new ImageWriterParams();
-        params.setResolution(Math.round(userAgent.getTargetResolution()));
+    private void writeImage(final OutputStream os, final RenderedImage image)
+            throws IOException {
+        final ImageWriterParams params = new ImageWriterParams();
+        params.setResolution(Math.round(this.userAgent.getTargetResolution()));
 
         // Encode PNG image
-        ImageWriter writer = ImageWriterRegistry.getInstance().getWriterFor(getMimeType());
+        final ImageWriter writer = ImageWriterRegistry.getInstance()
+                .getWriterFor(getMimeType());
         if (writer == null) {
-            BitmapRendererEventProducer eventProducer
-                = BitmapRendererEventProducer.Provider.get(
-                        getUserAgent().getEventBroadcaster());
+            final BitmapRendererEventProducer eventProducer = BitmapRendererEventProducer.Provider
+                    .get(getUserAgent().getEventBroadcaster());
             eventProducer.noImageWriterFound(this, getMimeType());
         }
         if (log.isDebugEnabled()) {
@@ -127,16 +135,20 @@ public class PNGRenderer extends Java2DRenderer {
 
     /**
      * Returns the OutputStream corresponding to this page
-     * @param pageNumber 0-based page number
+     *
+     * @param pageNumber
+     *            0-based page number
      * @return the corresponding OutputStream
-     * @throws IOException In case of an I/O error
+     * @throws IOException
+     *             In case of an I/O error
      */
-    protected OutputStream getCurrentOutputStream(int pageNumber) throws IOException {
+    protected OutputStream getCurrentOutputStream(final int pageNumber)
+            throws IOException {
 
         if (pageNumber == 0) {
-            return firstOutputStream;
+            return this.firstOutputStream;
         } else {
-            return multiFileUtil.createOutputStream(pageNumber);
+            return this.multiFileUtil.createOutputStream(pageNumber);
         }
 
     }

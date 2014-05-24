@@ -19,34 +19,36 @@
 
 package org.apache.fop.fo.properties;
 
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import org.apache.fop.fo.Constants;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.expr.PropertyException;
+
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * A helper class for mocking a property list.
  */
 public final class PropertyListMocks {
 
-    private PropertyListMocks() { }
+    private PropertyListMocks() {
+    }
 
     /**
-     * Creates and returns a mock property list returning a generic default for the
-     * {@link PropertyList#get(int)} method.
+     * Creates and returns a mock property list returning a generic default for
+     * the {@link PropertyList#get(int)} method.
      *
      * @return a mock property list
      */
     public static PropertyList mockPropertyList() {
         try {
             final PropertyList mockPList = mock(PropertyList.class);
-            final Property mockGenericProperty = PropertyMocks.mockGenericProperty();
+            final Property mockGenericProperty = PropertyMocks
+                    .mockGenericProperty();
             when(mockPList.get(anyInt())).thenReturn(mockGenericProperty);
             return mockPList;
-        } catch (PropertyException e) {
+        } catch (final PropertyException e) {
             throw new RuntimeException(e);
         }
     }
@@ -55,25 +57,34 @@ public final class PropertyListMocks {
      * Overrides with working mock properties the values returned by
      * {@link PropertyList#get(int)} for {@link Constants#PR_COLUMN_NUMBER},
      * {@link Constants#PR_NUMBER_COLUMNS_SPANNED},
-     * {@link Constants#PR_NUMBER_ROWS_SPANNED} and {@link Constants#PR_BORDER_COLLAPSE}.
+     * {@link Constants#PR_NUMBER_ROWS_SPANNED} and
+     * {@link Constants#PR_BORDER_COLLAPSE}.
      *
-     * @param mockPList a mock property list
+     * @param mockPList
+     *            a mock property list
      */
-    public static void mockTableProperties(PropertyList mockPList) {
+    public static void mockTableProperties(final PropertyList mockPList) {
         try {
-            final Property mockNumberProperty = PropertyMocks.mockNumberProperty();
-            when(mockPList.get(Constants.PR_COLUMN_NUMBER)).thenReturn(mockNumberProperty);
-            when(mockPList.get(Constants.PR_NUMBER_COLUMNS_SPANNED)).thenReturn(mockNumberProperty);
-            when(mockPList.get(Constants.PR_NUMBER_ROWS_SPANNED)).thenReturn(mockNumberProperty);
+            final Property mockNumberProperty = PropertyMocks
+                    .mockNumberProperty();
+            when(mockPList.get(Constants.PR_COLUMN_NUMBER)).thenReturn(
+                    mockNumberProperty);
+            when(mockPList.get(Constants.PR_NUMBER_COLUMNS_SPANNED))
+                    .thenReturn(mockNumberProperty);
+            when(mockPList.get(Constants.PR_NUMBER_ROWS_SPANNED)).thenReturn(
+                    mockNumberProperty);
 
             final Property borderCollapseProperty = mock(Property.class);
-            when(borderCollapseProperty.getEnum()).thenReturn(Constants.EN_SEPARATE);
-            when(mockPList.get(Constants.PR_BORDER_COLLAPSE)).thenReturn(borderCollapseProperty);
+            when(borderCollapseProperty.getEnum()).thenReturn(
+                    Constants.EN_SEPARATE);
+            when(mockPList.get(Constants.PR_BORDER_COLLAPSE)).thenReturn(
+                    borderCollapseProperty);
 
             final Property writingModeProperty = mock(Property.class);
             when(writingModeProperty.getEnum()).thenReturn(Constants.EN_LR_TB);
-            when(mockPList.get(Constants.PR_WRITING_MODE)).thenReturn(writingModeProperty);
-        } catch (PropertyException e) {
+            when(mockPList.get(Constants.PR_WRITING_MODE)).thenReturn(
+                    writingModeProperty);
+        } catch (final PropertyException e) {
             throw new RuntimeException(e);
         }
     }
@@ -82,15 +93,16 @@ public final class PropertyListMocks {
      * Overrides with a working mock property the value returned by
      * {@link PropertyList#getBorderPaddingBackgroundProps()}.
      *
-     * @param mockPList a mock property list
+     * @param mockPList
+     *            a mock property list
      */
-    public static void mockCommonBorderPaddingBackgroundProps(PropertyList mockPList) {
+    public static void mockCommonBorderPaddingBackgroundProps(
+            final PropertyList mockPList) {
         try {
-            final CommonBorderPaddingBackground mockCommonBorderPaddingBackground
-                    = mock(CommonBorderPaddingBackground.class);
-            when(mockPList.getBorderPaddingBackgroundProps())
-                    .thenReturn(mockCommonBorderPaddingBackground);
-        } catch (PropertyException e) {
+            final CommonBorderPaddingBackground mockCommonBorderPaddingBackground = mock(CommonBorderPaddingBackground.class);
+            when(mockPList.getBorderPaddingBackgroundProps()).thenReturn(
+                    mockCommonBorderPaddingBackground);
+        } catch (final PropertyException e) {
             throw new RuntimeException(e);
         }
     }

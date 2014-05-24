@@ -22,48 +22,56 @@ package org.apache.fop.logging;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.fop.layoutmgr.ElementListObserver.Observer;
 import org.apache.fop.layoutmgr.ElementListUtils;
 import org.apache.fop.layoutmgr.ListElement;
-import org.apache.fop.layoutmgr.ElementListObserver.Observer;
 
 /**
- * <p>Logs all observed element lists.
+ * <p>
+ * Logs all observed element lists.
  * </p>
- * <p>You can enable/disabled individual categories separately, for example for JDK 1.4 logging:
+ * <p>
+ * You can enable/disabled individual categories separately, for example for JDK
+ * 1.4 logging:
  * </p>
- * <p>org.apache.fop.logging.LoggingElementListObserver.level = INFO</p>
- * <p>org.apache.fop.logging.LoggingElementListObserver.table-cell.level = FINE</p>
+ * <p>
+ * org.apache.fop.logging.LoggingElementListObserver.level = INFO
+ * </p>
+ * <p>
+ * org.apache.fop.logging.LoggingElementListObserver.table-cell.level = FINE
+ * </p>
  */
+@Slf4j
 public class LoggingElementListObserver implements Observer {
 
     /** @see org.apache.fop.layoutmgr.ElementListObserver.Observer */
-    public void observe(List elementList, String category, String id) {
-        Log log = LogFactory.getLog(LoggingElementListObserver.class.getName() + "." + category);
+    @Override
+    public void observe(final List elementList, final String category,
+            final String id) {
         if (!log.isDebugEnabled()) {
             return;
         }
         log.debug(" ");
-        int len = (elementList != null ? ElementListUtils.calcContentLength(elementList) : 0);
-        log.debug("ElementList: category=" + category + ", id=" + id + ", len=" + len + "mpt");
+        final int len = elementList != null ? ElementListUtils
+                .calcContentLength(elementList) : 0;
+        log.debug("ElementList: category=" + category + ", id=" + id + ", len="
+                        + len + "mpt");
         if (elementList == null) {
             log.debug("<<empty list>>");
             return;
         }
-        ListIterator tempIter = elementList.listIterator();
+        final ListIterator tempIter = elementList.listIterator();
         ListElement temp;
         while (tempIter.hasNext()) {
             temp = (ListElement) tempIter.next();
             if (temp.isBox()) {
-                log.debug(tempIter.previousIndex()
-                        + ") " + temp);
+                log.debug(tempIter.previousIndex() + ") " + temp);
             } else if (temp.isGlue()) {
-                log.debug(tempIter.previousIndex()
-                        + ") " + temp);
+                log.debug(tempIter.previousIndex() + ") " + temp);
             } else {
-                log.debug(tempIter.previousIndex()
-                        + ") " + temp);
+                log.debug(tempIter.previousIndex() + ") " + temp);
             }
             if (temp.getPosition() != null) {
                 log.debug("            " + temp.getPosition());

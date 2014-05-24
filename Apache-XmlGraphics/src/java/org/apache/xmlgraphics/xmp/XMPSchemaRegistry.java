@@ -33,7 +33,7 @@ public final class XMPSchemaRegistry {
 
     private static XMPSchemaRegistry instance = null;
 
-    private Map schemas = new java.util.HashMap();
+    private final Map schemas = new java.util.HashMap();
 
     private XMPSchemaRegistry() {
         init();
@@ -56,19 +56,23 @@ public final class XMPSchemaRegistry {
 
     /**
      * Adds an XMP schema to the registry.
-     * @param schema the XMP schema
+     * 
+     * @param schema
+     *            the XMP schema
      */
-    public void addSchema(XMPSchema schema) {
-        schemas.put(schema.getNamespace(), schema);
+    public void addSchema(final XMPSchema schema) {
+        this.schemas.put(schema.getNamespace(), schema);
     }
 
     /**
      * Returns the XMP schema object for a given namespace.
-     * @param namespace the namespace URI
+     * 
+     * @param namespace
+     *            the namespace URI
      * @return the XMP schema or null if none is available
      */
-    public XMPSchema getSchema(String namespace) {
-        return (XMPSchema)schemas.get(namespace);
+    public XMPSchema getSchema(final String namespace) {
+        return (XMPSchema) this.schemas.get(namespace);
     }
 
 }

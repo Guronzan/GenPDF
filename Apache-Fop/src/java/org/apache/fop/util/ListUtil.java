@@ -34,22 +34,26 @@ public final class ListUtil {
     /**
      * Retrieve the last element from a list.
      *
-     * @param <T> the type of objects stored in the list
-     * @param list  the list to work on
+     * @param <T>
+     *            the type of objects stored in the list
+     * @param list
+     *            the list to work on
      * @return last element
      */
-    public static <T> T getLast(List<T> list) {
+    public static <T> T getLast(final List<T> list) {
         return list.get(list.size() - 1);
     }
 
     /**
      * Retrieve and remove the last element from a list.
      *
-     * @param <T> the type of objects stored in the list
-     * @param list  the list to work on
+     * @param <T>
+     *            the type of objects stored in the list
+     * @param list
+     *            the list to work on
      * @return previous last element
      */
-    public static <T> T removeLast(List<T> list) {
+    public static <T> T removeLast(final List<T> list) {
         return list.remove(list.size() - 1);
     }
 }

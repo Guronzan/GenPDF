@@ -30,25 +30,28 @@ import org.apache.xmlgraphics.xmp.XMPProperty;
 public class ArrayAddPropertyMerger implements PropertyMerger {
 
     /**
-     * @see org.apache.xmlgraphics.xmp.merge.PropertyMerger#merge(
-     *          org.apache.xmlgraphics.xmp.XMPProperty, org.apache.xmlgraphics.xmp.Metadata)
+     * @see org.apache.xmlgraphics.xmp.merge.PropertyMerger#merge(org.apache.xmlgraphics.xmp.XMPProperty,
+     *      org.apache.xmlgraphics.xmp.Metadata)
      */
-    public void merge(XMPProperty sourceProp, Metadata target) {
-        XMPProperty existing = target.getProperty(sourceProp.getName());
+    @Override
+    public void merge(final XMPProperty sourceProp, final Metadata target) {
+        final XMPProperty existing = target.getProperty(sourceProp.getName());
         if (existing == null) {
-            //simply copy over
+            // simply copy over
             target.setProperty(sourceProp);
         } else {
-            XMPArray array = existing.convertSimpleValueToArray(XMPArrayType.SEQ);
-            XMPArray otherArray = sourceProp.getArrayValue();
+            final XMPArray array = existing
+                    .convertSimpleValueToArray(XMPArrayType.SEQ);
+            final XMPArray otherArray = sourceProp.getArrayValue();
             if (otherArray == null) {
                 if (sourceProp.getXMLLang() != null) {
-                    array.add(sourceProp.getValue().toString(), sourceProp.getXMLLang());
+                    array.add(sourceProp.getValue().toString(),
+                            sourceProp.getXMLLang());
                 } else {
                     array.add(sourceProp.getValue());
                 }
             } else {
-                //TODO should be refined (xml:lang etc.)
+                // TODO should be refined (xml:lang etc.)
                 for (int i = 0, c = otherArray.getSize(); i < c; i++) {
                     array.add(otherArray.getValue(i));
                 }

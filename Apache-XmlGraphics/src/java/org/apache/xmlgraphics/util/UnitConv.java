@@ -56,110 +56,134 @@ public final class UnitConv {
     /** Describes the unit millipoint. */
     public static final String MPT = "mpt";
 
-        /** Describes the unit pixel. */
+    /** Describes the unit pixel. */
     public static final String PX = "px";
 
     /**
      * Converts millimeters (mm) to points (pt)
-     * @param mm the value in mm
+     * 
+     * @param mm
+     *            the value in mm
      * @return the value in pt
      */
-    public static double mm2pt(double mm) {
+    public static double mm2pt(final double mm) {
         return mm * IN2PT / IN2MM;
     }
 
     /**
      * Converts millimeters (mm) to millipoints (mpt)
-     * @param mm the value in mm
+     * 
+     * @param mm
+     *            the value in mm
      * @return the value in mpt
      */
-    public static double mm2mpt(double mm) {
+    public static double mm2mpt(final double mm) {
         return mm * 1000 * IN2PT / IN2MM;
     }
 
     /**
      * Converts points (pt) to millimeters (mm)
-     * @param pt the value in pt
+     * 
+     * @param pt
+     *            the value in pt
      * @return the value in mm
      */
-    public static double pt2mm(double pt) {
+    public static double pt2mm(final double pt) {
         return pt * IN2MM / IN2PT;
     }
 
     /**
      * Converts millimeters (mm) to inches (in)
-     * @param mm the value in mm
+     * 
+     * @param mm
+     *            the value in mm
      * @return the value in inches
      */
-    public static double mm2in(double mm) {
+    public static double mm2in(final double mm) {
         return mm / IN2MM;
     }
 
     /**
      * Converts inches (in) to millimeters (mm)
-     * @param in the value in inches
+     * 
+     * @param in
+     *            the value in inches
      * @return the value in mm
      */
-    public static double in2mm(double in) {
+    public static double in2mm(final double in) {
         return in * IN2MM;
     }
 
     /**
      * Converts inches (in) to millipoints (mpt)
-     * @param in the value in inches
+     * 
+     * @param in
+     *            the value in inches
      * @return the value in mpt
      */
-    public static double in2mpt(double in) {
+    public static double in2mpt(final double in) {
         return in * IN2PT * 1000;
     }
 
     /**
      * Converts inches (in) to points (pt)
-     * @param in the value in inches
+     * 
+     * @param in
+     *            the value in inches
      * @return the value in pt
      */
-    public static double in2pt(double in) {
+    public static double in2pt(final double in) {
         return in * IN2PT;
     }
 
     /**
      * Converts millipoints (mpt) to inches (in)
-     * @param mpt the value in mpt
+     * 
+     * @param mpt
+     *            the value in mpt
      * @return the value in inches
      */
-    public static double mpt2in(double mpt) {
+    public static double mpt2in(final double mpt) {
         return mpt / IN2PT / 1000;
     }
 
     /**
      * Converts millimeters (mm) to pixels (px)
-     * @param mm the value in mm
-     * @param resolution the resolution in dpi (dots per inch)
+     * 
+     * @param mm
+     *            the value in mm
+     * @param resolution
+     *            the resolution in dpi (dots per inch)
      * @return the value in pixels
      */
-    public static double mm2px(double mm, int resolution) {
+    public static double mm2px(final double mm, final int resolution) {
         return mm2in(mm) * resolution;
     }
 
     /**
      * Converts millipoints (mpt) to pixels (px)
-     * @param mpt the value in mpt
-     * @param resolution the resolution in dpi (dots per inch)
+     * 
+     * @param mpt
+     *            the value in mpt
+     * @param resolution
+     *            the resolution in dpi (dots per inch)
      * @return the value in pixels
      */
-    public static double mpt2px(double mpt, int resolution) {
+    public static double mpt2px(final double mpt, final int resolution) {
         return mpt2in(mpt) * resolution;
     }
 
     /**
      * Converts a millipoint-based transformation matrix to points.
-     * @param at a millipoint-based transformation matrix
+     * 
+     * @param at
+     *            a millipoint-based transformation matrix
      * @return a point-based transformation matrix
      */
-    public static AffineTransform mptToPt(AffineTransform at) {
-        double[] matrix = new double[6];
+    public static AffineTransform mptToPt(final AffineTransform at) {
+        final double[] matrix = new double[6];
         at.getMatrix(matrix);
-        //Convert to points
+        // Convert to points
         matrix[4] = matrix[4] / 1000;
         matrix[5] = matrix[5] / 1000;
         return new AffineTransform(matrix);
@@ -167,50 +191,60 @@ public final class UnitConv {
 
     /**
      * Converts a point-based transformation matrix to millipoints.
-     * @param at a point-based transformation matrix
+     * 
+     * @param at
+     *            a point-based transformation matrix
      * @return a millipoint-based transformation matrix
      */
-    public static AffineTransform ptToMpt(AffineTransform at) {
-        double[] matrix = new double[6];
+    public static AffineTransform ptToMpt(final AffineTransform at) {
+        final double[] matrix = new double[6];
         at.getMatrix(matrix);
-        //Convert to millipoints
+        // Convert to millipoints
         matrix[4] = matrix[4] * 1000;
         matrix[5] = matrix[5] * 1000;
         return new AffineTransform(matrix);
     }
 
     /**
-     * Convert the given unit length to a dimensionless integer representing
-     * a whole number of base units (milli-points).
+     * Convert the given unit length to a dimensionless integer representing a
+     * whole number of base units (milli-points).
      *
-     * @param value input unit value
+     * @param value
+     *            input unit value
      * @return int millipoints
      */
-    public static int convert(String value) {
+    public static int convert(final String value) {
         double retValue = 0;
         if (value != null) {
             if (value.toLowerCase().indexOf(PX) > 0) {
-                retValue = Double.parseDouble(value.substring(0, value.length() - 2));
+                retValue = Double.parseDouble(value.substring(0,
+                        value.length() - 2));
                 retValue *= 1000;
             } else if (value.toLowerCase().indexOf(INCH) > 0) {
-                retValue = Double.parseDouble(value.substring(0, value.length() - 2));
+                retValue = Double.parseDouble(value.substring(0,
+                        value.length() - 2));
                 retValue *= 72000;
             } else if (value.toLowerCase().indexOf(CM) > 0) {
-                retValue = Double.parseDouble(value.substring(0, value.length() - 2));
+                retValue = Double.parseDouble(value.substring(0,
+                        value.length() - 2));
                 retValue *= 28346.4567;
             } else if (value.toLowerCase().indexOf(MM) > 0) {
-                retValue = Double.parseDouble(value.substring(0, value.length() - 2));
+                retValue = Double.parseDouble(value.substring(0,
+                        value.length() - 2));
                 retValue *= 2834.64567;
             } else if (value.toLowerCase().indexOf(MPT) > 0) {
-                retValue = Double.parseDouble(value.substring(0, value.length() - 3));
+                retValue = Double.parseDouble(value.substring(0,
+                        value.length() - 3));
             } else if (value.toLowerCase().indexOf(POINT) > 0) {
-                retValue = Double.parseDouble(value.substring(0, value.length() - 2));
+                retValue = Double.parseDouble(value.substring(0,
+                        value.length() - 2));
                 retValue *= 1000;
             } else if (value.toLowerCase().indexOf(PICA) > 0) {
-                retValue = Double.parseDouble(value.substring(0, value.length() - 2));
+                retValue = Double.parseDouble(value.substring(0,
+                        value.length() - 2));
                 retValue *= 12000;
             }
         }
-        return (int)retValue;
+        return (int) retValue;
     }
 }

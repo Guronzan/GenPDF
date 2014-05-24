@@ -21,9 +21,6 @@ package org.apache.fop.afp;
 
 import java.awt.geom.Rectangle2D;
 
-import org.apache.xmlgraphics.image.codec.tiff.TIFFImage;
-import org.apache.xmlgraphics.java2d.Graphics2DImagePainter;
-
 import org.apache.fop.afp.ioca.IDEStructureParameter;
 import org.apache.fop.afp.ioca.ImageContent;
 import org.apache.fop.afp.modca.AbstractDataObject;
@@ -39,6 +36,8 @@ import org.apache.fop.afp.modca.Registry;
 import org.apache.fop.afp.modca.ResourceObject;
 import org.apache.fop.afp.modca.triplets.MappingOptionTriplet;
 import org.apache.fop.afp.modca.triplets.ObjectClassificationTriplet;
+import org.apache.xmlgraphics.image.codec.tiff.TIFFImage;
+import org.apache.xmlgraphics.java2d.Graphics2DImagePainter;
 
 /**
  * Factory for high level data objects (Image/Graphics etc)
@@ -50,34 +49,40 @@ public class AFPDataObjectFactory {
     /**
      * Main constructor
      *
-     * @param factory an object factory
+     * @param factory
+     *            an object factory
      */
-    public AFPDataObjectFactory(Factory factory) {
+    public AFPDataObjectFactory(final Factory factory) {
         this.factory = factory;
     }
 
     /**
      * Creates and configures an ObjectContainer.
      *
-     * @param dataObjectInfo the object container info
+     * @param dataObjectInfo
+     *            the object container info
      * @return a newly created Object Container
      */
-    public ObjectContainer createObjectContainer(AFPDataObjectInfo dataObjectInfo) {
-        ObjectContainer objectContainer = factory.createObjectContainer();
+    public ObjectContainer createObjectContainer(
+            final AFPDataObjectInfo dataObjectInfo) {
+        final ObjectContainer objectContainer = this.factory
+                .createObjectContainer();
 
-        // set data object viewport (i.e. position, rotation, dimension, resolution)
+        // set data object viewport (i.e. position, rotation, dimension,
+        // resolution)
         objectContainer.setViewport(dataObjectInfo);
 
         // set object classification
-        Registry.ObjectType objectType = dataObjectInfo.getObjectType();
-        AFPResourceInfo resourceInfo = dataObjectInfo.getResourceInfo();
-        AFPResourceLevel resourceLevel = resourceInfo.getLevel();
+        final Registry.ObjectType objectType = dataObjectInfo.getObjectType();
+        final AFPResourceInfo resourceInfo = dataObjectInfo.getResourceInfo();
+        final AFPResourceLevel resourceLevel = resourceInfo.getLevel();
         final boolean dataInContainer = true;
         final boolean containerHasOEG = resourceLevel.isInline();
         final boolean dataInOCD = true;
-        objectContainer.setObjectClassification(
-                ObjectClassificationTriplet.CLASS_TIME_INVARIANT_PAGINATED_PRESENTATION_OBJECT,
-                objectType, dataInContainer, containerHasOEG, dataInOCD);
+        objectContainer
+                .setObjectClassification(
+                        ObjectClassificationTriplet.CLASS_TIME_INVARIANT_PAGINATED_PRESENTATION_OBJECT,
+                        objectType, dataInContainer, containerHasOEG, dataInOCD);
 
         objectContainer.setData(dataObjectInfo.getData());
         return objectContainer;
@@ -86,18 +91,20 @@ public class AFPDataObjectFactory {
     /**
      * Creates and configures an IOCA Image Object.
      *
-     * @param imageObjectInfo the image object info
+     * @param imageObjectInfo
+     *            the image object info
      * @return a newly created IOCA Image Object
      */
-    public ImageObject createImage(AFPImageObjectInfo imageObjectInfo) {
+    public ImageObject createImage(final AFPImageObjectInfo imageObjectInfo) {
         // IOCA bitmap image
-        ImageObject imageObj = factory.createImageObject();
+        final ImageObject imageObj = this.factory.createImageObject();
 
-        // set data object viewport (i.e. position, rotation, dimension, resolution)
+        // set data object viewport (i.e. position, rotation, dimension,
+        // resolution)
         imageObj.setViewport(imageObjectInfo);
 
         if (imageObjectInfo.hasCompression()) {
-            int compression = imageObjectInfo.getCompression();
+            final int compression = imageObjectInfo.getCompression();
             switch (compression) {
             case TIFFImage.COMP_FAX_G3_1D:
                 imageObj.setEncoding(ImageContent.COMPID_G3_MH);
@@ -109,27 +116,28 @@ public class AFPDataObjectFactory {
                 imageObj.setEncoding(ImageContent.COMPID_G3_MMR);
                 break;
             case ImageContent.COMPID_JPEG:
-                imageObj.setEncoding((byte)compression);
+                imageObj.setEncoding((byte) compression);
                 break;
             default:
-                throw new IllegalStateException(
-                        "Invalid compression scheme: " + compression);
+                throw new IllegalStateException("Invalid compression scheme: "
+                        + compression);
             }
         }
 
-        ImageContent content = imageObj.getImageSegment().getImageContent();
-        int bitsPerPixel = imageObjectInfo.getBitsPerPixel();
+        final ImageContent content = imageObj.getImageSegment()
+                .getImageContent();
+        final int bitsPerPixel = imageObjectInfo.getBitsPerPixel();
         imageObj.setIDESize((byte) bitsPerPixel);
         IDEStructureParameter ideStruct;
         switch (bitsPerPixel) {
         case 1:
-            //Skip IDE Structure Parameter
+            // Skip IDE Structure Parameter
             break;
         case 4:
         case 8:
-            //A grayscale image
+            // A grayscale image
             ideStruct = content.needIDEStructureParameter();
-            ideStruct.setBitsPerComponent(new int[] {bitsPerPixel});
+            ideStruct.setBitsPerComponent(new int[] { bitsPerPixel });
             ideStruct.setColorModel(IDEStructureParameter.COLOR_MODEL_YCBCR);
             break;
         case 24:
@@ -141,8 +149,8 @@ public class AFPDataObjectFactory {
             ideStruct.setDefaultCMYKColorModel();
             break;
         default:
-            throw new IllegalArgumentException("Unsupported number of bits per pixel: "
-                    + bitsPerPixel);
+            throw new IllegalArgumentException(
+                    "Unsupported number of bits per pixel: " + bitsPerPixel);
         }
         if (bitsPerPixel > 1 && imageObjectInfo.isSubtractive()) {
             ideStruct = content.needIDEStructureParameter();
@@ -157,25 +165,29 @@ public class AFPDataObjectFactory {
     /**
      * Creates and returns a new graphics object.
      *
-     * @param graphicsObjectInfo the graphics object info
+     * @param graphicsObjectInfo
+     *            the graphics object info
      * @return a new graphics object
      */
-    public GraphicsObject createGraphic(AFPGraphicsObjectInfo graphicsObjectInfo) {
+    public GraphicsObject createGraphic(
+            final AFPGraphicsObjectInfo graphicsObjectInfo) {
         // set newly created graphics object in g2d
-        GraphicsObject graphicsObj = factory.createGraphicsObject();
+        final GraphicsObject graphicsObj = this.factory.createGraphicsObject();
 
-        // set data object viewport (i.e. position, rotation, dimension, resolution)
+        // set data object viewport (i.e. position, rotation, dimension,
+        // resolution)
         graphicsObj.setViewport(graphicsObjectInfo);
 
-        AFPGraphics2D g2d = graphicsObjectInfo.getGraphics2D();
+        final AFPGraphics2D g2d = graphicsObjectInfo.getGraphics2D();
         g2d.setGraphicsObject(graphicsObj);
 
-        //set color converter (i.e. an rgb to grayscale converter)
-        graphicsObj.setColorConverter(g2d.getPaintingState().getColorConverter());
+        // set color converter (i.e. an rgb to grayscale converter)
+        graphicsObj.setColorConverter(g2d.getPaintingState()
+                .getColorConverter());
 
         // paint to graphics object
-        Graphics2DImagePainter painter = graphicsObjectInfo.getPainter();
-        Rectangle2D area = graphicsObjectInfo.getArea();
+        final Graphics2DImagePainter painter = graphicsObjectInfo.getPainter();
+        final Rectangle2D area = graphicsObjectInfo.getArea();
         g2d.scale(1, -1);
         g2d.translate(0, -area.getHeight());
 
@@ -190,13 +202,17 @@ public class AFPDataObjectFactory {
     /**
      * Creates and returns a new include object.
      *
-     * @param includeName the include name
-     * @param dataObjectInfo a data object info
+     * @param includeName
+     *            the include name
+     * @param dataObjectInfo
+     *            a data object info
      *
      * @return a new include object
      */
-    public IncludeObject createInclude(String includeName, AFPDataObjectInfo dataObjectInfo) {
-        IncludeObject includeObj = factory.createInclude(includeName);
+    public IncludeObject createInclude(final String includeName,
+            final AFPDataObjectInfo dataObjectInfo) {
+        final IncludeObject includeObj = this.factory
+                .createInclude(includeName);
 
         if (dataObjectInfo instanceof AFPImageObjectInfo) {
             // IOCA image object
@@ -209,37 +225,42 @@ public class AFPDataObjectFactory {
             includeObj.setObjectType(IncludeObject.TYPE_OTHER);
 
             // set mandatory object classification (type other)
-            Registry.ObjectType objectType = dataObjectInfo.getObjectType();
+            final Registry.ObjectType objectType = dataObjectInfo
+                    .getObjectType();
             if (objectType != null) {
                 // set object classification
                 final boolean dataInContainer = true;
-                final boolean containerHasOEG = false; // environment parameters set in include
+                final boolean containerHasOEG = false; // environment parameters
+                                                       // set in include
                 final boolean dataInOCD = true;
-                includeObj.setObjectClassification(
-                   // object scope not defined
-                   ObjectClassificationTriplet.CLASS_TIME_VARIANT_PRESENTATION_OBJECT,
-                   objectType, dataInContainer, containerHasOEG, dataInOCD);
+                includeObj
+                        .setObjectClassification(
+                                // object scope not defined
+                                ObjectClassificationTriplet.CLASS_TIME_VARIANT_PRESENTATION_OBJECT,
+                                objectType, dataInContainer, containerHasOEG,
+                                dataInOCD);
             } else {
                 throw new IllegalStateException(
                         "Failed to set Object Classification Triplet on Object Container.");
             }
         }
 
-        AFPObjectAreaInfo objectAreaInfo = dataObjectInfo.getObjectAreaInfo();
+        final AFPObjectAreaInfo objectAreaInfo = dataObjectInfo
+                .getObjectAreaInfo();
 
-        int xOffset = objectAreaInfo.getX();
-        int yOffset = objectAreaInfo.getY();
+        final int xOffset = objectAreaInfo.getX();
+        final int yOffset = objectAreaInfo.getY();
         includeObj.setObjectAreaOffset(xOffset, yOffset);
 
-        int width = objectAreaInfo.getWidth();
-        int height = objectAreaInfo.getHeight();
+        final int width = objectAreaInfo.getWidth();
+        final int height = objectAreaInfo.getHeight();
         includeObj.setObjectAreaSize(width, height);
 
-        int rotation = objectAreaInfo.getRotation();
+        final int rotation = objectAreaInfo.getRotation();
         includeObj.setObjectAreaOrientation(rotation);
 
-        int widthRes = objectAreaInfo.getWidthRes();
-        int heightRes = objectAreaInfo.getHeightRes();
+        final int widthRes = objectAreaInfo.getWidthRes();
+        final int heightRes = objectAreaInfo.getHeightRes();
         includeObj.setMeasurementUnits(widthRes, heightRes);
 
         includeObj.setMappingOption(MappingOptionTriplet.SCALE_TO_FIT);
@@ -250,19 +271,23 @@ public class AFPDataObjectFactory {
     /**
      * Creates a resource object wrapper for named includable data objects
      *
-     * @param namedObj an named object
-     * @param resourceInfo resource information
-     * @param objectType the object type
+     * @param namedObj
+     *            an named object
+     * @param resourceInfo
+     *            resource information
+     * @param objectType
+     *            the object type
      * @return a new resource object wrapper
      */
-    public ResourceObject createResource(AbstractNamedAFPObject namedObj,
-            AFPResourceInfo resourceInfo, Registry.ObjectType objectType) {
+    public ResourceObject createResource(final AbstractNamedAFPObject namedObj,
+            final AFPResourceInfo resourceInfo,
+            final Registry.ObjectType objectType) {
         ResourceObject resourceObj = null;
-        String resourceName = resourceInfo.getName();
+        final String resourceName = resourceInfo.getName();
         if (resourceName != null) {
-            resourceObj = factory.createResource(resourceName);
+            resourceObj = this.factory.createResource(resourceName);
         } else {
-            resourceObj = factory.createResource();
+            resourceObj = this.factory.createResource();
         }
 
         if (namedObj instanceof Document) {
@@ -272,7 +297,7 @@ public class AFPDataObjectFactory {
         } else if (namedObj instanceof Overlay) {
             resourceObj.setType(ResourceObject.TYPE_OVERLAY_OBJECT);
         } else if (namedObj instanceof AbstractDataObject) {
-            AbstractDataObject dataObj = (AbstractDataObject)namedObj;
+            final AbstractDataObject dataObj = (AbstractDataObject) namedObj;
             if (namedObj instanceof ObjectContainer) {
                 resourceObj.setType(ResourceObject.TYPE_OBJECT_CONTAINER);
 
@@ -281,9 +306,11 @@ public class AFPDataObjectFactory {
                 final boolean containerHasOEG = false; // must be included
                 final boolean dataInOCD = true;
                 // mandatory triplet for object container
-                resourceObj.setObjectClassification(
-                    ObjectClassificationTriplet.CLASS_TIME_INVARIANT_PAGINATED_PRESENTATION_OBJECT,
-                    objectType, dataInContainer, containerHasOEG, dataInOCD);
+                resourceObj
+                        .setObjectClassification(
+                                ObjectClassificationTriplet.CLASS_TIME_INVARIANT_PAGINATED_PRESENTATION_OBJECT,
+                                objectType, dataInContainer, containerHasOEG,
+                                dataInOCD);
             } else if (namedObj instanceof ImageObject) {
                 // ioca image type
                 resourceObj.setType(ResourceObject.TYPE_IMAGE);
@@ -291,11 +318,12 @@ public class AFPDataObjectFactory {
                 resourceObj.setType(ResourceObject.TYPE_GRAPHIC);
             } else {
                 throw new UnsupportedOperationException(
-                        "Unsupported resource object for data object type " + dataObj);
+                        "Unsupported resource object for data object type "
+                                + dataObj);
             }
         } else {
             throw new UnsupportedOperationException(
-              "Unsupported resource object type " + namedObj);
+                    "Unsupported resource object type " + namedObj);
         }
 
         // set the resource information/classification on the data object

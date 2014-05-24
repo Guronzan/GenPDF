@@ -27,11 +27,8 @@ import org.junit.runners.Suite;
  *
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-        CollapsedConditionalBorderTestCase.class,
-        IllegalRowSpanTestCase.class,
-        RowGroupBuilderTestCase.class,
-        TableColumnColumnNumberTestCase.class,
-        TooManyColumnsTestCase.class })
+@Suite.SuiteClasses({ CollapsedConditionalBorderTestCase.class,
+    IllegalRowSpanTestCase.class, RowGroupBuilderTestCase.class,
+    TableColumnColumnNumberTestCase.class, TooManyColumnsTestCase.class })
 public final class AllTests {
 }

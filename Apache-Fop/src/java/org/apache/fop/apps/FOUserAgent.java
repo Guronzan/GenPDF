@@ -29,8 +29,8 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.Version;
 import org.apache.fop.accessibility.Accessibility;
 import org.apache.fop.accessibility.DummyStructureTreeEventHandler;
@@ -66,12 +66,11 @@ import org.apache.xmlgraphics.util.UnitConv;
  * These areas may contain resolvable areas that will be processed with other
  * resolvable areas
  */
+@Slf4j
 public class FOUserAgent {
 
     /** Defines the default target resolution (72dpi) for FOP */
     public static final float DEFAULT_TARGET_RESOLUTION = FopFactoryConfigurator.DEFAULT_TARGET_RESOLUTION;
-
-    private static Log log = LogFactory.getLog("FOP");
 
     private final FopFactory factory;
 
@@ -90,7 +89,7 @@ public class FOUserAgent {
     private Renderer rendererOverride = null;
     private FOEventHandler foEventHandlerOverride = null;
     private boolean locatorEnabled = true; // true by default (for error
-                                           // messages).
+    // messages).
     private boolean conserveMemoryPolicy = false;
     private final EventBroadcaster eventBroadcaster = new FOPEventBroadcaster();
     private StructureTreeEventHandler structureTreeEventHandler = DummyStructureTreeEventHandler.INSTANCE;
@@ -145,7 +144,7 @@ public class FOUserAgent {
      * Main constructor. <b>This constructor should not be called directly.
      * Please use the methods from FopFactory to construct FOUserAgent
      * instances!</b>
-     * 
+     *
      * @param factory
      *            the factory that provides environment-level information
      * @see org.apache.fop.apps.FopFactory
@@ -172,7 +171,7 @@ public class FOUserAgent {
     /**
      * Sets an explicit document handler to use which overrides the one that
      * would be selected by default.
-     * 
+     *
      * @param documentHandler
      *            the document handler instance to use
      */
@@ -188,7 +187,7 @@ public class FOUserAgent {
 
     /**
      * Returns the overriding {@link IFDocumentHandler} instance, if any.
-     * 
+     *
      * @return the overriding document handler or null
      */
     public IFDocumentHandler getDocumentHandlerOverride() {
@@ -198,7 +197,7 @@ public class FOUserAgent {
     /**
      * Sets an explicit renderer to use which overrides the one defined by the
      * render type setting.
-     * 
+     *
      * @param renderer
      *            the Renderer instance to use
      */
@@ -208,7 +207,7 @@ public class FOUserAgent {
 
     /**
      * Returns the overriding Renderer instance, if any.
-     * 
+     *
      * @return the overriding Renderer or null
      */
     public Renderer getRendererOverride() {
@@ -218,7 +217,7 @@ public class FOUserAgent {
     /**
      * Sets an explicit FOEventHandler instance which overrides the one defined
      * by the render type setting.
-     * 
+     *
      * @param handler
      *            the FOEventHandler instance
      */
@@ -228,7 +227,7 @@ public class FOUserAgent {
 
     /**
      * Returns the overriding FOEventHandler instance, if any.
-     * 
+     *
      * @return the overriding FOEventHandler or null
      */
     public FOEventHandler getFOEventHandlerOverride() {
@@ -237,7 +236,7 @@ public class FOUserAgent {
 
     /**
      * Sets the producer of the document.
-     * 
+     *
      * @param producer
      *            source of document
      */
@@ -247,7 +246,7 @@ public class FOUserAgent {
 
     /**
      * Returns the producer of the document
-     * 
+     *
      * @return producer name
      */
     public String getProducer() {
@@ -256,7 +255,7 @@ public class FOUserAgent {
 
     /**
      * Sets the creator of the document.
-     * 
+     *
      * @param creator
      *            of document
      */
@@ -266,7 +265,7 @@ public class FOUserAgent {
 
     /**
      * Returns the creator of the document
-     * 
+     *
      * @return creator name
      */
     public String getCreator() {
@@ -275,7 +274,7 @@ public class FOUserAgent {
 
     /**
      * Sets the creation date of the document.
-     * 
+     *
      * @param creationDate
      *            date of document
      */
@@ -285,7 +284,7 @@ public class FOUserAgent {
 
     /**
      * Returns the creation date of the document
-     * 
+     *
      * @return creation date of document
      */
     public Date getCreationDate() {
@@ -294,7 +293,7 @@ public class FOUserAgent {
 
     /**
      * Sets the author of the document.
-     * 
+     *
      * @param author
      *            of document
      */
@@ -304,7 +303,7 @@ public class FOUserAgent {
 
     /**
      * Returns the author of the document
-     * 
+     *
      * @return author name
      */
     public String getAuthor() {
@@ -314,7 +313,7 @@ public class FOUserAgent {
     /**
      * Sets the title of the document. This will override any title coming from
      * an fo:title element.
-     * 
+     *
      * @param title
      *            of document
      */
@@ -324,7 +323,7 @@ public class FOUserAgent {
 
     /**
      * Returns the title of the document
-     * 
+     *
      * @return title name
      */
     public String getTitle() {
@@ -333,7 +332,7 @@ public class FOUserAgent {
 
     /**
      * Sets the subject of the document.
-     * 
+     *
      * @param subject
      *            of document
      */
@@ -343,7 +342,7 @@ public class FOUserAgent {
 
     /**
      * Returns the subject of the document
-     * 
+     *
      * @return the subject
      */
     public String getSubject() {
@@ -352,7 +351,7 @@ public class FOUserAgent {
 
     /**
      * Sets the keywords for the document.
-     * 
+     *
      * @param keywords
      *            for the document
      */
@@ -362,7 +361,7 @@ public class FOUserAgent {
 
     /**
      * Returns the keywords for the document
-     * 
+     *
      * @return the keywords
      */
     public String getKeywords() {
@@ -371,7 +370,7 @@ public class FOUserAgent {
 
     /**
      * Returns the renderer options
-     * 
+     *
      * @return renderer options
      */
     public Map getRendererOptions() {
@@ -380,7 +379,7 @@ public class FOUserAgent {
 
     /**
      * Sets the base URL.
-     * 
+     *
      * @param baseUrl
      *            base URL
      */
@@ -390,7 +389,7 @@ public class FOUserAgent {
 
     /**
      * Sets font base URL.
-     * 
+     *
      * @param fontBaseUrl
      *            font base URL
      * @deprecated Use
@@ -408,7 +407,7 @@ public class FOUserAgent {
 
     /**
      * Returns the base URL.
-     * 
+     *
      * @return the base URL
      */
     public String getBaseURL() {
@@ -417,7 +416,7 @@ public class FOUserAgent {
 
     /**
      * Sets the URI Resolver.
-     * 
+     *
      * @param resolver
      *            the new URI resolver
      */
@@ -427,7 +426,7 @@ public class FOUserAgent {
 
     /**
      * Returns the URI Resolver.
-     * 
+     *
      * @return the URI Resolver
      */
     public URIResolver getURIResolver() {
@@ -437,7 +436,7 @@ public class FOUserAgent {
     /**
      * Attempts to resolve the given URI. Will use the configured resolver and
      * if not successful fall back to the default resolver.
-     * 
+     *
      * @param uri
      *            URI to access
      * @return A {@link javax.xml.transform.Source} object, or null if the URI
@@ -451,7 +450,7 @@ public class FOUserAgent {
     /**
      * Attempts to resolve the given URI. Will use the configured resolver and
      * if not successful fall back to the default resolver.
-     * 
+     *
      * @param href
      *            URI to access
      * @param base
@@ -483,7 +482,7 @@ public class FOUserAgent {
 
     /**
      * Sets the output File.
-     * 
+     *
      * @param f
      *            the output File
      */
@@ -493,7 +492,7 @@ public class FOUserAgent {
 
     /**
      * Gets the output File.
-     * 
+     *
      * @return the output File
      */
     public File getOutputFile() {
@@ -503,7 +502,7 @@ public class FOUserAgent {
     /**
      * Returns the conversion factor from pixel units to millimeters. This
      * depends on the desired target resolution.
-     * 
+     *
      * @return float conversion factor
      * @see #getTargetResolution()
      */
@@ -521,7 +520,7 @@ public class FOUserAgent {
      * resolution of bitmap images generated by the bitmap renderers (such as
      * the TIFF renderer) and of bitmap images generated by filter effects in
      * Apache Batik.
-     * 
+     *
      * @param dpi
      *            resolution in dpi
      */
@@ -538,7 +537,7 @@ public class FOUserAgent {
      * resolution of bitmap images generated by the bitmap renderers (such as
      * the TIFF renderer) and of bitmap images generated by filter effects in
      * Apache Batik.
-     * 
+     *
      * @param dpi
      *            resolution in dpi
      */
@@ -548,7 +547,7 @@ public class FOUserAgent {
 
     /**
      * Returns the image session context for the image package.
-     * 
+     *
      * @return the ImageSessionContext instance for this rendering run
      */
     public ImageSessionContext getImageSessionContext() {
@@ -558,7 +557,7 @@ public class FOUserAgent {
     /**
      * Returns the conversion factor from pixel units to millimeters. This
      * depends on the desired source resolution.
-     * 
+     *
      * @return float conversion factor
      * @see #getSourceResolution()
      */
@@ -594,7 +593,7 @@ public class FOUserAgent {
 
     /**
      * Returns whether FOP is strictly validating input XSL
-     * 
+     *
      * @return true of strict validation turned on, false otherwise
      * @see FopFactory#validateStrictly()
      */
@@ -639,7 +638,7 @@ public class FOUserAgent {
 
     /**
      * Checks if the use of Locators is enabled
-     * 
+     *
      * @return true if context information should be stored on each node in the
      *         FO tree.
      */
@@ -652,7 +651,7 @@ public class FOUserAgent {
      * processing run. Clients can register event listeners with the event
      * broadcaster to listen for events that occur while a document is being
      * processed.
-     * 
+     *
      * @return the event broadcaster.
      */
     public EventBroadcaster getEventBroadcaster() {
@@ -674,8 +673,7 @@ public class FOUserAgent {
                         // Backwards-compatibility: Make sure at least the
                         // LoggingEventListener is
                         // plugged in so no events are just silently swallowed.
-                        addEventListener(new LoggingEventListener(
-                                LogFactory.getLog(FOUserAgent.class)));
+                        addEventListener(new LoggingEventListener(log));
                     }
                     // Replace with final event listener
                     FOPEventBroadcaster.this.rootListener = new FOPEventListenerProxy(
@@ -747,7 +745,7 @@ public class FOUserAgent {
 
     /**
      * Check if accessibility is enabled.
-     * 
+     *
      * @return true if accessibility is enabled
      */
     public boolean isAccessibilityEnabled() {

@@ -26,36 +26,46 @@ import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
 
 /**
- * This class is an implementation of the Image interface exposing EPS file. It provides an
- * InputStream to access the EPS content and the decoded high-res bounding box.
+ * This class is an implementation of the Image interface exposing EPS file. It
+ * provides an InputStream to access the EPS content and the decoded high-res
+ * bounding box.
  */
 public class ImageRawEPS extends ImageRawStream {
 
     /**
      * Main constructor.
-     * @param info the image info object
-     * @param streamFactory the InputStreamFactory that is used to create InputStream instances
+     * 
+     * @param info
+     *            the image info object
+     * @param streamFactory
+     *            the InputStreamFactory that is used to create InputStream
+     *            instances
      */
-    public ImageRawEPS(ImageInfo info, InputStreamFactory streamFactory) {
+    public ImageRawEPS(final ImageInfo info,
+            final InputStreamFactory streamFactory) {
         super(info, ImageFlavor.RAW_EPS, streamFactory);
     }
 
     /**
      * Main constructor.
-     * @param info the image info object
-     * @param in the InputStream with the raw content
+     * 
+     * @param info
+     *            the image info object
+     * @param in
+     *            the InputStream with the raw content
      */
-    public ImageRawEPS(ImageInfo info, InputStream in) {
+    public ImageRawEPS(final ImageInfo info, final InputStream in) {
         super(info, ImageFlavor.RAW_EPS, in);
     }
 
     /**
      * Returns the bounding box of the EPS image.
+     * 
      * @return the bounding box
      */
     public Rectangle2D getBoundingBox() {
-        Rectangle2D bbox = (Rectangle2D)getInfo().getCustomObjects().get(
-                PreloaderEPS.EPS_BOUNDING_BOX);
+        final Rectangle2D bbox = (Rectangle2D) getInfo().getCustomObjects()
+                .get(PreloaderEPS.EPS_BOUNDING_BOX);
         return bbox;
     }
 }

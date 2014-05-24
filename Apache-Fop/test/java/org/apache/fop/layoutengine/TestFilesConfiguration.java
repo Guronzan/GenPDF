@@ -22,8 +22,8 @@ package org.apache.fop.layoutengine;
 import java.io.File;
 
 /**
- * A class that contains the information needed to run a suite of layout engine and FO tree
- * tests.
+ * A class that contains the information needed to run a suite of layout engine
+ * and FO tree tests.
  */
 public final class TestFilesConfiguration {
 
@@ -35,7 +35,7 @@ public final class TestFilesConfiguration {
     private final String disabledTests;
     private final boolean privateTests;
 
-    private TestFilesConfiguration(Builder builder) {
+    private TestFilesConfiguration(final Builder builder) {
         this.testDirectory = new File(builder.testDirectory);
         this.singleTest = builder.singleTest;
         this.testStartsWith = builder.testStartsWith;
@@ -47,63 +47,70 @@ public final class TestFilesConfiguration {
 
     /**
      * Returns the directory of the tests.
+     * 
      * @return the test directory
      */
     public File getTestDirectory() {
-        return testDirectory;
+        return this.testDirectory;
     }
 
     /**
      * Returns the name of the single test file to run.
+     * 
      * @return the single test file name
      */
     public String getSingleTest() {
-        return singleTest;
+        return this.singleTest;
     }
 
     /**
      * Returns the string that must prefix the test file names.
+     * 
      * @return the prefixing string
      */
     public String getStartsWith() {
-        return testStartsWith;
+        return this.testStartsWith;
     }
 
     /**
      * Returns the file suffix (i.e. ".xml" for XML files and ".fo" for FOs).
+     * 
      * @return the file suffix
      */
     public String getFileSuffix() {
-        return testFileSuffix;
+        return this.testFileSuffix;
     }
 
     /**
      * Returns the directory set of tests to be run.
+     * 
      * @return the directory tests
      */
     public String getTestSet() {
-        return testSet;
+        return this.testSet;
     }
 
     /**
      * Returns the name of the XML file containing the disabled tests.
+     * 
      * @return a file name, may be null
      */
     public String getDisabledTests() {
-        return disabledTests;
+        return this.disabledTests;
     }
 
     /**
      * Whether any private tests should be invoked.
+     * 
      * @return true if private tests should be tested
      */
     public boolean hasPrivateTests() {
-        return privateTests;
+        return this.privateTests;
     }
 
     /**
-     * A builder class that configures the data for running a suite of tests designed for the
-     * layout engine and FOTree.
+     * A builder class that configures the data for running a suite of tests
+     * designed for the layout engine and FOTree.
      */
     public static class Builder {
 
@@ -117,85 +124,104 @@ public final class TestFilesConfiguration {
 
         /**
          * Configures the test directory.
-         * @param dir the test directory
+         * 
+         * @param dir
+         *            the test directory
          * @return {@code this}
          */
-        public Builder testDir(String dir) {
-            testDirectory = dir;
+        public Builder testDir(final String dir) {
+            this.testDirectory = dir;
             return this;
         }
 
         /**
          * Configures the name of the single test to run.
-         * @param singleProperty name of the property that determines the single test case
+         * 
+         * @param singleProperty
+         *            name of the property that determines the single test case
          * @return {@code this}
          */
-        public Builder singleProperty(String singleProperty) {
-            singleTest = getSystemProperty(singleProperty);
+        public Builder singleProperty(final String singleProperty) {
+            this.singleTest = getSystemProperty(singleProperty);
             return this;
         }
 
         /**
          * Configures the prefix that all test cases must match.
-         * @param startsWithProperty name of the property that determines the common prefix
+         * 
+         * @param startsWithProperty
+         *            name of the property that determines the common prefix
          * @return {@code this}
          */
-        public Builder startsWithProperty(String startsWithProperty) {
-            testStartsWith = getSystemProperty(startsWithProperty);
+        public Builder startsWithProperty(final String startsWithProperty) {
+            this.testStartsWith = getSystemProperty(startsWithProperty);
             return this;
         }
 
         /**
          * Configures the test file name suffix.
-         * @param suffix the suffixing string
+         * 
+         * @param suffix
+         *            the suffixing string
          * @return {@code this}
          */
-        public Builder suffix(String suffix) {
-            testFileSuffix = suffix;
+        public Builder suffix(final String suffix) {
+            this.testFileSuffix = suffix;
             return this;
         }
 
         /**
          * Configures the name of the directory containing the set of tests.
-         * @param testSet the directory of tests. If null, defaults to "standard-testcases"
+         * 
+         * @param testSet
+         *            the directory of tests. If null, defaults to
+         *            "standard-testcases"
          * @return {@code this}
          */
-        public Builder testSet(String testSet) {
+        public Builder testSet(final String testSet) {
             this.testSet = testSet != null ? testSet : "standard-testcases";
             return this;
         }
 
         /**
          * Configures whether any tests are disabled.
-         * @param disabledProperty name of the property that determines the file of
-         * disabled test cases
-         * @param defaultValue if the property was not defined, uses this file name
-         * instead
+         * 
+         * @param disabledProperty
+         *            name of the property that determines the file of disabled
+         *            test cases
+         * @param defaultValue
+         *            if the property was not defined, uses this file name
+         *            instead
          * @return {@code this}
          */
-        public Builder disabledProperty(String disabledProperty, String defaultValue) {
-            String property = getSystemProperty(disabledProperty);
-            disabledTests = property != null ? property : defaultValue;
+        public Builder disabledProperty(final String disabledProperty,
+                final String defaultValue) {
+            final String property = getSystemProperty(disabledProperty);
+            this.disabledTests = property != null ? property : defaultValue;
             return this;
         }
 
         /**
          * Configures whether private tests must be run or not.
-         * @param privateTestsProperty name of the property containing the boolean switch
+         * 
+         * @param privateTestsProperty
+         *            name of the property containing the boolean switch
          * @return {@code this}
          */
-        public Builder privateTestsProperty(String privateTestsProperty) {
-            String property = getSystemProperty(privateTestsProperty);
-            this.privateTests = property != null && property.equalsIgnoreCase("true");
+        public Builder privateTestsProperty(final String privateTestsProperty) {
+            final String property = getSystemProperty(privateTestsProperty);
+            this.privateTests = property != null
+                    && property.equalsIgnoreCase("true");
             return this;
         }
 
-        private String getSystemProperty(String property) {
+        private String getSystemProperty(final String property) {
             return System.getProperty(property);
         }
 
         /**
          * Creates the configuration instance.
+         * 
          * @return a configuration instance configured by this builder
          */
         public TestFilesConfiguration build() {

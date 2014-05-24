@@ -21,9 +21,6 @@ package org.apache.fop.fo.flow;
 
 import java.util.Map;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.FOTreeBuilderContext;
@@ -34,6 +31,8 @@ import org.apache.fop.fo.PropertyListMaker;
 import org.apache.fop.fo.ValidationException;
 import org.apache.fop.fo.properties.Property;
 import org.apache.fop.fo.properties.PropertyCache;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_marker">
@@ -45,75 +44,82 @@ public class Marker extends FObjMixed {
     // End of property values
 
     private PropertyListMaker savePropertyListMaker;
-    private Map descendantPropertyLists = new java.util.HashMap();
+    private final Map descendantPropertyLists = new java.util.HashMap();
 
     /**
      * Create a marker fo.
      *
-     * @param parent the parent {@link FONode}
+     * @param parent
+     *            the parent {@link FONode}
      */
-    public Marker(FONode parent) {
+    public Marker(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         if (findAncestor(FO_FLOW) < 0) {
-            invalidChildError(locator, getParent().getName(), FO_URI, getLocalName(),
-                "rule.markerDescendantOfFlow");
+            invalidChildError(this.locator, getParent().getName(), FO_URI,
+                    getLocalName(), "rule.markerDescendantOfFlow");
         }
 
-        markerClassName = pList.get(PR_MARKER_CLASS_NAME).getString();
+        this.markerClassName = pList.get(PR_MARKER_CLASS_NAME).getString();
 
-        if (markerClassName == null || markerClassName.equals("")) {
+        if (this.markerClassName == null || this.markerClassName.equals("")) {
             missingPropertyError("marker-class-name");
         }
     }
 
     /**
-     * Retrieve the property list of the given {@link FONode}
-     * descendant
+     * Retrieve the property list of the given {@link FONode} descendant
      *
-     * @param foNode the {@link FONode} whose property list is requested
+     * @param foNode
+     *            the {@link FONode} whose property list is requested
      * @return the {@link MarkerPropertyList} for the given node
      */
-    protected MarkerPropertyList getPropertyListFor(FONode foNode) {
-        return (MarkerPropertyList)
-            descendantPropertyLists.get(foNode);
+    protected MarkerPropertyList getPropertyListFor(final FONode foNode) {
+        return (MarkerPropertyList) this.descendantPropertyLists.get(foNode);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() {
-        FOTreeBuilderContext builderContext = getBuilderContext();
+        final FOTreeBuilderContext builderContext = getBuilderContext();
         // Push a new property list maker which will make MarkerPropertyLists.
-        savePropertyListMaker = builderContext.getPropertyListMaker();
+        this.savePropertyListMaker = builderContext.getPropertyListMaker();
         builderContext.setPropertyListMaker(new PropertyListMaker() {
-            public PropertyList make(FObj fobj, PropertyList parentPropertyList) {
-                PropertyList pList = new MarkerPropertyList(fobj, parentPropertyList);
-                descendantPropertyLists.put(fobj, pList);
+            @Override
+            public PropertyList make(final FObj fobj,
+                    final PropertyList parentPropertyList) {
+                final PropertyList pList = new MarkerPropertyList(fobj,
+                        parentPropertyList);
+                Marker.this.descendantPropertyLists.put(fobj, pList);
                 return pList;
             }
         });
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
         super.endOfNode();
         // Pop the MarkerPropertyList maker.
-        getBuilderContext().setPropertyListMaker(savePropertyListMaker);
-        savePropertyListMaker = null;
+        getBuilderContext().setPropertyListMaker(this.savePropertyListMaker);
+        this.savePropertyListMaker = null;
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL Content Model: (#PCDATA|%inline;|%block;)*
-     * <br><i>Additionally: "An fo:marker may contain any formatting objects that
+     * {@inheritDoc} <br>
+     * XSL Content Model: (#PCDATA|%inline;|%block;)* <br>
+     * <i>Additionally: "An fo:marker may contain any formatting objects that
      * are permitted as a replacement of any fo:retrieve-marker that retrieves
-     * the fo:marker's children."</i>
-     * TODO implement "additional" constraint, possibly within fo:retrieve-marker
+     * the fo:marker's children."</i> TODO implement "additional" constraint,
+     * possibly within fo:retrieve-marker
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-            throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             if (!isBlockOrInlineItem(nsURI, localName)) {
                 invalidChildError(loc, nsURI, localName);
@@ -122,42 +128,47 @@ public class Marker extends FObjMixed {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected boolean inMarker() {
         return true;
     }
 
     /** @return the "marker-class-name" property */
     public String getMarkerClassName() {
-        return markerClassName;
+        return this.markerClassName;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "marker";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_MARKER}
      */
+    @Override
     public int getNameId() {
         return FO_MARKER;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(super.toString());
+        final StringBuffer sb = new StringBuffer(super.toString());
         sb.append(" {").append(getMarkerClassName()).append("}");
         return sb.toString();
     }
 
     /**
-     * An implementation of {@link PropertyList} which only stores the explicitly
-     * specified properties/attributes as bundles of name-value-namespace
-     * strings
+     * An implementation of {@link PropertyList} which only stores the
+     * explicitly specified properties/attributes as bundles of
+     * name-value-namespace strings
      */
-    protected class MarkerPropertyList extends PropertyList
-            implements Attributes {
+    protected class MarkerPropertyList extends PropertyList implements
+            Attributes {
 
         /** the array of attributes **/
         private MarkerAttribute[] attribs;
@@ -165,13 +176,16 @@ public class Marker extends FObjMixed {
         /**
          * Overriding default constructor
          *
-         * @param fobj  the {@link FObj} to attach
-         * @param parentPropertyList    ignored
+         * @param fobj
+         *            the {@link FObj} to attach
+         * @param parentPropertyList
+         *            ignored
          */
-        public MarkerPropertyList(FObj fobj, PropertyList parentPropertyList) {
-            /* ignore parentPropertyList
-             * won't be used because the attributes will be stored
-             * without resolving
+        public MarkerPropertyList(final FObj fobj,
+                final PropertyList parentPropertyList) {
+            /*
+             * ignore parentPropertyList won't be used because the attributes
+             * will be stored without resolving
              */
             super(fobj, null);
         }
@@ -182,8 +196,9 @@ public class Marker extends FObjMixed {
          *
          * {@inheritDoc}
          */
-        public void addAttributesToList(Attributes attributes)
-                    throws ValidationException {
+        @Override
+        public void addAttributesToList(final Attributes attributes)
+                throws ValidationException {
 
             this.attribs = new MarkerAttribute[attributes.getLength()];
 
@@ -198,69 +213,74 @@ public class Marker extends FObjMixed {
                 name = attributes.getLocalName(i);
                 value = attributes.getValue(i);
 
-                this.attribs[i]
-                    = MarkerAttribute.getInstance(namespace, qname, name, value);
+                this.attribs[i] = MarkerAttribute.getInstance(namespace, qname,
+                        name, value);
             }
         }
 
         /**
          * Null implementation; not used by this type of {@link PropertyList}.
-         * @param propId the propert id
-         * @param value the property value
+         * 
+         * @param propId
+         *            the propert id
+         * @param value
+         *            the property value
          */
-        public void putExplicit(int propId, Property value) {
-            //nop
+        @Override
+        public void putExplicit(final int propId, final Property value) {
+            // nop
         }
 
         /**
          * Null implementation; not used by this type of {@link PropertyList}.
-         * @param propId the propert id
+         * 
+         * @param propId
+         *            the propert id
          * @return the property id
          */
-        public Property getExplicit(int propId) {
+        @Override
+        public Property getExplicit(final int propId) {
             return null;
         }
 
         /** {@inheritDoc} */
+        @Override
         public int getLength() {
-            if (attribs == null) {
+            if (this.attribs == null) {
                 return 0;
             } else {
-                return attribs.length;
+                return this.attribs.length;
             }
         }
 
         /** {@inheritDoc} */
-        public String getURI(int index) {
-            if (attribs != null
-                    && index < attribs.length
-                    && index >= 0
-                    && attribs[index] != null) {
-                return attribs[index].namespace;
+        @Override
+        public String getURI(final int index) {
+            if (this.attribs != null && index < this.attribs.length
+                    && index >= 0 && this.attribs[index] != null) {
+                return this.attribs[index].namespace;
             } else {
                 return null;
             }
         }
 
         /** {@inheritDoc} */
-        public String getLocalName(int index) {
-            if (attribs != null
-                    && index < attribs.length
-                    && index >= 0
-                    && attribs[index] != null) {
-                return attribs[index].name;
+        @Override
+        public String getLocalName(final int index) {
+            if (this.attribs != null && index < this.attribs.length
+                    && index >= 0 && this.attribs[index] != null) {
+                return this.attribs[index].name;
             } else {
                 return null;
             }
         }
 
         /** {@inheritDoc} */
-        public String getQName(int index) {
-            if (attribs != null
-                    && index < attribs.length
-                    && index >= 0
-                    && attribs[index] != null) {
-                return attribs[index].qname;
+        @Override
+        public String getQName(final int index) {
+            if (this.attribs != null && index < this.attribs.length
+                    && index >= 0 && this.attribs[index] != null) {
+                return this.attribs[index].qname;
             } else {
                 return null;
             }
@@ -268,33 +288,36 @@ public class Marker extends FObjMixed {
 
         /**
          * Default implementation; not used.
-         * @param index a type index
+         * 
+         * @param index
+         *            a type index
          * @return type string
          */
-        public String getType(int index) {
+        @Override
+        public String getType(final int index) {
             return "CDATA";
         }
 
         /** {@inheritDoc} */
-        public String getValue(int index) {
-            if (attribs != null
-                    && index < attribs.length
-                    && index >= 0
-                    && attribs[index] != null) {
-                return attribs[index].value;
+        @Override
+        public String getValue(final int index) {
+            if (this.attribs != null && index < this.attribs.length
+                    && index >= 0 && this.attribs[index] != null) {
+                return this.attribs[index].value;
             } else {
                 return null;
             }
         }
 
         /** {@inheritDoc} */
-        public int getIndex(String name, String namespace) {
-            int index = -1;
-            if (attribs != null && name != null && namespace != null) {
-                for (int i = attribs.length; --i >= 0;) {
-                    if (attribs[i] != null
-                            && namespace.equals(attribs[i].namespace)
-                            && name.equals(attribs[i].name)) {
+        @Override
+        public int getIndex(final String name, final String namespace) {
+            final int index = -1;
+            if (this.attribs != null && name != null && namespace != null) {
+                for (int i = this.attribs.length; --i >= 0;) {
+                    if (this.attribs[i] != null
+                            && namespace.equals(this.attribs[i].namespace)
+                            && name.equals(this.attribs[i].name)) {
                         break;
                     }
                 }
@@ -303,12 +326,13 @@ public class Marker extends FObjMixed {
         }
 
         /** {@inheritDoc} */
-        public int getIndex(String qname) {
-            int index = -1;
-            if (attribs != null && qname != null) {
-                for (int i = attribs.length; --i >= 0;) {
-                    if (attribs[i] != null
-                            && qname.equals(attribs[i].qname)) {
+        @Override
+        public int getIndex(final String qname) {
+            final int index = -1;
+            if (this.attribs != null && qname != null) {
+                for (int i = this.attribs.length; --i >= 0;) {
+                    if (this.attribs[i] != null
+                            && qname.equals(this.attribs[i].qname)) {
                         break;
                     }
                 }
@@ -318,26 +342,34 @@ public class Marker extends FObjMixed {
 
         /**
          * Default implementation; not used
-         * @param name a type name
-         * @param namespace a type namespace
+         * 
+         * @param name
+         *            a type name
+         * @param namespace
+         *            a type namespace
          * @return type string
          */
-        public String getType(String name, String namespace) {
+        @Override
+        public String getType(final String name, final String namespace) {
             return "CDATA";
         }
 
         /**
          * Default implementation; not used
-         * @param qname a type name
+         * 
+         * @param qname
+         *            a type name
          * @return type string
          */
-        public String getType(String qname) {
+        @Override
+        public String getType(final String qname) {
             return "CDATA";
         }
 
         /** {@inheritDoc} */
-        public String getValue(String name, String namespace) {
-            int index = getIndex(name, namespace);
+        @Override
+        public String getValue(final String name, final String namespace) {
+            final int index = getIndex(name, namespace);
             if (index > 0) {
                 return getValue(index);
             }
@@ -345,8 +377,9 @@ public class Marker extends FObjMixed {
         }
 
         /** {@inheritDoc} */
-        public String getValue(String qname) {
-            int index = getIndex(qname);
+        @Override
+        public String getValue(final String qname) {
+            final int index = getIndex(qname);
             if (index > 0) {
                 return getValue(index);
             }
@@ -357,8 +390,7 @@ public class Marker extends FObjMixed {
     /** Convenience inner class */
     public static final class MarkerAttribute {
 
-        private static final PropertyCache<MarkerAttribute> CACHE
-                = new PropertyCache<MarkerAttribute>();
+        private static final PropertyCache<MarkerAttribute> CACHE = new PropertyCache<MarkerAttribute>();
 
         /** namespace */
         protected String namespace;
@@ -371,67 +403,74 @@ public class Marker extends FObjMixed {
 
         /**
          * Main constructor
-         * @param namespace the namespace URI
-         * @param qname the qualified name
-         * @param name  the name
-         * @param value the value
+         * 
+         * @param namespace
+         *            the namespace URI
+         * @param qname
+         *            the qualified name
+         * @param name
+         *            the name
+         * @param value
+         *            the value
          */
-        private MarkerAttribute(String namespace, String qname,
-                                    String name, String value) {
+        private MarkerAttribute(final String namespace, final String qname,
+                final String name, final String value) {
             this.namespace = namespace;
             this.qname = qname;
-            this.name = (name == null ? qname : name);
+            this.name = name == null ? qname : name;
             this.value = value;
         }
 
         /**
-         * Convenience method, reduces the number
-         * of distinct MarkerAttribute instances
+         * Convenience method, reduces the number of distinct MarkerAttribute
+         * instances
          *
-         * @param namespace the attribute namespace
-         * @param qname the fully qualified name of the attribute
-         * @param name  the attribute name
-         * @param value the attribute value
-         * @return the single MarkerAttribute instance corresponding to
-         *          the name/value-pair
+         * @param namespace
+         *            the attribute namespace
+         * @param qname
+         *            the fully qualified name of the attribute
+         * @param name
+         *            the attribute name
+         * @param value
+         *            the attribute value
+         * @return the single MarkerAttribute instance corresponding to the
+         *         name/value-pair
          */
-        private static MarkerAttribute getInstance(
-                                            String namespace, String qname,
-                                            String name, String value) {
-            return CACHE.fetch(
-                    new MarkerAttribute(namespace, qname, name, value));
+        private static MarkerAttribute getInstance(final String namespace,
+                final String qname, final String name, final String value) {
+            return CACHE.fetch(new MarkerAttribute(namespace, qname, name,
+                    value));
         }
 
         /** {@inheritDoc} */
+        @Override
         public int hashCode() {
             int hash = 17;
-            hash = (37 * hash) + (this.namespace == null ? 0 : this.namespace.hashCode());
-            hash = (37 * hash) + (this.qname == null ? 0 : this.qname.hashCode());
-            hash = (37 * hash) + (this.name == null ? 0 : this.name.hashCode());
-            hash = (37 * hash) + (this.value == null ? 0 : this.value.hashCode());
+            hash = 37 * hash
+                    + (this.namespace == null ? 0 : this.namespace.hashCode());
+            hash = 37 * hash + (this.qname == null ? 0 : this.qname.hashCode());
+            hash = 37 * hash + (this.name == null ? 0 : this.name.hashCode());
+            hash = 37 * hash + (this.value == null ? 0 : this.value.hashCode());
             return hash;
         }
 
         /** {@inheritDoc} */
-        public boolean equals(Object o) {
+        @Override
+        public boolean equals(final Object o) {
             if (this == o) {
                 return true;
             }
 
             if (o instanceof MarkerAttribute) {
-                MarkerAttribute attr = (MarkerAttribute) o;
-                return ((attr.namespace == this.namespace)
-                            || (attr.namespace != null
-                                    && attr.namespace.equals(this.namespace)))
-                    && ((attr.qname == this.qname)
-                            || (attr.qname != null
-                                    && attr.qname.equals(this.qname)))
-                    && ((attr.name == this.name)
-                            || (attr.name != null
-                                    && attr.name.equals(this.name)))
-                    && ((attr.value == this.value)
-                            || (attr.value != null
-                                    && attr.value.equals(this.value)));
+                final MarkerAttribute attr = (MarkerAttribute) o;
+                return (attr.namespace == this.namespace || attr.namespace != null
+                        && attr.namespace.equals(this.namespace))
+                        && (attr.qname == this.qname || attr.qname != null
+                                && attr.qname.equals(this.qname))
+                        && (attr.name == this.name || attr.name != null
+                                && attr.name.equals(this.name))
+                        && (attr.value == this.value || attr.value != null
+                                && attr.value.equals(this.value));
             } else {
                 return false;
             }

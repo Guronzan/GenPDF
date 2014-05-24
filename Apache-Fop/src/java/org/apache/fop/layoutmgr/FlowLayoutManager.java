@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Stack;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.area.Area;
 import org.apache.fop.area.BlockParent;
 import org.apache.fop.fo.pagination.Flow;
@@ -38,12 +38,8 @@ import org.apache.fop.util.ListUtil;
  * children. TODO Reintroduce emergency counter (generate error to avoid endless
  * loop)
  */
+@Slf4j
 public class FlowLayoutManager extends BlockStackingLayoutManager {
-
-    /**
-     * logging instance
-     */
-    private static Log log = LogFactory.getLog(FlowLayoutManager.class);
 
     /** Array of areas currently being filled stored by area class */
     private final BlockParent[] currentAreas = new BlockParent[Area.CLASS_MAX];
@@ -51,7 +47,7 @@ public class FlowLayoutManager extends BlockStackingLayoutManager {
     /**
      * This is the top level layout manager. It is created by the PageSequence
      * FO.
-     * 
+     *
      * @param pslm
      *            parent PageSequenceLayoutManager object
      * @param node
@@ -73,7 +69,7 @@ public class FlowLayoutManager extends BlockStackingLayoutManager {
     /**
      * Get a sequence of KnuthElements representing the content of the node
      * assigned to the LM.
-     * 
+     *
      * @param context
      *            the LayoutContext used to store layout information
      * @param alignment
@@ -119,7 +115,7 @@ public class FlowLayoutManager extends BlockStackingLayoutManager {
             if (!isRestart || doReset) {
                 if (doReset) {
                     currentChildLM.reset(); // TODO won't work with forced
-                                            // breaks
+                    // breaks
                 }
                 if (addChildElements(elements, currentChildLM, context,
                         alignment, null, null, null) != null) {
@@ -427,7 +423,7 @@ public class FlowLayoutManager extends BlockStackingLayoutManager {
 
     /**
      * Returns the IPD of the content area
-     * 
+     *
      * @return the IPD of the content area
      */
     @Override
@@ -437,7 +433,7 @@ public class FlowLayoutManager extends BlockStackingLayoutManager {
 
     /**
      * Returns the BPD of the content area
-     * 
+     *
      * @return the BPD of the content area
      */
     @Override

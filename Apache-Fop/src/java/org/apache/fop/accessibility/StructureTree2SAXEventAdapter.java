@@ -21,106 +21,123 @@ package org.apache.fop.accessibility;
 
 import java.util.Locale;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.fop.fo.FOElementMapping;
 import org.apache.fop.fo.extensions.ExtensionElementMapping;
 import org.apache.fop.fo.extensions.InternalElementMapping;
 import org.apache.fop.render.intermediate.IFConstants;
 import org.apache.fop.util.XMLConstants;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Converts structure tree events to SAX events.
  */
-public final class StructureTree2SAXEventAdapter implements StructureTreeEventHandler {
+public final class StructureTree2SAXEventAdapter implements
+        StructureTreeEventHandler {
 
     private final ContentHandler contentHandler;
 
-    private StructureTree2SAXEventAdapter(ContentHandler currentContentHandler) {
+    private StructureTree2SAXEventAdapter(
+            final ContentHandler currentContentHandler) {
         this.contentHandler = currentContentHandler;
     }
 
     /**
      * Factory method that creates a new instance.
-     * @param contentHandler The handler that receives SAX events
+     * 
+     * @param contentHandler
+     *            The handler that receives SAX events
      * @return -
      */
-    public static StructureTreeEventHandler newInstance(ContentHandler contentHandler) {
+    public static StructureTreeEventHandler newInstance(
+            final ContentHandler contentHandler) {
         return new StructureTree2SAXEventAdapter(contentHandler);
     }
 
     /** {@inheritDoc} */
-    public void startPageSequence(Locale locale, String role) {
+    @Override
+    public void startPageSequence(final Locale locale, final String role) {
         try {
-            AttributesImpl attributes = new AttributesImpl();
+            final AttributesImpl attributes = new AttributesImpl();
             if (role != null) {
-                attributes.addAttribute("", "type", "type", XMLConstants.CDATA, role);
+                attributes.addAttribute("", "type", "type", XMLConstants.CDATA,
+                        role);
             }
-            contentHandler.startPrefixMapping(
-                    InternalElementMapping.STANDARD_PREFIX, InternalElementMapping.URI);
-            contentHandler.startPrefixMapping(
-                    ExtensionElementMapping.STANDARD_PREFIX, ExtensionElementMapping.URI);
-            contentHandler.startElement(IFConstants.NAMESPACE,
-                    IFConstants.EL_STRUCTURE_TREE, IFConstants.EL_STRUCTURE_TREE,
-                    attributes);
-        } catch (SAXException e) {
+            this.contentHandler.startPrefixMapping(
+                    InternalElementMapping.STANDARD_PREFIX,
+                    InternalElementMapping.URI);
+            this.contentHandler.startPrefixMapping(
+                    ExtensionElementMapping.STANDARD_PREFIX,
+                    ExtensionElementMapping.URI);
+            this.contentHandler.startElement(IFConstants.NAMESPACE,
+                    IFConstants.EL_STRUCTURE_TREE,
+                    IFConstants.EL_STRUCTURE_TREE, attributes);
+        } catch (final SAXException e) {
             throw new RuntimeException(e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endPageSequence() {
         try {
-            contentHandler.endElement(IFConstants.NAMESPACE, IFConstants.EL_STRUCTURE_TREE,
+            this.contentHandler.endElement(IFConstants.NAMESPACE,
+                    IFConstants.EL_STRUCTURE_TREE,
                     IFConstants.EL_STRUCTURE_TREE);
-            contentHandler.endPrefixMapping(
-                    ExtensionElementMapping.STANDARD_PREFIX);
-            contentHandler.endPrefixMapping(
-                    InternalElementMapping.STANDARD_PREFIX);
+            this.contentHandler
+                    .endPrefixMapping(ExtensionElementMapping.STANDARD_PREFIX);
+            this.contentHandler
+                    .endPrefixMapping(InternalElementMapping.STANDARD_PREFIX);
 
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             throw new RuntimeException(e);
         }
     }
 
     /** {@inheritDoc} */
-    public StructureTreeElement startNode(String name, Attributes attributes) {
+    @Override
+    public StructureTreeElement startNode(String name,
+            final Attributes attributes) {
         try {
             if (name.equals("#PCDATA")) {
                 name = "marked-content";
-                contentHandler.startElement(IFConstants.NAMESPACE, name,
+                this.contentHandler.startElement(IFConstants.NAMESPACE, name,
                         name, attributes);
             } else {
-                contentHandler.startElement(FOElementMapping.URI, name,
+                this.contentHandler.startElement(FOElementMapping.URI, name,
                         FOElementMapping.STANDARD_PREFIX + ":" + name,
                         attributes);
             }
             return null;
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             throw new RuntimeException(e);
         }
     }
 
     /** {@inheritDoc} */
-    public void endNode(String name) {
+    @Override
+    public void endNode(final String name) {
         try {
-            contentHandler.endElement(FOElementMapping.URI, name,
+            this.contentHandler.endElement(FOElementMapping.URI, name,
                     FOElementMapping.STANDARD_PREFIX + ":" + name);
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             throw new RuntimeException(e);
         }
     }
 
     /** {@inheritDoc} */
-    public StructureTreeElement startImageNode(String name, Attributes attributes) {
+    @Override
+    public StructureTreeElement startImageNode(final String name,
+            final Attributes attributes) {
         return startNode(name, attributes);
     }
 
     /** {@inheritDoc} */
-    public StructureTreeElement startReferencedNode(String name, Attributes attributes) {
+    @Override
+    public StructureTreeElement startReferencedNode(final String name,
+            final Attributes attributes) {
         return startNode(name, attributes);
     }
 

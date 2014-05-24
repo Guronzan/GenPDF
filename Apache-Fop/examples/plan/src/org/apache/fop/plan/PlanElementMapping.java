@@ -19,10 +19,9 @@
 
 package org.apache.fop.plan;
 
-import org.w3c.dom.DOMImplementation;
-
 import org.apache.fop.fo.ElementMapping;
 import org.apache.fop.fo.FONode;
+import org.w3c.dom.DOMImplementation;
 
 /**
  * This class provides the element mapping for FOP.
@@ -38,27 +37,31 @@ public class PlanElementMapping extends ElementMapping {
     }
 
     /** {@inheritDoc} */
+    @Override
     public DOMImplementation getDOMImplementation() {
         return getDefaultDOMImplementation();
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void initialize() {
-        if (foObjs == null) {
-            foObjs = new java.util.HashMap<String, Maker>();
-            foObjs.put("plan", new PE());
-            foObjs.put(DEFAULT, new PlanMaker());
+        if (this.foObjs == null) {
+            this.foObjs = new java.util.HashMap<String, Maker>();
+            this.foObjs.put("plan", new PE());
+            this.foObjs.put(DEFAULT, new PlanMaker());
         }
     }
 
     static class PlanMaker extends ElementMapping.Maker {
-        public FONode make(FONode parent) {
+        @Override
+        public FONode make(final FONode parent) {
             return new PlanObj(parent);
         }
     }
 
     static class PE extends ElementMapping.Maker {
-        public FONode make(FONode parent) {
+        @Override
+        public FONode make(final FONode parent) {
             return new PlanElement(parent);
         }
     }

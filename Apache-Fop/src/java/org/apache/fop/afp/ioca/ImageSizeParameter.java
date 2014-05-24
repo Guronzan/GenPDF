@@ -36,15 +36,20 @@ public class ImageSizeParameter extends AbstractAFPObject {
     private int vRes = 0;
 
     /**
-     * Constructor for a ImageSizeParameter for the specified
-     * resolution, hsize and vsize.
+     * Constructor for a ImageSizeParameter for the specified resolution, hsize
+     * and vsize.
      *
-     * @param hsize The horizontal size of the image.
-     * @param vsize The vertical size of the image.
-     * @param hresol The horizontal resolution of the image.
-     * @param vresol The vertical resolution of the image.
+     * @param hsize
+     *            The horizontal size of the image.
+     * @param vsize
+     *            The vertical size of the image.
+     * @param hresol
+     *            The horizontal resolution of the image.
+     * @param vresol
+     *            The vertical resolution of the image.
      */
-    public ImageSizeParameter(int hsize, int vsize, int hresol, int vresol) {
+    public ImageSizeParameter(final int hsize, final int vsize,
+            final int hresol, final int vresol) {
         this.hSize = hsize;
         this.vSize = vsize;
         this.hRes = hresol;
@@ -52,34 +57,35 @@ public class ImageSizeParameter extends AbstractAFPObject {
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[] {
-            (byte)0x94, // ID = Image Size Parameter
-            0x09, // Length
-            0x00, // Unit base - 10 Inches
-            0x00, // HRESOL
-            0x00, //
-            0x00, // VRESOL
-            0x00, //
-            0x00, // HSIZE
-            0x00, //
-            0x00, // VSIZE
-            0x00, //
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[] { (byte) 0x94, // ID = Image Size
+                                                      // Parameter
+                0x09, // Length
+                0x00, // Unit base - 10 Inches
+                0x00, // HRESOL
+                0x00, //
+                0x00, // VRESOL
+                0x00, //
+                0x00, // HSIZE
+                0x00, //
+                0x00, // VSIZE
+                0x00, //
         };
 
-        byte[] x = BinaryUtils.convert(hRes, 2);
+        final byte[] x = BinaryUtils.convert(this.hRes, 2);
         data[3] = x[0];
         data[4] = x[1];
 
-        byte[] y = BinaryUtils.convert(vRes, 2);
+        final byte[] y = BinaryUtils.convert(this.vRes, 2);
         data[5] = y[0];
         data[6] = y[1];
 
-        byte[] w = BinaryUtils.convert(hSize, 2);
+        final byte[] w = BinaryUtils.convert(this.hSize, 2);
         data[7] = w[0];
         data[8] = w[1];
 
-        byte[] h = BinaryUtils.convert(vSize, 2);
+        final byte[] h = BinaryUtils.convert(this.vSize, 2);
         data[9] = h[0];
         data[10] = h[1];
 

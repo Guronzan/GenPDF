@@ -31,11 +31,12 @@ public final class ColorSpaces {
     private static CIELabColorSpace cieLabD65;
 
     private ColorSpaces() {
-        //Don't instantiate this class
+        // Don't instantiate this class
     }
 
     /**
      * Returns an instance of the device-specific CMYK color space.
+     * 
      * @return an instance of the device-specific CMYK color space
      */
     public static synchronized DeviceCMYKColorSpace getDeviceCMYKColorSpace() {
@@ -46,42 +47,53 @@ public final class ColorSpaces {
     }
 
     /**
-     * Indicates whether the given color space is device-specific (i.e. uncalibrated).
-     * @param cs the color space to check
+     * Indicates whether the given color space is device-specific (i.e.
+     * uncalibrated).
+     * 
+     * @param cs
+     *            the color space to check
      * @return true if the color space is device-specific
      */
-    public static boolean isDeviceColorSpace(ColorSpace cs) {
-        return (cs instanceof AbstractDeviceSpecificColorSpace);
+    public static boolean isDeviceColorSpace(final ColorSpace cs) {
+        return cs instanceof AbstractDeviceSpecificColorSpace;
     }
 
     /**
-     * Returns an instance of the CIE L*a*b* color space using the D50 white point.
+     * Returns an instance of the CIE L*a*b* color space using the D50 white
+     * point.
+     * 
      * @return an instance of the requested CIE L*a*b* color space
      */
     public static synchronized CIELabColorSpace getCIELabColorSpaceD50() {
         if (cieLabD50 == null) {
-            cieLabD50 = new CIELabColorSpace(CIELabColorSpace.getD50WhitePoint());
+            cieLabD50 = new CIELabColorSpace(
+                    CIELabColorSpace.getD50WhitePoint());
         }
         return cieLabD50;
     }
 
     /**
-     * Returns an instance of the CIE L*a*b* color space using the D65 white point.
+     * Returns an instance of the CIE L*a*b* color space using the D65 white
+     * point.
+     * 
      * @return an instance of the requested CIE L*a*b* color space
      */
     public static synchronized CIELabColorSpace getCIELabColorSpaceD65() {
         if (cieLabD65 == null) {
-            cieLabD65 = new CIELabColorSpace(CIELabColorSpace.getD65WhitePoint());
+            cieLabD65 = new CIELabColorSpace(
+                    CIELabColorSpace.getD65WhitePoint());
         }
         return cieLabD65;
     }
 
     private static final ColorSpaceOrigin UNKNOWN_ORIGIN = new ColorSpaceOrigin() {
 
+        @Override
         public String getProfileURI() {
             return null;
         }
 
+        @Override
         public String getProfileName() {
             return null;
         }
@@ -89,12 +101,14 @@ public final class ColorSpaces {
 
     /**
      * Returns information about the origin of a color space.
-     * @param cs the color space
+     * 
+     * @param cs
+     *            the color space
      * @return the origin information
      */
-    public static ColorSpaceOrigin getColorSpaceOrigin(ColorSpace cs) {
+    public static ColorSpaceOrigin getColorSpaceOrigin(final ColorSpace cs) {
         if (cs instanceof ColorSpaceOrigin) {
-            return (ColorSpaceOrigin)cs;
+            return (ColorSpaceOrigin) cs;
         } else {
             return UNKNOWN_ORIGIN;
         }

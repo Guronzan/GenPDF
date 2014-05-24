@@ -54,19 +54,19 @@ import java.util.Map;
  *
  * @version $Id: GraphicContext.java 1345683 2012-06-03 14:50:33Z gadams $
  *
- * Originally authored by Vincent Hardy and Christophe Jolif.
+ *          Originally authored by Vincent Hardy and Christophe Jolif.
  */
-public class GraphicContext implements Cloneable{
+public class GraphicContext implements Cloneable {
     /**
      * Default Transform to be used for creating FontRenderContext.
      */
     protected AffineTransform defaultTransform = new AffineTransform();
 
     /**
-     * Current AffineTransform. This is the concatenation
-     * of the original AffineTransform (i.e., last setTransform
-     * invocation) and the following transform invocations,
-     * as captured by originalTransform and the transformStack.
+     * Current AffineTransform. This is the concatenation of the original
+     * AffineTransform (i.e., last setTransform invocation) and the following
+     * transform invocations, as captured by originalTransform and the
+     * transformStack.
      */
     protected AffineTransform transform = new AffineTransform();
 
@@ -76,10 +76,10 @@ public class GraphicContext implements Cloneable{
     protected List transformStack = new ArrayList();
 
     /**
-     * Defines whether the transform stack is valid or not.
-     * This is for use by the class clients. The client should
-     * validate the stack every time it starts using it. The
-     * stack becomes invalid when a new transform is set.
+     * Defines whether the transform stack is valid or not. This is for use by
+     * the class clients. The client should validate the stack every time it
+     * starts using it. The stack becomes invalid when a new transform is set.
+     * 
      * @see #invalidateTransformStack()
      * @see #isTransformStackValid
      * @see #setTransform
@@ -131,27 +131,32 @@ public class GraphicContext implements Cloneable{
      */
     public GraphicContext() {
         // to workaround a JDK bug
-        hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
+        this.hints.put(RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_DEFAULT);
     }
 
     /**
-     * @param defaultDeviceTransform Default affine transform applied to map the user space to the
-     *                               user space.
+     * @param defaultDeviceTransform
+     *            Default affine transform applied to map the user space to the
+     *            user space.
      */
-    public GraphicContext(AffineTransform defaultDeviceTransform) {
+    public GraphicContext(final AffineTransform defaultDeviceTransform) {
         this();
-        defaultTransform = new AffineTransform(defaultDeviceTransform);
-        transform = new AffineTransform(defaultTransform);
-        if (!defaultTransform.isIdentity()) {
-            transformStack.add(TransformStackElement.createGeneralTransformElement(defaultTransform));
+        this.defaultTransform = new AffineTransform(defaultDeviceTransform);
+        this.transform = new AffineTransform(this.defaultTransform);
+        if (!this.defaultTransform.isIdentity()) {
+            this.transformStack.add(TransformStackElement
+                    .createGeneralTransformElement(this.defaultTransform));
         }
     }
 
     /**
      * Copy constructor.
-     * @param template the instance to make a copy of
+     * 
+     * @param template
+     *            the instance to make a copy of
      */
-    protected GraphicContext(GraphicContext template) {
+    protected GraphicContext(final GraphicContext template) {
         this(template.defaultTransform);
         //
         // Now, copy each GC element in turn
@@ -166,8 +171,8 @@ public class GraphicContext implements Cloneable{
         // Transform stack
         this.transformStack = new ArrayList(template.transformStack.size());
         for (int i = 0; i < template.transformStack.size(); i++) {
-            TransformStackElement stackElement
-                = (TransformStackElement)template.transformStack.get(i);
+            final TransformStackElement stackElement = (TransformStackElement) template.transformStack
+                    .get(i);
             this.transformStack.add(stackElement.clone());
         }
 
@@ -191,7 +196,7 @@ public class GraphicContext implements Cloneable{
         }
 
         // RenderingHints
-        this.hints = (RenderingHints)template.hints.clone();
+        this.hints = (RenderingHints) template.hints.clone();
 
         // Font (immutable)
         this.font = template.font;
@@ -204,175 +209,186 @@ public class GraphicContext implements Cloneable{
     /**
      * @return a deep copy of this context
      */
-    public Object clone(){
+    @Override
+    public Object clone() {
         return new GraphicContext(this);
     }
 
     /**
      * Gets this graphics context's current color.
-     * @return    this graphics context's current color.
-     * @see       java.awt.Color
-     * @see       java.awt.Graphics#setColor
+     * 
+     * @return this graphics context's current color.
+     * @see java.awt.Color
+     * @see java.awt.Graphics#setColor
      */
-    public Color getColor(){
-        return foreground;
+    public Color getColor() {
+        return this.foreground;
     }
 
     /**
-     * Sets this graphics context's current color to the specified
-     * color. All subsequent graphics operations using this graphics
-     * context use this specified color.
-     * @param     c   the new rendering color.
-     * @see       java.awt.Color
-     * @see       java.awt.Graphics#getColor
+     * Sets this graphics context's current color to the specified color. All
+     * subsequent graphics operations using this graphics context use this
+     * specified color.
+     * 
+     * @param c
+     *            the new rendering color.
+     * @see java.awt.Color
+     * @see java.awt.Graphics#getColor
      */
-    public void setColor(Color c){
-        if(c == null) {
+    public void setColor(final Color c) {
+        if (c == null) {
             return;
         }
 
-        if(paint != c) {
+        if (this.paint != c) {
             setPaint(c);
         }
     }
 
     /**
      * Gets the current font.
-     * @return    this graphics context's current font.
-     * @see       java.awt.Font
-     * @see       java.awt.Graphics#setFont
+     * 
+     * @return this graphics context's current font.
+     * @see java.awt.Font
+     * @see java.awt.Graphics#setFont
      */
-    public Font getFont(){
-        return font;
+    public Font getFont() {
+        return this.font;
     }
 
     /**
-     * Sets this graphics context's font to the specified font.
-     * All subsequent text operations using this graphics context
-     * use this font.
-     * @param  font   the font.
-     * @see     java.awt.Graphics#getFont
+     * Sets this graphics context's font to the specified font. All subsequent
+     * text operations using this graphics context use this font.
+     * 
+     * @param font
+     *            the font.
+     * @see java.awt.Graphics#getFont
      */
-    public void setFont(Font font){
-        if(font != null) {
+    public void setFont(final Font font) {
+        if (font != null) {
             this.font = font;
         }
     }
 
     /**
-     * Returns the bounding rectangle of the current clipping area.
-     * This method refers to the user clip, which is independent of the
-     * clipping associated with device bounds and window visibility.
-     * If no clip has previously been set, or if the clip has been
-     * cleared using <code>setClip(null)</code>, this method returns
-     * <code>null</code>.
-     * The coordinates in the rectangle are relative to the coordinate
-     * system origin of this graphics context.
-     * @return      the bounding rectangle of the current clipping area,
-     *              or <code>null</code> if no clip is set.
-     * @see         java.awt.Graphics#getClip
-     * @see         java.awt.Graphics#clipRect
-     * @see         java.awt.Graphics#setClip(int, int, int, int)
-     * @see         java.awt.Graphics#setClip(Shape)
-     * @since       JDK1.1
+     * Returns the bounding rectangle of the current clipping area. This method
+     * refers to the user clip, which is independent of the clipping associated
+     * with device bounds and window visibility. If no clip has previously been
+     * set, or if the clip has been cleared using <code>setClip(null)</code>,
+     * this method returns <code>null</code>. The coordinates in the rectangle
+     * are relative to the coordinate system origin of this graphics context.
+     * 
+     * @return the bounding rectangle of the current clipping area, or
+     *         <code>null</code> if no clip is set.
+     * @see java.awt.Graphics#getClip
+     * @see java.awt.Graphics#clipRect
+     * @see java.awt.Graphics#setClip(int, int, int, int)
+     * @see java.awt.Graphics#setClip(Shape)
+     * @since JDK1.1
      */
-    public Rectangle getClipBounds(){
-        Shape c = getClip();
-        if(c==null) {
+    public Rectangle getClipBounds() {
+        final Shape c = getClip();
+        if (c == null) {
             return null;
         } else {
             return c.getBounds();
         }
     }
 
-
     /**
-     * Intersects the current clip with the specified rectangle.
-     * The resulting clipping area is the intersection of the current
-     * clipping area and the specified rectangle.  If there is no
-     * current clipping area, either because the clip has never been
-     * set, or the clip has been cleared using <code>setClip(null)</code>,
-     * the specified rectangle becomes the new clip.
-     * This method sets the user clip, which is independent of the
-     * clipping associated with device bounds and window visibility.
-     * This method can only be used to make the current clip smaller.
-     * To set the current clip larger, use any of the setClip methods.
-     * Rendering operations have no effect outside of the clipping area.
-     * @param x the x coordinate of the rectangle to intersect the clip with
-     * @param y the y coordinate of the rectangle to intersect the clip with
-     * @param width the width of the rectangle to intersect the clip with
-     * @param height the height of the rectangle to intersect the clip with
+     * Intersects the current clip with the specified rectangle. The resulting
+     * clipping area is the intersection of the current clipping area and the
+     * specified rectangle. If there is no current clipping area, either because
+     * the clip has never been set, or the clip has been cleared using
+     * <code>setClip(null)</code>, the specified rectangle becomes the new clip.
+     * This method sets the user clip, which is independent of the clipping
+     * associated with device bounds and window visibility. This method can only
+     * be used to make the current clip smaller. To set the current clip larger,
+     * use any of the setClip methods. Rendering operations have no effect
+     * outside of the clipping area.
+     * 
+     * @param x
+     *            the x coordinate of the rectangle to intersect the clip with
+     * @param y
+     *            the y coordinate of the rectangle to intersect the clip with
+     * @param width
+     *            the width of the rectangle to intersect the clip with
+     * @param height
+     *            the height of the rectangle to intersect the clip with
      * @see #setClip(int, int, int, int)
      * @see #setClip(Shape)
      */
-    public void clipRect(int x, int y, int width, int height){
+    public void clipRect(final int x, final int y, final int width,
+            final int height) {
         clip(new Rectangle(x, y, width, height));
     }
 
-
     /**
      * Sets the current clip to the rectangle specified by the given
-     * coordinates.  This method sets the user clip, which is
-     * independent of the clipping associated with device bounds
-     * and window visibility.
-     * Rendering operations have no effect outside of the clipping area.
-     * @param       x the <i>x</i> coordinate of the new clip rectangle.
-     * @param       y the <i>y</i> coordinate of the new clip rectangle.
-     * @param       width the width of the new clip rectangle.
-     * @param       height the height of the new clip rectangle.
-     * @see         java.awt.Graphics#clipRect
-     * @see         java.awt.Graphics#setClip(Shape)
-     * @since       JDK1.1
+     * coordinates. This method sets the user clip, which is independent of the
+     * clipping associated with device bounds and window visibility. Rendering
+     * operations have no effect outside of the clipping area.
+     * 
+     * @param x
+     *            the <i>x</i> coordinate of the new clip rectangle.
+     * @param y
+     *            the <i>y</i> coordinate of the new clip rectangle.
+     * @param width
+     *            the width of the new clip rectangle.
+     * @param height
+     *            the height of the new clip rectangle.
+     * @see java.awt.Graphics#clipRect
+     * @see java.awt.Graphics#setClip(Shape)
+     * @since JDK1.1
      */
-    public void setClip(int x, int y, int width, int height){
+    public void setClip(final int x, final int y, final int width,
+            final int height) {
         setClip(new Rectangle(x, y, width, height));
     }
 
-
     /**
-     * Gets the current clipping area.
-     * This method returns the user clip, which is independent of the
-     * clipping associated with device bounds and window visibility.
-     * If no clip has previously been set, or if the clip has been
+     * Gets the current clipping area. This method returns the user clip, which
+     * is independent of the clipping associated with device bounds and window
+     * visibility. If no clip has previously been set, or if the clip has been
      * cleared using <code>setClip(null)</code>, this method returns
      * <code>null</code>.
-     * @return      a <code>Shape</code> object representing the
-     *              current clipping area, or <code>null</code> if
-     *              no clip is set.
-     * @see         java.awt.Graphics#getClipBounds()
-     * @see         java.awt.Graphics#clipRect
-     * @see         java.awt.Graphics#setClip(int, int, int, int)
-     * @see         java.awt.Graphics#setClip(Shape)
-     * @since       JDK1.1
+     * 
+     * @return a <code>Shape</code> object representing the current clipping
+     *         area, or <code>null</code> if no clip is set.
+     * @see java.awt.Graphics#getClipBounds()
+     * @see java.awt.Graphics#clipRect
+     * @see java.awt.Graphics#setClip(int, int, int, int)
+     * @see java.awt.Graphics#setClip(Shape)
+     * @since JDK1.1
      */
-    public Shape getClip(){
-        try{
-            return transform.createInverse().createTransformedShape(clip);
-        }catch(NoninvertibleTransformException e){
+    public Shape getClip() {
+        try {
+            return this.transform.createInverse().createTransformedShape(
+                    this.clip);
+        } catch (final NoninvertibleTransformException e) {
             return null;
         }
     }
 
-
     /**
-     * Sets the current clipping area to an arbitrary clip shape.
-     * Not all objects that implement the <code>Shape</code>
-     * interface can be used to set the clip.  The only
-     * <code>Shape</code> objects that are guaranteed to be
-     * supported are <code>Shape</code> objects that are
-     * obtained via the <code>getClip</code> method and via
-     * <code>Rectangle</code> objects.  This method sets the
-     * user clip, which is independent of the clipping associated
-     * with device bounds and window visibility.
-     * @param clip the <code>Shape</code> to use to set the clip
-     * @see         java.awt.Graphics#getClip()
-     * @see         java.awt.Graphics#clipRect
-     * @see         java.awt.Graphics#setClip(int, int, int, int)
-     * @since       JDK1.1
+     * Sets the current clipping area to an arbitrary clip shape. Not all
+     * objects that implement the <code>Shape</code> interface can be used to
+     * set the clip. The only <code>Shape</code> objects that are guaranteed to
+     * be supported are <code>Shape</code> objects that are obtained via the
+     * <code>getClip</code> method and via <code>Rectangle</code> objects. This
+     * method sets the user clip, which is independent of the clipping
+     * associated with device bounds and window visibility.
+     * 
+     * @param clip
+     *            the <code>Shape</code> to use to set the clip
+     * @see java.awt.Graphics#getClip()
+     * @see java.awt.Graphics#clipRect
+     * @see java.awt.Graphics#setClip(int, int, int, int)
+     * @since JDK1.1
      */
-    public void setClip(Shape clip) {
+    public void setClip(final Shape clip) {
         if (clip != null) {
-            this.clip = transform.createTransformedShape(clip);
+            this.clip = this.transform.createTransformedShape(clip);
         } else {
             this.clip = null;
         }
@@ -381,521 +397,555 @@ public class GraphicContext implements Cloneable{
     /**
      * Sets the <code>Composite</code> for the <code>Graphics2D</code> context.
      * The <code>Composite</code> is used in all drawing methods such as
-     * <code>drawImage</code>, <code>drawString</code>, <code>draw</code>,
-     * and <code>fill</code>.  It specifies how new pixels are to be combined
-     * with the existing pixels on the graphics device during the rendering
-     * process.
-     * <p>If this <code>Graphics2D</code> context is drawing to a
+     * <code>drawImage</code>, <code>drawString</code>, <code>draw</code>, and
+     * <code>fill</code>. It specifies how new pixels are to be combined with
+     * the existing pixels on the graphics device during the rendering process.
+     * <p>
+     * If this <code>Graphics2D</code> context is drawing to a
      * <code>Component</code> on the display screen and the
-     * <code>Composite</code> is a custom object rather than an
-     * instance of the <code>AlphaComposite</code> class, and if
-     * there is a security manager, its <code>checkPermission</code>
-     * method is called with an <code>AWTPermission("readDisplayPixels")</code>
-     * permission.
+     * <code>Composite</code> is a custom object rather than an instance of the
+     * <code>AlphaComposite</code> class, and if there is a security manager,
+     * its <code>checkPermission</code> method is called with an
+     * <code>AWTPermission("readDisplayPixels")</code> permission.
      *
-     * @param comp the <code>Composite</code> object to be used for rendering
+     * @param comp
+     *            the <code>Composite</code> object to be used for rendering
      * @throws SecurityException
-     *         if a custom <code>Composite</code> object is being
-     *         used to render to the screen and a security manager
-     *         is set and its <code>checkPermission</code> method
-     *         does not allow the operation.
+     *             if a custom <code>Composite</code> object is being used to
+     *             render to the screen and a security manager is set and its
+     *             <code>checkPermission</code> method does not allow the
+     *             operation.
      * @see java.awt.Graphics#setXORMode
      * @see java.awt.Graphics#setPaintMode
      * @see java.awt.AlphaComposite
      */
-    public void setComposite(Composite comp){
+    public void setComposite(final Composite comp) {
         this.composite = comp;
     }
 
-
     /**
-     * Sets the <code>Paint</code> attribute for the
-     * <code>Graphics2D</code> context.  Calling this method
-     * with a <code>null</code> <code>Paint</code> object does
-     * not have any effect on the current <code>Paint</code> attribute
-     * of this <code>Graphics2D</code>.
-     * @param paint the <code>Paint</code> object to be used to generate
-     * color during the rendering process, or <code>null</code>
+     * Sets the <code>Paint</code> attribute for the <code>Graphics2D</code>
+     * context. Calling this method with a <code>null</code> <code>Paint</code>
+     * object does not have any effect on the current <code>Paint</code>
+     * attribute of this <code>Graphics2D</code>.
+     * 
+     * @param paint
+     *            the <code>Paint</code> object to be used to generate color
+     *            during the rendering process, or <code>null</code>
      * @see java.awt.Graphics#setColor
      * @see java.awt.GradientPaint
      * @see java.awt.TexturePaint
      */
-    public void setPaint(Paint paint) {
-        if(paint == null) {
+    public void setPaint(final Paint paint) {
+        if (paint == null) {
             return;
         }
 
         this.paint = paint;
-        if(paint instanceof Color) {
-            foreground = (Color)paint;
+        if (paint instanceof Color) {
+            this.foreground = (Color) paint;
         }
     }
 
-
     /**
      * Sets the <code>Stroke</code> for the <code>Graphics2D</code> context.
-     * @param s the <code>Stroke</code> object to be used to stroke a
-     * <code>Shape</code> during the rendering process
+     * 
+     * @param s
+     *            the <code>Stroke</code> object to be used to stroke a
+     *            <code>Shape</code> during the rendering process
      * @see BasicStroke
      */
-    public void setStroke(Stroke s){
-        stroke = s;
+    public void setStroke(final Stroke s) {
+        this.stroke = s;
     }
 
     /**
-     * Sets the value of a single preference for the rendering algorithms.
-     * Hint categories include controls for rendering quality and overall
-     * time/quality trade-off in the rendering process.  Refer to the
-     * <code>RenderingHints</code> class for definitions of some common
-     * keys and values.
-     * @param hintKey the key of the hint to be set.
-     * @param hintValue the value indicating preferences for the specified
-     * hint category.
+     * Sets the value of a single preference for the rendering algorithms. Hint
+     * categories include controls for rendering quality and overall
+     * time/quality trade-off in the rendering process. Refer to the
+     * <code>RenderingHints</code> class for definitions of some common keys and
+     * values.
+     * 
+     * @param hintKey
+     *            the key of the hint to be set.
+     * @param hintValue
+     *            the value indicating preferences for the specified hint
+     *            category.
      * @see RenderingHints
      */
-    public void setRenderingHint(RenderingHints.Key hintKey, Object hintValue){
-        hints.put(hintKey, hintValue);
+    public void setRenderingHint(final RenderingHints.Key hintKey,
+            final Object hintValue) {
+        this.hints.put(hintKey, hintValue);
     }
-
 
     /**
      * Returns the value of a single preference for the rendering algorithms.
      * Hint categories include controls for rendering quality and overall
-     * time/quality trade-off in the rendering process.  Refer to the
-     * <code>RenderingHints</code> class for definitions of some common
-     * keys and values.
-     * @param hintKey the key corresponding to the hint to get.
-     * @return an object representing the value for the specified hint key.
-     * Some of the keys and their associated values are defined in the
-     * <code>RenderingHints</code> class.
+     * time/quality trade-off in the rendering process. Refer to the
+     * <code>RenderingHints</code> class for definitions of some common keys and
+     * values.
+     * 
+     * @param hintKey
+     *            the key corresponding to the hint to get.
+     * @return an object representing the value for the specified hint key. Some
+     *         of the keys and their associated values are defined in the
+     *         <code>RenderingHints</code> class.
      * @see RenderingHints
      */
-    public Object getRenderingHint(RenderingHints.Key hintKey){
-        return hints.get(hintKey);
+    public Object getRenderingHint(final RenderingHints.Key hintKey) {
+        return this.hints.get(hintKey);
     }
 
-
     /**
-     * Replaces the values of all preferences for the rendering
-     * algorithms with the specified <code>hints</code>.
-     * The existing values for all rendering hints are discarded and
-     * the new set of known hints and values are initialized from the
-     * specified {@link Map} object.
-     * Hint categories include controls for rendering quality and
-     * overall time/quality trade-off in the rendering process.
-     * Refer to the <code>RenderingHints</code> class for definitions of
-     * some common keys and values.
-     * @param hints the rendering hints to be set
+     * Replaces the values of all preferences for the rendering algorithms with
+     * the specified <code>hints</code>. The existing values for all rendering
+     * hints are discarded and the new set of known hints and values are
+     * initialized from the specified {@link Map} object. Hint categories
+     * include controls for rendering quality and overall time/quality trade-off
+     * in the rendering process. Refer to the <code>RenderingHints</code> class
+     * for definitions of some common keys and values.
+     * 
+     * @param hints
+     *            the rendering hints to be set
      * @see RenderingHints
      */
-    public void setRenderingHints(Map hints){
+    public void setRenderingHints(final Map hints) {
         this.hints = new RenderingHints(hints);
     }
 
-
     /**
-     * Sets the values of an arbitrary number of preferences for the
-     * rendering algorithms.
-     * Only values for the rendering hints that are present in the
-     * specified <code>Map</code> object are modified.
-     * All other preferences not present in the specified
-     * object are left unmodified.
-     * Hint categories include controls for rendering quality and
-     * overall time/quality trade-off in the rendering process.
-     * Refer to the <code>RenderingHints</code> class for definitions of
-     * some common keys and values.
-     * @param hints the rendering hints to be set
+     * Sets the values of an arbitrary number of preferences for the rendering
+     * algorithms. Only values for the rendering hints that are present in the
+     * specified <code>Map</code> object are modified. All other preferences not
+     * present in the specified object are left unmodified. Hint categories
+     * include controls for rendering quality and overall time/quality trade-off
+     * in the rendering process. Refer to the <code>RenderingHints</code> class
+     * for definitions of some common keys and values.
+     * 
+     * @param hints
+     *            the rendering hints to be set
      * @see RenderingHints
      */
-    public void addRenderingHints(Map hints){
+    public void addRenderingHints(final Map hints) {
         this.hints.putAll(hints);
     }
 
-
     /**
-     * Gets the preferences for the rendering algorithms.  Hint categories
-     * include controls for rendering quality and overall time/quality
-     * trade-off in the rendering process.
-     * Returns all of the hint key/value pairs that were ever specified in
-     * one operation.  Refer to the
-     * <code>RenderingHints</code> class for definitions of some common
-     * keys and values.
-     * @return a reference to an instance of <code>RenderingHints</code>
-     * that contains the current preferences.
+     * Gets the preferences for the rendering algorithms. Hint categories
+     * include controls for rendering quality and overall time/quality trade-off
+     * in the rendering process. Returns all of the hint key/value pairs that
+     * were ever specified in one operation. Refer to the
+     * <code>RenderingHints</code> class for definitions of some common keys and
+     * values.
+     * 
+     * @return a reference to an instance of <code>RenderingHints</code> that
+     *         contains the current preferences.
      * @see RenderingHints
      */
-    public RenderingHints getRenderingHints(){
-        return hints;
+    public RenderingHints getRenderingHints() {
+        return this.hints;
     }
 
     /**
      * Translates the origin of the graphics context to the point
-     * (<i>x</i>,&nbsp;<i>y</i>) in the current coordinate system.
-     * Modifies this graphics context so that its new origin corresponds
-     * to the point (<i>x</i>,&nbsp;<i>y</i>) in this graphics context's
-     * original coordinate system.  All coordinates used in subsequent
-     * rendering operations on this graphics context will be relative
-     * to this new origin.
-     * @param  x   the <i>x</i> coordinate.
-     * @param  y   the <i>y</i> coordinate.
+     * (<i>x</i>,&nbsp;<i>y</i>) in the current coordinate system. Modifies this
+     * graphics context so that its new origin corresponds to the point
+     * (<i>x</i>,&nbsp;<i>y</i>) in this graphics context's original coordinate
+     * system. All coordinates used in subsequent rendering operations on this
+     * graphics context will be relative to this new origin.
+     * 
+     * @param x
+     *            the <i>x</i> coordinate.
+     * @param y
+     *            the <i>y</i> coordinate.
      */
-    public void translate(int x, int y){
-        if(x!=0 || y!=0){
-            transform.translate(x, y);
-            transformStack.add(TransformStackElement.createTranslateElement(x, y));
+    public void translate(final int x, final int y) {
+        if (x != 0 || y != 0) {
+            this.transform.translate(x, y);
+            this.transformStack.add(TransformStackElement
+                    .createTranslateElement(x, y));
         }
     }
 
-
     /**
-     * Concatenates the current
-     * <code>Graphics2D</code> <code>Transform</code>
-     * with a translation transform.
-     * Subsequent rendering is translated by the specified
-     * distance relative to the previous position.
-     * This is equivalent to calling transform(T), where T is an
-     * <code>AffineTransform</code> represented by the following matrix:
+     * Concatenates the current <code>Graphics2D</code> <code>Transform</code>
+     * with a translation transform. Subsequent rendering is translated by the
+     * specified distance relative to the previous position. This is equivalent
+     * to calling transform(T), where T is an <code>AffineTransform</code>
+     * represented by the following matrix:
+     * 
      * <pre>
      *          [   1    0    tx  ]
      *          [   0    1    ty  ]
      *          [   0    0    1   ]
      * </pre>
-     * @param tx the distance to translate along the x-axis
-     * @param ty the distance to translate along the y-axis
+     * 
+     * @param tx
+     *            the distance to translate along the x-axis
+     * @param ty
+     *            the distance to translate along the y-axis
      */
-    public void translate(double tx, double ty){
-        transform.translate(tx, ty);
-        transformStack.add(TransformStackElement.createTranslateElement(tx, ty));
+    public void translate(final double tx, final double ty) {
+        this.transform.translate(tx, ty);
+        this.transformStack.add(TransformStackElement.createTranslateElement(
+                tx, ty));
     }
 
     /**
-     * Concatenates the current <code>Graphics2D</code>
-     * <code>Transform</code> with a rotation transform.
-     * Subsequent rendering is rotated by the specified radians relative
-     * to the previous origin.
-     * This is equivalent to calling <code>transform(R)</code>, where R is an
+     * Concatenates the current <code>Graphics2D</code> <code>Transform</code>
+     * with a rotation transform. Subsequent rendering is rotated by the
+     * specified radians relative to the previous origin. This is equivalent to
+     * calling <code>transform(R)</code>, where R is an
      * <code>AffineTransform</code> represented by the following matrix:
+     * 
      * <pre>
      *          [   cos(theta)    -sin(theta)    0   ]
      *          [   sin(theta)     cos(theta)    0   ]
      *          [       0              0         1   ]
      * </pre>
-     * Rotating with a positive angle theta rotates points on the positive
-     * x axis toward the positive y axis.
-     * @param theta the angle of rotation in radians
+     * 
+     * Rotating with a positive angle theta rotates points on the positive x
+     * axis toward the positive y axis.
+     * 
+     * @param theta
+     *            the angle of rotation in radians
      */
-    public void rotate(double theta){
-        transform.rotate(theta);
-        transformStack.add(TransformStackElement.createRotateElement(theta));
+    public void rotate(final double theta) {
+        this.transform.rotate(theta);
+        this.transformStack.add(TransformStackElement
+                .createRotateElement(theta));
     }
 
     /**
-     * Concatenates the current <code>Graphics2D</code>
-     * <code>Transform</code> with a translated rotation
-     * transform.  Subsequent rendering is transformed by a transform
-     * which is constructed by translating to the specified location,
-     * rotating by the specified radians, and translating back by the same
-     * amount as the original translation.  This is equivalent to the
+     * Concatenates the current <code>Graphics2D</code> <code>Transform</code>
+     * with a translated rotation transform. Subsequent rendering is transformed
+     * by a transform which is constructed by translating to the specified
+     * location, rotating by the specified radians, and translating back by the
+     * same amount as the original translation. This is equivalent to the
      * following sequence of calls:
+     * 
      * <pre>
-     *          translate(x, y);
-     *          rotate(theta);
-     *          translate(-x, -y);
+     * translate(x, y);
+     * rotate(theta);
+     * translate(-x, -y);
      * </pre>
-     * Rotating with a positive angle theta rotates points on the positive
-     * x axis toward the positive y axis.
-     * @param theta the angle of rotation in radians
-     * @param x x coordinate of the origin of the rotation
-     * @param y y coordinate of the origin of the rotation
+     * 
+     * Rotating with a positive angle theta rotates points on the positive x
+     * axis toward the positive y axis.
+     * 
+     * @param theta
+     *            the angle of rotation in radians
+     * @param x
+     *            x coordinate of the origin of the rotation
+     * @param y
+     *            y coordinate of the origin of the rotation
      */
-    public void rotate(double theta, double x, double y){
-        transform.rotate(theta, x, y);
-        transformStack.add(TransformStackElement.createTranslateElement(x, y));
-        transformStack.add(TransformStackElement.createRotateElement(theta));
-        transformStack.add(TransformStackElement.createTranslateElement(-x, -y));
+    public void rotate(final double theta, final double x, final double y) {
+        this.transform.rotate(theta, x, y);
+        this.transformStack.add(TransformStackElement.createTranslateElement(x,
+                y));
+        this.transformStack.add(TransformStackElement
+                .createRotateElement(theta));
+        this.transformStack.add(TransformStackElement.createTranslateElement(
+                -x, -y));
     }
 
     /**
-     * Concatenates the current <code>Graphics2D</code>
-     * <code>Transform</code> with a scaling transformation
-     * Subsequent rendering is resized according to the specified scaling
-     * factors relative to the previous scaling.
-     * This is equivalent to calling <code>transform(S)</code>, where S is an
+     * Concatenates the current <code>Graphics2D</code> <code>Transform</code>
+     * with a scaling transformation Subsequent rendering is resized according
+     * to the specified scaling factors relative to the previous scaling. This
+     * is equivalent to calling <code>transform(S)</code>, where S is an
      * <code>AffineTransform</code> represented by the following matrix:
+     * 
      * <pre>
      *          [   sx   0    0   ]
      *          [   0    sy   0   ]
      *          [   0    0    1   ]
      * </pre>
-     * @param sx the amount by which X coordinates in subsequent
-     * rendering operations are multiplied relative to previous
-     * rendering operations.
-     * @param sy the amount by which Y coordinates in subsequent
-     * rendering operations are multiplied relative to previous
-     * rendering operations.
+     * 
+     * @param sx
+     *            the amount by which X coordinates in subsequent rendering
+     *            operations are multiplied relative to previous rendering
+     *            operations.
+     * @param sy
+     *            the amount by which Y coordinates in subsequent rendering
+     *            operations are multiplied relative to previous rendering
+     *            operations.
      */
-    public void scale(double sx, double sy){
-        transform.scale(sx, sy);
-        transformStack.add(TransformStackElement.createScaleElement(sx, sy));
+    public void scale(final double sx, final double sy) {
+        this.transform.scale(sx, sy);
+        this.transformStack.add(TransformStackElement
+                .createScaleElement(sx, sy));
     }
 
     /**
-     * Concatenates the current <code>Graphics2D</code>
-     * <code>Transform</code> with a shearing transform.
-     * Subsequent renderings are sheared by the specified
-     * multiplier relative to the previous position.
-     * This is equivalent to calling <code>transform(SH)</code>, where SH
-     * is an <code>AffineTransform</code> represented by the following
-     * matrix:
+     * Concatenates the current <code>Graphics2D</code> <code>Transform</code>
+     * with a shearing transform. Subsequent renderings are sheared by the
+     * specified multiplier relative to the previous position. This is
+     * equivalent to calling <code>transform(SH)</code>, where SH is an
+     * <code>AffineTransform</code> represented by the following matrix:
+     * 
      * <pre>
      *          [   1   shx   0   ]
      *          [  shy   1    0   ]
      *          [   0    0    1   ]
      * </pre>
-     * @param shx the multiplier by which coordinates are shifted in
-     * the positive X axis direction as a function of their Y coordinate
-     * @param shy the multiplier by which coordinates are shifted in
-     * the positive Y axis direction as a function of their X coordinate
+     * 
+     * @param shx
+     *            the multiplier by which coordinates are shifted in the
+     *            positive X axis direction as a function of their Y coordinate
+     * @param shy
+     *            the multiplier by which coordinates are shifted in the
+     *            positive Y axis direction as a function of their X coordinate
      */
-    public void shear(double shx, double shy){
-        transform.shear(shx, shy);
-        transformStack.add(TransformStackElement.createShearElement(shx, shy));
+    public void shear(final double shx, final double shy) {
+        this.transform.shear(shx, shy);
+        this.transformStack.add(TransformStackElement.createShearElement(shx,
+                shy));
     }
 
     /**
      * Composes an <code>AffineTransform</code> object with the
-     * <code>Transform</code> in this <code>Graphics2D</code> according
-     * to the rule last-specified-first-applied.  If the current
-     * <code>Transform</code> is Cx, the result of composition
-     * with Tx is a new <code>Transform</code> Cx'.  Cx' becomes the
-     * current <code>Transform</code> for this <code>Graphics2D</code>.
-     * Transforming a point p by the updated <code>Transform</code> Cx' is
-     * equivalent to first transforming p by Tx and then transforming
-     * the result by the original <code>Transform</code> Cx.  In other
-     * words, Cx'(p) = Cx(Tx(p)).  A copy of the Tx is made, if necessary,
-     * so further modifications to Tx do not affect rendering.
-     * @param Tx the <code>AffineTransform</code> object to be composed with
-     * the current <code>Transform</code>
+     * <code>Transform</code> in this <code>Graphics2D</code> according to the
+     * rule last-specified-first-applied. If the current <code>Transform</code>
+     * is Cx, the result of composition with Tx is a new <code>Transform</code>
+     * Cx'. Cx' becomes the current <code>Transform</code> for this
+     * <code>Graphics2D</code>. Transforming a point p by the updated
+     * <code>Transform</code> Cx' is equivalent to first transforming p by Tx
+     * and then transforming the result by the original <code>Transform</code>
+     * Cx. In other words, Cx'(p) = Cx(Tx(p)). A copy of the Tx is made, if
+     * necessary, so further modifications to Tx do not affect rendering.
+     * 
+     * @param Tx
+     *            the <code>AffineTransform</code> object to be composed with
+     *            the current <code>Transform</code>
      * @see #setTransform
      * @see AffineTransform
      */
-    public void transform(AffineTransform Tx){
-        transform.concatenate(Tx);
-        transformStack.add(TransformStackElement.createGeneralTransformElement(Tx));
+    public void transform(final AffineTransform Tx) {
+        this.transform.concatenate(Tx);
+        this.transformStack.add(TransformStackElement
+                .createGeneralTransformElement(Tx));
     }
 
     /**
-     * Sets the <code>Transform</code> in the <code>Graphics2D</code>
-     * context.
-     * @param Tx the <code>AffineTransform</code> object to be used in the
-     * rendering process
+     * Sets the <code>Transform</code> in the <code>Graphics2D</code> context.
+     * 
+     * @param Tx
+     *            the <code>AffineTransform</code> object to be used in the
+     *            rendering process
      * @see #transform
      * @see AffineTransform
      */
-    public void setTransform(AffineTransform Tx){
-        transform = new AffineTransform(Tx);
+    public void setTransform(final AffineTransform Tx) {
+        this.transform = new AffineTransform(Tx);
         invalidateTransformStack();
-        if(!Tx.isIdentity()) {
-            transformStack.add(TransformStackElement.createGeneralTransformElement(Tx));
+        if (!Tx.isIdentity()) {
+            this.transformStack.add(TransformStackElement
+                    .createGeneralTransformElement(Tx));
         }
     }
 
     /**
-     * Marks the GraphicContext's isNewTransformStack to false
-     * as a memento that the current transform stack was read and
-     * has not been reset. Only the setTransform method can
-     * override this memento.
+     * Marks the GraphicContext's isNewTransformStack to false as a memento that
+     * the current transform stack was read and has not been reset. Only the
+     * setTransform method can override this memento.
      */
-    public void validateTransformStack(){
-        transformStackValid = true;
+    public void validateTransformStack() {
+        this.transformStackValid = true;
     }
 
     /**
      * Checks the status of the transform stack.
+     * 
      * @return true if the transform stack is valid
      */
-    public boolean isTransformStackValid(){
-        return transformStackValid;
+    public boolean isTransformStackValid() {
+        return this.transformStackValid;
     }
 
     /**
-     * @return array containing the successive transforms that
-     *         were concatenated with the original one.
+     * @return array containing the successive transforms that were concatenated
+     *         with the original one.
      */
-    public TransformStackElement[] getTransformStack(){
-        TransformStackElement[] stack = new TransformStackElement[transformStack.size()];
-        transformStack.toArray(stack);
+    public TransformStackElement[] getTransformStack() {
+        final TransformStackElement[] stack = new TransformStackElement[this.transformStack
+                .size()];
+        this.transformStack.toArray(stack);
         return stack;
     }
 
     /**
-     * Marks the GraphicContext's isNewTransformStack to true
-     * as a memento that the current transform stack was reset
-     * since it was last read. Only validateTransformStack
-     * can override this memento
+     * Marks the GraphicContext's isNewTransformStack to true as a memento that
+     * the current transform stack was reset since it was last read. Only
+     * validateTransformStack can override this memento
      */
-    protected void invalidateTransformStack(){
-        transformStack.clear();
-        transformStackValid = false;
+    protected void invalidateTransformStack() {
+        this.transformStack.clear();
+        this.transformStackValid = false;
     }
 
     /**
      * Returns a copy of the current <code>Transform</code> in the
      * <code>Graphics2D</code> context.
+     * 
      * @return the current <code>AffineTransform</code> in the
-     *             <code>Graphics2D</code> context.
+     *         <code>Graphics2D</code> context.
      * @see #transform
      * @see #setTransform
      */
-    public AffineTransform getTransform(){
-        return new AffineTransform(transform);
+    public AffineTransform getTransform() {
+        return new AffineTransform(this.transform);
     }
 
     /**
-     * Returns the current <code>Paint</code> of the
-     * <code>Graphics2D</code> context.
-     * @return the current <code>Graphics2D</code> <code>Paint</code>,
-     * which defines a color or pattern.
+     * Returns the current <code>Paint</code> of the <code>Graphics2D</code>
+     * context.
+     * 
+     * @return the current <code>Graphics2D</code> <code>Paint</code>, which
+     *         defines a color or pattern.
      * @see #setPaint
      * @see java.awt.Graphics#setColor
      */
-    public Paint getPaint(){
-        return paint;
+    public Paint getPaint() {
+        return this.paint;
     }
 
-
     /**
-     * Returns the current <code>Composite</code> in the
-     * <code>Graphics2D</code> context.
-     * @return the current <code>Graphics2D</code> <code>Composite</code>,
-     *              which defines a compositing style.
+     * Returns the current <code>Composite</code> in the <code>Graphics2D</code>
+     * context.
+     * 
+     * @return the current <code>Graphics2D</code> <code>Composite</code>, which
+     *         defines a compositing style.
      * @see #setComposite
      */
-    public Composite getComposite(){
-        return composite;
+    public Composite getComposite() {
+        return this.composite;
     }
 
     /**
-     * Sets the background color for the <code>Graphics2D</code> context.
-     * The background color is used for clearing a region.
-     * When a <code>Graphics2D</code> is constructed for a
-     * <code>Component</code>, the background color is
-     * inherited from the <code>Component</code>. Setting the background color
-     * in the <code>Graphics2D</code> context only affects the subsequent
-     * <code>clearRect</code> calls and not the background color of the
-     * <code>Component</code>.  To change the background
-     * of the <code>Component</code>, use appropriate methods of
-     * the <code>Component</code>.
-     * @param color the background color that isused in
-     * subsequent calls to <code>clearRect</code>
+     * Sets the background color for the <code>Graphics2D</code> context. The
+     * background color is used for clearing a region. When a
+     * <code>Graphics2D</code> is constructed for a <code>Component</code>, the
+     * background color is inherited from the <code>Component</code>. Setting
+     * the background color in the <code>Graphics2D</code> context only affects
+     * the subsequent <code>clearRect</code> calls and not the background color
+     * of the <code>Component</code>. To change the background of the
+     * <code>Component</code>, use appropriate methods of the
+     * <code>Component</code>.
+     * 
+     * @param color
+     *            the background color that isused in subsequent calls to
+     *            <code>clearRect</code>
      * @see #getBackground
      * @see java.awt.Graphics#clearRect
      */
-    public void setBackground(Color color){
-        if(color == null) {
+    public void setBackground(final Color color) {
+        if (color == null) {
             return;
         }
 
-        background = color;
+        this.background = color;
     }
-
 
     /**
      * Returns the background color used for clearing a region.
-     * @return the current <code>Graphics2D</code> <code>Color</code>,
-     * which defines the background color.
+     * 
+     * @return the current <code>Graphics2D</code> <code>Color</code>, which
+     *         defines the background color.
      * @see #setBackground
      */
-    public Color getBackground(){
-        return background;
+    public Color getBackground() {
+        return this.background;
     }
 
     /**
-     * Returns the current <code>Stroke</code> in the
-     * <code>Graphics2D</code> context.
-     * @return the current <code>Graphics2D</code> <code>Stroke</code>,
-     *                 which defines the line style.
+     * Returns the current <code>Stroke</code> in the <code>Graphics2D</code>
+     * context.
+     * 
+     * @return the current <code>Graphics2D</code> <code>Stroke</code>, which
+     *         defines the line style.
      * @see #setStroke
      */
-    public Stroke getStroke(){
-        return stroke;
+    public Stroke getStroke() {
+        return this.stroke;
     }
-
 
     /**
      * Intersects the current <code>Clip</code> with the interior of the
      * specified <code>Shape</code> and sets the <code>Clip</code> to the
-     * resulting intersection.  The specified <code>Shape</code> is
-     * transformed with the current <code>Graphics2D</code>
-     * <code>Transform</code> before being intersected with the current
-     * <code>Clip</code>.  This method is used to make the current
-     * <code>Clip</code> smaller.
-     * To make the <code>Clip</code> larger, use <code>setClip</code>.
-     * The <i>user clip</i> modified by this method is independent of the
-     * clipping associated with device bounds and visibility.  If no clip has
-     * previously been set, or if the clip has been cleared using
-     * {@link java.awt.Graphics#setClip(Shape) setClip} with a
-     * <code>null</code> argument, the specified <code>Shape</code> becomes
-     * the new user clip.
-     * @param s the <code>Shape</code> to be intersected with the current
-     *          <code>Clip</code>.  If <code>s</code> is <code>null</code>,
-     *          this method clears the current <code>Clip</code>.
+     * resulting intersection. The specified <code>Shape</code> is transformed
+     * with the current <code>Graphics2D</code> <code>Transform</code> before
+     * being intersected with the current <code>Clip</code>. This method is used
+     * to make the current <code>Clip</code> smaller. To make the
+     * <code>Clip</code> larger, use <code>setClip</code>. The <i>user clip</i>
+     * modified by this method is independent of the clipping associated with
+     * device bounds and visibility. If no clip has previously been set, or if
+     * the clip has been cleared using {@link java.awt.Graphics#setClip(Shape)
+     * setClip} with a <code>null</code> argument, the specified
+     * <code>Shape</code> becomes the new user clip.
+     * 
+     * @param s
+     *            the <code>Shape</code> to be intersected with the current
+     *            <code>Clip</code>. If <code>s</code> is <code>null</code>,
+     *            this method clears the current <code>Clip</code>.
      */
-    public void clip(Shape s){
+    public void clip(Shape s) {
         if (s != null) {
-            s = transform.createTransformedShape(s);
+            s = this.transform.createTransformedShape(s);
         }
 
-        if (clip != null) {
-            Area newClip = new Area(clip);
+        if (this.clip != null) {
+            final Area newClip = new Area(this.clip);
             newClip.intersect(new Area(s));
-            clip = new GeneralPath(newClip);
+            this.clip = new GeneralPath(newClip);
         } else {
-            clip = s;
+            this.clip = s;
         }
     }
 
     /**
      * Get the rendering context of the <code>Font</code> within this
-     * <code>Graphics2D</code> context.
-     * The {@link FontRenderContext}
-     * encapsulates application hints such as anti-aliasing and
-     * fractional metrics, as well as target device specific information
-     * such as dots-per-inch.  This information should be provided by the
-     * application when using objects that perform typographical
-     * formatting, such as <code>Font</code> and
-     * <code>TextLayout</code>.  This information should also be provided
-     * by applications that perform their own layout and need accurate
-     * measurements of various characteristics of glyphs such as advance
-     * and line height when various rendering hints have been applied to
+     * <code>Graphics2D</code> context. The {@link FontRenderContext}
+     * encapsulates application hints such as anti-aliasing and fractional
+     * metrics, as well as target device specific information such as
+     * dots-per-inch. This information should be provided by the application
+     * when using objects that perform typographical formatting, such as
+     * <code>Font</code> and <code>TextLayout</code>. This information should
+     * also be provided by applications that perform their own layout and need
+     * accurate measurements of various characteristics of glyphs such as
+     * advance and line height when various rendering hints have been applied to
      * the text rendering.
      *
      * @return a reference to an instance of FontRenderContext.
      * @see java.awt.font.FontRenderContext
      * @see java.awt.Font#createGlyphVector(FontRenderContext,char[])
      * @see java.awt.font.TextLayout
-     * @since     JDK1.2
+     * @since JDK1.2
      */
-    public FontRenderContext getFontRenderContext(){
+    public FontRenderContext getFontRenderContext() {
         //
         // Find if antialiasing should be used.
         //
-        Object antialiasingHint = hints.get(RenderingHints.KEY_TEXT_ANTIALIASING);
+        Object antialiasingHint = this.hints
+                .get(RenderingHints.KEY_TEXT_ANTIALIASING);
         boolean isAntialiased = true;
-        if(antialiasingHint != RenderingHints.VALUE_TEXT_ANTIALIAS_ON &&
-           antialiasingHint != RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT){
+        if (antialiasingHint != RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+                && antialiasingHint != RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT) {
 
             // If antialias was not turned off, then use the general rendering
             // hint.
-            if(antialiasingHint != RenderingHints.VALUE_TEXT_ANTIALIAS_OFF){
-                antialiasingHint = hints.get(RenderingHints.KEY_ANTIALIASING);
+            if (antialiasingHint != RenderingHints.VALUE_TEXT_ANTIALIAS_OFF) {
+                antialiasingHint = this.hints
+                        .get(RenderingHints.KEY_ANTIALIASING);
 
                 // Test general hint
-                if(antialiasingHint != RenderingHints.VALUE_ANTIALIAS_ON &&
-                   antialiasingHint != RenderingHints.VALUE_ANTIALIAS_DEFAULT){
-                    // Antialiasing was not requested. However, if it was not turned
+                if (antialiasingHint != RenderingHints.VALUE_ANTIALIAS_ON
+                        && antialiasingHint != RenderingHints.VALUE_ANTIALIAS_DEFAULT) {
+                    // Antialiasing was not requested. However, if it was not
+                    // turned
                     // off explicitly, use it.
-                    if(antialiasingHint == RenderingHints.VALUE_ANTIALIAS_OFF) {
+                    if (antialiasingHint == RenderingHints.VALUE_ANTIALIAS_OFF) {
                         isAntialiased = false;
                     }
                 }
@@ -909,14 +959,12 @@ public class GraphicContext implements Cloneable{
         // Find out whether fractional metrics should be used.
         //
         boolean useFractionalMetrics = true;
-        if(hints.get(RenderingHints.KEY_FRACTIONALMETRICS)
-           == RenderingHints.VALUE_FRACTIONALMETRICS_OFF) {
+        if (this.hints.get(RenderingHints.KEY_FRACTIONALMETRICS) == RenderingHints.VALUE_FRACTIONALMETRICS_OFF) {
             useFractionalMetrics = false;
         }
 
-        FontRenderContext frc = new FontRenderContext(defaultTransform,
-                                                      isAntialiased,
-                                                      useFractionalMetrics);
+        final FontRenderContext frc = new FontRenderContext(
+                this.defaultTransform, isAntialiased, useFractionalMetrics);
         return frc;
     }
 }

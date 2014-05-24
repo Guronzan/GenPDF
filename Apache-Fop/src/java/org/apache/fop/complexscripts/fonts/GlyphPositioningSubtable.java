@@ -27,80 +27,108 @@ import org.apache.fop.complexscripts.util.ScriptContextTester;
 // CSOFF: ParameterNumberCheck
 
 /**
- * <p>The <code>GlyphPositioningSubtable</code> implements an abstract base of a glyph subtable,
- * providing a default implementation of the <code>GlyphPositioning</code> interface.</p>
+ * <p>
+ * The <code>GlyphPositioningSubtable</code> implements an abstract base of a
+ * glyph subtable, providing a default implementation of the
+ * <code>GlyphPositioning</code> interface.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
-public abstract class GlyphPositioningSubtable extends GlyphSubtable implements GlyphPositioning {
+public abstract class GlyphPositioningSubtable extends GlyphSubtable implements
+        GlyphPositioning {
 
     /**
      * Instantiate a <code>GlyphPositioningSubtable</code>.
-     * @param id subtable identifier
-     * @param sequence subtable sequence
-     * @param flags subtable flags
-     * @param format subtable format
-     * @param coverage subtable coverage table
+     * 
+     * @param id
+     *            subtable identifier
+     * @param sequence
+     *            subtable sequence
+     * @param flags
+     *            subtable flags
+     * @param format
+     *            subtable format
+     * @param coverage
+     *            subtable coverage table
      */
-    protected GlyphPositioningSubtable ( String id, int sequence, int flags, int format, GlyphCoverageTable coverage ) {
-        super ( id, sequence, flags, format, coverage );
+    protected GlyphPositioningSubtable(final String id, final int sequence,
+            final int flags, final int format, final GlyphCoverageTable coverage) {
+        super(id, sequence, flags, format, coverage);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getTableType() {
         return GlyphTable.GLYPH_TABLE_TYPE_POSITIONING;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getTypeName() {
-        return GlyphPositioningTable.getLookupTypeName ( getType() );
+        return GlyphPositioningTable.getLookupTypeName(getType());
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible ( GlyphSubtable subtable ) {
+    @Override
+    public boolean isCompatible(final GlyphSubtable subtable) {
         return subtable instanceof GlyphPositioningSubtable;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean usesReverseScan() {
         return false;
     }
 
     /** {@inheritDoc} */
-    public boolean position ( GlyphPositioningState ps ) {
+    @Override
+    public boolean position(final GlyphPositioningState ps) {
         return false;
     }
 
     /**
-     * Apply positioning using specified state and subtable array. For each position in input sequence,
-     * apply subtables in order until some subtable applies or none remain. If no subtable applied or no
-     * input was consumed for a given position, then apply default action (no adjustments and advance).
-     * If <code>sequenceIndex</code> is non-negative, then apply subtables only when current position
-     * matches <code>sequenceIndex</code> in relation to the starting position. Furthermore, upon
-     * successful application at <code>sequenceIndex</code>, then discontinue processing the remaining
-     * @param ps positioning state
-     * @param sta array of subtables to apply
-     * @param sequenceIndex if non negative, then apply subtables only at specified sequence index
+     * Apply positioning using specified state and subtable array. For each
+     * position in input sequence, apply subtables in order until some subtable
+     * applies or none remain. If no subtable applied or no input was consumed
+     * for a given position, then apply default action (no adjustments and
+     * advance). If <code>sequenceIndex</code> is non-negative, then apply
+     * subtables only when current position matches <code>sequenceIndex</code>
+     * in relation to the starting position. Furthermore, upon successful
+     * application at <code>sequenceIndex</code>, then discontinue processing
+     * the remaining
+     * 
+     * @param ps
+     *            positioning state
+     * @param sta
+     *            array of subtables to apply
+     * @param sequenceIndex
+     *            if non negative, then apply subtables only at specified
+     *            sequence index
      * @return true if a non-zero adjustment occurred
      */
-    public static final boolean position ( GlyphPositioningState ps, GlyphPositioningSubtable[] sta, int sequenceIndex ) {
-        int sequenceStart = ps.getPosition();
+    public static final boolean position(final GlyphPositioningState ps,
+            final GlyphPositioningSubtable[] sta, final int sequenceIndex) {
+        final int sequenceStart = ps.getPosition();
         boolean appliedOneShot = false;
-        while ( ps.hasNext() ) {
+        while (ps.hasNext()) {
             boolean applied = false;
-            if ( ! appliedOneShot && ps.maybeApplicable() ) {
-                for ( int i = 0, n = sta.length; ! applied && ( i < n ); i++ ) {
-                    if ( sequenceIndex < 0 ) {
-                        applied = ps.apply ( sta [ i ] );
-                    } else if ( ps.getPosition() == ( sequenceStart + sequenceIndex ) ) {
-                        applied = ps.apply ( sta [ i ] );
-                        if ( applied ) {
+            if (!appliedOneShot && ps.maybeApplicable()) {
+                for (int i = 0, n = sta.length; !applied && i < n; i++) {
+                    if (sequenceIndex < 0) {
+                        applied = ps.apply(sta[i]);
+                    } else if (ps.getPosition() == sequenceStart
+                            + sequenceIndex) {
+                        applied = ps.apply(sta[i]);
+                        if (applied) {
                             appliedOneShot = true;
                         }
                     }
                 }
             }
-            if ( ! applied || ! ps.didConsume() ) {
+            if (!applied || !ps.didConsume()) {
                 ps.applyDefault();
             }
             ps.next();
@@ -110,19 +138,34 @@ public abstract class GlyphPositioningSubtable extends GlyphSubtable implements 
 
     /**
      * Apply positioning.
-     * @param gs input glyph sequence
-     * @param script tag
-     * @param language tag
-     * @param feature tag
-     * @param fontSize the font size
-     * @param sta subtable array
-     * @param widths array
-     * @param adjustments array (receives output adjustments)
-     * @param sct script context tester
+     * 
+     * @param gs
+     *            input glyph sequence
+     * @param script
+     *            tag
+     * @param language
+     *            tag
+     * @param feature
+     *            tag
+     * @param fontSize
+     *            the font size
+     * @param sta
+     *            subtable array
+     * @param widths
+     *            array
+     * @param adjustments
+     *            array (receives output adjustments)
+     * @param sct
+     *            script context tester
      * @return true if a non-zero adjustment occurred
      */
-    public static final boolean position ( GlyphSequence gs, String script, String language, String feature, int fontSize, GlyphPositioningSubtable[] sta, int[] widths, int[][] adjustments, ScriptContextTester sct ) {
-        return position ( new GlyphPositioningState ( gs, script, language, feature, fontSize, widths, adjustments, sct ), sta, -1 );
+    public static final boolean position(final GlyphSequence gs,
+            final String script, final String language, final String feature,
+            final int fontSize, final GlyphPositioningSubtable[] sta,
+            final int[] widths, final int[][] adjustments,
+            final ScriptContextTester sct) {
+        return position(new GlyphPositioningState(gs, script, language,
+                feature, fontSize, widths, adjustments, sct), sta, -1);
     }
 
 }

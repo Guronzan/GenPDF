@@ -20,34 +20,35 @@
 package org.apache.xmlgraphics.xmp;
 
 import java.net.URI;
-
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.xmlgraphics.util.QName;
+import org.apache.xmlgraphics.util.XMLizable;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-
-import org.apache.xmlgraphics.util.QName;
-import org.apache.xmlgraphics.util.XMLizable;
 
 /**
  * This class is the base class for all XMP properties.
  */
 public class XMPProperty implements XMLizable {
 
-    private QName name;
+    private final QName name;
     private Object value;
     private String xmllang;
     private Map qualifiers;
-    private boolean uri;
+    private final boolean uri;
 
     /**
      * Creates a new XMP property.
-     * @param name the name of the property
-     * @param value the value for the property
+     * 
+     * @param name
+     *            the name of the property
+     * @param value
+     *            the value for the property
      */
-    public XMPProperty(QName name, Object value) {
+    public XMPProperty(final QName name, final Object value) {
         this.name = name;
         this.value = value;
         this.uri = false;
@@ -65,15 +66,17 @@ public class XMPProperty implements XMLizable {
 
     /**
      * Sets the value of the property
-     * @param value the new value
+     * 
+     * @param value
+     *            the new value
      */
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         this.value = value;
     }
 
     /**
-     * @return the property value (can be a normal Java object (normally a String) or a descendant
-     *         of XMPComplexValue.
+     * @return the property value (can be a normal Java object (normally a
+     *         String) or a descendant of XMPComplexValue.
      */
     public Object getValue() {
         return this.value;
@@ -81,15 +84,18 @@ public class XMPProperty implements XMLizable {
 
     /**
      * Sets the xml:lang value for this property
-     * @param lang the language ("x-default" for the default language, null to make the value
-     *             language-independent)
+     * 
+     * @param lang
+     *            the language ("x-default" for the default language, null to
+     *            make the value language-independent)
      */
-    public void setXMLLang(String lang) {
+    public void setXMLLang(final String lang) {
         this.xmllang = lang;
     }
 
     /**
-     * @return the language for language-dependent values ("x-default" for the default language)
+     * @return the language for language-dependent values ("x-default" for the
+     *         default language)
      */
     public String getXMLLang() {
         return this.xmllang;
@@ -97,25 +103,29 @@ public class XMPProperty implements XMLizable {
 
     /**
      * Indicates whether the property is an array.
+     * 
      * @return true if the property is an array
      */
     public boolean isArray() {
-        return value instanceof XMPArray;
+        return this.value instanceof XMPArray;
     }
 
     /** @return the XMPArray for an array or null if the value is not an array. */
     public XMPArray getArrayValue() {
-        return (isArray() ? (XMPArray)value : null);
+        return isArray() ? (XMPArray) this.value : null;
     }
 
     /**
-     * Converts a simple value to an array of a given type if the value is not already an array.
-     * @param type the desired type of array
+     * Converts a simple value to an array of a given type if the value is not
+     * already an array.
+     * 
+     * @param type
+     *            the desired type of array
      * @return the array value
      */
-    public XMPArray convertSimpleValueToArray(XMPArrayType type) {
+    public XMPArray convertSimpleValueToArray(final XMPArrayType type) {
         if (getArrayValue() == null) {
-            XMPArray array = new XMPArray(type);
+            final XMPArray array = new XMPArray(type);
             if (getXMLLang() != null) {
                 array.add(getValue().toString(), getXMLLang());
             } else {
@@ -129,44 +139,52 @@ public class XMPProperty implements XMLizable {
         }
     }
 
-    /** @return the XMPStructure for a structure or null if the value is not a structure. */
+    /**
+     * @return the XMPStructure for a structure or null if the value is not a
+     *         structure.
+     */
     public PropertyAccess getStructureValue() {
-        return (value instanceof XMPStructure ? (XMPStructure)value : null);
+        return this.value instanceof XMPStructure ? (XMPStructure) this.value
+                : null;
     }
 
     private boolean hasPropertyQualifiers() {
-        return (this.qualifiers == null) || (this.qualifiers.size() == 0);
+        return this.qualifiers == null || this.qualifiers.size() == 0;
     }
 
     /**
-     * Indicates whether this property is actually not a structure, but a normal property with
-     * property qualifiers. If this method returns true, this structure can be converted to
-     * an simple XMPProperty using the simplify() method.
-     * @return true if this property is a structure property with property qualifiers
+     * Indicates whether this property is actually not a structure, but a normal
+     * property with property qualifiers. If this method returns true, this
+     * structure can be converted to an simple XMPProperty using the simplify()
+     * method.
+     * 
+     * @return true if this property is a structure property with property
+     *         qualifiers
      */
     public boolean isQualifiedProperty() {
-        PropertyAccess props = getStructureValue();
+        final PropertyAccess props = getStructureValue();
         if (props != null) {
-            XMPProperty rdfValue = props.getValueProperty();
-            return (rdfValue != null);
+            final XMPProperty rdfValue = props.getValueProperty();
+            return rdfValue != null;
         } else {
             return hasPropertyQualifiers();
         }
     }
 
     public void simplify() {
-        PropertyAccess props = getStructureValue();
+        final PropertyAccess props = getStructureValue();
         if (props != null) {
-            XMPProperty rdfValue = props.getValueProperty();
+            final XMPProperty rdfValue = props.getValueProperty();
             if (rdfValue != null) {
                 if (hasPropertyQualifiers()) {
-                    throw new IllegalStateException("Illegal internal state"
-                            + " (qualifiers present on non-simplified property)");
+                    throw new IllegalStateException(
+                            "Illegal internal state"
+                                    + " (qualifiers present on non-simplified property)");
                 }
-                XMPProperty prop = new XMPProperty(getName(), rdfValue);
-                Iterator iter = props.iterator();
+                final XMPProperty prop = new XMPProperty(getName(), rdfValue);
+                final Iterator iter = props.iterator();
                 while (iter.hasNext()) {
-                    QName name = (QName)iter.next();
+                    final QName name = (QName) iter.next();
                     if (!XMPConstants.RDF_VALUE.equals(name)) {
                         prop.setPropertyQualifier(name, props.getProperty(name));
                     }
@@ -175,8 +193,8 @@ public class XMPProperty implements XMLizable {
         }
     }
 
-
-    private void setPropertyQualifier(QName name, XMPProperty property) {
+    private void setPropertyQualifier(final QName name,
+            final XMPProperty property) {
         if (this.qualifiers == null) {
             this.qualifiers = new java.util.HashMap();
         }
@@ -186,35 +204,39 @@ public class XMPProperty implements XMLizable {
     private String getEffectiveQName() {
         String prefix = getName().getPrefix();
         if (prefix == null || "".equals(prefix)) {
-            XMPSchema schema = XMPSchemaRegistry.getInstance().getSchema(getNamespace());
+            final XMPSchema schema = XMPSchemaRegistry.getInstance().getSchema(
+                    getNamespace());
             prefix = schema.getPreferredPrefix();
         }
         return prefix + ":" + getName().getLocalName();
     }
 
     /** @see org.apache.xmlgraphics.util.XMLizable#toSAX(org.xml.sax.ContentHandler) */
-    public void toSAX(ContentHandler handler) throws SAXException {
-        AttributesImpl atts = new AttributesImpl();
-        String qName = getEffectiveQName();
-        if (value instanceof URI) {
-            atts.addAttribute(XMPConstants.RDF_NAMESPACE, "resource", "rdf:resource", "CDATA", ((URI)value).toString());
+    @Override
+    public void toSAX(final ContentHandler handler) throws SAXException {
+        final AttributesImpl atts = new AttributesImpl();
+        final String qName = getEffectiveQName();
+        if (this.value instanceof URI) {
+            atts.addAttribute(XMPConstants.RDF_NAMESPACE, "resource",
+                    "rdf:resource", "CDATA", ((URI) this.value).toString());
         }
-        handler.startElement(getName().getNamespaceURI(),
-                getName().getLocalName(), qName, atts);
-        if (value instanceof XMPComplexValue) {
-            XMPComplexValue cv = ((XMPComplexValue)value);
+        handler.startElement(getName().getNamespaceURI(), getName()
+                .getLocalName(), qName, atts);
+        if (this.value instanceof XMPComplexValue) {
+            final XMPComplexValue cv = (XMPComplexValue) this.value;
             cv.toSAX(handler);
-        } else if (!(value instanceof URI)) {
-            char[] chars = value.toString().toCharArray();
+        } else if (!(this.value instanceof URI)) {
+            final char[] chars = this.value.toString().toCharArray();
             handler.characters(chars, 0, chars.length);
         }
-        handler.endElement(getName().getNamespaceURI(),
-                getName().getLocalName(), qName);
+        handler.endElement(getName().getNamespaceURI(), getName()
+                .getLocalName(), qName);
     }
 
     /** @see java.lang.Object#toString() */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("XMP Property ");
+        final StringBuffer sb = new StringBuffer("XMP Property ");
         sb.append(getName()).append(": ");
         sb.append(getValue());
         return sb.toString();

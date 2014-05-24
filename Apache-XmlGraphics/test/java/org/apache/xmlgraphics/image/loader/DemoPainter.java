@@ -30,19 +30,21 @@ import org.apache.xmlgraphics.java2d.Graphics2DImagePainter;
 public class DemoPainter implements Graphics2DImagePainter {
 
     /** {@inheritDoc} */
+    @Override
     public Dimension getImageSize() {
         return new Dimension(10000, 10000);
     }
 
-    public void paint(Graphics2D g2d, Rectangle2D area) {
+    @Override
+    public void paint(final Graphics2D g2d, final Rectangle2D area) {
         g2d.translate(area.getX(), area.getY());
-        double w = area.getWidth();
-        double h = area.getHeight();
+        final double w = area.getWidth();
+        final double h = area.getHeight();
 
-        //Fit in paint area
-        Dimension imageSize = getImageSize();
-        double sx = w / imageSize.getWidth();
-        double sy = h / imageSize.getHeight();
+        // Fit in paint area
+        final Dimension imageSize = getImageSize();
+        final double sx = w / imageSize.getWidth();
+        final double sy = h / imageSize.getHeight();
         if (sx != 1.0 || sy != 1.0) {
             g2d.scale(sx, sy);
         }

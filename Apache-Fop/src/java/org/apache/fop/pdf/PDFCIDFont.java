@@ -28,76 +28,94 @@ import org.apache.fop.fonts.CIDFontType;
  */
 public class PDFCIDFont extends PDFObject {
 
-    private String basefont;
-    private CIDFontType cidtype;
+    private final String basefont;
+    private final CIDFontType cidtype;
     private Integer dw;
     private PDFWArray w;
     private int[] dw2;
     private PDFWArray w2;
-    private PDFCIDSystemInfo systemInfo;
-    private PDFCIDFontDescriptor descriptor;
+    private final PDFCIDSystemInfo systemInfo;
+    private final PDFCIDFontDescriptor descriptor;
     private PDFCMap cmap;
 
     /**
-     * /CIDToGIDMap (only for CIDFontType2, see p 212)
-     * can be either "Identity" (default) or a PDFStream
+     * /CIDToGIDMap (only for CIDFontType2, see p 212) can be either "Identity"
+     * (default) or a PDFStream
      */
     private PDFStream cidMap;
 
-
     /**
      * Create the /Font object
-     * @param basefont Name of the basefont
-     * @param cidtype CID type
-     * @param dw default width
-     * @param w array of character widths
-     * @param registry name of the issuer
-     * @param ordering Unique name of the font
-     * @param supplement Supplement number
-     * @param descriptor CID font descriptor
+     * 
+     * @param basefont
+     *            Name of the basefont
+     * @param cidtype
+     *            CID type
+     * @param dw
+     *            default width
+     * @param w
+     *            array of character widths
+     * @param registry
+     *            name of the issuer
+     * @param ordering
+     *            Unique name of the font
+     * @param supplement
+     *            Supplement number
+     * @param descriptor
+     *            CID font descriptor
      */
-    public PDFCIDFont(                                           // CSOK: ParameterNumber
-            String basefont, CIDFontType cidtype, int dw,
-            int[] w, String registry, String ordering,
-            int supplement, PDFCIDFontDescriptor descriptor) {
+    public PDFCIDFont(
+            // CSOK: ParameterNumber
+            final String basefont, final CIDFontType cidtype, final int dw,
+            final int[] w, final String registry, final String ordering,
+            final int supplement, final PDFCIDFontDescriptor descriptor) {
 
-        this(basefont, cidtype, dw,
-                new PDFWArray(w),
-                new PDFCIDSystemInfo(registry, ordering, supplement),
-                descriptor);
+        this(basefont, cidtype, dw, new PDFWArray(w), new PDFCIDSystemInfo(
+                registry, ordering, supplement), descriptor);
     }
 
     /**
      * Create the /Font object
-     * @param basefont Name of the basefont
-     * @param cidtype CID type
-     * @param dw default width
-     * @param w array of character widths
-     * @param systemInfo CID system info
-     * @param descriptor CID font descriptor
+     * 
+     * @param basefont
+     *            Name of the basefont
+     * @param cidtype
+     *            CID type
+     * @param dw
+     *            default width
+     * @param w
+     *            array of character widths
+     * @param systemInfo
+     *            CID system info
+     * @param descriptor
+     *            CID font descriptor
      */
-    public PDFCIDFont(String basefont, CIDFontType cidtype, int dw,
-                      int[] w, PDFCIDSystemInfo systemInfo,
-                      PDFCIDFontDescriptor descriptor) {
+    public PDFCIDFont(final String basefont, final CIDFontType cidtype,
+            final int dw, final int[] w, final PDFCIDSystemInfo systemInfo,
+            final PDFCIDFontDescriptor descriptor) {
 
-        this(basefont, cidtype, dw,
-                new PDFWArray(w),
-                systemInfo,
-                descriptor);
+        this(basefont, cidtype, dw, new PDFWArray(w), systemInfo, descriptor);
     }
 
     /**
      * Create the /Font object
-     * @param basefont Name of the basefont
-     * @param cidtype CID type
-     * @param dw default width
-     * @param w array of character widths
-     * @param systemInfo CID system info
-     * @param descriptor CID font descriptor
+     * 
+     * @param basefont
+     *            Name of the basefont
+     * @param cidtype
+     *            CID type
+     * @param dw
+     *            default width
+     * @param w
+     *            array of character widths
+     * @param systemInfo
+     *            CID system info
+     * @param descriptor
+     *            CID font descriptor
      */
-    public PDFCIDFont(String basefont, CIDFontType cidtype, int dw,
-                      PDFWArray w, PDFCIDSystemInfo systemInfo,
-                      PDFCIDFontDescriptor descriptor) {
+    public PDFCIDFont(final String basefont, final CIDFontType cidtype,
+            final int dw, final PDFWArray w, final PDFCIDSystemInfo systemInfo,
+            final PDFCIDFontDescriptor descriptor) {
 
         super();
 
@@ -115,60 +133,73 @@ public class PDFCIDFont extends PDFObject {
 
     /**
      * Set the /DW attribute
-     * @param dw the default width
+     * 
+     * @param dw
+     *            the default width
      */
-    public void setDW(int dw) {
+    public void setDW(final int dw) {
         this.dw = new Integer(dw);
     }
 
     /**
      * Set the /W array
-     * @param w the width array
+     * 
+     * @param w
+     *            the width array
      */
-    public void setW(PDFWArray w) {
+    public void setW(final PDFWArray w) {
         this.w = w;
     }
 
     /**
      * Set the (two elements) /DW2 array
-     * @param dw2 the default metrics for vertical writing
+     * 
+     * @param dw2
+     *            the default metrics for vertical writing
      */
-    public void setDW2(int[] dw2) {
+    public void setDW2(final int[] dw2) {
         this.dw2 = dw2;
     }
 
     /**
      * Set the two elements of the /DW2 array
-     * @param posY position vector
-     * @param displacementY displacement vector
+     * 
+     * @param posY
+     *            position vector
+     * @param displacementY
+     *            displacement vector
      */
-    public void setDW2(int posY, int displacementY) {
-        this.dw2 = new int[] {
-            posY, displacementY
-        };
+    public void setDW2(final int posY, final int displacementY) {
+        this.dw2 = new int[] { posY, displacementY };
     }
 
     /**
      * Set the CMap used as /ToUnicode cmap
-     * @param cmap character map
+     * 
+     * @param cmap
+     *            character map
      */
-    public void setCMAP(PDFCMap cmap) {
+    public void setCMAP(final PDFCMap cmap) {
         this.cmap = cmap;
     }
 
     /**
      * Set the /W2 array
-     * @param w2 array of metrics for vertical writing
+     * 
+     * @param w2
+     *            array of metrics for vertical writing
      */
-    public void setW2(PDFWArray w2) {
+    public void setW2(final PDFWArray w2) {
         this.w2 = w2;
     }
 
     /**
      * Set the /CIDToGIDMap (to be used only for CIDFontType2)
-     * @param map mapping information
+     * 
+     * @param map
+     *            mapping information
      */
-    public void setCIDMap(PDFStream map) {
+    public void setCIDMap(final PDFStream map) {
         this.cidMap = map;
     }
 
@@ -176,72 +207,74 @@ public class PDFCIDFont extends PDFObject {
      * Set the /CIDToGIDMap (to be used only for CIDFontType2) to "Identity"
      */
     public void setCIDMapIdentity() {
-        this.cidMap = null;    // not an error here, simply use the default
+        this.cidMap = null; // not an error here, simply use the default
     }
 
     /**
      * Returns the PDF name for a certain CID font type.
-     * @param cidFontType CID font type
+     * 
+     * @param cidFontType
+     *            CID font type
      * @return corresponding PDF name
      */
-    protected String getPDFNameForCIDFontType(CIDFontType cidFontType) {
+    protected String getPDFNameForCIDFontType(final CIDFontType cidFontType) {
         if (cidFontType == CIDFontType.CIDTYPE0) {
             return cidFontType.getName();
         } else if (cidFontType == CIDFontType.CIDTYPE2) {
             return cidFontType.getName();
         } else {
             throw new IllegalArgumentException("Unsupported CID font type: "
-                        + cidFontType.getName());
+                    + cidFontType.getName());
         }
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toPDFString() {
-        StringBuffer p = new StringBuffer(128);
+        final StringBuffer p = new StringBuffer(128);
         p.append("<< /Type /Font");
         p.append("\n/BaseFont /");
         p.append(this.basefont);
         p.append(" \n/CIDToGIDMap ");
-        if (cidMap != null) {
-            p.append(cidMap.referencePDF());
+        if (this.cidMap != null) {
+            p.append(this.cidMap.referencePDF());
         } else {
             p.append("/Identity");
-            //This is the default. We still write it because PDF/A requires it.
+            // This is the default. We still write it because PDF/A requires it.
         }
         p.append(" \n/Subtype /");
         p.append(getPDFNameForCIDFontType(this.cidtype));
         p.append("\n");
-        p.append(systemInfo.toPDFString());
+        p.append(this.systemInfo.toPDFString());
         p.append("\n/FontDescriptor ");
         p.append(this.descriptor.referencePDF());
 
-        if (cmap != null) {
+        if (this.cmap != null) {
             p.append("\n/ToUnicode ");
-            p.append(cmap.referencePDF());
+            p.append(this.cmap.referencePDF());
         }
-        if (dw != null) {
+        if (this.dw != null) {
             p.append("\n/DW ");
             p.append(this.dw);
         }
-        if (w != null) {
+        if (this.w != null) {
             p.append("\n/W ");
-            p.append(w.toPDFString());
+            p.append(this.w.toPDFString());
         }
-        if (dw2 != null) {
-            p.append("\n/DW2 [");    // always two values, see p 211
+        if (this.dw2 != null) {
+            p.append("\n/DW2 ["); // always two values, see p 211
             p.append(this.dw2[0]);
             p.append(this.dw2[1]);
             p.append("]");
         }
-        if (w2 != null) {
+        if (this.w2 != null) {
             p.append("\n/W2 ");
-            p.append(w2.toPDFString());
+            p.append(this.w2.toPDFString());
         }
         p.append("\n>>");
         return p.toString();
     }
 
 }
-

@@ -27,6 +27,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.MimeConstants;
@@ -34,6 +36,7 @@ import org.apache.fop.apps.MimeConstants;
 /**
  * Main command-line class for Apache FOP.
  */
+@Slf4j
 public final class Main {
 
     private Main() {
@@ -98,8 +101,7 @@ public final class Main {
         }
         final URL[] urls = (URL[]) jars.toArray(new URL[jars.size()]);
         /*
-         * for (int i = 0, c = urls.length; i < c; i++) {
-         * System.out.println(urls[i]); }
+         * for (int i = 0, c = urls.length; i < c; i++) { log.info(urls[i]); }
          */
         return urls;
     }
@@ -110,7 +112,7 @@ public final class Main {
      */
     public static boolean checkDependencies() {
         try {
-            // System.out.println(Thread.currentThread().getContextClassLoader());
+            // log.info(Thread.currentThread().getContextClassLoader());
             Class clazz = Class.forName("org.apache.commons.io.IOUtils");
             if (clazz != null) {
                 clazz = Class
@@ -124,20 +126,20 @@ public final class Main {
 
     /**
      * Dynamically builds a ClassLoader and executes FOP.
-     * 
+     *
      * @param args
      *            command-line arguments
      */
     public static void startFOPWithDynamicClasspath(final String[] args) {
         try {
             final URL[] urls = getJARList();
-            // System.out.println("CCL: "
+            // log.info("CCL: "
             // + Thread.currentThread().getContextClassLoader().toString());
             final ClassLoader loader = new java.net.URLClassLoader(urls, null);
             Thread.currentThread().setContextClassLoader(loader);
             final Class clazz = Class.forName("org.apache.fop.cli.Main", true,
                     loader);
-            // System.out.println("CL: " + clazz.getClassLoader().toString());
+            // log.info("CL: " + clazz.getClassLoader().toString());
             final Method mainMethod = clazz.getMethod("startFOP",
                     new Class[] { String[].class });
             mainMethod.invoke(null, new Object[] { args });
@@ -158,9 +160,9 @@ public final class Main {
      *            command-line arguments
      */
     public static void startFOP(final String[] args) {
-        // System.out.println("static CCL: "
+        // log.info("static CCL: "
         // + Thread.currentThread().getContextClassLoader().toString());
-        // System.out.println("static CL: " +
+        // log.info("static CL: " +
         // Fop.class.getClassLoader().toString());
         CommandLineOptions options = null;
         FOUserAgent foUserAgent = null;
@@ -184,7 +186,8 @@ public final class Main {
                 } else if (options.isOutputToStdOut()) {
                     out = new java.io.BufferedOutputStream(System.out);
                 }
-                if (!MimeConstants.MIME_XSL_FO.equals(outputFormat)) {
+                if (!org.apache.xmlgraphics.util.MimeConstants.MIME_XSL_FO
+                        .equals(outputFormat)) {
                     options.getInputHandler().renderTo(foUserAgent,
                             outputFormat, out);
                 } else {
@@ -202,7 +205,7 @@ public final class Main {
             }
         } catch (final Exception e) {
             if (options != null) {
-                options.getLogger().error("Exception", e);
+                log.error("Exception", e);
                 if (options.getOutputFile() != null) {
                     options.getOutputFile().delete();
                 }
@@ -213,7 +216,7 @@ public final class Main {
 
     /**
      * The main routine for the command line interface
-     * 
+     *
      * @param args
      *            the command line parameters
      */

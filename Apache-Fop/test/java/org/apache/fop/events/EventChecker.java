@@ -30,21 +30,23 @@ class EventChecker implements EventListener {
 
     private boolean eventReceived;
 
-    EventChecker(String expectedEventID) {
+    EventChecker(final String expectedEventID) {
         this.expectedEventID = expectedEventID;
     }
 
-    public void processEvent(Event event) {
-        // Always create the message to make sure there is no error in the formatting process
-        String id = event.getEventID();
-        if (id.equals(expectedEventID)) {
-            eventReceived = true;
+    @Override
+    public void processEvent(final Event event) {
+        // Always create the message to make sure there is no error in the
+        // formatting process
+        final String id = event.getEventID();
+        if (id.equals(this.expectedEventID)) {
+            this.eventReceived = true;
         }
     }
 
     void end() {
-        if (!eventReceived) {
-            fail("Did not received expected event: " + expectedEventID);
+        if (!this.eventReceived) {
+            fail("Did not received expected event: " + this.expectedEventID);
         }
     }
 }

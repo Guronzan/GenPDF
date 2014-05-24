@@ -21,12 +21,11 @@ package org.apache.fop.fo.pagination;
 
 import java.util.Locale;
 
-import org.xml.sax.Locator;
-import org.xml.sax.helpers.LocatorImpl;
-
 import org.apache.fop.events.Event;
 import org.apache.fop.events.EventExceptionManager.ExceptionFactory;
 import org.apache.fop.events.EventFormatter;
+import org.xml.sax.Locator;
+import org.xml.sax.helpers.LocatorImpl;
 
 /**
  * Exception thrown by FOP if there is a problem while producing new pages.
@@ -38,37 +37,43 @@ public class PageProductionException extends RuntimeException {
     private String localizedMessage;
     private Locator locator;
 
-
     /**
      * Creates a new PageProductionException.
-     * @param message the message
+     * 
+     * @param message
+     *            the message
      */
-    public PageProductionException(String message) {
+    public PageProductionException(final String message) {
         super(message);
     }
 
     /**
      * Creates a new PageProductionException.
-     * @param message the message
-     * @param locator the optional locator that points to the error in the source file
+     * 
+     * @param message
+     *            the message
+     * @param locator
+     *            the optional locator that points to the error in the source
+     *            file
      */
-    public PageProductionException(String message, Locator locator) {
+    public PageProductionException(final String message, final Locator locator) {
         super(message);
         setLocator(locator);
     }
 
-
     /**
      * Set a location associated with the exception.
-     * @param locator the locator holding the location.
+     * 
+     * @param locator
+     *            the locator holding the location.
      */
-    public void setLocator(Locator locator) {
+    public void setLocator(final Locator locator) {
         this.locator = locator != null ? new LocatorImpl(locator) : null;
     }
 
-
     /**
      * Returns the locattion associated with the exception.
+     * 
      * @return the locator or null if the location information is not available
      */
     public Locator getLocator() {
@@ -77,13 +82,16 @@ public class PageProductionException extends RuntimeException {
 
     /**
      * Sets the localized message for this exception.
-     * @param msg the localized message
+     * 
+     * @param msg
+     *            the localized message
      */
-    public void setLocalizedMessage(String msg) {
+    public void setLocalizedMessage(final String msg) {
         this.localizedMessage = msg;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalizedMessage() {
         if (this.localizedMessage != null) {
             return this.localizedMessage;
@@ -93,14 +101,17 @@ public class PageProductionException extends RuntimeException {
     }
 
     /** Exception factory for {@link PageProductionException}. */
-    public static class PageProductionExceptionFactory implements ExceptionFactory {
+    public static class PageProductionExceptionFactory implements
+            ExceptionFactory {
 
         /** {@inheritDoc} */
-        public Throwable createException(Event event) {
-            Object obj = event.getParam("loc");
-            Locator loc = (obj instanceof Locator ? (Locator)obj : null);
-            String msg = EventFormatter.format(event, Locale.ENGLISH);
-            PageProductionException ex = new PageProductionException(msg, loc);
+        @Override
+        public Throwable createException(final Event event) {
+            final Object obj = event.getParam("loc");
+            final Locator loc = obj instanceof Locator ? (Locator) obj : null;
+            final String msg = EventFormatter.format(event, Locale.ENGLISH);
+            final PageProductionException ex = new PageProductionException(msg,
+                    loc);
             if (!Locale.ENGLISH.equals(Locale.getDefault())) {
                 ex.setLocalizedMessage(EventFormatter.format(event));
             }
@@ -108,6 +119,7 @@ public class PageProductionException extends RuntimeException {
         }
 
         /** {@inheritDoc} */
+        @Override
         public Class<PageProductionException> getExceptionClass() {
             return PageProductionException.class;
         }

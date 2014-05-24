@@ -25,11 +25,11 @@ import java.awt.geom.Rectangle2D;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.gvt.GraphicsNode;
-
 import org.apache.xmlgraphics.java2d.Graphics2DImagePainter;
 
 /**
- * A graphics 2D image painter implementation for painting SVG images using Batik.
+ * A graphics 2D image painter implementation for painting SVG images using
+ * Batik.
  */
 public class Graphics2DImagePainterImpl implements Graphics2DImagePainter {
 
@@ -42,45 +42,51 @@ public class Graphics2DImagePainterImpl implements Graphics2DImagePainter {
     /**
      * Main constructor
      *
-     * @param root the graphics node root
-     * @param ctx the bridge context
-     * @param imageSize the image size
+     * @param root
+     *            the graphics node root
+     * @param ctx
+     *            the bridge context
+     * @param imageSize
+     *            the image size
      */
-    public Graphics2DImagePainterImpl(GraphicsNode root, BridgeContext ctx, Dimension imageSize) {
+    public Graphics2DImagePainterImpl(final GraphicsNode root,
+            final BridgeContext ctx, final Dimension imageSize) {
         this.root = root;
         this.imageSize = imageSize;
         this.ctx = ctx;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Dimension getImageSize() {
-        return imageSize;
+        return this.imageSize;
     }
 
-    private void prepare(Graphics2D g2d, Rectangle2D area) {
+    private void prepare(final Graphics2D g2d, final Rectangle2D area) {
         // If no viewbox is defined in the svg file, a viewbox of 100x100 is
         // assumed, as defined in SVGUserAgent.getViewportSize()
-        double tx = area.getX();
-        double ty = area.getY();
+        final double tx = area.getX();
+        final double ty = area.getY();
         if (tx != 0 || ty != 0) {
             g2d.translate(tx, ty);
         }
 
-        float iw = (float) ctx.getDocumentSize().getWidth();
-        float ih = (float) ctx.getDocumentSize().getHeight();
-        float w = (float) area.getWidth();
-        float h = (float) area.getHeight();
-        float sx = w / iw;
-        float sy = h / ih;
+        final float iw = (float) this.ctx.getDocumentSize().getWidth();
+        final float ih = (float) this.ctx.getDocumentSize().getHeight();
+        final float w = (float) area.getWidth();
+        final float h = (float) area.getHeight();
+        final float sx = w / iw;
+        final float sy = h / ih;
         if (sx != 1.0 || sy != 1.0) {
             g2d.scale(sx, sy);
         }
     }
 
     /** {@inheritDoc} */
-    public void paint(Graphics2D g2d, Rectangle2D area) {
+    @Override
+    public void paint(final Graphics2D g2d, final Rectangle2D area) {
         prepare(g2d, area);
-        root.paint(g2d);
+        this.root.paint(g2d);
     }
 
 }

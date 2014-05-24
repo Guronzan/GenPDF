@@ -31,11 +31,10 @@ public class FontShorthandParser extends GenericShorthandParser {
     /**
      * {@inheritDoc}
      */
-    public Property getValueForProperty(int propId,
-                                               Property property,
-                                               PropertyMaker maker,
-                                               PropertyList propertyList)
-                    throws PropertyException {
+    @Override
+    public Property getValueForProperty(final int propId,
+            final Property property, final PropertyMaker maker,
+            final PropertyList propertyList) throws PropertyException {
 
         int index = -1;
         Property newProp;
@@ -59,7 +58,7 @@ public class FontShorthandParser extends GenericShorthandParser {
             index = 5;
             break;
         default:
-            //nop
+            // nop
         }
         newProp = (Property) property.getList().get(index);
         return newProp;

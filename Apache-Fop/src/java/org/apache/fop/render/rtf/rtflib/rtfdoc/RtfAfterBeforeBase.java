@@ -30,63 +30,72 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * <p>Common code for RtfAfter and RtfBefore.</p>
+ * <p>
+ * Common code for RtfAfter and RtfBefore.
+ * </p>
  *
- * <p>This work was authored by Andreas Lambert (andreas.lambert@cronidesoft.com),
- * Christopher Scott (scottc@westinghouse.com), and
- * Christoph Zahm (zahm@jnet.ch) [support for tables in headers/footers].</p>
+ * <p>
+ * This work was authored by Andreas Lambert (andreas.lambert@cronidesoft.com),
+ * Christopher Scott (scottc@westinghouse.com), and Christoph Zahm
+ * (zahm@jnet.ch) [support for tables in headers/footers].
+ * </p>
  */
 
-abstract class RtfAfterBeforeBase
-extends RtfContainer
-implements IRtfParagraphContainer, IRtfExternalGraphicContainer, IRtfTableContainer,
-        IRtfTextrunContainer {
+abstract class RtfAfterBeforeBase extends RtfContainer implements
+IRtfParagraphContainer, IRtfExternalGraphicContainer,
+IRtfTableContainer, IRtfTextrunContainer {
     protected RtfAttributes attrib;
     private RtfParagraph para;
     private RtfExternalGraphic externalGraphic;
     private RtfTable table;
 
-    RtfAfterBeforeBase(RtfSection parent, Writer w, RtfAttributes attrs) throws IOException {
-        super((RtfContainer)parent, w, attrs);
-        attrib = attrs;
+    RtfAfterBeforeBase(final RtfSection parent, final Writer w,
+            final RtfAttributes attrs) throws IOException {
+        super(parent, w, attrs);
+        this.attrib = attrs;
     }
 
+    @Override
     public RtfParagraph newParagraph() throws IOException {
         closeAll();
-        para = new RtfParagraph(this, writer);
-        return para;
+        this.para = new RtfParagraph(this, this.writer);
+        return this.para;
     }
 
-    public RtfParagraph newParagraph(RtfAttributes attrs) throws IOException {
+    @Override
+    public RtfParagraph newParagraph(final RtfAttributes attrs)
+            throws IOException {
         closeAll();
-        para = new RtfParagraph(this, writer, attrs);
-        return para;
+        this.para = new RtfParagraph(this, this.writer, attrs);
+        return this.para;
     }
 
+    @Override
     public RtfExternalGraphic newImage() throws IOException {
         closeAll();
-        externalGraphic = new RtfExternalGraphic(this, writer);
-        return externalGraphic;
+        this.externalGraphic = new RtfExternalGraphic(this, this.writer);
+        return this.externalGraphic;
     }
 
     private void closeCurrentParagraph() throws IOException {
-        if (para != null) {
-            para.close();
+        if (this.para != null) {
+            this.para.close();
         }
     }
 
     private void closeCurrentExternalGraphic() throws IOException {
-        if (externalGraphic != null) {
-            externalGraphic.close();
+        if (this.externalGraphic != null) {
+            this.externalGraphic.close();
         }
     }
 
     private void closeCurrentTable() throws IOException {
-        if (table != null) {
-            table.close();
+        if (this.table != null) {
+            this.table.close();
         }
     }
 
+    @Override
     protected void writeRtfPrefix() throws IOException {
         writeGroupMark(true);
         writeMyAttributes();
@@ -95,12 +104,13 @@ implements IRtfParagraphContainer, IRtfExternalGraphicContainer, IRtfTableContai
     /** must be implemented to write the header or footer attributes */
     protected abstract void writeMyAttributes() throws IOException;
 
+    @Override
     protected void writeRtfSuffix() throws IOException {
         writeGroupMark(false);
     }
 
     public RtfAttributes getAttributes() {
-        return attrib;
+        return this.attrib;
     }
 
     public void closeAll() throws IOException {
@@ -109,25 +119,31 @@ implements IRtfParagraphContainer, IRtfExternalGraphicContainer, IRtfTableContai
         closeCurrentTable();
     }
 
-    /** close current table if any and start a new one
-     * @param tc added by Boris Poudérous on july 2002 in order to process
-     *  number-columns-spanned attribute
+    /**
+     * close current table if any and start a new one
+     *
+     * @param tc
+     *            added by Boris Poudérous on july 2002 in order to process
+     *            number-columns-spanned attribute
      */
-    public RtfTable newTable(RtfAttributes attrs, ITableColumnsInfo tc) throws IOException {
+    @Override
+    public RtfTable newTable(final RtfAttributes attrs,
+            final ITableColumnsInfo tc) throws IOException {
         closeAll();
-        table = new RtfTable(this, writer, attrs, tc);
-        return table;
+        this.table = new RtfTable(this, this.writer, attrs, tc);
+        return this.table;
     }
 
-    /** close current table if any and start a new one  */
-    public RtfTable newTable(ITableColumnsInfo tc) throws IOException {
+    /** close current table if any and start a new one */
+    @Override
+    public RtfTable newTable(final ITableColumnsInfo tc) throws IOException {
         closeAll();
-        table = new RtfTable(this, writer, tc);
-        return table;
+        this.table = new RtfTable(this, this.writer, tc);
+        return this.table;
     }
 
-    public RtfTextrun getTextrun()
-    throws IOException {
-        return RtfTextrun.getTextrun(this, writer, null);
+    @Override
+    public RtfTextrun getTextrun() throws IOException {
+        return RtfTextrun.getTextrun(this, this.writer, null);
     }
 }

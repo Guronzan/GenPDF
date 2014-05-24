@@ -27,19 +27,22 @@ public class DottedBorderElement extends AbstractBorderElement {
     private static final char MIDDLE_DOT = '\u00B7';
 
     /**
-     * Merges dotted border element with another border element. Here merging
-     * is quite simple: returning <code>this</code> without any comparing.
+     * Merges dotted border element with another border element. Here merging is
+     * quite simple: returning <code>this</code> without any comparing.
      *
-     * @param e instance of AbstractBorderElement
+     * @param e
+     *            instance of AbstractBorderElement
      * @return instance of DottedBorderElement
      */
-    public AbstractBorderElement merge(AbstractBorderElement e) {
+    @Override
+    public AbstractBorderElement merge(final AbstractBorderElement e) {
         return this;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public char convert2Char() {
         return MIDDLE_DOT;
     }

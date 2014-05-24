@@ -20,10 +20,10 @@
 package org.apache.fop.events;
 
 /**
- * This is a marker interface which all event producer interfaces need to extend. These interfaces
- * must agree to the following convention:
+ * This is a marker interface which all event producer interfaces need to
+ * extend. These interfaces must agree to the following convention:
  * <ul>
- *   <li>The first parameter of each method must be: <code>Object source</code>
+ * <li>The first parameter of each method must be: <code>Object source</code>
  * </ul>
  */
 public interface EventProducer {

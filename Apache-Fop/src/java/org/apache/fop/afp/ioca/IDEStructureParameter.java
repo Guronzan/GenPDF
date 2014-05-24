@@ -31,40 +31,41 @@ import org.apache.fop.afp.Streamable;
 public class IDEStructureParameter implements Streamable {
 
     /** The RGB color model used by the IDE Structure parameter */
-    public static final byte COLOR_MODEL_RGB = (byte)0x01;
+    public static final byte COLOR_MODEL_RGB = (byte) 0x01;
     /** The YCrCb color model used by the IDE Structure parameter */
-    public static final byte COLOR_MODEL_YCRCB = (byte)0x02;
+    public static final byte COLOR_MODEL_YCRCB = (byte) 0x02;
     /** The CMYK color model used by the IDE Structure parameter */
-    public static final byte COLOR_MODEL_CMYK = (byte)0x04;
+    public static final byte COLOR_MODEL_CMYK = (byte) 0x04;
     /** The YCbCr color model used by the IDE Structure parameter */
-    public static final byte COLOR_MODEL_YCBCR = (byte)0x12;
+    public static final byte COLOR_MODEL_YCBCR = (byte) 0x12;
 
     /** additive/subtractive setting for ASFLAG */
     private boolean subtractive = false;
 
     /** setting for GRAYCODE flag */
-    private boolean grayCoding = false;
+    private final boolean grayCoding = false;
 
     /** the image color model */
     private byte colorModel = COLOR_MODEL_RGB;
 
     /** the array with the number of bits/IDE for each component */
-    private byte[] bitsPerIDE = new byte[] {(byte)1}; //1-bit by default
+    private byte[] bitsPerIDE = new byte[] { (byte) 1 }; // 1-bit by default
 
     /**
-     * Creates a new IDE Structure parameter. The values are initialized for a bi-level image
-     * using the RGB color model.
+     * Creates a new IDE Structure parameter. The values are initialized for a
+     * bi-level image using the RGB color model.
      */
     public IDEStructureParameter() {
-        //nop
+        // nop
     }
 
     /**
      * Sets the image IDE color model.
      *
-     * @param color    the IDE color model.
+     * @param color
+     *            the IDE color model.
      */
-    public void setColorModel(byte color) {
+    public void setColorModel(final byte color) {
         this.colorModel = color;
     }
 
@@ -86,66 +87,75 @@ public class IDEStructureParameter implements Streamable {
 
     /**
      * Sets uniform bits per component.
-     * @param numComponents the number of components
-     * @param bitsPerComponent number of bits per component
+     * 
+     * @param numComponents
+     *            the number of components
+     * @param bitsPerComponent
+     *            number of bits per component
      */
-    public void setUniformBitsPerComponent(int numComponents, int bitsPerComponent) {
+    public void setUniformBitsPerComponent(final int numComponents,
+            final int bitsPerComponent) {
         if (bitsPerComponent < 0 || bitsPerComponent >= 256) {
             throw new IllegalArgumentException(
                     "The number of bits per component must be between 0 and 255");
         }
         this.bitsPerIDE = new byte[numComponents];
         for (int i = 0; i < numComponents; i++) {
-            this.bitsPerIDE[i] = (byte)bitsPerComponent;
+            this.bitsPerIDE[i] = (byte) bitsPerComponent;
         }
     }
 
     /**
      * Sets the array for the bits/IDE, one entry per component.
-     * @param bitsPerComponent the
+     * 
+     * @param bitsPerComponent
+     *            the
      */
-    public void setBitsPerComponent(int[] bitsPerComponent) {
-        int numComponents = bitsPerComponent.length;
+    public void setBitsPerComponent(final int[] bitsPerComponent) {
+        final int numComponents = bitsPerComponent.length;
         this.bitsPerIDE = new byte[numComponents];
         for (int i = 0; i < numComponents; i++) {
-            int bits = bitsPerComponent[i];
+            final int bits = bitsPerComponent[i];
             if (bits < 0 || bits >= 256) {
                 throw new IllegalArgumentException(
                         "The number of bits per component must be between 0 and 255");
             }
-            this.bitsPerIDE[i] = (byte)bits;
+            this.bitsPerIDE[i] = (byte) bits;
         }
     }
 
     /**
      * Set either additive or subtractive mode (used for ASFLAG).
-     * @param subtractive true for subtractive mode, false for additive mode
+     * 
+     * @param subtractive
+     *            true for subtractive mode, false for additive mode
      */
-    public void setSubtractive(boolean subtractive) {
+    public void setSubtractive(final boolean subtractive) {
         this.subtractive = subtractive;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        int length = 7 + bitsPerIDE.length;
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final int length = 7 + this.bitsPerIDE.length;
 
         byte flags = 0x00;
-        if (subtractive) {
+        if (this.subtractive) {
             flags |= 1 << 7;
         }
-        if (grayCoding) {
+        if (this.grayCoding) {
             flags |= 1 << 6;
         }
 
-        DataOutputStream dout = new DataOutputStream(os);
-        dout.writeByte(0x9B); //ID
-        dout.writeByte(length - 2); //LENGTH
-        dout.writeByte(flags); //FLAGS
-        dout.writeByte(this.colorModel); //FORMAT
+        final DataOutputStream dout = new DataOutputStream(os);
+        dout.writeByte(0x9B); // ID
+        dout.writeByte(length - 2); // LENGTH
+        dout.writeByte(flags); // FLAGS
+        dout.writeByte(this.colorModel); // FORMAT
         for (int i = 0; i < 3; i++) {
-            dout.writeByte(0); //RESERVED
+            dout.writeByte(0); // RESERVED
         }
-        dout.write(this.bitsPerIDE); //component sizes
+        dout.write(this.bitsPerIDE); // component sizes
     }
 
 }

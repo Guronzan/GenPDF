@@ -32,26 +32,23 @@ public class ImageLoaderFactoryRaw extends AbstractImageLoaderFactory {
     public static final String MIME_EMF = "image/x-emf";
 
     private static final String[] MIMES = new String[] {
-        MimeConstants.MIME_PNG,
-        MimeConstants.MIME_JPEG,
-        MimeConstants.MIME_TIFF,
-        MIME_EMF};
+            MimeConstants.MIME_PNG, MimeConstants.MIME_JPEG,
+            MimeConstants.MIME_TIFF, MIME_EMF };
 
     private static final ImageFlavor[][] FLAVORS = new ImageFlavor[][] {
-        {ImageFlavor.RAW_PNG},
-        {ImageFlavor.RAW_JPEG},
-        {ImageFlavor.RAW_TIFF},
-        {ImageFlavor.RAW_EMF}};
-
+            { ImageFlavor.RAW_PNG }, { ImageFlavor.RAW_JPEG },
+            { ImageFlavor.RAW_TIFF }, { ImageFlavor.RAW_EMF } };
 
     /**
-     * Returns the MIME type for a given ImageFlavor if it is from a format that is consumed
-     * without being undecoded. If the ImageFlavor is no raw flavor, an IllegalArgumentException
-     * is thrown.
-     * @param flavor the image flavor
+     * Returns the MIME type for a given ImageFlavor if it is from a format that
+     * is consumed without being undecoded. If the ImageFlavor is no raw flavor,
+     * an IllegalArgumentException is thrown.
+     * 
+     * @param flavor
+     *            the image flavor
      * @return the associated MIME type
      */
-    public static String getMimeForRawFlavor(ImageFlavor flavor) {
+    public static String getMimeForRawFlavor(final ImageFlavor flavor) {
         for (int i = 0, ci = FLAVORS.length; i < ci; i++) {
             for (int j = 0, cj = FLAVORS[i].length; j < cj; j++) {
                 if (FLAVORS[i][j].equals(flavor)) {
@@ -59,16 +56,19 @@ public class ImageLoaderFactoryRaw extends AbstractImageLoaderFactory {
                 }
             }
         }
-        throw new IllegalArgumentException("ImageFlavor is not a \"raw\" flavor: " + flavor);
+        throw new IllegalArgumentException(
+                "ImageFlavor is not a \"raw\" flavor: " + flavor);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMIMETypes() {
         return MIMES;
     }
 
     /** {@inheritDoc} */
-    public ImageFlavor[] getSupportedFlavors(String mime) {
+    @Override
+    public ImageFlavor[] getSupportedFlavors(final String mime) {
         for (int i = 0, c = MIMES.length; i < c; i++) {
             if (MIMES[i].equals(mime)) {
                 return FLAVORS[i];
@@ -78,7 +78,8 @@ public class ImageLoaderFactoryRaw extends AbstractImageLoaderFactory {
     }
 
     /** {@inheritDoc} */
-    public ImageLoader newImageLoader(ImageFlavor targetFlavor) {
+    @Override
+    public ImageLoader newImageLoader(final ImageFlavor targetFlavor) {
         if (targetFlavor.equals(ImageFlavor.RAW_JPEG)) {
             return new ImageLoaderRawJPEG();
         } else if (targetFlavor.equals(ImageFlavor.RAW_PNG)) {
@@ -89,6 +90,7 @@ public class ImageLoaderFactoryRaw extends AbstractImageLoaderFactory {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isAvailable() {
         return true;
     }

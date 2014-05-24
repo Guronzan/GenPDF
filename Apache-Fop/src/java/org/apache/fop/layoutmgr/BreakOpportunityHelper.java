@@ -28,25 +28,28 @@ import org.apache.fop.util.BreakUtil;
  */
 public final class BreakOpportunityHelper {
 
-    private BreakOpportunityHelper() { }
+    private BreakOpportunityHelper() {
+    }
 
     /**
-     * Returns the break opportunity before the given layout manager. There is a break
-     * opportunity if the LM's FO has the break-before property set, or if there is a
-     * break opportunity before its first child LM.
+     * Returns the break opportunity before the given layout manager. There is a
+     * break opportunity if the LM's FO has the break-before property set, or if
+     * there is a break opportunity before its first child LM.
      *
      * @return the break-before value (Constants.EN_*)
      */
-    public static int getBreakBefore(AbstractLayoutManager layoutManager) {
+    public static int getBreakBefore(final AbstractLayoutManager layoutManager) {
         int breakBefore = Constants.EN_AUTO;
         if (layoutManager.getFObj() instanceof BreakPropertySet) {
-            breakBefore = ((BreakPropertySet) layoutManager.getFObj()).getBreakBefore();
+            breakBefore = ((BreakPropertySet) layoutManager.getFObj())
+                    .getBreakBefore();
         }
-        LayoutManager childLM = layoutManager.getChildLM();
+        final LayoutManager childLM = layoutManager.getChildLM();
         // It is assumed this is only called when the first LM is active.
         if (childLM instanceof BreakOpportunity) {
-            BreakOpportunity bo = (BreakOpportunity) childLM;
-            breakBefore = BreakUtil.compareBreakClasses(breakBefore, bo.getBreakBefore());
+            final BreakOpportunity bo = (BreakOpportunity) childLM;
+            breakBefore = BreakUtil.compareBreakClasses(breakBefore,
+                    bo.getBreakBefore());
         }
         return breakBefore;
     }

@@ -35,7 +35,7 @@ public class SimpleResourceAccessor implements ResourceAccessor {
 
     /**
      * Creates a new simple resource accessor.
-     * 
+     *
      * @param baseURI
      *            the base URI to resolve relative URIs against (may be null)
      */
@@ -45,7 +45,7 @@ public class SimpleResourceAccessor implements ResourceAccessor {
 
     /**
      * Creates a new simple resource accessor.
-     * 
+     *
      * @param baseDir
      *            the base directory to resolve relative filenames against (may
      *            be null)
@@ -56,7 +56,7 @@ public class SimpleResourceAccessor implements ResourceAccessor {
 
     /**
      * Returns the base URI.
-     * 
+     *
      * @return the base URI (or null if no base URI was set)
      */
     public URI getBaseURI() {
@@ -65,7 +65,7 @@ public class SimpleResourceAccessor implements ResourceAccessor {
 
     /**
      * Resolve the given URI against the baseURI.
-     * 
+     *
      * @param uri
      *            the URI to resolve
      * @return the resolved URI

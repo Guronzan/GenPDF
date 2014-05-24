@@ -23,15 +23,19 @@ import org.apache.xmlgraphics.xmp.Metadata;
 import org.apache.xmlgraphics.xmp.XMPProperty;
 
 /**
- * Defines an interface the classes can implement to provide special property merging behaviour.
+ * Defines an interface the classes can implement to provide special property
+ * merging behaviour.
  */
 public interface PropertyMerger {
 
     /**
      * Merges a property into a given metadata object
-     * @param sourceProp the source property
-     * @param target the target metadata object
+     * 
+     * @param sourceProp
+     *            the source property
+     * @param target
+     *            the target metadata object
      */
-    void merge(XMPProperty sourceProp, Metadata target);
+    void merge(final XMPProperty sourceProp, final Metadata target);
 
 }

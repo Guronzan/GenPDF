@@ -28,18 +28,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * Thread-safe cache that minimizes the memory requirements by fetching an instance from the cache
- * that is equal to the given one. Internally the instances are stored in WeakReferences in order to
- * be reclaimed when they are no longer referenced.
- * @param <T> The type of values that are cached
+ * Thread-safe cache that minimizes the memory requirements by fetching an
+ * instance from the cache that is equal to the given one. Internally the
+ * instances are stored in WeakReferences in order to be reclaimed when they are
+ * no longer referenced.
+ *
+ * @param <T>
+ *            The type of values that are cached
  */
+@Slf4j
 public final class PropertyCache<T> {
-
-    private static final Log LOG = LogFactory.getLog(PropertyCache.class);
 
     /**
      * Determines if the cache is used based on the value of the system property
@@ -48,16 +49,17 @@ public final class PropertyCache<T> {
     private final boolean useCache;
 
     /**
-     * The underlying map that stores WeakReferences to the cached entries. The map keys are the
-     * hashCode of the cached entries. The map values are a WeakRefence to the cached entries. When
-     * two cached entries have the same hash code, the last one is kept but this should be an
-     * exception case (otherwise the hashCode() method of T needs to be fixed).
+     * The underlying map that stores WeakReferences to the cached entries. The
+     * map keys are the hashCode of the cached entries. The map values are a
+     * WeakRefence to the cached entries. When two cached entries have the same
+     * hash code, the last one is kept but this should be an exception case
+     * (otherwise the hashCode() method of T needs to be fixed).
      */
     private final ConcurrentMap<Integer, WeakReference<T>> map;
 
     /**
-     * Counts the number of entries put in the map in order to periodically check and remove the
-     * entries whose referents have been reclaimed.
+     * Counts the number of entries put in the map in order to periodically
+     * check and remove the entries whose referents have been reclaimed.
      */
     private final AtomicInteger putCounter;
 
@@ -79,14 +81,15 @@ public final class PropertyCache<T> {
         boolean useCache;
         try {
             useCache = Boolean.valueOf(
-                    System.getProperty("org.apache.fop.fo.properties.use-cache", "true"))
+                    System.getProperty(
+                            "org.apache.fop.fo.properties.use-cache", "true"))
                     .booleanValue();
-        } catch ( SecurityException e ) {
+        } catch (final SecurityException e) {
             useCache = true;
-            LOG.info("Unable to access org.apache.fop.fo.properties.use-cache"
-                   + " due to security restriction; defaulting to 'true'.");
+            log.info("Unable to access org.apache.fop.fo.properties.use-cache"
+                    + " due to security restriction; defaulting to 'true'.");
         }
-        if ( useCache ) {
+        if (useCache) {
             this.map = new ConcurrentHashMap<Integer, WeakReference<T>>();
             this.putCounter = new AtomicInteger();
             this.cleanupLock = new ReentrantLock();
@@ -104,10 +107,11 @@ public final class PropertyCache<T> {
      * Returns a cached version of the given object. If the object is not yet in
      * the cache, it will be added and then returned.
      *
-     * @param obj an object
+     * @param obj
+     *            an object
      * @return a cached version of the object
      */
-    public T fetch(T obj) {
+    public T fetch(final T obj) {
         if (!this.useCache) {
             return obj;
         }
@@ -116,11 +120,11 @@ public final class PropertyCache<T> {
             return null;
         }
 
-        Integer hashCode = Integer.valueOf(obj.hashCode());
+        final Integer hashCode = Integer.valueOf(obj.hashCode());
 
-        WeakReference<T> weakRef = map.get(hashCode);
+        WeakReference<T> weakRef = this.map.get(hashCode);
         if (weakRef == null) {
-            weakRef = map.putIfAbsent(hashCode, new WeakReference<T>(obj));
+            weakRef = this.map.putIfAbsent(hashCode, new WeakReference<T>(obj));
             attemptCleanup();
 
             if (weakRef == null) {
@@ -129,67 +133,72 @@ public final class PropertyCache<T> {
             // else another thread added a value, continue.
         }
 
-        T cached = weakRef.get();
+        final T cached = weakRef.get();
         if (cached != null) {
             if (eq(cached, obj)) {
                 return cached;
             } else {
                 /*
-                 * Log a message when obj.getClass() does not implement correctly the equals() or
-                 * hashCode() method. It is expected that only very few objects will have the
-                 * same hashCode but will not be equal.
+                 * Log a message when obj.getClass() does not implement
+                 * correctly the equals() or hashCode() method. It is expected
+                 * that only very few objects will have the same hashCode but
+                 * will not be equal.
                  */
-                if ((hashCodeCollisionCounter.incrementAndGet() % 10) == 0) {
-                    LOG.info(hashCodeCollisionCounter.get() + " hashCode() collisions for "
+                if (this.hashCodeCollisionCounter.incrementAndGet() % 10 == 0) {
+                    log.info(this.hashCodeCollisionCounter.get()
+                            + " hashCode() collisions for "
                             + obj.getClass().getName());
                 }
             }
 
         }
 
-        // Adds a new or replaces an existing entry with obj that has the same hash code
-        map.put(hashCode, new WeakReference<T>(obj));
+        // Adds a new or replaces an existing entry with obj that has the same
+        // hash code
+        this.map.put(hashCode, new WeakReference<T>(obj));
         attemptCleanup();
         return obj;
 
         /*
-         * Another thread might add first. We could check this using map.replace() instead of
-         * map.put() and then recursively call fetch(obj). But if in the meantime, garbage
-         * collection kicks in, we might end up with a StackOverflowException. Not caching an entry
-         * is tolerable, after all it's configurable.
+         * Another thread might add first. We could check this using
+         * map.replace() instead of map.put() and then recursively call
+         * fetch(obj). But if in the meantime, garbage collection kicks in, we
+         * might end up with a StackOverflowException. Not caching an entry is
+         * tolerable, after all it's configurable.
          */
     }
 
-
     private void attemptCleanup() {
-        if ((putCounter.incrementAndGet() % 10000) != 0) {
+        if (this.putCounter.incrementAndGet() % 10000 != 0) {
             return;
         }
 
-        // Lock as there is no need for concurrent cleanup and protect us, on JDK5, from
+        // Lock as there is no need for concurrent cleanup and protect us, on
+        // JDK5, from
         // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6312056
-        if (cleanupLock.tryLock()) {
+        if (this.cleanupLock.tryLock()) {
             try {
                 cleanReclaimedMapEntries();
             } finally {
-                cleanupLock.unlock();
+                this.cleanupLock.unlock();
             }
         }
     }
 
     private void cleanReclaimedMapEntries() {
-        Iterator<Map.Entry<Integer, WeakReference<T>>> iterator = map.entrySet().iterator();
+        final Iterator<Map.Entry<Integer, WeakReference<T>>> iterator = this.map
+                .entrySet().iterator();
         while (iterator.hasNext()) {
-            Map.Entry<Integer, WeakReference<T>> entry = iterator.next();
-            WeakReference<T> weakRef = entry.getValue();
-            T r = weakRef.get();
+            final Map.Entry<Integer, WeakReference<T>> entry = iterator.next();
+            final WeakReference<T> weakRef = entry.getValue();
+            final T r = weakRef.get();
             if (r == null) {
                 iterator.remove();
             }
         }
     }
 
-    private boolean eq(Object p, Object q) {
-        return (p == q || p.equals(q));
+    private boolean eq(final Object p, final Object q) {
+        return p == q || p.equals(q);
     }
 }

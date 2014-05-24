@@ -21,14 +21,13 @@ package org.apache.fop.afp;
 
 import java.awt.BasicStroke;
 
+import org.apache.fop.afp.modca.GraphicsObject;
+import org.apache.fop.fonts.FontInfo;
 import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import org.apache.fop.afp.modca.GraphicsObject;
-import org.apache.fop.fonts.FontInfo;
 
 public class AFPGraphics2DTestCase {
 
@@ -40,18 +39,20 @@ public class AFPGraphics2DTestCase {
     private final AFPResourceManager resourceManager = mock(AFPResourceManager.class);
     private final AFPResourceInfo resourceInfo = mock(AFPResourceInfo.class);
     private final FontInfo fontInfo = mock(FontInfo.class);
-    private AFPGraphics2D graphics2D = new AFPGraphics2D(false, paintingState, resourceManager, resourceInfo,
-            fontInfo);
+    private final AFPGraphics2D graphics2D = new AFPGraphics2D(false,
+            this.paintingState, this.resourceManager, this.resourceInfo,
+            this.fontInfo);
 
     @Test
     public void testApplyStroke() {
         // note: this only tests the setLineWidth in the GraphicsObject
-        float correctedLineWidth = lineWidth * correction;
-        when(stroke.getLineWidth()).thenReturn(lineWidth);
-        when(paintingState.getLineWidthCorrection()).thenReturn(correction);
-        graphics2D.setGraphicsObject(gObject);
-        graphics2D.applyStroke(stroke);
-        verify(gObject).setLineWidth(correctedLineWidth);
+        final float correctedLineWidth = this.lineWidth * this.correction;
+        when(this.stroke.getLineWidth()).thenReturn(this.lineWidth);
+        when(this.paintingState.getLineWidthCorrection()).thenReturn(
+                this.correction);
+        this.graphics2D.setGraphicsObject(this.gObject);
+        this.graphics2D.applyStroke(this.stroke);
+        verify(this.gObject).setLineWidth(correctedLineWidth);
     }
 
 }

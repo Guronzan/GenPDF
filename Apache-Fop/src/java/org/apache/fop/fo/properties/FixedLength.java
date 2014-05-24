@@ -19,11 +19,14 @@
 
 package org.apache.fop.fo.properties;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.datatypes.PercentBaseContext;
 
 /**
  * An absolute length quantity in XSL
  */
+@Slf4j
 public final class FixedLength extends LengthProperty {
 
     /** Describes the unit pica. */
@@ -48,88 +51,100 @@ public final class FixedLength extends LengthProperty {
     private static final PropertyCache<FixedLength> CACHE = new PropertyCache<FixedLength>();
 
     /** canonical zero-length instance */
-    public static final FixedLength ZERO_FIXED_LENGTH = new FixedLength(0, FixedLength.MPT, 1.0f);
+    public static final FixedLength ZERO_FIXED_LENGTH = new FixedLength(0,
+            FixedLength.MPT, 1.0f);
 
-    private int millipoints;
+    private final int millipoints;
 
     /**
-     * Set the length given a number of units, a unit name and
-     * an assumed resolution (used in case the units are pixels)
+     * Set the length given a number of units, a unit name and an assumed
+     * resolution (used in case the units are pixels)
      *
-     * @param numUnits  quantity of input units
-     * @param units     input unit specifier
-     * @param res       input/source resolution
+     * @param numUnits
+     *            quantity of input units
+     * @param units
+     *            input unit specifier
+     * @param res
+     *            input/source resolution
      */
-    private FixedLength(double numUnits, String units, float res) {
+    private FixedLength(final double numUnits, final String units,
+            final float res) {
         this.millipoints = convert(numUnits, units, res);
     }
 
     /**
-     * Return the cached {@link FixedLength} instance corresponding
-     * to the computed value in base-units (millipoints).
+     * Return the cached {@link FixedLength} instance corresponding to the
+     * computed value in base-units (millipoints).
      *
-     * @param numUnits  quantity of input units
-     * @param units     input unit specifier
-     * @param sourceResolution input/source resolution (= ratio of pixels per pt)
-     * @return  the canonical FixedLength instance corresponding
-     *          to the given number of units and unit specifier
-     *          in the given resolution
+     * @param numUnits
+     *            quantity of input units
+     * @param units
+     *            input unit specifier
+     * @param sourceResolution
+     *            input/source resolution (= ratio of pixels per pt)
+     * @return the canonical FixedLength instance corresponding to the given
+     *         number of units and unit specifier in the given resolution
      */
-    public static FixedLength getInstance(double numUnits,
-                                          String units,
-                                          float sourceResolution) {
+    public static FixedLength getInstance(final double numUnits,
+            final String units, final float sourceResolution) {
         if (numUnits == 0.0) {
             return ZERO_FIXED_LENGTH;
         } else {
-            return CACHE.fetch(new FixedLength(numUnits, units, sourceResolution));
+            return CACHE.fetch(new FixedLength(numUnits, units,
+                    sourceResolution));
         }
     }
 
     /**
-     * Return the cached {@link FixedLength} instance corresponding
-     * to the computed value
-     * This method assumes a source-resolution of 1 (1px = 1pt)
+     * Return the cached {@link FixedLength} instance corresponding to the
+     * computed value This method assumes a source-resolution of 1 (1px = 1pt)
      *
-     * @param numUnits  input units
-     * @param units     unit specifier
-     * @return  the canonical FixedLength instance corresponding
-     *          to the given number of units and unit specifier
+     * @param numUnits
+     *            input units
+     * @param units
+     *            unit specifier
+     * @return the canonical FixedLength instance corresponding to the given
+     *         number of units and unit specifier
      */
-    public static FixedLength getInstance(double numUnits,
-                                          String units) {
+    public static FixedLength getInstance(final double numUnits,
+            final String units) {
         return getInstance(numUnits, units, 1.0f);
 
     }
 
     /**
-     * Return the cached {@link FixedLength} instance corresponding
-     * to the computed value.
-     * This method assumes 'millipoints' (non-standard) as units,
-     * and an implied source-resolution of 1 (1px = 1pt).
+     * Return the cached {@link FixedLength} instance corresponding to the
+     * computed value. This method assumes 'millipoints' (non-standard) as
+     * units, and an implied source-resolution of 1 (1px = 1pt).
      *
-     * @param numUnits  input units
-     * @return  the canonical FixedLength instance corresponding
-     *          to the given number of units and unit specifier
+     * @param numUnits
+     *            input units
+     * @return the canonical FixedLength instance corresponding to the given
+     *         number of units and unit specifier
      */
-    public static FixedLength getInstance(double numUnits) {
+    public static FixedLength getInstance(final double numUnits) {
         return getInstance(numUnits, FixedLength.MPT, 1.0f);
 
     }
 
     /**
-     * Convert the given length to a dimensionless integer representing
-     * a whole number of base units (milli-points).
+     * Convert the given length to a dimensionless integer representing a whole
+     * number of base units (milli-points).
      *
-     * @param dvalue quantity of input units
-     * @param unit input unit specifier (in, cm, etc.)
-     * @param res   the input/source resolution (in case the unit spec is "px")
+     * @param dvalue
+     *            quantity of input units
+     * @param unit
+     *            input unit specifier (in, cm, etc.)
+     * @param res
+     *            the input/source resolution (in case the unit spec is "px")
      */
-    private static int convert(double dvalue, String unit, float res) {
-        // TODO: Maybe this method has a better place in org.apache.fop.util.UnitConv?.
+    private static int convert(double dvalue, final String unit, final float res) {
+        // TODO: Maybe this method has a better place in
+        // org.apache.fop.util.UnitConv?.
 
         if ("px".equals(unit)) {
-            //device-dependent units, take the resolution into account
-            dvalue *= (res * 1000);
+            // device-dependent units, take the resolution into account
+            dvalue *= res * 1000;
         } else {
             if (FixedLength.INCH.equals(unit)) {
                 dvalue *= 72000;
@@ -146,56 +161,62 @@ public final class FixedLength extends LengthProperty {
                 log.error("Unknown length unit '" + unit + "'");
             }
         }
-        return (int)dvalue;
+        return (int) dvalue;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getValue() {
-        return millipoints;
+        return this.millipoints;
     }
 
     /** {@inheritDoc} */
-    public int getValue(PercentBaseContext context) {
-        return millipoints;
+    @Override
+    public int getValue(final PercentBaseContext context) {
+        return this.millipoints;
     }
 
     /** {@inheritDoc} */
+    @Override
     public double getNumericValue() {
-        return millipoints;
+        return this.millipoints;
     }
 
     /** {@inheritDoc} */
-    public double getNumericValue(PercentBaseContext context) {
-        return millipoints;
+    @Override
+    public double getNumericValue(final PercentBaseContext context) {
+        return this.millipoints;
     }
 
     /**
-     * Return true since a FixedLength is always absolute.
-     * {@inheritDoc}
+     * Return true since a FixedLength is always absolute. {@inheritDoc}
      */
+    @Override
     public boolean isAbsolute() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return millipoints + FixedLength.MPT;
+        return this.millipoints + FixedLength.MPT;
     }
 
     /** {@inheritDoc} */
-    public boolean equals(Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
         if (obj instanceof FixedLength) {
-            return (((FixedLength)obj).millipoints == this.millipoints);
+            return ((FixedLength) obj).millipoints == this.millipoints;
         }
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode() {
-        return millipoints;
+        return this.millipoints;
     }
 }
-

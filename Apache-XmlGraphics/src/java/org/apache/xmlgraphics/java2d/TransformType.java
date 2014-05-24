@@ -25,9 +25,9 @@ package org.apache.xmlgraphics.java2d;
  * Enumeration for transformation types.
  *
  * @version $Id: TransformType.java 1345683 2012-06-03 14:50:33Z gadams $
- * Originally authored by Vincent Hardy.
+ *          Originally authored by Vincent Hardy.
  */
-public final class TransformType{
+public final class TransformType {
     /*
      * Transform type constants
      */
@@ -49,21 +49,27 @@ public final class TransformType{
     /**
      * TransformType values
      */
-    public static final TransformType TRANSLATE = new TransformType(TRANSFORM_TRANSLATE, TRANSLATE_STRING);
-    public static final TransformType ROTATE = new TransformType(TRANSFORM_ROTATE, ROTATE_STRING);
-    public static final TransformType SCALE = new TransformType(TRANSFORM_SCALE, SCALE_STRING);
-    public static final TransformType SHEAR = new TransformType(TRANSFORM_SHEAR, SHEAR_STRING);
-    public static final TransformType GENERAL = new TransformType(TRANSFORM_GENERAL, GENERAL_STRING);
+    public static final TransformType TRANSLATE = new TransformType(
+            TRANSFORM_TRANSLATE, TRANSLATE_STRING);
+    public static final TransformType ROTATE = new TransformType(
+            TRANSFORM_ROTATE, ROTATE_STRING);
+    public static final TransformType SCALE = new TransformType(
+            TRANSFORM_SCALE, SCALE_STRING);
+    public static final TransformType SHEAR = new TransformType(
+            TRANSFORM_SHEAR, SHEAR_STRING);
+    public static final TransformType GENERAL = new TransformType(
+            TRANSFORM_GENERAL, GENERAL_STRING);
 
-    private String desc;
-    private int val;
+    private final String desc;
+    private final int val;
 
     /**
-     * Constructor is private so that no instances other than
-     * the ones in the enumeration can be created.
+     * Constructor is private so that no instances other than the ones in the
+     * enumeration can be created.
+     * 
      * @see #readResolve
      */
-    private TransformType(int val, String desc){
+    private TransformType(final int val, final String desc) {
         this.desc = desc;
         this.val = val;
     }
@@ -71,13 +77,14 @@ public final class TransformType{
     /**
      * @return description
      */
-    public String toString(){
-        return desc;
+    @Override
+    public String toString() {
+        return this.desc;
     }
 
     /**
-     * Convenience for enumeration switching.
-     * That is,
+     * Convenience for enumeration switching. That is,
+     * 
      * <pre>
      *   switch(transformType.toInt()){
      *       case TransformType.TRANSFORM_TRANSLATE:
@@ -85,17 +92,17 @@ public final class TransformType{
      *       case TransformType.TRANSFORM_ROTATE:
      * </pre>
      */
-    public int toInt(){
-        return val;
+    public int toInt() {
+        return this.val;
     }
 
     /**
-     *  This is called by the serialization code before it returns an unserialized
-     * object. To provide for unicity of instances, the instance that was read
-     * is replaced by its static equivalent
+     * This is called by the serialization code before it returns an
+     * unserialized object. To provide for unicity of instances, the instance
+     * that was read is replaced by its static equivalent
      */
     public Object readResolve() {
-        switch(val){
+        switch (this.val) {
         case TRANSFORM_TRANSLATE:
             return TransformType.TRANSLATE;
         case TRANSFORM_ROTATE:

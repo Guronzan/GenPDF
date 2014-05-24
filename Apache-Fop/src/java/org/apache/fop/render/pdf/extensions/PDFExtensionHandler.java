@@ -19,25 +19,21 @@
 
 package org.apache.fop.render.pdf.extensions;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.fop.util.ContentHandlerFactory;
+import org.apache.fop.util.ContentHandlerFactory.ObjectBuiltListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.apache.fop.util.ContentHandlerFactory;
-import org.apache.fop.util.ContentHandlerFactory.ObjectBuiltListener;
-
 /**
  * ContentHandler (parser) for restoring PDF extension objects from XML.
  */
-public class PDFExtensionHandler extends DefaultHandler
-            implements ContentHandlerFactory.ObjectSource {
-
-    /** Logger instance */
-    protected static final Log log = LogFactory.getLog(PDFExtensionHandler.class);
+@Slf4j
+public class PDFExtensionHandler extends DefaultHandler implements
+ContentHandlerFactory.ObjectSource {
 
     private Attributes lastAttributes;
 
@@ -45,14 +41,16 @@ public class PDFExtensionHandler extends DefaultHandler
     private ObjectBuiltListener listener;
 
     /** {@inheritDoc} */
-    public void startElement(String uri, String localName, String qName, Attributes attributes)
-                throws SAXException {
+    @Override
+    public void startElement(final String uri, final String localName,
+            final String qName, final Attributes attributes)
+                    throws SAXException {
         boolean handled = false;
         if (PDFExtensionAttachment.CATEGORY.equals(uri)) {
-            lastAttributes = new AttributesImpl(attributes);
+            this.lastAttributes = new AttributesImpl(attributes);
             handled = false;
             if (localName.equals(PDFEmbeddedFileExtensionAttachment.ELEMENT)) {
-                //handled in endElement
+                // handled in endElement
                 handled = true;
             }
         }
@@ -61,38 +59,44 @@ public class PDFExtensionHandler extends DefaultHandler
                 throw new SAXException("Unhandled element " + localName
                         + " in namespace: " + uri);
             } else {
-                log.warn("Unhandled element " + localName
-                        + " in namespace: " + uri);
+                log.warn("Unhandled element " + localName + " in namespace: "
+                        + uri);
             }
         }
     }
 
     /** {@inheritDoc} */
-    public void endElement(String uri, String localName, String qName) throws SAXException {
+    @Override
+    public void endElement(final String uri, final String localName,
+            final String qName) throws SAXException {
         if (PDFExtensionAttachment.CATEGORY.equals(uri)) {
             if (PDFEmbeddedFileExtensionAttachment.ELEMENT.equals(localName)) {
-                String name = lastAttributes.getValue("name");
-                String src = lastAttributes.getValue("src");
-                String desc = lastAttributes.getValue("description");
-                this.returnedObject = new PDFEmbeddedFileExtensionAttachment(name, src, desc);
+                final String name = this.lastAttributes.getValue("name");
+                final String src = this.lastAttributes.getValue("src");
+                final String desc = this.lastAttributes.getValue("description");
+                this.returnedObject = new PDFEmbeddedFileExtensionAttachment(
+                        name, src, desc);
             }
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endDocument() throws SAXException {
-        if (listener != null) {
-            listener.notifyObjectBuilt(getObject());
+        if (this.listener != null) {
+            this.listener.notifyObjectBuilt(getObject());
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public Object getObject() {
-        return returnedObject;
+        return this.returnedObject;
     }
 
     /** {@inheritDoc} */
-    public void setObjectBuiltListener(ObjectBuiltListener listener) {
+    @Override
+    public void setObjectBuiltListener(final ObjectBuiltListener listener) {
         this.listener = listener;
     }
 }

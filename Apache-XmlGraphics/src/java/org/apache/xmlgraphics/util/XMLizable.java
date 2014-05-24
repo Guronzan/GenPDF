@@ -29,16 +29,19 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 /**
- * This interface can be implemented by classes willing to provide an XML representation
- * of their current state as SAX events.
+ * This interface can be implemented by classes willing to provide an XML
+ * representation of their current state as SAX events.
  */
 public interface XMLizable {
 
     /**
      * Generates SAX events representing the object's state.
-     * @param handler ContentHandler instance to send the SAX events to
-     * @throws SAXException if there's a problem generating the SAX events
+     * 
+     * @param handler
+     *            ContentHandler instance to send the SAX events to
+     * @throws SAXException
+     *             if there's a problem generating the SAX events
      */
-    void toSAX(ContentHandler handler) throws SAXException;
+    void toSAX(final ContentHandler handler) throws SAXException;
 
 }

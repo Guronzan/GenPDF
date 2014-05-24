@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
-
 import org.apache.fop.afp.ptoca.PtocaConstants;
 import org.apache.fop.afp.util.BinaryUtils;
 
@@ -46,11 +45,13 @@ import org.apache.fop.afp.util.BinaryUtils;
  * which signal an alternate mode of processing for the content of the current
  * Presentation Text data.
  * <p>
- * The content for this object can be created using {@link org.apache.fop.afp.ptoca.PtocaBuilder}.
+ * The content for this object can be created using
+ * {@link org.apache.fop.afp.ptoca.PtocaBuilder}.
  */
-public class PresentationTextData extends AbstractAFPObject implements PtocaConstants {
+public class PresentationTextData extends AbstractAFPObject implements
+        PtocaConstants {
 
-    /** the maximum size of the presentation text data.*/
+    /** the maximum size of the presentation text data. */
     private static final int MAX_SIZE = 8192;
 
     /** the AFP data relating to this presentation text data. */
@@ -73,36 +74,38 @@ public class PresentationTextData extends AbstractAFPObject implements PtocaCons
      * @param controlInd
      *            The control sequence indicator.
      */
-    public PresentationTextData(boolean controlInd) {
-        final byte[] data = {
-                0x5A, // Structured field identifier
+    public PresentationTextData(final boolean controlInd) {
+        final byte[] data = { 0x5A, // Structured field identifier
                 0x00, // Record length byte 1
                 0x00, // Record length byte 2
                 SF_CLASS, // PresentationTextData identifier byte 1
                 Type.DATA, // PresentationTextData identifier byte 2
-                Category.PRESENTATION_TEXT, // PresentationTextData identifier byte 3
+                Category.PRESENTATION_TEXT, // PresentationTextData identifier
+                                            // byte 3
                 0x00, // Flag
                 0x00, // Reserved
                 0x00, // Reserved
         };
-        baos.write(data, 0, HEADER_LENGTH);
+        this.baos.write(data, 0, HEADER_LENGTH);
 
         if (controlInd) {
-            baos.write(new byte[] {0x2B, (byte) 0xD3}, 0, 2);
+            this.baos.write(new byte[] { 0x2B, (byte) 0xD3 }, 0, 2);
         }
     }
 
     /**
-     * Returns the number of data bytes still available in this object until it is full and a new
-     * one has to be started.
+     * Returns the number of data bytes still available in this object until it
+     * is full and a new one has to be started.
+     * 
      * @return the number of data bytes available
      */
     public int getBytesAvailable() {
-        return MAX_SIZE - baos.size() + HEADER_LENGTH;
+        return MAX_SIZE - this.baos.size() + HEADER_LENGTH;
     }
 
     /**
      * Returns the output stream the content data is written to.
+     * 
      * @return the output stream
      */
     protected OutputStream getOutputStream() {
@@ -110,10 +113,11 @@ public class PresentationTextData extends AbstractAFPObject implements PtocaCons
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
         assert getBytesAvailable() >= 0;
-        byte[] data = baos.toByteArray();
-        byte[] size = BinaryUtils.convert(data.length - 1, 2);
+        final byte[] data = this.baos.toByteArray();
+        final byte[] size = BinaryUtils.convert(data.length - 1, 2);
         data[1] = size[0];
         data[2] = size[1];
         os.write(data);

@@ -28,12 +28,14 @@ import java.io.IOException;
 interface ObjectReference {
 
     /**
-     * Outputs this reference to the given stream, in the cross-reference stream format.
-     * For example, a object may output the bytes 01 00 00 00 00 00 00 01 ff 00 to
-     * indicate a non-compressed object (01), at offset 511 from the beginning of the file
-     * (00 00 00 00 00 00 01 ff), of generation number 0 (00).
+     * Outputs this reference to the given stream, in the cross-reference stream
+     * format. For example, a object may output the bytes 01 00 00 00 00 00 00
+     * 01 ff 00 to indicate a non-compressed object (01), at offset 511 from the
+     * beginning of the file (00 00 00 00 00 00 01 ff), of generation number 0
+     * (00).
      *
-     * @param out the stream to which to output the reference
+     * @param out
+     *            the stream to which to output the reference
      */
-    void output(DataOutputStream out) throws IOException;
+    void output(final DataOutputStream out) throws IOException;
 }

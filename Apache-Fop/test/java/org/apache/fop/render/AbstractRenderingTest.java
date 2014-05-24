@@ -36,7 +36,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 
 /**
  * Abstract base class for rendering (output) verification tests.
@@ -46,9 +45,10 @@ public abstract class AbstractRenderingTest {
     private static final Map<String, String> MIME_MAP = new java.util.HashMap<String, String>();
 
     static {
-        MIME_MAP.put(MimeConstants.MIME_PDF, ".pdf");
-        MIME_MAP.put(MimeConstants.MIME_POSTSCRIPT, ".ps");
-        MIME_MAP.put(MimeConstants.MIME_AFP, ".afp");
+        MIME_MAP.put(org.apache.xmlgraphics.util.MimeConstants.MIME_PDF, ".pdf");
+        MIME_MAP.put(org.apache.xmlgraphics.util.MimeConstants.MIME_POSTSCRIPT,
+                ".ps");
+        MIME_MAP.put(org.apache.xmlgraphics.util.MimeConstants.MIME_AFP, ".afp");
     }
 
     /** the JAXP TransformerFactory */
@@ -58,38 +58,45 @@ public abstract class AbstractRenderingTest {
 
     /**
      * Renders a test file.
-     * @param ua the user agent (with override set!)
-     * @param resourceName the resource name for the FO file
-     * @param suffix a suffix for the output filename
-     * @param outputFormat MIME type of the requested output format
+     * 
+     * @param ua
+     *            the user agent (with override set!)
+     * @param resourceName
+     *            the resource name for the FO file
+     * @param suffix
+     *            a suffix for the output filename
+     * @param outputFormat
+     *            MIME type of the requested output format
      * @return the output file
-     * @throws Exception if an error occurs
+     * @throws Exception
+     *             if an error occurs
      */
-    protected File renderFile(FOUserAgent ua, String resourceName, String suffix,
-            String outputFormat) throws Exception {
-        String extension = MIME_MAP.get(outputFormat);
+    protected File renderFile(final FOUserAgent ua, final String resourceName,
+            final String suffix, final String outputFormat) throws Exception {
+        final String extension = MIME_MAP.get(outputFormat);
         assert extension != null;
-        File outputFile = new File("build/test-results/" + resourceName + suffix + extension);
-        File outputDir = outputFile.getParentFile();
+        final File outputFile = new File("build/test-results/" + resourceName
+                + suffix + extension);
+        final File outputDir = outputFile.getParentFile();
         FileUtils.forceMkdir(outputDir);
 
         // Prepare input file
-        InputStream in = getClass().getResourceAsStream(resourceName);
+        final InputStream in = getClass().getResourceAsStream(resourceName);
         if (in == null) {
-            throw new MissingResourceException(resourceName + " not found in resources",
-                    getClass().getName(), null);
+            throw new MissingResourceException(resourceName
+                    + " not found in resources", getClass().getName(), null);
         }
         try {
-            Source src = new StreamSource(in);
+            final Source src = new StreamSource(in);
 
             // Create output file
             OutputStream out = new java.io.FileOutputStream(outputFile);
             out = new java.io.BufferedOutputStream(out);
             try {
-                Fop fop = fopFactory.newFop(outputFormat, ua, out);
-                SAXResult res = new SAXResult(fop.getDefaultHandler());
+                final Fop fop = this.fopFactory.newFop(outputFormat, ua, out);
+                final SAXResult res = new SAXResult(fop.getDefaultHandler());
 
-                Transformer transformer = tFactory.newTransformer();
+                final Transformer transformer = this.tFactory.newTransformer();
                 transformer.transform(src, res);
             } finally {
                 IOUtils.closeQuietly(out);

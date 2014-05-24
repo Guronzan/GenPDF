@@ -30,24 +30,28 @@ public interface PercentBase {
     /**
      * Determines whether a numeric property is created or one with a percentage
      * base.
+     * 
      * @return 0 for length, 1 for percentage
      */
     int getDimension();
 
     /**
-     * @return the base value (this will be used as the base to which a percentage will be
-     *         applied to compute the length of the referencing item)
+     * @return the base value (this will be used as the base to which a
+     *         percentage will be applied to compute the length of the
+     *         referencing item)
      */
     double getBaseValue();
 
     /**
-     * @param context The context for percentage evaluation
+     * @param context
+     *            The context for percentage evaluation
      * @return the integer size in millipoints of the object (this will be used
-     * as the base to which a percentage will be applied to compute the length
-     * of the referencing item)
-     * @throws PropertyException if a problem occurs during evaluation of this
-     *     value.
+     *         as the base to which a percentage will be applied to compute the
+     *         length of the referencing item)
+     * @throws PropertyException
+     *             if a problem occurs during evaluation of this value.
      */
-    int getBaseLength(PercentBaseContext context) throws PropertyException;
+    int getBaseLength(final PercentBaseContext context)
+            throws PropertyException;
 
 }

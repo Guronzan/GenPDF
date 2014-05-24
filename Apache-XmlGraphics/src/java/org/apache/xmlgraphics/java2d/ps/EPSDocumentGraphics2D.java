@@ -24,73 +24,78 @@ import java.io.IOException;
 import org.apache.xmlgraphics.ps.DSCConstants;
 
 /**
- * This class is a wrapper for the <tt>AbstractPSDocumentGraphics2D</tt> that
- * is used to create EPS (Encapsulated PostScript) files instead of PS file.
+ * This class is a wrapper for the <tt>AbstractPSDocumentGraphics2D</tt> that is
+ * used to create EPS (Encapsulated PostScript) files instead of PS file.
  *
- * @version $Id: EPSDocumentGraphics2D.java 954770 2010-06-15 09:05:14Z jeremias $
+ * @version $Id: EPSDocumentGraphics2D.java 954770 2010-06-15 09:05:14Z jeremias
+ *          $
  * @see org.apache.xmlgraphics.java2d.ps.PSGraphics2D
  * @see org.apache.xmlgraphics.java2d.ps.AbstractPSDocumentGraphics2D
  */
 public class EPSDocumentGraphics2D extends AbstractPSDocumentGraphics2D {
 
     /**
-     * Create a new EPSDocumentGraphics2D.
-     * This is used to create a new EPS document, the height,
-     * width and output stream can be setup later.
-     * For use by the transcoder which needs font information
-     * for the bridge before the document size is known.
-     * The resulting document is written to the stream after rendering.
+     * Create a new EPSDocumentGraphics2D. This is used to create a new EPS
+     * document, the height, width and output stream can be setup later. For use
+     * by the transcoder which needs font information for the bridge before the
+     * document size is known. The resulting document is written to the stream
+     * after rendering.
      *
-     * @param textAsShapes set this to true so that text will be rendered
-     * using curves and not the font.
+     * @param textAsShapes
+     *            set this to true so that text will be rendered using curves
+     *            and not the font.
      */
-    public EPSDocumentGraphics2D(boolean textAsShapes) {
+    public EPSDocumentGraphics2D(final boolean textAsShapes) {
         super(textAsShapes);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void writeFileHeader() throws IOException {
         final Long pagewidth = new Long(this.width);
         final Long pageheight = new Long(this.height);
 
-        //PostScript Header
-        gen.writeln(DSCConstants.PS_ADOBE_30 + " " + DSCConstants.EPSF_30);
-        gen.writeDSCComment(DSCConstants.CREATOR,
-                    new String[] {"Apache XML Graphics Commons"
-                        + ": EPS Generator for Java2D"});
-        gen.writeDSCComment(DSCConstants.CREATION_DATE,
-                    new Object[] {new java.util.Date()});
-        gen.writeDSCComment(DSCConstants.PAGES, DSCConstants.ATEND);
-        gen.writeDSCComment(DSCConstants.BBOX, new Object[]
-                {ZERO, ZERO, pagewidth, pageheight});
-        gen.writeDSCComment(DSCConstants.LANGUAGE_LEVEL, new Integer(gen.getPSLevel()));
-        gen.writeDSCComment(DSCConstants.END_COMMENTS);
+        // PostScript Header
+        this.gen.writeln(DSCConstants.PS_ADOBE_30 + " " + DSCConstants.EPSF_30);
+        this.gen.writeDSCComment(DSCConstants.CREATOR,
+                new String[] { "Apache XML Graphics Commons"
+                        + ": EPS Generator for Java2D" });
+        this.gen.writeDSCComment(DSCConstants.CREATION_DATE,
+                new Object[] { new java.util.Date() });
+        this.gen.writeDSCComment(DSCConstants.PAGES, DSCConstants.ATEND);
+        this.gen.writeDSCComment(DSCConstants.BBOX, new Object[] { ZERO, ZERO,
+                pagewidth, pageheight });
+        this.gen.writeDSCComment(DSCConstants.LANGUAGE_LEVEL, new Integer(
+                this.gen.getPSLevel()));
+        this.gen.writeDSCComment(DSCConstants.END_COMMENTS);
 
-        //Prolog
-        gen.writeDSCComment(DSCConstants.BEGIN_PROLOG);
+        // Prolog
+        this.gen.writeDSCComment(DSCConstants.BEGIN_PROLOG);
         writeProcSets();
-        if (customTextHandler instanceof PSTextHandler) {
-            ((PSTextHandler)customTextHandler).writeSetup();
+        if (this.customTextHandler instanceof PSTextHandler) {
+            ((PSTextHandler) this.customTextHandler).writeSetup();
         }
-        gen.writeDSCComment(DSCConstants.END_PROLOG);
+        this.gen.writeDSCComment(DSCConstants.END_PROLOG);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void writePageHeader() throws IOException {
-        Integer pageNumber = new Integer(this.pagecount);
-        gen.writeDSCComment(DSCConstants.PAGE, new Object[]
-                {pageNumber.toString(), pageNumber});
-        gen.writeDSCComment(DSCConstants.PAGE_BBOX, new Object[]
-                {ZERO, ZERO, new Integer(width), new Integer(height)});
-        gen.writeDSCComment(DSCConstants.BEGIN_PAGE_SETUP);
-        if (customTextHandler instanceof PSTextHandler) {
-            ((PSTextHandler)customTextHandler).writePageSetup();
+        final Integer pageNumber = new Integer(this.pagecount);
+        this.gen.writeDSCComment(DSCConstants.PAGE,
+                new Object[] { pageNumber.toString(), pageNumber });
+        this.gen.writeDSCComment(DSCConstants.PAGE_BBOX, new Object[] { ZERO,
+                ZERO, new Integer(this.width), new Integer(this.height) });
+        this.gen.writeDSCComment(DSCConstants.BEGIN_PAGE_SETUP);
+        if (this.customTextHandler instanceof PSTextHandler) {
+            ((PSTextHandler) this.customTextHandler).writePageSetup();
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void writePageTrailer() throws IOException {
-        //nop, no DSC PageTrailer needed
+        // nop, no DSC PageTrailer needed
     }
 
 }

@@ -31,7 +31,7 @@ public final class StringUtils {
     /**
      * Padds the string to the left with the given character for the specified
      * length.
-     * 
+     *
      * @param input
      *            The input string.
      * @param padding
@@ -62,7 +62,7 @@ public final class StringUtils {
     /**
      * Padds the string to the right with the given character for the specified
      * length.
-     * 
+     *
      * @param input
      *            The input string.
      * @param padding

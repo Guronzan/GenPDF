@@ -37,58 +37,83 @@ public interface AreaEventProducer extends EventProducer {
 
         /**
          * Returns an event producer.
-         * @param broadcaster the event broadcaster to use
+         * 
+         * @param broadcaster
+         *            the event broadcaster to use
          * @return the event producer
          */
-        public static AreaEventProducer get(EventBroadcaster broadcaster) {
-            return (AreaEventProducer)broadcaster.getEventProducerFor(
-                    AreaEventProducer.class);
+        public static AreaEventProducer get(final EventBroadcaster broadcaster) {
+            return (AreaEventProducer) broadcaster
+                    .getEventProducerFor(AreaEventProducer.class);
         }
     }
 
     /**
      * An unresolved ID reference was encountered.
-     * @param source the event source
-     * @param type the type of reference
-     * @param id the unresolved ID
+     * 
+     * @param source
+     *            the event source
+     * @param type
+     *            the type of reference
+     * @param id
+     *            the unresolved ID
      * @event.severity WARN
      */
-    void unresolvedIDReference(Object source, String type, String id);
+    void unresolvedIDReference(final Object source, final String type,
+            final String id);
 
     /**
      * An unresolved ID reference was encountered on a page.
-     * @param source the event source
-     * @param page the page the ID reference was found on
-     * @param id the unresolved ID
+     * 
+     * @param source
+     *            the event source
+     * @param page
+     *            the page the ID reference was found on
+     * @param id
+     *            the unresolved ID
      * @event.severity WARN
      */
-    void unresolvedIDReferenceOnPage(Object source, String page, String id);
+    void unresolvedIDReferenceOnPage(final Object source, final String page,
+            final String id);
 
     /**
      * A page could not be loaded/deserialized from a file.
-     * @param source the event source
-     * @param page the page to be loaded
-     * @param e the original exception
+     * 
+     * @param source
+     *            the event source
+     * @param page
+     *            the page to be loaded
+     * @param e
+     *            the original exception
      * @event.severity ERROR
      */
-    void pageLoadError(Object source, String page, Exception e);
+    void pageLoadError(final Object source, final String page, final Exception e);
 
     /**
      * A page could not be saved/serialized to a file.
-     * @param source the event source
-     * @param page the page to be serialized
-     * @param e the original exception
+     * 
+     * @param source
+     *            the event source
+     * @param page
+     *            the page to be serialized
+     * @param e
+     *            the original exception
      * @event.severity ERROR
      */
-    void pageSaveError(Object source, String page, Exception e);
+    void pageSaveError(final Object source, final String page, final Exception e);
 
     /**
      * A page could not be rendered.
-     * @param source the event source
-     * @param page the page to be serialized
-     * @param e the original exception
+     * 
+     * @param source
+     *            the event source
+     * @param page
+     *            the page to be serialized
+     * @param e
+     *            the original exception
      * @event.severity ERROR
      */
-    void pageRenderingError(Object source, String page, Exception e);
+    void pageRenderingError(final Object source, final String page,
+            final Exception e);
 
 }

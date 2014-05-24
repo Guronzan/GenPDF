@@ -26,7 +26,8 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.logging.impl.SimpleLog;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
@@ -44,6 +45,7 @@ import org.w3c.dom.NodeList;
  * different versions of FOP or the pdf can be view for manual checking and pdf
  * rendering.
  */
+@Slf4j
 public class TestConverter {
 
     // configure fopFactory as desired
@@ -57,24 +59,19 @@ public class TestConverter {
     private final Map differ = new java.util.HashMap();
 
     /**
-     * logging instance
-     */
-    protected SimpleLog logger = null;
-
-    /**
      * This main method can be used to run the test converter from the command
      * line. This will take a specified testsuite xml and process all tests in
      * it. The command line options are: -b to set the base directory for where
      * the testsuite and associated files are -failOnly to process only the
      * tests which are specified as fail in the test results -pdf to output the
      * result as pdf
-     * 
+     *
      * @param args
      *            command-line arguments
      */
     public static void main(final String[] args) {
         if (args == null || args.length == 0) {
-            System.out.println("test suite file name required");
+            log.info("test suite file name required");
             return;
         }
         final TestConverter tc = new TestConverter();
@@ -85,13 +82,11 @@ public class TestConverter {
             if (args[count].equals("-failOnly")) {
                 tc.setFailOnly(true);
             } else if (args[count].equals("-pdf")) {
-                tc.setOutputFormat(MimeConstants.MIME_PDF);
+                tc.setOutputFormat(org.apache.xmlgraphics.util.MimeConstants.MIME_PDF);
             } else if (args[count].equals("-rtf")) {
-                tc.setOutputFormat(MimeConstants.MIME_RTF);
+                tc.setOutputFormat(org.apache.xmlgraphics.util.MimeConstants.MIME_RTF);
             } else if (args[count].equals("-ps")) {
-                tc.setOutputFormat(MimeConstants.MIME_POSTSCRIPT);
-            } else if (args[count].equals("-d")) {
-                tc.setDebug(true);
+                tc.setOutputFormat(org.apache.xmlgraphics.util.MimeConstants.MIME_POSTSCRIPT);
             } else if (args[count].equals("-b")) {
                 tc.setBaseDir(args[++count]);
             } else if (args[count].equals("-results")) {
@@ -101,7 +96,7 @@ public class TestConverter {
             }
         }
         if (testFile == null) {
-            System.out.println("test suite file name required");
+            log.info("test suite file name required");
         }
 
         tc.runTests(testFile, results, null);
@@ -111,13 +106,11 @@ public class TestConverter {
      * Construct a new TestConverter
      */
     public TestConverter() {
-        this.logger = new SimpleLog("FOP/Test");
-        this.logger.setLevel(SimpleLog.LOG_LEVEL_ERROR);
     }
 
     /**
      * Controls output format to generate
-     * 
+     *
      * @param outputFormat
      *            the MIME type of the output format
      */
@@ -128,7 +121,7 @@ public class TestConverter {
     /**
      * Controls whether to process only the tests which are specified as fail in
      * the test results.
-     * 
+     *
      * @param fail
      *            True if only fail tests should be processed
      */
@@ -138,7 +131,7 @@ public class TestConverter {
 
     /**
      * Sets the base directory.
-     * 
+     *
      * @param str
      *            base directory
      */
@@ -147,23 +140,9 @@ public class TestConverter {
     }
 
     /**
-     * Controls whether to set logging to debug level
-     * 
-     * @param debug
-     *            If true, debug level, if false, error level
-     */
-    public void setDebug(final boolean debug) {
-        if (debug) {
-            this.logger.setLevel(SimpleLog.LOG_LEVEL_DEBUG);
-        } else {
-            this.logger.setLevel(SimpleLog.LOG_LEVEL_ERROR);
-        }
-    }
-
-    /**
      * Run the Tests. This runs the tests specified in the xml file fname. The
      * document is read as a dom and each testcase is covered.
-     * 
+     *
      * @param fname
      *            filename of the input file
      * @param dest
@@ -174,7 +153,7 @@ public class TestConverter {
      */
     public Map runTests(final String fname, final String dest,
             final String compDir) {
-        this.logger.debug("running tests in file:" + fname);
+        log.debug("running tests in file:" + fname);
         try {
             if (compDir != null) {
                 this.compare = new File(this.baseDir + "/" + compDir);
@@ -198,7 +177,7 @@ public class TestConverter {
             if (testsuite.hasAttributes()) {
                 final String profile = testsuite.getAttributes()
                         .getNamedItem("profile").getNodeValue();
-                this.logger.debug("testing test suite:" + profile);
+                log.debug("testing test suite:" + profile);
             }
 
             final NodeList testcases = testsuite.getChildNodes();
@@ -209,7 +188,7 @@ public class TestConverter {
                 }
             }
         } catch (final Exception e) {
-            this.logger.error("Error while running tests", e);
+            log.error("Error while running tests", e);
         }
         return this.differ;
     }
@@ -218,7 +197,7 @@ public class TestConverter {
      * Run a test case. This goes through a test case in the document. A
      * testcase can contain a test, a result or more test cases. A test case is
      * handled recursively otherwise the test is run.
-     * 
+     *
      * @param tcase
      *            Test case node to run
      */
@@ -226,7 +205,7 @@ public class TestConverter {
         if (tcase.hasAttributes()) {
             final String profile = tcase.getAttributes()
                     .getNamedItem("profile").getNodeValue();
-            this.logger.debug("testing profile:" + profile);
+            log.debug("testing profile:" + profile);
         }
 
         final NodeList cases = tcase.getChildNodes();
@@ -250,7 +229,7 @@ public class TestConverter {
      * documents. If the test has a result specified it is checked. This creates
      * an XSLTInputHandler to provide the input for FOP and writes the data out
      * to an XML are tree.
-     * 
+     *
      * @param testcase
      *            Test case to run
      * @param test
@@ -278,8 +257,7 @@ public class TestConverter {
         if (xslNode != null) {
             xsl = xslNode.getNodeValue();
         }
-        this.logger.debug("converting xml:" + xml + " and xsl:" + xsl
-                + " to area tree");
+        log.debug("converting xml:" + xml + " and xsl:" + xsl + " to area tree");
 
         String res = xml;
         final Node resNode = test.getAttributes().getNamedItem("results");
@@ -293,7 +271,7 @@ public class TestConverter {
                 baseURL = xmlFile.getParentFile().toURI().toURL()
                         .toExternalForm();
             } catch (final Exception e) {
-                this.logger.error("Error setting base directory");
+                log.error("Error setting base directory");
             }
 
             InputHandler inputHandler = null;
@@ -307,8 +285,7 @@ public class TestConverter {
             final FOUserAgent userAgent = this.fopFactory.newFOUserAgent();
             userAgent.setBaseURL(baseURL);
 
-            userAgent.getRendererOptions()
-                    .put("fineDetail", new Boolean(false));
+            userAgent.getRendererOptions().put("fineDetail", Boolean.FALSE);
             userAgent.getRendererOptions().put("consistentOutput",
                     new Boolean(true));
             userAgent.setProducer("Testsuite Converter");
@@ -323,8 +300,7 @@ public class TestConverter {
             outputFile.getParentFile().mkdirs();
             final OutputStream outStream = new java.io.BufferedOutputStream(
                     new java.io.FileOutputStream(outputFile));
-            this.logger.debug("ddir:" + this.destdir + " on:"
-                    + outputFile.getName());
+            log.debug("ddir:" + this.destdir + " on:" + outputFile.getName());
             inputHandler.renderTo(userAgent, this.outputFormat, outStream);
             outStream.close();
 
@@ -337,7 +313,7 @@ public class TestConverter {
                 }
             }
         } catch (final Exception e) {
-            this.logger.error("Error while running tests", e);
+            log.error("Error while running tests", e);
         }
     }
 
@@ -345,11 +321,14 @@ public class TestConverter {
      * Return a suitable file extension for the output format.
      */
     private String makeResultExtension() {
-        if (MimeConstants.MIME_PDF.equals(this.outputFormat)) {
+        if (org.apache.xmlgraphics.util.MimeConstants.MIME_PDF
+                .equals(this.outputFormat)) {
             return ".pdf";
-        } else if (MimeConstants.MIME_RTF.equals(this.outputFormat)) {
+        } else if (org.apache.xmlgraphics.util.MimeConstants.MIME_RTF
+                .equals(this.outputFormat)) {
             return ".rtf";
-        } else if (MimeConstants.MIME_POSTSCRIPT.equals(this.outputFormat)) {
+        } else if (org.apache.xmlgraphics.util.MimeConstants.MIME_POSTSCRIPT
+                .equals(this.outputFormat)) {
             return ".ps";
         } else {
             return ".at.xml";
@@ -358,7 +337,7 @@ public class TestConverter {
 
     /**
      * Compare files.
-     * 
+     *
      * @param f1
      *            first file
      * @param f2
@@ -369,7 +348,7 @@ public class TestConverter {
         try {
             return FileCompare.compareFiles(f1, f2);
         } catch (final Exception e) {
-            this.logger.error("Error while comparing files", e);
+            log.error("Error while comparing files", e);
             return false;
         }
     }

@@ -38,57 +38,61 @@ public class TrailerDictionary {
 
     private final PDFDictionary dictionary;
 
-    public TrailerDictionary(PDFDocument pdfDocument) {
+    public TrailerDictionary(final PDFDocument pdfDocument) {
         this.dictionary = new PDFDictionary();
         this.dictionary.setDocument(pdfDocument);
     }
 
     /** Sets the value of the Root entry. */
-    public TrailerDictionary setRoot(PDFRoot root) {
-        dictionary.put("/Root", root);
+    public TrailerDictionary setRoot(final PDFRoot root) {
+        this.dictionary.put("/Root", root);
         return this;
     }
 
     /** Sets the value of the Info entry. */
-    public TrailerDictionary setInfo(PDFInfo info) {
-        dictionary.put("/Info", info);
+    public TrailerDictionary setInfo(final PDFInfo info) {
+        this.dictionary.put("/Info", info);
         return this;
     }
 
     /** Sets the value of the Encrypt entry. */
-    public TrailerDictionary setEncryption(PDFEncryption encryption) {
-        dictionary.put("/Encrypt", encryption);
+    public TrailerDictionary setEncryption(final PDFEncryption encryption) {
+        this.dictionary.put("/Encrypt", encryption);
         return this;
     }
 
     /** Sets the value of the ID entry. */
-    public TrailerDictionary setFileID(byte[] originalFileID, byte[] updatedFileID) {
-        // TODO this is ugly! Used to circumvent the fact that the file ID will be
+    public TrailerDictionary setFileID(final byte[] originalFileID,
+            final byte[] updatedFileID) {
+        // TODO this is ugly! Used to circumvent the fact that the file ID will
+        // be
         // encrypted if directly stored as a byte array
         class FileID implements PDFWritable {
 
             private final byte[] fileID;
 
-            FileID(byte[] id) {
-                fileID = id;
+            FileID(final byte[] id) {
+                this.fileID = id;
             }
 
-            public void outputInline(OutputStream out, StringBuilder textBuffer)
-                    throws IOException {
+            @Override
+            public void outputInline(final OutputStream out,
+                    final StringBuilder textBuffer) throws IOException {
                 PDFDocument.flushTextBuffer(textBuffer, out);
-                String hex = PDFText.toHex(fileID, true);
-                byte[] encoded = hex.getBytes("US-ASCII");
+                final String hex = PDFText.toHex(this.fileID, true);
+                final byte[] encoded = hex.getBytes("US-ASCII");
                 out.write(encoded);
             }
 
         }
-        PDFArray fileID = new PDFArray(new FileID(originalFileID), new FileID(updatedFileID));
-        dictionary.put("/ID", fileID);
+        final PDFArray fileID = new PDFArray(new FileID(originalFileID),
+                new FileID(updatedFileID));
+        this.dictionary.put("/ID", fileID);
         return this;
     }
 
     PDFDictionary getDictionary() {
-        return dictionary;
+        return this.dictionary;
     }
 
 }

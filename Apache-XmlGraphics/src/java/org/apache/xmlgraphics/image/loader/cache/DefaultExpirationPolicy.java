@@ -27,7 +27,7 @@ public class DefaultExpirationPolicy implements ExpirationPolicy {
     public static final int EXPIRATION_IMMEDIATE = 0;
     public static final int EXPIRATION_NEVER = -1;
 
-    private int expirationAfter; //in seconds
+    private final int expirationAfter; // in seconds
 
     /**
      * Creates a new policy with default settings (expiration in 60 seconds).
@@ -38,23 +38,28 @@ public class DefaultExpirationPolicy implements ExpirationPolicy {
 
     /**
      * Creates a new policy.
-     * @param expirationAfter the expiration in seconds (a negative value means: never expire)
+     * 
+     * @param expirationAfter
+     *            the expiration in seconds (a negative value means: never
+     *            expire)
      */
-    public DefaultExpirationPolicy(int expirationAfter) {
+    public DefaultExpirationPolicy(final int expirationAfter) {
         this.expirationAfter = expirationAfter;
     }
 
     private boolean isNeverExpired() {
-        return (this.expirationAfter < 0);
+        return this.expirationAfter < 0;
     }
 
     /** {@inheritDoc} */
-    public boolean isExpired(TimeStampProvider provider, long timestamp) {
+    @Override
+    public boolean isExpired(final TimeStampProvider provider,
+            final long timestamp) {
         if (isNeverExpired()) {
             return false;
         } else {
-            long now = provider.getTimeStamp();
-            return now >= (timestamp + (this.expirationAfter * 1000));
+            final long now = provider.getTimeStamp();
+            return now >= timestamp + this.expirationAfter * 1000;
         }
     }
 

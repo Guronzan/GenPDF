@@ -20,8 +20,6 @@
 package org.apache.fop.fo.flow;
 
 // XML
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.FObj;
@@ -29,6 +27,7 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.ValidationException;
 import org.apache.fop.fo.properties.CommonAccessibility;
 import org.apache.fop.fo.properties.CommonAccessibilityHolder;
+import org.xml.sax.Locator;
 
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_footnote-body">
@@ -42,41 +41,45 @@ public class FootnoteBody extends FObj implements CommonAccessibilityHolder {
     /**
      * Base constructor
      *
-     * @param parent FONode that is the parent of this object
+     * @param parent
+     *            FONode that is the parent of this object
      */
-    public FootnoteBody(FONode parent) {
+    public FootnoteBody(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
-        commonAccessibility = CommonAccessibility.getInstance(pList);
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
+        this.commonAccessibility = CommonAccessibility.getInstance(pList);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
         getFOEventHandler().startFootnoteBody(this);
     }
 
     /**
      * Make sure the content model is satisfied, if so then tell the
-     * {@link org.apache.fop.fo.FOEventHandler} that we are at the
-     * end of the footnote-body.
-     * {@inheritDoc}
+     * {@link org.apache.fop.fo.FOEventHandler} that we are at the end of the
+     * footnote-body. {@inheritDoc}
      */
+    @Override
     protected void endOfNode() throws FOPException {
-        if (firstChild == null) {
+        if (this.firstChild == null) {
             missingChildElementError("(%block;)+");
         }
         getFOEventHandler().endFootnoteBody(this);
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL Content Model: (%block;)+
+     * {@inheritDoc} <br>
+     * XSL Content Model: (%block;)+
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-                throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             if (!isBlockItem(nsURI, localName)) {
                 invalidChildError(loc, nsURI, localName);
@@ -85,21 +88,25 @@ public class FootnoteBody extends FObj implements CommonAccessibilityHolder {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "footnote-body";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_FOOTNOTE_BODY}
      */
+    @Override
     public int getNameId() {
         return FO_FOOTNOTE_BODY;
     }
 
     /** {@inheritDoc} */
+    @Override
     public CommonAccessibility getCommonAccessibility() {
-        return commonAccessibility;
+        return this.commonAccessibility;
     }
 
 }

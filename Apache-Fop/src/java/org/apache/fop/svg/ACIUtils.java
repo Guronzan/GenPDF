@@ -28,14 +28,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.batik.bridge.SVGFontFamily;
 import org.apache.batik.gvt.font.GVTFont;
 import org.apache.batik.gvt.font.GVTFontFamily;
 import org.apache.batik.gvt.text.GVTAttributedCharacterIterator;
-
 import org.apache.fop.fonts.Font;
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.fonts.FontTriplet;
@@ -43,52 +41,59 @@ import org.apache.fop.fonts.FontTriplet;
 /**
  * Utilities for java.text.AttributedCharacterIterator.
  */
+@Slf4j
 public final class ACIUtils {
 
-    /** the logger for this class */
-    private static final Log LOG = LogFactory.getLog(ACIUtils.class);
-
     private ACIUtils() {
-        //This class shouldn't be instantiated.
+        // This class shouldn't be instantiated.
     }
 
     /**
-     * Tries to find matching fonts in FOP's {@link FontInfo} instance for fonts used by
-     * Apache Batik. The method inspects the various GVT attributes found in the ACI.
-     * @param aci the ACI to find matching fonts for
-     * @param fontInfo the font info instance with FOP's fonts
+     * Tries to find matching fonts in FOP's {@link FontInfo} instance for fonts
+     * used by Apache Batik. The method inspects the various GVT attributes
+     * found in the ACI.
+     *
+     * @param aci
+     *            the ACI to find matching fonts for
+     * @param fontInfo
+     *            the font info instance with FOP's fonts
      * @return an array of matching fonts
      */
-    public static Font[] findFontsForBatikACI(AttributedCharacterIterator aci, FontInfo fontInfo) {
-        List<Font> fonts = new java.util.ArrayList<Font>();
+    public static Font[] findFontsForBatikACI(
+            final AttributedCharacterIterator aci, final FontInfo fontInfo) {
+        final List<Font> fonts = new java.util.ArrayList<Font>();
         @SuppressWarnings("unchecked")
-        List<GVTFontFamily> gvtFonts = (List<GVTFontFamily>) aci.getAttribute(
-                GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES);
-        Float posture = (Float) aci.getAttribute(TextAttribute.POSTURE);
-        Float taWeight = (Float) aci.getAttribute(TextAttribute.WEIGHT);
-        Float fontSize = (Float) aci.getAttribute(TextAttribute.SIZE);
+        final List<GVTFontFamily> gvtFonts = (List<GVTFontFamily>) aci
+        .getAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT_FAMILIES);
+        final Float posture = (Float) aci.getAttribute(TextAttribute.POSTURE);
+        final Float taWeight = (Float) aci.getAttribute(TextAttribute.WEIGHT);
+        final Float fontSize = (Float) aci.getAttribute(TextAttribute.SIZE);
 
-        String style = toStyle(posture);
-        int weight = toCSSWeight(taWeight);
-        int fsize = (int)(fontSize.floatValue() * 1000);
+        final String style = toStyle(posture);
+        final int weight = toCSSWeight(taWeight);
+        final int fsize = (int) (fontSize.floatValue() * 1000);
 
         String firstFontFamily = null;
 
-        //GVT_FONT can sometimes be different from the fonts in GVT_FONT_FAMILIES
-        //or GVT_FONT_FAMILIES can even be empty and only GVT_FONT is set
-        /* The following code section is not available until Batik 1.7 is released. */
-        GVTFont gvtFont = (GVTFont)aci.getAttribute(
-                GVTAttributedCharacterIterator.TextAttribute.GVT_FONT);
+        // GVT_FONT can sometimes be different from the fonts in
+        // GVT_FONT_FAMILIES
+        // or GVT_FONT_FAMILIES can even be empty and only GVT_FONT is set
+        /*
+         * The following code section is not available until Batik 1.7 is
+         * released.
+         */
+        final GVTFont gvtFont = (GVTFont) aci
+                .getAttribute(GVTAttributedCharacterIterator.TextAttribute.GVT_FONT);
         if (gvtFont != null) {
-            String gvtFontFamily = gvtFont.getFamilyName();
+            final String gvtFontFamily = gvtFont.getFamilyName();
             if (fontInfo.hasFont(gvtFontFamily, style, weight)) {
-                FontTriplet triplet = fontInfo.fontLookup(gvtFontFamily, style,
-                                                          weight);
-                Font f = fontInfo.getFontInstance(triplet, fsize);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Found a font that matches the GVT font: "
-                              + gvtFontFamily + ", " + weight + ", " + style
-                              + " -> " + f);
+                final FontTriplet triplet = fontInfo.fontLookup(gvtFontFamily,
+                        style, weight);
+                final Font f = fontInfo.getFontInstance(triplet, fsize);
+                if (log.isDebugEnabled()) {
+                    log.debug("Found a font that matches the GVT font: "
+                            + gvtFontFamily + ", " + weight + ", " + style
+                            + " -> " + f);
                 }
                 fonts.add(f);
             }
@@ -97,18 +102,22 @@ public final class ACIUtils {
 
         if (gvtFonts != null) {
             boolean haveInstanceOfSVGFontFamily = false;
-            for (GVTFontFamily fam : gvtFonts) {
+            for (final GVTFontFamily fam : gvtFonts) {
                 if (fam instanceof SVGFontFamily) {
                     haveInstanceOfSVGFontFamily = true;
                 }
-                String fontFamily = fam.getFamilyName();
+                final String fontFamily = fam.getFamilyName();
                 if (fontInfo.hasFont(fontFamily, style, weight)) {
-                    FontTriplet triplet = fontInfo.fontLookup(fontFamily, style,
-                                                       weight);
-                    Font f = fontInfo.getFontInstance(triplet, fsize);
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Found a font that matches the GVT font family: "
-                                + fontFamily + ", " + weight + ", " + style
+                    final FontTriplet triplet = fontInfo.fontLookup(fontFamily,
+                            style, weight);
+                    final Font f = fontInfo.getFontInstance(triplet, fsize);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Found a font that matches the GVT font family: "
+                                + fontFamily
+                                + ", "
+                                + weight
+                                + ", "
+                                + style
                                 + " -> " + f);
                     }
                     fonts.add(f);
@@ -117,9 +126,12 @@ public final class ACIUtils {
                     firstFontFamily = fontFamily;
                 }
             }
-            // SVG fonts are embedded fonts in the SVG document and are rarely used; however if they
-            // are used but the fonts also exists in the system and are known to FOP then FOP should
-            // use them; then the decision whether Batik should stroke the text should be made after
+            // SVG fonts are embedded fonts in the SVG document and are rarely
+            // used; however if they
+            // are used but the fonts also exists in the system and are known to
+            // FOP then FOP should
+            // use them; then the decision whether Batik should stroke the text
+            // should be made after
             // no matching fonts are found
             if (fonts.isEmpty() && haveInstanceOfSVGFontFamily) {
                 fontInfo.notifyStrokingSVGTextAsShapes(firstFontFamily);
@@ -128,14 +140,16 @@ public final class ACIUtils {
         }
         if (fonts.isEmpty()) {
             if (firstFontFamily == null) {
-                //This will probably never happen. Just to be on the safe side.
+                // This will probably never happen. Just to be on the safe side.
                 firstFontFamily = "any";
             }
-            //lookup with fallback possibility (incl. substitution notification)
-            FontTriplet triplet = fontInfo.fontLookup(firstFontFamily, style, weight);
-            Font f = fontInfo.getFontInstance(triplet, fsize);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Falling back to adjustable font lookup up for: "
+            // lookup with fallback possibility (incl. substitution
+            // notification)
+            final FontTriplet triplet = fontInfo.fontLookup(firstFontFamily,
+                    style, weight);
+            final Font f = fontInfo.getFontInstance(triplet, fsize);
+            if (log.isDebugEnabled()) {
+                log.debug("Falling back to adjustable font lookup up for: "
                         + firstFontFamily + ", " + weight + ", " + style
                         + " -> " + f);
             }
@@ -144,7 +158,7 @@ public final class ACIUtils {
         return fonts.toArray(new Font[fonts.size()]);
     }
 
-    private static int toCSSWeight(Float weight) {
+    private static int toCSSWeight(final Float weight) {
         if (weight == null) {
             return 400;
         } else if (weight <= TextAttribute.WEIGHT_EXTRA_LIGHT.floatValue()) {
@@ -157,7 +171,7 @@ public final class ACIUtils {
             return 400;
         } else if (weight <= TextAttribute.WEIGHT_SEMIBOLD.floatValue()) {
             return 500;
-        } else if (weight <  TextAttribute.WEIGHT_BOLD.floatValue()) {
+        } else if (weight < TextAttribute.WEIGHT_BOLD.floatValue()) {
             return 600;
         } else if (weight == TextAttribute.WEIGHT_BOLD.floatValue()) {
             return 700;
@@ -170,28 +184,30 @@ public final class ACIUtils {
         }
     }
 
-    private static String toStyle(Float posture) {
-        return ((posture != null) && (posture.floatValue() > 0.0))
-                       ? Font.STYLE_ITALIC
-                       : Font.STYLE_NORMAL;
+    private static String toStyle(final Float posture) {
+        return posture != null && posture.floatValue() > 0.0 ? Font.STYLE_ITALIC
+                : Font.STYLE_NORMAL;
     }
 
     /**
      * Dumps the contents of an ACI to System.out. Used for debugging only.
-     * @param aci the ACI to dump
+     *
+     * @param aci
+     *            the ACI to dump
      */
-    public static void dumpAttrs(AttributedCharacterIterator aci) {
+    public static void dumpAttrs(final AttributedCharacterIterator aci) {
         aci.first();
-        Set<Entry<Attribute, Object>> entries = aci.getAttributes().entrySet();
-        for (Map.Entry<Attribute, Object> entry : entries) {
+        final Set<Entry<Attribute, Object>> entries = aci.getAttributes()
+                .entrySet();
+        for (final Map.Entry<Attribute, Object> entry : entries) {
             if (entry.getValue() != null) {
-                System.out.println(entry.getKey() + ": " + entry.getValue());
+                log.info(entry.getKey() + ": " + entry.getValue());
             }
         }
         int start = aci.getBeginIndex();
         System.out.print("AttrRuns: ");
         while (aci.current() != CharacterIterator.DONE) {
-            int end = aci.getRunLimit();
+            final int end = aci.getRunLimit();
             System.out.print("" + (end - start) + ", ");
             aci.setIndex(end);
             if (start == end) {
@@ -199,7 +215,7 @@ public final class ACIUtils {
             }
             start = end;
         }
-        System.out.println("");
+        log.info("");
     }
 
 }

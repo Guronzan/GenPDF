@@ -39,27 +39,33 @@ public final class FOPProcSet extends PSProcSet {
 
     /**
      * Writes the procset to the PostScript file.
-     * @param gen the PS generator
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param gen
+     *            the PS generator
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public void writeTo(PSGenerator gen) throws IOException {
-        gen.writeDSCComment(DSCConstants.BEGIN_RESOURCE,
-                new Object[] {TYPE_PROCSET, getName(),
-                    Float.toString(getVersion()), Integer.toString(getRevision())});
-        gen.writeDSCComment(DSCConstants.VERSION,
-                new Object[] {Float.toString(getVersion()), Integer.toString(getRevision())});
+    public void writeTo(final PSGenerator gen) throws IOException {
+        gen.writeDSCComment(
+                DSCConstants.BEGIN_RESOURCE,
+                new Object[] { TYPE_PROCSET, getName(),
+                        Float.toString(getVersion()),
+                        Integer.toString(getRevision()) });
+        gen.writeDSCComment(
+                DSCConstants.VERSION,
+                new Object[] { Float.toString(getVersion()),
+                        Integer.toString(getRevision()) });
         gen.writeDSCComment(DSCConstants.COPYRIGHT, "Copyright 2009 "
-                    + "The Apache Software Foundation. "
-                    + "License terms: http://www.apache.org/licenses/LICENSE-2.0");
+                + "The Apache Software Foundation. "
+                + "License terms: http://www.apache.org/licenses/LICENSE-2.0");
         gen.writeDSCComment(DSCConstants.TITLE,
                 "Basic set of procedures used by Apache FOP");
-
 
         gen.writeln("/TJ { % Similar but not equal to PDF's TJ operator");
         gen.writeln("  {");
         gen.writeln("    dup type /stringtype eq");
-        gen.writeln("    { show }"); //normal text show
-        gen.writeln("    { neg 1000 div 0 rmoveto }"); //negative X movement
+        gen.writeln("    { show }"); // normal text show
+        gen.writeln("    { neg 1000 div 0 rmoveto }"); // negative X movement
         gen.writeln("    ifelse");
         gen.writeln("  } forall");
         gen.writeln("} bd");
@@ -68,8 +74,8 @@ public final class FOPProcSet extends PSProcSet {
         gen.writeln("  /ATJls exch def");
         gen.writeln("  {");
         gen.writeln("    dup type /stringtype eq");
-        gen.writeln("    { ATJls 0 3 2 roll ashow }"); //normal text show
-        gen.writeln("    { neg 1000 div 0 rmoveto }"); //negative X movement
+        gen.writeln("    { ATJls 0 3 2 roll ashow }"); // normal text show
+        gen.writeln("    { neg 1000 div 0 rmoveto }"); // negative X movement
         gen.writeln("    ifelse");
         gen.writeln("  } forall");
         gen.writeln("} bd");

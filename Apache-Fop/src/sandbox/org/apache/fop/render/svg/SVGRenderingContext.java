@@ -19,37 +19,41 @@
 
 package org.apache.fop.render.svg;
 
-import org.xml.sax.ContentHandler;
-
-import org.apache.xmlgraphics.util.MimeConstants;
-
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.render.AbstractRenderingContext;
+import org.apache.xmlgraphics.util.MimeConstants;
+import org.xml.sax.ContentHandler;
 
 /**
  * Rendering context for SVG production.
  */
 public class SVGRenderingContext extends AbstractRenderingContext {
 
-    private ContentHandler handler;
+    private final ContentHandler handler;
 
     /**
      * Main constructor.
-     * @param userAgent the user agent
-     * @param handler the target content handler
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param handler
+     *            the target content handler
      */
-    public SVGRenderingContext(FOUserAgent userAgent, ContentHandler handler) {
+    public SVGRenderingContext(final FOUserAgent userAgent,
+            final ContentHandler handler) {
         super(userAgent);
         this.handler = handler;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return MimeConstants.MIME_SVG;
     }
 
     /**
      * Returns the target content handler.
+     * 
      * @return the content handler
      */
     public ContentHandler getContentHandler() {

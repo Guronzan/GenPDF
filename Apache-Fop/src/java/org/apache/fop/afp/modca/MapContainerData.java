@@ -26,25 +26,27 @@ import org.apache.fop.afp.modca.triplets.MappingOptionTriplet;
 import org.apache.fop.afp.util.BinaryUtils;
 
 /**
- * The Map Container Data structured field specifies how a presentation data object
- * that is carried in an Object Container is mapped into its object area.
+ * The Map Container Data structured field specifies how a presentation data
+ * object that is carried in an Object Container is mapped into its object area.
  */
 public class MapContainerData extends AbstractTripletStructuredObject {
 
     /**
      * Main constructor
      *
-     * @param optionValue the mapping option value
+     * @param optionValue
+     *            the mapping option value
      */
-    public MapContainerData(byte optionValue) {
+    public MapContainerData(final byte optionValue) {
         super.addTriplet(new MappingOptionTriplet(optionValue));
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[11];
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[11];
         copySF(data, Type.MAP, Category.OBJECT_CONTAINER);
-        int tripletLen = getTripletDataLength();
+        final int tripletLen = getTripletDataLength();
 
         byte[] len = BinaryUtils.convert(10 + tripletLen, 2);
         data[1] = len[0];

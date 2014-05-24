@@ -22,8 +22,9 @@ package org.apache.fop.fonts;
 import org.apache.fop.events.EventBroadcaster;
 
 /**
- * Event listener interface for font-related events. This interface extends FontEventListener
- * and EventProducer for integration into FOP's event subsystem.
+ * Event listener interface for font-related events. This interface extends
+ * FontEventListener and EventProducer for integration into FOP's event
+ * subsystem.
  */
 public class FontEventAdapter implements FontEventListener {
 
@@ -33,41 +34,53 @@ public class FontEventAdapter implements FontEventListener {
 
     /**
      * Creates a new FontEventAdapter.
-     * @param broadcaster the event broadcaster to send the generated events to
+     * 
+     * @param broadcaster
+     *            the event broadcaster to send the generated events to
      */
-    public FontEventAdapter(EventBroadcaster broadcaster) {
+    public FontEventAdapter(final EventBroadcaster broadcaster) {
         this.eventBroadcaster = broadcaster;
     }
 
     private FontEventProducer getEventProducer() {
-        if (eventProducer == null) {
-            eventProducer = FontEventProducer.Provider.get(eventBroadcaster);
+        if (this.eventProducer == null) {
+            this.eventProducer = FontEventProducer.Provider
+                    .get(this.eventBroadcaster);
         }
-        return eventProducer;
+        return this.eventProducer;
     }
 
     /** {@inheritDoc} */
-    public void fontSubstituted(Object source, FontTriplet requested, FontTriplet effective) {
+    @Override
+    public void fontSubstituted(final Object source,
+            final FontTriplet requested, final FontTriplet effective) {
         getEventProducer().fontSubstituted(source, requested, effective);
     }
 
     /** {@inheritDoc} */
-    public void fontLoadingErrorAtAutoDetection(Object source, String fontURL, Exception e) {
+    @Override
+    public void fontLoadingErrorAtAutoDetection(final Object source,
+            final String fontURL, final Exception e) {
         getEventProducer().fontLoadingErrorAtAutoDetection(source, fontURL, e);
     }
 
     /** {@inheritDoc} */
-    public void glyphNotAvailable(Object source, char ch, String fontName) {
+    @Override
+    public void glyphNotAvailable(final Object source, final char ch,
+            final String fontName) {
         getEventProducer().glyphNotAvailable(source, ch, fontName);
     }
 
     /** {@inheritDoc} */
-    public void fontDirectoryNotFound(Object source, String dir) {
+    @Override
+    public void fontDirectoryNotFound(final Object source, final String dir) {
         getEventProducer().fontDirectoryNotFound(source, dir);
     }
 
     /** {@inheritDoc} */
-    public void svgTextStrokedAsShapes(Object source, String fontFamily) {
+    @Override
+    public void svgTextStrokedAsShapes(final Object source,
+            final String fontFamily) {
         getEventProducer().svgTextStrokedAsShapes(source, fontFamily);
     }
 

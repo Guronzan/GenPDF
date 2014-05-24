@@ -19,8 +19,6 @@
 
 package org.apache.fop;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 
 import javax.xml.transform.Result;
@@ -34,33 +32,39 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.cli.InputHandler;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
+
 /**
- * Basic runtime test for the old Fop class. It is used to verify that
- * nothing obvious is broken after compiling.
+ * Basic runtime test for the old Fop class. It is used to verify that nothing
+ * obvious is broken after compiling.
  */
 public class BasicDriverTestCase extends AbstractFOPTest {
 
-    private FopFactory fopFactory = FopFactory.newInstance();
+    private final FopFactory fopFactory = FopFactory.newInstance();
 
     /**
      * Tests Fop with JAXP and OutputStream generating PDF.
-     * @throws Exception if anything fails
+     * 
+     * @throws Exception
+     *             if anything fails
      */
     @Test
     public void testFO2PDFWithJAXP() throws Exception {
-        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-        File foFile = new File(getBaseDir(), "test/xml/bugtests/block.fo");
-        ByteArrayOutputStream baout = new ByteArrayOutputStream();
-        Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, baout);
+        final FOUserAgent foUserAgent = this.fopFactory.newFOUserAgent();
+        final File foFile = new File(getBaseDir(), "test/xml/bugtests/block.fo");
+        final ByteArrayOutputStream baout = new ByteArrayOutputStream();
+        final Fop fop = this.fopFactory.newFop(
+                org.apache.xmlgraphics.util.MimeConstants.MIME_PDF,
+                foUserAgent, baout);
 
-        TransformerFactory factory = TransformerFactory.newInstance();
-        Transformer transformer = factory.newTransformer(); //Identity transf.
-        Source src = new StreamSource(foFile);
-        Result res = new SAXResult(fop.getDefaultHandler());
+        final TransformerFactory factory = TransformerFactory.newInstance();
+        final Transformer transformer = factory.newTransformer(); // Identity
+                                                                  // transf.
+        final Source src = new StreamSource(foFile);
+        final Result res = new SAXResult(fop.getDefaultHandler());
         transformer.transform(src, res);
 
         assertTrue("Generated PDF has zero length", baout.size() > 0);
@@ -68,19 +72,24 @@ public class BasicDriverTestCase extends AbstractFOPTest {
 
     /**
      * Tests Fop with JAXP and OutputStream generating PostScript.
-     * @throws Exception if anything fails
+     * 
+     * @throws Exception
+     *             if anything fails
      */
     @Test
     public void testFO2PSWithJAXP() throws Exception {
-        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-        File foFile = new File(getBaseDir(), "test/xml/bugtests/block.fo");
-        ByteArrayOutputStream baout = new ByteArrayOutputStream();
-        Fop fop = fopFactory.newFop(MimeConstants.MIME_POSTSCRIPT, foUserAgent, baout);
+        final FOUserAgent foUserAgent = this.fopFactory.newFOUserAgent();
+        final File foFile = new File(getBaseDir(), "test/xml/bugtests/block.fo");
+        final ByteArrayOutputStream baout = new ByteArrayOutputStream();
+        final Fop fop = this.fopFactory.newFop(
+                org.apache.xmlgraphics.util.MimeConstants.MIME_POSTSCRIPT,
+                foUserAgent, baout);
 
-        TransformerFactory factory = TransformerFactory.newInstance();
-        Transformer transformer = factory.newTransformer(); //Identity transf.
-        Source src = new StreamSource(foFile);
-        Result res = new SAXResult(fop.getDefaultHandler());
+        final TransformerFactory factory = TransformerFactory.newInstance();
+        final Transformer transformer = factory.newTransformer(); // Identity
+                                                                  // transf.
+        final Source src = new StreamSource(foFile);
+        final Result res = new SAXResult(fop.getDefaultHandler());
         transformer.transform(src, res);
 
         assertTrue("Generated PostScript has zero length", baout.size() > 0);
@@ -88,19 +97,24 @@ public class BasicDriverTestCase extends AbstractFOPTest {
 
     /**
      * Tests Fop with JAXP and OutputStream generating RTF.
-     * @throws Exception if anything fails
+     * 
+     * @throws Exception
+     *             if anything fails
      */
     @Test
     public void testFO2RTFWithJAXP() throws Exception {
-        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-        File foFile = new File(getBaseDir(), "test/xml/bugtests/block.fo");
-        ByteArrayOutputStream baout = new ByteArrayOutputStream();
-        Fop fop = fopFactory.newFop(MimeConstants.MIME_RTF, foUserAgent, baout);
+        final FOUserAgent foUserAgent = this.fopFactory.newFOUserAgent();
+        final File foFile = new File(getBaseDir(), "test/xml/bugtests/block.fo");
+        final ByteArrayOutputStream baout = new ByteArrayOutputStream();
+        final Fop fop = this.fopFactory.newFop(
+                org.apache.xmlgraphics.util.MimeConstants.MIME_RTF,
+                foUserAgent, baout);
 
-        TransformerFactory factory = TransformerFactory.newInstance();
-        Transformer transformer = factory.newTransformer(); //Identity transf.
-        Source src = new StreamSource(foFile);
-        Result res = new SAXResult(fop.getDefaultHandler());
+        final TransformerFactory factory = TransformerFactory.newInstance();
+        final Transformer transformer = factory.newTransformer(); // Identity
+                                                                  // transf.
+        final Source src = new StreamSource(foFile);
+        final Result res = new SAXResult(fop.getDefaultHandler());
         transformer.transform(src, res);
 
         assertTrue("Generated RTF has zero length", baout.size() > 0);
@@ -108,17 +122,20 @@ public class BasicDriverTestCase extends AbstractFOPTest {
 
     /**
      * Tests Fop with XsltInputHandler and OutputStream.
-     * @throws Exception if anything fails
+     * 
+     * @throws Exception
+     *             if anything fails
      */
     @Test
     public void testFO2PDFWithXSLTInputHandler() throws Exception {
-        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
-        File xmlFile = new File(getBaseDir(), "test/xml/1.xml");
-        File xsltFile = new File(getBaseDir(), "test/xsl/doc.xsl");
-        ByteArrayOutputStream baout = new ByteArrayOutputStream();
+        final FOUserAgent foUserAgent = this.fopFactory.newFOUserAgent();
+        final File xmlFile = new File(getBaseDir(), "test/xml/1.xml");
+        final File xsltFile = new File(getBaseDir(), "test/xsl/doc.xsl");
+        final ByteArrayOutputStream baout = new ByteArrayOutputStream();
 
-        InputHandler handler = new InputHandler(xmlFile, xsltFile, null);
-        handler.renderTo(foUserAgent, MimeConstants.MIME_PDF, baout);
+        final InputHandler handler = new InputHandler(xmlFile, xsltFile, null);
+        handler.renderTo(foUserAgent,
+                org.apache.xmlgraphics.util.MimeConstants.MIME_PDF, baout);
 
         assertTrue("Generated PDF has zero length", baout.size() > 0);
     }

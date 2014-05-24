@@ -20,8 +20,7 @@
 package org.apache.fop.area.inline;
 
 /**
- * Anchor area for footnote or float.
- * Not sure if this is needed.
+ * Anchor area for footnote or float. Not sure if this is needed.
  */
 public class Anchor extends InlineArea {
 
@@ -31,4 +30,3 @@ public class Anchor extends InlineArea {
     // has reference to associated footnote or float out-of-line area
 
 }
-

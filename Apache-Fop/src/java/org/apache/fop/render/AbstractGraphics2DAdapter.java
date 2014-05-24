@@ -43,7 +43,7 @@ public abstract class AbstractGraphics2DAdapter implements Graphics2DAdapter {
 
     /**
      * Paints the image to a BufferedImage and returns that.
-     * 
+     *
      * @param painter
      *            the painter which will paint the actual image
      * @param context
@@ -142,7 +142,7 @@ public abstract class AbstractGraphics2DAdapter implements Graphics2DAdapter {
      * Sets rendering hints on the Graphics2D created for painting to a
      * BufferedImage. Subclasses can modify the settings to customize the
      * behaviour.
-     * 
+     *
      * @param g2d
      *            the Graphics2D instance
      */

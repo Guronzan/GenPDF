@@ -31,22 +31,25 @@ public class FootnoteBodyLayoutManager extends BlockStackingLayoutManager {
 
     /**
      * Creates a new FootnoteBodyLayoutManager.
-     * @param body the footnote-body element
+     * 
+     * @param body
+     *            the footnote-body element
      */
-    public FootnoteBodyLayoutManager(FootnoteBody body) {
+    public FootnoteBodyLayoutManager(final FootnoteBody body) {
         super(body);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void addAreas(PositionIterator parentIter, LayoutContext layoutContext) {
+    public void addAreas(final PositionIterator parentIter,
+            final LayoutContext layoutContext) {
         LayoutManager childLM;
         LayoutManager lastLM = null;
-        LayoutContext lc = new LayoutContext(0);
+        final LayoutContext lc = new LayoutContext(0);
 
         // "unwrap" the NonLeafPositions stored in parentIter
         // and put them in a new list;
-        LinkedList<Position> positionList = new LinkedList<Position>();
+        final LinkedList<Position> positionList = new LinkedList<Position>();
         Position pos;
         while (parentIter.hasNext()) {
             pos = parentIter.next();
@@ -67,12 +70,13 @@ public class FootnoteBodyLayoutManager extends BlockStackingLayoutManager {
 
         // the Positions in positionList were inside the elements
         // created by the LineLM
-        PositionIterator childPosIter = new PositionIterator(positionList.listIterator());
+        final PositionIterator childPosIter = new PositionIterator(
+                positionList.listIterator());
 
         while ((childLM = childPosIter.getNextChildLM()) != null) {
             // set last area flag
-            lc.setFlags(LayoutContext.LAST_AREA,
-                    (layoutContext.isLastArea() && childLM == lastLM));
+            lc.setFlags(LayoutContext.LAST_AREA, layoutContext.isLastArea()
+                    && childLM == lastLM);
             // Add the line areas to Area
             childLM.addAreas(childPosIter, lc);
         }
@@ -80,14 +84,14 @@ public class FootnoteBodyLayoutManager extends BlockStackingLayoutManager {
 
     /** {@inheritDoc} */
     @Override
-    public void addChildArea(Area childArea) {
+    public void addChildArea(final Area childArea) {
         childArea.setAreaClass(Area.CLASS_FOOTNOTE);
-        parentLayoutManager.addChildArea(childArea);
+        this.parentLayoutManager.addChildArea(childArea);
     }
 
     /** @return the FootnoteBody node */
     protected FootnoteBody getFootnodeBodyFO() {
-        return (FootnoteBody) fobj;
+        return (FootnoteBody) this.fobj;
     }
 
     /** {@inheritDoc} */

@@ -22,10 +22,9 @@ package org.apache.fop.afp.ptoca;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.junit.Test;
-
 import org.apache.fop.afp.fonts.CharactersetEncoder.EncodedChars;
 import org.apache.fop.afp.ptoca.TransparentDataControlSequence.TransparentData;
+import org.junit.Test;
 
 import static org.apache.fop.afp.ptoca.PtocaConstants.TRANSPARENT_DATA_MAX_SIZE;
 import static org.mockito.Mockito.mock;
@@ -48,26 +47,29 @@ public class TransparentDataControlSequenceTestCase {
         testTRNs(true);
     }
 
-    public void testTRNs(boolean isDBCS) throws IOException {
+    public void testTRNs(final boolean isDBCS) throws IOException {
         for (int length = 100; length < 10000; length += 1000) {
             createTRNControlSequence(isDBCS, length);
-            int maxTRNSize = TRANSPARENT_DATA_MAX_SIZE - (isDBCS ? 1 : 0);
-            int numberOfTRNs = length / maxTRNSize;
+            final int maxTRNSize = TRANSPARENT_DATA_MAX_SIZE - (isDBCS ? 1 : 0);
+            final int numberOfTRNs = length / maxTRNSize;
             for (int i = 0; i < numberOfTRNs; i++) {
-                verify(encodedChars, times(1)).writeTo(outStream, i * maxTRNSize, maxTRNSize);
+                verify(this.encodedChars, times(1)).writeTo(this.outStream,
+                        i * maxTRNSize, maxTRNSize);
             }
-            int lastOffset = numberOfTRNs * maxTRNSize;
-            verify(encodedChars, times(1)).writeTo(outStream, numberOfTRNs * maxTRNSize,
-                    length - lastOffset);
+            final int lastOffset = numberOfTRNs * maxTRNSize;
+            verify(this.encodedChars, times(1)).writeTo(this.outStream,
+                    numberOfTRNs * maxTRNSize, length - lastOffset);
         }
     }
 
-    private void createTRNControlSequence(boolean isDBCS, int length) throws IOException {
-        encodedChars = mock(EncodedChars.class);
-        when(encodedChars.isDBCS()).thenReturn(isDBCS);
-        when(encodedChars.getLength()).thenReturn(length);
-        for (TransparentData trn : new TransparentDataControlSequence(encodedChars)) {
-            trn.writeTo(outStream);
+    private void createTRNControlSequence(final boolean isDBCS, final int length)
+            throws IOException {
+        this.encodedChars = mock(EncodedChars.class);
+        when(this.encodedChars.isDBCS()).thenReturn(isDBCS);
+        when(this.encodedChars.getLength()).thenReturn(length);
+        for (final TransparentData trn : new TransparentDataControlSequence(
+                this.encodedChars)) {
+            trn.writeTo(this.outStream);
         }
     }
 }

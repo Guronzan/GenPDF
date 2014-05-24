@@ -19,22 +19,22 @@
 
 package org.apache.fop.render.pdf;
 
-import static org.junit.Assert.fail;
-
 import java.io.File;
 
 import org.apache.fop.apps.FOUserAgent;
 import org.junit.Test;
+
+import static org.junit.Assert.fail;
 
 /**
  * Tests the disables-srgb-colorspace setting.
  */
 public class PDFsRGBSettingsTestCase extends BasePDFTest {
 
-    private File foBaseDir = new File("test/xml/pdf-a");
+    private final File foBaseDir = new File("test/xml/pdf-a");
 
-    private FOUserAgent getUserAgent(boolean enablePDFA) {
-        final FOUserAgent a = fopFactory.newFOUserAgent();
+    private FOUserAgent getUserAgent(final boolean enablePDFA) {
+        final FOUserAgent a = this.fopFactory.newFOUserAgent();
         if (enablePDFA) {
             a.getRendererOptions().put("pdf-a-mode", "PDF/A-1b");
         }
@@ -43,17 +43,20 @@ public class PDFsRGBSettingsTestCase extends BasePDFTest {
     }
 
     /**
-     * Verify that the PDFRenderer complains if PDF/A or PDF/X is used when sRGB is disabled.
-     * @throws Exception if the test fails
+     * Verify that the PDFRenderer complains if PDF/A or PDF/X is used when sRGB
+     * is disabled.
+     * 
+     * @throws Exception
+     *             if the test fails
      */
     @Test
     public void testPDFAWithDisabledSRGB() throws Exception {
-        File foFile = new File(foBaseDir, "minimal-pdf-a.fo");
+        final File foFile = new File(this.foBaseDir, "minimal-pdf-a.fo");
         try {
             convertFO(foFile, getUserAgent(true), false);
             fail("PDFRenderer must fail if PDF/A is active!");
-        } catch (IllegalStateException e) {
-            //exception expected!
+        } catch (final IllegalStateException e) {
+            // exception expected!
         }
     }
 

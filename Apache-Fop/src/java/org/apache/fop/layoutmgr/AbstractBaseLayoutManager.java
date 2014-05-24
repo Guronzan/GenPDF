@@ -22,8 +22,8 @@ package org.apache.fop.layoutmgr;
 import java.util.List;
 import java.util.Stack;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.datatypes.LengthBase;
 import org.apache.fop.fo.FObj;
 
@@ -33,6 +33,7 @@ import org.apache.fop.fo.FObj;
  * {@link org.apache.fop.datatypes.PercentBaseContext} interfaces into a common
  * base class for all higher LayoutManagers.
  */
+@Slf4j
 public abstract class AbstractBaseLayoutManager implements LayoutManager {
 
     /** Indicator if this LM generates reference areas. */
@@ -41,12 +42,6 @@ public abstract class AbstractBaseLayoutManager implements LayoutManager {
     protected boolean generatesBlockArea = false;
     /** The formatting object for this LM. */
     protected final FObj fobj;
-
-    /**
-     * logging instance
-     */
-    private static final Log LOG = LogFactory
-            .getLog(AbstractBaseLayoutManager.class);
 
     /**
      * Abstract base layout manager.
@@ -85,7 +80,7 @@ public abstract class AbstractBaseLayoutManager implements LayoutManager {
             case LengthBase.CONTAINING_REFAREA_WIDTH:
                 return getReferenceAreaIPD();
             default:
-                LOG.error("Unknown base type for LengthBase:" + lengthBase);
+                log.error("Unknown base type for LengthBase:" + lengthBase);
                 return 0;
             }
         } else {
@@ -97,14 +92,14 @@ public abstract class AbstractBaseLayoutManager implements LayoutManager {
                 return lm.getBaseLength(lengthBase, fobjx);
             }
         }
-        LOG.error("Cannot find LM to handle given FO for LengthBase. ("
+        log.error("Cannot find LM to handle given FO for LengthBase. ("
                 + fobjx.getContextInfo() + ")");
         return 0;
     }
 
     /**
      * Find the first ancestor area that is a block area and returns its IPD.
-     * 
+     *
      * @return the ipd of the ancestor block area
      */
     protected int getAncestorBlockAreaIPD() {
@@ -115,13 +110,13 @@ public abstract class AbstractBaseLayoutManager implements LayoutManager {
             }
             lm = lm.getParent();
         }
-        LOG.error("No parent LM found");
+        log.error("No parent LM found");
         return 0;
     }
 
     /**
      * Find the first ancestor area that is a block area and returns its BPD.
-     * 
+     *
      * @return the bpd of the ancestor block area
      */
     protected int getAncestorBlockAreaBPD() {
@@ -132,13 +127,13 @@ public abstract class AbstractBaseLayoutManager implements LayoutManager {
             }
             lm = lm.getParent();
         }
-        LOG.error("No parent LM found");
+        log.error("No parent LM found");
         return 0;
     }
 
     /**
      * Find the parent area and returns its IPD.
-     * 
+     *
      * @return the ipd of the parent area
      */
     protected int getParentAreaIPD() {
@@ -146,13 +141,13 @@ public abstract class AbstractBaseLayoutManager implements LayoutManager {
         if (lm != null) {
             return lm.getContentAreaIPD();
         }
-        LOG.error("No parent LM found");
+        log.error("No parent LM found");
         return 0;
     }
 
     /**
      * Find the parent area and returns its BPD.
-     * 
+     *
      * @return the bpd of the parent area
      */
     protected int getParentAreaBPD() {
@@ -160,14 +155,14 @@ public abstract class AbstractBaseLayoutManager implements LayoutManager {
         if (lm != null) {
             return lm.getContentAreaBPD();
         }
-        LOG.error("No parent LM found");
+        log.error("No parent LM found");
         return 0;
     }
 
     /**
      * Find the first ancestor area that is a reference area and returns its
      * IPD.
-     * 
+     *
      * @return the ipd of the ancestor reference area
      */
     public int getReferenceAreaIPD() {
@@ -178,14 +173,14 @@ public abstract class AbstractBaseLayoutManager implements LayoutManager {
             }
             lm = lm.getParent();
         }
-        LOG.error("No parent LM found");
+        log.error("No parent LM found");
         return 0;
     }
 
     /**
      * Find the first ancestor area that is a reference area and returns its
      * BPD.
-     * 
+     *
      * @return the bpd of the ancestor reference area
      */
     protected int getReferenceAreaBPD() {
@@ -196,7 +191,7 @@ public abstract class AbstractBaseLayoutManager implements LayoutManager {
             }
             lm = lm.getParent();
         }
-        LOG.error("No parent LM found");
+        log.error("No parent LM found");
         return 0;
     }
 
@@ -229,7 +224,7 @@ public abstract class AbstractBaseLayoutManager implements LayoutManager {
     /**
      * Lets implementing LM set the flag indicating if they generate reference
      * areas.
-     * 
+     *
      * @param generatesReferenceArea
      *            if true the areas generates by this LM are reference areas.
      */
@@ -247,7 +242,7 @@ public abstract class AbstractBaseLayoutManager implements LayoutManager {
     /**
      * Lets implementing LM set the flag indicating if they generate block
      * areas.
-     * 
+     *
      * @param generatesBlockArea
      *            if true the areas generates by this LM are block areas.
      */

@@ -36,20 +36,9 @@ import java.util.Stack;
 
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.batik.parser.AWTTransformProducer;
-
-import org.apache.xmlgraphics.xmp.Metadata;
-import org.apache.xmlgraphics.xmp.schemas.DublinCoreAdapter;
-import org.apache.xmlgraphics.xmp.schemas.DublinCoreSchema;
-import org.apache.xmlgraphics.xmp.schemas.XMPBasicAdapter;
-import org.apache.xmlgraphics.xmp.schemas.XMPBasicSchema;
-
 import org.apache.fop.Version;
 import org.apache.fop.accessibility.StructureTreeElement;
 import org.apache.fop.apps.FOPException;
@@ -88,6 +77,7 @@ import org.apache.fop.fonts.LazyFont;
 import org.apache.fop.fonts.Typeface;
 import org.apache.fop.render.AbstractPathOrientedRenderer;
 import org.apache.fop.render.Renderer;
+import org.apache.fop.render.intermediate.IFGraphicContext.Group;
 import org.apache.fop.render.intermediate.extensions.AbstractAction;
 import org.apache.fop.render.intermediate.extensions.ActionSet;
 import org.apache.fop.render.intermediate.extensions.Bookmark;
@@ -99,20 +89,28 @@ import org.apache.fop.render.intermediate.extensions.URIAction;
 import org.apache.fop.render.pdf.PDFEventProducer;
 import org.apache.fop.traits.BorderProps;
 import org.apache.fop.traits.RuleStyle;
+import org.apache.xmlgraphics.xmp.Metadata;
+import org.apache.xmlgraphics.xmp.schemas.DublinCoreAdapter;
+import org.apache.xmlgraphics.xmp.schemas.DublinCoreSchema;
+import org.apache.xmlgraphics.xmp.schemas.XMPBasicAdapter;
+import org.apache.xmlgraphics.xmp.schemas.XMPBasicSchema;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
- * This renderer implementation is an adapter to the {@link IFPainter} interface. It is used
- * to generate content using FOP's intermediate format.
+ * This renderer implementation is an adapter to the {@link IFPainter}
+ * interface. It is used to generate content using FOP's intermediate format.
  */
+@Slf4j
 public class IFRenderer extends AbstractPathOrientedRenderer {
 
-    //TODO Many parts of the Renderer infrastructure are using floats (coordinates in points)
-    //instead of ints (in millipoints). A lot of conversion to and from is performed.
-    //When the new IF is established, the Renderer infrastructure should be revisited so check
-    //if optimizations can be done to avoid int->float->int conversions.
-
-    /** logging instance */
-    protected static final Log log = LogFactory.getLog(IFRenderer.class);
+    // TODO Many parts of the Renderer infrastructure are using floats
+    // (coordinates in points)
+    // instead of ints (in millipoints). A lot of conversion to and from is
+    // performed.
+    // When the new IF is established, the Renderer infrastructure should be
+    // revisited so check
+    // if optimizations can be done to avoid int->float->int conversions.
 
     /** XML MIME type */
     public static final String IF_MIME_TYPE = MimeConstants.MIME_FOP_IF;
@@ -120,68 +118,78 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
     private IFDocumentHandler documentHandler;
     private IFPainter painter;
 
-    /** If not null, the XMLRenderer will mimic another renderer by using its font setup. */
+    /**
+     * If not null, the XMLRenderer will mimic another renderer by using its
+     * font setup.
+     */
     protected Renderer mimic;
 
     private boolean inPageSequence = false;
 
-    private Stack graphicContextStack = new Stack();
-    private Stack viewportDimensionStack = new Stack();
+    private final Stack graphicContextStack = new Stack();
+    private final Stack viewportDimensionStack = new Stack();
     private IFGraphicContext graphicContext = new IFGraphicContext();
-    //private Stack groupStack = new Stack();
+    // private Stack groupStack = new Stack();
 
     private Metadata documentMetadata;
 
     /**
-     * Maps XSL-FO element IDs to their on-page XY-positions
-     * Must be used in conjunction with the page reference to fully specify the details
-     * of a "go-to" action.
+     * Maps XSL-FO element IDs to their on-page XY-positions Must be used in
+     * conjunction with the page reference to fully specify the details of a
+     * "go-to" action.
      */
-    private Map idPositions = new java.util.HashMap();
+    private final Map idPositions = new java.util.HashMap();
 
     /**
      * The "go-to" actions in idGoTos that are not complete yet
      */
-    private List unfinishedGoTos = new java.util.ArrayList();
-    // can't use a Set because PDFGoTo.equals returns true if the target is the same,
+    private final List unfinishedGoTos = new java.util.ArrayList();
+    // can't use a Set because PDFGoTo.equals returns true if the target is the
+    // same,
     // even if the object number differs
 
     /** Maps unique PageViewport key to page indices (for link target handling) */
     protected Map pageIndices = new java.util.HashMap();
 
     private BookmarkTree bookmarkTree;
-    private List deferredDestinations = new java.util.ArrayList();
-    private List deferredLinks = new java.util.ArrayList();
-    private ActionSet actionSet = new ActionSet();
+    private final List deferredDestinations = new java.util.ArrayList();
+    private final List deferredLinks = new java.util.ArrayList();
+    private final ActionSet actionSet = new ActionSet();
 
-    private TextUtil textUtil = new TextUtil();
+    private final TextUtil textUtil = new TextUtil();
 
-    private Stack<String> ids = new Stack<String>();
+    private final Stack<String> ids = new Stack<String>();
 
     /**
      * Main constructor
      *
-     * @param userAgent the user agent that contains configuration details. This cannot be null.
+     * @param userAgent
+     *            the user agent that contains configuration details. This
+     *            cannot be null.
      */
-    public IFRenderer(FOUserAgent userAgent) {
+    public IFRenderer(final FOUserAgent userAgent) {
         super(userAgent);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return IF_MIME_TYPE;
     }
 
     /**
      * Sets the {@link IFDocumentHandler} to be used by the {@link IFRenderer}.
-     * @param documentHandler the {@link IFDocumentHandler}
+     *
+     * @param documentHandler
+     *            the {@link IFDocumentHandler}
      */
-    public void setDocumentHandler(IFDocumentHandler documentHandler) {
+    public void setDocumentHandler(final IFDocumentHandler documentHandler) {
         this.documentHandler = documentHandler;
     }
 
     /** {@inheritDoc} */
-    public void setupFontInfo(FontInfo inFontInfo) throws FOPException {
+    @Override
+    public void setupFontInfo(final FontInfo inFontInfo) throws FOPException {
         if (this.documentHandler == null) {
             this.documentHandler = createDefaultDocumentHandler();
         }
@@ -189,7 +197,7 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
         this.fontInfo = inFontInfo;
     }
 
-    private void handleIFException(IFException ife) {
+    private void handleIFException(final IFException ife) {
         if (ife.getCause() instanceof SAXException) {
             throw new RuntimeException(ife.getCause());
         } else {
@@ -197,22 +205,25 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
         }
     }
 
-    private void handleIFExceptionWithIOException(IFException ife) throws IOException {
+    private void handleIFExceptionWithIOException(final IFException ife)
+            throws IOException {
         if (ife.getCause() instanceof IOException) {
-            throw (IOException)ife.getCause();
+            throw (IOException) ife.getCause();
         } else {
             handleIFException(ife);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean supportsOutOfOrder() {
-        return (this.documentHandler != null
-                ? this.documentHandler.supportsPagesOutOfOrder() : false);
+        return this.documentHandler != null ? this.documentHandler
+                .supportsPagesOutOfOrder() : false;
     }
 
     /**
      * Returns the document navigation handler if available/supported.
+     *
      * @return the document navigation handler or null if not supported
      */
     protected IFDocumentNavigationHandler getDocumentNavigationHandler() {
@@ -220,7 +231,9 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
     }
 
     /**
-     * Indicates whether document navigation features are supported by the document handler.
+     * Indicates whether document navigation features are supported by the
+     * document handler.
+     *
      * @return true if document navigation features are available
      */
     protected boolean hasDocumentNavigation() {
@@ -229,27 +242,30 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
 
     /**
      * Creates a default {@link IFDocumentHandler} when none has been set.
+     *
      * @return the default IFDocumentHandler
      */
     protected IFDocumentHandler createDefaultDocumentHandler() {
-        IFSerializer serializer = new IFSerializer();
-        FOUserAgent userAgent = getUserAgent();
+        final IFSerializer serializer = new IFSerializer();
+        final FOUserAgent userAgent = getUserAgent();
         serializer.setContext(new IFContext(userAgent));
         if (userAgent.isAccessibilityEnabled()) {
-            userAgent.setStructureTreeEventHandler(serializer.getStructureTreeEventHandler());
+            userAgent.setStructureTreeEventHandler(serializer
+                    .getStructureTreeEventHandler());
         }
         return serializer;
     }
 
     /** {@inheritDoc} */
-    public void startRenderer(OutputStream outputStream)
-                throws IOException {
+    @Override
+    public void startRenderer(final OutputStream outputStream)
+            throws IOException {
         try {
             if (outputStream != null) {
-                StreamResult result = new StreamResult(outputStream);
+                final StreamResult result = new StreamResult(outputStream);
                 if (getUserAgent().getOutputFile() != null) {
-                    result.setSystemId(
-                            getUserAgent().getOutputFile().toURI().toURL().toExternalForm());
+                    result.setSystemId(getUserAgent().getOutputFile().toURI()
+                            .toURL().toExternalForm());
                 }
                 if (this.documentHandler == null) {
                     this.documentHandler = createDefaultDocumentHandler();
@@ -261,56 +277,60 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
                 log.debug("Rendering areas via IF document handler ("
                         + this.documentHandler.getClass().getName() + ")...");
             }
-            documentHandler.startDocument();
-            documentHandler.startDocumentHeader();
-        } catch (IFException e) {
+            this.documentHandler.startDocument();
+            this.documentHandler.startDocumentHeader();
+        } catch (final IFException e) {
             handleIFExceptionWithIOException(e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stopRenderer() throws IOException {
         try {
             if (this.inPageSequence) {
-                documentHandler.endPageSequence();
+                this.documentHandler.endPageSequence();
                 this.inPageSequence = false;
             }
-            documentHandler.startDocumentTrailer();
+            this.documentHandler.startDocumentTrailer();
 
-            //Wrap up document navigation
+            // Wrap up document navigation
             if (hasDocumentNavigation()) {
                 finishOpenGoTos();
-                Iterator iter = this.deferredDestinations.iterator();
+                final Iterator iter = this.deferredDestinations.iterator();
                 while (iter.hasNext()) {
-                    NamedDestination dest = (NamedDestination)iter.next();
+                    final NamedDestination dest = (NamedDestination) iter
+                            .next();
                     iter.remove();
                     getDocumentNavigationHandler().renderNamedDestination(dest);
                 }
 
                 if (this.bookmarkTree != null) {
-                    getDocumentNavigationHandler().renderBookmarkTree(this.bookmarkTree);
+                    getDocumentNavigationHandler().renderBookmarkTree(
+                            this.bookmarkTree);
                 }
             }
 
-            documentHandler.endDocumentTrailer();
-            documentHandler.endDocument();
-        } catch (IFException e) {
+            this.documentHandler.endDocumentTrailer();
+            this.documentHandler.endDocument();
+        } catch (final IFException e) {
             handleIFExceptionWithIOException(e);
         }
-        pageIndices.clear();
-        idPositions.clear();
-        actionSet.clear();
+        this.pageIndices.clear();
+        this.idPositions.clear();
+        this.actionSet.clear();
         super.stopRenderer();
         log.debug("Rendering finished.");
     }
 
     @Override
-    public void setDocumentLocale(Locale locale) {
-        documentHandler.setDocumentLocale(locale);
+    public void setDocumentLocale(final Locale locale) {
+        this.documentHandler.setDocumentLocale(locale);
     }
 
     /** {@inheritDoc} */
-    public void processOffDocumentItem(OffDocumentItem odi) {
+    @Override
+    public void processOffDocumentItem(final OffDocumentItem odi) {
         if (odi instanceof DestinationData) {
             // render Destinations
             renderDestination((DestinationData) odi);
@@ -318,188 +338,204 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
             // render Bookmark-Tree
             renderBookmarkTree((BookmarkData) odi);
         } else if (odi instanceof OffDocumentExtensionAttachment) {
-            ExtensionAttachment attachment = ((OffDocumentExtensionAttachment)odi).getAttachment();
+            final ExtensionAttachment attachment = ((OffDocumentExtensionAttachment) odi)
+                    .getAttachment();
             if (XMPMetadata.CATEGORY.equals(attachment.getCategory())) {
-                renderXMPMetadata((XMPMetadata)attachment);
+                renderXMPMetadata((XMPMetadata) attachment);
             } else {
                 try {
                     this.documentHandler.handleExtensionObject(attachment);
-                } catch (IFException ife) {
+                } catch (final IFException ife) {
                     handleIFException(ife);
                 }
             }
         }
     }
 
-    private void renderDestination(DestinationData dd) {
+    private void renderDestination(final DestinationData dd) {
         if (!hasDocumentNavigation()) {
             return;
         }
-        String targetID = dd.getIDRef();
+        final String targetID = dd.getIDRef();
         if (targetID == null || targetID.length() == 0) {
-            throw new IllegalArgumentException("DestinationData must contain a ID reference");
+            throw new IllegalArgumentException(
+                    "DestinationData must contain a ID reference");
         }
-        PageViewport pv = dd.getPageViewport();
+        final PageViewport pv = dd.getPageViewport();
         if (pv != null) {
-            GoToXYAction action = getGoToActionForID(targetID, pv.getPageIndex());
-            NamedDestination namedDestination = new NamedDestination(targetID, action);
+            final GoToXYAction action = getGoToActionForID(targetID,
+                    pv.getPageIndex());
+            final NamedDestination namedDestination = new NamedDestination(
+                    targetID, action);
             this.deferredDestinations.add(namedDestination);
         } else {
-            //Warning already issued by AreaTreeHandler (debug level is sufficient)
+            // Warning already issued by AreaTreeHandler (debug level is
+            // sufficient)
             log.debug("Unresolved destination item received: " + dd.getIDRef());
         }
     }
 
     /**
      * Renders a Bookmark-Tree object
-     * @param bookmarks the BookmarkData object containing all the Bookmark-Items
+     *
+     * @param bookmarks
+     *            the BookmarkData object containing all the Bookmark-Items
      */
-    protected void renderBookmarkTree(BookmarkData bookmarks) {
+    protected void renderBookmarkTree(final BookmarkData bookmarks) {
         assert this.bookmarkTree == null;
         if (!hasDocumentNavigation()) {
             return;
         }
         this.bookmarkTree = new BookmarkTree();
         for (int i = 0; i < bookmarks.getCount(); i++) {
-            BookmarkData ext = bookmarks.getSubData(i);
-            Bookmark b = renderBookmarkItem(ext);
-            bookmarkTree.addBookmark(b);
+            final BookmarkData ext = bookmarks.getSubData(i);
+            final Bookmark b = renderBookmarkItem(ext);
+            this.bookmarkTree.addBookmark(b);
         }
     }
 
-    private Bookmark renderBookmarkItem(BookmarkData bookmarkItem) {
+    private Bookmark renderBookmarkItem(final BookmarkData bookmarkItem) {
 
-        String targetID = bookmarkItem.getIDRef();
+        final String targetID = bookmarkItem.getIDRef();
         if (targetID == null || targetID.length() == 0) {
-            throw new IllegalArgumentException("DestinationData must contain a ID reference");
+            throw new IllegalArgumentException(
+                    "DestinationData must contain a ID reference");
         }
         GoToXYAction action = null;
-        PageViewport pv = bookmarkItem.getPageViewport();
+        final PageViewport pv = bookmarkItem.getPageViewport();
 
         if (pv != null) {
             action = getGoToActionForID(targetID, pv.getPageIndex());
         } else {
-            //Warning already issued by AreaTreeHandler (debug level is sufficient)
-            log.debug("Bookmark with IDRef \"" + targetID + "\" has a null PageViewport.");
+            // Warning already issued by AreaTreeHandler (debug level is
+            // sufficient)
+            log.debug("Bookmark with IDRef \"" + targetID
+                    + "\" has a null PageViewport.");
         }
 
-        Bookmark b = new Bookmark(
-                bookmarkItem.getBookmarkTitle(),
-                bookmarkItem.showChildItems(),
-                action);
+        final Bookmark b = new Bookmark(bookmarkItem.getBookmarkTitle(),
+                bookmarkItem.showChildItems(), action);
         for (int i = 0; i < bookmarkItem.getCount(); i++) {
             b.addChildBookmark(renderBookmarkItem(bookmarkItem.getSubData(i)));
         }
         return b;
     }
 
-    private void renderXMPMetadata(XMPMetadata metadata) {
+    private void renderXMPMetadata(final XMPMetadata metadata) {
         this.documentMetadata = metadata.getMetadata();
     }
 
-    private GoToXYAction getGoToActionForID(String targetID, int pageIndex) {
+    private GoToXYAction getGoToActionForID(final String targetID,
+            final int pageIndex) {
         // Already a GoToXY present for this target? If not, create.
-        GoToXYAction action = (GoToXYAction)actionSet.get(targetID);
-        //GoToXYAction action = (GoToXYAction)idGoTos.get(targetID);
+        GoToXYAction action = (GoToXYAction) this.actionSet.get(targetID);
+        // GoToXYAction action = (GoToXYAction)idGoTos.get(targetID);
         if (action == null) {
             if (pageIndex < 0) {
-                //pageIndex = page
+                // pageIndex = page
             }
-            Point position = (Point)idPositions.get(targetID);
+            final Point position = (Point) this.idPositions.get(targetID);
             // can the GoTo already be fully filled in?
             if (pageIndex >= 0 && position != null) {
                 action = new GoToXYAction(targetID, pageIndex, position);
             } else {
                 // Not complete yet, can't use getPDFGoTo:
                 action = new GoToXYAction(targetID, pageIndex, null);
-                unfinishedGoTos.add(action);
+                this.unfinishedGoTos.add(action);
             }
-            action = (GoToXYAction)actionSet.put(action);
-            //idGoTos.put(targetID, action);
+            action = (GoToXYAction) this.actionSet.put(action);
+            // idGoTos.put(targetID, action);
         }
         return action;
     }
 
     private void finishOpenGoTos() {
-        int count = unfinishedGoTos.size();
+        final int count = this.unfinishedGoTos.size();
         if (count > 0) {
-            Point defaultPos = new Point(0, 0);  // top-o-page
-            while (!unfinishedGoTos.isEmpty()) {
-                GoToXYAction action = (GoToXYAction)unfinishedGoTos.get(0);
+            final Point defaultPos = new Point(0, 0); // top-o-page
+            while (!this.unfinishedGoTos.isEmpty()) {
+                final GoToXYAction action = (GoToXYAction) this.unfinishedGoTos
+                        .get(0);
                 noteGoToPosition(action, defaultPos);
             }
-            PDFEventProducer eventProducer = PDFEventProducer.Provider.get(
-                    getUserAgent().getEventBroadcaster());
+            final PDFEventProducer eventProducer = PDFEventProducer.Provider
+                    .get(getUserAgent().getEventBroadcaster());
             eventProducer.nonFullyResolvedLinkTargets(this, count);
             // dysfunctional if pageref is null
         }
     }
 
-    private void noteGoToPosition(GoToXYAction action, Point position) {
+    private void noteGoToPosition(final GoToXYAction action,
+            final Point position) {
         action.setTargetLocation(position);
         try {
             getDocumentNavigationHandler().addResolvedAction(action);
-        } catch (IFException ife) {
+        } catch (final IFException ife) {
             handleIFException(ife);
         }
-        unfinishedGoTos.remove(action);
+        this.unfinishedGoTos.remove(action);
     }
 
-    private void noteGoToPosition(GoToXYAction action, PageViewport pv, Point position) {
+    private void noteGoToPosition(final GoToXYAction action,
+            final PageViewport pv, final Point position) {
         action.setPageIndex(pv.getPageIndex());
         noteGoToPosition(action, position);
     }
 
-    private void saveAbsolutePosition(String id, PageViewport pv,
-            int relativeIPP, int relativeBPP, AffineTransform tf) {
-        Point position = new Point(relativeIPP, relativeBPP);
+    private void saveAbsolutePosition(final String id, final PageViewport pv,
+            final int relativeIPP, final int relativeBPP,
+            final AffineTransform tf) {
+        final Point position = new Point(relativeIPP, relativeBPP);
         tf.transform(position, position);
-        idPositions.put(id, position);
+        this.idPositions.put(id, position);
         // is there already a GoTo action waiting to be completed?
-        GoToXYAction action = (GoToXYAction)actionSet.get(id);
+        final GoToXYAction action = (GoToXYAction) this.actionSet.get(id);
         if (action != null) {
             noteGoToPosition(action, pv, position);
         }
     }
 
-    private void saveAbsolutePosition(String id, int relativeIPP, int relativeBPP) {
-        saveAbsolutePosition(id, this.currentPageViewport,
-                             relativeIPP, relativeBPP, graphicContext.getTransform());
+    private void saveAbsolutePosition(final String id, final int relativeIPP,
+            final int relativeBPP) {
+        saveAbsolutePosition(id, this.currentPageViewport, relativeIPP,
+                relativeBPP, this.graphicContext.getTransform());
     }
 
-    private void saveBlockPosIfTargetable(Block block) {
-        String id = getTargetableID(block);
+    private void saveBlockPosIfTargetable(final Block block) {
+        final String id = getTargetableID(block);
         if (hasDocumentNavigation() && id != null) {
             // FIXME: Like elsewhere in the renderer code, absolute and relative
-            //        directions are happily mixed here. This makes sure that the
-            //        links point to the right location, but it is not correct.
+            // directions are happily mixed here. This makes sure that the
+            // links point to the right location, but it is not correct.
             int ipp = block.getXOffset();
             int bpp = block.getYOffset() + block.getSpaceBefore();
-            int positioning = block.getPositioning();
+            final int positioning = block.getPositioning();
             if (!(positioning == Block.FIXED || positioning == Block.ABSOLUTE)) {
-                ipp += currentIPPosition;
-                bpp += currentBPPosition;
+                ipp += this.currentIPPosition;
+                bpp += this.currentBPPosition;
             }
-            saveAbsolutePosition(id, currentPageViewport, ipp, bpp, graphicContext.getTransform());
+            saveAbsolutePosition(id, this.currentPageViewport, ipp, bpp,
+                    this.graphicContext.getTransform());
         }
     }
 
-    private void saveInlinePosIfTargetable(InlineArea inlineArea) {
-        String id = getTargetableID(inlineArea);
+    private void saveInlinePosIfTargetable(final InlineArea inlineArea) {
+        final String id = getTargetableID(inlineArea);
         if (hasDocumentNavigation() && id != null) {
-            int extraMarginBefore = 5000; // millipoints
-            int ipp = currentIPPosition;
-            int bpp = currentBPPosition
-                + inlineArea.getBlockProgressionOffset() - extraMarginBefore;
+            final int extraMarginBefore = 5000; // millipoints
+            final int ipp = this.currentIPPosition;
+            final int bpp = this.currentBPPosition
+                    + inlineArea.getBlockProgressionOffset()
+                    - extraMarginBefore;
             saveAbsolutePosition(id, ipp, bpp);
         }
     }
 
-    private String getTargetableID(Area area) {
-        String id = (String) area.getTrait(Trait.PROD_ID);
+    private String getTargetableID(final Area area) {
+        final String id = (String) area.getTrait(Trait.PROD_ID);
         if (id == null || id.length() == 0
-            || !currentPageViewport.isFirstWithID(id)
-            || idPositions.containsKey(id)) {
+                || !this.currentPageViewport.isFirstWithID(id)
+                || this.idPositions.containsKey(id)) {
             return null;
         } else {
             return id;
@@ -507,33 +543,37 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
     }
 
     /** {@inheritDoc} */
-    public void startPageSequence(PageSequence pageSequence) {
+    @Override
+    public void startPageSequence(final PageSequence pageSequence) {
         try {
             if (this.inPageSequence) {
-                documentHandler.endPageSequence();
-                documentHandler.getContext().setLanguage(null);
+                this.documentHandler.endPageSequence();
+                this.documentHandler.getContext().setLanguage(null);
             } else {
                 if (this.documentMetadata == null) {
                     this.documentMetadata = createDefaultDocumentMetadata();
                 }
-                documentHandler.handleExtensionObject(this.documentMetadata);
-                documentHandler.endDocumentHeader();
+                this.documentHandler
+                .handleExtensionObject(this.documentMetadata);
+                this.documentHandler.endDocumentHeader();
                 this.inPageSequence = true;
             }
             establishForeignAttributes(pageSequence.getForeignAttributes());
-            documentHandler.getContext().setLanguage(toLocale(pageSequence));
-            documentHandler.startPageSequence(null);
+            this.documentHandler.getContext().setLanguage(
+                    toLocale(pageSequence));
+            this.documentHandler.startPageSequence(null);
             resetForeignAttributes();
             processExtensionAttachments(pageSequence);
-        } catch (IFException e) {
+        } catch (final IFException e) {
             handleIFException(e);
         }
     }
 
-    private Locale toLocale(PageSequence pageSequence) {
+    private Locale toLocale(final PageSequence pageSequence) {
         if (pageSequence.getLanguage() != null) {
             if (pageSequence.getCountry() != null) {
-                return new Locale(pageSequence.getLanguage(), pageSequence.getCountry());
+                return new Locale(pageSequence.getLanguage(),
+                        pageSequence.getCountry());
             } else {
                 return new Locale(pageSequence.getLanguage());
             }
@@ -542,8 +582,8 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
     }
 
     private Metadata createDefaultDocumentMetadata() {
-        Metadata xmp = new Metadata();
-        DublinCoreAdapter dc = DublinCoreSchema.getAdapter(xmp);
+        final Metadata xmp = new Metadata();
+        final DublinCoreAdapter dc = DublinCoreSchema.getAdapter(xmp);
         if (getUserAgent().getTitle() != null) {
             dc.setTitle(getUserAgent().getTitle());
         }
@@ -553,7 +593,7 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
         if (getUserAgent().getKeywords() != null) {
             dc.addSubject(getUserAgent().getKeywords());
         }
-        XMPBasicAdapter xmpBasic = XMPBasicSchema.getAdapter(xmp);
+        final XMPBasicAdapter xmpBasic = XMPBasicSchema.getAdapter(xmp);
         if (getUserAgent().getProducer() != null) {
             xmpBasic.setCreatorTool(getUserAgent().getProducer());
         } else {
@@ -569,144 +609,160 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
     }
 
     /** {@inheritDoc} */
-    public void preparePage(PageViewport page) {
+    @Override
+    public void preparePage(final PageViewport page) {
         super.preparePage(page);
     }
 
     /** {@inheritDoc} */
-    public void renderPage(PageViewport page) throws IOException, FOPException {
+    @Override
+    public void renderPage(final PageViewport page) throws IOException,
+    FOPException {
         if (log.isTraceEnabled()) {
             log.trace("renderPage() " + page);
         }
         try {
-            pageIndices.put(page.getKey(), new Integer(page.getPageIndex()));
-            Rectangle viewArea = page.getViewArea();
-            Dimension dim = new Dimension(viewArea.width, viewArea.height);
+            this.pageIndices.put(page.getKey(),
+                    new Integer(page.getPageIndex()));
+            final Rectangle viewArea = page.getViewArea();
+            final Dimension dim = new Dimension(viewArea.width, viewArea.height);
 
             establishForeignAttributes(page.getForeignAttributes());
-            documentHandler.startPage(page.getPageIndex(), page.getPageNumberString(),
-                    page.getSimplePageMasterName(), dim);
+            this.documentHandler.startPage(page.getPageIndex(),
+                    page.getPageNumberString(), page.getSimplePageMasterName(),
+                    dim);
             resetForeignAttributes();
-            documentHandler.startPageHeader();
+            this.documentHandler.startPageHeader();
 
-            //Add page attachments to page header
+            // Add page attachments to page header
             processExtensionAttachments(page);
 
-            documentHandler.endPageHeader();
-            this.painter = documentHandler.startPageContent();
+            this.documentHandler.endPageHeader();
+            this.painter = this.documentHandler.startPageContent();
             super.renderPage(page);
             this.painter = null;
-            documentHandler.endPageContent();
+            this.documentHandler.endPageContent();
 
-            documentHandler.startPageTrailer();
+            this.documentHandler.startPageTrailer();
             if (hasDocumentNavigation()) {
-                Iterator iter = this.deferredLinks.iterator();
+                final Iterator iter = this.deferredLinks.iterator();
                 while (iter.hasNext()) {
-                    Link link = (Link)iter.next();
+                    final Link link = (Link) iter.next();
                     iter.remove();
                     getDocumentNavigationHandler().renderLink(link);
                 }
             }
-            documentHandler.endPageTrailer();
+            this.documentHandler.endPageTrailer();
 
             establishForeignAttributes(page.getForeignAttributes());
-            documentHandler.endPage();
+            this.documentHandler.endPage();
             resetForeignAttributes();
-        } catch (IFException e) {
+        } catch (final IFException e) {
             handleIFException(e);
         }
     }
 
-    private void processExtensionAttachments(AreaTreeObject area) throws IFException {
+    private void processExtensionAttachments(final AreaTreeObject area)
+            throws IFException {
         if (area.hasExtensionAttachments()) {
-            for (Iterator iter = area.getExtensionAttachments().iterator();
-                iter.hasNext();) {
-                ExtensionAttachment attachment = (ExtensionAttachment) iter.next();
+            for (final Object element : area.getExtensionAttachments()) {
+                final ExtensionAttachment attachment = (ExtensionAttachment) element;
                 this.documentHandler.handleExtensionObject(attachment);
             }
         }
     }
 
-    private void establishForeignAttributes(Map foreignAttributes) {
-        documentHandler.getContext().setForeignAttributes(foreignAttributes);
+    private void establishForeignAttributes(final Map foreignAttributes) {
+        this.documentHandler.getContext().setForeignAttributes(
+                foreignAttributes);
     }
 
     private void resetForeignAttributes() {
-        documentHandler.getContext().resetForeignAttributes();
+        this.documentHandler.getContext().resetForeignAttributes();
     }
 
-    private void establishStructureTreeElement(StructureTreeElement structureTreeElement) {
-        documentHandler.getContext().setStructureTreeElement(structureTreeElement);
+    private void establishStructureTreeElement(
+            final StructureTreeElement structureTreeElement) {
+        this.documentHandler.getContext().setStructureTreeElement(
+                structureTreeElement);
     }
 
     private void resetStructurePointer() {
-        documentHandler.getContext().resetStructureTreeElement();
+        this.documentHandler.getContext().resetStructureTreeElement();
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void saveGraphicsState() {
-        graphicContextStack.push(graphicContext);
-        graphicContext = (IFGraphicContext)graphicContext.clone();
+        this.graphicContextStack.push(this.graphicContext);
+        this.graphicContext = (IFGraphicContext) this.graphicContext.clone();
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void restoreGraphicsState() {
-        while (graphicContext.getGroupStackSize() > 0) {
-            IFGraphicContext.Group[] groups = graphicContext.dropGroups();
+        while (this.graphicContext.getGroupStackSize() > 0) {
+            final IFGraphicContext.Group[] groups = this.graphicContext
+                    .dropGroups();
             for (int i = groups.length - 1; i >= 0; i--) {
                 try {
-                    groups[i].end(painter);
-                } catch (IFException ife) {
+                    groups[i].end(this.painter);
+                } catch (final IFException ife) {
                     handleIFException(ife);
                 }
             }
         }
-        graphicContext = (IFGraphicContext)graphicContextStack.pop();
+        this.graphicContext = (IFGraphicContext) this.graphicContextStack.pop();
     }
 
-    private void pushGroup(IFGraphicContext.Group group) {
-        graphicContext.pushGroup(group);
+    private void pushGroup(final IFGraphicContext.Group group) {
+        this.graphicContext.pushGroup(group);
         try {
-            group.start(painter);
-        } catch (IFException ife) {
+            group.start(this.painter);
+        } catch (final IFException ife) {
             handleIFException(ife);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     protected List breakOutOfStateStack() {
         log.debug("Block.FIXED --> break out");
-        List breakOutList = new java.util.ArrayList();
+        final List breakOutList = new java.util.ArrayList();
         while (!this.graphicContextStack.empty()) {
-            //Handle groups
-            IFGraphicContext.Group[] groups = graphicContext.getGroups();
+            // Handle groups
+            final IFGraphicContext.Group[] groups = this.graphicContext
+                    .getGroups();
             for (int j = groups.length - 1; j >= 0; j--) {
                 try {
-                    groups[j].end(painter);
-                } catch (IFException ife) {
+                    groups[j].end(this.painter);
+                } catch (final IFException ife) {
                     handleIFException(ife);
                 }
             }
 
             breakOutList.add(0, this.graphicContext);
-            graphicContext = (IFGraphicContext)graphicContextStack.pop();
+            this.graphicContext = (IFGraphicContext) this.graphicContextStack
+                    .pop();
         }
         return breakOutList;
     }
 
     /** {@inheritDoc} */
-    protected void restoreStateStackAfterBreakOut(List breakOutList) {
+    @Override
+    protected void restoreStateStackAfterBreakOut(final List breakOutList) {
         log.debug("Block.FIXED --> restoring context after break-out");
         for (int i = 0, c = breakOutList.size(); i < c; i++) {
-            graphicContextStack.push(graphicContext);
-            this.graphicContext = (IFGraphicContext)breakOutList.get(i);
+            this.graphicContextStack.push(this.graphicContext);
+            this.graphicContext = (IFGraphicContext) breakOutList.get(i);
 
-            //Handle groups
-            IFGraphicContext.Group[] groups = graphicContext.getGroups();
-            for (int j = 0, jc = groups.length; j < jc; j++) {
+            // Handle groups
+            final IFGraphicContext.Group[] groups = this.graphicContext
+                    .getGroups();
+            for (final Group group : groups) {
                 try {
-                    groups[j].start(painter);
-                } catch (IFException ife) {
+                    group.start(this.painter);
+                } catch (final IFException ife) {
                     handleIFException(ife);
                 }
             }
@@ -715,190 +771,215 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
     }
 
     /** {@inheritDoc} */
-    protected void concatenateTransformationMatrix(AffineTransform at) {
+    @Override
+    protected void concatenateTransformationMatrix(final AffineTransform at) {
         if (!at.isIdentity()) {
             concatenateTransformationMatrixMpt(ptToMpt(at), false);
         }
     }
 
-    private void concatenateTransformationMatrixMpt(AffineTransform at, boolean force) {
+    private void concatenateTransformationMatrixMpt(final AffineTransform at,
+            final boolean force) {
         if (force || !at.isIdentity()) {
             if (log.isTraceEnabled()) {
                 log.trace("-----concatenateTransformationMatrix: " + at);
             }
-            IFGraphicContext.Group group = new IFGraphicContext.Group(at);
+            final IFGraphicContext.Group group = new IFGraphicContext.Group(at);
             pushGroup(group);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void beginTextObject() {
-        //nop - Ignore, handled by painter internally
+        // nop - Ignore, handled by painter internally
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endTextObject() {
-        //nop - Ignore, handled by painter internally
+        // nop - Ignore, handled by painter internally
     }
 
     /** {@inheritDoc} */
-    protected void renderRegionViewport(RegionViewport viewport) {
-        Dimension dim = new Dimension(viewport.getIPD(), viewport.getBPD());
-        viewportDimensionStack.push(dim);
+    @Override
+    protected void renderRegionViewport(final RegionViewport viewport) {
+        final Dimension dim = new Dimension(viewport.getIPD(),
+                viewport.getBPD());
+        this.viewportDimensionStack.push(dim);
         super.renderRegionViewport(viewport);
-        viewportDimensionStack.pop();
+        this.viewportDimensionStack.pop();
     }
 
     /** {@inheritDoc} */
-    protected void renderBlockViewport(BlockViewport bv, List children) {
-        //Essentially the same code as in the super class but optimized for the IF
+    @Override
+    protected void renderBlockViewport(final BlockViewport bv,
+            final List children) {
+        // Essentially the same code as in the super class but optimized for the
+        // IF
 
-        //This is the content-rect
-        Dimension dim = new Dimension(bv.getIPD(), bv.getBPD());
-        viewportDimensionStack.push(dim);
+        // This is the content-rect
+        final Dimension dim = new Dimension(bv.getIPD(), bv.getBPD());
+        this.viewportDimensionStack.push(dim);
 
         // save positions
-        int saveIP = currentIPPosition;
-        int saveBP = currentBPPosition;
+        final int saveIP = this.currentIPPosition;
+        final int saveBP = this.currentBPPosition;
 
         CTM ctm = bv.getCTM();
-        int borderPaddingStart = bv.getBorderAndPaddingWidthStart();
-        int borderPaddingBefore = bv.getBorderAndPaddingWidthBefore();
+        final int borderPaddingStart = bv.getBorderAndPaddingWidthStart();
+        final int borderPaddingBefore = bv.getBorderAndPaddingWidthBefore();
 
         if (bv.getPositioning() == Block.ABSOLUTE
                 || bv.getPositioning() == Block.FIXED) {
 
-            //For FIXED, we need to break out of the current viewports to the
-            //one established by the page. We save the state stack for restoration
-            //after the block-container has been painted. See below.
+            // For FIXED, we need to break out of the current viewports to the
+            // one established by the page. We save the state stack for
+            // restoration
+            // after the block-container has been painted. See below.
             List breakOutList = null;
             if (bv.getPositioning() == Block.FIXED) {
                 breakOutList = breakOutOfStateStack();
             }
 
-            AffineTransform positionTransform = new AffineTransform();
+            final AffineTransform positionTransform = new AffineTransform();
             positionTransform.translate(bv.getXOffset(), bv.getYOffset());
 
-            //"left/"top" (bv.getX/YOffset()) specify the position of the content rectangle
-            positionTransform.translate(-borderPaddingStart, -borderPaddingBefore);
+            // "left/"top" (bv.getX/YOffset()) specify the position of the
+            // content rectangle
+            positionTransform.translate(-borderPaddingStart,
+                    -borderPaddingBefore);
 
-            //Free transformation for the block-container viewport
+            // Free transformation for the block-container viewport
             String transf;
             transf = bv.getForeignAttributeValue(FOX_TRANSFORM);
             if (transf != null) {
-                AffineTransform freeTransform = AWTTransformProducer.createAffineTransform(transf);
+                final AffineTransform freeTransform = AWTTransformProducer
+                        .createAffineTransform(transf);
                 positionTransform.concatenate(freeTransform);
             }
 
             saveGraphicsState();
-            //Viewport position
+            // Viewport position
             concatenateTransformationMatrixMpt(positionTransform, false);
 
-            //Background and borders
-            float bpwidth = (borderPaddingStart + bv.getBorderAndPaddingWidthEnd());
-            float bpheight = (borderPaddingBefore + bv.getBorderAndPaddingWidthAfter());
-            drawBackAndBorders(bv, 0, 0,
-                    (dim.width + bpwidth) / 1000f, (dim.height + bpheight) / 1000f);
+            // Background and borders
+            final float bpwidth = borderPaddingStart
+                    + bv.getBorderAndPaddingWidthEnd();
+            final float bpheight = borderPaddingBefore
+                    + bv.getBorderAndPaddingWidthAfter();
+            drawBackAndBorders(bv, 0, 0, (dim.width + bpwidth) / 1000f,
+                    (dim.height + bpheight) / 1000f);
 
-            //Shift to content rectangle after border painting
-            AffineTransform contentRectTransform = new AffineTransform();
-            contentRectTransform.translate(borderPaddingStart, borderPaddingBefore);
+            // Shift to content rectangle after border painting
+            final AffineTransform contentRectTransform = new AffineTransform();
+            contentRectTransform.translate(borderPaddingStart,
+                    borderPaddingBefore);
             concatenateTransformationMatrixMpt(contentRectTransform, false);
 
-            //saveGraphicsState();
-            //Set up coordinate system for content rectangle
-            AffineTransform contentTransform = ctm.toAffineTransform();
-            //concatenateTransformationMatrixMpt(contentTransform);
+            // saveGraphicsState();
+            // Set up coordinate system for content rectangle
+            final AffineTransform contentTransform = ctm.toAffineTransform();
+            // concatenateTransformationMatrixMpt(contentTransform);
             startViewport(contentTransform, bv.getClipRectangle());
 
-            currentIPPosition = 0;
-            currentBPPosition = 0;
+            this.currentIPPosition = 0;
+            this.currentBPPosition = 0;
             renderBlocks(bv, children);
 
             endViewport();
-            //restoreGraphicsState();
+            // restoreGraphicsState();
             restoreGraphicsState();
 
             if (breakOutList != null) {
                 restoreStateStackAfterBreakOut(breakOutList);
             }
 
-            currentIPPosition = saveIP;
-            currentBPPosition = saveBP;
+            this.currentIPPosition = saveIP;
+            this.currentBPPosition = saveBP;
         } else {
 
-            currentBPPosition += bv.getSpaceBefore();
+            this.currentBPPosition += bv.getSpaceBefore();
 
-            //borders and background in the old coordinate system
+            // borders and background in the old coordinate system
             handleBlockTraits(bv);
 
-            //Advance to start of content area
-            currentIPPosition += bv.getStartIndent();
+            // Advance to start of content area
+            this.currentIPPosition += bv.getStartIndent();
 
-            CTM tempctm = new CTM(containingIPPosition, currentBPPosition);
+            final CTM tempctm = new CTM(this.containingIPPosition,
+                    this.currentBPPosition);
             ctm = tempctm.multiply(ctm);
 
-            //Now adjust for border/padding
-            currentBPPosition += borderPaddingBefore;
+            // Now adjust for border/padding
+            this.currentBPPosition += borderPaddingBefore;
 
             startVParea(ctm, bv.getClipRectangle());
-            currentIPPosition = 0;
-            currentBPPosition = 0;
+            this.currentIPPosition = 0;
+            this.currentBPPosition = 0;
             renderBlocks(bv, children);
             endVParea();
 
-            currentIPPosition = saveIP;
-            currentBPPosition = saveBP;
+            this.currentIPPosition = saveIP;
+            this.currentBPPosition = saveBP;
 
-            currentBPPosition += bv.getAllocBPD();
+            this.currentBPPosition += bv.getAllocBPD();
         }
-        viewportDimensionStack.pop();
+        this.viewportDimensionStack.pop();
     }
 
     /** {@inheritDoc} */
-    public void renderInlineViewport(InlineViewport viewport) {
-        StructureTreeElement structElem
-                = (StructureTreeElement) viewport.getTrait(Trait.STRUCTURE_TREE_ELEMENT);
+    @Override
+    public void renderInlineViewport(final InlineViewport viewport) {
+        final StructureTreeElement structElem = (StructureTreeElement) viewport
+                .getTrait(Trait.STRUCTURE_TREE_ELEMENT);
         establishStructureTreeElement(structElem);
         pushdID(viewport);
-        Dimension dim = new Dimension(viewport.getIPD(), viewport.getBPD());
-        viewportDimensionStack.push(dim);
+        final Dimension dim = new Dimension(viewport.getIPD(),
+                viewport.getBPD());
+        this.viewportDimensionStack.push(dim);
         super.renderInlineViewport(viewport);
-        viewportDimensionStack.pop();
+        this.viewportDimensionStack.pop();
         resetStructurePointer();
         popID(viewport);
     }
 
     /** {@inheritDoc} */
-    protected void startVParea(CTM ctm, Rectangle clippingRect) {
+    @Override
+    protected void startVParea(final CTM ctm, final Rectangle clippingRect) {
         if (log.isTraceEnabled()) {
-            log.trace("startVParea() ctm=" + ctm + ", clippingRect=" + clippingRect);
+            log.trace("startVParea() ctm=" + ctm + ", clippingRect="
+                    + clippingRect);
         }
-        AffineTransform at = new AffineTransform(ctm.toArray());
+        final AffineTransform at = new AffineTransform(ctm.toArray());
         startViewport(at, clippingRect);
         if (log.isTraceEnabled()) {
-            log.trace("startVPArea: " + at + " --> " + graphicContext.getTransform());
+            log.trace("startVPArea: " + at + " --> "
+                    + this.graphicContext.getTransform());
         }
     }
 
-    private void startViewport(AffineTransform at, Rectangle clipRect) {
+    private void startViewport(final AffineTransform at,
+            final Rectangle clipRect) {
         saveGraphicsState();
         try {
-            IFGraphicContext.Viewport viewport = new IFGraphicContext.Viewport(
-                    at, (Dimension)viewportDimensionStack.peek(), clipRect);
-            graphicContext.pushGroup(viewport);
-            viewport.start(painter);
-        } catch (IFException e) {
+            final IFGraphicContext.Viewport viewport = new IFGraphicContext.Viewport(
+                    at, (Dimension) this.viewportDimensionStack.peek(),
+                    clipRect);
+            this.graphicContext.pushGroup(viewport);
+            viewport.start(this.painter);
+        } catch (final IFException e) {
             handleIFException(e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endVParea() {
         log.trace("endVParea()");
         endViewport();
         if (log.isTraceEnabled()) {
-            log.trace("endVPArea() --> " + graphicContext.getTransform());
+            log.trace("endVPArea() --> " + this.graphicContext.getTransform());
         }
     }
 
@@ -907,7 +988,8 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
     }
 
     /** {@inheritDoc} */
-    protected void renderInlineArea(InlineArea inlineArea) {
+    @Override
+    protected void renderInlineArea(final InlineArea inlineArea) {
         saveInlinePosIfTargetable(inlineArea);
         pushdID(inlineArea);
         super.renderInlineArea(inlineArea);
@@ -915,15 +997,16 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
     }
 
     /** {@inheritDoc} */
-    public void renderInlineParent(InlineParent ip) {
+    @Override
+    public void renderInlineParent(final InlineParent ip) {
         // stuff we only need if a link must be created:
         Rectangle ipRect = null;
         AbstractAction action = null;
         // make sure the rect is determined *before* calling super!
-        int ipp = currentIPPosition;
-        int bpp = currentBPPosition + ip.getBlockProgressionOffset();
+        final int ipp = this.currentIPPosition;
+        final int bpp = this.currentBPPosition + ip.getBlockProgressionOffset();
         ipRect = new Rectangle(ipp, bpp, ip.getIPD(), ip.getBPD());
-        AffineTransform transform = graphicContext.getTransform();
+        final AffineTransform transform = this.graphicContext.getTransform();
         ipRect = transform.createTransformedShape(ipRect).getBounds();
 
         // render contents
@@ -932,46 +1015,50 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
         boolean linkTraitFound = false;
 
         // try INTERNAL_LINK first
-        Trait.InternalLink intLink = (Trait.InternalLink) ip.getTrait(Trait.INTERNAL_LINK);
+        final Trait.InternalLink intLink = (Trait.InternalLink) ip
+                .getTrait(Trait.INTERNAL_LINK);
         if (intLink != null) {
             linkTraitFound = true;
-            String pvKey = intLink.getPVKey();
-            String idRef = intLink.getIDRef();
-            boolean pvKeyOK = pvKey != null && pvKey.length() > 0;
-            boolean idRefOK = idRef != null && idRef.length() > 0;
+            final String pvKey = intLink.getPVKey();
+            final String idRef = intLink.getIDRef();
+            final boolean pvKeyOK = pvKey != null && pvKey.length() > 0;
+            final boolean idRefOK = idRef != null && idRef.length() > 0;
             if (pvKeyOK && idRefOK) {
-                Integer pageIndex = (Integer)pageIndices.get(pvKey);
-                action = getGoToActionForID(idRef, (pageIndex != null ? pageIndex.intValue() : -1));
+                final Integer pageIndex = (Integer) this.pageIndices.get(pvKey);
+                action = getGoToActionForID(idRef,
+                        pageIndex != null ? pageIndex.intValue() : -1);
             } else {
-                //Warnings already issued by AreaTreeHandler
+                // Warnings already issued by AreaTreeHandler
             }
         }
 
         // no INTERNAL_LINK, look for EXTERNAL_LINK
         if (!linkTraitFound) {
-            Trait.ExternalLink extLink = (Trait.ExternalLink) ip.getTrait(Trait.EXTERNAL_LINK);
+            final Trait.ExternalLink extLink = (Trait.ExternalLink) ip
+                    .getTrait(Trait.EXTERNAL_LINK);
             if (extLink != null) {
-                String extDest = extLink.getDestination();
+                final String extDest = extLink.getDestination();
                 if (extDest != null && extDest.length() > 0) {
                     linkTraitFound = true;
                     action = new URIAction(extDest, extLink.newWindow());
-                    action = actionSet.put(action);
+                    action = this.actionSet.put(action);
                 }
             }
         }
 
         // warn if link trait found but not allowed, else create link
         if (linkTraitFound) {
-            StructureTreeElement structElem
-                    = (StructureTreeElement) ip.getTrait(Trait.STRUCTURE_TREE_ELEMENT);
+            final StructureTreeElement structElem = (StructureTreeElement) ip
+                    .getTrait(Trait.STRUCTURE_TREE_ELEMENT);
             action.setStructureTreeElement(structElem);
-            Link link = new Link(action, ipRect);
+            final Link link = new Link(action, ipRect);
             this.deferredLinks.add(link);
         }
     }
 
     /** {@inheritDoc} */
-    protected void renderBlock(Block block) {
+    @Override
+    protected void renderBlock(final Block block) {
         if (log.isTraceEnabled()) {
             log.trace("renderBlock() " + block);
         }
@@ -981,162 +1068,184 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
         popID(block);
     }
 
-    private void pushdID(Area area) {
-        String prodID = (String) area.getTrait(Trait.PROD_ID);
+    private void pushdID(final Area area) {
+        final String prodID = (String) area.getTrait(Trait.PROD_ID);
         if (prodID != null) {
-            ids.push(prodID);
-            documentHandler.getContext().setID(prodID);
+            this.ids.push(prodID);
+            this.documentHandler.getContext().setID(prodID);
         }
     }
 
-    private void popID(Area area) {
-        String prodID = (String) area.getTrait(Trait.PROD_ID);
+    private void popID(final Area area) {
+        final String prodID = (String) area.getTrait(Trait.PROD_ID);
         if (prodID != null) {
-            ids.pop();
-            documentHandler.getContext().setID(ids.empty() ? "" : ids.peek());
+            this.ids.pop();
+            this.documentHandler.getContext().setID(
+                    this.ids.empty() ? "" : this.ids.peek());
         }
     }
 
-    private Typeface getTypeface(String fontName) {
-        Typeface tf = (Typeface) fontInfo.getFonts().get(fontName);
+    private Typeface getTypeface(final String fontName) {
+        Typeface tf = this.fontInfo.getFonts().get(fontName);
         if (tf instanceof LazyFont) {
-            tf = ((LazyFont)tf).getRealFont();
+            tf = ((LazyFont) tf).getRealFont();
         }
         return tf;
     }
 
     /** {@inheritDoc} */
-    protected void renderText(TextArea text) {
+    @Override
+    protected void renderText(final TextArea text) {
         if (log.isTraceEnabled()) {
             log.trace("renderText() " + text);
         }
         renderInlineAreaBackAndBorders(text);
-        Color ct = (Color) text.getTrait(Trait.COLOR);
+        final Color ct = (Color) text.getTrait(Trait.COLOR);
 
         beginTextObject();
 
-        String fontName = getInternalFontNameForArea(text);
-        int size = ((Integer) text.getTrait(Trait.FONT_SIZE)).intValue();
-        StructureTreeElement structElem
-                = (StructureTreeElement) text.getTrait(Trait.STRUCTURE_TREE_ELEMENT);
+        final String fontName = getInternalFontNameForArea(text);
+        final int size = ((Integer) text.getTrait(Trait.FONT_SIZE)).intValue();
+        final StructureTreeElement structElem = (StructureTreeElement) text
+                .getTrait(Trait.STRUCTURE_TREE_ELEMENT);
         establishStructureTreeElement(structElem);
 
         // This assumes that *all* CIDFonts use a /ToUnicode mapping
-        Typeface tf = getTypeface(fontName);
+        final Typeface tf = getTypeface(fontName);
 
-        FontTriplet triplet = (FontTriplet)text.getTrait(Trait.FONT);
+        final FontTriplet triplet = (FontTriplet) text.getTrait(Trait.FONT);
         try {
-            painter.setFont(triplet.getName(), triplet.getStyle(), new Integer(triplet.getWeight()),
-                    "normal", new Integer(size), ct);
-        } catch (IFException e) {
+            this.painter.setFont(triplet.getName(), triplet.getStyle(),
+                    new Integer(triplet.getWeight()), "normal", new Integer(
+                            size), ct);
+        } catch (final IFException e) {
             handleIFException(e);
         }
 
-        int rx = currentIPPosition + text.getBorderAndPaddingWidthStart();
-        int bl = currentBPPosition + text.getBlockProgressionOffset() + text.getBaselineOffset();
-        textUtil.flush();
-        textUtil.setStartPosition(rx, bl);
-        textUtil.setSpacing(text.getTextLetterSpaceAdjust(), text.getTextWordSpaceAdjust());
+        final int rx = this.currentIPPosition
+                + text.getBorderAndPaddingWidthStart();
+        final int bl = this.currentBPPosition
+                + text.getBlockProgressionOffset() + text.getBaselineOffset();
+        this.textUtil.flush();
+        this.textUtil.setStartPosition(rx, bl);
+        this.textUtil.setSpacing(text.getTextLetterSpaceAdjust(),
+                text.getTextWordSpaceAdjust());
         super.renderText(text);
 
-        textUtil.flush();
+        this.textUtil.flush();
         renderTextDecoration(tf, size, text, bl, rx);
         resetStructurePointer();
     }
 
     /** {@inheritDoc} */
-    protected void renderWord(WordArea word) {
-        Font font = getFontFromArea(word.getParentArea());
-        String s = word.getWord();
+    @Override
+    protected void renderWord(final WordArea word) {
+        final Font font = getFontFromArea(word.getParentArea());
+        final String s = word.getWord();
 
         int[][] dp = word.getGlyphPositionAdjustments();
-        if ( dp == null ) {
-            dp = IFUtil.convertDXToDP ( word.getLetterAdjustArray() );
+        if (dp == null) {
+            dp = IFUtil.convertDXToDP(word.getLetterAdjustArray());
         }
 
-        renderText(s, dp, word.isReversed(),
-                font, (AbstractTextArea)word.getParentArea());
+        renderText(s, dp, word.isReversed(), font,
+                (AbstractTextArea) word.getParentArea());
 
         super.renderWord(word);
     }
 
     /** {@inheritDoc} */
-    protected void renderSpace(SpaceArea space) {
-        Font font = getFontFromArea(space.getParentArea());
-        String s = space.getSpace();
+    @Override
+    protected void renderSpace(final SpaceArea space) {
+        final Font font = getFontFromArea(space.getParentArea());
+        final String s = space.getSpace();
 
-        AbstractTextArea textArea = (AbstractTextArea)space.getParentArea();
+        final AbstractTextArea textArea = (AbstractTextArea) space
+                .getParentArea();
         renderText(s, null, false, font, textArea);
 
-        if (textUtil.combined && space.isAdjustable()) {
-            //Used for justified text, for example
-            int tws = textArea.getTextWordSpaceAdjust()
-                         + 2 * textArea.getTextLetterSpaceAdjust();
+        if (this.textUtil.combined && space.isAdjustable()) {
+            // Used for justified text, for example
+            final int tws = textArea.getTextWordSpaceAdjust() + 2
+                    * textArea.getTextLetterSpaceAdjust();
             if (tws != 0) {
-                textUtil.adjust(tws);
+                this.textUtil.adjust(tws);
             }
         }
         super.renderSpace(space);
     }
 
-    private void renderText(String s,
-                              int[][] dp, boolean reversed,
-                              Font font, AbstractTextArea parentArea) {
-        if ( ( dp == null ) || IFUtil.isDPOnlyDX ( dp ) ) {
-            int[] dx = IFUtil.convertDPToDX ( dp );
-            renderTextWithAdjustments ( s, dx, reversed, font, parentArea );
+    private void renderText(final String s, final int[][] dp,
+            final boolean reversed, final Font font,
+            final AbstractTextArea parentArea) {
+        if (dp == null || IFUtil.isDPOnlyDX(dp)) {
+            final int[] dx = IFUtil.convertDPToDX(dp);
+            renderTextWithAdjustments(s, dx, reversed, font, parentArea);
         } else {
-            renderTextWithAdjustments ( s, dp, reversed, font, parentArea );
+            renderTextWithAdjustments(s, dp, reversed, font, parentArea);
         }
     }
 
     /**
      * Does low-level rendering of text using DX only position adjustments.
-     * @param s text to render
-     * @param dx an array of widths for letter adjustment (may be null)
-     * @param reversed if true then text has been reversed (from logical order)
-     * @param font to font in use
-     * @param parentArea the parent text area to retrieve certain traits from
+     *
+     * @param s
+     *            text to render
+     * @param dx
+     *            an array of widths for letter adjustment (may be null)
+     * @param reversed
+     *            if true then text has been reversed (from logical order)
+     * @param font
+     *            to font in use
+     * @param parentArea
+     *            the parent text area to retrieve certain traits from
      */
-    private void renderTextWithAdjustments(String s,
-                              int[] dx, boolean reversed,
-                              Font font, AbstractTextArea parentArea) {
-        int l = s.length();
+    private void renderTextWithAdjustments(final String s, final int[] dx,
+            final boolean reversed, final Font font,
+            final AbstractTextArea parentArea) {
+        final int l = s.length();
         if (l == 0) {
             return;
         }
         for (int i = 0; i < l; i++) {
-            char ch = s.charAt(i);
-            textUtil.addChar(ch);
+            final char ch = s.charAt(i);
+            this.textUtil.addChar(ch);
             int glyphAdjust = 0;
-            if (textUtil.combined && font.hasChar(ch)) {
-                int tls = (i < l - 1 ? parentArea.getTextLetterSpaceAdjust() : 0);
+            if (this.textUtil.combined && font.hasChar(ch)) {
+                final int tls = i < l - 1 ? parentArea
+                        .getTextLetterSpaceAdjust() : 0;
                 glyphAdjust += tls;
             }
             if (dx != null && i < l) {
                 glyphAdjust += dx[i];
             }
-            textUtil.adjust(glyphAdjust);
+            this.textUtil.adjust(glyphAdjust);
         }
     }
 
     /**
      * Does low-level rendering of text using generalized position adjustments.
-     * @param s text to render
-     * @param dp an array of 4-tuples, expressing [X,Y] placment
-     * adjustments and [X,Y] advancement adjustments, in that order (may be null)
-     * @param reversed if true then text has been reversed (from logical order)
-     * @param font to font in use
-     * @param parentArea the parent text area to retrieve certain traits from
+     *
+     * @param s
+     *            text to render
+     * @param dp
+     *            an array of 4-tuples, expressing [X,Y] placment adjustments
+     *            and [X,Y] advancement adjustments, in that order (may be null)
+     * @param reversed
+     *            if true then text has been reversed (from logical order)
+     * @param font
+     *            to font in use
+     * @param parentArea
+     *            the parent text area to retrieve certain traits from
      */
-    private void renderTextWithAdjustments(String s,
-                              int[][] dp, boolean reversed,
-                              Font font, AbstractTextArea parentArea) {
-        assert !textUtil.combined;
-        for ( int i = 0, n = s.length(); i < n; i++ ) {
-            textUtil.addChar ( s.charAt ( i ) );
-            if ( dp != null ) {
-                textUtil.adjust ( dp[i] );
+    private void renderTextWithAdjustments(final String s, final int[][] dp,
+            final boolean reversed, final Font font,
+            final AbstractTextArea parentArea) {
+        assert !this.textUtil.combined;
+        for (int i = 0, n = s.length(); i < n; i++) {
+            this.textUtil.addChar(s.charAt(i));
+            if (dp != null) {
+                this.textUtil.adjust(dp[i]);
             }
         }
     }
@@ -1152,69 +1261,73 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
         private int tws;
         private final boolean combined = false;
 
-        void addChar(char ch) {
-            text.append(ch);
+        void addChar(final char ch) {
+            this.text.append(ch);
         }
 
-        void adjust(int dx) {
-            adjust ( new int[] {
-                    dx,                         // xPlaAdjust
-                    0,                          // yPlaAdjust
-                    dx,                         // xAdvAdjust
-                    0                           // yAdvAdjust
-                } );
+        void adjust(final int dx) {
+            adjust(new int[] { dx, // xPlaAdjust
+                    0, // yPlaAdjust
+                    dx, // xAdvAdjust
+                    0 // yAdvAdjust
+            });
         }
 
-        void adjust(int[] pa) {
-            if ( !IFUtil.isPAIdentity ( pa ) ) {
-                int idx = text.length();
-                if (idx > dp.length - 1) {
-                    int newSize = Math.max(dp.length, idx + 1) + INITIAL_BUFFER_SIZE;
-                    int[][] newDP = new int[newSize][];
+        void adjust(final int[] pa) {
+            if (!IFUtil.isPAIdentity(pa)) {
+                final int idx = this.text.length();
+                if (idx > this.dp.length - 1) {
+                    final int newSize = Math.max(this.dp.length, idx + 1)
+                            + INITIAL_BUFFER_SIZE;
+                    final int[][] newDP = new int[newSize][];
                     // reuse prior PA[0]...PA[dp.length-1]
-                    System.arraycopy(dp, 0, newDP, 0, dp.length);
+                    System.arraycopy(this.dp, 0, newDP, 0, this.dp.length);
                     // populate new PA[dp.length]...PA[newDP.length-1]
-                    for ( int i = dp.length, n = newDP.length; i < n; i++ ) {
+                    for (int i = this.dp.length, n = newDP.length; i < n; i++) {
                         newDP[i] = new int[4];
                     }
-                    dp = newDP;
+                    this.dp = newDP;
                 }
-                IFUtil.adjustPA ( dp[idx - 1], pa );
+                IFUtil.adjustPA(this.dp[idx - 1], pa);
                 // lastDPPos = idx;
             }
         }
 
         void reset() {
-            if (text.length() > 0) {
-                text.setLength(0);
-                for ( int i = 0, n = dp.length; i < n; i++ ) {
-                    Arrays.fill(dp[i], 0);
+            if (this.text.length() > 0) {
+                this.text.setLength(0);
+                for (final int[] element : this.dp) {
+                    Arrays.fill(element, 0);
                 }
                 // lastDPPos = 0;
             }
         }
 
-        void setStartPosition(int x, int y) {
+        void setStartPosition(final int x, final int y) {
             this.startx = x;
             this.starty = y;
         }
 
-        void setSpacing(int tls, int tws) {
+        void setSpacing(final int tls, final int tws) {
             this.tls = tls;
             this.tws = tws;
         }
 
         void flush() {
-            if (text.length() > 0) {
+            if (this.text.length() > 0) {
                 try {
-                    if (combined) {
-                        painter.drawText(startx, starty, 0, 0,
-                                         trimAdjustments ( dp, text.length() ), text.toString());
+                    if (this.combined) {
+                        IFRenderer.this.painter.drawText(this.startx,
+                                this.starty, 0, 0,
+                                trimAdjustments(this.dp, this.text.length()),
+                                this.text.toString());
                     } else {
-                        painter.drawText(startx, starty, tls, tws,
-                                         trimAdjustments ( dp, text.length() ), text.toString());
+                        IFRenderer.this.painter.drawText(this.startx,
+                                this.starty, this.tls, this.tws,
+                                trimAdjustments(this.dp, this.text.length()),
+                                this.text.toString());
                     }
-                } catch (IFException e) {
+                } catch (final IFException e) {
                     handleIFException(e);
                 }
                 reset();
@@ -1224,30 +1337,33 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
         /**
          * Trim adjustments array <code>dp</code> to be no greater length than
          * text length, and where trailing all-zero entries are removed.
-         * @param dp a position adjustments array (or null)
-         * @param textLength the length of the associated text
-         * @return either the original value of <code>dp</code> or a copy
-         * of its first N significant adjustment entries, such that N is
-         * no greater than text length, and the last entry has a non-zero
-         * adjustment.
+         *
+         * @param dp
+         *            a position adjustments array (or null)
+         * @param textLength
+         *            the length of the associated text
+         * @return either the original value of <code>dp</code> or a copy of its
+         *         first N significant adjustment entries, such that N is no
+         *         greater than text length, and the last entry has a non-zero
+         *         adjustment.
          */
-        private int[][] trimAdjustments ( int[][] dp, int textLength ) {
-            if ( dp != null ) {
-                int tl = textLength;
-                int pl = dp.length;
-                int i  = ( tl < pl ) ? tl : pl;
-                while ( i > 0 ) {
-                    int[] pa = dp [ i - 1 ];
-                    if ( !IFUtil.isPAIdentity ( pa ) ) {
+        private int[][] trimAdjustments(int[][] dp, final int textLength) {
+            if (dp != null) {
+                final int tl = textLength;
+                final int pl = dp.length;
+                int i = tl < pl ? tl : pl;
+                while (i > 0) {
+                    final int[] pa = dp[i - 1];
+                    if (!IFUtil.isPAIdentity(pa)) {
                         break;
                     } else {
                         i--;
                     }
                 }
-                if ( i == 0 ) {
+                if (i == 0) {
                     dp = null;
-                } else if ( i < pl ) {
-                    dp = IFUtil.copyDP ( dp, 0, i );
+                } else if (i < pl) {
+                    dp = IFUtil.copyDP(dp, 0, i);
                 }
             }
             return dp;
@@ -1255,63 +1371,67 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
     }
 
     /** {@inheritDoc} */
-    public void renderImage(Image image, Rectangle2D pos) {
+    @Override
+    public void renderImage(final Image image, final Rectangle2D pos) {
         drawImage(image.getURL(), pos, image.getForeignAttributes());
     }
 
     /** {@inheritDoc} */
-    protected void drawImage(String uri, Rectangle2D pos, Map foreignAttributes) {
-        Rectangle posInt = new Rectangle(
-                currentIPPosition + (int)pos.getX(),
-                currentBPPosition + (int)pos.getY(),
-                (int)pos.getWidth(),
-                (int)pos.getHeight());
+    @Override
+    protected void drawImage(String uri, final Rectangle2D pos,
+            final Map foreignAttributes) {
+        final Rectangle posInt = new Rectangle(this.currentIPPosition
+                + (int) pos.getX(), this.currentBPPosition + (int) pos.getY(),
+                (int) pos.getWidth(), (int) pos.getHeight());
         uri = URISpecification.getURL(uri);
         try {
             establishForeignAttributes(foreignAttributes);
-            painter.drawImage(uri, posInt);
+            this.painter.drawImage(uri, posInt);
             resetForeignAttributes();
-        } catch (IFException ife) {
+        } catch (final IFException ife) {
             handleIFException(ife);
         }
     }
 
     /** {@inheritDoc} */
-    public void renderForeignObject(ForeignObject fo, Rectangle2D pos) {
+    @Override
+    public void renderForeignObject(final ForeignObject fo,
+            final Rectangle2D pos) {
         endTextObject();
-        Rectangle posInt = new Rectangle(
-                currentIPPosition + (int)pos.getX(),
-                currentBPPosition + (int)pos.getY(),
-                (int)pos.getWidth(),
-                (int)pos.getHeight());
-        Document doc = fo.getDocument();
+        final Rectangle posInt = new Rectangle(this.currentIPPosition
+                + (int) pos.getX(), this.currentBPPosition + (int) pos.getY(),
+                (int) pos.getWidth(), (int) pos.getHeight());
+        final Document doc = fo.getDocument();
         try {
             establishForeignAttributes(fo.getForeignAttributes());
-            painter.drawImage(doc, posInt);
+            this.painter.drawImage(doc, posInt);
             resetForeignAttributes();
-        } catch (IFException ife) {
+        } catch (final IFException ife) {
             handleIFException(ife);
         }
     }
 
     /** {@inheritDoc} */
-    public void renderLeader(Leader area) {
+    @Override
+    public void renderLeader(final Leader area) {
         renderInlineAreaBackAndBorders(area);
 
-        int style = area.getRuleStyle();
-        int ruleThickness = area.getRuleThickness();
-        int startx = currentIPPosition + area.getBorderAndPaddingWidthStart();
-        int starty = currentBPPosition + area.getBlockProgressionOffset() + (ruleThickness / 2);
-        int endx = currentIPPosition
-                        + area.getBorderAndPaddingWidthStart()
-                        + area.getIPD();
-        Color col = (Color)area.getTrait(Trait.COLOR);
+        final int style = area.getRuleStyle();
+        final int ruleThickness = area.getRuleThickness();
+        final int startx = this.currentIPPosition
+                + area.getBorderAndPaddingWidthStart();
+        final int starty = this.currentBPPosition
+                + area.getBlockProgressionOffset() + ruleThickness / 2;
+        final int endx = this.currentIPPosition
+                + area.getBorderAndPaddingWidthStart() + area.getIPD();
+        final Color col = (Color) area.getTrait(Trait.COLOR);
 
-        Point start = new Point(startx, starty);
-        Point end = new Point(endx, starty);
+        final Point start = new Point(startx, starty);
+        final Point end = new Point(endx, starty);
         try {
-            painter.drawLine(start, end, ruleThickness, col, RuleStyle.valueOf(style));
-        } catch (IFException ife) {
+            this.painter.drawLine(start, end, ruleThickness, col,
+                    RuleStyle.valueOf(style));
+        } catch (final IFException ife) {
             handleIFException(ife);
         }
 
@@ -1319,95 +1439,109 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void clip() {
         throw new IllegalStateException("Not used");
     }
 
     /** {@inheritDoc} */
-    protected void clipRect(float x, float y, float width, float height) {
+    @Override
+    protected void clipRect(final float x, final float y, final float width,
+            final float height) {
         pushGroup(new IFGraphicContext.Group());
         try {
-            painter.clipRect(toMillipointRectangle(x, y, width, height));
-        } catch (IFException ife) {
+            this.painter.clipRect(toMillipointRectangle(x, y, width, height));
+        } catch (final IFException ife) {
             handleIFException(ife);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void closePath() {
         throw new IllegalStateException("Not used");
     }
 
     /** {@inheritDoc} */
-    protected void drawBorders(                                  // CSOK: ParameterNumber
-            float startx, float starty,
-            float width, float height,
-            BorderProps bpsBefore, BorderProps bpsAfter,
-            BorderProps bpsStart, BorderProps bpsEnd, int level) {
-        Rectangle rect = toMillipointRectangle(startx, starty, width, height);
+    @Override
+    protected void drawBorders(
+            // CSOK: ParameterNumber
+            final float startx, final float starty, final float width,
+            final float height, final BorderProps bpsBefore,
+            final BorderProps bpsAfter, final BorderProps bpsStart,
+            final BorderProps bpsEnd, final int level) {
+        final Rectangle rect = toMillipointRectangle(startx, starty, width,
+                height);
         try {
-            BorderProps bpsTop = bpsBefore;
-            BorderProps bpsBottom = bpsAfter;
+            final BorderProps bpsTop = bpsBefore;
+            final BorderProps bpsBottom = bpsAfter;
             BorderProps bpsLeft;
             BorderProps bpsRight;
-            if ( ( level == -1 ) || ( ( level & 1 ) == 0 ) ) {
+            if (level == -1 || (level & 1) == 0) {
                 bpsLeft = bpsStart;
                 bpsRight = bpsEnd;
             } else {
                 bpsLeft = bpsEnd;
                 bpsRight = bpsStart;
             }
-            painter.drawBorderRect(rect, bpsTop, bpsBottom, bpsLeft, bpsRight);
-        } catch (IFException ife) {
+            this.painter.drawBorderRect(rect, bpsTop, bpsBottom, bpsLeft,
+                    bpsRight);
+        } catch (final IFException ife) {
             handleIFException(ife);
         }
     }
 
     /** {@inheritDoc} */
-    protected void drawBorderLine(                               // CSOK: ParameterNumber
-            float x1, float y1, float x2, float y2, boolean horz,
-            boolean startOrBefore, int style, Color col) {
-        //Simplified implementation that is only used by renderTextDecoration()
-        //drawBorders() is overridden and uses the Painter's high-level method drawBorderRect()
+    @Override
+    protected void drawBorderLine(
+            // CSOK: ParameterNumber
+            final float x1, final float y1, final float x2, final float y2,
+            final boolean horz, final boolean startOrBefore, final int style,
+            final Color col) {
+        // Simplified implementation that is only used by renderTextDecoration()
+        // drawBorders() is overridden and uses the Painter's high-level method
+        // drawBorderRect()
         updateColor(col, true);
         fillRect(x1, y1, x2 - x1, y2 - y1);
     }
 
-    private int toMillipoints(float coordinate) {
+    private int toMillipoints(final float coordinate) {
         return Math.round(coordinate * 1000);
     }
 
-    private Rectangle toMillipointRectangle(float x, float y, float width, float height) {
-        return new Rectangle(
-                toMillipoints(x),
-                toMillipoints(y),
-                toMillipoints(width),
-                toMillipoints(height));
+    private Rectangle toMillipointRectangle(final float x, final float y,
+            final float width, final float height) {
+        return new Rectangle(toMillipoints(x), toMillipoints(y),
+                toMillipoints(width), toMillipoints(height));
     }
 
     /** {@inheritDoc} */
-    protected void fillRect(float x, float y, float width, float height) {
+    @Override
+    protected void fillRect(final float x, final float y, final float width,
+            final float height) {
         try {
-            painter.fillRect(
-                    toMillipointRectangle(x, y, width, height),
+            this.painter.fillRect(toMillipointRectangle(x, y, width, height),
                     this.graphicContext.getPaint());
-        } catch (IFException e) {
+        } catch (final IFException e) {
             handleIFException(e);
         }
     }
 
     /** {@inheritDoc} */
-    protected void moveTo(float x, float y) {
+    @Override
+    protected void moveTo(final float x, final float y) {
         throw new IllegalStateException("Not used");
     }
 
     /** {@inheritDoc} */
-    protected void lineTo(float x, float y) {
+    @Override
+    protected void lineTo(final float x, final float y) {
         throw new IllegalStateException("Not used");
     }
 
     /** {@inheritDoc} */
-    protected void updateColor(Color col, boolean fill) {
+    @Override
+    protected void updateColor(final Color col, final boolean fill) {
         if (fill) {
             this.graphicContext.setPaint(col);
         } else {

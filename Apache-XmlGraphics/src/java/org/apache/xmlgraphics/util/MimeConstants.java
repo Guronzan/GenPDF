@@ -20,70 +20,71 @@
 package org.apache.xmlgraphics.util;
 
 /**
- * Frequently used MIME types for various file formats used by the XML Graphics project.
+ * Frequently used MIME types for various file formats used by the XML Graphics
+ * project.
  */
 public interface MimeConstants {
 
     /** Portable Document Format */
-    String MIME_PDF             = "application/pdf";
+    String MIME_PDF = "application/pdf";
 
     /** PostScript */
-    String MIME_POSTSCRIPT      = "application/postscript";
+    String MIME_POSTSCRIPT = "application/postscript";
     /** Encapsulated PostScript (same MIME type as PostScript) */
-    String MIME_EPS             = MIME_POSTSCRIPT;
+    String MIME_EPS = MIME_POSTSCRIPT;
 
     /** HP's PCL */
-    String MIME_PCL             = "application/x-pcl";
+    String MIME_PCL = "application/x-pcl";
     /** HP's PCL (alternative MIME type) */
-    String MIME_PCL_ALT         = "application/vnd.hp-PCL";
+    String MIME_PCL_ALT = "application/vnd.hp-PCL";
 
     /** IBM's AFP */
-    String MIME_AFP             = "application/x-afp";
+    String MIME_AFP = "application/x-afp";
 
     /** IBM's AFP (alternative MIME type) */
-    String MIME_AFP_ALT         = "application/vnd.ibm.modcap";
+    String MIME_AFP_ALT = "application/vnd.ibm.modcap";
 
     /** IBM's AFP IOCA subset for bilevel raster image */
-    String MIME_AFP_IOCA_FS10   = "image/x-afp+fs10";
+    String MIME_AFP_IOCA_FS10 = "image/x-afp+fs10";
 
     /** IBM's AFP IOCA subset for grayscale and color raster image */
-    String MIME_AFP_IOCA_FS11   = "image/x-afp+fs11";
+    String MIME_AFP_IOCA_FS11 = "image/x-afp+fs11";
 
     /** IBM's AFP IOCA subset for grayscale and color tiled raster image */
-    String MIME_AFP_IOCA_FS45   = "image/x-afp+fs45";
+    String MIME_AFP_IOCA_FS45 = "image/x-afp+fs45";
 
     /** IBM's AFP GOCA subset for graphical objects */
-    String MIME_AFP_GOCA        = "image/x-afp+goca";
+    String MIME_AFP_GOCA = "image/x-afp+goca";
 
     /** Plain text */
-    String MIME_PLAIN_TEXT      = "text/plain";
+    String MIME_PLAIN_TEXT = "text/plain";
 
     /** Rich text format */
-    String MIME_RTF             = "application/rtf";
+    String MIME_RTF = "application/rtf";
     /** Rich text format (alternative 1) */
-    String MIME_RTF_ALT1        = "text/richtext";
+    String MIME_RTF_ALT1 = "text/richtext";
     /** Rich text format (alternative 2) */
-    String MIME_RTF_ALT2        = "text/rtf";
+    String MIME_RTF_ALT2 = "text/rtf";
 
     /** FrameMaker's MIF */
-    String MIME_MIF             = "application/mif";
+    String MIME_MIF = "application/mif";
 
     /** Structured Vector Graphics */
-    String MIME_SVG             = "image/svg+xml";
+    String MIME_SVG = "image/svg+xml";
 
     /** GIF images */
-    String MIME_GIF             = "image/gif";
+    String MIME_GIF = "image/gif";
     /** PNG images */
-    String MIME_PNG             = "image/png";
+    String MIME_PNG = "image/png";
     /** JPEG images */
-    String MIME_JPEG            = "image/jpeg";
+    String MIME_JPEG = "image/jpeg";
     /** TIFF images */
-    String MIME_TIFF            = "image/tiff";
+    String MIME_TIFF = "image/tiff";
 
     /** Proposed but non-registered MIME type for XSL-FO */
-    String MIME_XSL_FO          = "text/xsl";
+    String MIME_XSL_FO = "text/xsl";
 
     /** Microsoft's Enhanced Metafile */
-    String MIME_EMF             = "image/x-emf";
+    String MIME_EMF = "image/x-emf";
 
 }

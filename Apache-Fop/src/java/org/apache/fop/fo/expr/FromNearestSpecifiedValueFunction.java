@@ -23,12 +23,13 @@ import org.apache.fop.fo.FOPropertyMapping;
 import org.apache.fop.fo.properties.Property;
 
 /**
- * Class modelling the from-nearest-specified-value function. See Sec. 5.10.4
- * of the XSL-FO standard.
+ * Class modelling the from-nearest-specified-value function. See Sec. 5.10.4 of
+ * the XSL-FO standard.
  */
 public class FromNearestSpecifiedValueFunction extends FunctionBase {
 
     /** {@inheritDoc} */
+    @Override
     public int getRequiredArgsCount() {
         return 0;
     }
@@ -41,28 +42,31 @@ public class FromNearestSpecifiedValueFunction extends FunctionBase {
 
     @Override
     /** {@inheritDoc} */
-    public Property getOptionalArgDefault(int index, PropertyInfo pi) throws PropertyException {
-        if ( index == 0 ) {
-            return getPropertyName ( pi );
+    public Property getOptionalArgDefault(final int index, final PropertyInfo pi)
+            throws PropertyException {
+        if (index == 0) {
+            return getPropertyName(pi);
         } else {
-            return super.getOptionalArgDefault ( index, pi );
+            return super.getOptionalArgDefault(index, pi);
         }
     }
 
     /** {@inheritDoc} */
-    public Property eval(Property[] args, PropertyInfo pInfo) throws PropertyException {
-        String propName = args[0].getString();
+    @Override
+    public Property eval(final Property[] args, final PropertyInfo pInfo)
+            throws PropertyException {
+        final String propName = args[0].getString();
         if (propName == null) {
             throw new PropertyException(
                     "Incorrect parameter to from-nearest-specified-value function");
         }
         // NOTE: special cases for shorthand property
         // Should return COMPUTED VALUE
-        int propId = FOPropertyMapping.getPropertyId(propName);
+        final int propId = FOPropertyMapping.getPropertyId(propName);
         if (propId < 0) {
             throw new PropertyException(
                     "Unknown property name used with inherited-property-value function: "
-                        + propName);
+                            + propName);
         }
         return pInfo.getPropertyList().getNearestSpecified(propId);
     }

@@ -23,22 +23,28 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 
 /**
- * Interface for converters that convert images to monochrome (1-bit, bi-level) bitmap images.
+ * Interface for converters that convert images to monochrome (1-bit, bi-level)
+ * bitmap images.
  */
 public interface MonochromeBitmapConverter {
 
     /**
      * Sets a hint to the implementation
-     * @param name the name of the hint
-     * @param value the value
+     * 
+     * @param name
+     *            the name of the hint
+     * @param value
+     *            the value
      */
-    void setHint(String name, String value);
+    void setHint(final String name, final String value);
 
     /**
      * Converts a bitmap image to a monochrome (1-bit) b/w bitmap image.
-     * @param img the original image
+     * 
+     * @param img
+     *            the original image
      * @return the converted monochrome image
      */
-    RenderedImage convertToMonochrome(BufferedImage img);
+    RenderedImage convertToMonochrome(final BufferedImage img);
 
 }

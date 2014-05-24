@@ -39,14 +39,17 @@ public class DSCCommentLanguageLevel extends AbstractDSCComment {
 
     /**
      * Creates a new instance
-     * @param level the PostScript language level (usually 2 or 3)
+     * 
+     * @param level
+     *            the PostScript language level (usually 2 or 3)
      */
-    public DSCCommentLanguageLevel(int level) {
+    public DSCCommentLanguageLevel(final int level) {
         this.level = level;
     }
 
     /**
      * Returns the PostScript language level (usually 2 or 3).
+     * 
      * @return the language level
      */
     public int getLanguageLevel() {
@@ -56,6 +59,7 @@ public class DSCCommentLanguageLevel extends AbstractDSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#getName()
      */
+    @Override
     public String getName() {
         return DSCConstants.LANGUAGE_LEVEL;
     }
@@ -63,6 +67,7 @@ public class DSCCommentLanguageLevel extends AbstractDSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#hasValues()
      */
+    @Override
     public boolean hasValues() {
         return true;
     }
@@ -70,16 +75,19 @@ public class DSCCommentLanguageLevel extends AbstractDSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#parseValue(java.lang.String)
      */
-    public void parseValue(String value) {
+    @Override
+    public void parseValue(final String value) {
         this.level = Integer.parseInt(value);
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#generate(org.apache.xmlgraphics.ps.PSGenerator)
      */
-    public void generate(PSGenerator gen) throws IOException {
-        if (level <= 0) {
-            throw new IllegalStateException("Language Level was not properly set");
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
+        if (this.level <= 0) {
+            throw new IllegalStateException(
+                    "Language Level was not properly set");
         }
         gen.writeDSCComment(getName(), new Integer(getLanguageLevel()));
     }

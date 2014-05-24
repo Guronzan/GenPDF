@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
-
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageException;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
@@ -38,27 +37,33 @@ import org.apache.xmlgraphics.util.MimeConstants;
 public class ImageConverterRendered2PNG extends AbstractImageConverter {
 
     /** {@inheritDoc} */
-    public Image convert(Image src, Map hints) throws ImageException, IOException {
+    @Override
+    public Image convert(final Image src, final Map hints)
+            throws ImageException, IOException {
         checkSourceFlavor(src);
-        ImageRendered rendered = (ImageRendered)src;
-        ImageWriter writer = ImageWriterRegistry.getInstance().getWriterFor(MimeConstants.MIME_PNG);
+        final ImageRendered rendered = (ImageRendered) src;
+        final ImageWriter writer = ImageWriterRegistry.getInstance()
+                .getWriterFor(MimeConstants.MIME_PNG);
         if (writer == null) {
-            throw new ImageException("Cannot convert image to PNG. No suitable ImageWriter found.");
+            throw new ImageException(
+                    "Cannot convert image to PNG. No suitable ImageWriter found.");
         }
-        ByteArrayOutputStream baout = new ByteArrayOutputStream();
-        ImageWriterParams params = new ImageWriterParams();
-        params.setResolution((int)Math.round(src.getSize().getDpiHorizontal()));
+        final ByteArrayOutputStream baout = new ByteArrayOutputStream();
+        final ImageWriterParams params = new ImageWriterParams();
+        params.setResolution((int) Math.round(src.getSize().getDpiHorizontal()));
         writer.writeImage(rendered.getRenderedImage(), baout, params);
         return new ImageRawStream(src.getInfo(), getTargetFlavor(),
                 new java.io.ByteArrayInputStream(baout.toByteArray()));
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getSourceFlavor() {
         return ImageFlavor.RENDERED_IMAGE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getTargetFlavor() {
         return ImageFlavor.RAW_PNG;
     }

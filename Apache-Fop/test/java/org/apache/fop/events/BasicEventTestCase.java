@@ -59,7 +59,7 @@ public class BasicEventTestCase {
     }
 
     @Test
-    public void testEventProducer() throws Exception {
+    public void testEventProducer() {
         final MyEventListener listener = new MyEventListener();
 
         final EventBroadcaster broadcaster = new DefaultEventBroadcaster();

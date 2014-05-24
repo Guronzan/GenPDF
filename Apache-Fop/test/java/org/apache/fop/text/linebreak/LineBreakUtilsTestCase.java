@@ -19,9 +19,9 @@
 
 package org.apache.fop.text.linebreak;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * TODO add javadoc
@@ -32,41 +32,40 @@ public class LineBreakUtilsTestCase {
 
     @Test
     public void testLineBreakProperty() {
-        assertEquals(LineBreakUtils.getLineBreakProperty('A'), LineBreakUtils.LINE_BREAK_PROPERTY_AL);
-        assertEquals(LineBreakUtils.getLineBreakProperty('1'), LineBreakUtils.LINE_BREAK_PROPERTY_NU);
-        assertEquals(LineBreakUtils.getLineBreakProperty('\n'), LineBreakUtils.LINE_BREAK_PROPERTY_LF);
-        assertEquals(LineBreakUtils.getLineBreakProperty('\r'), LineBreakUtils.LINE_BREAK_PROPERTY_CR);
-        assertEquals(LineBreakUtils.getLineBreakProperty('('), LineBreakUtils.LINE_BREAK_PROPERTY_OP);
+        assertEquals(LineBreakUtils.getLineBreakProperty('A'),
+                LineBreakUtils.LINE_BREAK_PROPERTY_AL);
+        assertEquals(LineBreakUtils.getLineBreakProperty('1'),
+                LineBreakUtils.LINE_BREAK_PROPERTY_NU);
+        assertEquals(LineBreakUtils.getLineBreakProperty('\n'),
+                LineBreakUtils.LINE_BREAK_PROPERTY_LF);
+        assertEquals(LineBreakUtils.getLineBreakProperty('\r'),
+                LineBreakUtils.LINE_BREAK_PROPERTY_CR);
+        assertEquals(LineBreakUtils.getLineBreakProperty('('),
+                LineBreakUtils.LINE_BREAK_PROPERTY_OP);
         assertEquals(LineBreakUtils.getLineBreakProperty('\u1F7E'), 0);
     }
 
     @Test
     public void testLineBreakPair() {
-        assertEquals(
-            LineBreakUtils.getLineBreakPairProperty(
-                LineBreakUtils.LINE_BREAK_PROPERTY_CM,
-                LineBreakUtils.LINE_BREAK_PROPERTY_CL),
-            LineBreakUtils.PROHIBITED_BREAK);
-        assertEquals(
-            LineBreakUtils.getLineBreakPairProperty(
-                LineBreakUtils.LINE_BREAK_PROPERTY_CL,
-                LineBreakUtils.LINE_BREAK_PROPERTY_CM),
-            LineBreakUtils.COMBINING_INDIRECT_BREAK);
-        assertEquals(
-            LineBreakUtils.getLineBreakPairProperty(
-                LineBreakUtils.LINE_BREAK_PROPERTY_IS,
-                LineBreakUtils.LINE_BREAK_PROPERTY_PR),
-            LineBreakUtils.DIRECT_BREAK);
-        assertEquals(
-            LineBreakUtils.getLineBreakPairProperty(
-                LineBreakUtils.LINE_BREAK_PROPERTY_AL,
-                LineBreakUtils.LINE_BREAK_PROPERTY_OP),
-            LineBreakUtils.INDIRECT_BREAK);
-        assertEquals(
-            LineBreakUtils.getLineBreakPairProperty(
-                LineBreakUtils.LINE_BREAK_PROPERTY_LF,
-                LineBreakUtils.LINE_BREAK_PROPERTY_CM),
-            0);
+        assertEquals(LineBreakUtils.getLineBreakPairProperty(
+                        LineBreakUtils.LINE_BREAK_PROPERTY_CM,
+                        LineBreakUtils.LINE_BREAK_PROPERTY_CL),
+                LineBreakUtils.PROHIBITED_BREAK);
+        assertEquals(LineBreakUtils.getLineBreakPairProperty(
+                        LineBreakUtils.LINE_BREAK_PROPERTY_CL,
+                        LineBreakUtils.LINE_BREAK_PROPERTY_CM),
+                LineBreakUtils.COMBINING_INDIRECT_BREAK);
+        assertEquals(LineBreakUtils.getLineBreakPairProperty(
+                        LineBreakUtils.LINE_BREAK_PROPERTY_IS,
+                        LineBreakUtils.LINE_BREAK_PROPERTY_PR),
+                LineBreakUtils.DIRECT_BREAK);
+        assertEquals(LineBreakUtils.getLineBreakPairProperty(
+                        LineBreakUtils.LINE_BREAK_PROPERTY_AL,
+                        LineBreakUtils.LINE_BREAK_PROPERTY_OP),
+                LineBreakUtils.INDIRECT_BREAK);
+        assertEquals(LineBreakUtils.getLineBreakPairProperty(
+                        LineBreakUtils.LINE_BREAK_PROPERTY_LF,
+                        LineBreakUtils.LINE_BREAK_PROPERTY_CM), 0);
     }
 
 }

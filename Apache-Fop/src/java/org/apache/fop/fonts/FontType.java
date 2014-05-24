@@ -27,50 +27,53 @@ public class FontType {
     /**
      * Collective identifier for "other" font types
      */
-    public static final FontType OTHER       = new FontType("Other", 0);
+    public static final FontType OTHER = new FontType("Other", 0);
     /**
      * Adobe Type 0 fonts (composite font)
      */
-    public static final FontType TYPE0       = new FontType("Type0", 1);
+    public static final FontType TYPE0 = new FontType("Type0", 1);
     /**
      * Adobe Type 1 fonts
      */
-    public static final FontType TYPE1       = new FontType("Type1", 2);
+    public static final FontType TYPE1 = new FontType("Type1", 2);
     /**
      * Adobe Multiple Master Type 1 fonts
      */
-    public static final FontType MMTYPE1     = new FontType("MMType1", 3);
+    public static final FontType MMTYPE1 = new FontType("MMType1", 3);
     /**
      * Adobe Type 3 fonts ("user-defined" fonts)
      */
-    public static final FontType TYPE3       = new FontType("Type3", 4);
+    public static final FontType TYPE3 = new FontType("Type3", 4);
     /**
      * TrueType fonts
      */
-    public static final FontType TRUETYPE    = new FontType("TrueType", 5);
+    public static final FontType TRUETYPE = new FontType("TrueType", 5);
 
     private final String name;
     private final int value;
 
-
     /**
      * Construct a font type.
-     * @param name a font type name
-     * @param value a font type value
+     * 
+     * @param name
+     *            a font type name
+     * @param value
+     *            a font type value
      * @see org.apache.avalon.framework.Enum#Enum(String)
      */
-    protected FontType(String name, int value) {
+    protected FontType(final String name, final int value) {
         this.name = name;
         this.value = value;
     }
 
-
     /**
      * Returns the FontType by name.
-     * @param name Name of the font type to look up
+     * 
+     * @param name
+     *            Name of the font type to look up
      * @return the font type
      */
-    public static FontType byName(String name) {
+    public static FontType byName(final String name) {
         if (name.equalsIgnoreCase(FontType.OTHER.getName())) {
             return FontType.OTHER;
         } else if (name.equalsIgnoreCase(FontType.TYPE0.getName())) {
@@ -88,13 +91,14 @@ public class FontType {
         }
     }
 
-
     /**
      * Returns the FontType by value.
-     * @param value Value of the font type to look up
+     * 
+     * @param value
+     *            Value of the font type to look up
      * @return the font type
      */
-    public static FontType byValue(int value) {
+    public static FontType byValue(final int value) {
         if (value == FontType.OTHER.getValue()) {
             return FontType.OTHER;
         } else if (value == FontType.TYPE0.getValue()) {
@@ -118,7 +122,7 @@ public class FontType {
      * @return the name
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -127,12 +131,12 @@ public class FontType {
      * @return the value
      */
     public int getValue() {
-        return value;
+        return this.value;
     }
 
     @Override
     public String toString() {
-        return name;
+        return this.name;
     }
 
 }

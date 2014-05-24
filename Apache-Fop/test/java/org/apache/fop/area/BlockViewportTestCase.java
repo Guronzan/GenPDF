@@ -27,18 +27,18 @@ import org.junit.Test;
 public class BlockViewportTestCase extends ViewportTest {
 
     @Test
-    public void testNonClip() throws Exception {
-        BlockViewport bv = new BlockViewport();
+    public void testNonClip() {
+        final BlockViewport bv = new BlockViewport();
         bv.setIPD(100);
         bv.setBPD(50);
         checkNonClip(bv);
     }
 
     @Test
-    public void testClip() throws Exception {
-        BlockViewport bv = new BlockViewport();
-        int ipd = 100;
-        int bpd = 50;
+    public void testClip() {
+        final BlockViewport bv = new BlockViewport();
+        final int ipd = 100;
+        final int bpd = 50;
         bv.setIPD(ipd);
         bv.setBPD(bpd);
         bv.setClip(true);

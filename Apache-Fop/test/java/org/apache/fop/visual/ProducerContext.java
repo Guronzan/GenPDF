@@ -38,24 +38,26 @@ public class ProducerContext {
      * @return the TransformerFactory to be used.
      */
     public TransformerFactory getTransformerFactory() {
-        if (tFactory == null) {
-            tFactory = TransformerFactory.newInstance();
+        if (this.tFactory == null) {
+            this.tFactory = TransformerFactory.newInstance();
         }
-        return tFactory;
+        return this.tFactory;
     }
 
     /**
      * @return the requested bitmap resolution in dpi for all bitmaps.
      */
     public int getTargetResolution() {
-        return targetResolution;
+        return this.targetResolution;
     }
 
     /**
      * Sets the requested bitmap resolution in dpi for all bitmaps.
-     * @param resolution the resolution in dpi
+     * 
+     * @param resolution
+     *            the resolution in dpi
      */
-    public void setTargetResolution(int resolution) {
+    public void setTargetResolution(final int resolution) {
         this.targetResolution = resolution;
     }
 
@@ -63,14 +65,17 @@ public class ProducerContext {
      * @return the XSLT stylesheet to preprocess the input files with.
      */
     public Templates getTemplates() {
-        return templates;
+        return this.templates;
     }
 
     /**
-     * Sets an optional XSLT stylesheet which is used to preprocess all input files with.
-     * @param templates the XSLT stylesheet
+     * Sets an optional XSLT stylesheet which is used to preprocess all input
+     * files with.
+     * 
+     * @param templates
+     *            the XSLT stylesheet
      */
-    public void setTemplates(Templates templates) {
+    public void setTemplates(final Templates templates) {
         this.templates = templates;
     }
 
@@ -78,14 +83,16 @@ public class ProducerContext {
      * @return the target directory for all produced bitmaps
      */
     public File getTargetDir() {
-        return targetDir;
+        return this.targetDir;
     }
 
     /**
      * Sets the target directory for all produced bitmaps.
-     * @param targetDir the target directory
+     * 
+     * @param targetDir
+     *            the target directory
      */
-    public void setTargetDir(File targetDir) {
+    public void setTargetDir(final File targetDir) {
         this.targetDir = targetDir;
     }
 }

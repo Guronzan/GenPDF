@@ -28,18 +28,21 @@ import org.apache.xmlgraphics.ps.PSGenerator;
  */
 public class PostScriptLine extends AbstractEvent {
 
-    private String line;
+    private final String line;
 
     /**
      * Creates a new instance.
-     * @param line the code line
+     * 
+     * @param line
+     *            the code line
      */
-    public PostScriptLine(String line) {
+    public PostScriptLine(final String line) {
         this.line = line;
     }
 
     /**
      * Returns the code line.
+     * 
      * @return the code line
      */
     public String getLine() {
@@ -49,13 +52,15 @@ public class PostScriptLine extends AbstractEvent {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#generate(org.apache.xmlgraphics.ps.PSGenerator)
      */
-    public void generate(PSGenerator gen) throws IOException {
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
         gen.writeln(getLine());
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#getEventType()
      */
+    @Override
     public int getEventType() {
         return LINE;
     }
@@ -63,6 +68,7 @@ public class PostScriptLine extends AbstractEvent {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.AbstractEvent#asLine()
      */
+    @Override
     public PostScriptLine asLine() {
         return this;
     }
@@ -70,6 +76,7 @@ public class PostScriptLine extends AbstractEvent {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.AbstractEvent#isLine()
      */
+    @Override
     public boolean isLine() {
         return true;
     }

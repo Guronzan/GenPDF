@@ -26,8 +26,8 @@ import java.util.Collection;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Class for testing the FOP's hyphenation layout engine using testcases specified in XML
- * files.
+ * Class for testing the FOP's hyphenation layout engine using testcases
+ * specified in XML files.
  */
 public class HyphenationLayoutTestCase extends LayoutEngineTestCase {
 
@@ -35,18 +35,22 @@ public class HyphenationLayoutTestCase extends LayoutEngineTestCase {
      * Creates the parameters for this test.
      *
      * @return the list of file arrays populated with test files
-     * @throws IOException if an I/O error occurs while reading the test file
+     * @throws IOException
+     *             if an I/O error occurs while reading the test file
      */
     @Parameters
     public static Collection<File[]> getParameters() throws IOException {
-        return LayoutEngineTestUtils.getLayoutTestFiles("hyphenation-testcases");
+        return LayoutEngineTestUtils
+                .getLayoutTestFiles("hyphenation-testcases");
     }
 
     /**
      * Constructor
-     * @param testFile the file to test
+     * 
+     * @param testFile
+     *            the file to test
      */
-    public HyphenationLayoutTestCase(File testFile) {
+    public HyphenationLayoutTestCase(final File testFile) {
         super(testFile);
     }
 

@@ -30,15 +30,16 @@ class MockTimeStampProvider extends TimeStampProvider {
         this(0);
     }
 
-    public MockTimeStampProvider(long timestamp) {
+    public MockTimeStampProvider(final long timestamp) {
         setTimeStamp(timestamp);
     }
 
-    public void setTimeStamp(long timestamp) {
+    public void setTimeStamp(final long timestamp) {
         this.timestamp = timestamp;
     }
 
     /** {@inheritDoc} */
+    @Override
     public long getTimeStamp() {
         return this.timestamp;
     }

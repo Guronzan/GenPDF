@@ -36,17 +36,18 @@ public class OldExtensionElementMapping extends ElementMapping {
      * Constructor.
      */
     public OldExtensionElementMapping() {
-        namespaceURI = URI;
+        this.namespaceURI = URI;
     }
 
     /**
      * Initialize the data structures.
      */
+    @Override
     protected void initialize() {
-        if (foObjs == null) {
-            foObjs = new HashMap<String, Maker>();
-            foObjs.put("outline", new UnknownXMLObj.Maker(URI));
-            foObjs.put("label", new UnknownXMLObj.Maker(URI));
+        if (this.foObjs == null) {
+            this.foObjs = new HashMap<String, Maker>();
+            this.foObjs.put("outline", new UnknownXMLObj.Maker(URI));
+            this.foObjs.put("label", new UnknownXMLObj.Maker(URI));
         }
     }
 }

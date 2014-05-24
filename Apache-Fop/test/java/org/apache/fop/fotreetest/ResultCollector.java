@@ -23,14 +23,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * This class collects failures for assertions injected into the FO stream.
  */
+@Slf4j
 public class ResultCollector {
 
     private static ResultCollector instance = null;
 
-    private List<String> results = new ArrayList<String>();
+    private final List<String> results = new ArrayList<String>();
 
     /** @return the ResultCollector singleton */
     public static ResultCollector getInstance() {
@@ -42,36 +45,38 @@ public class ResultCollector {
 
     /** Main constructor. */
     public ResultCollector() {
-        //nop
+        // nop
     }
 
     /**
      * This notifies the ResultCollector about an assertion failure.
      *
-     * @param message   the message containing the details
+     * @param message
+     *            the message containing the details
      */
-    public void notifyAssertionFailure(String message) {
-        System.out.println(message);
-        results.add(message);
+    public void notifyAssertionFailure(final String message) {
+        log.info(message);
+        this.results.add(message);
     }
 
     /**
-     * This notifies the ResultCollector about a testcase that ended
-     * with a fatal error
+     * This notifies the ResultCollector about a testcase that ended with a
+     * fatal error
      *
-     * @param message   the message containing the details
+     * @param message
+     *            the message containing the details
      */
-    public void notifyError(String message) {
-        results.add(message);
+    public void notifyError(final String message) {
+        this.results.add(message);
     }
 
     /** Resets the result list. */
     public void reset() {
-        results.clear();
+        this.results.clear();
     }
 
     /** @return the list of results */
     public List<String> getResults() {
-        return Collections.unmodifiableList(results);
+        return Collections.unmodifiableList(this.results);
     }
 }

@@ -24,16 +24,13 @@ package org.apache.fop.pdf;
  */
 public abstract class PDFAction extends PDFObject {
 
-
     /**
-     * represent the action to call
-     * this method should be implemented to return the action which gets
-     * called by the Link Object.  This could be a reference to another object
-     * or the specific destination of the link
+     * represent the action to call this method should be implemented to return
+     * the action which gets called by the Link Object. This could be a
+     * reference to another object or the specific destination of the link
      *
      * @return the action to place next to /A within a Link
      */
     public abstract String getAction();
-
 
 }

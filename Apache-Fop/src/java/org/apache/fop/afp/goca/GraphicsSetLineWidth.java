@@ -33,32 +33,36 @@ public class GraphicsSetLineWidth extends AbstractGraphicsDrawingOrder {
     /**
      * Main constructor
      *
-     * @param multiplier the line width multiplier
+     * @param multiplier
+     *            the line width multiplier
      */
-    public GraphicsSetLineWidth(int multiplier) {
+    public GraphicsSetLineWidth(final int multiplier) {
         this.multiplier = multiplier;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 2;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[] {
-           getOrderCode(), // GSLW order code
-           (byte) multiplier // MH (line-width)
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[] { getOrderCode(), // GSLW order code
+                (byte) this.multiplier // MH (line-width)
         };
         os.write(data);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "GraphicsSetLineWidth{multiplier=" + multiplier + "}";
+        return "GraphicsSetLineWidth{multiplier=" + this.multiplier + "}";
     }
 
     /** {@inheritDoc} */
+    @Override
     byte getOrderCode() {
         return 0x19;
     }

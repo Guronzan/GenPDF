@@ -34,9 +34,9 @@ import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.avalon.framework.configuration.Configuration;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.fop.fo.ElementMapping;
 import org.apache.fop.fo.ElementMappingRegistry;
 import org.apache.fop.fonts.FontCache;
@@ -59,10 +59,8 @@ import org.xml.sax.SAXException;
  * Information that may potentially be different for each rendering run can be
  * found and managed in the FOUserAgent.
  */
+@Slf4j
 public class FopFactory implements ImageContext {
-
-    /** logger instance */
-    private static Log log = LogFactory.getLog(FopFactory.class);
 
     /** Factory for Renderers and FOEventHandlers */
     private final RendererFactory rendererFactory;
@@ -177,7 +175,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Returns a new FopFactory instance.
-     * 
+     *
      * @return the requested FopFactory instance.
      */
     public static FopFactory newInstance() {
@@ -189,7 +187,7 @@ public class FopFactory implements ImageContext {
      * special values that are particular to a rendering run. Don't reuse
      * instances over multiple rendering runs but instead create a new one each
      * time and reuse the FopFactory.
-     * 
+     *
      * @return the newly created FOUserAgent instance initialized with default
      *         values
      * @throws FOPException
@@ -216,7 +214,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Sets complex script support.
-     * 
+     *
      * @param value
      *            <code>true</code> to enable complex script features,
      *            <code>false</code> otherwise
@@ -235,7 +233,7 @@ public class FopFactory implements ImageContext {
      * <p>
      * MIME types are used to select the output format (ex. "application/pdf"
      * for PDF). You can use the constants defined in {@link MimeConstants}.
-     * 
+     *
      * @param outputFormat
      *            the MIME type of the output format to use (ex.
      *            "application/pdf").
@@ -256,7 +254,7 @@ public class FopFactory implements ImageContext {
      * <p>
      * MIME types are used to select the output format (ex. "application/pdf"
      * for PDF). You can use the constants defined in {@link MimeConstants}.
-     * 
+     *
      * @param outputFormat
      *            the MIME type of the output format to use (ex.
      *            "application/pdf").
@@ -278,7 +276,7 @@ public class FopFactory implements ImageContext {
      * <p>
      * MIME types are used to select the output format (ex. "application/pdf"
      * for PDF). You can use the constants defined in {@link MimeConstants}.
-     * 
+     *
      * @param outputFormat
      *            the MIME type of the output format to use (ex.
      *            "application/pdf").
@@ -302,7 +300,7 @@ public class FopFactory implements ImageContext {
      * <p>
      * MIME types are used to select the output format (ex. "application/pdf"
      * for PDF). You can use the constants defined in {@link MimeConstants}.
-     * 
+     *
      * @param outputFormat
      *            the MIME type of the output format to use (ex.
      *            "application/pdf").
@@ -328,7 +326,7 @@ public class FopFactory implements ImageContext {
      * to supply your own {@link org.apache.fop.render.Renderer Renderer} or
      * {@link org.apache.fop.fo.FOEventHandler FOEventHandler} instance instead
      * of the default ones created internally by FOP.
-     * 
+     *
      * @param userAgent
      *            the user agent that will be used to control the rendering run
      * @return the new Fop instance
@@ -374,7 +372,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Returns the image manager.
-     * 
+     *
      * @return the image manager
      */
     public ImageManager getImageManager() {
@@ -383,7 +381,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Add the element mapping with the given class name.
-     * 
+     *
      * @param elementMapping
      *            the class name representing the element mapping.
      */
@@ -394,7 +392,7 @@ public class FopFactory implements ImageContext {
     /**
      * Sets an explicit LayoutManagerMaker instance which overrides the one
      * defined by the AreaTreeHandler.
-     * 
+     *
      * @param lmMaker
      *            the LayoutManagerMaker instance
      */
@@ -404,7 +402,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Returns the overriding LayoutManagerMaker instance, if any.
-     * 
+     *
      * @return the overriding LayoutManagerMaker or null
      */
     public LayoutManagerMaker getLayoutManagerMakerOverride() {
@@ -413,7 +411,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Sets the base URL.
-     * 
+     *
      * @param base
      *            the base URL
      * @throws MalformedURLException
@@ -425,7 +423,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Returns the base URL.
-     * 
+     *
      * @return the base URL
      */
     public String getBaseURL() {
@@ -434,7 +432,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Sets the font base URL.
-     * 
+     *
      * @param fontBase
      *            font base URL
      * @throws MalformedURLException
@@ -463,7 +461,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Sets the hyphen base URL.
-     * 
+     *
      * @param hyphenBase
      *            hythen base URL
      * @throws MalformedURLException
@@ -473,11 +471,11 @@ public class FopFactory implements ImageContext {
             throws MalformedURLException {
         if (hyphenBase != null) {
             setHyphenationTreeResolver(new HyphenationTreeResolver() {
-                        @Override
-                        public Source resolve(final String href) {
-                            return resolveURI(href, hyphenBase);
-                        }
-                    });
+                @Override
+                public Source resolve(final String href) {
+                    return resolveURI(href, hyphenBase);
+                }
+            });
         }
         this.hyphenBase = this.foURIResolver.checkBaseURL(hyphenBase);
     }
@@ -504,7 +502,7 @@ public class FopFactory implements ImageContext {
      * Sets the URI Resolver. It is used for resolving factory-level URIs like
      * hyphenation patterns and as backup for URI resolution performed during a
      * rendering run.
-     * 
+     *
      * @param uriResolver
      *            the new URI resolver
      */
@@ -514,7 +512,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Returns the URI Resolver.
-     * 
+     *
      * @return the URI Resolver
      */
     public URIResolver getURIResolver() {
@@ -523,7 +521,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Returns the FO URI Resolver.
-     * 
+     *
      * @return the FO URI Resolver
      */
     public FOURIResolver getFOURIResolver() {
@@ -541,7 +539,7 @@ public class FopFactory implements ImageContext {
     /**
      * Sets the HyphenationTreeResolver to be used for resolving user-supplied
      * hyphenation files.
-     * 
+     *
      * @param hyphResolver
      *            the HyphenationTreeResolver instance
      */
@@ -553,7 +551,7 @@ public class FopFactory implements ImageContext {
     /**
      * Activates strict XSL content model validation for FOP Default is false
      * (FOP will continue processing where it can)
-     * 
+     *
      * @param validateStrictly
      *            true to turn on strict validation
      */
@@ -563,7 +561,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Returns whether FOP is strictly validating input XSL
-     * 
+     *
      * @return true of strict validation turned on, false otherwise
      */
     public boolean validateStrictly() {
@@ -591,7 +589,7 @@ public class FopFactory implements ImageContext {
      * and to produce results that are more in line with the expectation of
      * unexperienced FO users. Note: Enabling this features violates the XSL
      * specification!
-     * 
+     *
      * @param value
      *            true to enable the feature
      */
@@ -611,7 +609,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Controls whether kerning is activated on base 14 fonts.
-     * 
+     *
      * @param value
      *            true if kerning should be activated
      * @deprecated use getFontManager().setBase14KerningEnabled(boolean) instead
@@ -630,7 +628,7 @@ public class FopFactory implements ImageContext {
     /**
      * Returns the conversion factor from pixel units to millimeters. This
      * depends on the desired source resolution.
-     * 
+     *
      * @return float conversion factor
      * @see #getSourceResolution()
      */
@@ -642,7 +640,7 @@ public class FopFactory implements ImageContext {
      * Sets the source resolution in dpi. This value is used to interpret the
      * pixel size of source documents like SVG images and bitmap images without
      * resolution information.
-     * 
+     *
      * @param dpi
      *            resolution in dpi
      */
@@ -662,7 +660,7 @@ public class FopFactory implements ImageContext {
     /**
      * Returns the conversion factor from pixel units to millimeters. This
      * depends on the desired target resolution.
-     * 
+     *
      * @return float conversion factor
      * @see #getTargetResolution()
      */
@@ -674,7 +672,7 @@ public class FopFactory implements ImageContext {
      * Sets the source resolution in dpi. This value is used to interpret the
      * pixel size of source documents like SVG images and bitmap images without
      * resolution information.
-     * 
+     *
      * @param dpi
      *            resolution in dpi
      */
@@ -686,7 +684,7 @@ public class FopFactory implements ImageContext {
      * Sets the source resolution in dpi. This value is used to interpret the
      * pixel size of source documents like SVG images and bitmap images without
      * resolution information.
-     * 
+     *
      * @param dpi
      *            resolution in dpi
      */
@@ -743,7 +741,7 @@ public class FopFactory implements ImageContext {
      * Adds a namespace to the set of ignored namespaces. If FOP encounters a
      * namespace which it cannot handle, it issues a warning except if this
      * namespace is in the ignored set.
-     * 
+     *
      * @param namespaceURI
      *            the namespace URI
      */
@@ -755,7 +753,7 @@ public class FopFactory implements ImageContext {
      * Adds a collection of namespaces to the set of ignored namespaces. If FOP
      * encounters a namespace which it cannot handle, it issues a warning except
      * if this namespace is in the ignored set.
-     * 
+     *
      * @param namespaceURIs
      *            the namespace URIs
      */
@@ -765,7 +763,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Indicates whether a namespace URI is on the ignored list.
-     * 
+     *
      * @param namespaceURI
      *            the namespace URI
      * @return true if the namespace is ignored by FOP
@@ -783,7 +781,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Set the user configuration.
-     * 
+     *
      * @param userConfigFile
      *            the configuration file
      * @throws IOException
@@ -798,7 +796,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Set the user configuration from an URI.
-     * 
+     *
      * @param uri
      *            the URI to the configuration file
      * @throws IOException
@@ -813,7 +811,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Set the user configuration.
-     * 
+     *
      * @param userConfig
      *            configuration
      * @throws FOPException
@@ -827,7 +825,7 @@ public class FopFactory implements ImageContext {
     /**
      * Set the base URI for the user configuration Useful for programmatic
      * configurations
-     * 
+     *
      * @param baseURI
      *            the base URI
      */
@@ -837,7 +835,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Get the user configuration.
-     * 
+     *
      * @return the user configuration
      */
     public Configuration getUserConfig() {
@@ -846,7 +844,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Is the user configuration to be validated?
-     * 
+     *
      * @param strictUserConfigValidation
      *            strict user config validation
      */
@@ -858,7 +856,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Is the user configuration to be validated?
-     * 
+     *
      * @return if the user configuration should be validated
      */
     public boolean validateUserConfigStrictly() {
@@ -869,7 +867,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Whether or not to cache results of font triplet detection/auto-config
-     * 
+     *
      * @param useCache
      *            use cache or not
      * @deprecated use getFontManager().setUseCache(boolean) instead
@@ -881,7 +879,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Cache results of font triplet detection/auto-config?
-     * 
+     *
      * @return whether this factory is uses the cache
      * @deprecated use getFontManager().useCache() instead
      */
@@ -892,7 +890,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Returns the font cache instance used by this factory.
-     * 
+     *
      * @return the font cache
      * @deprecated use getFontManager().getFontCache() instead
      */
@@ -903,7 +901,7 @@ public class FopFactory implements ImageContext {
 
     /**
      * Returns the font manager.
-     * 
+     *
      * @return the font manager
      */
     public FontManager getFontManager() {
@@ -913,7 +911,7 @@ public class FopFactory implements ImageContext {
     /**
      * Attempts to resolve the given URI. Will use the configured resolver and
      * if not successful fall back to the default resolver.
-     * 
+     *
      * @param href
      *            URI to access
      * @param baseUri
@@ -936,7 +934,7 @@ public class FopFactory implements ImageContext {
      * Returns the color space cache for this instance.
      * <p>
      * Note: this method should not be considered as part of FOP's external API.
-     * 
+     *
      * @return the color space cache
      */
     public ColorSpaceCache getColorSpaceCache() {

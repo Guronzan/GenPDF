@@ -35,8 +35,10 @@ public interface IRtfParagraphKeepTogetherContainer {
 
     /**
      * Close current paragraph, if any, and start a new one
+     * 
      * @return new paragraph object (with keep together)
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
     RtfParagraphKeepTogether newParagraphKeepTogether() throws IOException;
 }

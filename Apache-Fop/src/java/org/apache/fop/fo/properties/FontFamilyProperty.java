@@ -19,6 +19,8 @@
 
 package org.apache.fop.fo.properties;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.fo.FObj;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.expr.PropertyException;
@@ -26,11 +28,11 @@ import org.apache.fop.fo.expr.PropertyException;
 /**
  * Property class for the font-family property.
  */
+@Slf4j
 public final class FontFamilyProperty extends ListProperty {
 
     /** cache holding all canonical FontFamilyProperty instances */
-    private static final PropertyCache<FontFamilyProperty> CACHE
-            = new PropertyCache<FontFamilyProperty>();
+    private static final PropertyCache<FontFamilyProperty> CACHE = new PropertyCache<FontFamilyProperty>();
 
     /**
      * Inner class for creating instances of ListProperty
@@ -38,21 +40,23 @@ public final class FontFamilyProperty extends ListProperty {
     public static class Maker extends PropertyMaker {
 
         /**
-         * @param propId ID of the property for which Maker should be created
+         * @param propId
+         *            ID of the property for which Maker should be created
          */
-        public Maker(int propId) {
+        public Maker(final int propId) {
             super(propId);
         }
 
         /**
          * {@inheritDoc}
          */
-        public Property make(PropertyList propertyList, String value, FObj fo)
-                throws PropertyException {
+        @Override
+        public Property make(final PropertyList propertyList,
+                final String value, final FObj fo) throws PropertyException {
             if ("inherit".equals(value)) {
                 return super.make(propertyList, value, fo);
             } else {
-                FontFamilyProperty prop = new FontFamilyProperty();
+                final FontFamilyProperty prop = new FontFamilyProperty();
                 String tmpVal;
                 int startIndex = 0;
                 int commaIndex = value.indexOf(',');
@@ -72,7 +76,7 @@ public final class FontFamilyProperty extends ListProperty {
                     aposIndex = tmpVal.indexOf('\'');
                     quoteIndex = tmpVal.indexOf('\"');
                     if (aposIndex != -1 || quoteIndex != -1) {
-                        qChar = (aposIndex == -1) ? '\"' : '\'';
+                        qChar = aposIndex == -1 ? '\"' : '\'';
                         if (tmpVal.lastIndexOf(qChar) != tmpVal.length() - 1) {
                             log.warn("Skipping malformed value for font-family: "
                                     + tmpVal + " in \"" + value + "\".");
@@ -85,7 +89,7 @@ public final class FontFamilyProperty extends ListProperty {
                         int dblSpaceIndex = tmpVal.indexOf("  ");
                         while (dblSpaceIndex != -1) {
                             tmpVal = tmpVal.substring(0, dblSpaceIndex)
-                                        + tmpVal.substring(dblSpaceIndex + 1);
+                                    + tmpVal.substring(dblSpaceIndex + 1);
                             dblSpaceIndex = tmpVal.indexOf("  ");
                         }
                         prop.addProperty(StringProperty.getInstance(tmpVal));
@@ -98,8 +102,9 @@ public final class FontFamilyProperty extends ListProperty {
         /**
          * {@inheritDoc}
          */
-        public Property convertProperty(Property p,
-                                        PropertyList propertyList, FObj fo) {
+        @Override
+        public Property convertProperty(final Property p,
+                final PropertyList propertyList, final FObj fo) {
             if (p instanceof FontFamilyProperty) {
                 return p;
             } else {
@@ -110,9 +115,10 @@ public final class FontFamilyProperty extends ListProperty {
     }
 
     /**
-     * @param prop the first Property to be added to the list
+     * @param prop
+     *            the first Property to be added to the list
      */
-    private FontFamilyProperty(Property prop) {
+    private FontFamilyProperty(final Property prop) {
         super();
         addProperty(prop);
     }
@@ -127,20 +133,24 @@ public final class FontFamilyProperty extends ListProperty {
 
     /**
      * Add a new property to the list
-     * @param prop Property to be added to the list
+     *
+     * @param prop
+     *            Property to be added to the list
      */
-    public void addProperty(Property prop) {
+    @Override
+    public void addProperty(final Property prop) {
         if (prop.getList() != null) {
-            list.addAll(prop.getList());
+            this.list.addAll(prop.getList());
         } else {
             super.addProperty(prop);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getString() {
-        if (list.size() > 0) {
-            Property first = (Property)list.get(0);
+        if (this.list.size() > 0) {
+            final Property first = this.list.get(0);
             return first.getString();
         } else {
             return super.getString();

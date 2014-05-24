@@ -613,7 +613,7 @@ public class PreviewDialog extends JFrame implements StatusListener {
                     @Override
                     public void doit() {
                         PreviewDialog.this.previewPanel
-                        .setDisplayMode(PreviewPanel.SINGLE);
+                                .setDisplayMode(PreviewPanel.SINGLE);
                     }
                 });
         final JRadioButtonMenuItem cont = new JRadioButtonMenuItem(new Command(
@@ -626,7 +626,7 @@ public class PreviewDialog extends JFrame implements StatusListener {
             @Override
             public void doit() {
                 PreviewDialog.this.previewPanel
-                .setDisplayMode(PreviewPanel.CONTINUOUS);
+                        .setDisplayMode(PreviewPanel.CONTINUOUS);
             }
         });
         final JRadioButtonMenuItem facing = new JRadioButtonMenuItem(
@@ -639,7 +639,7 @@ public class PreviewDialog extends JFrame implements StatusListener {
                     @Override
                     public void doit() {
                         PreviewDialog.this.previewPanel
-                        .setDisplayMode(PreviewPanel.CONT_FACING);
+                                .setDisplayMode(PreviewPanel.CONT_FACING);
                     }
                 });
         single.setSelected(true);
@@ -765,7 +765,7 @@ public class PreviewDialog extends JFrame implements StatusListener {
      */
     public void setScale(final double scaleFactor) {
         this.scale
-        .setSelectedItem(this.percentFormat.format(scaleFactor) + "%");
+                .setSelectedItem(this.percentFormat.format(scaleFactor) + "%");
         this.previewPanel.setScaleFactor(scaleFactor / 100d);
     }
 
@@ -896,7 +896,7 @@ public class PreviewDialog extends JFrame implements StatusListener {
         setStatus(msg);
         JOptionPane.showMessageDialog(getContentPane(),
                 "<html><b>" + msg + ":</b><br>" + e.getClass().getName()
-                + "<br>" + e.getMessage() + "</html>",
+                        + "<br>" + e.getMessage() + "</html>",
                 this.translator.getString("Exception.Error"),
                 JOptionPane.ERROR_MESSAGE);
     }

@@ -27,28 +27,30 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.apache.fop.util.GenerationHelperContentHandler;
 import org.xml.sax.ContentHandler;
 
-import org.apache.fop.util.GenerationHelperContentHandler;
-
 /**
- * Abstract base class for XML-writing {@link IFDocumentHandler} implementations.
+ * Abstract base class for XML-writing {@link IFDocumentHandler}
+ * implementations.
  */
-public abstract class AbstractXMLWritingIFDocumentHandler extends AbstractIFDocumentHandler {
+public abstract class AbstractXMLWritingIFDocumentHandler extends
+        AbstractIFDocumentHandler {
 
     /**
      * Default SAXTransformerFactory that can be used by subclasses.
      */
-    protected SAXTransformerFactory tFactory
-        = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
+    protected SAXTransformerFactory tFactory = (SAXTransformerFactory) SAXTransformerFactory
+            .newInstance();
 
     /** Main SAX ContentHandler to receive the generated SAX events. */
     protected GenerationHelperContentHandler handler;
 
     /** {@inheritDoc} */
-    public void setResult(Result result) throws IFException {
+    @Override
+    public void setResult(final Result result) throws IFException {
         if (result instanceof SAXResult) {
-            SAXResult saxResult = (SAXResult)result;
+            final SAXResult saxResult = (SAXResult) result;
             this.handler = new GenerationHelperContentHandler(
                     saxResult.getHandler(), getMainNamespace());
         } else {
@@ -59,25 +61,31 @@ public abstract class AbstractXMLWritingIFDocumentHandler extends AbstractIFDocu
 
     /**
      * Returns the main namespace used for generated XML content.
+     * 
      * @return the main namespace
      */
     protected abstract String getMainNamespace();
 
     /**
      * Creates a ContentHandler for the given JAXP Result instance.
-     * @param result the JAXP Result instance
+     * 
+     * @param result
+     *            the JAXP Result instance
      * @return the requested SAX ContentHandler
-     * @throws IFException if an error occurs setting up the output
+     * @throws IFException
+     *             if an error occurs setting up the output
      */
-    protected ContentHandler createContentHandler(Result result) throws IFException {
+    protected ContentHandler createContentHandler(final Result result)
+            throws IFException {
         try {
-            TransformerHandler tHandler = tFactory.newTransformerHandler();
-            Transformer transformer = tHandler.getTransformer();
+            final TransformerHandler tHandler = this.tFactory
+                    .newTransformerHandler();
+            final Transformer transformer = tHandler.getTransformer();
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");
             tHandler.setResult(result);
             return tHandler;
-        } catch (TransformerConfigurationException tce) {
+        } catch (final TransformerConfigurationException tce) {
             throw new IFException(
                     "Error while setting up the serializer for XML output", tce);
         }

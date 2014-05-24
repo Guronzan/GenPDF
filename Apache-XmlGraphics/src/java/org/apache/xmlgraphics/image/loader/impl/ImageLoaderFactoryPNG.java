@@ -25,21 +25,23 @@ import org.apache.xmlgraphics.util.MimeConstants;
 
 public class ImageLoaderFactoryPNG extends AbstractImageLoaderFactory {
 
-    private static final String[] MIMES = new String[] {MimeConstants.MIME_PNG};
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_PNG };
 
-    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {ImageFlavor.RENDERED_IMAGE};
+    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] { ImageFlavor.RENDERED_IMAGE };
 
     public ImageLoaderFactoryPNG() {
         //
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMIMETypes() {
         return MIMES;
     }
 
     /** {@inheritDoc} */
-    public ImageFlavor[] getSupportedFlavors(String mime) {
+    @Override
+    public ImageFlavor[] getSupportedFlavors(final String mime) {
         if (MimeConstants.MIME_PNG.equals(mime)) {
             return FLAVORS;
         }
@@ -47,11 +49,13 @@ public class ImageLoaderFactoryPNG extends AbstractImageLoaderFactory {
     }
 
     /** {@inheritDoc} */
-    public ImageLoader newImageLoader(ImageFlavor targetFlavor) {
+    @Override
+    public ImageLoader newImageLoader(final ImageFlavor targetFlavor) {
         return new ImageLoaderPNG();
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isAvailable() {
         return true;
     }

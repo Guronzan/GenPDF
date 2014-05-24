@@ -25,8 +25,8 @@ import java.io.OutputStream;
 import org.apache.fop.afp.util.BinaryUtils;
 
 /**
- * The Map Data Resource structured field specifies resources that are
- * required for presentation.
+ * The Map Data Resource structured field specifies resources that are required
+ * for presentation.
  */
 public class MapDataResource extends AbstractTripletStructuredObject {
 
@@ -37,12 +37,13 @@ public class MapDataResource extends AbstractTripletStructuredObject {
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
         super.writeStart(os);
-        byte[] data = new byte[11];
+        final byte[] data = new byte[11];
         copySF(data, Type.MAP, Category.DATA_RESOURCE);
 
-        int tripletDataLen = getTripletDataLength();
+        final int tripletDataLen = getTripletDataLength();
 
         byte[] len = BinaryUtils.convert(10 + tripletDataLen, 2);
         data[1] = len[0];

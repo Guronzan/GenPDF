@@ -24,22 +24,26 @@ package org.apache.fop.render.afp;
  */
 class PageSegmentDescriptor {
 
-    private String name;
-    private String uri;
+    private final String name;
+    private final String uri;
 
     /**
      * Creates a new page segment descriptor.
-     * @param name the page segment name
-     * @param uri the URI identifying the external resource file (may be null if the page segment
-     *                  shall be referenced rather than embedded)
+     * 
+     * @param name
+     *            the page segment name
+     * @param uri
+     *            the URI identifying the external resource file (may be null if
+     *            the page segment shall be referenced rather than embedded)
      */
-    public PageSegmentDescriptor(String name, String uri) {
+    public PageSegmentDescriptor(final String name, final String uri) {
         this.name = name;
         this.uri = uri;
     }
 
     /**
      * Returns the name of the page segment (usually 8 upper case letters).
+     * 
      * @return the name of the page segment
      */
     public String getName() {
@@ -48,7 +52,9 @@ class PageSegmentDescriptor {
 
     /**
      * Returns the URI of the external resource containing the page segment.
-     * @return the URI of the external resource (or null if the resource is not to be embedded)
+     * 
+     * @return the URI of the external resource (or null if the resource is not
+     *         to be embedded)
      */
     public String getURI() {
         return this.uri;

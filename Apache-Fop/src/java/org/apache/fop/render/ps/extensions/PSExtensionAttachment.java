@@ -19,18 +19,17 @@
 
 package org.apache.fop.render.ps.extensions;
 
+import org.apache.fop.fo.extensions.ExtensionAttachment;
+import org.apache.xmlgraphics.util.XMLizable;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import org.apache.xmlgraphics.util.XMLizable;
-
-import org.apache.fop.fo.extensions.ExtensionAttachment;
-
 /**
  * This is the pass-through value object for the PostScript extension.
  */
-public abstract class PSExtensionAttachment implements ExtensionAttachment, XMLizable {
+public abstract class PSExtensionAttachment implements ExtensionAttachment,
+        XMLizable {
 
     /** extension node content */
     protected String content;
@@ -40,9 +39,11 @@ public abstract class PSExtensionAttachment implements ExtensionAttachment, XMLi
 
     /**
      * Default constructor.
-     * @param content the content of the setup code object
+     * 
+     * @param content
+     *            the content of the setup code object
      */
-    public PSExtensionAttachment(String content) {
+    public PSExtensionAttachment(final String content) {
         this.content = content;
     }
 
@@ -56,36 +57,42 @@ public abstract class PSExtensionAttachment implements ExtensionAttachment, XMLi
      * @return the category URI
      * @see org.apache.fop.fo.extensions.ExtensionAttachment#getCategory()
      */
+    @Override
     public String getCategory() {
         return CATEGORY;
     }
 
     /** @return the content */
     public String getContent() {
-        return content;
+        return this.content;
     }
 
     /**
      * Sets the content for the setup code object.
-     * @param content The content to set.
+     * 
+     * @param content
+     *            The content to set.
      */
-    public void setContent(String content) {
+    public void setContent(final String content) {
         this.content = content;
     }
 
     /**
      * Generates SAX events representing the object's state.
      *
-     * @param handler ContentHandler instance to send the SAX events to
-     * @throws SAXException if there's a problem generating the SAX events
+     * @param handler
+     *            ContentHandler instance to send the SAX events to
+     * @throws SAXException
+     *             if there's a problem generating the SAX events
      * @see org.apache.xmlgraphics.util.XMLizable#toSAX(org.xml.sax.ContentHandler)
      */
-    public void toSAX(ContentHandler handler) throws SAXException {
-        AttributesImpl atts = new AttributesImpl();
-        String element = getElement();
+    @Override
+    public void toSAX(final ContentHandler handler) throws SAXException {
+        final AttributesImpl atts = new AttributesImpl();
+        final String element = getElement();
         handler.startElement(CATEGORY, element, element, atts);
-        if (content != null && content.length() > 0) {
-            char[] chars = content.toCharArray();
+        if (this.content != null && this.content.length() > 0) {
+            final char[] chars = this.content.toCharArray();
             handler.characters(chars, 0, chars.length);
         }
         handler.endElement(CATEGORY, element, element);
@@ -93,7 +100,7 @@ public abstract class PSExtensionAttachment implements ExtensionAttachment, XMLi
 
     /** @return type name */
     public String getType() {
-        String className = getClass().getName();
+        final String className = getClass().getName();
         return className.substring(className.lastIndexOf('.') + 3);
     }
 
@@ -101,8 +108,9 @@ public abstract class PSExtensionAttachment implements ExtensionAttachment, XMLi
      * @return a string representation of this object
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
-        return getType() + ": content=" + content;
+        return getType() + ": content=" + this.content;
     }
 
     /** @return element */

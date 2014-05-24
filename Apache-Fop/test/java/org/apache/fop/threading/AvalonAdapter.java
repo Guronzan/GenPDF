@@ -20,7 +20,6 @@
 package org.apache.fop.threading;
 
 import org.apache.avalon.framework.logger.Logger;
-
 import org.apache.fop.events.Event;
 import org.apache.fop.events.EventFormatter;
 import org.apache.fop.events.EventListener;
@@ -32,24 +31,25 @@ import org.apache.fop.events.model.EventSeverity;
 class AvalonAdapter implements EventListener {
 
     private final Logger logger;
-    private String filename;
+    private final String filename;
 
-    public AvalonAdapter(Logger logger, String filename) {
+    public AvalonAdapter(final Logger logger, final String filename) {
         this.logger = logger;
         this.filename = filename;
     }
 
-    public void processEvent(Event event) {
-        String msg = EventFormatter.format(event);
-        EventSeverity severity = event.getSeverity();
+    @Override
+    public void processEvent(final Event event) {
+        final String msg = EventFormatter.format(event);
+        final EventSeverity severity = event.getSeverity();
         if (severity == EventSeverity.INFO) {
-            //logger.info(filename + ": " + msg);
+            // logger.info(filename + ": " + msg);
         } else if (severity == EventSeverity.WARN) {
-            //logger.warn(filename + ": "  + msg);
+            // logger.warn(filename + ": " + msg);
         } else if (severity == EventSeverity.ERROR) {
-            logger.error(filename + ": "  + msg);
+            this.logger.error(this.filename + ": " + msg);
         } else if (severity == EventSeverity.FATAL) {
-            logger.fatalError(filename + ": "  + msg);
+            this.logger.fatalError(this.filename + ": " + msg);
         } else {
             assert false;
         }

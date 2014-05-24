@@ -19,10 +19,10 @@
 
 package org.apache.fop.pdf;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
 
 /**
  * This is a test case for ({@link Version}.
@@ -30,13 +30,13 @@ import org.junit.Test;
 public class VersionTestCase {
 
     /**
-     * Test the <code>getValue()</code> method. This should return {@link Version} given a
-     * {@link String}.
+     * Test the <code>getValue()</code> method. This should return
+     * {@link Version} given a {@link String}.
      */
     @Test
     public void testGetValue() {
         int index = 0;
-        for (Version version : Version.values()) {
+        for (final Version version : Version.values()) {
             assertEquals(version, Version.getValueOf("1." + index++));
         }
     }
@@ -47,14 +47,15 @@ public class VersionTestCase {
     }
 
     /**
-     * Tests that the <code>toString()</method> method returns the PDF version string of the proper
+     * Tests that the
+     * <code>toString()</method> method returns the PDF version string of the proper
      * format.
      */
     @Test
     public void testToString() {
         // Test all the normal values
         int index = 0;
-        for (Version version : Version.values()) {
+        for (final Version version : Version.values()) {
             assertTrue(version.toString().equals("1." + index++));
         }
     }
@@ -65,18 +66,11 @@ public class VersionTestCase {
     @Test
     public void testCompareTo() {
         // Ensure that the implicit comparison contract is satisfied
-        Version[] expected = {
-                Version.V1_0,
-                Version.V1_1,
-                Version.V1_2,
-                Version.V1_3,
-                Version.V1_4,
-                Version.V1_5,
-                Version.V1_6,
-                Version.V1_7
-        };
+        final Version[] expected = { Version.V1_0, Version.V1_1, Version.V1_2,
+                Version.V1_3, Version.V1_4, Version.V1_5, Version.V1_6,
+                Version.V1_7 };
 
-        Version[] actual = Version.values();
+        final Version[] actual = Version.values();
 
         for (int i = 0; i < actual.length - 1; i++) {
             assertEquals(-1, actual[i].compareTo(expected[i + 1]));

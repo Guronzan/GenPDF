@@ -29,14 +29,14 @@ import java.io.OutputStream;
 public class PresentationSpaceResetMixingTriplet extends AbstractTriplet {
 
     /**
-     * Do not reset to the color of the medium prior to
-     * placing data into this MO:DCA presentation space.
+     * Do not reset to the color of the medium prior to placing data into this
+     * MO:DCA presentation space.
      */
     public static final byte NOT_RESET = 0x00;
 
     /**
-     * Reset to the color of the medium prior to placing
-     * data into this MO:DCA presentation space.
+     * Reset to the color of the medium prior to placing data into this MO:DCA
+     * presentation space.
      */
     public static final byte RESET = 0x01;
 
@@ -45,22 +45,25 @@ public class PresentationSpaceResetMixingTriplet extends AbstractTriplet {
     /**
      * Main constructor
      *
-     * @param backgroundMixFlag the background mixing flag
+     * @param backgroundMixFlag
+     *            the background mixing flag
      */
-    public PresentationSpaceResetMixingTriplet(byte backgroundMixFlag) {
+    public PresentationSpaceResetMixingTriplet(final byte backgroundMixFlag) {
         super(PRESENTATION_SPACE_RESET_MIXING);
         this.backgroundMixFlag = backgroundMixFlag;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 3;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = getData();
-        data[2] = backgroundMixFlag;
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = getData();
+        data[2] = this.backgroundMixFlag;
         os.write(data);
     }
 }

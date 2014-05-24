@@ -24,8 +24,8 @@ import org.apache.fop.fonts.FontType;
 /**
  * Class representing a Type3 font.
  * <p>
- * <b>CAUTION: this is not yet fully implemented!!!!!!!</b>
- * the /CharProcs is still missing its <code>toPDF()</code> method.
+ * <b>CAUTION: this is not yet fully implemented!!!!!!!</b> the /CharProcs is
+ * still missing its <code>toPDF()</code> method.
  * <p>
  * Type3 fonts are specified on page 206 and onwards of the PDF 1.3 spec.
  */
@@ -34,31 +34,37 @@ public class PDFFontType3 extends PDFFontNonBase14 {
     /**
      * Create the /Font object
      *
-     * @param fontname the internal name for the font
-     * @param basefont the base font name
-     * @param encoding the character encoding schema used by the font
+     * @param fontname
+     *            the internal name for the font
+     * @param basefont
+     *            the base font name
+     * @param encoding
+     *            the character encoding schema used by the font
      */
-    public PDFFontType3(String fontname,
-                        String basefont,
-                        Object encoding) {
+    public PDFFontType3(final String fontname, final String basefont,
+            final Object encoding) {
         super(fontname, FontType.TYPE3, basefont, encoding);
     }
 
     /**
      * Create the /Font object
      *
-     * @param fontname the internal name for the font
-     * @param basefont the base font name
-     * @param encoding the character encoding schema used by the font
-     * @param fontBBox the font's bounding box
-     * @param fontMatrix the font's transformation matrix
-     * @param charProcs the glyphs' definitions
+     * @param fontname
+     *            the internal name for the font
+     * @param basefont
+     *            the base font name
+     * @param encoding
+     *            the character encoding schema used by the font
+     * @param fontBBox
+     *            the font's bounding box
+     * @param fontMatrix
+     *            the font's transformation matrix
+     * @param charProcs
+     *            the glyphs' definitions
      */
-    public PDFFontType3(String fontname,
-                        String basefont,
-                        Object encoding,
-                        PDFRectangle fontBBox, PDFArray fontMatrix,
-                        PDFCharProcs charProcs) {
+    public PDFFontType3(final String fontname, final String basefont,
+            final Object encoding, final PDFRectangle fontBBox,
+            final PDFArray fontMatrix, final PDFCharProcs charProcs) {
 
         /* generic creation of PDF object */
         super(fontname, FontType.TYPE3, basefont, encoding /* , mapping */);
@@ -71,18 +77,20 @@ public class PDFFontType3 extends PDFFontNonBase14 {
     /**
      * Set the font's bounding box
      *
-     * @param bbox bounding box for the font
+     * @param bbox
+     *            bounding box for the font
      */
-    public void setFontBBox(PDFRectangle bbox) {
+    public void setFontBBox(final PDFRectangle bbox) {
         put("FontBBox", bbox);
     }
 
     /**
      * Set the font's transformation matrix
      *
-     * @param matrix the transformation matrix for the font
+     * @param matrix
+     *            the transformation matrix for the font
      */
-    public void setFontMatrix(PDFArray matrix) {
+    public void setFontMatrix(final PDFArray matrix) {
         put("FontMatrix", matrix);
     }
 
@@ -91,9 +99,10 @@ public class PDFFontType3 extends PDFFontNonBase14 {
      * <p>
      * The /CharProcs object needs to be registered in the document's resources.
      *
-     * @param chars the glyphs' dictionary
+     * @param chars
+     *            the glyphs' dictionary
      */
-    public void setCharProcs(PDFCharProcs chars) {
+    public void setCharProcs(final PDFCharProcs chars) {
         put("CharProcs", chars);
     }
 

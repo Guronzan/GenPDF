@@ -19,8 +19,6 @@
 
 package org.apache.fop.afp;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -28,6 +26,8 @@ import java.util.Arrays;
 import org.apache.commons.io.IOUtils;
 import org.apache.fop.afp.util.AFPResourceUtil;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the {@link AFPResourceUtil} class.
@@ -42,7 +42,9 @@ public class AFPResourceUtilTestCase {
 
     /**
      * Tests copyResourceFile()
-     * @throws Exception -
+     * 
+     * @throws Exception
+     *             -
      */
     @Test
     public void testCopyResourceFile() throws Exception {
@@ -73,7 +75,9 @@ public class AFPResourceUtilTestCase {
 
     /**
      * Tests copyNamedResource()
-     * @throws Exception -
+     * 
+     * @throws Exception
+     *             -
      */
     @Test
     public void testCopyNamedResource() throws Exception {

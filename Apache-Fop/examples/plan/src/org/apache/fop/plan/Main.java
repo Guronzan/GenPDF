@@ -22,74 +22,82 @@ package org.apache.fop.plan;
 import java.io.InputStream;
 import java.io.Writer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import lombok.extern.slf4j.Slf4j;
 
-import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.svg2svg.SVGTranscoder;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Sample command-line application for converting plan XML to SVG.
  */
+@Slf4j
 public class Main {
 
     /**
      * Main method.
-     * @param args command-line arguments
+     *
+     * @param args
+     *            command-line arguments
      */
-    public static void main(String[] args) {
-        Main main = new Main();
+    public static void main(final String[] args) {
+        final Main main = new Main();
         main.convert(args);
         System.exit(0);
     }
 
     /**
      * Runs the conversion
-     * @param params command-line arguments
+     *
+     * @param params
+     *            command-line arguments
      */
-    public void convert(String[] params) {
+    public void convert(final String[] params) {
         if (params.length != 2) {
-            System.out.println("arguments: plan.xml output.svg");
+            log.info("arguments: plan.xml output.svg");
             return;
         }
         try {
-            InputStream is = new java.io.FileInputStream(params[0]);
-            Document doc = createSVGDocument(is);
-            SVGTranscoder svgT = new SVGTranscoder();
-            TranscoderInput input = new TranscoderInput(doc);
-            Writer ostream = new java.io.FileWriter(params[1]);
-            TranscoderOutput output = new TranscoderOutput(ostream);
+            final InputStream is = new java.io.FileInputStream(params[0]);
+            final Document doc = createSVGDocument(is);
+            final SVGTranscoder svgT = new SVGTranscoder();
+            final TranscoderInput input = new TranscoderInput(doc);
+            final Writer ostream = new java.io.FileWriter(params[1]);
+            final TranscoderOutput output = new TranscoderOutput(ostream);
             svgT.transcode(input, output);
             ostream.flush();
             ostream.close();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
      * Helper method to create the SVG document from the plan InputStream.
-     * @param is InputStream
+     *
+     * @param is
+     *            InputStream
      * @return Document a DOM containing the SVG
      */
-    public Document createSVGDocument(InputStream is) {
+    public Document createSVGDocument(final InputStream is) {
         Document doc = null;
 
         Element root = null;
         try {
-            doc = javax.xml.parsers.DocumentBuilderFactory.newInstance().
-                  newDocumentBuilder().parse(is);
+            doc = javax.xml.parsers.DocumentBuilderFactory.newInstance()
+                    .newDocumentBuilder().parse(is);
 
             root = doc.getDocumentElement();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
-        PlanRenderer gr = new PlanRenderer();
+        final PlanRenderer gr = new PlanRenderer();
         gr.setFontInfo("sansserif", 12);
-        Document svgdoc = gr.createSVGDocument(doc);
+        final Document svgdoc = gr.createSVGDocument(doc);
         return svgdoc;
     }
 }

@@ -19,30 +19,31 @@
 
 package org.apache.fop.fo.expr;
 
-
 import org.apache.fop.fo.properties.NumberProperty;
 import org.apache.fop.fo.properties.Property;
 
 class RoundFunction extends FunctionBase {
 
     /** {@inheritDoc} */
+    @Override
     public int getRequiredArgsCount() {
         return 1;
     }
 
     /** {@inheritDoc} */
-    public Property eval(Property[] args, PropertyInfo pInfo) throws PropertyException {
-        Number dbl = args[0].getNumber();
+    @Override
+    public Property eval(final Property[] args, final PropertyInfo pInfo)
+            throws PropertyException {
+        final Number dbl = args[0].getNumber();
         if (dbl == null) {
             throw new PropertyException("Non number operand to round function");
         }
-        double n = dbl.doubleValue();
+        final double n = dbl.doubleValue();
         double r = Math.floor(n + 0.5);
         if (r == 0.0 && n < 0.0) {
-            r = -r;    // round(-0.2) returns -0 not 0
+            r = -r; // round(-0.2) returns -0 not 0
         }
         return NumberProperty.getInstance(r);
     }
 
 }
-

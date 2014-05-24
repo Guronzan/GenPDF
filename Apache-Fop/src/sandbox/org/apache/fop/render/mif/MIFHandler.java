@@ -22,10 +22,7 @@ package org.apache.fop.render.mif;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.xml.sax.SAXException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.fo.FOEventHandler;
@@ -58,19 +55,17 @@ import org.apache.fop.fo.pagination.SimplePageMaster;
 import org.apache.fop.fo.pagination.StaticContent;
 import org.apache.fop.fonts.FontSetup;
 import org.apache.fop.render.DefaultFontResolver;
+import org.xml.sax.SAXException;
 
 // TODO: do we really want every method throwing a SAXException
 
 /**
- * The MIF Handler.
- * This generates MIF output using the structure events from
- * the FO Tree sent to this structure handler.
- * This builds an MIF file and writes it to the output.
+ * The MIF Handler. This generates MIF output using the structure events from
+ * the FO Tree sent to this structure handler. This builds an MIF file and
+ * writes it to the output.
  */
+@Slf4j
 public class MIFHandler extends FOEventHandler {
-
-    /** Logger */
-    private static Log log = LogFactory.getLog(MIFHandler.class);
 
     /** the MIFFile instance */
     protected MIFFile mifFile;
@@ -84,306 +79,362 @@ public class MIFHandler extends FOEventHandler {
 
     /**
      * Creates a new MIF handler on a given OutputStream.
-     * @param ua FOUserAgent instance for this process
-     * @param os OutputStream to write to
+     *
+     * @param ua
+     *            FOUserAgent instance for this process
+     * @param os
+     *            OutputStream to write to
      */
-    public MIFHandler(FOUserAgent ua, OutputStream os) {
+    public MIFHandler(final FOUserAgent ua, final OutputStream os) {
         super(ua);
-        outStream = os;
-        boolean base14Kerning = false; //TODO - FIXME
-        FontSetup.setup(fontInfo, null, new DefaultFontResolver(ua), base14Kerning);
+        this.outStream = os;
+        final boolean base14Kerning = false; // TODO - FIXME
+        FontSetup.setup(this.fontInfo, null, new DefaultFontResolver(ua),
+                base14Kerning);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startDocument() throws SAXException {
-        log.fatal("The MIF Handler is non-functional at this time. Please help resurrect it!");
-        mifFile = new MIFFile();
+        log.error("The MIF Handler is non-functional at this time. Please help resurrect it!");
+        this.mifFile = new MIFFile();
         try {
-            mifFile.output(outStream);
-        } catch (IOException ioe) {
+            this.mifFile.output(this.outStream);
+        } catch (final IOException ioe) {
             throw new SAXException(ioe);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endDocument() throws SAXException {
         // finish all open elements
-        mifFile.finish(true);
+        this.mifFile.finish(true);
         try {
-            mifFile.output(outStream);
-            outStream.flush();
-        } catch (IOException ioe) {
+            this.mifFile.output(this.outStream);
+            this.outStream.flush();
+        } catch (final IOException ioe) {
             throw new SAXException(ioe);
         }
     }
 
     /** {@inheritDoc} */
-    public void startPageSequence(PageSequence pageSeq) {
+    @Override
+    public void startPageSequence(final PageSequence pageSeq) {
         // get the layout master set
         // setup the pages for this sequence
-        String name = pageSeq.getMasterReference();
-        SimplePageMaster spm = pageSeq.getRoot().getLayoutMasterSet().getSimplePageMaster(name);
+        final String name = pageSeq.getMasterReference();
+        final SimplePageMaster spm = pageSeq.getRoot().getLayoutMasterSet()
+                .getSimplePageMaster(name);
         if (spm == null) {
-            PageSequenceMaster psm
-                = pageSeq.getRoot().getLayoutMasterSet().getPageSequenceMaster(name);
+            final PageSequenceMaster psm = pageSeq.getRoot()
+                    .getLayoutMasterSet().getPageSequenceMaster(name);
         } else {
             // create simple master with regions
             MIFElement prop = new MIFElement("PageType");
             prop.setValue("BodyPage");
 
-           MIFElement page = new MIFElement("Page");
-           page.addElement(prop);
+            final MIFElement page = new MIFElement("Page");
+            page.addElement(prop);
 
-           prop = new MIFElement("PageBackground");
-           prop.setValue("'Default'");
-           page.addElement(prop);
+            prop = new MIFElement("PageBackground");
+            prop.setValue("'Default'");
+            page.addElement(prop);
 
-           // build regions
-           MIFElement textRect = new MIFElement("TextRect");
-           prop = new MIFElement("ID");
-           prop.setValue("1");
-           textRect.addElement(prop);
-           prop = new MIFElement("ShapeRect");
-           prop.setValue("0.0 841.889 453.543 0.0");
-           textRect.addElement(prop);
-           page.addElement(textRect);
+            // build regions
+            MIFElement textRect = new MIFElement("TextRect");
+            prop = new MIFElement("ID");
+            prop.setValue("1");
+            textRect.addElement(prop);
+            prop = new MIFElement("ShapeRect");
+            prop.setValue("0.0 841.889 453.543 0.0");
+            textRect.addElement(prop);
+            page.addElement(textRect);
 
-           textRect = new MIFElement("TextRect");
-           prop = new MIFElement("ID");
-           prop.setValue("2");
-           textRect.addElement(prop);
-           prop = new MIFElement("ShapeRect");
-           prop.setValue("0.0 841.889 453.543 187.65");
-           textRect.addElement(prop);
-           page.addElement(textRect);
+            textRect = new MIFElement("TextRect");
+            prop = new MIFElement("ID");
+            prop.setValue("2");
+            textRect.addElement(prop);
+            prop = new MIFElement("ShapeRect");
+            prop.setValue("0.0 841.889 453.543 187.65");
+            textRect.addElement(prop);
+            page.addElement(textRect);
 
-           mifFile.addPage(page);
+            this.mifFile.addPage(page);
         }
     }
 
     /** {@inheritDoc} */
-    public void endPageSequence(PageSequence pageSeq) {
+    @Override
+    public void endPageSequence(final PageSequence pageSeq) {
     }
 
     /** {@inheritDoc} */
-    public void startFlow(Flow fl) {
+    @Override
+    public void startFlow(final Flow fl) {
         // start text flow in body region
-        textFlow = new MIFElement("TextFlow");
+        this.textFlow = new MIFElement("TextFlow");
     }
 
     /** {@inheritDoc} */
-    public void endFlow(Flow fl) {
-        textFlow.finish(true);
-        mifFile.addElement(textFlow);
-        textFlow = null;
+    @Override
+    public void endFlow(final Flow fl) {
+        this.textFlow.finish(true);
+        this.mifFile.addElement(this.textFlow);
+        this.textFlow = null;
     }
 
     /** {@inheritDoc} */
-    public void startBlock(Block bl) {
-        para = new MIFElement("Para");
+    @Override
+    public void startBlock(final Block bl) {
+        this.para = new MIFElement("Para");
         // get font
-        textFlow.addElement(para);
+        this.textFlow.addElement(this.para);
     }
 
     /** {@inheritDoc} */
-    public void endBlock(Block bl) {
-        para.finish(true);
-        para = null;
+    @Override
+    public void endBlock(final Block bl) {
+        this.para.finish(true);
+        this.para = null;
     }
 
     /** {@inheritDoc} */
-    public void startInline(Inline inl) {
+    @Override
+    public void startInline(final Inline inl) {
     }
 
     /** {@inheritDoc} */
-    public void endInline(Inline inl) {
+    @Override
+    public void endInline(final Inline inl) {
     }
 
     /** {@inheritDoc} */
-    public void startTable(Table tbl) {
+    @Override
+    public void startTable(final Table tbl) {
     }
 
     /** {@inheritDoc} */
-    public void endTable(Table tbl) {
+    @Override
+    public void endTable(final Table tbl) {
     }
 
     /** {@inheritDoc} */
-    public void startColumn(TableColumn tc) {
+    @Override
+    public void startColumn(final TableColumn tc) {
     }
 
     /** {@inheritDoc} */
-    public void endColumn(TableColumn tc) {
+    @Override
+    public void endColumn(final TableColumn tc) {
     }
 
     /** {@inheritDoc} */
-    public void startHeader(TableHeader th) {
+    @Override
+    public void startHeader(final TableHeader th) {
     }
 
     /** {@inheritDoc} */
-    public void endHeader(TableHeader th) {
+    @Override
+    public void endHeader(final TableHeader th) {
     }
 
     /** {@inheritDoc} */
-    public void startFooter(TableFooter tf) {
+    @Override
+    public void startFooter(final TableFooter tf) {
     }
 
     /** {@inheritDoc} */
-    public void endFooter(TableFooter tf) {
+    @Override
+    public void endFooter(final TableFooter tf) {
     }
 
     /** {@inheritDoc} */
-    public void startBody(TableBody tb) {
+    @Override
+    public void startBody(final TableBody tb) {
     }
 
     /** {@inheritDoc} */
-    public void endBody(TableBody tb) {
+    @Override
+    public void endBody(final TableBody tb) {
     }
 
     /** {@inheritDoc} */
-    public void startRow(TableRow tr) {
+    @Override
+    public void startRow(final TableRow tr) {
     }
 
     /** {@inheritDoc} */
-    public void endRow(TableRow tr) {
+    @Override
+    public void endRow(final TableRow tr) {
     }
 
     /** {@inheritDoc} */
-    public void startCell(TableCell tc) {
+    @Override
+    public void startCell(final TableCell tc) {
     }
 
     /** {@inheritDoc} */
-    public void endCell(TableCell tc) {
+    @Override
+    public void endCell(final TableCell tc) {
     }
 
     /** {@inheritDoc} */
-    public void startList(ListBlock lb) {
+    @Override
+    public void startList(final ListBlock lb) {
     }
 
     /** {@inheritDoc} */
-    public void endList(ListBlock lb) {
+    @Override
+    public void endList(final ListBlock lb) {
     }
 
     /** {@inheritDoc} */
-    public void startListItem(ListItem li) {
+    @Override
+    public void startListItem(final ListItem li) {
     }
 
     /** {@inheritDoc} */
-    public void endListItem(ListItem li) {
+    @Override
+    public void endListItem(final ListItem li) {
     }
 
     /** {@inheritDoc} */
-    public void startListLabel(ListItemLabel listItemLabel) {
+    @Override
+    public void startListLabel(final ListItemLabel listItemLabel) {
     }
 
     /** {@inheritDoc} */
-    public void endListLabel(ListItemLabel listItemLabel) {
+    @Override
+    public void endListLabel(final ListItemLabel listItemLabel) {
     }
 
     /** {@inheritDoc} */
-    public void startListBody(ListItemBody listItemBody) {
+    @Override
+    public void startListBody(final ListItemBody listItemBody) {
     }
 
     /** {@inheritDoc} */
-    public void endListBody(ListItemBody listItemBody) {
+    @Override
+    public void endListBody(final ListItemBody listItemBody) {
     }
 
     /** {@inheritDoc} */
-    public void startStatic(StaticContent staticContent) {
+    @Override
+    public void startStatic(final StaticContent staticContent) {
     }
 
     /** {@inheritDoc} */
-    public void endStatic(StaticContent staticContent) {
+    @Override
+    public void endStatic(final StaticContent staticContent) {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startMarkup() {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endMarkup() {
     }
 
     /** {@inheritDoc} */
-    public void startLink(BasicLink basicLink) {
+    @Override
+    public void startLink(final BasicLink basicLink) {
     }
 
     /** {@inheritDoc} */
-    public void endLink(BasicLink basicLink) {
+    @Override
+    public void endLink(final BasicLink basicLink) {
     }
 
     /** {@inheritDoc} */
-    public void image(ExternalGraphic eg) {
+    @Override
+    public void image(final ExternalGraphic eg) {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void pageRef() {
     }
 
     /** {@inheritDoc} */
-    public void startInstreamForeignObject(InstreamForeignObject ifo) {
+    @Override
+    public void startInstreamForeignObject(final InstreamForeignObject ifo) {
     }
 
     /** {@inheritDoc} */
-    public void endInstreamForeignObject(InstreamForeignObject ifo) {
+    @Override
+    public void endInstreamForeignObject(final InstreamForeignObject ifo) {
     }
 
     /** {@inheritDoc} */
-    public void startFootnote(Footnote footnote) {
+    @Override
+    public void startFootnote(final Footnote footnote) {
     }
 
     /** {@inheritDoc} */
-    public void endFootnote(Footnote footnote) {
+    @Override
+    public void endFootnote(final Footnote footnote) {
     }
 
     /** {@inheritDoc} */
-    public void startFootnoteBody(FootnoteBody body) {
+    @Override
+    public void startFootnoteBody(final FootnoteBody body) {
     }
 
     /** {@inheritDoc} */
-    public void endFootnoteBody(FootnoteBody body) {
+    @Override
+    public void endFootnoteBody(final FootnoteBody body) {
     }
 
     /** {@inheritDoc} */
-    public void startLeader(Leader l) {
+    @Override
+    public void startLeader(final Leader l) {
     }
 
     /** {@inheritDoc} */
-    public void endLeader(Leader l) {
+    @Override
+    public void endLeader(final Leader l) {
     }
 
-    public void character(Character c) {
-        appendCharacters ( new String ( new char[] {c.getCharacter()} ) );
-    }
-
-    /** {@inheritDoc} */
-    public void characters(FOText foText) {
-        appendCharacters ( foText.getCharSequence().toString() );
+    @Override
+    public void character(final Character c) {
+        appendCharacters(new String(new char[] { c.getCharacter() }));
     }
 
     /** {@inheritDoc} */
-    public void startPageNumber(PageNumber pagenum) {
+    @Override
+    public void characters(final FOText foText) {
+        appendCharacters(foText.getCharSequence().toString());
     }
 
     /** {@inheritDoc} */
-    public void endPageNumber(PageNumber pagenum) {
+    @Override
+    public void startPageNumber(final PageNumber pagenum) {
     }
 
-    private void appendCharacters ( String str ) {
-        if (para != null) {
+    /** {@inheritDoc} */
+    @Override
+    public void endPageNumber(final PageNumber pagenum) {
+    }
+
+    private void appendCharacters(String str) {
+        if (this.para != null) {
             str = str.trim();
             // break into nice length chunks
             if (str.length() == 0) {
                 return;
             }
-            MIFElement line = new MIFElement("ParaLine");
+            final MIFElement line = new MIFElement("ParaLine");
             MIFElement prop = new MIFElement("TextRectID");
             prop.setValue("2");
             line.addElement(prop);
             prop = new MIFElement("String");
             prop.setValue("\"" + str + "\"");
             line.addElement(prop);
-            para.addElement(line);
+            this.para.addElement(line);
         }
     }
 }
-

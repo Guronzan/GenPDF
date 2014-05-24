@@ -23,70 +23,74 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * An iterator over {@link Position} instances, that is wrapped around
- * another 'parent' {@link Iterator}. The parent can be either another
- * {@code PositionIterator}, or an iterator over {@link KnuthElement}s,
- * for example.<br/>
+ * An iterator over {@link Position} instances, that is wrapped around another
+ * 'parent' {@link Iterator}. The parent can be either another
+ * {@code PositionIterator}, or an iterator over {@link KnuthElement}s, for
+ * example.<br/>
  * The {@link #next()} method always returns a {@link Position}. The
- * {@link #getPos(Object)} method can be overridden in subclasses
- * to take care of obtaining the {@link LayoutManager} or {@link Position}
- * from the object returned by the parent iterator's {@code next()} method.
+ * {@link #getPos(Object)} method can be overridden in subclasses to take care
+ * of obtaining the {@link LayoutManager} or {@link Position} from the object
+ * returned by the parent iterator's {@code next()} method.
  */
 public class PositionIterator implements Iterator<Position> {
 
-    private Iterator parentIter;
+    private final Iterator parentIter;
     private Object nextObj;
     private LayoutManager childLM;
     private boolean hasNext;
 
     /**
      * Construct position iterator.
-     * @param parentIter an iterator to use as parent
+     * 
+     * @param parentIter
+     *            an iterator to use as parent
      */
-    public PositionIterator(Iterator parentIter) {
+    public PositionIterator(final Iterator parentIter) {
         this.parentIter = parentIter;
         lookAhead();
-        //checkNext();
+        // checkNext();
     }
 
     /** @return layout manager of next child layout manager or null */
     public LayoutManager getNextChildLM() {
         // Move to next "segment" of iterator, ie: new childLM
-        if (childLM == null && nextObj != null) {
-            childLM = getLM(nextObj);
-            hasNext = true;
+        if (this.childLM == null && this.nextObj != null) {
+            this.childLM = getLM(this.nextObj);
+            this.hasNext = true;
         }
-        return childLM;
+        return this.childLM;
     }
 
     /**
-     * @param nextObj next object from which to obtain position
+     * @param nextObj
+     *            next object from which to obtain position
      * @return layout manager
      */
-    protected LayoutManager getLM(Object nextObj) {
+    protected LayoutManager getLM(final Object nextObj) {
         return getPos(nextObj).getLM();
     }
 
     /**
-     * Default implementation assumes that the passed
-     * {@code nextObj} is itself a {@link Position}, and just returns it.
-     * Subclasses for which this is not the case, <em>must</em> provide a
-     * suitable override this method.
-     * @param nextObj next object from which to obtain position
+     * Default implementation assumes that the passed {@code nextObj} is itself
+     * a {@link Position}, and just returns it. Subclasses for which this is not
+     * the case, <em>must</em> provide a suitable override this method.
+     * 
+     * @param nextObj
+     *            next object from which to obtain position
      * @return position of next object.
      */
-    protected Position getPos(Object nextObj) {
+    protected Position getPos(final Object nextObj) {
         if (nextObj instanceof Position) {
-            return (Position)nextObj;
+            return (Position) nextObj;
         }
         throw new IllegalArgumentException(
                 "Cannot obtain Position from the given object.");
     }
 
     private void lookAhead() {
-        if (parentIter.hasNext()) {
-            hasNext = true;
-            nextObj = parentIter.next();
+        if (this.parentIter.hasNext()) {
+            this.hasNext = true;
+            this.nextObj = this.parentIter.next();
         } else {
             endIter();
         }
@@ -94,13 +98,13 @@ public class PositionIterator implements Iterator<Position> {
 
     /** @return true if not at end of sub-sequence with same child layout manager */
     protected boolean checkNext() {
-        LayoutManager lm = getLM(nextObj);
-        if (childLM == null) {
-            childLM = lm;
-        } else if (childLM != lm && lm != null) {
+        final LayoutManager lm = getLM(this.nextObj);
+        if (this.childLM == null) {
+            this.childLM = lm;
+        } else if (this.childLM != lm && lm != null) {
             // End of this sub-sequence with same child LM
-            hasNext = false;
-            childLM = null;
+            this.hasNext = false;
+            this.childLM = null;
             return false;
         }
         return true;
@@ -108,21 +112,22 @@ public class PositionIterator implements Iterator<Position> {
 
     /** end (reset) iterator */
     protected void endIter() {
-        hasNext = false;
-        nextObj = null;
-        childLM = null;
+        this.hasNext = false;
+        this.nextObj = null;
+        this.childLM = null;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasNext() {
-        return (hasNext && checkNext());
+        return this.hasNext && checkNext();
     }
 
-
     /** {@inheritDoc} */
+    @Override
     public Position next() throws NoSuchElementException {
-        if (hasNext) {
-            Position retPos = getPos(nextObj);
+        if (this.hasNext) {
+            final Position retPos = getPos(this.nextObj);
             lookAhead();
             return retPos;
         } else {
@@ -132,11 +137,13 @@ public class PositionIterator implements Iterator<Position> {
 
     /** @return peek at next object */
     public Object peekNext() {
-        return nextObj;
+        return this.nextObj;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void remove() throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("PositionIterator doesn't support remove");
+        throw new UnsupportedOperationException(
+                "PositionIterator doesn't support remove");
     }
 }

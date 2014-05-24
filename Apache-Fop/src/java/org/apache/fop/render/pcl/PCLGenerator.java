@@ -61,7 +61,7 @@ public class PCLGenerator {
 
     /** A list of all supported resolutions in PCL (values in dpi) */
     public static final int[] PCL_RESOLUTIONS = new int[] { 75, 100, 150, 200,
-            300, 600 };
+        300, 600 };
 
     private final DecimalFormatSymbols symbols = new DecimalFormatSymbols(
             Locale.US);
@@ -85,7 +85,7 @@ public class PCLGenerator {
 
     /**
      * Main constructor.
-     * 
+     *
      * @param out
      *            the OutputStream to write the PCL stream to
      */
@@ -95,7 +95,7 @@ public class PCLGenerator {
 
     /**
      * Main constructor.
-     * 
+     *
      * @param out
      *            the OutputStream to write the PCL stream to
      * @param maxResolution
@@ -124,7 +124,7 @@ public class PCLGenerator {
 
     /**
      * Returns the currently active text encoding.
-     * 
+     *
      * @return the text encoding
      */
     public String getTextEncoding() {
@@ -138,7 +138,7 @@ public class PCLGenerator {
 
     /**
      * Writes a PCL escape command to the output stream.
-     * 
+     *
      * @param cmd
      *            the command (without the ESCAPE character)
      * @throws IOException
@@ -151,7 +151,7 @@ public class PCLGenerator {
 
     /**
      * Writes raw text (in ISO-8859-1 encoding) to the output stream.
-     * 
+     *
      * @param s
      *            the text
      * @throws IOException
@@ -185,7 +185,7 @@ public class PCLGenerator {
 
     /**
      * Sends the universal end of language command (UEL).
-     * 
+     *
      * @throws IOException
      *             In case of an I/O error
      */
@@ -195,7 +195,7 @@ public class PCLGenerator {
 
     /**
      * Resets the printer and restores the user default environment.
-     * 
+     *
      * @throws IOException
      *             In case of an I/O error
      */
@@ -205,7 +205,7 @@ public class PCLGenerator {
 
     /**
      * Sends the job separation command.
-     * 
+     *
      * @throws IOException
      *             In case of an I/O error
      */
@@ -215,7 +215,7 @@ public class PCLGenerator {
 
     /**
      * Sends the form feed character.
-     * 
+     *
      * @throws IOException
      *             In case of an I/O error
      */
@@ -225,7 +225,7 @@ public class PCLGenerator {
 
     /**
      * Sets the unit of measure.
-     * 
+     *
      * @param value
      *            the resolution value (units per inch)
      * @throws IOException
@@ -237,7 +237,7 @@ public class PCLGenerator {
 
     /**
      * Sets the raster graphics resolution
-     * 
+     *
      * @param value
      *            the resolution value (units per inch)
      * @throws IOException
@@ -249,7 +249,7 @@ public class PCLGenerator {
 
     /**
      * Selects the page size.
-     * 
+     *
      * @param selector
      *            the integer representing the page size
      * @throws IOException
@@ -265,7 +265,7 @@ public class PCLGenerator {
      * the manual envelope feed, "4" is the "lower" tray and "7" is
      * "auto-select". Consult the technical reference for your printer for all
      * available values.
-     * 
+     *
      * @param selector
      *            the integer representing the paper source/tray
      * @throws IOException
@@ -281,7 +281,7 @@ public class PCLGenerator {
      * (rear) output bin. Some printers may support additional output bins.
      * Consult the technical reference for your printer for all available
      * values.
-     * 
+     *
      * @param selector
      *            the integer representing the output bin
      * @throws IOException
@@ -295,7 +295,7 @@ public class PCLGenerator {
      * Selects the duplexing mode for the page. The parameter is usually
      * printer-specific. "0" means Simplex, "1" means Duplex, Long-Edge Binding,
      * "2" means Duplex, Short-Edge Binding.
-     * 
+     *
      * @param selector
      *            the integer representing the duplexing mode of the page
      * @throws IOException
@@ -307,7 +307,7 @@ public class PCLGenerator {
 
     /**
      * Clears the horizontal margins.
-     * 
+     *
      * @throws IOException
      *             In case of an I/O error
      */
@@ -318,7 +318,7 @@ public class PCLGenerator {
     /**
      * The Top Margin command designates the number of lines between the top of
      * the logical page and the top of the text area.
-     * 
+     *
      * @param numberOfLines
      *            the number of lines (See PCL specification for details)
      * @throws IOException
@@ -331,7 +331,7 @@ public class PCLGenerator {
     /**
      * The Text Length command can be used to define the bottom border. See the
      * PCL specification for details.
-     * 
+     *
      * @param numberOfLines
      *            the number of lines
      * @throws IOException
@@ -343,7 +343,7 @@ public class PCLGenerator {
 
     /**
      * Sets the Vertical Motion Index (VMI).
-     * 
+     *
      * @param value
      *            the VMI value
      * @throws IOException
@@ -355,7 +355,7 @@ public class PCLGenerator {
 
     /**
      * Sets the cursor to a new absolute coordinate.
-     * 
+     *
      * @param x
      *            the X coordinate (in millipoints)
      * @param y
@@ -381,7 +381,7 @@ public class PCLGenerator {
     /**
      * Pushes the current cursor position on a stack (stack size: max 20
      * entries)
-     * 
+     *
      * @throws IOException
      *             In case of an I/O error
      */
@@ -391,7 +391,7 @@ public class PCLGenerator {
 
     /**
      * Pops the current cursor position from the stack.
-     * 
+     *
      * @throws IOException
      *             In case of an I/O error
      */
@@ -402,7 +402,7 @@ public class PCLGenerator {
     /**
      * Changes the current print direction while maintaining the current cursor
      * position.
-     * 
+     *
      * @param rotate
      *            the rotation angle (counterclockwise), one of 0, 90, 180 and
      *            270.
@@ -415,7 +415,7 @@ public class PCLGenerator {
 
     /**
      * Enters the HP GL/2 mode.
-     * 
+     *
      * @param restorePreviousHPGL2Cursor
      *            true if the previous HP GL/2 pen position should be restored,
      *            false if the current position is maintained
@@ -433,7 +433,7 @@ public class PCLGenerator {
 
     /**
      * Enters the PCL mode.
-     * 
+     *
      * @param restorePreviousPCLCursor
      *            true if the previous PCL cursor position should be restored,
      *            false if the current position is maintained
@@ -494,7 +494,7 @@ public class PCLGenerator {
     /**
      * Generates a user-defined pattern for a dithering pattern matching the
      * grayscale value of the color given.
-     * 
+     *
      * @param col
      *            the color to create the pattern for
      * @param patternID
@@ -545,7 +545,7 @@ public class PCLGenerator {
 
     /**
      * Sets the source transparency mode.
-     * 
+     *
      * @param transparent
      *            true if transparent, false for opaque
      * @throws IOException
@@ -558,7 +558,7 @@ public class PCLGenerator {
 
     /**
      * Sets the pattern transparency mode.
-     * 
+     *
      * @param transparent
      *            true if transparent, false for opaque
      * @throws IOException
@@ -571,7 +571,7 @@ public class PCLGenerator {
 
     /**
      * Sets the transparency modes.
-     * 
+     *
      * @param source
      *            source transparency: true if transparent, false for opaque
      * @param pattern
@@ -596,7 +596,7 @@ public class PCLGenerator {
 
     /**
      * Convert an RGB color value to a grayscale from 0 to 100.
-     * 
+     *
      * @param r
      *            the red component
      * @param g
@@ -611,7 +611,7 @@ public class PCLGenerator {
 
     /**
      * Convert a Color value to a PCL shade value (0-100).
-     * 
+     *
      * @param col
      *            the color
      * @return the PCL shade value (100=black)
@@ -625,7 +625,7 @@ public class PCLGenerator {
     /**
      * Selects the current grayscale color (the given color is converted to
      * grayscales).
-     * 
+     *
      * @param col
      *            the color
      * @throws IOException
@@ -648,7 +648,7 @@ public class PCLGenerator {
 
     /**
      * Select the current pattern
-     * 
+     *
      * @param patternID
      *            the pattern ID (<ESC>*c#G command)
      * @param pattern
@@ -667,7 +667,7 @@ public class PCLGenerator {
     /**
      * Sets the dithering quality used when encoding gray or color images. If
      * not explicitely set a medium setting (0.5f) is used.
-     * 
+     *
      * @param quality
      *            a quality setting between 0.0f (worst/fastest) and 1.0f
      *            (best/slowest)
@@ -679,7 +679,7 @@ public class PCLGenerator {
 
     /**
      * Returns the dithering quality used when encoding gray or color images.
-     * 
+     *
      * @return the quality setting between 0.0f (worst/fastest) and 1.0f
      *         (best/slowest)
      */
@@ -689,7 +689,7 @@ public class PCLGenerator {
 
     /**
      * Indicates whether an image is a monochrome (b/w) image.
-     * 
+     *
      * @param img
      *            the image
      * @return true if it's a monochrome image
@@ -700,7 +700,7 @@ public class PCLGenerator {
 
     /**
      * Indicates whether an image is a grayscale image.
-     * 
+     *
      * @param img
      *            the image
      * @return true if it's a grayscale image
@@ -710,12 +710,12 @@ public class PCLGenerator {
     }
 
     private static int jaiAvailable = -1; // no synchronization necessary, not
-                                          // critical
+    // critical
 
     /**
      * Indicates whether JAI is available. JAI has shown to be reliable when
      * dithering a grayscale or color image to monochrome bitmaps (1-bit).
-     * 
+     *
      * @return true if JAI is available
      */
     public static boolean isJAIAvailable() {
@@ -737,7 +737,7 @@ public class PCLGenerator {
 
     /**
      * Calculates the ideal PCL resolution for a given resolution.
-     * 
+     *
      * @param resolution
      *            the input resolution
      * @param increased
@@ -828,7 +828,7 @@ public class PCLGenerator {
     /**
      * Paint a bitmap at the current cursor position. The bitmap is converted to
      * a monochrome (1-bit) bitmap image.
-     * 
+     *
      * @param img
      *            the bitmap image
      * @param targetDim
@@ -855,7 +855,7 @@ public class PCLGenerator {
         } else {
             effDim = new Dimension((int) Math.ceil(UnitConv.mpt2px(
                     targetDim.width, effResolution)), (int) Math.ceil(UnitConv
-                    .mpt2px(targetDim.height, effResolution)));
+                            .mpt2px(targetDim.height, effResolution)));
         }
         final boolean scaled = !orgDim.equals(effDim);
         // ImageWriterUtil.saveAsPNG(img, new
@@ -895,16 +895,16 @@ public class PCLGenerator {
         // see http://www.jguru.com/faq/view.jsp?EID=221919
         double greyVal = 0.072169d * (rgb & 0xff);
         rgb >>= 8;
-            greyVal += 0.715160d * (rgb & 0xff);
-            rgb >>= 8;
-                greyVal += 0.212671d * (rgb & 0xff);
-                return (int) greyVal;
+        greyVal += 0.715160d * (rgb & 0xff);
+        rgb >>= 8;
+        greyVal += 0.212671d * (rgb & 0xff);
+        return (int) greyVal;
     }
 
     /**
      * Paint a bitmap at the current cursor position. The bitmap must be a
      * monochrome (1-bit) bitmap image.
-     * 
+     *
      * @param img
      *            the bitmap image (must be 1-bit b/w)
      * @param resolution

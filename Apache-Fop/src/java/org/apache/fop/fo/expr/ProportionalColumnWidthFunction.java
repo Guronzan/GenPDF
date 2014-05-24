@@ -33,6 +33,7 @@ import org.apache.fop.fo.properties.TableColLength;
 public class ProportionalColumnWidthFunction extends FunctionBase {
 
     /** {@inheritDoc} */
+    @Override
     public int getRequiredArgsCount() {
         return 1;
     }
@@ -44,19 +45,21 @@ public class ProportionalColumnWidthFunction extends FunctionBase {
     }
 
     /** {@inheritDoc} */
-    public Property eval(Property[] args, PropertyInfo pInfo) throws PropertyException {
-        Number d = args[0].getNumber();
+    @Override
+    public Property eval(final Property[] args, final PropertyInfo pInfo)
+            throws PropertyException {
+        final Number d = args[0].getNumber();
         if (d == null) {
             throw new PropertyException("Non numeric operand to "
                     + "proportional-column-width() function.");
         }
-        PropertyList pList = pInfo.getPropertyList();
+        final PropertyList pList = pInfo.getPropertyList();
         if (!"fo:table-column".equals(pList.getFObj().getName())) {
             throw new PropertyException("proportional-column-width() function "
                     + "may only be used on fo:table-column.");
         }
 
-        Table t = (Table) pList.getParentFObj();
+        final Table t = (Table) pList.getParentFObj();
         if (t.isAutoLayout()) {
             throw new PropertyException("proportional-column-width() function "
                     + "may only be used when fo:table has "
@@ -65,21 +68,26 @@ public class ProportionalColumnWidthFunction extends FunctionBase {
         return new TableColLength(d.doubleValue(), pInfo.getFO());
     }
 
-    private static class ProportionalColumnWidthPercentBase implements PercentBase {
+    private static class ProportionalColumnWidthPercentBase implements
+            PercentBase {
 
         /** {@inheritDoc} */
-        public int getBaseLength(PercentBaseContext context) throws PropertyException {
+        @Override
+        public int getBaseLength(final PercentBaseContext context)
+                throws PropertyException {
             return 0;
         }
 
         /** {@inheritDoc} */
+        @Override
         public double getBaseValue() {
-            //make sure percentage-arguments are interpreted
-            //as numerics (1% = 1 * 0.01)
+            // make sure percentage-arguments are interpreted
+            // as numerics (1% = 1 * 0.01)
             return 1;
         }
 
         /** {@inheritDoc} */
+        @Override
         public int getDimension() {
             return 0;
         }

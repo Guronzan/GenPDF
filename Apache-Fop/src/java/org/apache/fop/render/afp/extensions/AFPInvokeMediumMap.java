@@ -38,16 +38,18 @@ public class AFPInvokeMediumMap extends AFPExtensionAttachment {
     }
 
     /** {@inheritDoc} */
-    public void toSAX(ContentHandler handler) throws SAXException {
-        AttributesImpl atts = new AttributesImpl();
-        if (name != null && name.length() > 0) {
-            atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", name);
+    @Override
+    public void toSAX(final ContentHandler handler) throws SAXException {
+        final AttributesImpl atts = new AttributesImpl();
+        if (this.name != null && this.name.length() > 0) {
+            atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", this.name);
         }
-        handler.startElement(CATEGORY, elementName, elementName, atts);
-        handler.endElement(CATEGORY, elementName, elementName);
+        handler.startElement(CATEGORY, this.elementName, this.elementName, atts);
+        handler.endElement(CATEGORY, this.elementName, this.elementName);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "AFPInvokeMediumMap(name=" + getName() + ")";
     }

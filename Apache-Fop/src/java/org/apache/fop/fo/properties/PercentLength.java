@@ -19,6 +19,8 @@
 
 package org.apache.fop.fo.properties;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.datatypes.PercentBase;
 import org.apache.fop.datatypes.PercentBaseContext;
 import org.apache.fop.fo.expr.PropertyException;
@@ -27,29 +29,33 @@ import org.apache.fop.util.CompareUtil;
 /**
  * a percent specified length quantity in XSL
  */
+@Slf4j
 public class PercentLength extends LengthProperty {
 
     /**
      * The percentage itself, expressed as a decimal value, e.g. for 95%, set
      * the value to .95
      */
-    private double factor;
+    private final double factor;
 
     /**
      * A PercentBase implementation that contains the base length to which the
      * {@link #factor} should be applied to compute the actual length
      */
-    private PercentBase lbase;
+    private final PercentBase lbase;
 
     /**
-     * Main constructor. Construct an object based on a factor (the percent,
-     * as a factor) and an object which has a method to return the Length which
+     * Main constructor. Construct an object based on a factor (the percent, as
+     * a factor) and an object which has a method to return the Length which
      * provides the "base" for the actual length that is modeled.
-     * @param factor the percentage factor, expressed as a decimal (e.g. use
-     * .95 to represent 95%)
-     * @param lbase base property to which the factor should be applied
+     *
+     * @param factor
+     *            the percentage factor, expressed as a decimal (e.g. use .95 to
+     *            represent 95%)
+     * @param lbase
+     *            base property to which the factor should be applied
      */
-    public PercentLength(double factor, PercentBase lbase) {
+    public PercentLength(final double factor, final PercentBase lbase) {
         this.factor = factor;
         this.lbase = lbase;
     }
@@ -62,63 +68,67 @@ public class PercentLength extends LengthProperty {
     }
 
     /**
-     * Used during property resolution to check for
-     * negative percentages
+     * Used during property resolution to check for negative percentages
      *
      * @return the percentage value
      */
     protected double getPercentage() {
-        return factor * 100;
+        return this.factor * 100;
     }
 
     /**
-     * Return false because percent-length are always relative.
-     * {@inheritDoc}
+     * Return false because percent-length are always relative. {@inheritDoc}
      */
+    @Override
     public boolean isAbsolute() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public double getNumericValue() {
         return getNumericValue(null);
     }
 
     /** {@inheritDoc} */
-    public double getNumericValue(PercentBaseContext context) {
+    @Override
+    public double getNumericValue(final PercentBaseContext context) {
         try {
-            return factor * lbase.getBaseLength(context);
-        } catch (PropertyException exc) {
-            log.error(exc);
+            return this.factor * this.lbase.getBaseLength(context);
+        } catch (final PropertyException exc) {
+            log.error(exc.getMessage(), exc);
             return 0;
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getString() {
-        return (factor * 100.0) + "%";
+        return this.factor * 100.0 + "%";
     }
 
     /**
-     * Return the length of this PercentLength.
-     * {@inheritDoc}
+     * Return the length of this PercentLength. {@inheritDoc}
      */
+    @Override
     public int getValue() {
         return (int) getNumericValue();
     }
 
     /** {@inheritDoc} */
-    public int getValue(PercentBaseContext context) {
+    @Override
+    public int getValue(final PercentBaseContext context) {
         return (int) getNumericValue(context);
     }
 
     /**
      * @return the String equivalent of this
      */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(PercentLength.class.getName())
-                .append("[factor=").append(factor)
-                .append(",lbase=").append(lbase).append("]");
+        final StringBuffer sb = new StringBuffer(PercentLength.class.getName())
+        .append("[factor=").append(this.factor).append(",lbase=")
+                .append(this.lbase).append("]");
         return sb.toString();
     }
 
@@ -126,21 +136,21 @@ public class PercentLength extends LengthProperty {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + CompareUtil.getHashCode(factor);
-        result = prime * result + CompareUtil.getHashCode(lbase);
+        result = prime * result + CompareUtil.getHashCode(this.factor);
+        result = prime * result + CompareUtil.getHashCode(this.lbase);
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
         if (!(obj instanceof PercentLength)) {
             return false;
         }
-        PercentLength other = (PercentLength) obj;
-        return CompareUtil.equal(factor, other.factor)
-                && CompareUtil.equal(lbase, other.lbase);
+        final PercentLength other = (PercentLength) obj;
+        return CompareUtil.equal(this.factor, other.factor)
+                && CompareUtil.equal(this.lbase, other.lbase);
     }
 }

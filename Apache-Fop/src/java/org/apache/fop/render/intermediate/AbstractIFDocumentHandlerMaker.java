@@ -22,20 +22,24 @@ package org.apache.fop.render.intermediate;
 import org.apache.fop.apps.FOUserAgent;
 
 /**
- * Base class for factory classes which instantiate {@link IFDocumentHandler}s and provide
- * information about them.
+ * Base class for factory classes which instantiate {@link IFDocumentHandler}s
+ * and provide information about them.
  */
 public abstract class AbstractIFDocumentHandlerMaker {
 
     /**
      * Instantiates a new {@link IFDocumentHandler}.
-     * @param userAgent the user agent
+     * 
+     * @param userAgent
+     *            the user agent
      * @return the newly instantiated document handler
      */
-    public abstract IFDocumentHandler makeIFDocumentHandler(FOUserAgent userAgent);
+    public abstract IFDocumentHandler makeIFDocumentHandler(
+            final FOUserAgent userAgent);
 
     /**
-     * @return Indicates whether this document handler requires an OutputStream to work with.
+     * @return Indicates whether this document handler requires an OutputStream
+     *         to work with.
      */
     public abstract boolean needsOutputStream();
 
@@ -45,12 +49,15 @@ public abstract class AbstractIFDocumentHandlerMaker {
     public abstract String[] getSupportedMimeTypes();
 
     /**
-     * Indicates whether a specific MIME type is supported by this document handler.
-     * @param mimeType the MIME type (ex. "application/pdf")
+     * Indicates whether a specific MIME type is supported by this document
+     * handler.
+     * 
+     * @param mimeType
+     *            the MIME type (ex. "application/pdf")
      * @return true if the MIME type is supported
      */
-    public boolean isMimeTypeSupported(String mimeType) {
-        String[] mimes = getSupportedMimeTypes();
+    public boolean isMimeTypeSupported(final String mimeType) {
+        final String[] mimes = getSupportedMimeTypes();
         for (int i = 0; i < mimes.length; i++) {
             if (mimes[i].equals(mimeType)) {
                 return true;

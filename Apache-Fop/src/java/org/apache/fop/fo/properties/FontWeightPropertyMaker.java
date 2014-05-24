@@ -33,93 +33,117 @@ public class FontWeightPropertyMaker extends EnumProperty.Maker {
 
     /**
      * Main constructor
-     * @param propId    the property id
+     * 
+     * @param propId
+     *            the property id
      */
-    public FontWeightPropertyMaker(int propId) {
+    public FontWeightPropertyMaker(final int propId) {
         super(propId);
     }
 
     /**
      * {@inheritDoc}
      */
-    public Property make(PropertyList pList, String value, FObj fo)
-                        throws PropertyException {
+    @Override
+    public Property make(final PropertyList pList, final String value,
+            final FObj fo) throws PropertyException {
         if ("inherit".equals(value)) {
             return super.make(pList, value, fo);
         } else {
-            String pValue = checkValueKeywords(value);
+            final String pValue = checkValueKeywords(value);
             Property newProp = checkEnumValues(pValue);
-            int enumValue = ( newProp != null ) ? newProp.getEnum() : -1;
-            if (enumValue == Constants.EN_BOLDER || enumValue == Constants.EN_LIGHTER) {
+            int enumValue = newProp != null ? newProp.getEnum() : -1;
+            if (enumValue == Constants.EN_BOLDER
+                    || enumValue == Constants.EN_LIGHTER) {
                 /* check for relative enum values, compute in relation to parent */
-                Property parentProp = pList.getInherited(Constants.PR_FONT_WEIGHT);
+                final Property parentProp = pList
+                        .getInherited(Constants.PR_FONT_WEIGHT);
                 if (enumValue == Constants.EN_BOLDER) {
                     enumValue = parentProp.getEnum();
                     switch (enumValue) {
                     case Constants.EN_100:
-                        newProp = EnumProperty.getInstance(Constants.EN_200, "200");
+                        newProp = EnumProperty.getInstance(Constants.EN_200,
+                                "200");
                         break;
                     case Constants.EN_200:
-                        newProp = EnumProperty.getInstance(Constants.EN_300, "300");
+                        newProp = EnumProperty.getInstance(Constants.EN_300,
+                                "300");
                         break;
                     case Constants.EN_300:
-                        newProp = EnumProperty.getInstance(Constants.EN_400, "400");
+                        newProp = EnumProperty.getInstance(Constants.EN_400,
+                                "400");
                         break;
                     case Constants.EN_400:
-                        newProp = EnumProperty.getInstance(Constants.EN_500, "500");
+                        newProp = EnumProperty.getInstance(Constants.EN_500,
+                                "500");
                         break;
                     case Constants.EN_500:
-                        newProp = EnumProperty.getInstance(Constants.EN_600, "600");
+                        newProp = EnumProperty.getInstance(Constants.EN_600,
+                                "600");
                         break;
                     case Constants.EN_600:
-                        newProp = EnumProperty.getInstance(Constants.EN_700, "700");
+                        newProp = EnumProperty.getInstance(Constants.EN_700,
+                                "700");
                         break;
                     case Constants.EN_700:
-                        newProp = EnumProperty.getInstance(Constants.EN_800, "800");
+                        newProp = EnumProperty.getInstance(Constants.EN_800,
+                                "800");
                         break;
                     case Constants.EN_800:
                     case Constants.EN_900:
-                        newProp = EnumProperty.getInstance(Constants.EN_900, "900");
+                        newProp = EnumProperty.getInstance(Constants.EN_900,
+                                "900");
                         break;
                     default:
-                        //nop
+                        // nop
                     }
                 } else {
                     enumValue = parentProp.getEnum();
                     switch (enumValue) {
                     case Constants.EN_100:
                     case Constants.EN_200:
-                        newProp = EnumProperty.getInstance(Constants.EN_100, "100");
+                        newProp = EnumProperty.getInstance(Constants.EN_100,
+                                "100");
                         break;
                     case Constants.EN_300:
-                        newProp = EnumProperty.getInstance(Constants.EN_200, "200");
+                        newProp = EnumProperty.getInstance(Constants.EN_200,
+                                "200");
                         break;
                     case Constants.EN_400:
-                        newProp = EnumProperty.getInstance(Constants.EN_300, "300");
+                        newProp = EnumProperty.getInstance(Constants.EN_300,
+                                "300");
                         break;
                     case Constants.EN_500:
-                        newProp = EnumProperty.getInstance(Constants.EN_400, "400");
+                        newProp = EnumProperty.getInstance(Constants.EN_400,
+                                "400");
                         break;
                     case Constants.EN_600:
-                        newProp = EnumProperty.getInstance(Constants.EN_500, "500");
+                        newProp = EnumProperty.getInstance(Constants.EN_500,
+                                "500");
                         break;
                     case Constants.EN_700:
-                        newProp = EnumProperty.getInstance(Constants.EN_600, "600");
+                        newProp = EnumProperty.getInstance(Constants.EN_600,
+                                "600");
                         break;
                     case Constants.EN_800:
-                        newProp = EnumProperty.getInstance(Constants.EN_700, "700");
+                        newProp = EnumProperty.getInstance(Constants.EN_700,
+                                "700");
                         break;
                     case Constants.EN_900:
-                        newProp = EnumProperty.getInstance(Constants.EN_800, "800");
+                        newProp = EnumProperty.getInstance(Constants.EN_800,
+                                "800");
                         break;
                     default:
-                        //nop
+                        // nop
                     }
                 }
             } else if (enumValue == -1) {
-                /* neither a keyword, nor an enum
-                 * still maybe a valid expression, so send it through the parser... */
-                newProp = PropertyParser.parse(value, new PropertyInfo(this, pList));
+                /*
+                 * neither a keyword, nor an enum still maybe a valid
+                 * expression, so send it through the parser...
+                 */
+                newProp = PropertyParser.parse(value, new PropertyInfo(this,
+                        pList));
             }
             if (newProp != null) {
                 newProp = convertProperty(newProp, pList, fo);

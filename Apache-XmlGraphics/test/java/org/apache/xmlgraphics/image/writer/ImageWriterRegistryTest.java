@@ -32,8 +32,8 @@ import org.apache.xmlgraphics.image.writer.imageio.ImageIOPNGImageWriter;
  */
 public class ImageWriterRegistryTest extends TestCase {
 
-    public void testRegistry() throws Exception {
-        ImageWriterRegistry registry = new ImageWriterRegistry();
+    public void testRegistry() {
+        final ImageWriterRegistry registry = new ImageWriterRegistry();
 
         ImageWriter writer;
         writer = registry.getWriterFor("image/something");
@@ -55,17 +55,22 @@ public class ImageWriterRegistryTest extends TestCase {
 
     private static class DummyPNGWriter extends AbstractImageWriter {
 
+        @Override
         public String getMIMEType() {
             return "image/png";
         }
 
-        public void writeImage(RenderedImage image, OutputStream out) throws IOException {
-            //nop
+        @Override
+        public void writeImage(final RenderedImage image, final OutputStream out)
+                throws IOException {
+            // nop
         }
 
-        public void writeImage(RenderedImage image, OutputStream out, ImageWriterParams params)
-                throws IOException {
-            //nop
+        @Override
+        public void writeImage(final RenderedImage image,
+                final OutputStream out, final ImageWriterParams params)
+                        throws IOException {
+            // nop
         }
 
     }

@@ -25,10 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.apache.xmlgraphics.util.Service;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
@@ -39,18 +36,17 @@ import org.apache.fop.render.intermediate.EventProducingFilter;
 import org.apache.fop.render.intermediate.IFDocumentHandler;
 import org.apache.fop.render.intermediate.IFDocumentHandlerConfigurator;
 import org.apache.fop.render.intermediate.IFRenderer;
+import org.apache.xmlgraphics.util.Service;
 
 /**
  * Factory for FOEventHandlers and Renderers.
  */
+@Slf4j
 public class RendererFactory {
 
-    /** the logger */
-    private static Log log = LogFactory.getLog(RendererFactory.class);
-
-    private Map rendererMakerMapping = new java.util.HashMap();
-    private Map eventHandlerMakerMapping = new java.util.HashMap();
-    private Map documentHandlerMakerMapping = new java.util.HashMap();
+    private final Map rendererMakerMapping = new java.util.HashMap();
+    private final Map eventHandlerMakerMapping = new java.util.HashMap();
+    private final Map documentHandlerMakerMapping = new java.util.HashMap();
 
     private boolean rendererPreferred = false;
 
@@ -64,210 +60,235 @@ public class RendererFactory {
     }
 
     /**
-     * Controls whether a {@link Renderer} is preferred over a {@link IFDocumentHandler} if
-     * both are available for the same MIME type.
-     * @param value true to prefer the {@link Renderer},
-     *                  false to prefer the {@link IFDocumentHandler}.
+     * Controls whether a {@link Renderer} is preferred over a
+     * {@link IFDocumentHandler} if both are available for the same MIME type.
+     *
+     * @param value
+     *            true to prefer the {@link Renderer}, false to prefer the
+     *            {@link IFDocumentHandler}.
      */
-    public void setRendererPreferred(boolean value) {
+    public void setRendererPreferred(final boolean value) {
         this.rendererPreferred = value;
     }
 
     /**
-     * Indicates whether a {@link Renderer} is preferred over a {@link IFDocumentHandler} if
-     * both are available for the same MIME type.
-     * @return true if the {@link Renderer} is preferred,
-     *                  false if the {@link IFDocumentHandler} is preferred.
+     * Indicates whether a {@link Renderer} is preferred over a
+     * {@link IFDocumentHandler} if both are available for the same MIME type.
+     *
+     * @return true if the {@link Renderer} is preferred, false if the
+     *         {@link IFDocumentHandler} is preferred.
      */
     public boolean isRendererPreferred() {
         return this.rendererPreferred;
     }
 
     /**
-     * Add a new RendererMaker. If another maker has already been registered for a
-     * particular MIME type, this call overwrites the existing one.
-     * @param maker the RendererMaker
+     * Add a new RendererMaker. If another maker has already been registered for
+     * a particular MIME type, this call overwrites the existing one.
+     *
+     * @param maker
+     *            the RendererMaker
      */
-    public void addRendererMaker(AbstractRendererMaker maker) {
-        String[] mimes = maker.getSupportedMimeTypes();
-        for (int i = 0; i < mimes.length; i++) {
-            //This overrides any renderer previously set for a MIME type
-            if (rendererMakerMapping.get(mimes[i]) != null) {
-                log.trace("Overriding renderer for " + mimes[i]
-                        + " with " + maker.getClass().getName());
+    public void addRendererMaker(final AbstractRendererMaker maker) {
+        final String[] mimes = maker.getSupportedMimeTypes();
+        for (final String mime : mimes) {
+            // This overrides any renderer previously set for a MIME type
+            if (this.rendererMakerMapping.get(mime) != null) {
+                log.trace("Overriding renderer for " + mime + " with "
+                        + maker.getClass().getName());
             }
-            rendererMakerMapping.put(mimes[i], maker);
+            this.rendererMakerMapping.put(mime, maker);
         }
     }
 
     /**
-     * Add a new FOEventHandlerMaker. If another maker has already been registered for a
-     * particular MIME type, this call overwrites the existing one.
-     * @param maker the FOEventHandlerMaker
+     * Add a new FOEventHandlerMaker. If another maker has already been
+     * registered for a particular MIME type, this call overwrites the existing
+     * one.
+     *
+     * @param maker
+     *            the FOEventHandlerMaker
      */
-    public void addFOEventHandlerMaker(AbstractFOEventHandlerMaker maker) {
-        String[] mimes = maker.getSupportedMimeTypes();
-        for (int i = 0; i < mimes.length; i++) {
-            //This overrides any event handler previously set for a MIME type
-            if (eventHandlerMakerMapping.get(mimes[i]) != null) {
-                log.trace("Overriding FOEventHandler for " + mimes[i]
-                        + " with " + maker.getClass().getName());
+    public void addFOEventHandlerMaker(final AbstractFOEventHandlerMaker maker) {
+        final String[] mimes = maker.getSupportedMimeTypes();
+        for (final String mime : mimes) {
+            // This overrides any event handler previously set for a MIME type
+            if (this.eventHandlerMakerMapping.get(mime) != null) {
+                log.trace("Overriding FOEventHandler for " + mime + " with "
+                        + maker.getClass().getName());
             }
-            eventHandlerMakerMapping.put(mimes[i], maker);
+            this.eventHandlerMakerMapping.put(mime, maker);
         }
     }
 
     /**
-     * Add a new document handler maker. If another maker has already been registered for a
-     * particular MIME type, this call overwrites the existing one.
-     * @param maker the intermediate format document handler maker
+     * Add a new document handler maker. If another maker has already been
+     * registered for a particular MIME type, this call overwrites the existing
+     * one.
+     *
+     * @param maker
+     *            the intermediate format document handler maker
      */
-    public void addDocumentHandlerMaker(AbstractIFDocumentHandlerMaker maker) {
-        String[] mimes = maker.getSupportedMimeTypes();
-        for (int i = 0; i < mimes.length; i++) {
-            //This overrides any renderer previously set for a MIME type
-            if (documentHandlerMakerMapping.get(mimes[i]) != null) {
-                log.trace("Overriding document handler for " + mimes[i]
-                        + " with " + maker.getClass().getName());
+    public void addDocumentHandlerMaker(
+            final AbstractIFDocumentHandlerMaker maker) {
+        final String[] mimes = maker.getSupportedMimeTypes();
+        for (final String mime : mimes) {
+            // This overrides any renderer previously set for a MIME type
+            if (this.documentHandlerMakerMapping.get(mime) != null) {
+                log.trace("Overriding document handler for " + mime + " with "
+                        + maker.getClass().getName());
             }
-            documentHandlerMakerMapping.put(mimes[i], maker);
+            this.documentHandlerMakerMapping.put(mime, maker);
         }
     }
 
     /**
-     * Add a new RendererMaker. If another maker has already been registered for a
-     * particular MIME type, this call overwrites the existing one.
-     * @param className the fully qualified class name of the RendererMaker
+     * Add a new RendererMaker. If another maker has already been registered for
+     * a particular MIME type, this call overwrites the existing one.
+     *
+     * @param className
+     *            the fully qualified class name of the RendererMaker
      */
-    public void addRendererMaker(String className) {
+    public void addRendererMaker(final String className) {
         try {
-            AbstractRendererMaker makerInstance
-                = (AbstractRendererMaker)Class.forName(className).newInstance();
+            final AbstractRendererMaker makerInstance = (AbstractRendererMaker) Class
+                    .forName(className).newInstance();
             addRendererMaker(makerInstance);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Could not find "
-                                               + className);
-        } catch (InstantiationException e) {
+        } catch (final ClassNotFoundException e) {
+            throw new IllegalArgumentException("Could not find " + className);
+        } catch (final InstantiationException e) {
             throw new IllegalArgumentException("Could not instantiate "
-                                               + className);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Could not access "
-                                               + className);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(className
-                                               + " is not an "
-                                               + AbstractRendererMaker.class.getName());
+                    + className);
+        } catch (final IllegalAccessException e) {
+            throw new IllegalArgumentException("Could not access " + className);
+        } catch (final ClassCastException e) {
+            throw new IllegalArgumentException(className + " is not an "
+                    + AbstractRendererMaker.class.getName());
         }
     }
 
     /**
-     * Add a new FOEventHandlerMaker. If another maker has already been registered for a
-     * particular MIME type, this call overwrites the existing one.
-     * @param className the fully qualified class name of the FOEventHandlerMaker
+     * Add a new FOEventHandlerMaker. If another maker has already been
+     * registered for a particular MIME type, this call overwrites the existing
+     * one.
+     *
+     * @param className
+     *            the fully qualified class name of the FOEventHandlerMaker
      */
-    public void addFOEventHandlerMaker(String className) {
+    public void addFOEventHandlerMaker(final String className) {
         try {
-            AbstractFOEventHandlerMaker makerInstance
-                = (AbstractFOEventHandlerMaker)Class.forName(className).newInstance();
+            final AbstractFOEventHandlerMaker makerInstance = (AbstractFOEventHandlerMaker) Class
+                    .forName(className).newInstance();
             addFOEventHandlerMaker(makerInstance);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Could not find "
-                                               + className);
-        } catch (InstantiationException e) {
+        } catch (final ClassNotFoundException e) {
+            throw new IllegalArgumentException("Could not find " + className);
+        } catch (final InstantiationException e) {
             throw new IllegalArgumentException("Could not instantiate "
-                                               + className);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Could not access "
-                                               + className);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(className
-                                               + " is not an "
-                                               + AbstractFOEventHandlerMaker.class.getName());
+                    + className);
+        } catch (final IllegalAccessException e) {
+            throw new IllegalArgumentException("Could not access " + className);
+        } catch (final ClassCastException e) {
+            throw new IllegalArgumentException(className + " is not an "
+                    + AbstractFOEventHandlerMaker.class.getName());
         }
     }
 
     /**
-     * Add a new document handler maker. If another maker has already been registered for a
-     * particular MIME type, this call overwrites the existing one.
-     * @param className the fully qualified class name of the document handler maker
+     * Add a new document handler maker. If another maker has already been
+     * registered for a particular MIME type, this call overwrites the existing
+     * one.
+     *
+     * @param className
+     *            the fully qualified class name of the document handler maker
      */
-    public void addDocumentHandlerMaker(String className) {
+    public void addDocumentHandlerMaker(final String className) {
         try {
-            AbstractIFDocumentHandlerMaker makerInstance
-                = (AbstractIFDocumentHandlerMaker)Class.forName(className).newInstance();
+            final AbstractIFDocumentHandlerMaker makerInstance = (AbstractIFDocumentHandlerMaker) Class
+                    .forName(className).newInstance();
             addDocumentHandlerMaker(makerInstance);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Could not find "
-                                               + className);
-        } catch (InstantiationException e) {
+        } catch (final ClassNotFoundException e) {
+            throw new IllegalArgumentException("Could not find " + className);
+        } catch (final InstantiationException e) {
             throw new IllegalArgumentException("Could not instantiate "
-                                               + className);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Could not access "
-                                               + className);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(className
-                                               + " is not an "
-                                               + AbstractIFDocumentHandlerMaker.class.getName());
+                    + className);
+        } catch (final IllegalAccessException e) {
+            throw new IllegalArgumentException("Could not access " + className);
+        } catch (final ClassCastException e) {
+            throw new IllegalArgumentException(className + " is not an "
+                    + AbstractIFDocumentHandlerMaker.class.getName());
         }
     }
 
     /**
      * Returns a RendererMaker which handles the given MIME type.
-     * @param mime the requested output format
+     *
+     * @param mime
+     *            the requested output format
      * @return the requested RendererMaker or null if none is available
      */
-    public AbstractRendererMaker getRendererMaker(String mime) {
-        AbstractRendererMaker maker
-            = (AbstractRendererMaker)rendererMakerMapping.get(mime);
+    public AbstractRendererMaker getRendererMaker(final String mime) {
+        final AbstractRendererMaker maker = (AbstractRendererMaker) this.rendererMakerMapping
+                .get(mime);
         return maker;
     }
 
     /**
      * Returns a FOEventHandlerMaker which handles the given MIME type.
-     * @param mime the requested output format
+     *
+     * @param mime
+     *            the requested output format
      * @return the requested FOEventHandlerMaker or null if none is available
      */
-    public AbstractFOEventHandlerMaker getFOEventHandlerMaker(String mime) {
-        AbstractFOEventHandlerMaker maker
-            = (AbstractFOEventHandlerMaker)eventHandlerMakerMapping.get(mime);
+    public AbstractFOEventHandlerMaker getFOEventHandlerMaker(final String mime) {
+        final AbstractFOEventHandlerMaker maker = (AbstractFOEventHandlerMaker) this.eventHandlerMakerMapping
+                .get(mime);
         return maker;
     }
 
     /**
      * Returns a RendererMaker which handles the given MIME type.
-     * @param mime the requested output format
+     *
+     * @param mime
+     *            the requested output format
      * @return the requested RendererMaker or null if none is available
      */
-    public AbstractIFDocumentHandlerMaker getDocumentHandlerMaker(String mime) {
-        AbstractIFDocumentHandlerMaker maker
-            = (AbstractIFDocumentHandlerMaker)documentHandlerMakerMapping.get(mime);
+    public AbstractIFDocumentHandlerMaker getDocumentHandlerMaker(
+            final String mime) {
+        final AbstractIFDocumentHandlerMaker maker = (AbstractIFDocumentHandlerMaker) this.documentHandlerMakerMapping
+                .get(mime);
         return maker;
     }
 
     /**
      * Creates a Renderer object based on render-type desired
-     * @param userAgent the user agent for access to configuration
-     * @param outputFormat the MIME type of the output format to use (ex. "application/pdf").
+     *
+     * @param userAgent
+     *            the user agent for access to configuration
+     * @param outputFormat
+     *            the MIME type of the output format to use (ex.
+     *            "application/pdf").
      * @return the new Renderer instance
-     * @throws FOPException if the renderer cannot be properly constructed
+     * @throws FOPException
+     *             if the renderer cannot be properly constructed
      */
-    public Renderer createRenderer(FOUserAgent userAgent, String outputFormat)
-                    throws FOPException {
+    public Renderer createRenderer(final FOUserAgent userAgent,
+            final String outputFormat) throws FOPException {
         if (userAgent.getDocumentHandlerOverride() != null) {
-            return createRendererForDocumentHandler(userAgent.getDocumentHandlerOverride());
+            return createRendererForDocumentHandler(userAgent
+                    .getDocumentHandlerOverride());
         } else if (userAgent.getRendererOverride() != null) {
             return userAgent.getRendererOverride();
         } else {
             Renderer renderer;
             if (isRendererPreferred()) {
-                //Try renderer first
+                // Try renderer first
                 renderer = tryRendererMaker(userAgent, outputFormat);
                 if (renderer == null) {
-                    renderer = tryIFDocumentHandlerMaker(userAgent, outputFormat);
+                    renderer = tryIFDocumentHandlerMaker(userAgent,
+                            outputFormat);
                 }
             } else {
-                //Try document handler first
+                // Try document handler first
                 renderer = tryIFDocumentHandlerMaker(userAgent, outputFormat);
                 if (renderer == null) {
                     renderer = tryRendererMaker(userAgent, outputFormat);
@@ -275,18 +296,18 @@ public class RendererFactory {
             }
             if (renderer == null) {
                 throw new UnsupportedOperationException(
-                        "No renderer for the requested format available: " + outputFormat);
+                        "No renderer for the requested format available: "
+                                + outputFormat);
             }
             return renderer;
         }
     }
 
-    private Renderer tryIFDocumentHandlerMaker(FOUserAgent userAgent, String outputFormat)
-            throws FOPException {
-        AbstractIFDocumentHandlerMaker documentHandlerMaker
-            = getDocumentHandlerMaker(outputFormat);
+    private Renderer tryIFDocumentHandlerMaker(final FOUserAgent userAgent,
+            final String outputFormat) throws FOPException {
+        final AbstractIFDocumentHandlerMaker documentHandlerMaker = getDocumentHandlerMaker(outputFormat);
         if (documentHandlerMaker != null) {
-            IFDocumentHandler documentHandler = createDocumentHandler(
+            final IFDocumentHandler documentHandler = createDocumentHandler(
                     userAgent, outputFormat);
             return createRendererForDocumentHandler(documentHandler);
         } else {
@@ -294,12 +315,13 @@ public class RendererFactory {
         }
     }
 
-    private Renderer tryRendererMaker(FOUserAgent userAgent, String outputFormat)
-                throws FOPException {
-        AbstractRendererMaker maker = getRendererMaker(outputFormat);
+    private Renderer tryRendererMaker(final FOUserAgent userAgent,
+            final String outputFormat) throws FOPException {
+        final AbstractRendererMaker maker = getRendererMaker(outputFormat);
         if (maker != null) {
-            Renderer rend = maker.makeRenderer(userAgent);
-            RendererConfigurator configurator = maker.getConfigurator(userAgent);
+            final Renderer rend = maker.makeRenderer(userAgent);
+            final RendererConfigurator configurator = maker
+                    .getConfigurator(userAgent);
             if (configurator != null) {
                 configurator.configure(rend);
             }
@@ -309,82 +331,104 @@ public class RendererFactory {
         }
     }
 
-    private Renderer createRendererForDocumentHandler(IFDocumentHandler documentHandler) {
-        IFRenderer rend = new IFRenderer(documentHandler.getContext().getUserAgent());
+    private Renderer createRendererForDocumentHandler(
+            final IFDocumentHandler documentHandler) {
+        final IFRenderer rend = new IFRenderer(documentHandler.getContext()
+                .getUserAgent());
         rend.setDocumentHandler(documentHandler);
         return rend;
     }
 
     /**
      * Creates FOEventHandler instances based on the desired output.
-     * @param userAgent the user agent for access to configuration
-     * @param outputFormat the MIME type of the output format to use (ex. "application/pdf").
-     * @param out the OutputStream where the output is written to (if applicable)
+     *
+     * @param userAgent
+     *            the user agent for access to configuration
+     * @param outputFormat
+     *            the MIME type of the output format to use (ex.
+     *            "application/pdf").
+     * @param out
+     *            the OutputStream where the output is written to (if
+     *            applicable)
      * @return the newly constructed FOEventHandler
-     * @throws FOPException if the FOEventHandler cannot be properly constructed
+     * @throws FOPException
+     *             if the FOEventHandler cannot be properly constructed
      */
-    public FOEventHandler createFOEventHandler(FOUserAgent userAgent,
-                String outputFormat, OutputStream out) throws FOPException {
+    public FOEventHandler createFOEventHandler(final FOUserAgent userAgent,
+            final String outputFormat, final OutputStream out)
+                    throws FOPException {
 
         if (userAgent.getFOEventHandlerOverride() != null) {
             return userAgent.getFOEventHandlerOverride();
         } else {
-            AbstractFOEventHandlerMaker maker = getFOEventHandlerMaker(outputFormat);
+            final AbstractFOEventHandlerMaker maker = getFOEventHandlerMaker(outputFormat);
             if (maker != null) {
                 return maker.makeFOEventHandler(userAgent, out);
             } else {
-                AbstractRendererMaker rendMaker = getRendererMaker(outputFormat);
+                final AbstractRendererMaker rendMaker = getRendererMaker(outputFormat);
                 AbstractIFDocumentHandlerMaker documentHandlerMaker = null;
-                boolean outputStreamMissing = (userAgent.getRendererOverride() == null)
-                    && (userAgent.getDocumentHandlerOverride() == null);
+                boolean outputStreamMissing = userAgent.getRendererOverride() == null
+                        && userAgent.getDocumentHandlerOverride() == null;
                 if (rendMaker == null) {
                     documentHandlerMaker = getDocumentHandlerMaker(outputFormat);
                     if (documentHandlerMaker != null) {
-                        outputStreamMissing &= (out == null)
-                                && (documentHandlerMaker.needsOutputStream());
+                        outputStreamMissing &= out == null
+                                && documentHandlerMaker.needsOutputStream();
                     }
                 } else {
-                    outputStreamMissing &= (out == null) && (rendMaker.needsOutputStream());
+                    outputStreamMissing &= out == null
+                            && rendMaker.needsOutputStream();
                 }
                 if (userAgent.getRendererOverride() != null
                         || rendMaker != null
                         || userAgent.getDocumentHandlerOverride() != null
                         || documentHandlerMaker != null) {
                     if (outputStreamMissing) {
-                        throw new FOPException(
-                            "OutputStream has not been set");
+                        throw new FOPException("OutputStream has not been set");
                     }
-                    //Found a Renderer so we need to construct an AreaTreeHandler.
+                    // Found a Renderer so we need to construct an
+                    // AreaTreeHandler.
                     return new AreaTreeHandler(userAgent, outputFormat, out);
                 } else {
                     throw new UnsupportedOperationException(
-                            "Don't know how to handle \"" + outputFormat + "\" as an output format."
-                            + " Neither an FOEventHandler, nor a Renderer could be found"
-                            + " for this output format.");
+                            "Don't know how to handle \""
+                                    + outputFormat
+                                    + "\" as an output format."
+                                    + " Neither an FOEventHandler, nor a Renderer could be found"
+                                    + " for this output format.");
                 }
             }
         }
     }
 
     /**
-     * Creates a {@link IFDocumentHandler} object based on the desired output format.
-     * @param userAgent the user agent for access to configuration
-     * @param outputFormat the MIME type of the output format to use (ex. "application/pdf").
+     * Creates a {@link IFDocumentHandler} object based on the desired output
+     * format.
+     *
+     * @param userAgent
+     *            the user agent for access to configuration
+     * @param outputFormat
+     *            the MIME type of the output format to use (ex.
+     *            "application/pdf").
      * @return the new {@link IFDocumentHandler} instance
-     * @throws FOPException if the document handler cannot be properly constructed
+     * @throws FOPException
+     *             if the document handler cannot be properly constructed
      */
-    public IFDocumentHandler createDocumentHandler(FOUserAgent userAgent, String outputFormat)
-                    throws FOPException {
+    public IFDocumentHandler createDocumentHandler(final FOUserAgent userAgent,
+            final String outputFormat) throws FOPException {
         if (userAgent.getDocumentHandlerOverride() != null) {
             return userAgent.getDocumentHandlerOverride();
         }
-        AbstractIFDocumentHandlerMaker maker = getDocumentHandlerMaker(outputFormat);
+        final AbstractIFDocumentHandlerMaker maker = getDocumentHandlerMaker(outputFormat);
         if (maker == null) {
             throw new UnsupportedOperationException(
-                "No IF document handler for the requested format available: " + outputFormat);
+                    "No IF document handler for the requested format available: "
+                            + outputFormat);
         }
-        IFDocumentHandler documentHandler = maker.makeIFDocumentHandler(userAgent);
-        IFDocumentHandlerConfigurator configurator = documentHandler.getConfigurator();
+        final IFDocumentHandler documentHandler = maker
+                .makeIFDocumentHandler(userAgent);
+        final IFDocumentHandlerConfigurator configurator = documentHandler
+                .getConfigurator();
         if (configurator != null) {
             configurator.configure(documentHandler);
         }
@@ -395,21 +439,21 @@ public class RendererFactory {
      * @return an array of all supported MIME types
      */
     public String[] listSupportedMimeTypes() {
-        List lst = new java.util.ArrayList();
+        final List lst = new java.util.ArrayList();
         Iterator iter = this.rendererMakerMapping.keySet().iterator();
         while (iter.hasNext()) {
-            lst.add(((String)iter.next()));
+            lst.add(iter.next());
         }
         iter = this.eventHandlerMakerMapping.keySet().iterator();
         while (iter.hasNext()) {
-            lst.add(((String)iter.next()));
+            lst.add(iter.next());
         }
         iter = this.documentHandlerMakerMapping.keySet().iterator();
         while (iter.hasNext()) {
-            lst.add(((String)iter.next()));
+            lst.add(iter.next());
         }
         Collections.sort(lst);
-        return (String[])lst.toArray(new String[lst.size()]);
+        return (String[]) lst.toArray(new String[lst.size()]);
     }
 
     /**
@@ -418,18 +462,18 @@ public class RendererFactory {
      */
     private void discoverRenderers() {
         // add mappings from available services
-        Iterator providers
-            = Service.providers(Renderer.class);
+        final Iterator providers = Service.providers(Renderer.class);
         if (providers != null) {
             while (providers.hasNext()) {
-                AbstractRendererMaker maker = (AbstractRendererMaker)providers.next();
+                final AbstractRendererMaker maker = (AbstractRendererMaker) providers
+                        .next();
                 try {
                     if (log.isDebugEnabled()) {
                         log.debug("Dynamically adding maker for Renderer: "
                                 + maker.getClass().getName());
                     }
                     addRendererMaker(maker);
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                     log.error("Error while adding maker for Renderer", e);
                 }
 
@@ -438,23 +482,23 @@ public class RendererFactory {
     }
 
     /**
-     * Discovers FOEventHandler implementations through the classpath and dynamically
-     * registers them.
+     * Discovers FOEventHandler implementations through the classpath and
+     * dynamically registers them.
      */
     private void discoverFOEventHandlers() {
         // add mappings from available services
-        Iterator providers
-            = Service.providers(FOEventHandler.class);
+        final Iterator providers = Service.providers(FOEventHandler.class);
         if (providers != null) {
             while (providers.hasNext()) {
-                AbstractFOEventHandlerMaker maker = (AbstractFOEventHandlerMaker)providers.next();
+                final AbstractFOEventHandlerMaker maker = (AbstractFOEventHandlerMaker) providers
+                        .next();
                 try {
                     if (log.isDebugEnabled()) {
                         log.debug("Dynamically adding maker for FOEventHandler: "
                                 + maker.getClass().getName());
                     }
                     addFOEventHandlerMaker(maker);
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                     log.error("Error while adding maker for FOEventHandler", e);
                 }
 
@@ -463,24 +507,25 @@ public class RendererFactory {
     }
 
     /**
-     * Discovers {@link IFDocumentHandler} implementations through the classpath and dynamically
-     * registers them.
+     * Discovers {@link IFDocumentHandler} implementations through the classpath
+     * and dynamically registers them.
      */
     private void discoverDocumentHandlers() {
         // add mappings from available services
-        Iterator providers = Service.providers(IFDocumentHandler.class);
+        final Iterator providers = Service.providers(IFDocumentHandler.class);
         if (providers != null) {
             while (providers.hasNext()) {
-                AbstractIFDocumentHandlerMaker maker
-                    = (AbstractIFDocumentHandlerMaker)providers.next();
+                final AbstractIFDocumentHandlerMaker maker = (AbstractIFDocumentHandlerMaker) providers
+                        .next();
                 try {
                     if (log.isDebugEnabled()) {
                         log.debug("Dynamically adding maker for IFDocumentHandler: "
                                 + maker.getClass().getName());
                     }
                     addDocumentHandlerMaker(maker);
-                } catch (IllegalArgumentException e) {
-                    log.error("Error while adding maker for IFDocumentHandler", e);
+                } catch (final IllegalArgumentException e) {
+                    log.error("Error while adding maker for IFDocumentHandler",
+                            e);
                 }
 
             }

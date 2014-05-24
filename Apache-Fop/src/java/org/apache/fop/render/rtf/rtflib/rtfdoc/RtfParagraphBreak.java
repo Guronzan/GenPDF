@@ -22,14 +22,14 @@ package org.apache.fop.render.rtf.rtflib.rtfdoc;
 import java.io.IOException;
 import java.io.Writer;
 
-/**  Class which represents a paragraph break.*/
+/** Class which represents a paragraph break. */
 
 public class RtfParagraphBreak extends RtfElement {
     private static final String DEFAULT_PARAGRAPH = "par";
 
     private String controlWord = DEFAULT_PARAGRAPH;
 
-    RtfParagraphBreak(RtfContainer parent, Writer w)
+    RtfParagraphBreak(final RtfContainer parent, final Writer w)
             throws IOException {
         super(parent, w);
     }
@@ -37,35 +37,42 @@ public class RtfParagraphBreak extends RtfElement {
     /**
      * @return true if this element would generate no "useful" RTF content
      */
+    @Override
     public boolean isEmpty() {
         return false;
     }
 
     /**
      * write RTF code of all our children
-     * @throws IOException for I/O problems
+     * 
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeRtfContent() throws IOException {
-        if (controlWord != null ) {
-            writeControlWord(controlWord);
+        if (this.controlWord != null) {
+            writeControlWord(this.controlWord);
         }
     }
 
     /**
-     * Whether or not the break can be skipped.
-     * If the paragraph marks a table cell end it is not possible
+     * Whether or not the break can be skipped. If the paragraph marks a table
+     * cell end it is not possible
+     * 
      * @return boolean
      */
     public boolean canHide() {
-        return this.controlWord.equals ( DEFAULT_PARAGRAPH );
+        return this.controlWord.equals(DEFAULT_PARAGRAPH);
     }
 
     /**
-     * Sets a different control word for this paragraph. If this method
-     * is used the paragraph will always be displayed (@see canHide))
-     * @param controlWord the new control word
+     * Sets a different control word for this paragraph. If this method is used
+     * the paragraph will always be displayed (@see canHide))
+     * 
+     * @param controlWord
+     *            the new control word
      */
-    public void switchControlWord(String controlWord) {
+    public void switchControlWord(final String controlWord) {
         this.controlWord = controlWord;
     }
 }

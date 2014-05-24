@@ -27,41 +27,34 @@ import org.apache.xmlgraphics.image.loader.ImageFlavor;
 public interface PSSupportedFlavors {
 
     /** The flavors supported inline with PostScript level 2. */
-    ImageFlavor[] LEVEL_2_FLAVORS_INLINE = new ImageFlavor[]
-                                                 {ImageFlavor.RAW_EPS,
-                                                  ImageFlavor.RAW_CCITTFAX,
-                                                  ImageFlavor.GRAPHICS2D,
-                                                  ImageFlavor.BUFFERED_IMAGE,
-                                                  ImageFlavor.RENDERED_IMAGE,
-                                                  ImageFlavor.XML_DOM};
+    ImageFlavor[] LEVEL_2_FLAVORS_INLINE = new ImageFlavor[] {
+            ImageFlavor.RAW_EPS, ImageFlavor.RAW_CCITTFAX,
+            ImageFlavor.GRAPHICS2D, ImageFlavor.BUFFERED_IMAGE,
+            ImageFlavor.RENDERED_IMAGE, ImageFlavor.XML_DOM };
 
     /** The flavors supported inline with PostScript level 3 and higher. */
-    ImageFlavor[] LEVEL_3_FLAVORS_INLINE = new ImageFlavor[]
-                                                 {ImageFlavor.RAW_EPS,
-                                                  ImageFlavor.RAW_JPEG,
-                                                  ImageFlavor.RAW_CCITTFAX,
-                                                  ImageFlavor.GRAPHICS2D,
-                                                  ImageFlavor.BUFFERED_IMAGE,
-                                                  ImageFlavor.RENDERED_IMAGE,
-                                                  ImageFlavor.XML_DOM};
+    ImageFlavor[] LEVEL_3_FLAVORS_INLINE = new ImageFlavor[] {
+            ImageFlavor.RAW_EPS, ImageFlavor.RAW_JPEG,
+            ImageFlavor.RAW_CCITTFAX, ImageFlavor.GRAPHICS2D,
+            ImageFlavor.BUFFERED_IMAGE, ImageFlavor.RENDERED_IMAGE,
+            ImageFlavor.XML_DOM };
 
     /** The flavors supported as forms with PostScript level 2. */
-    ImageFlavor[] LEVEL_2_FLAVORS_FORM = new ImageFlavor[]
-                                                 {//ImageFlavor.RAW_EPS,
-                                                  ImageFlavor.RAW_CCITTFAX,
-                                                  ImageFlavor.GRAPHICS2D,
-                                                  ImageFlavor.BUFFERED_IMAGE,
-                                                  ImageFlavor.RENDERED_IMAGE/*,
-                                                  ImageFlavor.XML_DOM*/};
+    ImageFlavor[] LEVEL_2_FLAVORS_FORM = new ImageFlavor[] {// ImageFlavor.RAW_EPS,
+    ImageFlavor.RAW_CCITTFAX, ImageFlavor.GRAPHICS2D,
+            ImageFlavor.BUFFERED_IMAGE, ImageFlavor.RENDERED_IMAGE /*
+                                                                    * ,
+                                                                    * ImageFlavor
+                                                                    * .XML_DOM
+                                                                    */};
 
     /** The flavors supported as forms with PostScript level 3 or higher. */
-    ImageFlavor[] LEVEL_3_FLAVORS_FORM = new ImageFlavor[]
-                                                 {//ImageFlavor.RAW_EPS,
-                                                  ImageFlavor.RAW_JPEG,
-                                                  ImageFlavor.RAW_CCITTFAX,
-                                                  ImageFlavor.GRAPHICS2D,
-                                                  ImageFlavor.BUFFERED_IMAGE,
-                                                  ImageFlavor.RENDERED_IMAGE/*,
-                                                  ImageFlavor.XML_DOM*/};
+    ImageFlavor[] LEVEL_3_FLAVORS_FORM = new ImageFlavor[] {// ImageFlavor.RAW_EPS,
+    ImageFlavor.RAW_JPEG, ImageFlavor.RAW_CCITTFAX, ImageFlavor.GRAPHICS2D,
+            ImageFlavor.BUFFERED_IMAGE, ImageFlavor.RENDERED_IMAGE /*
+                                                                    * ,
+                                                                    * ImageFlavor
+                                                                    * .XML_DOM
+                                                                    */};
 
 }

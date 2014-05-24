@@ -26,23 +26,25 @@ import junit.framework.TestCase;
  */
 public class CorruptImagesTestCase extends TestCase {
 
-    private MockImageContext imageContext = MockImageContext.getInstance();
+    private final MockImageContext imageContext = MockImageContext
+            .getInstance();
 
-    public CorruptImagesTestCase(String name) {
+    public CorruptImagesTestCase(final String name) {
         super(name);
     }
 
     public void testCorruptPNG() throws Exception {
-        String uri = "corrupt-image.png";
+        final String uri = "corrupt-image.png";
 
-        ImageSessionContext sessionContext = imageContext.newSessionContext();
-        ImageManager manager = imageContext.getImageManager();
+        final ImageSessionContext sessionContext = this.imageContext
+                .newSessionContext();
+        final ImageManager manager = this.imageContext.getImageManager();
 
         try {
             manager.preloadImage(uri, sessionContext);
             fail("Expected an ImageException!");
-        } catch (ImageException ie) {
-            //Expected exception
+        } catch (final ImageException ie) {
+            // Expected exception
             assertNotNull(ie.getMessage());
         }
     }

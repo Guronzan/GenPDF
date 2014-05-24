@@ -43,7 +43,7 @@ public class ImageLoaderImageIOTestCase {
     /**
      * Tests a grayscale PNG that has a CMYK color profile. ImageLoaderImageIO
      * used to fail on that with an IllegalArgumentException.
-     * 
+     *
      * @throws Exception
      *             if an error occurs
      */

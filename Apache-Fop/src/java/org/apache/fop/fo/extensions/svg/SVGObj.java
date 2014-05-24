@@ -23,29 +23,31 @@ import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.XMLObj;
 
 /**
- * Class for SVG element objects.
- * This aids in the construction of the SVG Document.
+ * Class for SVG element objects. This aids in the construction of the SVG
+ * Document.
  */
 public class SVGObj extends XMLObj {
 
     /**
      * Constructs an SVG object (called by Maker).
      *
-     * @param parent the parent formatting object
+     * @param parent
+     *            the parent formatting object
      */
-    public SVGObj(FONode parent) {
+    public SVGObj(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNamespaceURI() {
         return SVGElementMapping.URI;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNormalNamespacePrefix() {
         return "svg";
     }
 
 }
-

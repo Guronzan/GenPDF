@@ -27,14 +27,16 @@ public class GraphicsSetCurrentPosition extends AbstractGraphicsCoord {
     /**
      * Constructor
      *
-     * @param coords the x/y coordinates for this object
+     * @param coords
+     *            the x/y coordinates for this object
      */
-    public GraphicsSetCurrentPosition(int[] coords) {
+    public GraphicsSetCurrentPosition(final int[] coords) {
         super(coords);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected byte getOrderCode() {
-        return (byte)0x21;
+        return (byte) 0x21;
     }
 }

@@ -29,22 +29,26 @@ import org.apache.fop.afp.util.BinaryUtils;
  * The Preprocess Presentation Object structured field specifies presentation
  * parameters for a data object that has been mapped as a resource.
  */
-public class PreprocessPresentationObject extends AbstractTripletStructuredObject {
-    private static final byte TYPE_OTHER = (byte)0x92;
-    private static final byte TYPE_OVERLAY = (byte)0xDF;
-    private static final byte TYPE_IMAGE = (byte)0xFB;
+public class PreprocessPresentationObject extends
+        AbstractTripletStructuredObject {
+    private static final byte TYPE_OTHER = (byte) 0x92;
+    private static final byte TYPE_OVERLAY = (byte) 0xDF;
+    private static final byte TYPE_IMAGE = (byte) 0xFB;
 
     private byte objType = TYPE_OTHER;
-    private byte objOrent = 0; // object always processed at 0 degree orientation
+    private byte objOrent = 0; // object always processed at 0 degree
+                               // orientation
     private int objXOffset = -1;
     private int objYOffset = -1;
 
     /**
      * Main constructor
      *
-     * @param prePresObj the presentation object to be preprocessed
+     * @param prePresObj
+     *            the presentation object to be preprocessed
      */
-    public PreprocessPresentationObject(AbstractTripletStructuredObject prePresObj) {
+    public PreprocessPresentationObject(
+            final AbstractTripletStructuredObject prePresObj) {
         if (prePresObj instanceof ImageObject || prePresObj instanceof Overlay) {
             if (prePresObj instanceof ImageObject) {
                 this.objType = TYPE_IMAGE;
@@ -72,38 +76,42 @@ public class PreprocessPresentationObject extends AbstractTripletStructuredObjec
     /**
      * Sets the object orientations relative to media leading edge
      *
-     * @param orientation the object orientations relative to media leading edge
+     * @param orientation
+     *            the object orientations relative to media leading edge
      */
-    public void setOrientation(byte orientation) {
-        objOrent = orientation;
+    public void setOrientation(final byte orientation) {
+        this.objOrent = orientation;
     }
 
     /**
      * Sets the X axis origin for object content
      *
-     * @param xOffset the X axis origin for object content
+     * @param xOffset
+     *            the X axis origin for object content
      */
-    public void setXOffset(int xOffset) {
+    public void setXOffset(final int xOffset) {
         this.objXOffset = xOffset;
     }
 
     /**
      * Sets the Y axis origin for object content
      *
-     * @param yOffset the Y axis origin for object content
+     * @param yOffset
+     *            the Y axis origin for object content
      */
-    public void setYOffset(int yOffset) {
+    public void setYOffset(final int yOffset) {
         this.objYOffset = yOffset;
     }
 
     /** {@inheritDoc} */
-    public void writeStart(OutputStream os) throws IOException {
+    @Override
+    public void writeStart(final OutputStream os) throws IOException {
         super.writeStart(os);
 
-        byte[] data = new byte[9];
+        final byte[] data = new byte[9];
         copySF(data, Type.PROCESS, Category.DATA_RESOURCE);
 
-        byte[] l = BinaryUtils.convert(19 + getTripletDataLength(), 2);
+        final byte[] l = BinaryUtils.convert(19 + getTripletDataLength(), 2);
         data[1] = l[0]; // Length byte 1
         data[2] = l[1]; // Length byte 1
 
@@ -111,34 +119,35 @@ public class PreprocessPresentationObject extends AbstractTripletStructuredObjec
     }
 
     /** {@inheritDoc} */
-    public void writeContent(OutputStream os) throws IOException {
-        byte[] data = new byte[12];
-        byte[] l = BinaryUtils.convert(12 + getTripletDataLength(), 2);
+    @Override
+    public void writeContent(final OutputStream os) throws IOException {
+        final byte[] data = new byte[12];
+        final byte[] l = BinaryUtils.convert(12 + getTripletDataLength(), 2);
         data[0] = l[0]; // RGLength
         data[1] = l[1]; // RGLength
-        data[2] = objType; // ObjType
+        data[2] = this.objType; // ObjType
         data[3] = 0x00; // Reserved
         data[4] = 0x00; // Reserved
-        data[5] = objOrent; // ObjOrent
-        if (objXOffset > 0) {
-            byte[] xOff = BinaryUtils.convert(objYOffset, 3);
+        data[5] = this.objOrent; // ObjOrent
+        if (this.objXOffset > 0) {
+            final byte[] xOff = BinaryUtils.convert(this.objYOffset, 3);
             data[6] = xOff[0]; // XocaOset (not specified)
             data[7] = xOff[1]; // XocaOset
             data[8] = xOff[2]; // XocaOset
         } else {
-            data[6] = (byte)0xFF; // XocaOset (not specified)
-            data[7] = (byte)0xFF; // XocaOset
-            data[8] = (byte)0xFF; // XocaOset
+            data[6] = (byte) 0xFF; // XocaOset (not specified)
+            data[7] = (byte) 0xFF; // XocaOset
+            data[8] = (byte) 0xFF; // XocaOset
         }
-        if (objYOffset > 0) {
-            byte[] yOff = BinaryUtils.convert(objYOffset, 3);
+        if (this.objYOffset > 0) {
+            final byte[] yOff = BinaryUtils.convert(this.objYOffset, 3);
             data[9] = yOff[0]; // YocaOset (not specified)
             data[10] = yOff[1]; // YocaOset
             data[11] = yOff[2]; // YocaOset
         } else {
-            data[9] = (byte)0xFF; // YocaOset (not specified)
-            data[10] = (byte)0xFF; // YocaOset
-            data[11] = (byte)0xFF; // YocaOset
+            data[9] = (byte) 0xFF; // YocaOset (not specified)
+            data[10] = (byte) 0xFF; // YocaOset
+            data[11] = (byte) 0xFF; // YocaOset
         }
         os.write(data);
 

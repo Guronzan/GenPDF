@@ -26,9 +26,9 @@ import org.apache.fop.afp.modca.AbstractAFPObject;
 import org.apache.fop.afp.util.BinaryUtils;
 
 /**
- * The IM Image Input Descriptor structured field contains the
- * descriptor data for an IM image data object. This data specifies
- * the resolution, size, and color of the IM image.
+ * The IM Image Input Descriptor structured field contains the descriptor data
+ * for an IM image data object. This data specifies the resolution, size, and
+ * color of the IM image.
  */
 public class ImageInputDescriptor extends AbstractAFPObject {
 
@@ -36,9 +36,10 @@ public class ImageInputDescriptor extends AbstractAFPObject {
     private int resolution = 240;
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
 
-        byte[] data = new byte[45];
+        final byte[] data = new byte[45];
         copySF(data, Type.DESCRIPTOR, Category.IM_IMAGE);
 
         data[1] = 0x00; // length
@@ -63,20 +64,20 @@ public class ImageInputDescriptor extends AbstractAFPObject {
         // Y Base (Fixed x00)
         data[22] = 0x00;
 
-        byte[] imagepoints = BinaryUtils.convert(resolution * 10, 2);
+        final byte[] imagepoints = BinaryUtils.convert(this.resolution * 10, 2);
 
         /**
-         * Specifies the number of image points per unit base for the X axis
-         * of the image. This value is ten times the resolution of the image
-         * in the X direction.
+         * Specifies the number of image points per unit base for the X axis of
+         * the image. This value is ten times the resolution of the image in the
+         * X direction.
          */
         data[23] = imagepoints[0];
         data[24] = imagepoints[1];
 
         /**
-         * Specifies the number of image points per unit base for the Y axis
-         * of the image. This value is ten times the resolution of the image
-         * in the Y direction.
+         * Specifies the number of image points per unit base for the Y axis of
+         * the image. This value is ten times the resolution of the image in the
+         * Y direction.
          */
         data[25] = imagepoints[0];
         data[26] = imagepoints[1];
@@ -116,19 +117,20 @@ public class ImageInputDescriptor extends AbstractAFPObject {
         data[42] = 0x01;
 
         // Image Color
-        data[43] = (byte)0xFF;
-        data[44] = (byte)0xFF;
+        data[43] = (byte) 0xFF;
+        data[44] = (byte) 0xFF;
 
         os.write(data);
     }
 
     /**
-     * Sets the resolution information for the raster image
-     * the default value is a resolution of 240 dpi.
+     * Sets the resolution information for the raster image the default value is
+     * a resolution of 240 dpi.
      *
-     * @param resolution The resolution value
+     * @param resolution
+     *            The resolution value
      */
-    public void setResolution(int resolution) {
+    public void setResolution(final int resolution) {
         this.resolution = resolution;
     }
 

@@ -28,7 +28,9 @@ import java.util.Arrays;
  * <p>
  * This class extends java.awt.Color class keeping track of the original color
  * property values specified by the fo user in a rgb-icc call.
- * @deprecated Replaced by {@link org.apache.xmlgraphics.java2d.color.ColorWithAlternatives}
+ * 
+ * @deprecated Replaced by
+ *             {@link org.apache.xmlgraphics.java2d.color.ColorWithAlternatives}
  */
 @Deprecated
 public final class ColorExt extends Color {
@@ -49,14 +51,16 @@ public final class ColorExt extends Color {
     /*
      * Helper for createFromFoRgbIcc
      */
-    private ColorExt(ColorSpace colorSpace, float[] colorValues, float opacity) {
+    private ColorExt(final ColorSpace colorSpace, final float[] colorValues,
+            final float opacity) {
         super(colorSpace, colorValues, opacity);
     }
 
     /*
      * Helper for createFromSvgIccColor
      */
-    private ColorExt(float red, float green, float blue, float opacity) {
+    private ColorExt(final float red, final float green, final float blue,
+            final float opacity) {
         super(red, green, blue, opacity);
     }
 
@@ -82,10 +86,11 @@ public final class ColorExt extends Color {
      *            color values
      * @return the requested color object
      */
-    public static ColorExt createFromFoRgbIcc(float redReplacement,
-            float greenReplacement, float blueReplacement, String profileName,
-            String profileSrc, ColorSpace colorSpace, float[] iccValues) {
-        ColorExt ce = new ColorExt(colorSpace, iccValues, 1.0f);
+    public static ColorExt createFromFoRgbIcc(final float redReplacement,
+            final float greenReplacement, final float blueReplacement,
+            final String profileName, final String profileSrc,
+            final ColorSpace colorSpace, final float[] iccValues) {
+        final ColorExt ce = new ColorExt(colorSpace, iccValues, 1.0f);
         ce.rgbReplacementRed = redReplacement;
         ce.rgbReplacementGreen = greenReplacement;
         ce.rgbReplacementBlue = blueReplacement;
@@ -120,12 +125,14 @@ public final class ColorExt extends Color {
      *            ICC color values
      * @return the requested color object
      */
-    public static ColorExt createFromSvgIccColor(                // CSOK: ParameterNumber
-            float red, float green,
-            float blue, float opacity, String profileName, String profileHref,
-            ColorSpace profileCS, float[] colorValues) {
-        //TODO this method is not referenced by FOP, can it be deleted?
-        ColorExt ce = new ColorExt(red, green, blue, opacity);
+    public static ColorExt createFromSvgIccColor(
+            // CSOK: ParameterNumber
+            final float red, final float green, final float blue,
+            final float opacity, final String profileName,
+            final String profileHref, final ColorSpace profileCS,
+            final float[] colorValues) {
+        // TODO this method is not referenced by FOP, can it be deleted?
+        final ColorExt ce = new ColorExt(red, green, blue, opacity);
         ce.rgbReplacementRed = -1;
         ce.rgbReplacementGreen = -1;
         ce.rgbReplacementBlue = -1;
@@ -140,13 +147,14 @@ public final class ColorExt extends Color {
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        //implementation from the superclass should be good enough for our purposes
+        // implementation from the superclass should be good enough for our
+        // purposes
         return super.hashCode();
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -156,35 +164,35 @@ public final class ColorExt extends Color {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        ColorExt other = (ColorExt)obj;
-        //TODO maybe use super.getColorComponents() instead
-        if (!Arrays.equals(colorValues, other.colorValues)) {
+        final ColorExt other = (ColorExt) obj;
+        // TODO maybe use super.getColorComponents() instead
+        if (!Arrays.equals(this.colorValues, other.colorValues)) {
             return false;
         }
-        if (iccProfileName == null) {
+        if (this.iccProfileName == null) {
             if (other.iccProfileName != null) {
                 return false;
             }
-        } else if (!iccProfileName.equals(other.iccProfileName)) {
+        } else if (!this.iccProfileName.equals(other.iccProfileName)) {
             return false;
         }
-        if (iccProfileSrc == null) {
+        if (this.iccProfileSrc == null) {
             if (other.iccProfileSrc != null) {
                 return false;
             }
-        } else if (!iccProfileSrc.equals(other.iccProfileSrc)) {
+        } else if (!this.iccProfileSrc.equals(other.iccProfileSrc)) {
             return false;
         }
-        if (Float.floatToIntBits(rgbReplacementBlue)
-                != Float.floatToIntBits(other.rgbReplacementBlue)) {
+        if (Float.floatToIntBits(this.rgbReplacementBlue) != Float
+                .floatToIntBits(other.rgbReplacementBlue)) {
             return false;
         }
-        if (Float.floatToIntBits(rgbReplacementGreen)
-                != Float.floatToIntBits(other.rgbReplacementGreen)) {
+        if (Float.floatToIntBits(this.rgbReplacementGreen) != Float
+                .floatToIntBits(other.rgbReplacementGreen)) {
             return false;
         }
-        if (Float.floatToIntBits(rgbReplacementRed)
-                != Float.floatToIntBits(other.rgbReplacementRed)) {
+        if (Float.floatToIntBits(this.rgbReplacementRed) != Float
+                .floatToIntBits(other.rgbReplacementRed)) {
             return false;
         }
         return true;
@@ -212,17 +220,20 @@ public final class ColorExt extends Color {
      * @return the original ColorSpace
      */
     public ColorSpace getOrigColorSpace() {
-        //TODO this method is probably unnecessary due to super.cs and getColorSpace()
+        // TODO this method is probably unnecessary due to super.cs and
+        // getColorSpace()
         return this.colorSpace;
     }
 
     /**
      * Returns the original color values.
+     * 
      * @return the original color values
      */
     public float[] getOriginalColorComponents() {
-        //TODO this method is probably unnecessary due to super.fvalue and getColorComponents()
-        float[] copy = new float[this.colorValues.length];
+        // TODO this method is probably unnecessary due to super.fvalue and
+        // getColorComponents()
+        final float[] copy = new float[this.colorValues.length];
         System.arraycopy(this.colorValues, 0, copy, 0, copy.length);
         return copy;
     }
@@ -230,10 +241,11 @@ public final class ColorExt extends Color {
     /**
      * Create string representation of fop-rgb-icc function call to map this
      * ColorExt settings
+     * 
      * @return the string representing the internal fop-rgb-icc() function call
      */
     public String toFunctionCall() {
-        StringBuffer sb = new StringBuffer(40);
+        final StringBuffer sb = new StringBuffer(40);
         sb.append("fop-rgb-icc(");
         sb.append(this.rgbReplacementRed + ",");
         sb.append(this.rgbReplacementGreen + ",");
@@ -242,7 +254,7 @@ public final class ColorExt extends Color {
         if (this.iccProfileSrc != null) {
             sb.append("\"" + this.iccProfileSrc + "\"");
         }
-        float[] colorComponents = this.getColorComponents(null);
+        final float[] colorComponents = this.getColorComponents(null);
         for (int ix = 0; ix < colorComponents.length; ix++) {
             sb.append(",");
             sb.append(colorComponents[ix]);

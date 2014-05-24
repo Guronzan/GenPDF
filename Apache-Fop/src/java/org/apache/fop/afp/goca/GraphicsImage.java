@@ -50,13 +50,19 @@ public class GraphicsImage extends AbstractGraphicsDrawingOrder {
     /**
      * Main constructor
      *
-     * @param x the x coordinate of the image
-     * @param y the y coordinate of the image
-     * @param width the image width
-     * @param height the image height
-     * @param imageData the image data
+     * @param x
+     *            the x coordinate of the image
+     * @param y
+     *            the y coordinate of the image
+     * @param width
+     *            the image width
+     * @param height
+     *            the image height
+     * @param imageData
+     *            the image data
      */
-    public GraphicsImage(int x, int y, int width, int height, byte[] imageData) {
+    public GraphicsImage(final int x, final int y, final int width,
+            final int height, final byte[] imageData) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -65,56 +71,52 @@ public class GraphicsImage extends AbstractGraphicsDrawingOrder {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
-        //TODO:
+        // TODO:
         return 0;
     }
 
+    @Override
     byte getOrderCode() {
-        return (byte)0xD1;
+        return (byte) 0xD1;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] xcoord = BinaryUtils.convert(x, 2);
-        byte[] ycoord = BinaryUtils.convert(y, 2);
-        byte[] w = BinaryUtils.convert(width, 2);
-        byte[] h = BinaryUtils.convert(height, 2);
-        byte[] startData = new byte[] {
-            getOrderCode(), // GBIMG order code
-            (byte) 0x0A, // LENGTH
-            xcoord[0],
-            xcoord[1],
-            ycoord[0],
-            ycoord[1],
-            0x00, // FORMAT
-            0x00, // RES
-            w[0], // WIDTH
-            w[1], //
-            h[0], // HEIGHT
-            h[1] //
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] xcoord = BinaryUtils.convert(this.x, 2);
+        final byte[] ycoord = BinaryUtils.convert(this.y, 2);
+        final byte[] w = BinaryUtils.convert(this.width, 2);
+        final byte[] h = BinaryUtils.convert(this.height, 2);
+        final byte[] startData = new byte[] { getOrderCode(), // GBIMG order
+                                                              // code
+                (byte) 0x0A, // LENGTH
+                xcoord[0], xcoord[1], ycoord[0], ycoord[1], 0x00, // FORMAT
+                0x00, // RES
+                w[0], // WIDTH
+                w[1], //
+                h[0], // HEIGHT
+                h[1] //
         };
         os.write(startData);
 
-        byte[] dataHeader = new byte[] {
-            (byte) 0x92 // GIMD
+        final byte[] dataHeader = new byte[] { (byte) 0x92 // GIMD
         };
         final int lengthOffset = 1;
-        writeChunksToStream(imageData, dataHeader, lengthOffset, MAX_DATA_LEN, os);
+        writeChunksToStream(this.imageData, dataHeader, lengthOffset,
+                MAX_DATA_LEN, os);
 
-        byte[] endData = new byte[] {
-            (byte) 0x93, // GEIMG order code
-            0x00 // LENGTH
+        final byte[] endData = new byte[] { (byte) 0x93, // GEIMG order code
+                0x00 // LENGTH
         };
         os.write(endData);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "GraphicsImage{x=" + x
-            + ", y=" + y
-            + ", width=" + width
-            + ", height=" + height
-        + "}";
+        return "GraphicsImage{x=" + this.x + ", y=" + this.y + ", width="
+                + this.width + ", height=" + this.height + "}";
     }
 }

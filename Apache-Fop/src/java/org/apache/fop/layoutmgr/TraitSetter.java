@@ -19,8 +19,8 @@
 
 package org.apache.fop.layoutmgr;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.accessibility.StructureTreeElement;
 import org.apache.fop.area.Area;
 import org.apache.fop.area.Trait;
@@ -39,13 +39,11 @@ import org.apache.fop.traits.MinOptMax;
 /**
  * This is a helper class used for setting common traits on areas.
  */
+@Slf4j
 public final class TraitSetter {
 
     private TraitSetter() {
     }
-
-    /** logger */
-    private static final Log LOG = LogFactory.getLog(TraitSetter.class);
 
     /**
      * Sets border and padding traits on areas.
@@ -106,11 +104,11 @@ public final class TraitSetter {
 
     /*
      * Sets border traits on an area.
-     *
+     * 
      * @param area area to set the traits on
-     *
+     * 
      * @param bpProps border and padding properties
-     *
+     * 
      * @param mode the border paint mode (see BorderProps)
      */
     private static void addBorderTrait(final Area area,
@@ -351,15 +349,15 @@ public final class TraitSetter {
                                 context,
                                 LengthBase.IMAGE_BACKGROUND_POSITION_HORIZONTAL,
                                 referenceIPD
-                                - back.getImageInfo().getSize()
-                                .getWidthMpt());
+                                        - back.getImageInfo().getSize()
+                                                .getWidthMpt());
 
                         back.setHoriz(ipdShift
                                 + backProps.backgroundPositionHorizontal
-                                .getValue(refContext));
+                                        .getValue(refContext));
                     } else {
                         // TODO Area IPD has to be set for this to work
-                        LOG.warn("Horizontal background image positioning ignored"
+                        log.warn("Horizontal background image positioning ignored"
                                 + " because the IPD was not set on the area."
                                 + " (Yes, it's a bug in FOP)");
                     }
@@ -373,14 +371,14 @@ public final class TraitSetter {
                                 context,
                                 LengthBase.IMAGE_BACKGROUND_POSITION_VERTICAL,
                                 referenceBPD
-                                - back.getImageInfo().getSize()
-                                .getHeightMpt());
+                                        - back.getImageInfo().getSize()
+                                                .getHeightMpt());
                         back.setVertical(bpdShift
                                 + backProps.backgroundPositionVertical
-                                .getValue(refContext));
+                                        .getValue(refContext));
                     } else {
                         // TODO Area BPD has to be set for this to work
-                        LOG.warn("Vertical background image positioning ignored"
+                        log.warn("Vertical background image positioning ignored"
                                 + " because the BPD was not set on the area."
                                 + " (Yes, it's a bug in FOP)");
                     }
@@ -435,7 +433,7 @@ public final class TraitSetter {
                         back.setHoriz(horizontal);
                     } else {
                         // TODO Area IPD has to be set for this to work
-                        LOG.warn("Horizontal background image positioning ignored"
+                        log.warn("Horizontal background image positioning ignored"
                                 + " because the IPD was not set on the area."
                                 + " (Yes, it's a bug in FOP)");
                     }
@@ -460,7 +458,7 @@ public final class TraitSetter {
                         back.setVertical(vertical);
                     } else {
                         // TODO Area BPD has to be set for this to work
-                        LOG.warn("Vertical background image positioning ignored"
+                        log.warn("Vertical background image positioning ignored"
                                 + " because the BPD was not set on the area."
                                 + " (Yes, it's a bug in FOP)");
                     }

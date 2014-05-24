@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class BreakElement extends UnresolvedListElement {
 
-    private int penaltyWidth;
+    private final int penaltyWidth;
     private int penaltyValue;
     private int breakClass = -1;
     private List pendingBeforeMarks;
@@ -34,49 +34,67 @@ public class BreakElement extends UnresolvedListElement {
 
     /**
      * Main constructor
-     * @param position the Position instance needed by the addAreas stage of the LMs.
-     * @param penaltyValue the penalty value for the penalty element to be constructed
-     * @param context the layout context which contains the pending conditional elements
+     * 
+     * @param position
+     *            the Position instance needed by the addAreas stage of the LMs.
+     * @param penaltyValue
+     *            the penalty value for the penalty element to be constructed
+     * @param context
+     *            the layout context which contains the pending conditional
+     *            elements
      */
-    public BreakElement(Position position, int penaltyValue, LayoutContext context) {
+    public BreakElement(final Position position, final int penaltyValue,
+            final LayoutContext context) {
         this(position, penaltyValue, -1, context);
     }
 
     /**
-     * Create a new BreakElement for the given {@code position}, {@code penaltyValue}
-     * and {@code breakClass}. (Used principally to generate break-possibilities in
-     * ranges of content that must be kept together within the context corresponding
-     * to the {@code breakClass}; expected to be one of
-     *   {@link org.apache.fop.fo.Constants#EN_AUTO},
-     *   {@link org.apache.fop.fo.Constants#EN_LINE},
-     *   {@link org.apache.fop.fo.Constants#EN_COLUMN} or
-     *   {@link org.apache.fop.fo.Constants#EN_PAGE})
-     * @param position  the corresponding {@link Position}
-     * @param penaltyValue  the penalty value
-     * @param breakClass    the break class
-     * @param context       the {@link LayoutContext}
+     * Create a new BreakElement for the given {@code position},
+     * {@code penaltyValue} and {@code breakClass}. (Used principally to
+     * generate break-possibilities in ranges of content that must be kept
+     * together within the context corresponding to the {@code breakClass};
+     * expected to be one of {@link org.apache.fop.fo.Constants#EN_AUTO},
+     * {@link org.apache.fop.fo.Constants#EN_LINE},
+     * {@link org.apache.fop.fo.Constants#EN_COLUMN} or
+     * {@link org.apache.fop.fo.Constants#EN_PAGE})
+     * 
+     * @param position
+     *            the corresponding {@link Position}
+     * @param penaltyValue
+     *            the penalty value
+     * @param breakClass
+     *            the break class
+     * @param context
+     *            the {@link LayoutContext}
      */
-    public BreakElement(Position position, int penaltyValue, int breakClass,
-                        LayoutContext context) {
+    public BreakElement(final Position position, final int penaltyValue,
+            final int breakClass, final LayoutContext context) {
         this(position, 0, penaltyValue, breakClass, context);
     }
 
     /**
      * Constructor for hard breaks.
      *
-     * @param position the Position instance needed by the addAreas stage of the LMs.
-     * @param penaltyWidth the penalty width
-     * @param penaltyValue the penalty value for the penalty element to be constructed
-     * @param breakClass the break class of this penalty (one of
-     *   {@link org.apache.fop.fo.Constants#EN_AUTO},
-     *   {@link org.apache.fop.fo.Constants#EN_COLUMN},
-     *   {@link org.apache.fop.fo.Constants#EN_PAGE},
-     *   {@link org.apache.fop.fo.Constants#EN_EVEN_PAGE},
-     *   {@link org.apache.fop.fo.Constants#EN_ODD_PAGE})
-     * @param context the layout context which contains the pending conditional elements
+     * @param position
+     *            the Position instance needed by the addAreas stage of the LMs.
+     * @param penaltyWidth
+     *            the penalty width
+     * @param penaltyValue
+     *            the penalty value for the penalty element to be constructed
+     * @param breakClass
+     *            the break class of this penalty (one of
+     *            {@link org.apache.fop.fo.Constants#EN_AUTO},
+     *            {@link org.apache.fop.fo.Constants#EN_COLUMN},
+     *            {@link org.apache.fop.fo.Constants#EN_PAGE},
+     *            {@link org.apache.fop.fo.Constants#EN_EVEN_PAGE},
+     *            {@link org.apache.fop.fo.Constants#EN_ODD_PAGE})
+     * @param context
+     *            the layout context which contains the pending conditional
+     *            elements
      */
-    public BreakElement(Position position, int penaltyWidth, int penaltyValue,
-                int breakClass, LayoutContext context) {
+    public BreakElement(final Position position, final int penaltyWidth,
+            final int penaltyValue, final int breakClass,
+            final LayoutContext context) {
         super(position);
         this.penaltyWidth = penaltyWidth;
         this.penaltyValue = penaltyValue;
@@ -85,20 +103,21 @@ public class BreakElement extends UnresolvedListElement {
         this.pendingAfterMarks = context.getPendingAfterMarks();
     }
 
-    private static String getBreakClassName(int breakClass) {
+    private static String getBreakClassName(final int breakClass) {
         return AbstractBreaker.getBreakClassName(breakClass);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isConditional() {
-        return false; //Does not really apply here
+        return false; // Does not really apply here
     }
 
     /** {@inheritDoc} */
     /*
-    public boolean isPenalty() {
-        return true; //not entirely true but a BreakElement will generate a penalty later
-    }*/
+     * public boolean isPenalty() { return true; //not entirely true but a
+     * BreakElement will generate a penalty later }
+     */
 
     /** @return the penalty width */
     public int getPenaltyWidth() {
@@ -112,42 +131,44 @@ public class BreakElement extends UnresolvedListElement {
 
     /**
      * Sets the penalty value.
-     * @param p the new penalty value
+     * 
+     * @param p
+     *            the new penalty value
      */
-    public void setPenaltyValue(int p) {
+    public void setPenaltyValue(final int p) {
         this.penaltyValue = p;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isForcedBreak() {
-        return penaltyValue == -KnuthElement.INFINITE;
+        return this.penaltyValue == -KnuthElement.INFINITE;
     }
 
     /**
      * Returns the break class of this penalty.
      *
-     * @return one of
-     *   {@link org.apache.fop.fo.Constants#EN_AUTO},
-     *   {@link org.apache.fop.fo.Constants#EN_COLUMN},
-     *   {@link org.apache.fop.fo.Constants#EN_PAGE},
-     *   {@link org.apache.fop.fo.Constants#EN_EVEN_PAGE},
-     *   {@link org.apache.fop.fo.Constants#EN_ODD_PAGE}.
+     * @return one of {@link org.apache.fop.fo.Constants#EN_AUTO},
+     *         {@link org.apache.fop.fo.Constants#EN_COLUMN},
+     *         {@link org.apache.fop.fo.Constants#EN_PAGE},
+     *         {@link org.apache.fop.fo.Constants#EN_EVEN_PAGE},
+     *         {@link org.apache.fop.fo.Constants#EN_ODD_PAGE}.
      */
     public int getBreakClass() {
-        return breakClass;
+        return this.breakClass;
     }
 
     /**
      * Sets the break class.
      *
-     * @param breakClass one of
-     *   {@link org.apache.fop.fo.Constants#EN_AUTO},
-     *   {@link org.apache.fop.fo.Constants#EN_COLUMN},
-     *   {@link org.apache.fop.fo.Constants#EN_PAGE},
-     *   {@link org.apache.fop.fo.Constants#EN_EVEN_PAGE},
-     *   {@link org.apache.fop.fo.Constants#EN_ODD_PAGE}.
+     * @param breakClass
+     *            one of {@link org.apache.fop.fo.Constants#EN_AUTO},
+     *            {@link org.apache.fop.fo.Constants#EN_COLUMN},
+     *            {@link org.apache.fop.fo.Constants#EN_PAGE},
+     *            {@link org.apache.fop.fo.Constants#EN_EVEN_PAGE},
+     *            {@link org.apache.fop.fo.Constants#EN_ODD_PAGE}.
      */
-    public void setBreakClass(int breakClass) {
+    public void setBreakClass(final int breakClass) {
         this.breakClass = breakClass;
     }
 
@@ -162,9 +183,9 @@ public class BreakElement extends UnresolvedListElement {
     }
 
     /**
-     * Clears all pending marks associated with this break element. This is used in break
-     * cases where we only know very late if the break is actually after all the content
-     * of an FO has been generated.
+     * Clears all pending marks associated with this break element. This is used
+     * in break cases where we only know very late if the break is actually
+     * after all the content of an FO has been generated.
      */
     public void clearPendingMarks() {
         this.pendingBeforeMarks = null;
@@ -172,21 +193,20 @@ public class BreakElement extends UnresolvedListElement {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(64);
+        final StringBuffer sb = new StringBuffer(64);
         sb.append("BreakPossibility[p:");
         sb.append(KnuthPenalty.valueOf(this.penaltyValue));
         if (isForcedBreak()) {
             sb.append(" (forced break, ")
-                    .append(getBreakClassName(this.breakClass))
-                    .append(")");
+            .append(getBreakClassName(this.breakClass)).append(")");
         } else if (this.penaltyValue >= 0 && this.breakClass != -1) {
             sb.append(" (keep constraint, ")
-                    .append(getBreakClassName(this.breakClass))
-                    .append(")");
+            .append(getBreakClassName(this.breakClass)).append(")");
         }
         sb.append("; w:");
-        sb.append(penaltyWidth);
+        sb.append(this.penaltyWidth);
         sb.append("]");
         return sb.toString();
     }

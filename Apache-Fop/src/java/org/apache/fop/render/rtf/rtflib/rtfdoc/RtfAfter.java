@@ -31,22 +31,23 @@ import java.io.Writer;
 
 /** RtfContainer that encloses footers */
 public class RtfAfter extends RtfAfterBeforeBase {
-    /**RtfBefore attributes*/
+    /** RtfBefore attributes */
     public static final String FOOTER = "footer";
     /** String array of footer attributes */
-    public static final String[] FOOTER_ATTR = new String[]{
-        FOOTER
-    };
+    public static final String[] FOOTER_ATTR = new String[] { FOOTER };
 
-    RtfAfter(RtfSection parent, Writer w, RtfAttributes attrs) throws IOException {
+    RtfAfter(final RtfSection parent, final Writer w, final RtfAttributes attrs)
+            throws IOException {
         super(parent, w, attrs);
     }
 
     /**
      *
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeMyAttributes() throws IOException {
-        writeAttributes(attrib, FOOTER_ATTR);
+        writeAttributes(this.attrib, FOOTER_ATTR);
     }
 }

@@ -30,16 +30,20 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * <p>Page number citation container.</p>
-
- * <p>This work was authored by Christopher Scott (scottc@westinghouse.com) and
- * Boris Pouderous (boris.pouderous@free.fr).</p>
+ * <p>
+ * Page number citation container.
+ * </p>
+ *
+ * <p>
+ * This work was authored by Christopher Scott (scottc@westinghouse.com) and
+ * Boris Pouderous (boris.pouderous@free.fr).
+ * </p>
  */
 public class RtfPageNumberCitation extends RtfContainer {
-    /* Page field :
-       "{\field {\*\fldinst {PAGEREF xx}} {\fldrslt}}" where xx represents the
-       'id' of the referenced page
-    */
+    /*
+     * Page field : "{\field {\*\fldinst {PAGEREF xx}} {\fldrslt}}" where xx
+     * represents the 'id' of the referenced page
+     */
 
     /** constant for field */
     public static final String RTF_FIELD = "field";
@@ -51,50 +55,59 @@ public class RtfPageNumberCitation extends RtfContainer {
     // The 'id' of the referenced page
     private String id = null;
 
-    /** Create an RTF page number citation as a child of given container with default attributes */
-    RtfPageNumberCitation (RtfContainer parent, Writer w, String id)
-            throws IOException {
+    /**
+     * Create an RTF page number citation as a child of given container with
+     * default attributes
+     */
+    RtfPageNumberCitation(final RtfContainer parent, final Writer w,
+            final String id) throws IOException {
         super(parent, w);
         this.id = id;
     }
 
-    /** Create an RTF page number citation as a child of given
-     *    paragraph, copying its attributes */
-    RtfPageNumberCitation (RtfParagraph parent, Writer w, String id)
-            throws IOException {
+    /**
+     * Create an RTF page number citation as a child of given paragraph, copying
+     * its attributes
+     */
+    RtfPageNumberCitation(final RtfParagraph parent, final Writer w,
+            final String id) throws IOException {
         // add the attributes ant text attributes of the parent paragraph
-        super((RtfContainer)parent, w, parent.attrib);
+        super(parent, w, parent.attrib);
         if (parent.getTextAttributes() != null) {
-            attrib.set(parent.getTextAttributes());
+            this.attrib.set(parent.getTextAttributes());
         }
         this.id = id;
     }
 
     /**
      * Write the content
-     * @throws IOException for I/O problems
+     *
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeRtfContent() throws IOException {
         // If we have a valid ID
         if (isValid()) {
             // Build page reference field
             String pageRef = RTF_FIELD_PAGEREF_MODEL;
             final int insertionIndex = pageRef.indexOf("}");
-            pageRef = pageRef.substring(0, insertionIndex)
-                + "\"" + id
-                + "\"" + " "
-                + pageRef.substring(insertionIndex, pageRef.length());
-            id = null;
+            pageRef = pageRef.substring(0, insertionIndex) + "\"" + this.id
+                    + "\"" + " "
+                    + pageRef.substring(insertionIndex, pageRef.length());
+            this.id = null;
 
             // Write RTF content
             writeGroupMark(true);
             writeControlWord(RTF_FIELD);
             writeGroupMark(true);
-            writeAttributes(attrib, RtfText.ATTR_NAMES); // Added by Boris Poudérous
+            writeAttributes(this.attrib, RtfText.ATTR_NAMES); // Added by Boris
+            // Poudérous
             writeStarControlWord(pageRef);
             writeGroupMark(false);
             writeGroupMark(true);
-            writeControlWord(RTF_FIELD_RESULT + '#'); //To see where the page-number would be
+            writeControlWord(RTF_FIELD_RESULT + '#'); // To see where the
+            // page-number would be
             writeGroupMark(false);
             writeGroupMark(false);
         }
@@ -102,12 +115,13 @@ public class RtfPageNumberCitation extends RtfContainer {
 
     /** checks that the 'ref-id' attribute exists */
     private boolean isValid() {
-        return (id != null);
+        return this.id != null;
     }
 
     /**
      * @return true if this element would generate no "useful" RTF content
      */
+    @Override
     public boolean isEmpty() {
         return false;
     }

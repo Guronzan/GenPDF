@@ -31,18 +31,21 @@ public class CloseBlockerOutputStream extends ProxyOutputStream {
 
     /**
      * Main constructor.
-     * @param out the underlying stream
+     * 
+     * @param out
+     *            the underlying stream
      */
-    public CloseBlockerOutputStream(OutputStream out) {
+    public CloseBlockerOutputStream(final OutputStream out) {
         super(out);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void close() throws IOException {
         try {
             flush();
-        } catch (IOException ioe) {
-            //ignore
+        } catch (final IOException ioe) {
+            // ignore
         }
     }
 

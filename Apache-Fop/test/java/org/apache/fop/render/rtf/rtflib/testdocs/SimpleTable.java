@@ -17,7 +17,6 @@
 
 /* $Id: SimpleTable.java 1297404 2012-03-06 10:17:54Z vhennebert $ */
 
-
 /*
  * This file is part of the RTF library of the FOP project, which was originally
  * created by Bertrand Delacretaz <bdelacretaz@codeconsult.ch> and by other
@@ -32,11 +31,13 @@ import java.io.IOException;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfDocumentArea;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfTable;
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfTableRow;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfTableCell;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfTableRow;
 
-/**  Generates a simple RTF test document for the jfor rtflib package.
- *  @author Bertrand Delacretaz bdelacretaz@codeconsult.ch
+/**
+ * Generates a simple RTF test document for the jfor rtflib package.
+ * 
+ * @author Bertrand Delacretaz bdelacretaz@codeconsult.ch
  */
 class SimpleTable extends TestDocument {
     /** generate the body of the test document */
@@ -45,24 +46,31 @@ class SimpleTable extends TestDocument {
     static final int INCH_TO_TWIPS = 1440;
     static final int C1W = 4;
 
-    protected void generateDocument(RtfDocumentArea rda, RtfSection sect)
-    throws IOException {
+    @Override
+    protected void generateDocument(final RtfDocumentArea rda,
+            final RtfSection sect) throws IOException {
         final RtfTable tbl = sect.newTable(new DummyTableColumnsInfo());
-        tbl.newTableRow().newTableCell(C1W * INCH_TO_TWIPS).newParagraph().newText
-                ("Here's a table row with just one cell, width " + C1W + "''");
+        tbl.newTableRow()
+                .newTableCell(C1W * INCH_TO_TWIPS)
+                .newParagraph()
+                .newText(
+                        "Here's a table row with just one cell, width " + C1W
+                                + "''");
 
         for (int row = 0; row < MAX_ROW; row++) {
             final RtfTableRow r = tbl.newTableRow();
 
             for (int col = 0; col < MAX_COL; col++) {
                 final float widthInInches = col / 2f + 1f;
-                final int widthInTwips = (int)(widthInInches * INCH_TO_TWIPS);
+                final int widthInTwips = (int) (widthInInches * INCH_TO_TWIPS);
                 final RtfTableCell c = r.newTableCell(widthInTwips);
-                c.newParagraph().newText("(" + row + "," + col + "), width "
-                        + widthInInches  + "''");
+                c.newParagraph().newText(
+                        "(" + row + "," + col + "), width " + widthInInches
+                                + "''");
                 if (row == 0 && col == 1) {
                     for (int i = 0; i < 4; i++) {
-                        c.newParagraph().newText("additional paragraph " + i + " of cell 0,1");
+                        c.newParagraph().newText(
+                                "additional paragraph " + i + " of cell 0,1");
                     }
                 }
             }

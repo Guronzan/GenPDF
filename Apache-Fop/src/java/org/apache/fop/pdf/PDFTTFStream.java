@@ -22,66 +22,79 @@ package org.apache.fop.pdf;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Special PDFStream for embeddable TrueType fonts.
  */
+@Slf4j
 public class PDFTTFStream extends AbstractPDFFontStream {
 
-    private int origLength;
+    private final int origLength;
     private byte[] ttfData;
 
     /**
      * Main constructor
-     * @param len original length
+     *
+     * @param len
+     *            original length
      */
-    public PDFTTFStream(int len) {
+    public PDFTTFStream(final int len) {
         super();
-        origLength = len;
+        this.origLength = len;
     }
 
     /** {@inheritDoc} */
+    @Override
     protected int getSizeHint() throws IOException {
         if (this.ttfData != null) {
-            return ttfData.length;
+            return this.ttfData.length;
         } else {
-            return 0; //no hint available
+            return 0; // no hint available
         }
     }
 
     /**
-     * Overload the base object method so we don't have to copy
-     * byte arrays around so much
-     * {@inheritDoc}
+     * Overload the base object method so we don't have to copy byte arrays
+     * around so much {@inheritDoc}
      */
-    public int output(java.io.OutputStream stream)
+    @Override
+    public int output(final java.io.OutputStream stream)
             throws java.io.IOException {
         if (log.isDebugEnabled()) {
-            log.debug("Writing " + origLength + " bytes of TTF font data");
+            log.debug("Writing " + this.origLength + " bytes of TTF font data");
         }
 
-        int length = super.output(stream);
+        final int length = super.output(stream);
         log.debug("Embedded TrueType/OpenType font");
         return length;
     }
 
     /** {@inheritDoc} */
-    protected void outputRawStreamData(OutputStream out) throws IOException {
+    @Override
+    protected void outputRawStreamData(final OutputStream out)
+            throws IOException {
         out.write(this.ttfData);
     }
 
     /** {@inheritDoc} */
-    protected void populateStreamDict(Object lengthEntry) {
-        put("Length1", origLength);
+    @Override
+    protected void populateStreamDict(final Object lengthEntry) {
+        put("Length1", this.origLength);
         super.populateStreamDict(lengthEntry);
     }
 
     /**
      * Sets the TrueType font data.
-     * @param data the font payload
-     * @param size size of the payload
-     * @throws IOException in case of an I/O problem
+     *
+     * @param data
+     *            the font payload
+     * @param size
+     *            size of the payload
+     * @throws IOException
+     *             in case of an I/O problem
      */
-    public void setData(byte[] data, int size) throws IOException {
+    public void setData(final byte[] data, final int size) throws IOException {
         this.ttfData = new byte[size];
         System.arraycopy(data, 0, this.ttfData, 0, size);
     }

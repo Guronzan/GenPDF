@@ -23,30 +23,33 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Represents the 4 bytes that specify the axis-area rotation reference coordinate system
+ * Represents the 4 bytes that specify the axis-area rotation reference
+ * coordinate system
  */
 public enum AxisOrientation {
 
-    RIGHT_HANDED_0(Rotation.ROTATION_0, Rotation.ROTATION_90),
-    RIGHT_HANDED_90(Rotation.ROTATION_90, Rotation.ROTATION_180),
-    RIGHT_HANDED_180(Rotation.ROTATION_180, Rotation.ROTATION_270),
-    RIGHT_HANDED_270(Rotation.ROTATION_270, Rotation.ROTATION_0);
+    RIGHT_HANDED_0(Rotation.ROTATION_0, Rotation.ROTATION_90), RIGHT_HANDED_90(
+            Rotation.ROTATION_90, Rotation.ROTATION_180), RIGHT_HANDED_180(
+            Rotation.ROTATION_180, Rotation.ROTATION_270), RIGHT_HANDED_270(
+            Rotation.ROTATION_270, Rotation.ROTATION_0);
 
     /**
-     * The object area's X-axis rotation from the X axis of the reference coordinate system
+     * The object area's X-axis rotation from the X axis of the reference
+     * coordinate system
      */
     private final Rotation xoaOrent;
     /**
-     * The object area's Y-axis rotation from the Y axis of the reference coordinate system
+     * The object area's Y-axis rotation from the Y axis of the reference
+     * coordinate system
      */
     private final Rotation yoaOrent;
 
-    public void writeTo(byte[] out, int offset) {
-        xoaOrent.writeTo(out, offset);
-        yoaOrent.writeTo(out, offset + 2);
+    public void writeTo(final byte[] out, final int offset) {
+        this.xoaOrent.writeTo(out, offset);
+        this.yoaOrent.writeTo(out, offset + 2);
     }
 
-    private AxisOrientation(Rotation xoaOrent, Rotation yoaOrent) {
+    private AxisOrientation(final Rotation xoaOrent, final Rotation yoaOrent) {
         this.xoaOrent = xoaOrent;
         this.yoaOrent = yoaOrent;
     }
@@ -54,29 +57,39 @@ public enum AxisOrientation {
     /**
      * Writes the axis orientation area bytes to the output stream.
      *
-     * @param stream the output stream to write to
-     * @throws IOException if an I/O error occurs
+     * @param stream
+     *            the output stream to write to
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public void writeTo(OutputStream stream) throws IOException {
-        byte[] data = new byte[4];
+    public void writeTo(final OutputStream stream) throws IOException {
+        final byte[] data = new byte[4];
         writeTo(data, 0);
         stream.write(data);
     }
 
     /**
-     * Gets the right-handed axis orientation object for a given orientation in degrees.
+     * Gets the right-handed axis orientation object for a given orientation in
+     * degrees.
      *
-     * @param orientation the orientation in degrees
+     * @param orientation
+     *            the orientation in degrees
      * @return the {@link AxisOrientation} object
      */
-    public static AxisOrientation getRightHandedAxisOrientationFor(int orientation) {
+    public static AxisOrientation getRightHandedAxisOrientationFor(
+            final int orientation) {
         switch (orientation) {
-            case 0: return RIGHT_HANDED_0;
-            case 90: return RIGHT_HANDED_90;
-            case 180: return RIGHT_HANDED_180;
-            case 270: return RIGHT_HANDED_270;
-            default: throw new IllegalArgumentException(
-            "The orientation must be one of the values 0, 90, 180, 270");
+        case 0:
+            return RIGHT_HANDED_0;
+        case 90:
+            return RIGHT_HANDED_90;
+        case 180:
+            return RIGHT_HANDED_180;
+        case 270:
+            return RIGHT_HANDED_270;
+        default:
+            throw new IllegalArgumentException(
+                    "The orientation must be one of the values 0, 90, 180, 270");
         }
     }
 }

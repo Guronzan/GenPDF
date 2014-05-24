@@ -22,51 +22,54 @@ package embedding;
 // Java
 import java.io.File;
 import java.io.OutputStream;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 //JAXP
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Source;
-import javax.xml.transform.Result;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 
+import lombok.extern.slf4j.Slf4j;
+
+// FOP
+import org.apache.fop.apps.FOUserAgent;
+import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopFactory;
 // DOM
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
-// FOP
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.Fop;
-import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
-
-
 /**
- * This class demonstrates the conversion of a DOM Document to PDF
- * using JAXP (XSLT) and FOP (XSL-FO).
+ * This class demonstrates the conversion of a DOM Document to PDF using JAXP
+ * (XSLT) and FOP (XSL-FO).
  */
+@Slf4j
 public class ExampleDOM2PDF {
 
     // configure fopFactory as desired
-    private FopFactory fopFactory = FopFactory.newInstance();
+    private final FopFactory fopFactory = FopFactory.newInstance();
 
     /** xsl-fo namespace URI */
     protected static String foNS = "http://www.w3.org/1999/XSL/Format";
 
     /**
      * Converts a DOM Document to a PDF file using FOP.
-     * @param xslfoDoc the DOM Document
-     * @param pdf the target PDF file
+     *
+     * @param xslfoDoc
+     *            the DOM Document
+     * @param pdf
+     *            the target PDF file
      */
-    public void convertDOM2PDF(Document xslfoDoc, File pdf) {
+    public void convertDOM2PDF(final Document xslfoDoc, final File pdf) {
         try {
-            FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+            final FOUserAgent foUserAgent = this.fopFactory.newFOUserAgent();
             // configure foUserAgent as desired
 
             // Setup output
@@ -75,17 +78,22 @@ public class ExampleDOM2PDF {
 
             try {
                 // Construct fop with desired output format and output stream
-                Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);
+                final Fop fop = this.fopFactory.newFop(
+                        org.apache.xmlgraphics.util.MimeConstants.MIME_PDF,
+                        foUserAgent, out);
 
                 // Setup Identity Transformer
-                TransformerFactory factory = TransformerFactory.newInstance();
-                Transformer transformer = factory.newTransformer(); // identity transformer
+                final TransformerFactory factory = TransformerFactory
+                        .newInstance();
+                final Transformer transformer = factory.newTransformer(); // identity
+                // transformer
 
                 // Setup input for XSLT transformation
-                Source src = new DOMSource(xslfoDoc);
+                final Source src = new DOMSource(xslfoDoc);
 
-                // Resulting SAX events (the generated FO) must be piped through to FOP
-                Result res = new SAXResult(fop.getDefaultHandler());
+                // Resulting SAX events (the generated FO) must be piped through
+                // to FOP
+                final Result res = new SAXResult(fop.getDefaultHandler());
 
                 // Start XSLT transformation and FOP processing
                 transformer.transform(src, res);
@@ -93,7 +101,7 @@ public class ExampleDOM2PDF {
                 out.close();
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace(System.err);
             System.exit(-1);
         }
@@ -102,30 +110,32 @@ public class ExampleDOM2PDF {
 
     /**
      * Main method.
-     * @param args command-line arguments
+     *
+     * @param args
+     *            command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
-            System.out.println("FOP ExampleDOM2PDF\n");
+            log.info("FOP ExampleDOM2PDF\n");
 
-            //Setup directories
-            File baseDir = new File(".");
-            File outDir = new File(baseDir, "out");
+            // Setup directories
+            final File baseDir = new File(".");
+            final File outDir = new File(baseDir, "out");
             outDir.mkdirs();
 
-            //Setup output file
-            File pdffile = new File(outDir, "ResultDOM2PDF.pdf");
-            System.out.println("PDF Output File: " + pdffile);
-            System.out.println();
+            // Setup output file
+            final File pdffile = new File(outDir, "ResultDOM2PDF.pdf");
+            log.info("PDF Output File: " + pdffile);
+            log.info("");
 
-            Document foDoc = buildDOMDocument();
+            final Document foDoc = buildDOMDocument();
 
-            ExampleDOM2PDF app = new ExampleDOM2PDF();
+            final ExampleDOM2PDF app = new ExampleDOM2PDF();
             app.convertDOM2PDF(foDoc, pdffile);
 
-            System.out.println("Success!");
+            log.info("Success!");
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace(System.err);
             System.exit(-1);
         }
@@ -133,17 +143,20 @@ public class ExampleDOM2PDF {
 
     /**
      * Builds the example FO document as a DOM in memory.
+     *
      * @return the FO document
-     * @throws ParserConfigurationException In case there is a problem creating a DOM document
+     * @throws ParserConfigurationException
+     *             In case there is a problem creating a DOM document
      */
-    private static Document buildDOMDocument() throws ParserConfigurationException {
+    private static Document buildDOMDocument()
+            throws ParserConfigurationException {
         // Create a sample XSL-FO DOM document
         Document foDoc = null;
         Element root = null, ele1 = null, ele2 = null, ele3 = null;
 
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
-        DocumentBuilder db = dbf.newDocumentBuilder();
+        final DocumentBuilder db = dbf.newDocumentBuilder();
         foDoc = db.newDocument();
 
         root = foDoc.createElementNS(foNS, "fo:root");
@@ -174,20 +187,24 @@ public class ExampleDOM2PDF {
 
     /**
      * Adds an element to the DOM.
-     * @param parent parent node to attach the new element to
-     * @param newNodeName name of the new node
-     * @param textVal content of the element
+     *
+     * @param parent
+     *            parent node to attach the new element to
+     * @param newNodeName
+     *            name of the new node
+     * @param textVal
+     *            content of the element
      */
-    protected static void addElement(Node parent, String newNodeName,
-                                String textVal) {
+    protected static void addElement(final Node parent,
+            final String newNodeName, final String textVal) {
         if (textVal == null) {
             return;
-        }  // use only with text nodes
-        Element newElement = parent.getOwnerDocument().createElementNS(
-                                        foNS, newNodeName);
-        Text elementText = parent.getOwnerDocument().createTextNode(textVal);
+        } // use only with text nodes
+        final Element newElement = parent.getOwnerDocument().createElementNS(
+                foNS, newNodeName);
+        final Text elementText = parent.getOwnerDocument().createTextNode(
+                textVal);
         newElement.appendChild(elementText);
         parent.appendChild(newElement);
     }
 }
-

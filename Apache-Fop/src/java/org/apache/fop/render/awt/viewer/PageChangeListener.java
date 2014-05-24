@@ -22,15 +22,17 @@ package org.apache.fop.render.awt.viewer;
 import java.util.EventListener;
 
 /**
- * Swing listener interface for classes which wish to receive
- * notification of page change events.
+ * Swing listener interface for classes which wish to receive notification of
+ * page change events.
  */
 public interface PageChangeListener extends EventListener {
 
     /**
      * Called whenever the current page is changed.
-     * @param pce the page change event
+     * 
+     * @param pce
+     *            the page change event
      */
-    void pageChanged(PageChangeEvent pce);
+    void pageChanged(final PageChangeEvent pce);
 
 }

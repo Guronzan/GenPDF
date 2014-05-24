@@ -47,55 +47,65 @@ public class PSSetupCode extends PSExtensionAttachment {
 
     /**
      * Default constructor.
-     * @param name the name of the setup code object, may be null
-     * @param content the content of the setup code object
+     * 
+     * @param name
+     *            the name of the setup code object, may be null
+     * @param content
+     *            the content of the setup code object
      */
-    public PSSetupCode(String name, String content) {
+    public PSSetupCode(final String name, final String content) {
         super(content);
         this.name = name;
     }
 
     /** @return the name */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
      * Sets the name of the setup code object.
-     * @param name The name to set.
+     * 
+     * @param name
+     *            The name to set.
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getCategory() {
         return CATEGORY;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "PSSetupCode(name=" + getName() + ", content='" + getContent() + "')";
+        return "PSSetupCode(name=" + getName() + ", content='" + getContent()
+                + "')";
     }
 
     /**
      * @return the element name
      * @see org.apache.fop.render.ps.extensions.PSExtensionAttachment#getElement()
      */
+    @Override
     protected String getElement() {
         return ELEMENT;
     }
 
     /** {@inheritDoc} */
-    public void toSAX(ContentHandler handler) throws SAXException {
-        AttributesImpl atts = new AttributesImpl();
-        if (name != null && name.length() > 0) {
-            atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", name);
+    @Override
+    public void toSAX(final ContentHandler handler) throws SAXException {
+        final AttributesImpl atts = new AttributesImpl();
+        if (this.name != null && this.name.length() > 0) {
+            atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", this.name);
         }
-        String element = getElement();
+        final String element = getElement();
         handler.startElement(CATEGORY, element, element, atts);
-        if (content != null && content.length() > 0) {
-            char[] chars = content.toCharArray();
+        if (this.content != null && this.content.length() > 0) {
+            final char[] chars = this.content.toCharArray();
             handler.characters(chars, 0, chars.length);
         }
         handler.endElement(CATEGORY, element, element);

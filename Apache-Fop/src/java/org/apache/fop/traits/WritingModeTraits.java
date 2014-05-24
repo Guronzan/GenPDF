@@ -36,118 +36,143 @@ public class WritingModeTraits implements WritingModeTraitsSetter {
      * Default writing mode traits constructor.
      */
     public WritingModeTraits() {
-        this ( WritingMode.LR_TB );
+        this(WritingMode.LR_TB);
     }
 
     /**
      * Construct writing mode traits using the specified writing mode.
-     * @param writingMode a writing mode traits object
+     * 
+     * @param writingMode
+     *            a writing mode traits object
      */
-    public WritingModeTraits ( WritingMode writingMode ) {
-        assignWritingModeTraits ( writingMode );
+    public WritingModeTraits(final WritingMode writingMode) {
+        assignWritingModeTraits(writingMode);
     }
 
     /**
      * @return the "inline-progression-direction" trait.
      */
+    @Override
     public Direction getInlineProgressionDirection() {
-        return inlineProgressionDirection;
+        return this.inlineProgressionDirection;
     }
 
     /**
-     * @param direction the "inline-progression-direction" trait.
+     * @param direction
+     *            the "inline-progression-direction" trait.
      */
-    public void setInlineProgressionDirection ( Direction direction ) {
+    @Override
+    public void setInlineProgressionDirection(final Direction direction) {
         this.inlineProgressionDirection = direction;
     }
 
     /**
      * @return the "block-progression-direction" trait.
      */
+    @Override
     public Direction getBlockProgressionDirection() {
-        return blockProgressionDirection;
+        return this.blockProgressionDirection;
     }
 
     /**
-     * @param direction the "block-progression-direction" trait.
+     * @param direction
+     *            the "block-progression-direction" trait.
      */
-    public void setBlockProgressionDirection ( Direction direction ) {
+    @Override
+    public void setBlockProgressionDirection(final Direction direction) {
         this.blockProgressionDirection = direction;
     }
 
     /**
      * @return the "column-progression-direction" trait.
      */
+    @Override
     public Direction getColumnProgressionDirection() {
-        return columnProgressionDirection;
+        return this.columnProgressionDirection;
     }
 
     /**
-     * @param direction the "column-progression-direction" trait.
+     * @param direction
+     *            the "column-progression-direction" trait.
      */
-    public void setColumnProgressionDirection ( Direction direction ) {
+    @Override
+    public void setColumnProgressionDirection(final Direction direction) {
         this.columnProgressionDirection = direction;
     }
 
     /**
      * @return the "row-progression-direction" trait.
      */
+    @Override
     public Direction getRowProgressionDirection() {
-        return rowProgressionDirection;
+        return this.rowProgressionDirection;
     }
 
     /**
-     * @param direction the "row-progression-direction" trait.
+     * @param direction
+     *            the "row-progression-direction" trait.
      */
-    public void setRowProgressionDirection ( Direction direction ) {
+    @Override
+    public void setRowProgressionDirection(final Direction direction) {
         this.rowProgressionDirection = direction;
     }
 
     /**
      * @return the "shift-direction" trait.
      */
+    @Override
     public Direction getShiftDirection() {
-        return shiftDirection;
+        return this.shiftDirection;
     }
 
     /**
-     * @param direction the "shift-direction" trait.
+     * @param direction
+     *            the "shift-direction" trait.
      */
-    public void setShiftDirection ( Direction direction ) {
+    @Override
+    public void setShiftDirection(final Direction direction) {
         this.shiftDirection = direction;
     }
 
     /**
      * @return the "writing-mode" trait.
      */
+    @Override
     public WritingMode getWritingMode() {
-        return writingMode;
+        return this.writingMode;
     }
 
     /**
-     * @param writingMode the "writing-mode" trait.
+     * @param writingMode
+     *            the "writing-mode" trait.
      */
-    public void setWritingMode ( WritingMode writingMode ) {
+    @Override
+    public void setWritingMode(final WritingMode writingMode) {
         this.writingMode = writingMode;
     }
 
     /**
-     * @param writingMode the "writing-mode" trait.
+     * @param writingMode
+     *            the "writing-mode" trait.
      */
-    public void assignWritingModeTraits ( WritingMode writingMode ) {
-        writingMode.assignWritingModeTraits ( this );
+    @Override
+    public void assignWritingModeTraits(final WritingMode writingMode) {
+        writingMode.assignWritingModeTraits(this);
     }
 
     /**
-     * Helper function to find the writing mode traits getter (if any) that applies for
-     * a given FO node.
-     * @param fn the node to start searching from
-     * @return the applicable writing mode traits getter, or null if none applies
+     * Helper function to find the writing mode traits getter (if any) that
+     * applies for a given FO node.
+     * 
+     * @param fn
+     *            the node to start searching from
+     * @return the applicable writing mode traits getter, or null if none
+     *         applies
      */
-    public static WritingModeTraitsGetter
-        getWritingModeTraitsGetter ( org.apache.fop.fo.FONode fn ) {
-        for ( org.apache.fop.fo.FONode n = fn; n != null; n = n.getParent() ) {
-            if ( n instanceof WritingModeTraitsGetter ) {
+    public static WritingModeTraitsGetter getWritingModeTraitsGetter(
+            final org.apache.fop.fo.FONode fn) {
+        for (org.apache.fop.fo.FONode n = fn; n != null; n = n.getParent()) {
+            if (n instanceof WritingModeTraitsGetter) {
                 return (WritingModeTraitsGetter) n;
             }
         }

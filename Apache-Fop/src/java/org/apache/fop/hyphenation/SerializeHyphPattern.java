@@ -24,6 +24,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * <p>
  * Serialize hyphenation patterns.
@@ -36,13 +38,14 @@ import java.io.ObjectOutputStream;
  * This class may be called from the ant build file in a java task.
  * </p>
  */
+@Slf4j
 public class SerializeHyphPattern {
 
     private boolean errorDump = false;
 
     /**
      * Controls the amount of error information dumped.
-     * 
+     *
      * @param errorDump
      *            True if more error info should be provided
      */
@@ -53,7 +56,7 @@ public class SerializeHyphPattern {
     /**
      * Compile all xml files in sourceDir, and write output hyp files in
      * targetDir
-     * 
+     *
      * @param sourceDir
      *            Directory with pattern xml files
      * @param targetDir
@@ -106,12 +109,12 @@ public class SerializeHyphPattern {
      * serializes pattern files
      */
     private HyphenationTree buildPatternFile(final File infile) {
-        System.out.println("Processing " + infile);
+        log.info("Processing " + infile);
         final HyphenationTree hTree = new HyphenationTree();
         try {
             hTree.loadPatterns(infile.toString());
             if (this.errorDump) {
-                System.out.println("Stats: ");
+                log.info("Stats: ");
                 hTree.printStats();
             }
         } catch (final HyphenationException ex) {
@@ -143,7 +146,7 @@ public class SerializeHyphPattern {
 
     /**
      * Entry point for ant java task
-     * 
+     *
      * @param args
      *            sourceDir, targetDir
      */

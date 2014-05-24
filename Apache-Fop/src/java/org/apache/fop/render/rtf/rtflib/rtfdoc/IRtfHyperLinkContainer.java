@@ -29,17 +29,26 @@ package org.apache.fop.render.rtf.rtflib.rtfdoc;
 import java.io.IOException;
 
 /**
- * <p>Interface for RtfElements that can contain RtfHyperLinks.</p>
+ * <p>
+ * Interface for RtfElements that can contain RtfHyperLinks.
+ * </p>
  *
- * <p>This work was authored by Andreas Putz (a.putz@skynamics.com).</p>
+ * <p>
+ * This work was authored by Andreas Putz (a.putz@skynamics.com).
+ * </p>
  */
 public interface IRtfHyperLinkContainer extends IRtfTextContainer {
     /**
      * Creates a new hyperlink.
-     * @param str Hyperlink string
-     * @param attr Hyperlink attributes
-     * @exception IOException on error
+     * 
+     * @param str
+     *            Hyperlink string
+     * @param attr
+     *            Hyperlink attributes
+     * @exception IOException
+     *                on error
      * @return new Hyperlink object
      */
-    RtfHyperLink newHyperLink (String str, RtfAttributes attr) throws IOException;
+    RtfHyperLink newHyperLink(final String str, final RtfAttributes attr)
+            throws IOException;
 }

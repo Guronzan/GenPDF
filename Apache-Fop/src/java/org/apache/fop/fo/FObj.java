@@ -27,25 +27,26 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
-import org.apache.xmlgraphics.util.QName;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.extensions.ExtensionAttachment;
 import org.apache.fop.fo.flow.Marker;
 import org.apache.fop.fo.properties.PropertyMaker;
+import org.apache.xmlgraphics.util.QName;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 /**
- * Base class for representation of formatting objects and their processing.
- * All standard formatting object classes extend this class.
+ * Base class for representation of formatting objects and their processing. All
+ * standard formatting object classes extend this class.
  */
+@Slf4j
 public abstract class FObj extends FONode implements Constants {
 
     /** the list of property makers */
-    private static final PropertyMaker[] PROPERTY_LIST_TABLE
-                            = FOPropertyMapping.getGenericMappings();
+    private static final PropertyMaker[] PROPERTY_LIST_TABLE = FOPropertyMapping
+            .getGenericMappings();
 
     /** pointer to the descendant subtree */
     protected FONode firstChild;
@@ -59,8 +60,9 @@ public abstract class FObj extends FONode implements Constants {
     /** The map of foreign attributes, null if none */
     private Map<QName, String> foreignAttributes = null;
 
-    /** Used to indicate if this FO is either an Out Of Line FO (see rec)
-     *  or a descendant of one. Used during FO validation.
+    /**
+     * Used to indicate if this FO is either an Out Of Line FO (see rec) or a
+     * descendant of one. Used during FO validation.
      */
     private boolean isOutOfLineFODescendant = false;
 
@@ -71,34 +73,37 @@ public abstract class FObj extends FONode implements Constants {
 
     // The value of properties relevant for all fo objects
     private String id = null;
+
     // End of property values
 
     /**
      * Create a new formatting object.
      *
-     * @param parent the parent node
+     * @param parent
+     *            the parent node
      */
-    public FObj(FONode parent) {
+    public FObj(final FONode parent) {
         super(parent);
 
         // determine if isOutOfLineFODescendant should be set
         if (parent != null && parent instanceof FObj) {
             if (((FObj) parent).getIsOutOfLineFODescendant()) {
-                isOutOfLineFODescendant = true;
+                this.isOutOfLineFODescendant = true;
             } else {
-                int foID = getNameId();
+                final int foID = getNameId();
                 if (foID == FO_FLOAT || foID == FO_FOOTNOTE
-                    || foID == FO_FOOTNOTE_BODY) {
-                        isOutOfLineFODescendant = true;
+                        || foID == FO_FOOTNOTE_BODY) {
+                    this.isOutOfLineFODescendant = true;
                 }
             }
         }
     }
 
     /** {@inheritDoc} */
-    public FONode clone(FONode parent, boolean removeChildren)
-        throws FOPException {
-        FObj fobj = (FObj) super.clone(parent, removeChildren);
+    @Override
+    public FONode clone(final FONode parent, final boolean removeChildren)
+            throws FOPException {
+        final FObj fobj = (FObj) super.clone(parent, removeChildren);
         if (removeChildren) {
             fobj.firstChild = null;
         }
@@ -107,16 +112,19 @@ public abstract class FObj extends FONode implements Constants {
 
     /**
      * Returns the PropertyMaker for a given property ID.
-     * @param propId the property ID
+     *
+     * @param propId
+     *            the property ID
      * @return the requested Property Maker
      */
-    public static PropertyMaker getPropertyMakerFor(int propId) {
+    public static PropertyMaker getPropertyMakerFor(final int propId) {
         return PROPERTY_LIST_TABLE[propId];
     }
 
     /** {@inheritDoc} */
-    public void processNode(String elementName, Locator locator,
-                            Attributes attlist, PropertyList pList)
+    @Override
+    public void processNode(final String elementName, final Locator locator,
+            final Attributes attlist, final PropertyList pList)
                     throws FOPException {
         setLocator(locator);
         pList.addAttributesToList(attlist);
@@ -126,90 +134,103 @@ public abstract class FObj extends FONode implements Constants {
     }
 
     /**
-     * Create a default property list for this element.
-     * {@inheritDoc}
+     * Create a default property list for this element. {@inheritDoc}
      */
-    protected PropertyList createPropertyList(PropertyList parent,
-                    FOEventHandler foEventHandler) throws FOPException {
+    @Override
+    protected PropertyList createPropertyList(final PropertyList parent,
+            final FOEventHandler foEventHandler) throws FOPException {
         return getBuilderContext().getPropertyListMaker().make(this, parent);
     }
 
     /**
-     * Bind property values from the property list to the FO node.
-     * Must be overridden in all FObj subclasses that have properties
-     * applying to it.
-     * @param pList the PropertyList where the properties can be found.
-     * @throws FOPException if there is a problem binding the values
+     * Bind property values from the property list to the FO node. Must be
+     * overridden in all FObj subclasses that have properties applying to it.
+     *
+     * @param pList
+     *            the PropertyList where the properties can be found.
+     * @throws FOPException
+     *             if there is a problem binding the values
      */
-    public void bind(PropertyList pList) throws FOPException {
-        id = pList.get(PR_ID).getString();
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
+        this.id = pList.get(PR_ID).getString();
     }
 
     /**
      * {@inheritDoc}
-     * @throws FOPException FOP Exception
+     *
+     * @throws FOPException
+     *             FOP Exception
      */
+    @Override
     protected void startOfNode() throws FOPException {
-        if (id != null) {
-            checkId(id);
+        if (this.id != null) {
+            checkId(this.id);
         }
     }
 
     /**
-     * Setup the id for this formatting object.
-     * Most formatting objects can have an id that can be referenced.
-     * This methods checks that the id isn't already used by another FO
+     * Setup the id for this formatting object. Most formatting objects can have
+     * an id that can be referenced. This methods checks that the id isn't
+     * already used by another FO
      *
-     * @param id    the id to check
-     * @throws ValidationException if the ID is already defined elsewhere
-     *                              (strict validation only)
+     * @param id
+     *            the id to check
+     * @throws ValidationException
+     *             if the ID is already defined elsewhere (strict validation
+     *             only)
      */
-    private void checkId(String id) throws ValidationException {
+    private void checkId(final String id) throws ValidationException {
         if (!inMarker() && !id.equals("")) {
-            Set idrefs = getBuilderContext().getIDReferences();
+            final Set idrefs = getBuilderContext().getIDReferences();
             if (!idrefs.contains(id)) {
                 idrefs.add(id);
             } else {
-                getFOValidationEventProducer().idNotUnique(this, getName(), id, true, locator);
+                getFOValidationEventProducer().idNotUnique(this, getName(), id,
+                        true, this.locator);
             }
         }
     }
 
     /**
      * Returns Out Of Line FO Descendant indicator.
+     *
      * @return true if Out of Line FO or Out Of Line descendant, false otherwise
      */
     boolean getIsOutOfLineFODescendant() {
-        return isOutOfLineFODescendant;
+        return this.isOutOfLineFODescendant;
     }
 
-    /** {@inheritDoc}*/
-    protected void addChildNode(FONode child) throws FOPException {
+    /** {@inheritDoc} */
+    @Override
+    protected void addChildNode(final FONode child) throws FOPException {
         if (child.getNameId() == FO_MARKER) {
             addMarker((Marker) child);
         } else {
-            ExtensionAttachment attachment = child.getExtensionAttachment();
+            final ExtensionAttachment attachment = child
+                    .getExtensionAttachment();
             if (attachment != null) {
-                /* This removes the element from the normal children,
-                 * so no layout manager is being created for them
-                 * as they are only additional information.
+                /*
+                 * This removes the element from the normal children, so no
+                 * layout manager is being created for them as they are only
+                 * additional information.
                  */
                 addExtensionAttachment(attachment);
             } else {
-                if (firstChild == null) {
-                    firstChild = child;
-                    lastChild = child;
+                if (this.firstChild == null) {
+                    this.firstChild = child;
+                    this.lastChild = child;
                 } else {
-                    if (lastChild == null) {
-                        FONode prevChild = firstChild;
+                    if (this.lastChild == null) {
+                        FONode prevChild = this.firstChild;
                         while (prevChild.siblings != null
                                 && prevChild.siblings[1] != null) {
                             prevChild = prevChild.siblings[1];
                         }
                         FONode.attachSiblings(prevChild, child);
                     } else {
-                        FONode.attachSiblings(lastChild, child);
-                        lastChild = child;
+                        FONode.attachSiblings(this.lastChild, child);
+                        this.lastChild = child;
                     }
                 }
             }
@@ -218,48 +239,54 @@ public abstract class FObj extends FONode implements Constants {
 
     /**
      * Used by RetrieveMarker during Marker-subtree cloning
-     * @param child     the (cloned) child node
-     * @param parent    the (cloned) parent node
-     * @throws FOPException when the child could not be added to the parent
+     *
+     * @param child
+     *            the (cloned) child node
+     * @param parent
+     *            the (cloned) parent node
+     * @throws FOPException
+     *             when the child could not be added to the parent
      */
-    protected static void addChildTo(FONode child, FONode parent)
-                            throws FOPException {
+    protected static void addChildTo(final FONode child, final FONode parent)
+            throws FOPException {
         parent.addChildNode(child);
     }
 
     /** {@inheritDoc} */
-    public void removeChild(FONode child) {
+    @Override
+    public void removeChild(final FONode child) {
         FONode nextChild = null;
         if (child.siblings != null) {
             nextChild = child.siblings[1];
         }
-        if (child == firstChild) {
-            firstChild = nextChild;
-            if (firstChild != null) {
-                firstChild.siblings[0] = null;
+        if (child == this.firstChild) {
+            this.firstChild = nextChild;
+            if (this.firstChild != null) {
+                this.firstChild.siblings[0] = null;
             }
         } else {
-            FONode prevChild = child.siblings[0];
+            final FONode prevChild = child.siblings[0];
             prevChild.siblings[1] = nextChild;
             if (nextChild != null) {
                 nextChild.siblings[0] = prevChild;
             }
         }
-        if (child == lastChild) {
+        if (child == this.lastChild) {
             if (child.siblings != null) {
-                lastChild = siblings[0];
+                this.lastChild = this.siblings[0];
             } else {
-                lastChild = null;
+                this.lastChild = null;
             }
         }
     }
 
     /**
      * Find the nearest parent, grandparent, etc. FONode that is also an FObj
+     *
      * @return FObj the nearest ancestor FONode that is an FObj
      */
     public FObj findNearestAncestorFObj() {
-        FONode par = parent;
+        FONode par = this.parent;
         while (par != null && !(par instanceof FObj)) {
             par = par.parent;
         }
@@ -268,14 +295,15 @@ public abstract class FObj extends FONode implements Constants {
 
     /**
      * Check if this formatting object generates reference areas.
-     * @return true if generates reference areas
-     * TODO see if needed
+     *
+     * @return true if generates reference areas TODO see if needed
      */
     public boolean generatesReferenceAreas() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public FONodeIterator getChildNodes() {
         if (hasChildren()) {
             return new FObjIterator(this);
@@ -285,6 +313,7 @@ public abstract class FObj extends FONode implements Constants {
 
     /**
      * Indicates whether this formatting object has children.
+     *
      * @return true if there are children
      */
     public boolean hasChildren() {
@@ -292,22 +321,22 @@ public abstract class FObj extends FONode implements Constants {
     }
 
     /**
-     * Return an iterator over the object's childNodes starting
-     * at the passed-in node (= first call to iterator.next() will
-     * return childNode)
-     * @param childNode First node in the iterator
-     * @return A ListIterator or null if childNode isn't a child of
-     * this FObj.
+     * Return an iterator over the object's childNodes starting at the passed-in
+     * node (= first call to iterator.next() will return childNode)
+     *
+     * @param childNode
+     *            First node in the iterator
+     * @return A ListIterator or null if childNode isn't a child of this FObj.
      */
-    public FONodeIterator getChildNodes(FONode childNode) {
-        FONodeIterator it = getChildNodes();
+    @Override
+    public FONodeIterator getChildNodes(final FONode childNode) {
+        final FONodeIterator it = getChildNodes();
         if (it != null) {
-            if (firstChild == childNode) {
+            if (this.firstChild == childNode) {
                 return it;
             } else {
-                while (it.hasNext()
-                        && it.nextNode().siblings[1] != childNode) {
-                    //nop
+                while (it.hasNext() && it.nextNode().siblings[1] != childNode) {
+                    // nop
                 }
                 if (it.hasNext()) {
                     return it;
@@ -320,34 +349,35 @@ public abstract class FObj extends FONode implements Constants {
     }
 
     /**
-     * Notifies a FObj that one of it's children is removed.
-     * This method is subclassed by Block to clear the
-     * firstInlineChild variable in case it doesn't generate
-     * any areas (see addMarker()).
-     * @param node the node that was removed
+     * Notifies a FObj that one of it's children is removed. This method is
+     * subclassed by Block to clear the firstInlineChild variable in case it
+     * doesn't generate any areas (see addMarker()).
+     *
+     * @param node
+     *            the node that was removed
      */
-    void notifyChildRemoval(FONode node) {
-        //nop
+    void notifyChildRemoval(final FONode node) {
+        // nop
     }
 
     /**
-     * Add the marker to this formatting object.
-     * If this object can contain markers it checks that the marker
-     * has a unique class-name for this object and that it is
-     * the first child.
-     * @param marker Marker to add.
+     * Add the marker to this formatting object. If this object can contain
+     * markers it checks that the marker has a unique class-name for this object
+     * and that it is the first child.
+     *
+     * @param marker
+     *            Marker to add.
      */
-    protected void addMarker(Marker marker) {
-        String mcname = marker.getMarkerClassName();
-        if (firstChild != null) {
+    protected void addMarker(final Marker marker) {
+        final String mcname = marker.getMarkerClassName();
+        if (this.firstChild != null) {
             // check for empty childNodes
-            for (Iterator iter = getChildNodes(); iter.hasNext();) {
-                FONode node = (FONode) iter.next();
-                if (node instanceof FObj
-                        || (node instanceof FOText
-                                && ((FOText) node).willCreateArea())) {
-                    getFOValidationEventProducer().markerNotInitialChild(this, getName(),
-                            mcname, locator);
+            for (final Iterator iter = getChildNodes(); iter.hasNext();) {
+                final FONode node = (FONode) iter.next();
+                if (node instanceof FObj || node instanceof FOText
+                        && ((FOText) node).willCreateArea()) {
+                    getFOValidationEventProducer().markerNotInitialChild(this,
+                            getName(), mcname, this.locator);
                     return;
                 } else if (node instanceof FOText) {
                     iter.remove();
@@ -355,14 +385,14 @@ public abstract class FObj extends FONode implements Constants {
                 }
             }
         }
-        if (markers == null) {
-            markers = new java.util.HashMap();
+        if (this.markers == null) {
+            this.markers = new java.util.HashMap();
         }
-        if (!markers.containsKey(mcname)) {
-            markers.put(mcname, marker);
+        if (!this.markers.containsKey(mcname)) {
+            this.markers.put(mcname, marker);
         } else {
-            getFOValidationEventProducer().markerNotUniqueForSameParent(this, getName(),
-                    mcname, locator);
+            getFOValidationEventProducer().markerNotUniqueForSameParent(this,
+                    getName(), mcname, this.locator);
         }
     }
 
@@ -370,19 +400,20 @@ public abstract class FObj extends FONode implements Constants {
      * @return true if there are any Markers attached to this object
      */
     public boolean hasMarkers() {
-        return markers != null && !markers.isEmpty();
+        return this.markers != null && !this.markers.isEmpty();
     }
 
     /**
      * @return the collection of Markers attached to this object
      */
     public Map getMarkers() {
-        return markers;
+        return this.markers;
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String getContextInfoAlt() {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         if (getLocalName() != null) {
             sb.append(getName());
             sb.append(", ");
@@ -391,7 +422,7 @@ public abstract class FObj extends FONode implements Constants {
             sb.append("id=").append(getId());
             return sb.toString();
         }
-        String s = gatherContextInfo();
+        final String s = gatherContextInfo();
         if (s != null) {
             sb.append("\"");
             if (s.length() < 32) {
@@ -408,18 +439,19 @@ public abstract class FObj extends FONode implements Constants {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String gatherContextInfo() {
         if (getLocator() != null) {
             return super.gatherContextInfo();
         } else {
-            ListIterator iter = getChildNodes();
+            final ListIterator iter = getChildNodes();
             if (iter == null) {
                 return null;
             }
-            StringBuffer sb = new StringBuffer();
+            final StringBuffer sb = new StringBuffer();
             while (iter.hasNext()) {
-                FONode node = (FONode) iter.next();
-                String s = node.gatherContextInfo();
+                final FONode node = (FONode) iter.next();
+                final String s = node.gatherContextInfo();
                 if (s != null) {
                     if (sb.length() > 0) {
                         sb.append(", ");
@@ -427,41 +459,43 @@ public abstract class FObj extends FONode implements Constants {
                     sb.append(s);
                 }
             }
-            return (sb.length() > 0 ? sb.toString() : null);
+            return sb.length() > 0 ? sb.toString() : null;
         }
     }
 
     /**
-     * Convenience method for validity checking.  Checks if the
-     * incoming node is a member of the "%block;" parameter entity
-     * as defined in Sect. 6.2 of the XSL 1.0 & 1.1 Recommendations
+     * Convenience method for validity checking. Checks if the incoming node is
+     * a member of the "%block;" parameter entity as defined in Sect. 6.2 of the
+     * XSL 1.0 & 1.1 Recommendations
      *
-     * @param nsURI namespace URI of incoming node
-     * @param lName local name (i.e., no prefix) of incoming node
+     * @param nsURI
+     *            namespace URI of incoming node
+     * @param lName
+     *            local name (i.e., no prefix) of incoming node
      * @return true if a member, false if not
      */
-    protected boolean isBlockItem(String nsURI, String lName) {
-        return (FO_URI.equals(nsURI)
-                && ("block".equals(lName)
-                        || "table".equals(lName)
+    protected boolean isBlockItem(final String nsURI, final String lName) {
+        return FO_URI.equals(nsURI)
+                && ("block".equals(lName) || "table".equals(lName)
                         || "table-and-caption".equals(lName)
                         || "block-container".equals(lName)
-                        || "list-block".equals(lName)
-                        || "float".equals(lName)
-                        || isNeutralItem(nsURI, lName)));
+                        || "list-block".equals(lName) || "float".equals(lName) || isNeutralItem(
+                                nsURI, lName));
     }
 
     /**
-     * Convenience method for validity checking.  Checks if the
-     * incoming node is a member of the "%inline;" parameter entity
-     * as defined in Sect. 6.2 of the XSL 1.0 & 1.1 Recommendations
+     * Convenience method for validity checking. Checks if the incoming node is
+     * a member of the "%inline;" parameter entity as defined in Sect. 6.2 of
+     * the XSL 1.0 & 1.1 Recommendations
      *
-     * @param nsURI namespace URI of incoming node
-     * @param lName local name (i.e., no prefix) of incoming node
+     * @param nsURI
+     *            namespace URI of incoming node
+     * @param lName
+     *            local name (i.e., no prefix) of incoming node
      * @return true if a member, false if not
      */
-    protected boolean isInlineItem(String nsURI, String lName) {
-        return (FO_URI.equals(nsURI)
+    protected boolean isInlineItem(final String nsURI, final String lName) {
+        return FO_URI.equals(nsURI)
                 && ("bidi-override".equals(lName)
                         || "character".equals(lName)
                         || "external-graphic".equals(lName)
@@ -473,52 +507,58 @@ public abstract class FObj extends FONode implements Constants {
                         || "page-number-citation".equals(lName)
                         || "page-number-citation-last".equals(lName)
                         || "basic-link".equals(lName)
-                        || ("multi-toggle".equals(lName)
-                                && (getNameId() == FO_MULTI_CASE
-                                        || findAncestor(FO_MULTI_CASE) > 0))
-                        || ("footnote".equals(lName)
-                                && !isOutOfLineFODescendant)
-                        || isNeutralItem(nsURI, lName)));
+                        || "multi-toggle".equals(lName)
+                        && (getNameId() == FO_MULTI_CASE || findAncestor(FO_MULTI_CASE) > 0)
+                        || "footnote".equals(lName)
+                        && !this.isOutOfLineFODescendant || isNeutralItem(
+                                nsURI, lName));
     }
 
     /**
-     * Convenience method for validity checking.  Checks if the
-     * incoming node is a member of the "%block;" parameter entity
-     * or "%inline;" parameter entity
-     * @param nsURI namespace URI of incoming node
-     * @param lName local name (i.e., no prefix) of incoming node
+     * Convenience method for validity checking. Checks if the incoming node is
+     * a member of the "%block;" parameter entity or "%inline;" parameter entity
+     *
+     * @param nsURI
+     *            namespace URI of incoming node
+     * @param lName
+     *            local name (i.e., no prefix) of incoming node
      * @return true if a member, false if not
      */
-    protected boolean isBlockOrInlineItem(String nsURI, String lName) {
-        return (isBlockItem(nsURI, lName) || isInlineItem(nsURI, lName));
+    protected boolean isBlockOrInlineItem(final String nsURI, final String lName) {
+        return isBlockItem(nsURI, lName) || isInlineItem(nsURI, lName);
     }
 
     /**
-     * Convenience method for validity checking.  Checks if the
-     * incoming node is a member of the neutral item list
-     * as defined in Sect. 6.2 of the XSL 1.0 & 1.1 Recommendations
-     * @param nsURI namespace URI of incoming node
-     * @param lName local name (i.e., no prefix) of incoming node
+     * Convenience method for validity checking. Checks if the incoming node is
+     * a member of the neutral item list as defined in Sect. 6.2 of the XSL 1.0
+     * & 1.1 Recommendations
+     *
+     * @param nsURI
+     *            namespace URI of incoming node
+     * @param lName
+     *            local name (i.e., no prefix) of incoming node
      * @return true if a member, false if not
      */
-    protected boolean isNeutralItem(String nsURI, String lName) {
-        return (FO_URI.equals(nsURI)
+    protected boolean isNeutralItem(final String nsURI, final String lName) {
+        return FO_URI.equals(nsURI)
                 && ("multi-switch".equals(lName)
                         || "multi-properties".equals(lName)
                         || "wrapper".equals(lName)
-                        || (!isOutOfLineFODescendant && "float".equals(lName))
-                        || "retrieve-marker".equals(lName)
-                        || "retrieve-table-marker".equals(lName)));
+                        || !this.isOutOfLineFODescendant
+                        && "float".equals(lName)
+                        || "retrieve-marker".equals(lName) || "retrieve-table-marker"
+                        .equals(lName));
     }
 
     /**
-     * Convenience method for validity checking.  Checks if the
-     * current node has an ancestor of a given name.
-     * @param ancestorID    ID of node name to check for (e.g., FO_ROOT)
-     * @return number of levels above FO where ancestor exists,
-     *         -1 if not found
+     * Convenience method for validity checking. Checks if the current node has
+     * an ancestor of a given name.
+     *
+     * @param ancestorID
+     *            ID of node name to check for (e.g., FO_ROOT)
+     * @return number of levels above FO where ancestor exists, -1 if not found
      */
-    protected int findAncestor(int ancestorID) {
+    protected int findAncestor(final int ancestorID) {
         int found = 1;
         FONode temp = getParent();
         while (temp != null) {
@@ -540,47 +580,52 @@ public abstract class FObj extends FONode implements Constants {
 
     /** @return the "id" property. */
     public String getId() {
-        return id;
+        return this.id;
     }
 
     /** @return whether this object has an id set */
     public boolean hasId() {
-        return (id != null && id.length() > 0);
+        return this.id != null && this.id.length() > 0;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNamespaceURI() {
         return FOElementMapping.URI;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNormalNamespacePrefix() {
         return "fo";
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isBidiRangeBlockItem() {
-        String ns = getNamespaceURI();
-        String ln = getLocalName();
+        final String ns = getNamespaceURI();
+        final String ln = getLocalName();
         return !isNeutralItem(ns, ln) && isBlockItem(ns, ln);
     }
 
     /**
      * Recursively set resolved bidirectional level of FO (and its ancestors) if
-     * and only if it is non-negative and if either the current value is reset (-1)
-     * or the new value is less than the current value.
-     * @param bidiLevel a non-negative bidi embedding level
+     * and only if it is non-negative and if either the current value is reset
+     * (-1) or the new value is less than the current value.
+     *
+     * @param bidiLevel
+     *            a non-negative bidi embedding level
      */
-    public void setBidiLevel(int bidiLevel) {
+    public void setBidiLevel(final int bidiLevel) {
         assert bidiLevel >= 0;
-        if ( bidiLevel >= 0 ) {
-            if ( ( this.bidiLevel < 0 ) || ( bidiLevel < this.bidiLevel ) ) {
+        if (bidiLevel >= 0) {
+            if (this.bidiLevel < 0 || bidiLevel < this.bidiLevel) {
                 this.bidiLevel = bidiLevel;
-                if ( parent != null ) {
-                    FObj foParent = (FObj) parent;
-                    int parentBidiLevel = foParent.getBidiLevel();
-                    if ( ( parentBidiLevel < 0 ) || ( bidiLevel < parentBidiLevel ) ) {
-                        foParent.setBidiLevel ( bidiLevel );
+                if (this.parent != null) {
+                    final FObj foParent = (FObj) this.parent;
+                    final int parentBidiLevel = foParent.getBidiLevel();
+                    if (parentBidiLevel < 0 || bidiLevel < parentBidiLevel) {
+                        foParent.setBidiLevel(bidiLevel);
                     }
                 }
             }
@@ -589,25 +634,26 @@ public abstract class FObj extends FONode implements Constants {
 
     /**
      * Obtain resolved bidirectional level of FO.
-     * @return either a non-negative bidi embedding level or -1
-     * in case no bidi levels have been assigned
+     *
+     * @return either a non-negative bidi embedding level or -1 in case no bidi
+     *         levels have been assigned
      */
     public int getBidiLevel() {
-        return bidiLevel;
+        return this.bidiLevel;
     }
 
     /**
-     * Obtain resolved bidirectional level of FO or nearest FO
-     * ancestor that has a resolved level.
-     * @return either a non-negative bidi embedding level or -1
-     * in case no bidi levels have been assigned to this FO or
-     * any ancestor
+     * Obtain resolved bidirectional level of FO or nearest FO ancestor that has
+     * a resolved level.
+     *
+     * @return either a non-negative bidi embedding level or -1 in case no bidi
+     *         levels have been assigned to this FO or any ancestor
      */
     public int getBidiLevelRecursive() {
-        for ( FONode fn = this; fn != null; fn = fn.getParent() ) {
-            if ( fn instanceof FObj ) {
-                int level = ( (FObj) fn).getBidiLevel();
-                if ( level >= 0 ) {
+        for (FONode fn = this; fn != null; fn = fn.getParent()) {
+            if (fn instanceof FObj) {
+                final int level = ((FObj) fn).getBidiLevel();
+                if (level >= 0) {
                     return level;
                 }
             }
@@ -616,71 +662,79 @@ public abstract class FObj extends FONode implements Constants {
     }
 
     /**
-     * Add a new extension attachment to this FObj.
-     * (see org.apache.fop.fo.FONode for details)
+     * Add a new extension attachment to this FObj. (see
+     * org.apache.fop.fo.FONode for details)
      *
-     * @param attachment the attachment to add.
+     * @param attachment
+     *            the attachment to add.
      */
-    void addExtensionAttachment(ExtensionAttachment attachment) {
+    void addExtensionAttachment(final ExtensionAttachment attachment) {
         if (attachment == null) {
             throw new NullPointerException(
                     "Parameter attachment must not be null");
         }
-        if (extensionAttachments == null) {
-            extensionAttachments = new java.util.ArrayList<ExtensionAttachment>();
+        if (this.extensionAttachments == null) {
+            this.extensionAttachments = new java.util.ArrayList<ExtensionAttachment>();
         }
         if (log.isDebugEnabled()) {
             log.debug("ExtensionAttachment of category "
-                    + attachment.getCategory() + " added to "
-                    + getName() + ": " + attachment);
+                    + attachment.getCategory() + " added to " + getName()
+                    + ": " + attachment);
         }
-        extensionAttachments.add(attachment);
+        this.extensionAttachments.add(attachment);
     }
 
     /** @return the extension attachments of this FObj. */
-    public List/*<ExtensionAttachment>*/ getExtensionAttachments() {
-        if (extensionAttachments == null) {
+    public List/* <ExtensionAttachment> */getExtensionAttachments() {
+        if (this.extensionAttachments == null) {
             return Collections.EMPTY_LIST;
         } else {
-            return extensionAttachments;
+            return this.extensionAttachments;
         }
     }
 
     /** @return true if this FObj has extension attachments */
     public boolean hasExtensionAttachments() {
-        return extensionAttachments != null;
+        return this.extensionAttachments != null;
     }
 
     /**
      * Adds a foreign attribute to this FObj.
-     * @param attributeName the attribute name as a QName instance
-     * @param value the attribute value
+     *
+     * @param attributeName
+     *            the attribute name as a QName instance
+     * @param value
+     *            the attribute value
      */
-    public void addForeignAttribute(QName attributeName, String value) {
-        /* TODO: Handle this over FOP's property mechanism so we can use
-         *       inheritance.
+    public void addForeignAttribute(final QName attributeName,
+            final String value) {
+        /*
+         * TODO: Handle this over FOP's property mechanism so we can use
+         * inheritance.
          */
         if (attributeName == null) {
-            throw new NullPointerException("Parameter attributeName must not be null");
+            throw new NullPointerException(
+                    "Parameter attributeName must not be null");
         }
-        if (foreignAttributes == null) {
-            foreignAttributes = new java.util.HashMap<QName, String>();
+        if (this.foreignAttributes == null) {
+            this.foreignAttributes = new java.util.HashMap<QName, String>();
         }
-        foreignAttributes.put(attributeName, value);
+        this.foreignAttributes.put(attributeName, value);
     }
 
     /** @return the map of foreign attributes */
     public Map getForeignAttributes() {
-        if (foreignAttributes == null) {
+        if (this.foreignAttributes == null) {
             return Collections.EMPTY_MAP;
         } else {
-            return foreignAttributes;
+            return this.foreignAttributes;
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return (super.toString() + "[@id=" + this.id + "]");
+        return super.toString() + "[@id=" + this.id + "]";
     }
 
     /** Basic {@link FONode.FONodeIterator} implementation */
@@ -695,7 +749,7 @@ public abstract class FObj extends FONode implements Constants {
         private int currentIndex;
         private int flags = F_NONE_ALLOWED;
 
-        FObjIterator(FObj parent) {
+        FObjIterator(final FObj parent) {
             this.parentNode = parent;
             this.currentNode = parent.firstChild;
             this.currentIndex = 0;
@@ -703,57 +757,61 @@ public abstract class FObj extends FONode implements Constants {
         }
 
         /** {@inheritDoc} */
+        @Override
         public FObj parentNode() {
-            return parentNode;
+            return this.parentNode;
         }
 
         /** {@inheritDoc} */
+        @Override
         public Object next() {
-            if (currentNode != null) {
-                if (currentIndex != 0) {
-                    if (currentNode.siblings != null
-                        && currentNode.siblings[1] != null) {
-                        currentNode = currentNode.siblings[1];
+            if (this.currentNode != null) {
+                if (this.currentIndex != 0) {
+                    if (this.currentNode.siblings != null
+                            && this.currentNode.siblings[1] != null) {
+                        this.currentNode = this.currentNode.siblings[1];
                     } else {
                         throw new NoSuchElementException();
                     }
                 }
-                currentIndex++;
-                flags |= (F_SET_ALLOWED | F_REMOVE_ALLOWED);
-                return currentNode;
+                this.currentIndex++;
+                this.flags |= F_SET_ALLOWED | F_REMOVE_ALLOWED;
+                return this.currentNode;
             } else {
                 throw new NoSuchElementException();
             }
         }
 
         /** {@inheritDoc} */
+        @Override
         public Object previous() {
-            if (currentNode.siblings != null
-                    && currentNode.siblings[0] != null) {
-                currentIndex--;
-                currentNode = currentNode.siblings[0];
-                flags |= (F_SET_ALLOWED | F_REMOVE_ALLOWED);
-                return currentNode;
+            if (this.currentNode.siblings != null
+                    && this.currentNode.siblings[0] != null) {
+                this.currentIndex--;
+                this.currentNode = this.currentNode.siblings[0];
+                this.flags |= F_SET_ALLOWED | F_REMOVE_ALLOWED;
+                return this.currentNode;
             } else {
                 throw new NoSuchElementException();
             }
         }
 
         /** {@inheritDoc} */
-        public void set(Object o) {
-            if ((flags & F_SET_ALLOWED) == F_SET_ALLOWED) {
-                FONode newNode = (FONode) o;
-                if (currentNode == parentNode.firstChild) {
-                    parentNode.firstChild = newNode;
+        @Override
+        public void set(final Object o) {
+            if ((this.flags & F_SET_ALLOWED) == F_SET_ALLOWED) {
+                final FONode newNode = (FONode) o;
+                if (this.currentNode == this.parentNode.firstChild) {
+                    this.parentNode.firstChild = newNode;
                 } else {
-                    FONode.attachSiblings(currentNode.siblings[0], newNode);
+                    FONode.attachSiblings(this.currentNode.siblings[0], newNode);
                 }
-                if (currentNode.siblings != null
-                        && currentNode.siblings[1] != null) {
-                    FONode.attachSiblings(newNode, currentNode.siblings[1]);
+                if (this.currentNode.siblings != null
+                        && this.currentNode.siblings[1] != null) {
+                    FONode.attachSiblings(newNode, this.currentNode.siblings[1]);
                 }
-                if (currentNode == parentNode.lastChild) {
-                    parentNode.lastChild = newNode;
+                if (this.currentNode == this.parentNode.lastChild) {
+                    this.parentNode.lastChild = newNode;
                 }
             } else {
                 throw new IllegalStateException();
@@ -761,100 +819,109 @@ public abstract class FObj extends FONode implements Constants {
         }
 
         /** {@inheritDoc} */
-        public void add(Object o) {
-            FONode newNode = (FONode) o;
-            if (currentIndex == -1) {
-                if (currentNode != null) {
-                    FONode.attachSiblings(newNode, currentNode);
+        @Override
+        public void add(final Object o) {
+            final FONode newNode = (FONode) o;
+            if (this.currentIndex == -1) {
+                if (this.currentNode != null) {
+                    FONode.attachSiblings(newNode, this.currentNode);
                 }
-                parentNode.firstChild = newNode;
-                currentIndex = 0;
-                currentNode = newNode;
-                if (parentNode.lastChild == null) {
-                    parentNode.lastChild = newNode;
+                this.parentNode.firstChild = newNode;
+                this.currentIndex = 0;
+                this.currentNode = newNode;
+                if (this.parentNode.lastChild == null) {
+                    this.parentNode.lastChild = newNode;
                 }
             } else {
-                if (currentNode.siblings != null
-                        && currentNode.siblings[1] != null) {
-                    FONode.attachSiblings((FONode) o, currentNode.siblings[1]);
+                if (this.currentNode.siblings != null
+                        && this.currentNode.siblings[1] != null) {
+                    FONode.attachSiblings((FONode) o,
+                            this.currentNode.siblings[1]);
                 }
-                FONode.attachSiblings(currentNode, (FONode) o);
-                if (currentNode == parentNode.lastChild) {
-                    parentNode.lastChild = newNode;
+                FONode.attachSiblings(this.currentNode, (FONode) o);
+                if (this.currentNode == this.parentNode.lastChild) {
+                    this.parentNode.lastChild = newNode;
                 }
             }
-            flags &= F_NONE_ALLOWED;
+            this.flags &= F_NONE_ALLOWED;
         }
 
         /** {@inheritDoc} */
+        @Override
         public boolean hasNext() {
-            return (currentNode != null)
-                && ((currentIndex == 0)
-                        || (currentNode.siblings != null
-                            && currentNode.siblings[1] != null));
+            return this.currentNode != null
+                    && (this.currentIndex == 0 || this.currentNode.siblings != null
+                            && this.currentNode.siblings[1] != null);
         }
 
         /** {@inheritDoc} */
+        @Override
         public boolean hasPrevious() {
-            return (currentIndex != 0)
-                || (currentNode.siblings != null
-                    && currentNode.siblings[0] != null);
+            return this.currentIndex != 0 || this.currentNode.siblings != null
+                    && this.currentNode.siblings[0] != null;
         }
 
         /** {@inheritDoc} */
+        @Override
         public int nextIndex() {
-            return currentIndex + 1;
+            return this.currentIndex + 1;
         }
 
         /** {@inheritDoc} */
+        @Override
         public int previousIndex() {
-            return currentIndex - 1;
+            return this.currentIndex - 1;
         }
 
         /** {@inheritDoc} */
+        @Override
         public void remove() {
-            if ((flags & F_REMOVE_ALLOWED) == F_REMOVE_ALLOWED) {
-                parentNode.removeChild(currentNode);
-                if (currentIndex == 0) {
-                    //first node removed
-                    currentNode = parentNode.firstChild;
-                } else if (currentNode.siblings != null
-                        && currentNode.siblings[0] != null) {
-                    currentNode = currentNode.siblings[0];
-                    currentIndex--;
+            if ((this.flags & F_REMOVE_ALLOWED) == F_REMOVE_ALLOWED) {
+                this.parentNode.removeChild(this.currentNode);
+                if (this.currentIndex == 0) {
+                    // first node removed
+                    this.currentNode = this.parentNode.firstChild;
+                } else if (this.currentNode.siblings != null
+                        && this.currentNode.siblings[0] != null) {
+                    this.currentNode = this.currentNode.siblings[0];
+                    this.currentIndex--;
                 } else {
-                    currentNode = null;
+                    this.currentNode = null;
                 }
-                flags &= F_NONE_ALLOWED;
+                this.flags &= F_NONE_ALLOWED;
             } else {
                 throw new IllegalStateException();
             }
         }
 
         /** {@inheritDoc} */
+        @Override
         public FONode lastNode() {
-            while (currentNode != null
-                    && currentNode.siblings != null
-                    && currentNode.siblings[1] != null) {
-                currentNode = currentNode.siblings[1];
-                currentIndex++;
+            while (this.currentNode != null
+                    && this.currentNode.siblings != null
+                    && this.currentNode.siblings[1] != null) {
+                this.currentNode = this.currentNode.siblings[1];
+                this.currentIndex++;
             }
-            return currentNode;
+            return this.currentNode;
         }
 
         /** {@inheritDoc} */
+        @Override
         public FONode firstNode() {
-            currentNode = parentNode.firstChild;
-            currentIndex = 0;
-            return currentNode;
+            this.currentNode = this.parentNode.firstChild;
+            this.currentIndex = 0;
+            return this.currentNode;
         }
 
         /** {@inheritDoc} */
+        @Override
         public FONode nextNode() {
             return (FONode) next();
         }
 
         /** {@inheritDoc} */
+        @Override
         public FONode previousNode() {
             return (FONode) previous();
         }

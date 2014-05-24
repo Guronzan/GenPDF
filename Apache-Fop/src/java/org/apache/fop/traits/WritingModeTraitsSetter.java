@@ -20,51 +20,66 @@
 package org.apache.fop.traits;
 
 /**
- * This interface provides read and assignment access to FO traits related to writing mode.
+ * This interface provides read and assignment access to FO traits related to
+ * writing mode.
  */
 public interface WritingModeTraitsSetter extends WritingModeTraitsGetter {
 
     /**
      * Set value of inline-progression-direction trait.
-     * @param direction the "inline-progression-direction" trait
+     * 
+     * @param direction
+     *            the "inline-progression-direction" trait
      */
-    void setInlineProgressionDirection ( Direction direction );
+    void setInlineProgressionDirection(final Direction direction);
 
     /**
      * Set value of block-progression-direction trait.
-     * @param direction the "block-progression-direction" trait
+     * 
+     * @param direction
+     *            the "block-progression-direction" trait
      */
-    void setBlockProgressionDirection ( Direction direction );
+    void setBlockProgressionDirection(final Direction direction);
 
     /**
      * Set value of column-progression-direction trait.
-     * @param direction the "column-progression-direction" trait
+     * 
+     * @param direction
+     *            the "column-progression-direction" trait
      */
-    void setColumnProgressionDirection ( Direction direction );
+    void setColumnProgressionDirection(final Direction direction);
 
     /**
      * Set value of row-progression-direction trait.
-     * @param direction the "row-progression-direction" trait
+     * 
+     * @param direction
+     *            the "row-progression-direction" trait
      */
-    void setRowProgressionDirection ( Direction direction );
+    void setRowProgressionDirection(final Direction direction);
 
     /**
      * Set value of shift-direction trait.
-     * @param direction the "shift-direction" trait
+     * 
+     * @param direction
+     *            the "shift-direction" trait
      */
-    void setShiftDirection ( Direction direction );
+    void setShiftDirection(final Direction direction);
 
     /**
      * Set value of writing-mode trait.
-     * @param writingMode the "writing-mode" trait
+     * 
+     * @param writingMode
+     *            the "writing-mode" trait
      */
-    void setWritingMode ( WritingMode writingMode );
+    void setWritingMode(final WritingMode writingMode);
 
     /**
-     * Collectivelly assign values to all writing mode traits based upon a specific
-     * writing mode.
-     * @param writingMode the "writing-mode" trait
+     * Collectivelly assign values to all writing mode traits based upon a
+     * specific writing mode.
+     * 
+     * @param writingMode
+     *            the "writing-mode" trait
      */
-    void assignWritingModeTraits ( WritingMode writingMode );
+    void assignWritingModeTraits(final WritingMode writingMode);
 
 }

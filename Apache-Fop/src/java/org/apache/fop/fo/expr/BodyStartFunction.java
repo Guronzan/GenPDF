@@ -32,25 +32,30 @@ import org.apache.fop.fo.properties.Property;
 public class BodyStartFunction extends FunctionBase {
 
     /** {@inheritDoc} */
+    @Override
     public int getRequiredArgsCount() {
         return 0;
     }
 
     /** {@inheritDoc} */
-    public Property eval(Property[] args, PropertyInfo pInfo) throws PropertyException {
-        Numeric distance
-            = pInfo.getPropertyList()
-              .get(Constants.PR_PROVISIONAL_DISTANCE_BETWEEN_STARTS).getNumeric();
+    @Override
+    public Property eval(final Property[] args, final PropertyInfo pInfo)
+            throws PropertyException {
+        final Numeric distance = pInfo.getPropertyList()
+                .get(Constants.PR_PROVISIONAL_DISTANCE_BETWEEN_STARTS)
+                .getNumeric();
 
         PropertyList pList = pInfo.getPropertyList();
         while (pList != null && !(pList.getFObj() instanceof ListItem)) {
             pList = pList.getParentPropertyList();
         }
         if (pList == null) {
-            throw new PropertyException("body-start() called from outside an fo:list-item");
+            throw new PropertyException(
+                    "body-start() called from outside an fo:list-item");
         }
 
-        Numeric startIndent = pList.get(Constants.PR_START_INDENT).getNumeric();
+        final Numeric startIndent = pList.get(Constants.PR_START_INDENT)
+                .getNumeric();
 
         return (Property) NumericOp.addition(distance, startIndent);
     }

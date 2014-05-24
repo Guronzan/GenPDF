@@ -25,35 +25,40 @@ import java.io.OutputStream;
 import java.net.URI;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.fop.afp.util.AFPResourceUtil;
 import org.apache.fop.afp.util.ResourceAccessor;
 
-
 /**
- * Encapsulates an included resource object that is loaded from an external file.
+ * Encapsulates an included resource object that is loaded from an external
+ * file.
  */
 public class IncludedResourceObject extends AbstractNamedAFPObject {
 
-    private ResourceAccessor resourceAccessor;
-    private URI uri;
+    private final ResourceAccessor resourceAccessor;
+    private final URI uri;
 
     /**
      * Main constructor.
-     * @param name the name of the included resource
-     * @param resourceAccessor the resource accessor to load the external file with
-     * @param uri the URI of the external file
+     * 
+     * @param name
+     *            the name of the included resource
+     * @param resourceAccessor
+     *            the resource accessor to load the external file with
+     * @param uri
+     *            the URI of the external file
      */
-    public IncludedResourceObject(String name,
-            ResourceAccessor resourceAccessor, URI uri) {
+    public IncludedResourceObject(final String name,
+            final ResourceAccessor resourceAccessor, final URI uri) {
         super(name);
         this.resourceAccessor = resourceAccessor;
         this.uri = uri;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        InputStream in = resourceAccessor.createInputStream(this.uri);
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final InputStream in = this.resourceAccessor
+                .createInputStream(this.uri);
         try {
             AFPResourceUtil.copyResourceFile(in, os);
         } finally {

@@ -28,11 +28,13 @@ import java.io.OutputStream;
 public interface Streamable {
 
     /**
-     * DataStream objects must implement the writeToStream()
-     * method to write its data to the given OutputStream
+     * DataStream objects must implement the writeToStream() method to write its
+     * data to the given OutputStream
      *
-     * @param os the outputsteam stream
-     * @throws java.io.IOException an I/O exception of some sort has occurred.
+     * @param os
+     *            the outputsteam stream
+     * @throws java.io.IOException
+     *             an I/O exception of some sort has occurred.
      */
-    void writeToStream(OutputStream os) throws IOException;
+    void writeToStream(final OutputStream os) throws IOException;
 }

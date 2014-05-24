@@ -36,48 +36,54 @@ import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
+import org.apache.xmlgraphics.image.loader.util.ImageUtil;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
-
-import org.apache.xmlgraphics.image.loader.util.ImageUtil;
 
 /**
  * Tests for AbstractImageSessionContext.
  */
 public class ImageSessionContextTestCase extends TestCase {
 
-    private MockImageContext imageContext = MockImageContext.getInstance();
+    private final MockImageContext imageContext = MockImageContext
+            .getInstance();
 
-    public ImageSessionContextTestCase(String name) {
+    public ImageSessionContextTestCase(final String name) {
         super(name);
     }
 
-    public void testStreamSourceWithSystemID() throws Exception {
-        URIResolver resolver = new URIResolver() {
-            public Source resolve(String href, String base) throws TransformerException {
+    public void testStreamSourceWithSystemID() {
+        final URIResolver resolver = new URIResolver() {
+            @Override
+            public Source resolve(final String href, final String base)
+                    throws TransformerException {
                 if (href.startsWith("img:")) {
-                    String filename = href.substring(4);
+                    final String filename = href.substring(4);
                     return new StreamSource(base + filename);
                 } else {
                     return null;
                 }
             }
         };
-        String uri = "img:asf-logo.png";
+        final String uri = "img:asf-logo.png";
 
-        ImageSource imgSrc = checkImageInputStreamAvailable(uri, resolver);
-        assertTrue(imgSrc.isFastSource()); //Access through local file system
+        final ImageSource imgSrc = checkImageInputStreamAvailable(uri, resolver);
+        assertTrue(imgSrc.isFastSource()); // Access through local file system
     }
 
-    public void testStreamSourceWithInputStream() throws Exception {
-        URIResolver resolver = new URIResolver() {
-            public Source resolve(String href, String base) throws TransformerException {
+    public void testStreamSourceWithInputStream() {
+        final URIResolver resolver = new URIResolver() {
+            @Override
+            public Source resolve(final String href, final String base)
+                    throws TransformerException {
                 if (href.startsWith("img:")) {
-                    String filename = href.substring(4);
+                    final String filename = href.substring(4);
                     try {
                         return new StreamSource(new java.io.FileInputStream(
-                                new File(MockImageSessionContext.IMAGE_BASE_DIR, filename)));
-                    } catch (FileNotFoundException e) {
+                                new File(
+                                        MockImageSessionContext.IMAGE_BASE_DIR,
+                                        filename)));
+                    } catch (final FileNotFoundException e) {
                         throw new TransformerException(e);
                     }
                 } else {
@@ -85,42 +91,49 @@ public class ImageSessionContextTestCase extends TestCase {
                 }
             }
         };
-        String uri = "img:asf-logo.png";
+        final String uri = "img:asf-logo.png";
 
-        ImageSource imgSrc = checkImageInputStreamAvailable(uri, resolver);
-        //We don't pass in the URI, so no fast source is possible
+        final ImageSource imgSrc = checkImageInputStreamAvailable(uri, resolver);
+        // We don't pass in the URI, so no fast source is possible
         assertTrue(!imgSrc.isFastSource());
     }
 
-    public void testStreamSourceWithFile() throws Exception {
-        URIResolver resolver = new URIResolver() {
-            public Source resolve(String href, String base) throws TransformerException {
+    public void testStreamSourceWithFile() {
+        final URIResolver resolver = new URIResolver() {
+            @Override
+            public Source resolve(final String href, final String base)
+                    throws TransformerException {
                 if (href.startsWith("img:")) {
-                    String filename = href.substring(4);
-                    File f = new File(MockImageSessionContext.IMAGE_BASE_DIR, filename);
+                    final String filename = href.substring(4);
+                    final File f = new File(
+                            MockImageSessionContext.IMAGE_BASE_DIR, filename);
                     return new StreamSource(f);
                 } else {
                     return null;
                 }
             }
         };
-        String uri = "img:asf-logo.png";
+        final String uri = "img:asf-logo.png";
 
-        ImageSource imgSrc = checkImageInputStreamAvailable(uri, resolver);
-        assertTrue(imgSrc.isFastSource()); //Accessed through the local file system
+        final ImageSource imgSrc = checkImageInputStreamAvailable(uri, resolver);
+        assertTrue(imgSrc.isFastSource()); // Accessed through the local file
+        // system
     }
 
-    public void testStreamSourceWithInputStreamAndSystemID() throws Exception {
-        URIResolver resolver = new URIResolver() {
-            public Source resolve(String href, String base) throws TransformerException {
+    public void testStreamSourceWithInputStreamAndSystemID() {
+        final URIResolver resolver = new URIResolver() {
+            @Override
+            public Source resolve(final String href, final String base)
+                    throws TransformerException {
                 if (href.startsWith("img:")) {
-                    String filename = href.substring(4);
+                    final String filename = href.substring(4);
                     try {
-                        File f = new File(MockImageSessionContext.IMAGE_BASE_DIR, filename);
-                        return new StreamSource(
-                                new java.io.FileInputStream(f),
+                        final File f = new File(
+                                MockImageSessionContext.IMAGE_BASE_DIR,
+                                filename);
+                        return new StreamSource(new java.io.FileInputStream(f),
                                 f.toURI().toASCIIString());
-                    } catch (FileNotFoundException e) {
+                    } catch (final FileNotFoundException e) {
                         throw new TransformerException(e);
                     }
                 } else {
@@ -128,75 +141,87 @@ public class ImageSessionContextTestCase extends TestCase {
                 }
             }
         };
-        String uri = "img:asf-logo.png";
+        final String uri = "img:asf-logo.png";
 
-        ImageSource imgSrc = checkImageInputStreamAvailable(uri, resolver);
-        assertTrue(imgSrc.isFastSource()); //Access through local file system (thanks to the URI
-                                           //being passed through by the URIResolver)
+        final ImageSource imgSrc = checkImageInputStreamAvailable(uri, resolver);
+        assertTrue(imgSrc.isFastSource()); // Access through local file system
+        // (thanks to the URI
+        // being passed through by the
+        // URIResolver)
     }
 
-    public void testStreamSourceWithReader() throws Exception {
-        URIResolver resolver = new URIResolver() {
-            public Source resolve(String href, String base) throws TransformerException {
+    public void testStreamSourceWithReader() {
+        final URIResolver resolver = new URIResolver() {
+            @Override
+            public Source resolve(final String href, final String base)
+                    throws TransformerException {
                 if (href.startsWith("img:")) {
-                    String filename = href.substring(4);
+                    final String filename = href.substring(4);
                     return new StreamSource(new java.io.StringReader(filename));
                 } else {
                     return null;
                 }
             }
         };
-        String uri = "img:asf-logo.png";
+        final String uri = "img:asf-logo.png";
 
-        Source src = resolve(uri, resolver);
-        assertTrue(src instanceof StreamSource); //Source remains unchanged
+        final Source src = resolve(uri, resolver);
+        assertTrue(src instanceof StreamSource); // Source remains unchanged
         assertTrue(ImageUtil.hasReader(src));
     }
 
-    private ImageSource checkImageInputStreamAvailable(String uri, URIResolver resolver) {
-        Source src = resolve(uri, resolver);
+    private ImageSource checkImageInputStreamAvailable(final String uri,
+            final URIResolver resolver) {
+        final Source src = resolve(uri, resolver);
         assertNotNull("Source must not be null", src);
         assertTrue("Source must be an ImageSource", src instanceof ImageSource);
-        ImageSource imgSrc = (ImageSource)src;
+        final ImageSource imgSrc = (ImageSource) src;
         assertTrue(ImageUtil.hasImageInputStream(imgSrc));
         return imgSrc;
     }
 
-    private Source resolve(String uri, URIResolver resolver) {
-        ImageSessionContext sessionContext = new SimpleURIResolverBasedImageSessionContext(
-                imageContext, MockImageSessionContext.IMAGE_BASE_DIR, resolver);
-        Source src = sessionContext.newSource(uri);
+    private Source resolve(final String uri, final URIResolver resolver) {
+        final ImageSessionContext sessionContext = new SimpleURIResolverBasedImageSessionContext(
+                this.imageContext, MockImageSessionContext.IMAGE_BASE_DIR,
+                resolver);
+        final Source src = sessionContext.newSource(uri);
         return src;
     }
 
-    public void testSAXSourceWithSystemID() throws Exception {
-        URIResolver resolver = new URIResolver() {
-            public Source resolve(String href, String base) throws TransformerException {
+    public void testSAXSourceWithSystemID() {
+        final URIResolver resolver = new URIResolver() {
+            @Override
+            public Source resolve(final String href, final String base)
+                    throws TransformerException {
                 if (href.startsWith("img:")) {
-                    String filename = href.substring(4);
-                    InputSource is = new InputSource(base + filename);
+                    final String filename = href.substring(4);
+                    final InputSource is = new InputSource(base + filename);
                     return new SAXSource(is);
                 } else {
                     return null;
                 }
             }
         };
-        String uri = "img:asf-logo.png";
+        final String uri = "img:asf-logo.png";
 
-        ImageSource imgSrc = checkImageInputStreamAvailable(uri, resolver);
+        final ImageSource imgSrc = checkImageInputStreamAvailable(uri, resolver);
         assertTrue(imgSrc.isFastSource());
     }
 
-    public void testSAXSourceWithInputStream() throws Exception {
-        URIResolver resolver = new URIResolver() {
-            public Source resolve(String href, String base) throws TransformerException {
+    public void testSAXSourceWithInputStream() {
+        final URIResolver resolver = new URIResolver() {
+            @Override
+            public Source resolve(final String href, final String base)
+                    throws TransformerException {
                 if (href.startsWith("img:")) {
-                    String filename = href.substring(4);
+                    final String filename = href.substring(4);
                     InputSource is;
                     try {
                         is = new InputSource(new java.io.FileInputStream(
-                                new File(MockImageSessionContext.IMAGE_BASE_DIR, filename)));
-                    } catch (FileNotFoundException e) {
+                                new File(
+                                        MockImageSessionContext.IMAGE_BASE_DIR,
+                                        filename)));
+                    } catch (final FileNotFoundException e) {
                         throw new TransformerException(e);
                     }
                     return new SAXSource(is);
@@ -205,16 +230,18 @@ public class ImageSessionContextTestCase extends TestCase {
                 }
             }
         };
-        String uri = "img:asf-logo.png";
+        final String uri = "img:asf-logo.png";
 
         checkImageInputStreamAvailable(uri, resolver);
     }
 
-    public void testSAXSourceWithReader() throws Exception {
-        URIResolver resolver = new URIResolver() {
-            public Source resolve(String href, String base) throws TransformerException {
+    public void testSAXSourceWithReader() {
+        final URIResolver resolver = new URIResolver() {
+            @Override
+            public Source resolve(final String href, final String base)
+                    throws TransformerException {
                 if (href.startsWith("img:")) {
-                    String filename = href.substring(4);
+                    final String filename = href.substring(4);
                     InputSource is;
                     is = new InputSource(new java.io.StringReader(filename));
                     return new SAXSource(is);
@@ -223,48 +250,56 @@ public class ImageSessionContextTestCase extends TestCase {
                 }
             }
         };
-        String uri = "img:asf-logo.png";
+        final String uri = "img:asf-logo.png";
 
-        Source src = resolve(uri, resolver);
-        assertTrue(src instanceof SAXSource); //Source remains unchanged
+        final Source src = resolve(uri, resolver);
+        assertTrue(src instanceof SAXSource); // Source remains unchanged
         assertTrue(ImageUtil.hasReader(src));
     }
 
     private static final String SOME_XML = "<root><child id='1'>Hello World!</child></root>";
 
-    public void testSAXSourceWithXMLReader() throws Exception {
-        URIResolver resolver = new URIResolver() {
-            public Source resolve(String href, String base) throws TransformerException {
+    public void testSAXSourceWithXMLReader() {
+        final URIResolver resolver = new URIResolver() {
+            @Override
+            public Source resolve(final String href, final String base)
+                    throws TransformerException {
                 if (href.startsWith("xml:")) {
-                    String xml = href.substring(4);
-                    InputSource is = new InputSource(new java.io.StringReader(xml));
+                    final String xml = href.substring(4);
+                    final InputSource is = new InputSource(
+                            new java.io.StringReader(xml));
                     return new SAXSource(createSomeXMLReader(), is);
                 } else {
                     return null;
                 }
             }
         };
-        String uri = "xml:" + SOME_XML;
+        final String uri = "xml:" + SOME_XML;
 
-        Source src = resolve(uri, resolver);
-        assertTrue(src instanceof SAXSource); //Source remains unchanged
-        SAXSource saxSrc = (SAXSource)src;
+        final Source src = resolve(uri, resolver);
+        assertTrue(src instanceof SAXSource); // Source remains unchanged
+        final SAXSource saxSrc = (SAXSource) src;
         assertNotNull(saxSrc.getXMLReader());
         assertNotNull(saxSrc.getInputSource());
     }
 
-    public void testDOMSource() throws Exception {
-        URIResolver resolver = new URIResolver() {
-            public Source resolve(String href, String base) throws TransformerException {
+    public void testDOMSource() {
+        final URIResolver resolver = new URIResolver() {
+            @Override
+            public Source resolve(final String href, final String base)
+                    throws TransformerException {
                 if (href.startsWith("xml:")) {
-                    String xml = href.substring(4);
-                    InputSource is = new InputSource(new java.io.StringReader(xml));
-                    SAXSource sax = new SAXSource(createSomeXMLReader(), is);
+                    final String xml = href.substring(4);
+                    final InputSource is = new InputSource(
+                            new java.io.StringReader(xml));
+                    final SAXSource sax = new SAXSource(createSomeXMLReader(),
+                            is);
 
-                    //Convert SAXSource to DOMSource
-                    TransformerFactory tFactory = TransformerFactory.newInstance();
-                    Transformer transformer = tFactory.newTransformer();
-                    DOMResult res = new DOMResult();
+                    // Convert SAXSource to DOMSource
+                    final TransformerFactory tFactory = TransformerFactory
+                            .newInstance();
+                    final Transformer transformer = tFactory.newTransformer();
+                    final DOMResult res = new DOMResult();
                     transformer.transform(sax, res);
                     return new DOMSource(res.getNode());
                 } else {
@@ -272,21 +307,21 @@ public class ImageSessionContextTestCase extends TestCase {
                 }
             }
         };
-        String uri = "xml:" + SOME_XML;
+        final String uri = "xml:" + SOME_XML;
 
-        Source src = resolve(uri, resolver);
-        assertTrue(src instanceof DOMSource); //Source remains unchanged
-        DOMSource domSrc = (DOMSource)src;
+        final Source src = resolve(uri, resolver);
+        assertTrue(src instanceof DOMSource); // Source remains unchanged
+        final DOMSource domSrc = (DOMSource) src;
         assertNotNull(domSrc.getNode());
     }
 
     private XMLReader createSomeXMLReader() {
-        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        final SAXParserFactory parserFactory = SAXParserFactory.newInstance();
         SAXParser parser;
         try {
             parser = parserFactory.newSAXParser();
             return parser.getXMLReader();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             fail("Could not create XMLReader");
             return null;
         }

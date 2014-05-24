@@ -25,9 +25,9 @@ import org.apache.fop.util.text.AdvancedMessageFormat.Part;
 import org.apache.fop.util.text.AdvancedMessageFormat.PartFactory;
 
 /**
- * Defines an "if" field part that checks if field's value is true or false.
- * It returns either of two possible values attached as additional part parameters. Example:
- * <code>{field,if,Yes,No}</code>
+ * Defines an "if" field part that checks if field's value is true or false. It
+ * returns either of two possible values attached as additional part parameters.
+ * Example: <code>{field,if,Yes,No}</code>
  */
 public class IfFieldPart implements Part {
 
@@ -40,59 +40,70 @@ public class IfFieldPart implements Part {
 
     /**
      * Creates a new "if" field part.
-     * @param fieldName the field name
-     * @param values the unparsed parameter values
+     * 
+     * @param fieldName
+     *            the field name
+     * @param values
+     *            the unparsed parameter values
      */
-    public IfFieldPart(String fieldName, String values) {
+    public IfFieldPart(final String fieldName, final String values) {
         this.fieldName = fieldName;
         parseValues(values);
     }
 
     /**
      * Parses the parameter values
-     * @param values the unparsed parameter values
+     * 
+     * @param values
+     *            the unparsed parameter values
      */
-    protected void parseValues(String values) {
-        String[] parts = AdvancedMessageFormat.COMMA_SEPARATOR_REGEX.split(values, 2);
+    protected void parseValues(final String values) {
+        final String[] parts = AdvancedMessageFormat.COMMA_SEPARATOR_REGEX
+                .split(values, 2);
         if (parts.length == 2) {
-            ifValue = AdvancedMessageFormat.unescapeComma(parts[0]);
-            elseValue = AdvancedMessageFormat.unescapeComma(parts[1]);
+            this.ifValue = AdvancedMessageFormat.unescapeComma(parts[0]);
+            this.elseValue = AdvancedMessageFormat.unescapeComma(parts[1]);
         } else {
-            ifValue = AdvancedMessageFormat.unescapeComma(values);
+            this.ifValue = AdvancedMessageFormat.unescapeComma(values);
         }
     }
 
     /** {@inheritDoc} */
-    public void write(StringBuffer sb, Map params) {
-        boolean isTrue = isTrue(params);
+    @Override
+    public void write(final StringBuffer sb, final Map params) {
+        final boolean isTrue = isTrue(params);
         if (isTrue) {
-            sb.append(ifValue);
-        } else if (elseValue != null) {
-            sb.append(elseValue);
+            sb.append(this.ifValue);
+        } else if (this.elseValue != null) {
+            sb.append(this.elseValue);
         }
     }
 
     /**
-     * Indicates whether the field's value is true. If the field is not a boolen, it is true
-     * if the field is not null.
-     * @param params the message parameters
+     * Indicates whether the field's value is true. If the field is not a
+     * boolen, it is true if the field is not null.
+     * 
+     * @param params
+     *            the message parameters
      * @return true the field's value as boolean
      */
-    protected boolean isTrue(Map params) {
-        Object obj = params.get(fieldName);
+    protected boolean isTrue(final Map params) {
+        final Object obj = params.get(this.fieldName);
         if (obj instanceof Boolean) {
-            return ((Boolean)obj).booleanValue();
+            return ((Boolean) obj).booleanValue();
         } else {
-            return (obj != null);
+            return obj != null;
         }
     }
 
     /** {@inheritDoc} */
-    public boolean isGenerated(Map params) {
-        return isTrue(params) || (elseValue != null);
+    @Override
+    public boolean isGenerated(final Map params) {
+        return isTrue(params) || this.elseValue != null;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "{" + this.fieldName + ", if...}";
     }
@@ -103,11 +114,13 @@ public class IfFieldPart implements Part {
     public static class Factory implements PartFactory {
 
         /** {@inheritDoc} */
-        public Part newPart(String fieldName, String values) {
+        @Override
+        public Part newPart(final String fieldName, final String values) {
             return new IfFieldPart(fieldName, values);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String getFormat() {
             return "if";
         }

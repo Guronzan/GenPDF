@@ -42,118 +42,133 @@ public class RegionBody extends Region {
     private CommonMarginBlock commonMarginBlock;
     private Numeric columnCount;
     private Length columnGap;
+
     // End of property values
 
     /**
-     * Create a RegionBody instance that is a child of the
-     * given parent {@link FONode}.
-     * @param parent    the {@link FONode} that is to be the parent
+     * Create a RegionBody instance that is a child of the given parent
+     * {@link FONode}.
+     * 
+     * @param parent
+     *            the {@link FONode} that is to be the parent
      */
-    public RegionBody(FONode parent) {
+    public RegionBody(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        commonMarginBlock = pList.getMarginBlockProps();
-        columnCount = pList.get(PR_COLUMN_COUNT).getNumeric();
-        columnGap = pList.get(PR_COLUMN_GAP).getLength();
+        this.commonMarginBlock = pList.getMarginBlockProps();
+        this.columnCount = pList.get(PR_COLUMN_COUNT).getNumeric();
+        this.columnGap = pList.get(PR_COLUMN_GAP).getLength();
 
-        if ((getColumnCount() > 1) && (getOverflow() == EN_SCROLL)) {
-            /* This is an error (See XSL Rec, fo:region-body description).
-             * The Rec allows for acting as if "1" is chosen in
-             * these cases, but we will need to be able to change Numeric
-             * values in order to do this.
+        if (getColumnCount() > 1 && getOverflow() == EN_SCROLL) {
+            /*
+             * This is an error (See XSL Rec, fo:region-body description). The
+             * Rec allows for acting as if "1" is chosen in these cases, but we
+             * will need to be able to change Numeric values in order to do
+             * this.
              */
-            getFOValidationEventProducer().columnCountErrorOnRegionBodyOverflowScroll(this,
-                    getName(), getLocator());
+            getFOValidationEventProducer()
+                    .columnCountErrorOnRegionBodyOverflowScroll(this,
+                            getName(), getLocator());
         }
     }
 
     /**
-     * Return the {@link CommonMarginBlock} instance attached to
-     * this instance.
+     * Return the {@link CommonMarginBlock} instance attached to this instance.
+     * 
      * @return the {@link CommonMarginBlock} instance
      */
     public CommonMarginBlock getCommonMarginBlock() {
-        return commonMarginBlock;
+        return this.commonMarginBlock;
     }
 
     /**
      * Return the value of the <code>column-count<code> property.
+     * 
      * @return the "column-count" property.
      */
     public int getColumnCount() {
-        return columnCount.getValue();
+        return this.columnCount.getValue();
     }
 
     /**
      * Return the value of the <code>column-gap</code> property.
+     * 
      * @return the "column-gap" property.
      */
     public int getColumnGap() {
-        return columnGap.getValue();
+        return this.columnGap.getValue();
     }
 
     /** {@inheritDoc} */
-    public Rectangle getViewportRectangle (FODimension reldims) {
-        /* Special rules apply to resolving margins in the page context.
-         * Contrary to normal margins in this case top and bottom margin
-         * are resolved relative to the height. In the property subsystem
-         * all margin properties are configured to using BLOCK_WIDTH.
-         * That's why we 'cheat' here and setup a context for the height but
-         * use the LengthBase.BLOCK_WIDTH.
-         * Also the values are resolved relative to the page size
-         * and reference orientation.
+    @Override
+    public Rectangle getViewportRectangle(final FODimension reldims) {
+        /*
+         * Special rules apply to resolving margins in the page context.
+         * Contrary to normal margins in this case top and bottom margin are
+         * resolved relative to the height. In the property subsystem all margin
+         * properties are configured to using BLOCK_WIDTH. That's why we 'cheat'
+         * here and setup a context for the height but use the
+         * LengthBase.BLOCK_WIDTH. Also the values are resolved relative to the
+         * page size and reference orientation.
          */
-        PercentBaseContext pageWidthContext
-            = getPageWidthContext(LengthBase.CONTAINING_BLOCK_WIDTH);
-        PercentBaseContext pageHeightContext
-            = getPageHeightContext(LengthBase.CONTAINING_BLOCK_WIDTH);
+        final PercentBaseContext pageWidthContext = getPageWidthContext(LengthBase.CONTAINING_BLOCK_WIDTH);
+        final PercentBaseContext pageHeightContext = getPageHeightContext(LengthBase.CONTAINING_BLOCK_WIDTH);
 
         int start;
         int end;
         // [TBD] WRITING MODE ALERT
-        switch ( getWritingMode().getEnumValue() ) {
+        switch (getWritingMode().getEnumValue()) {
         case Constants.EN_RL_TB:
-            start = commonMarginBlock.marginRight.getValue(pageWidthContext);
-            end = commonMarginBlock.marginLeft.getValue(pageWidthContext);
+            start = this.commonMarginBlock.marginRight
+                    .getValue(pageWidthContext);
+            end = this.commonMarginBlock.marginLeft.getValue(pageWidthContext);
             break;
         case Constants.EN_TB_LR:
         case Constants.EN_TB_RL:
-            start = commonMarginBlock.marginTop.getValue(pageWidthContext);
-            end = commonMarginBlock.marginBottom.getValue(pageWidthContext);
+            start = this.commonMarginBlock.marginTop.getValue(pageWidthContext);
+            end = this.commonMarginBlock.marginBottom
+                    .getValue(pageWidthContext);
             break;
         case Constants.EN_LR_TB:
         default:
-            start = commonMarginBlock.marginLeft.getValue(pageWidthContext);
-            end = commonMarginBlock.marginRight.getValue(pageWidthContext);
+            start = this.commonMarginBlock.marginLeft
+                    .getValue(pageWidthContext);
+            end = this.commonMarginBlock.marginRight.getValue(pageWidthContext);
             break;
         }
-        int before = commonMarginBlock.spaceBefore.getOptimum(pageHeightContext)
-                        .getLength().getValue(pageHeightContext);
-        int after = commonMarginBlock.spaceAfter.getOptimum(pageHeightContext)
-                        .getLength().getValue(pageHeightContext);
-        return new Rectangle(start, before,
-                    reldims.ipd - start - end,
-                    reldims.bpd - before - after);
+        final int before = this.commonMarginBlock.spaceBefore
+                .getOptimum(pageHeightContext).getLength()
+                .getValue(pageHeightContext);
+        final int after = this.commonMarginBlock.spaceAfter
+                .getOptimum(pageHeightContext).getLength()
+                .getValue(pageHeightContext);
+        return new Rectangle(start, before, reldims.ipd - start - end,
+                reldims.bpd - before - after);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String getDefaultRegionName() {
         return "xsl-region-body";
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "region-body";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_REGION_BODY}
      */
+    @Override
     public int getNameId() {
         return FO_REGION_BODY;
     }

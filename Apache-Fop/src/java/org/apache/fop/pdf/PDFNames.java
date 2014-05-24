@@ -37,33 +37,39 @@ public class PDFNames extends PDFDictionary {
 
     /**
      * Returns the Dests object
+     * 
      * @return the Dests object, or null if it's not used
      */
     public PDFDests getDests() {
-        return (PDFDests)get(DESTS);
+        return (PDFDests) get(DESTS);
     }
 
     /**
      * Set the Dests object
-     * @param dests the Dests object
+     * 
+     * @param dests
+     *            the Dests object
      */
-    public void setDests(PDFDests dests) {
+    public void setDests(final PDFDests dests) {
         put(DESTS, dests);
     }
 
     /**
      * Returns the EmbeddedFiles object
+     * 
      * @return the EmbeddedFiles object, or null if it's not used
      */
     public PDFEmbeddedFiles getEmbeddedFiles() {
-        return (PDFEmbeddedFiles)get(EMBEDDED_FILES);
+        return (PDFEmbeddedFiles) get(EMBEDDED_FILES);
     }
 
     /**
      * Set the EmbeddedFiles object
-     * @param embeddedFiles the EmbeddedFiles object
+     * 
+     * @param embeddedFiles
+     *            the EmbeddedFiles object
      */
-    public void setEmbeddedFiles(PDFEmbeddedFiles embeddedFiles) {
+    public void setEmbeddedFiles(final PDFEmbeddedFiles embeddedFiles) {
         put(EMBEDDED_FILES, embeddedFiles);
     }
 

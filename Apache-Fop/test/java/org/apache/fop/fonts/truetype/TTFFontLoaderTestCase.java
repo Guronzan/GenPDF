@@ -22,12 +22,11 @@ package org.apache.fop.fonts.truetype;
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Test;
-
 import org.apache.fop.fonts.EmbeddingMode;
 import org.apache.fop.fonts.EncodingMode;
 import org.apache.fop.fonts.FontManager;
 import org.apache.fop.fonts.FontResolver;
+import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -39,21 +38,25 @@ public class TTFFontLoaderTestCase {
 
     @Test
     public void testUseKerning() throws IOException {
-        boolean useComplexScriptFeatures = false;
-        File file = new File("test/resources/fonts/ttf/DejaVuLGCSerif.ttf");
-        String absoluteFilePath = file.toURI().toURL().toExternalForm();
-        FontResolver resolver = FontManager.createMinimalFontResolver(useComplexScriptFeatures);
-        String fontName = "Deja Vu";
-        boolean embedded = false;
+        final boolean useComplexScriptFeatures = false;
+        final File file = new File(
+                "test/resources/fonts/ttf/DejaVuLGCSerif.ttf");
+        final String absoluteFilePath = file.toURI().toURL().toExternalForm();
+        final FontResolver resolver = FontManager
+                .createMinimalFontResolver(useComplexScriptFeatures);
+        final String fontName = "Deja Vu";
+        final boolean embedded = false;
         boolean useKerning = true;
 
-        TTFFontLoader fontLoader = new TTFFontLoader(absoluteFilePath, fontName, embedded,
-                EmbeddingMode.AUTO, EncodingMode.AUTO, useKerning, useComplexScriptFeatures, resolver);
+        TTFFontLoader fontLoader = new TTFFontLoader(absoluteFilePath,
+                fontName, embedded, EmbeddingMode.AUTO, EncodingMode.AUTO,
+                useKerning, useComplexScriptFeatures, resolver);
         assertTrue(fontLoader.getFont().hasKerningInfo());
         useKerning = false;
 
-        fontLoader = new TTFFontLoader(absoluteFilePath, fontName, embedded, EmbeddingMode.AUTO,
-                EncodingMode.AUTO, useKerning, useComplexScriptFeatures, resolver);
+        fontLoader = new TTFFontLoader(absoluteFilePath, fontName, embedded,
+                EmbeddingMode.AUTO, EncodingMode.AUTO, useKerning,
+                useComplexScriptFeatures, resolver);
         assertFalse(fontLoader.getFont().hasKerningInfo());
     }
 }

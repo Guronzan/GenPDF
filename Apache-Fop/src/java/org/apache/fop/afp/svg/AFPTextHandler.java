@@ -23,8 +23,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.afp.AFPGraphics2D;
 import org.apache.fop.afp.AFPPaintingState;
@@ -39,13 +38,11 @@ import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.svg.FOPTextHandlerAdapter;
 
 /**
- * Specialized TextHandler implementation that the AFPGraphics2D class delegates to to paint text
- * using AFP GOCA text operations.
+ * Specialized TextHandler implementation that the AFPGraphics2D class delegates
+ * to to paint text using AFP GOCA text operations.
  */
+@Slf4j
 public class AFPTextHandler extends FOPTextHandlerAdapter {
-
-    /** logging instance */
-    private static Log log = LogFactory.getLog(AFPTextHandler.class);
 
     /** Overriding FontState */
     protected Font overrideFont = null;
@@ -54,15 +51,18 @@ public class AFPTextHandler extends FOPTextHandlerAdapter {
     private final FontInfo fontInfo;
 
     /** the resource manager */
-    private AFPResourceManager resourceManager;
+    private final AFPResourceManager resourceManager;
 
     /**
      * Main constructor.
      *
-     * @param fontInfo the AFPGraphics2D instance
-     * @param resourceManager the AFPResourceManager instance
+     * @param fontInfo
+     *            the AFPGraphics2D instance
+     * @param resourceManager
+     *            the AFPResourceManager instance
      */
-    public AFPTextHandler(FontInfo fontInfo, AFPResourceManager resourceManager) {
+    public AFPTextHandler(final FontInfo fontInfo,
+            final AFPResourceManager resourceManager) {
         this.fontInfo = fontInfo;
         this.resourceManager = resourceManager;
     }
@@ -72,54 +72,58 @@ public class AFPTextHandler extends FOPTextHandlerAdapter {
      *
      * @return the FontInfo object
      */
+    @Override
     public FontInfo getFontInfo() {
-        return fontInfo;
+        return this.fontInfo;
     }
 
     /**
      * Registers a page font
      *
-     * @param internalFontName the internal font name
-     * @param fontSize the font size
+     * @param internalFontName
+     *            the internal font name
+     * @param fontSize
+     *            the font size
      * @return a font reference
      */
-    private int registerPageFont(AFPPageFonts pageFonts, String internalFontName, int fontSize) {
-        AFPFont afpFont = (AFPFont)fontInfo.getFonts().get(internalFontName);
+    private int registerPageFont(final AFPPageFonts pageFonts,
+            final String internalFontName, final int fontSize) {
+        final AFPFont afpFont = (AFPFont) this.fontInfo.getFonts().get(
+                internalFontName);
         // register if necessary
-        AFPFontAttributes afpFontAttributes = pageFonts.registerFont(
-                internalFontName,
-                afpFont,
-                fontSize
-        );
+        final AFPFontAttributes afpFontAttributes = pageFonts.registerFont(
+                internalFontName, afpFont, fontSize);
         if (afpFont.isEmbeddable()) {
             try {
                 final CharacterSet charSet = afpFont.getCharacterSet(fontSize);
                 this.resourceManager.embedFont(afpFont, charSet);
-            } catch (IOException ioe) {
-                throw new RuntimeException("Error while embedding font resources", ioe);
+            } catch (final IOException ioe) {
+                throw new RuntimeException(
+                        "Error while embedding font resources", ioe);
             }
         }
         return afpFontAttributes.getFontReference();
     }
 
     /**
-     * Add a text string to the current data object of the AFP datastream.
-     * The text is painted using text operations.
+     * Add a text string to the current data object of the AFP datastream. The
+     * text is painted using text operations.
      *
      * {@inheritDoc}
      */
     @Override
-    public void drawString(Graphics2D g, String str, float x, float y) {
+    public void drawString(final Graphics2D g, final String str, final float x,
+            final float y) {
         if (log.isDebugEnabled()) {
             log.debug("drawString() str=" + str + ", x=" + x + ", y=" + y);
         }
         if (g instanceof AFPGraphics2D) {
-            AFPGraphics2D g2d = (AFPGraphics2D)g;
-            GraphicsObject graphicsObj = g2d.getGraphicsObject();
-            Color color = g2d.getColor();
+            final AFPGraphics2D g2d = (AFPGraphics2D) g;
+            final GraphicsObject graphicsObj = g2d.getGraphicsObject();
+            final Color color = g2d.getColor();
 
             // set the color
-            AFPPaintingState paintingState = g2d.getPaintingState();
+            final AFPPaintingState paintingState = g2d.getPaintingState();
             if (paintingState.setColor(color)) {
                 graphicsObj.setColor(color);
             }
@@ -128,27 +132,30 @@ public class AFPTextHandler extends FOPTextHandlerAdapter {
             int fontReference = 0;
             int fontSize;
             String internalFontName;
-            AFPPageFonts pageFonts = paintingState.getPageFonts();
-            if (overrideFont != null) {
-                internalFontName = overrideFont.getFontName();
-                fontSize = overrideFont.getFontSize();
+            final AFPPageFonts pageFonts = paintingState.getPageFonts();
+            if (this.overrideFont != null) {
+                internalFontName = this.overrideFont.getFontName();
+                fontSize = this.overrideFont.getFontSize();
                 if (log.isDebugEnabled()) {
-                    log.debug("  with overriding font: " + internalFontName + ", " + fontSize);
+                    log.debug("  with overriding font: " + internalFontName
+                            + ", " + fontSize);
                 }
             } else {
-                java.awt.Font awtFont = g2d.getFont();
-                Font fopFont = fontInfo.getFontInstanceForAWTFont(awtFont);
+                final java.awt.Font awtFont = g2d.getFont();
+                final Font fopFont = this.fontInfo
+                        .getFontInstanceForAWTFont(awtFont);
                 if (log.isDebugEnabled()) {
                     log.debug("  with font: " + fopFont);
                 }
                 internalFontName = fopFont.getFontName();
                 fontSize = fopFont.getFontSize();
             }
-            fontSize = (int)Math.round(
-                    g2d.convertToAbsoluteLength(fontSize));
-            fontReference = registerPageFont(pageFonts, internalFontName, fontSize);
+            fontSize = (int) Math.round(g2d.convertToAbsoluteLength(fontSize));
+            fontReference = registerPageFont(pageFonts, internalFontName,
+                    fontSize);
             // TODO: re-think above registerPageFont code...
-            AFPFont afpFont = (AFPFont) fontInfo.getFonts().get(internalFontName);
+            final AFPFont afpFont = (AFPFont) this.fontInfo.getFonts().get(
+                    internalFontName);
             final CharacterSet charSet = afpFont.getCharacterSet(fontSize);
             // Work-around for InfoPrint's AFP which loses character set state
             // over Graphics Data
@@ -157,7 +164,8 @@ public class AFPTextHandler extends FOPTextHandlerAdapter {
             // add the character string
             graphicsObj.addString(str, Math.round(x), Math.round(y), charSet);
         } else {
-            //Inside Batik's SVG filter operations, you won't get an AFPGraphics2D
+            // Inside Batik's SVG filter operations, you won't get an
+            // AFPGraphics2D
             g.drawString(str, x, y);
         }
     }
@@ -165,9 +173,11 @@ public class AFPTextHandler extends FOPTextHandlerAdapter {
     /**
      * Sets the overriding font.
      *
-     * @param overrideFont Overriding Font to set
+     * @param overrideFont
+     *            Overriding Font to set
      */
-    public void setOverrideFont(Font overrideFont) {
+    @Override
+    public void setOverrideFont(final Font overrideFont) {
         this.overrideFont = overrideFont;
     }
 }

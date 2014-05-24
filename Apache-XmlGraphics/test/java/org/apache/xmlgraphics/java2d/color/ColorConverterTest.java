@@ -24,18 +24,22 @@ import java.awt.color.ColorSpace;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+
 public class ColorConverterTest extends TestCase {
 
-    public void testToGray() throws Exception {
-        ColorConverter converter = GrayScaleColorConverter.getInstance();
-        Color rgb = new Color(255, 184, 0);
-        Color gray = converter.convert(rgb);
+    @Test
+    public void testToGray() {
+        final ColorConverter converter = GrayScaleColorConverter.getInstance();
+        final Color rgb = new Color(255, 184, 0);
+        final Color gray = converter.convert(rgb);
 
-        ColorSpaceOrigin origin = ColorSpaces.getColorSpaceOrigin(gray.getColorSpace());
+        final ColorSpaceOrigin origin = ColorSpaces.getColorSpaceOrigin(gray
+                .getColorSpace());
         assertEquals("#CMYK", origin.getProfileName());
         assertNull(origin.getProfileURI());
         assertEquals(ColorSpace.TYPE_CMYK, gray.getColorSpace().getType());
-        float[] comps = gray.getColorComponents(null);
+        final float[] comps = gray.getColorComponents(null);
         assertEquals(4, comps.length);
         assertEquals(0.0f, comps[0], 0.1f);
         assertEquals(0.0f, comps[1], 0.1f);

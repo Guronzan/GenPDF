@@ -21,15 +21,14 @@ package org.apache.fop.render.afp.extensions;
 
 import java.io.Serializable;
 
-import org.apache.xmlgraphics.util.XMLizable;
-
 import org.apache.fop.fo.extensions.ExtensionAttachment;
+import org.apache.xmlgraphics.util.XMLizable;
 
 /**
  * This is the pass-through value object for the AFP extension.
  */
-public abstract class AFPExtensionAttachment
-    implements ExtensionAttachment, Serializable, XMLizable {
+public abstract class AFPExtensionAttachment implements ExtensionAttachment,
+        Serializable, XMLizable {
 
     private static final long serialVersionUID = 7190606822558332901L;
 
@@ -52,38 +51,42 @@ public abstract class AFPExtensionAttachment
     /**
      * Default constructor.
      *
-     * @param elementName the name of the afp extension attachment, may be null
+     * @param elementName
+     *            the name of the afp extension attachment, may be null
      */
-    public AFPExtensionAttachment(String elementName) {
+    public AFPExtensionAttachment(final String elementName) {
         this.elementName = elementName;
     }
 
     /** @return the name */
     public String getElementName() {
-        return elementName;
+        return this.elementName;
     }
 
     /**
      * @return true if this element has a name attribute
      */
     protected boolean hasName() {
-        return name != null;
+        return this.name != null;
     }
 
     /** @return the name */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
      * Sets the name of the setup code object.
-     * @param name The name to set.
+     * 
+     * @param name
+     *            The name to set.
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getCategory() {
         return CATEGORY;
     }

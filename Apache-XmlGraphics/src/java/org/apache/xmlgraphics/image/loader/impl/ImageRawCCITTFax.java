@@ -25,34 +25,43 @@ import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
 
 /**
- * This class is an implementation of the Image interface exposing a 1-bit bitmap image stream
- * that can be decoded by the PostScript or PDF CCITTFaxDecode filter.
+ * This class is an implementation of the Image interface exposing a 1-bit
+ * bitmap image stream that can be decoded by the PostScript or PDF
+ * CCITTFaxDecode filter.
  */
 public class ImageRawCCITTFax extends ImageRawStream {
 
-    private int compression;
+    private final int compression;
 
     /**
      * Main constructor.
-     * @param info the image info object
-     * @param in the ImageInputStream with the raw content
-     * @param compression the integer value of the TIFF compression scheme
+     * 
+     * @param info
+     *            the image info object
+     * @param in
+     *            the ImageInputStream with the raw content
+     * @param compression
+     *            the integer value of the TIFF compression scheme
      */
-    public ImageRawCCITTFax(ImageInfo info, java.io.InputStream in, int compression) {
+    public ImageRawCCITTFax(final ImageInfo info, final java.io.InputStream in,
+            final int compression) {
         super(info, ImageFlavor.RAW_CCITTFAX, in);
         this.compression = compression;
     }
 
     /**
      * Returns the image's color space
+     * 
      * @return the color space
      */
+    @Override
     public ColorSpace getColorSpace() {
         return ColorSpace.getInstance(ColorSpace.CS_GRAY);
     }
 
     /**
      * Returns the TIFF compression scheme.
+     * 
      * @return the TIFF compression scheme
      */
     public int getCompression() {

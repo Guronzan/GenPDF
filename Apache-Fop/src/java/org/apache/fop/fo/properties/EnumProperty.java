@@ -30,8 +30,7 @@ import org.apache.fop.util.CompareUtil;
 public final class EnumProperty extends Property {
 
     /** cache holding all canonical EnumProperty instances */
-    private static final PropertyCache<EnumProperty> CACHE
-            = new PropertyCache<EnumProperty>();
+    private static final PropertyCache<EnumProperty> CACHE = new PropertyCache<EnumProperty>();
 
     /**
      * Inner class for creating EnumProperty instances
@@ -39,34 +38,44 @@ public final class EnumProperty extends Property {
     public static class Maker extends PropertyMaker {
 
         /**
-         * @param propId the id of the property for which a Maker should be created
+         * @param propId
+         *            the id of the property for which a Maker should be created
          */
-        public Maker(int propId) {
+        public Maker(final int propId) {
             super(propId);
         }
 
         /**
          * Called by subclass if no match found.
-         * @param value string containing the value to be checked
+         * 
+         * @param value
+         *            string containing the value to be checked
          * @return null (indicates that an appropriate match was not found)
          */
-        public Property checkEnumValues(String value) {
-            //log.error("Unknown enumerated value for property '"
-            //                       + getPropName() + "': " + value);
+        @Override
+        public Property checkEnumValues(final String value) {
+            // log.error("Unknown enumerated value for property '"
+            // + getPropName() + "': " + value);
             return super.checkEnumValues(value);
         }
 
         /**
          * Convert a property.
-         * @param p the property to convert
-         * @param propertyList the property list to use in conversion
-         * @param fo the FO to use in conversion
+         * 
+         * @param p
+         *            the property to convert
+         * @param propertyList
+         *            the property list to use in conversion
+         * @param fo
+         *            the FO to use in conversion
          * @return the converted property
-         * @throws PropertyException if a property conversion exception occurs
+         * @throws PropertyException
+         *             if a property conversion exception occurs
          */
-        public Property convertProperty(Property p,
-                                        PropertyList propertyList,
-                                        FObj fo) throws PropertyException {
+        @Override
+        public Property convertProperty(final Property p,
+                final PropertyList propertyList, final FObj fo)
+                throws PropertyException {
             if (p instanceof EnumProperty) {
                 return p;
             } else {
@@ -79,27 +88,34 @@ public final class EnumProperty extends Property {
     private final String text;
 
     /**
-     * @param explicitValue enumerated value to be set for this property
-     * @param text the string value of the enum.
+     * @param explicitValue
+     *            enumerated value to be set for this property
+     * @param text
+     *            the string value of the enum.
      */
-    private EnumProperty(int explicitValue, String text) {
+    private EnumProperty(final int explicitValue, final String text) {
         this.value = explicitValue;
         this.text = text;
     }
 
     /**
      * Construct an enumeration property.
-     * @param explicitValue the value
-     * @param text the text
+     * 
+     * @param explicitValue
+     *            the value
+     * @param text
+     *            the text
      * @return an enumeration property
      */
-    public static EnumProperty getInstance(int explicitValue, String text) {
+    public static EnumProperty getInstance(final int explicitValue,
+            final String text) {
         return CACHE.fetch(new EnumProperty(explicitValue, text));
     }
 
     /**
      * @return this.value
      */
+    @Override
     public int getEnum() {
         return this.value;
     }
@@ -107,16 +123,17 @@ public final class EnumProperty extends Property {
     /**
      * @return this.value cast as an Object
      */
+    @Override
     public Object getObject() {
-        return text;
+        return this.text;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof EnumProperty) {
-            EnumProperty ep = (EnumProperty)obj;
+            final EnumProperty ep = (EnumProperty) obj;
             return this.value == ep.value
-                    && CompareUtil.equal(text, ep.text);
+                    && CompareUtil.equal(this.text, ep.text);
         } else {
             return false;
         }
@@ -124,7 +141,6 @@ public final class EnumProperty extends Property {
 
     @Override
     public int hashCode() {
-        return value + text.hashCode();
+        return this.value + this.text.hashCode();
     }
 }
-

@@ -28,11 +28,11 @@ import java.util.List;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fonts.autodetect.FontFileFinder;
 import org.apache.fop.fonts.autodetect.FontInfoFinder;
@@ -41,10 +41,8 @@ import org.apache.fop.util.LogUtil;
 /**
  * An abstract FontInfo configurator
  */
+@Slf4j
 public class FontInfoConfigurator {
-    /** logger instance */
-    protected static final Log log = LogFactory
-            .getLog(FontInfoConfigurator.class);
 
     private final Configuration cfg;
     private final FontManager fontManager;
@@ -54,7 +52,7 @@ public class FontInfoConfigurator {
 
     /**
      * Main constructor
-     * 
+     *
      * @param cfg
      *            the configuration object
      * @param fontManager
@@ -78,7 +76,7 @@ public class FontInfoConfigurator {
 
     /**
      * Initializes font info settings from the user configuration
-     * 
+     *
      * @param fontInfoList
      *            a font info list
      * @throws FOPException
@@ -170,7 +168,7 @@ public class FontInfoConfigurator {
 
     /**
      * Populates the font info list from the fonts configuration
-     * 
+     *
      * @param fontsCfg
      *            a fonts configuration
      * @param fontCache

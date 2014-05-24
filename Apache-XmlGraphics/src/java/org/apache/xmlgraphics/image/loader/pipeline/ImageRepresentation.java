@@ -23,19 +23,21 @@ import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.util.dijkstra.Vertex;
 
 /**
- * This class represents a combination of MIME type and an image flavor.
- * It is used in conjunction with Dijkstra's algorithm to find and construct a
+ * This class represents a combination of MIME type and an image flavor. It is
+ * used in conjunction with Dijkstra's algorithm to find and construct a
  * conversion pipeline for images.
  */
 public class ImageRepresentation implements Vertex {
 
-    private ImageFlavor flavor;
+    private final ImageFlavor flavor;
 
     /**
      * Main constructor
-     * @param flavor the image flavor
+     * 
+     * @param flavor
+     *            the image flavor
      */
-    public ImageRepresentation(ImageFlavor flavor) {
+    public ImageRepresentation(final ImageFlavor flavor) {
         if (flavor == null) {
             throw new NullPointerException("flavor must not be null");
         }
@@ -44,28 +46,33 @@ public class ImageRepresentation implements Vertex {
 
     /**
      * Returns the image flavor.
+     * 
      * @return the image flavor
      */
     public ImageFlavor getFlavor() {
-        return flavor;
+        return this.flavor;
     }
 
     /** {@inheritDoc} */
-    public boolean equals(Object obj) {
-        return toString().equals(((ImageRepresentation)obj).toString());
+    @Override
+    public boolean equals(final Object obj) {
+        return toString().equals(((ImageRepresentation) obj).toString());
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode() {
         return getFlavor().hashCode();
     }
 
     /** {@inheritDoc} */
-    public int compareTo(Object obj) {
-        return toString().compareTo(((ImageRepresentation)obj).toString());
+    @Override
+    public int compareTo(final Object obj) {
+        return toString().compareTo(((ImageRepresentation) obj).toString());
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return getFlavor().toString();
     }

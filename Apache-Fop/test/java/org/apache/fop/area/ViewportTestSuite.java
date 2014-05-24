@@ -28,10 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * A suite of all the tests relating to the {@linkplain Viewport} interface.
  */
 @RunWith(Suite.class)
-@SuiteClasses({
-    RegionViewportTestCase.class,
-    BlockViewportTestCase.class,
-    InlineViewportTestCase.class
-})
+@SuiteClasses({ RegionViewportTestCase.class, BlockViewportTestCase.class,
+        InlineViewportTestCase.class })
 public final class ViewportTestSuite {
 }

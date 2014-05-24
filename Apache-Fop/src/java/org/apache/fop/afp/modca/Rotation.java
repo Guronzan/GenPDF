@@ -24,23 +24,20 @@ package org.apache.fop.afp.modca;
  *
  */
 public enum Rotation {
-    ROTATION_0(0),
-    ROTATION_90(0x2D),
-    ROTATION_180(0x5A),
-    ROTATION_270(0x87);
+    ROTATION_0(0), ROTATION_90(0x2D), ROTATION_180(0x5A), ROTATION_270(0x87);
 
     private final byte firstByte;
 
-    public void writeTo(byte[] out, int offset) {
-        out[offset] = firstByte;
-        out[offset + 1] = (byte)0;
+    public void writeTo(final byte[] out, final int offset) {
+        out[offset] = this.firstByte;
+        out[offset + 1] = (byte) 0;
     }
 
-    private Rotation(int firstByte) {
+    private Rotation(final int firstByte) {
         this.firstByte = (byte) firstByte;
     }
 
     public byte getByte() {
-        return firstByte;
+        return this.firstByte;
     }
 }

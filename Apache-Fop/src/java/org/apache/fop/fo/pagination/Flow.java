@@ -19,8 +19,6 @@
 
 package org.apache.fop.fo.pagination;
 
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.FObj;
@@ -28,6 +26,7 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.ValidationException;
 import org.apache.fop.fo.properties.CommonAccessibility;
 import org.apache.fop.fo.properties.CommonAccessibilityHolder;
+import org.xml.sax.Locator;
 
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_flow">
@@ -45,22 +44,26 @@ public class Flow extends FObj implements CommonAccessibilityHolder {
 
     /**
      * Create a Flow instance that is a child of the given {@link FONode}.
-     * @param parent the {@link FONode} that is the parent of this object
+     * 
+     * @param parent
+     *            the {@link FONode} that is the parent of this object
      */
-    public Flow(FONode parent) {
+    public Flow(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        flowName = pList.get(PR_FLOW_NAME).getString();
-        commonAccessibility = CommonAccessibility.getInstance(pList);
+        this.flowName = pList.get(PR_FLOW_NAME).getString();
+        this.commonAccessibility = CommonAccessibility.getInstance(pList);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
-        if (flowName == null || flowName.equals("")) {
+        if (this.flowName == null || this.flowName.equals("")) {
             missingPropertyError("flow-name");
         }
 
@@ -69,74 +72,78 @@ public class Flow extends FObj implements CommonAccessibilityHolder {
         // multiplicity of fo:flow in XSL 1.0 is cleared up - one (1)
         // fo:flow per fo:page-sequence only.
 
-        /*        if (pageSequence.isFlowSet()) {
-                    if (this.name.equals("fo:flow")) {
-                        throw new FOPException("Only a single fo:flow permitted"
-                                               + " per fo:page-sequence");
-                    } else {
-                        throw new FOPException(this.name
-                                               + " not allowed after fo:flow");
-                    }
-                }
+        /*
+         * if (pageSequence.isFlowSet()) { if (this.name.equals("fo:flow")) {
+         * throw new FOPException("Only a single fo:flow permitted" +
+         * " per fo:page-sequence"); } else { throw new FOPException(this.name +
+         * " not allowed after fo:flow"); } }
          */
         // Now done in addChild of page-sequence
-        //pageSequence.addFlow(this);
+        // pageSequence.addFlow(this);
         getFOEventHandler().startFlow(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
-        if (!blockItemFound) {
+        if (!this.blockItemFound) {
             missingChildElementError("marker* (%block;)+");
         }
         getFOEventHandler().endFlow(this);
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL Content Model: marker* (%block;)+
+     * {@inheritDoc} <br>
+     * XSL Content Model: marker* (%block;)+
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-                throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             if (localName.equals("marker")) {
-                if (blockItemFound) {
-                   nodesOutOfOrderError(loc, "fo:marker", "(%block;)");
+                if (this.blockItemFound) {
+                    nodesOutOfOrderError(loc, "fo:marker", "(%block;)");
                 }
             } else if (!isBlockItem(nsURI, localName)) {
                 invalidChildError(loc, nsURI, localName);
             } else {
-                blockItemFound = true;
+                this.blockItemFound = true;
             }
         }
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return true (Flow can generate reference areas)
      */
+    @Override
     public boolean generatesReferenceAreas() {
         return true;
     }
 
     /** @return "flow-name" property. */
     public String getFlowName() {
-        return flowName;
+        return this.flowName;
     }
 
+    @Override
     public CommonAccessibility getCommonAccessibility() {
-        return commonAccessibility;
+        return this.commonAccessibility;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "flow";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_FLOW}
      */
+    @Override
     public int getNameId() {
         return FO_FLOW;
     }

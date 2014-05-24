@@ -21,33 +21,33 @@ package org.apache.fop.layoutengine;
 
 import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
+import org.apache.fop.intermediate.IFCheck;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
-
-import org.apache.fop.intermediate.IFCheck;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
  * Simple check that requires an XPath expression to evaluate to true.
  */
 public class TrueCheck implements LayoutEngineCheck, IFCheck {
 
-    private String xpath;
+    private final String xpath;
     private String failureMessage;
-    private PrefixResolver prefixResolver;
+    private final PrefixResolver prefixResolver;
 
     /**
      * Creates a new instance from a DOM node.
-     * @param node DOM node that defines this check
+     * 
+     * @param node
+     *            DOM node that defines this check
      */
-    public TrueCheck(Node node) {
+    public TrueCheck(final Node node) {
         this.xpath = node.getAttributes().getNamedItem("xpath").getNodeValue();
-        Node nd = node.getAttributes().getNamedItem("fail-msg");
+        final Node nd = node.getAttributes().getNamedItem("fail-msg");
         if (nd != null) {
             this.failureMessage = nd.getNodeValue();
         }
@@ -55,37 +55,41 @@ public class TrueCheck implements LayoutEngineCheck, IFCheck {
     }
 
     /** {@inheritDoc} */
-    public void check(LayoutResult result) {
+    @Override
+    public void check(final LayoutResult result) {
         doCheck(result.getAreaTree());
     }
 
     /** {@inheritDoc} */
-    public void check(Document intermediate) {
+    @Override
+    public void check(final Document intermediate) {
         doCheck(intermediate);
     }
 
-    private void doCheck(Document doc) {
+    private void doCheck(final Document doc) {
         XObject res;
         try {
-            res = XPathAPI.eval(doc, xpath, prefixResolver);
-        } catch (TransformerException e) {
-            throw new RuntimeException("XPath evaluation failed: " + e.getMessage());
+            res = XPathAPI.eval(doc, this.xpath, this.prefixResolver);
+        } catch (final TransformerException e) {
+            throw new RuntimeException("XPath evaluation failed: "
+                    + e.getMessage());
         }
         if (!XBoolean.S_TRUE.equals(res)) {
-            if (failureMessage != null) {
-                throw new RuntimeException(failureMessage);
+            if (this.failureMessage != null) {
+                throw new RuntimeException(this.failureMessage);
             } else {
                 throw new RuntimeException(
                         "Expected XPath expression to evaluate to 'true', but got '"
-                        + res + "' (" + this + ")");
+                                + res + "' (" + this + ")");
             }
         }
 
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "XPath: " + xpath;
+        return "XPath: " + this.xpath;
     }
 
 }

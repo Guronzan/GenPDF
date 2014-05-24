@@ -19,41 +19,42 @@
 
 package org.apache.fop.afp.modca;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * Tests the {@linkplain AbstractAFPObject} class.
  */
-public abstract class AbstractNamedAFPObjectTest<S extends  AbstractNamedAFPObject>
-        extends AbstractAFPObjectTest<S> {
+public abstract class AbstractNamedAFPObjectTest<S extends AbstractNamedAFPObject>
+extends AbstractAFPObjectTest<S> {
+    @Override
     @Test
     public void testCopySF() {
 
         final S sut = getSut();
 
-        byte[] expected = new byte[17];
-        S.copySF(expected, (byte) 0xD3, (byte)0, (byte)0);
+        final byte[] expected = new byte[17];
+        AbstractAFPObject.copySF(expected, (byte) 0xD3, (byte) 0, (byte) 0);
 
-        byte[] nameData = sut.getNameBytes();
+        final byte[] nameData = sut.getNameBytes();
         System.arraycopy(nameData, 0, expected, 9, nameData.length);
 
-        byte[] actual = new byte[17];
-        Arrays.fill(actual, (byte)-1);
+        final byte[] actual = new byte[17];
+        Arrays.fill(actual, (byte) -1);
 
-        getSut().copySF(actual, (byte)0, (byte)0);
+        getSut().copySF(actual, (byte) 0, (byte) 0);
 
         assertTrue(Arrays.equals(actual, expected));
 
-        byte[] expected2 =  new byte[17];
+        final byte[] expected2 = new byte[17];
         System.arraycopy(expected, 0, expected2, 0, expected.length);
         System.arraycopy(nameData, 0, expected, 9, nameData.length);
 
-        final byte type = (byte)1;
-        final byte catagory = (byte)2;
+        final byte type = (byte) 1;
+        final byte catagory = (byte) 2;
         expected2[4] = type;
         expected2[5] = catagory;
 

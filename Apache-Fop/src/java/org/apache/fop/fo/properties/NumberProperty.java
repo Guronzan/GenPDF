@@ -42,25 +42,28 @@ public final class NumberProperty extends Property implements Numeric {
 
         /**
          * Constructor for NumberProperty.Maker
-         * @param propId the id of the property for which a Maker should be created
+         * 
+         * @param propId
+         *            the id of the property for which a Maker should be created
          */
-        public Maker(int propId) {
+        public Maker(final int propId) {
             super(propId);
         }
 
         /**
          * {@inheritDoc}
          */
-        public Property convertProperty(Property p,
-                                        PropertyList propertyList, FObj fo)
-                    throws PropertyException {
+        @Override
+        public Property convertProperty(final Property p,
+                final PropertyList propertyList, final FObj fo)
+                throws PropertyException {
             if (p instanceof NumberProperty) {
                 return p;
             }
             if (p instanceof EnumProperty) {
                 return EnumNumber.getInstance(p);
             }
-            Number val = p.getNumber();
+            final Number val = p.getNumber();
             if (val != null) {
                 return getInstance(val.doubleValue());
             }
@@ -76,9 +79,12 @@ public final class NumberProperty extends Property implements Numeric {
 
         /**
          * Constructor for NumberProperty.PositiveIntegerMaker
-         * @param propId the id of the property for which a PositiveIntegerMaker should be created
+         * 
+         * @param propId
+         *            the id of the property for which a PositiveIntegerMaker
+         *            should be created
          */
-        public PositiveIntegerMaker(int propId) {
+        public PositiveIntegerMaker(final int propId) {
             super(propId);
         }
 
@@ -87,13 +93,14 @@ public final class NumberProperty extends Property implements Numeric {
          *
          * {@inheritDoc}
          */
-        public Property convertProperty(Property p,
-                                        PropertyList propertyList, FObj fo)
-                    throws PropertyException {
+        @Override
+        public Property convertProperty(final Property p,
+                final PropertyList propertyList, final FObj fo)
+                throws PropertyException {
             if (p instanceof EnumProperty) {
                 return EnumNumber.getInstance(p);
             }
-            Number val = p.getNumber();
+            final Number val = p.getNumber();
             if (val != null) {
                 int i = Math.round(val.floatValue());
                 if (i <= 0) {
@@ -107,23 +114,24 @@ public final class NumberProperty extends Property implements Numeric {
     }
 
     /** cache holding all canonical NumberProperty instances */
-    private static final PropertyCache<NumberProperty> CACHE
-            = new PropertyCache<NumberProperty>();
+    private static final PropertyCache<NumberProperty> CACHE = new PropertyCache<NumberProperty>();
 
     private final Number number;
 
     /**
      * Constructor for double input
-     * @param num double numeric value for property
+     * 
+     * @param num
+     *            double numeric value for property
      */
-    private NumberProperty(double num) {
-        //Store the number as an int or a long,
-        //if possible
+    private NumberProperty(final double num) {
+        // Store the number as an int or a long,
+        // if possible
         if (num == Math.floor(num)) {
             if (num < Integer.MAX_VALUE) {
-                this.number = new Integer((int)num);
+                this.number = new Integer((int) num);
             } else {
-                this.number = new Long((long)num);
+                this.number = new Long((long) num);
             }
         } else {
             this.number = new Double(num);
@@ -132,95 +140,118 @@ public final class NumberProperty extends Property implements Numeric {
 
     /**
      * Constructor for integer input
-     * @param num integer numeric value for property
+     * 
+     * @param num
+     *            integer numeric value for property
      */
-    private NumberProperty(int num) {
+    private NumberProperty(final int num) {
         this.number = new Integer(num);
     }
 
     /**
-     * Returns the canonical NumberProperty instance
-     * corresponding to the given Number
-     * @param num   the base Double
-     * @return  the canonical NumberProperty
+     * Returns the canonical NumberProperty instance corresponding to the given
+     * Number
+     * 
+     * @param num
+     *            the base Double
+     * @return the canonical NumberProperty
      */
-    public static NumberProperty getInstance(Double num) {
+    public static NumberProperty getInstance(final Double num) {
         return CACHE.fetch(new NumberProperty(num.doubleValue()));
     }
 
     /**
-     * Returns the canonical NumberProperty instance
-     * corresponding to the given Integer
-     * @param num   the base Integer
-     * @return  the canonical NumberProperty
+     * Returns the canonical NumberProperty instance corresponding to the given
+     * Integer
+     * 
+     * @param num
+     *            the base Integer
+     * @return the canonical NumberProperty
      */
-    public static NumberProperty getInstance(Integer num) {
+    public static NumberProperty getInstance(final Integer num) {
         return CACHE.fetch(new NumberProperty(num.intValue()));
     }
 
     /**
-     * Returns the canonical NumberProperty instance
-     * corresponding to the given double
-     * @param num   the base double value
-     * @return  the canonical NumberProperty
+     * Returns the canonical NumberProperty instance corresponding to the given
+     * double
+     * 
+     * @param num
+     *            the base double value
+     * @return the canonical NumberProperty
      */
-    public static NumberProperty getInstance(double num) {
+    public static NumberProperty getInstance(final double num) {
         return CACHE.fetch(new NumberProperty(num));
     }
 
     /**
-     * Returns the canonical NumberProperty instance
-     * corresponding to the given int
-     * @param num   the base int value
-     * @return  the canonical NumberProperty
+     * Returns the canonical NumberProperty instance corresponding to the given
+     * int
+     * 
+     * @param num
+     *            the base int value
+     * @return the canonical NumberProperty
      */
-    public static NumberProperty getInstance(int num) {
+    public static NumberProperty getInstance(final int num) {
         return CACHE.fetch(new NumberProperty(num));
     }
 
     /**
      * Plain number always has a dimension of 0.
+     * 
      * @return a dimension of 0.
      */
+    @Override
     public int getDimension() {
         return 0;
     }
 
     /**
      * Return the value of this Numeric.
+     * 
      * @return The value as a double.
      */
+    @Override
     public double getNumericValue() {
-        return number.doubleValue();
+        return this.number.doubleValue();
     }
 
     /**
      * Return the value of this Numeric.
-     * @param context Evaluation context
+     * 
+     * @param context
+     *            Evaluation context
      * @return The value as a double.
      */
-    public double getNumericValue(PercentBaseContext context) {
+    @Override
+    public double getNumericValue(final PercentBaseContext context) {
         return getNumericValue();
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getValue() {
-        return number.intValue();
+        return this.number.intValue();
     }
 
     /**
      * Return the value
-     * @param context Evaluation context
+     * 
+     * @param context
+     *            Evaluation context
      * @return The value as an int.
      */
-    public int getValue(PercentBaseContext context) {
+    @Override
+    public int getValue(final PercentBaseContext context) {
         return getValue();
     }
 
     /**
      * Return true because all numbers are absolute.
+     * 
      * @return true.
      */
+    @Override
     public boolean isAbsolute() {
         return true;
     }
@@ -228,6 +259,7 @@ public final class NumberProperty extends Property implements Numeric {
     /**
      * @return this.number cast as a Number
      */
+    @Override
     public Number getNumber() {
         return this.number;
     }
@@ -235,30 +267,37 @@ public final class NumberProperty extends Property implements Numeric {
     /**
      * @return this.number cast as an Object
      */
+    @Override
     public Object getObject() {
         return this.number;
     }
 
     /**
      * Convert NumberProperty to Numeric object
+     * 
      * @return Numeric object corresponding to this
      */
+    @Override
     public Numeric getNumeric() {
         return this;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Length getLength() {
-        //Assume pixels (like in HTML) when there's no unit
+        // Assume pixels (like in HTML) when there's no unit
         return FixedLength.getInstance(getNumericValue(), "px");
     }
 
     /**
      * Convert NumberProperty to a Color. Not sure why this is needed.
-     * @param foUserAgent FOUserAgent
+     * 
+     * @param foUserAgent
+     *            FOUserAgent
      * @return Color that corresponds to black
      */
-    public Color getColor(FOUserAgent foUserAgent) {
+    @Override
+    public Color getColor(final FOUserAgent foUserAgent) {
         // TODO: Implement somehow
         // Convert numeric value to color ???
         // Convert to hexadecimal and then try to make it into a color?
@@ -267,20 +306,20 @@ public final class NumberProperty extends Property implements Numeric {
 
     /** {@inheritDoc} */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
         if (!(obj instanceof NumberProperty)) {
             return false;
         }
-        NumberProperty other = (NumberProperty) obj;
-        return CompareUtil.equal(number, other.number);
+        final NumberProperty other = (NumberProperty) obj;
+        return CompareUtil.equal(this.number, other.number);
     }
 
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return number.hashCode();
+        return this.number.hashCode();
     }
 }

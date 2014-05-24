@@ -26,16 +26,22 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlgraphics.image.writer.ImageWriter;
 import org.apache.xmlgraphics.image.writer.ImageWriterParams;
 import org.apache.xmlgraphics.image.writer.ImageWriterRegistry;
 import org.apache.xmlgraphics.image.writer.MultiImageWriter;
 
+@Slf4j
 public class ImageWriterExample2 extends ImageWriterExample1 {
 
-    private BufferedImage createAnImage(String compression, int pageNum) {
-        boolean monochrome = compression.startsWith("CCITT"); //CCITT is for 1bit b/w only
+    private BufferedImage createAnImage(final String compression,
+            final int pageNum) {
+        final boolean monochrome = compression.startsWith("CCITT"); // CCITT is
+        // for 1bit
+        // b/w only
 
         BufferedImage bimg;
         if (monochrome) {
@@ -44,46 +50,53 @@ public class ImageWriterExample2 extends ImageWriterExample1 {
             bimg = new BufferedImage(400, 200, BufferedImage.TYPE_INT_RGB);
         }
 
-        Graphics2D g2d = bimg.createGraphics();
+        final Graphics2D g2d = bimg.createGraphics();
         g2d.setBackground(Color.white);
         g2d.clearRect(0, 0, 400, 200);
         g2d.setColor(Color.black);
 
-        //Paint something
+        // Paint something
         paintSome(g2d, pageNum);
 
         return bimg;
     }
 
     /**
-     * Creates a bitmap file. We paint a few things on a bitmap and then save the bitmap using
-     * an ImageWriter.
-     * @param outputFile the target file
-     * @param format the target format (a MIME type, ex. "image/png")
-     * @throws IOException In case of an I/O error
+     * Creates a bitmap file. We paint a few things on a bitmap and then save
+     * the bitmap using an ImageWriter.
+     *
+     * @param outputFile
+     *            the target file
+     * @param format
+     *            the target format (a MIME type, ex. "image/png")
+     * @throws IOException
+     *             In case of an I/O error
      */
-    public void generateBitmapUsingJava2D(File outputFile, String format)
-                throws IOException {
-        //String compression = "CCITT T.6";
-        String compression = "PackBits";
+    @Override
+    public void generateBitmapUsingJava2D(final File outputFile,
+            final String format) throws IOException {
+        // String compression = "CCITT T.6";
+        final String compression = "PackBits";
 
         OutputStream out = new java.io.FileOutputStream(outputFile);
         out = new java.io.BufferedOutputStream(out);
         try {
 
-            ImageWriter writer = ImageWriterRegistry.getInstance().getWriterFor(format);
-            ImageWriterParams params = new ImageWriterParams();
+            final ImageWriter writer = ImageWriterRegistry.getInstance()
+                    .getWriterFor(format);
+            final ImageWriterParams params = new ImageWriterParams();
             params.setCompressionMethod(compression);
             params.setResolution(72);
 
             if (writer.supportsMultiImageWriter()) {
-                MultiImageWriter multiWriter = writer.createMultiImageWriter(out);
+                final MultiImageWriter multiWriter = writer
+                        .createMultiImageWriter(out);
                 multiWriter.writeImage(createAnImage(compression, 1), params);
                 multiWriter.writeImage(createAnImage(compression, 2), params);
                 multiWriter.close();
             } else {
-                throw new UnsupportedOperationException("multi-page images not supported for "
-                        + format);
+                throw new UnsupportedOperationException(
+                        "multi-page images not supported for " + format);
             }
 
         } finally {
@@ -93,9 +106,11 @@ public class ImageWriterExample2 extends ImageWriterExample1 {
 
     /**
      * Command-line interface
-     * @param args command-line arguments
+     *
+     * @param args
+     *            command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
             File targetDir;
             if (args.length >= 1) {
@@ -104,13 +119,14 @@ public class ImageWriterExample2 extends ImageWriterExample1 {
                 targetDir = new File(".");
             }
             if (!targetDir.exists()) {
-                System.err.println("Target Directory does not exist: " + targetDir);
+                System.err.println("Target Directory does not exist: "
+                        + targetDir);
             }
-            File outputFile = new File(targetDir, "eps-example2.tif");
-            ImageWriterExample2 app = new ImageWriterExample2();
+            final File outputFile = new File(targetDir, "eps-example2.tif");
+            final ImageWriterExample2 app = new ImageWriterExample2();
             app.generateBitmapUsingJava2D(outputFile, "image/tiff");
-            System.out.println("File written: " + outputFile.getCanonicalPath());
-        } catch (Exception e) {
+            log.info("File written: " + outputFile.getCanonicalPath());
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }

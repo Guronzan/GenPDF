@@ -24,27 +24,35 @@ package org.apache.fop.pdf;
 /**
  * Class representing a font descriptor for CID fonts.
  *
- * Font descriptors for CID fonts are specified on page 227 and onwards of the PDF 1.3 spec.
+ * Font descriptors for CID fonts are specified on page 227 and onwards of the
+ * PDF 1.3 spec.
  */
 public class PDFCIDFontDescriptor extends PDFFontDescriptor {
 
     /**
      * Create a /FontDescriptor object.
      *
-     * @param basefont the base font name
-     * @param fontBBox the bounding box for the described font
-     * @param flags various characteristics of the font
-     * @param capHeight height of the capital letters
-     * @param stemV the width of the dominant vertical stems of glyphs
-     * @param italicAngle the angle of the vertical dominant strokes
-     * @param lang the language
+     * @param basefont
+     *            the base font name
+     * @param fontBBox
+     *            the bounding box for the described font
+     * @param flags
+     *            various characteristics of the font
+     * @param capHeight
+     *            height of the capital letters
+     * @param stemV
+     *            the width of the dominant vertical stems of glyphs
+     * @param italicAngle
+     *            the angle of the vertical dominant strokes
+     * @param lang
+     *            the language
      */
-    public PDFCIDFontDescriptor(String basefont, int[] fontBBox,
-                                int capHeight, int flags, int italicAngle,
-                                int stemV, String lang) {
+    public PDFCIDFontDescriptor(final String basefont, final int[] fontBBox,
+            final int capHeight, final int flags, final int italicAngle,
+            final int stemV, final String lang) {
 
         super(basefont, fontBBox[3], fontBBox[1], capHeight, flags,
-              new PDFRectangle(fontBBox), italicAngle, stemV);
+                new PDFRectangle(fontBBox), italicAngle, stemV);
 
         put("MissingWidth", new Integer(500));
         if (lang != null) {
@@ -54,9 +62,11 @@ public class PDFCIDFontDescriptor extends PDFFontDescriptor {
 
     /**
      * Set the CID set stream.
-     * @param cidSet the PDF stream containing the CID set
+     * 
+     * @param cidSet
+     *            the PDF stream containing the CID set
      */
-    public void setCIDSet(PDFStream cidSet) {
+    public void setCIDSet(final PDFStream cidSet) {
         if (cidSet != null) {
             put("CIDSet", cidSet);
         }

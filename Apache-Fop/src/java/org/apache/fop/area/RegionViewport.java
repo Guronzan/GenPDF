@@ -27,10 +27,9 @@ import java.util.TreeMap;
 import org.apache.fop.traits.WritingModeTraitsGetter;
 
 /**
- * Region Viewport area.
- * This object represents the region-viewport-area.  It has a
- * region-reference-area as its child.  These areas are described
- * in the fo:region-body description in the XSL Recommendation.
+ * Region Viewport area. This object represents the region-viewport-area. It has
+ * a region-reference-area as its child. These areas are described in the
+ * fo:region-body description in the XSL Recommendation.
  */
 public class RegionViewport extends Area implements Viewport {
 
@@ -44,9 +43,10 @@ public class RegionViewport extends Area implements Viewport {
     /**
      * Create a new region-viewport-area
      *
-     * @param viewArea the view area of this viewport
+     * @param viewArea
+     *            the view area of this viewport
      */
-    public RegionViewport(Rectangle2D viewArea) {
+    public RegionViewport(final Rectangle2D viewArea) {
         this.viewArea = viewArea;
         addTrait(Trait.IS_VIEWPORT_AREA, Boolean.TRUE);
     }
@@ -54,10 +54,11 @@ public class RegionViewport extends Area implements Viewport {
     /**
      * Set the region-reference-area for this region viewport.
      *
-     * @param reg the child region-reference-area inside this viewport
+     * @param reg
+     *            the child region-reference-area inside this viewport
      */
-    public void setRegionReference(RegionReference reg) {
-        regionReference = reg;
+    public void setRegionReference(final RegionReference reg) {
+        this.regionReference = reg;
     }
 
     /**
@@ -66,26 +67,29 @@ public class RegionViewport extends Area implements Viewport {
      * @return the child region-reference-area inside this viewport
      */
     public RegionReference getRegionReference() {
-        return regionReference;
+        return this.regionReference;
     }
 
     /**
      * Set the clipping for this region viewport.
      *
-     * @param c the clipping value
+     * @param c
+     *            the clipping value
      */
-    public void setClip(boolean c) {
-        clip = c;
+    public void setClip(final boolean c) {
+        this.clip = c;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasClip() {
         return this.clip;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Rectangle getClipRectangle() {
-        if (clip) {
+        if (this.clip) {
             return new Rectangle(getIPD(), getBPD());
         } else {
             return null;
@@ -98,47 +102,50 @@ public class RegionViewport extends Area implements Viewport {
      * @return the viewport rectangle area
      */
     public Rectangle2D getViewArea() {
-        return viewArea;
+        return this.viewArea;
     }
 
-    private void writeObject(java.io.ObjectOutputStream out)
-    throws IOException {
-        out.writeFloat((float) viewArea.getX());
-        out.writeFloat((float) viewArea.getY());
-        out.writeFloat((float) viewArea.getWidth());
-        out.writeFloat((float) viewArea.getHeight());
-        out.writeBoolean(clip);
-        out.writeObject((TreeMap)traits);
-        out.writeObject(regionReference);
+    private void writeObject(final java.io.ObjectOutputStream out)
+            throws IOException {
+        out.writeFloat((float) this.viewArea.getX());
+        out.writeFloat((float) this.viewArea.getY());
+        out.writeFloat((float) this.viewArea.getWidth());
+        out.writeFloat((float) this.viewArea.getHeight());
+        out.writeBoolean(this.clip);
+        out.writeObject(this.traits);
+        out.writeObject(this.regionReference);
     }
 
-    private void readObject(java.io.ObjectInputStream in)
+    private void readObject(final java.io.ObjectInputStream in)
             throws IOException, ClassNotFoundException {
-        viewArea = new Rectangle2D.Float(in.readFloat(), in.readFloat(),
-                                         in.readFloat(), in.readFloat());
-        clip = in.readBoolean();
-        traits = (TreeMap)in.readObject();
+        this.viewArea = new Rectangle2D.Float(in.readFloat(), in.readFloat(),
+                in.readFloat(), in.readFloat());
+        this.clip = in.readBoolean();
+        this.traits = (TreeMap) in.readObject();
         setRegionReference((RegionReference) in.readObject());
     }
 
     /** {@inheritDoc} */
+    @Override
     public Object clone() throws CloneNotSupportedException {
-        RegionViewport rv = (RegionViewport) super.clone();
-        rv.regionReference = (RegionReference) regionReference.clone();
-        rv.viewArea = (Rectangle2D) viewArea.clone();
+        final RegionViewport rv = (RegionViewport) super.clone();
+        rv.regionReference = (RegionReference) this.regionReference.clone();
+        rv.viewArea = (Rectangle2D) this.viewArea.clone();
         return rv;
     }
 
     /**
-     * Sets the writing mode traits for the region reference of
-     * this region viewport
-     * @param wmtg a WM traits getter
+     * Sets the writing mode traits for the region reference of this region
+     * viewport
+     *
+     * @param wmtg
+     *            a WM traits getter
      */
-    public void setWritingModeTraits(WritingModeTraitsGetter wmtg) {
-        if (regionReference != null) {
-            regionReference.setWritingModeTraits(wmtg);
+    @Override
+    public void setWritingModeTraits(final WritingModeTraitsGetter wmtg) {
+        if (this.regionReference != null) {
+            this.regionReference.setWritingModeTraits(wmtg);
         }
     }
 
 }
-

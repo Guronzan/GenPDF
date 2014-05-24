@@ -30,12 +30,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import org.apache.fop.util.DefaultErrorListener;
+import org.apache.fop.util.UnclosableInputStream;
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageContext;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
@@ -43,71 +41,69 @@ import org.apache.xmlgraphics.image.loader.ImageSize;
 import org.apache.xmlgraphics.image.loader.impl.AbstractImagePreloader;
 import org.apache.xmlgraphics.image.loader.impl.ImageXMLDOM;
 import org.apache.xmlgraphics.image.loader.util.ImageUtil;
-
-import org.apache.fop.util.DefaultErrorListener;
-import org.apache.fop.util.UnclosableInputStream;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Image preloader for Plan images.
  */
+@Slf4j
 public class PreloaderPlan extends AbstractImagePreloader {
 
-    /** Logger instance */
-    private static Log log = LogFactory.getLog(PreloaderPlan.class);
-
     /** {@inheritDoc} */
-    public ImageInfo preloadImage(String uri, Source src, ImageContext context)
-            throws IOException {
+    @Override
+    public ImageInfo preloadImage(final String uri, final Source src,
+            final ImageContext context) throws IOException {
         if (!ImageUtil.hasInputStream(src)) {
-            //TODO Remove this and support DOMSource and possibly SAXSource
+            // TODO Remove this and support DOMSource and possibly SAXSource
             return null;
         }
-        ImageInfo info = getImage(uri, src, context);
+        final ImageInfo info = getImage(uri, src, context);
         if (info != null) {
-            ImageUtil.closeQuietly(src); //Image is fully read
+            ImageUtil.closeQuietly(src); // Image is fully read
         }
         return info;
     }
 
-    private ImageInfo getImage(String uri, Source src, ImageContext context) throws IOException {
+    private ImageInfo getImage(final String uri, final Source src,
+            final ImageContext context) throws IOException {
 
-        InputStream in = new UnclosableInputStream(ImageUtil.needInputStream(src));
+        final InputStream in = new UnclosableInputStream(
+                ImageUtil.needInputStream(src));
         try {
-            Document planDoc = getDocument(in);
-            Element rootEl = planDoc.getDocumentElement();
-            if (!PlanElementMapping.NAMESPACE.equals(
-                    rootEl.getNamespaceURI())) {
+            final Document planDoc = getDocument(in);
+            final Element rootEl = planDoc.getDocumentElement();
+            if (!PlanElementMapping.NAMESPACE.equals(rootEl.getNamespaceURI())) {
                 in.reset();
                 return null;
             }
 
-            //Have to render the plan to know its size
-            PlanRenderer pr = new PlanRenderer();
-            Document svgDoc = pr.createSVGDocument(planDoc);
-            float width = pr.getWidth();
-            float height = pr.getHeight();
+            // Have to render the plan to know its size
+            final PlanRenderer pr = new PlanRenderer();
+            final Document svgDoc = pr.createSVGDocument(planDoc);
+            final float width = pr.getWidth();
+            final float height = pr.getHeight();
 
-            //Return converted SVG image
-            ImageInfo info = new ImageInfo(uri, "image/svg+xml");
+            // Return converted SVG image
+            final ImageInfo info = new ImageInfo(uri, "image/svg+xml");
             final ImageSize size = new ImageSize();
-            size.setSizeInMillipoints(
-                    Math.round(width * 1000),
+            size.setSizeInMillipoints(Math.round(width * 1000),
                     Math.round(height * 1000));
-            //Set the resolution to that of the FOUserAgent
+            // Set the resolution to that of the FOUserAgent
             size.setResolution(context.getSourceResolution());
             size.calcPixelsFromSize();
             info.setSize(size);
 
-            //The whole image had to be loaded for this, so keep it
-            Image image = new ImageXMLDOM(info, svgDoc,
-                    svgDoc.getDocumentElement().getNamespaceURI());
+            // The whole image had to be loaded for this, so keep it
+            final Image image = new ImageXMLDOM(info, svgDoc, svgDoc
+                    .getDocumentElement().getNamespaceURI());
             info.getCustomObjects().put(ImageInfo.ORIGINAL_IMAGE, image);
 
             return info;
-        } catch (TransformerException e) {
+        } catch (final TransformerException e) {
             try {
                 in.reset();
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 // we're more interested in the original exception
             }
             log.debug("Error while trying to parsing a Plan file: "
@@ -116,18 +112,19 @@ public class PreloaderPlan extends AbstractImagePreloader {
         }
     }
 
-    private Document getDocument(InputStream in) throws TransformerException {
-        TransformerFactory tFactory = TransformerFactory.newInstance();
-        //Custom error listener to minimize output to console
-        ErrorListener errorListener = new DefaultErrorListener(log);
+    private Document getDocument(final InputStream in)
+            throws TransformerException {
+        final TransformerFactory tFactory = TransformerFactory.newInstance();
+        // Custom error listener to minimize output to console
+        final ErrorListener errorListener = new DefaultErrorListener(log);
         tFactory.setErrorListener(errorListener);
-        Transformer transformer = tFactory.newTransformer();
+        final Transformer transformer = tFactory.newTransformer();
         transformer.setErrorListener(errorListener);
-        Source source = new StreamSource(in);
-        DOMResult res = new DOMResult();
+        final Source source = new StreamSource(in);
+        final DOMResult res = new DOMResult();
         transformer.transform(source, res);
 
-        Document doc = (Document)res.getNode();
+        final Document doc = (Document) res.getNode();
         return doc;
     }
 

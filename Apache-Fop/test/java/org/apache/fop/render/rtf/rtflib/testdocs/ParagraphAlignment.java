@@ -17,7 +17,6 @@
 
 /* $Id: ParagraphAlignment.java 679326 2008-07-24 09:35:34Z vhennebert $ */
 
-
 /*
  * This file is part of the RTF library of the FOP project, which was originally
  * created by Bertrand Delacretaz <bdelacretaz@codeconsult.ch> and by other
@@ -27,14 +26,16 @@
 
 package org.apache.fop.render.rtf.rtflib.testdocs;
 
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfDocumentArea;
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfParagraph;
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfText;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfAttributes;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfDocumentArea;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfParagraph;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfText;
 
-/**  Generates a simple RTF test document for the jfor rtflib package.
- *  @author Bertrand Delacretaz bdelacretaz@codeconsult.ch
+/**
+ * Generates a simple RTF test document for the jfor rtflib package.
+ * 
+ * @author Bertrand Delacretaz bdelacretaz@codeconsult.ch
  */
 public class ParagraphAlignment extends TestDocument {
 
@@ -46,34 +47,39 @@ public class ParagraphAlignment extends TestDocument {
 
     /**
      * Generate the document.
-     * @param rda RtfDocumentArea
-     * @param sect RtfSection
-     * @throws java.io.IOException for I/O errors
+     * 
+     * @param rda
+     *            RtfDocumentArea
+     * @param sect
+     *            RtfSection
+     * @throws java.io.IOException
+     *             for I/O errors
      */
-    protected void generateDocument(RtfDocumentArea rda, RtfSection sect) throws java.io.IOException
-    {
-        RtfAttributes attr = new RtfAttributes ();
+    @Override
+    protected void generateDocument(final RtfDocumentArea rda,
+            final RtfSection sect) throws java.io.IOException {
+        RtfAttributes attr = new RtfAttributes();
         attr.set(RtfText.ALIGN_CENTER);
-        RtfParagraph p = sect.newParagraph (attr);
+        RtfParagraph p = sect.newParagraph(attr);
         p.newLineBreak();
         p.newLineBreak();
-        p.newText ("Centered title");
+        p.newText("Centered title");
         p.newLineBreak();
         p.close();
 
-        attr = new RtfAttributes ();
+        attr = new RtfAttributes();
         attr.set(RtfText.ALIGN_LEFT);
-        p = sect.newParagraph (attr);
+        p = sect.newParagraph(attr);
         p.newLineBreak();
-        p.newText ("This is the left aligned text.");
+        p.newText("This is the left aligned text.");
         p.newLineBreak();
         p.close();
 
-        attr = new RtfAttributes ();
+        attr = new RtfAttributes();
         attr.set(RtfText.ALIGN_RIGHT);
-        p = sect.newParagraph (attr);
+        p = sect.newParagraph(attr);
         p.newLineBreak();
-        p.newText ("This is the right aligned text.");
+        p.newText("This is the right aligned text.");
         p.newLineBreak();
         p.close();
     }

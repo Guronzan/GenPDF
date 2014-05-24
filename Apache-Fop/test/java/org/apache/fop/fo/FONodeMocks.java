@@ -19,68 +19,69 @@
 
 package org.apache.fop.fo;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 
+import org.apache.fop.apps.FOUserAgent;
+import org.apache.fop.apps.FopFactory;
 import org.apache.xmlgraphics.image.loader.ImageException;
 import org.apache.xmlgraphics.image.loader.ImageManager;
 import org.apache.xmlgraphics.image.loader.ImageSessionContext;
 
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.FopFactory;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * A helper class for creating mocks of {@link FONode} and its descendants.
  */
 public final class FONodeMocks {
 
-    private FONodeMocks() { }
+    private FONodeMocks() {
+    }
 
     /**
      * Creates and returns a mock {@link FONode} configured with a mock
-     * {@link FOEventHandler}. The FO event handler returns a mock {@link FOUserAgent},
-     * which in turn returns a mock {@link FopFactory}, which returns a mock
-     * {@link ImageManager}.
+     * {@link FOEventHandler}. The FO event handler returns a mock
+     * {@link FOUserAgent}, which in turn returns a mock {@link FopFactory},
+     * which returns a mock {@link ImageManager}.
      *
      * @return a mock FO node
      */
     public static FONode mockFONode() {
-        FONode mockFONode = mock(FONode.class);
+        final FONode mockFONode = mock(FONode.class);
         mockGetFOEventHandler(mockFONode);
         return mockFONode;
     }
 
-    private static void mockGetFOEventHandler(FONode mockFONode) {
-        FOEventHandler mockFOEventHandler = mock(FOEventHandler.class);
+    private static void mockGetFOEventHandler(final FONode mockFONode) {
+        final FOEventHandler mockFOEventHandler = mock(FOEventHandler.class);
         mockGetUserAgent(mockFOEventHandler);
         when(mockFONode.getFOEventHandler()).thenReturn(mockFOEventHandler);
     }
 
-    private static void mockGetUserAgent(FOEventHandler mockFOEventHandler) {
-        FOUserAgent mockFOUserAgent = mock(FOUserAgent.class);
+    private static void mockGetUserAgent(final FOEventHandler mockFOEventHandler) {
+        final FOUserAgent mockFOUserAgent = mock(FOUserAgent.class);
         mockGetFactory(mockFOUserAgent);
         when(mockFOEventHandler.getUserAgent()).thenReturn(mockFOUserAgent);
     }
 
-    private static void mockGetFactory(FOUserAgent mockFOUserAgent) {
-        FopFactory mockFopFactory = mock(FopFactory.class);
+    private static void mockGetFactory(final FOUserAgent mockFOUserAgent) {
+        final FopFactory mockFopFactory = mock(FopFactory.class);
         mockGetImageManager(mockFopFactory);
         when(mockFOUserAgent.getFactory()).thenReturn(mockFopFactory);
     }
 
-    private static void mockGetImageManager(FopFactory mockFopFactory) {
+    private static void mockGetImageManager(final FopFactory mockFopFactory) {
         try {
-            ImageManager mockImageManager = mock(ImageManager.class);
-            when(mockImageManager.getImageInfo(anyString(), any(ImageSessionContext.class)))
-                    .thenReturn(null);
+            final ImageManager mockImageManager = mock(ImageManager.class);
+            when(
+                    mockImageManager.getImageInfo(anyString(),
+                            any(ImageSessionContext.class))).thenReturn(null);
             when(mockFopFactory.getImageManager()).thenReturn(mockImageManager);
-        } catch (ImageException e) {
+        } catch (final ImageException e) {
             throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }

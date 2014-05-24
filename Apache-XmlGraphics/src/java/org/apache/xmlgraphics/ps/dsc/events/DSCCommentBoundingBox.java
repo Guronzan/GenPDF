@@ -42,14 +42,17 @@ public class DSCCommentBoundingBox extends AbstractDSCComment {
 
     /**
      * Creates a new instance.
-     * @param bbox the bounding box
+     * 
+     * @param bbox
+     *            the bounding box
      */
-    public DSCCommentBoundingBox(Rectangle2D bbox) {
+    public DSCCommentBoundingBox(final Rectangle2D bbox) {
         setBoundingBox(bbox);
     }
 
     /**
      * Returns the bounding box.
+     * 
      * @return the bounding box
      */
     public Rectangle2D getBoundingBox() {
@@ -58,42 +61,52 @@ public class DSCCommentBoundingBox extends AbstractDSCComment {
 
     /**
      * Sets the bounding box.
-     * @param bbox the bounding box
+     * 
+     * @param bbox
+     *            the bounding box
      */
-    public void setBoundingBox(Rectangle2D bbox) {
+    public void setBoundingBox(final Rectangle2D bbox) {
         this.bbox = bbox;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return DSCConstants.BBOX;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasValues() {
         return true;
     }
 
     /** {@inheritDoc} */
-    public void parseValue(String value) {
-        List params = splitParams(value);
-        Iterator iter = params.iterator();
+    @Override
+    public void parseValue(final String value) {
+        final List params = splitParams(value);
+        final Iterator iter = params.iterator();
 
-        double x1 = Double.parseDouble((String)iter.next());
-        double y1 = Double.parseDouble((String)iter.next());
-        double x2 = Double.parseDouble((String)iter.next());
-        double y2 = Double.parseDouble((String)iter.next());
+        final double x1 = Double.parseDouble((String) iter.next());
+        final double y1 = Double.parseDouble((String) iter.next());
+        final double x2 = Double.parseDouble((String) iter.next());
+        final double y2 = Double.parseDouble((String) iter.next());
         this.bbox = new Rectangle2D.Double(x1, y1, x2 - x1, y2 - y1);
     }
 
     /** {@inheritDoc} */
-    public void generate(PSGenerator gen) throws IOException {
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
         if (getBoundingBox() != null) {
-            gen.writeDSCComment(getName(), new Object[] {
-                new Integer((int)Math.floor(this.bbox.getX())),
-                new Integer((int)Math.floor(this.bbox.getY())),
-                new Integer((int)Math.ceil(this.bbox.getX() + this.bbox.getWidth())),
-                new Integer((int)Math.ceil(this.bbox.getY() + this.bbox.getHeight()))});
+            gen.writeDSCComment(
+                    getName(),
+                    new Object[] {
+                            new Integer((int) Math.floor(this.bbox.getX())),
+                            new Integer((int) Math.floor(this.bbox.getY())),
+                            new Integer((int) Math.ceil(this.bbox.getX()
+                                    + this.bbox.getWidth())),
+                            new Integer((int) Math.ceil(this.bbox.getY()
+                                    + this.bbox.getHeight())) });
         } else {
             gen.writeDSCComment(getName(), DSCConstants.ATEND);
         }

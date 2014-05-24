@@ -50,7 +50,7 @@ public class PSImageUtils {
 
     /**
      * Writes a bitmap image to the PostScript stream.
-     * 
+     *
      * @param encoder
      *            the image encoder
      * @param imgDim
@@ -118,7 +118,7 @@ public class PSImageUtils {
 
     /**
      * Writes a bitmap image to the PostScript stream.
-     * 
+     *
      * @param encoder
      *            the image encoder
      * @param imgDim
@@ -274,7 +274,7 @@ public class PSImageUtils {
 
     static void writeImageCommand(final RenderedImage img,
             final PSDictionary imageDict, final PSGenerator gen)
-            throws IOException {
+                    throws IOException {
         final ImageEncodingHelper helper = new ImageEncodingHelper(img, true);
         final ColorModel cm = helper.getEncodedColorModel();
         final Dimension imgDim = new Dimension(img.getWidth(), img.getHeight());
@@ -293,7 +293,7 @@ public class PSImageUtils {
     static void writeImageCommand(final PSDictionary imageDict,
             final Dimension imgDim, final ColorSpace colorSpace,
             final boolean invertImage, final PSGenerator gen)
-            throws IOException {
+                    throws IOException {
         imageDict.put("/ImageType", "1");
         imageDict.put("/Width", Integer.toString(imgDim.width));
         imageDict.put("/Height", Integer.toString(imgDim.height));
@@ -310,7 +310,7 @@ public class PSImageUtils {
     }
 
     private static final char[] HEX = { '0', '1', '2', '3', '4', '5', '6', '7',
-        '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+            '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
     private static String rgb2Hex(final int rgb) {
         final StringBuffer sb = new StringBuffer();
@@ -324,7 +324,7 @@ public class PSImageUtils {
 
     /**
      * Renders a bitmap image to PostScript.
-     * 
+     *
      * @param img
      *            image to render
      * @param x
@@ -356,7 +356,7 @@ public class PSImageUtils {
 
     /**
      * Paints a reusable image (previously added as a PostScript form).
-     * 
+     *
      * @param form
      *            the PostScript form resource implementing the image
      * @param formDimensions
@@ -415,7 +415,7 @@ public class PSImageUtils {
     /**
      * Generates commands to modify the current transformation matrix so an
      * image fits into a given rectangle.
-     * 
+     *
      * @param gen
      *            the PostScript generator
      * @param imageDimensions
@@ -427,7 +427,7 @@ public class PSImageUtils {
      */
     public static void translateAndScale(final PSGenerator gen,
             Dimension2D imageDimensions, final Rectangle2D targetRect)
-            throws IOException {
+                    throws IOException {
         gen.writeln(gen.formatDouble(targetRect.getX()) + " "
                 + gen.formatDouble(targetRect.getY()) + " translate");
         if (imageDimensions == null) {
@@ -443,7 +443,7 @@ public class PSImageUtils {
 
     /**
      * Extracts a packed RGB integer array of a RenderedImage.
-     * 
+     *
      * @param img
      *            the image
      * @param startX
@@ -511,7 +511,7 @@ public class PSImageUtils {
 
     /**
      * Places an EPS file in the PostScript stream.
-     * 
+     *
      * @param in
      *            the InputStream that contains the EPS stream
      * @param name

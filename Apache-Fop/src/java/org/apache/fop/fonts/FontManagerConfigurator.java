@@ -25,12 +25,12 @@ import java.net.URI;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.apache.fop.apps.FOPException;
+import org.apache.fop.fonts.FontTriplet.Matcher;
 import org.apache.fop.fonts.substitute.FontSubstitutions;
 import org.apache.fop.fonts.substitute.FontSubstitutionsConfigurator;
 import org.apache.fop.util.LogUtil;
@@ -38,10 +38,8 @@ import org.apache.fop.util.LogUtil;
 /**
  * Configurator of the FontManager
  */
+@Slf4j
 public class FontManagerConfigurator {
-
-    /** logger instance */
-    private static Log log = LogFactory.getLog(FontManagerConfigurator.class);
 
     private final Configuration cfg;
 
@@ -49,52 +47,64 @@ public class FontManagerConfigurator {
 
     /**
      * Main constructor
-     * @param cfg the font manager configuration object
+     *
+     * @param cfg
+     *            the font manager configuration object
      */
-    public FontManagerConfigurator(Configuration cfg) {
+    public FontManagerConfigurator(final Configuration cfg) {
         this.cfg = cfg;
     }
 
     /**
      * Main constructor
-     * @param cfg the font manager configuration object
-     * @param baseURI the base URI of the configuration
+     *
+     * @param cfg
+     *            the font manager configuration object
+     * @param baseURI
+     *            the base URI of the configuration
      */
-    public FontManagerConfigurator(Configuration cfg, URI baseURI) {
+    public FontManagerConfigurator(final Configuration cfg, final URI baseURI) {
         this.cfg = cfg;
         this.baseURI = baseURI;
     }
 
     /**
      * Initializes font settings from the user configuration
-     * @param fontManager a font manager
-     * @param strict true if strict checking of the configuration is enabled
-     * @throws FOPException if an exception occurs while processing the configuration
+     *
+     * @param fontManager
+     *            a font manager
+     * @param strict
+     *            true if strict checking of the configuration is enabled
+     * @throws FOPException
+     *             if an exception occurs while processing the configuration
      */
-    public void configure(FontManager fontManager, boolean strict) throws FOPException {
+    public void configure(final FontManager fontManager, final boolean strict)
+            throws FOPException {
         // caching (fonts)
-        if (cfg.getChild("use-cache", false) != null) {
+        if (this.cfg.getChild("use-cache", false) != null) {
             try {
-                fontManager.setUseCache(cfg.getChild("use-cache").getValueAsBoolean());
-            } catch (ConfigurationException e) {
+                fontManager.setUseCache(this.cfg.getChild("use-cache")
+                        .getValueAsBoolean());
+            } catch (final ConfigurationException e) {
                 LogUtil.handleException(log, e, true);
             }
         }
-        if (cfg.getChild("cache-file", false) != null) {
+        if (this.cfg.getChild("cache-file", false) != null) {
             try {
-                fontManager.setCacheFile(new File(cfg.getChild("cache-file").getValue()));
-            } catch (ConfigurationException e) {
+                fontManager.setCacheFile(new File(this.cfg.getChild(
+                        "cache-file").getValue()));
+            } catch (final ConfigurationException e) {
                 LogUtil.handleException(log, e, true);
             }
         }
-        if (cfg.getChild("font-base", false) != null) {
-            String path = cfg.getChild("font-base").getValue(null);
-            if (baseURI != null) {
-                path = baseURI.resolve(path).normalize().toString();
+        if (this.cfg.getChild("font-base", false) != null) {
+            String path = this.cfg.getChild("font-base").getValue(null);
+            if (this.baseURI != null) {
+                path = this.baseURI.resolve(path).normalize().toString();
             }
             try {
                 fontManager.setFontBaseURL(path);
-            } catch (MalformedURLException mfue) {
+            } catch (final MalformedURLException mfue) {
                 LogUtil.handleException(log, mfue, true);
             }
         }
@@ -102,31 +112,34 @@ public class FontManagerConfigurator {
         // [GA] permit configuration control over base14 kerning; without this,
         // there is no way for a user to enable base14 kerning other than by
         // programmatic API;
-        if (cfg.getChild("base14-kerning", false) != null) {
+        if (this.cfg.getChild("base14-kerning", false) != null) {
             try {
-                fontManager
-                    .setBase14KerningEnabled(cfg.getChild("base14-kerning").getValueAsBoolean());
-            } catch (ConfigurationException e) {
+                fontManager.setBase14KerningEnabled(this.cfg.getChild(
+                        "base14-kerning").getValueAsBoolean());
+            } catch (final ConfigurationException e) {
                 LogUtil.handleException(log, e, true);
             }
         }
 
         // global font configuration
-        Configuration fontsCfg = cfg.getChild("fonts", false);
+        final Configuration fontsCfg = this.cfg.getChild("fonts", false);
         if (fontsCfg != null) {
 
             // font substitution
-            Configuration substitutionsCfg = fontsCfg.getChild("substitutions", false);
+            final Configuration substitutionsCfg = fontsCfg.getChild(
+                    "substitutions", false);
             if (substitutionsCfg != null) {
-                FontSubstitutions substitutions = new FontSubstitutions();
-                new FontSubstitutionsConfigurator(substitutionsCfg).configure(substitutions);
+                final FontSubstitutions substitutions = new FontSubstitutions();
+                new FontSubstitutionsConfigurator(substitutionsCfg)
+                .configure(substitutions);
                 fontManager.setFontSubstitutions(substitutions);
             }
 
             // referenced fonts (fonts which are not to be embedded)
-            Configuration referencedFontsCfg = fontsCfg.getChild("referenced-fonts", false);
+            final Configuration referencedFontsCfg = fontsCfg.getChild(
+                    "referenced-fonts", false);
             if (referencedFontsCfg != null) {
-                FontTriplet.Matcher matcher = createFontsMatcher(
+                final FontTriplet.Matcher matcher = createFontsMatcher(
                         referencedFontsCfg, strict);
                 fontManager.setReferencedFontsMatcher(matcher);
             }
@@ -136,25 +149,29 @@ public class FontManagerConfigurator {
 
     /**
      * Creates a font triplet matcher from a configuration object.
-     * @param cfg the configuration object
-     * @param strict true for strict configuraton error handling
+     *
+     * @param cfg
+     *            the configuration object
+     * @param strict
+     *            true for strict configuraton error handling
      * @return the font matcher
-     * @throws FOPException if an error occurs while building the matcher
+     * @throws FOPException
+     *             if an error occurs while building the matcher
      */
     public static FontTriplet.Matcher createFontsMatcher(
-            Configuration cfg, boolean strict) throws FOPException {
-        List<FontTriplet.Matcher> matcherList = new java.util.ArrayList<FontTriplet.Matcher>();
-        Configuration[] matches = cfg.getChildren("match");
-        for (int i = 0; i < matches.length; i++) {
+            final Configuration cfg, final boolean strict) throws FOPException {
+        final List<FontTriplet.Matcher> matcherList = new java.util.ArrayList<FontTriplet.Matcher>();
+        final Configuration[] matches = cfg.getChildren("match");
+        for (final Configuration matche : matches) {
             try {
-                matcherList.add(new FontFamilyRegExFontTripletMatcher(
-                        matches[i].getAttribute("font-family")));
-            } catch (ConfigurationException ce) {
+                matcherList.add(new FontFamilyRegExFontTripletMatcher(matche
+                        .getAttribute("font-family")));
+            } catch (final ConfigurationException ce) {
                 LogUtil.handleException(log, ce, strict);
                 continue;
             }
         }
-        FontTriplet.Matcher orMatcher = new OrFontTripletMatcher(
+        final FontTriplet.Matcher orMatcher = new OrFontTripletMatcher(
                 matcherList.toArray(new FontTriplet.Matcher[matcherList.size()]));
         return orMatcher;
     }
@@ -163,14 +180,15 @@ public class FontManagerConfigurator {
 
         private final FontTriplet.Matcher[] matchers;
 
-        public OrFontTripletMatcher(FontTriplet.Matcher[] matchers) {
+        public OrFontTripletMatcher(final FontTriplet.Matcher[] matchers) {
             this.matchers = matchers;
         }
 
         /** {@inheritDoc} */
-        public boolean matches(FontTriplet triplet) {
-            for (int i = 0, c = matchers.length; i < c; i++) {
-                if (matchers[i].matches(triplet)) {
+        @Override
+        public boolean matches(final FontTriplet triplet) {
+            for (final Matcher matcher : this.matchers) {
+                if (matcher.matches(triplet)) {
                     return true;
                 }
             }
@@ -179,17 +197,19 @@ public class FontManagerConfigurator {
 
     }
 
-    private static class FontFamilyRegExFontTripletMatcher implements FontTriplet.Matcher {
+    private static class FontFamilyRegExFontTripletMatcher implements
+    FontTriplet.Matcher {
 
         private final Pattern regex;
 
-        public FontFamilyRegExFontTripletMatcher(String regex) {
+        public FontFamilyRegExFontTripletMatcher(final String regex) {
             this.regex = Pattern.compile(regex);
         }
 
         /** {@inheritDoc} */
-        public boolean matches(FontTriplet triplet) {
-            return regex.matcher(triplet.getName()).matches();
+        @Override
+        public boolean matches(final FontTriplet triplet) {
+            return this.regex.matcher(triplet.getName()).matches();
         }
 
     }

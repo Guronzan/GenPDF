@@ -21,36 +21,41 @@ package org.apache.fop.render.afp;
 
 import java.util.Map;
 
-import org.apache.xmlgraphics.util.MimeConstants;
-
 import org.apache.fop.afp.AFPPaintingState;
 import org.apache.fop.afp.AFPResourceManager;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.render.AbstractRenderingContext;
+import org.apache.xmlgraphics.util.MimeConstants;
 
 /**
  * Rendering context for AFP (MO:DCA) production.
  */
 public class AFPRenderingContext extends AbstractRenderingContext {
 
-    private AFPResourceManager resourceManager;
-    private AFPPaintingState paintingState;
-    private FontInfo fontInfo;
-    private Map foreignAttributes;
+    private final AFPResourceManager resourceManager;
+    private final AFPPaintingState paintingState;
+    private final FontInfo fontInfo;
+    private final Map foreignAttributes;
 
     /**
      * Main constructor.
-     * @param userAgent the user agent
-     * @param resourceManager the resource manager
-     * @param paintingState the painting state
-     * @param fontInfo the font list
-     * @param foreignAttributes a map of foreign attributes
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param resourceManager
+     *            the resource manager
+     * @param paintingState
+     *            the painting state
+     * @param fontInfo
+     *            the font list
+     * @param foreignAttributes
+     *            a map of foreign attributes
      */
-    public AFPRenderingContext(FOUserAgent userAgent,
-            AFPResourceManager resourceManager,
-            AFPPaintingState paintingState,
-            FontInfo fontInfo, Map foreignAttributes) {
+    public AFPRenderingContext(final FOUserAgent userAgent,
+            final AFPResourceManager resourceManager,
+            final AFPPaintingState paintingState, final FontInfo fontInfo,
+            final Map foreignAttributes) {
         super(userAgent);
         this.resourceManager = resourceManager;
         this.paintingState = paintingState;
@@ -59,12 +64,14 @@ public class AFPRenderingContext extends AbstractRenderingContext {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return MimeConstants.MIME_AFP;
     }
 
     /**
      * Returns the resource manager.
+     * 
      * @return the resource manager
      */
     public AFPResourceManager getResourceManager() {
@@ -78,6 +85,7 @@ public class AFPRenderingContext extends AbstractRenderingContext {
 
     /**
      * Returns the font list.
+     * 
      * @return the font list
      */
     public FontInfo getFontInfo() {
@@ -86,6 +94,7 @@ public class AFPRenderingContext extends AbstractRenderingContext {
 
     /**
      * Returns a Map of foreign attributes.
+     * 
      * @return the foreign attributes (Map&lt;QName, Object&gt;)
      */
     public Map getForeignAttributes() {

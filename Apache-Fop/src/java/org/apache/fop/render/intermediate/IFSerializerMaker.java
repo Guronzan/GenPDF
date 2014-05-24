@@ -23,28 +23,33 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.MimeConstants;
 
 /**
- * Intermediate format document handler factory for intermediate format XML output.
+ * Intermediate format document handler factory for intermediate format XML
+ * output.
  */
 public class IFSerializerMaker extends AbstractIFDocumentHandlerMaker {
 
     /** {@inheritDoc} */
-    public IFDocumentHandler makeIFDocumentHandler(FOUserAgent ua) {
-        IFSerializer handler = new IFSerializer();
+    @Override
+    public IFDocumentHandler makeIFDocumentHandler(final FOUserAgent ua) {
+        final IFSerializer handler = new IFSerializer();
         handler.setContext(new IFContext(ua));
         if (ua.isAccessibilityEnabled()) {
-            ua.setStructureTreeEventHandler(handler.getStructureTreeEventHandler());
+            ua.setStructureTreeEventHandler(handler
+                    .getStructureTreeEventHandler());
         }
         return handler;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
-        return new String[] {MimeConstants.MIME_FOP_IF};
+        return new String[] { MimeConstants.MIME_FOP_IF };
     }
 
 }

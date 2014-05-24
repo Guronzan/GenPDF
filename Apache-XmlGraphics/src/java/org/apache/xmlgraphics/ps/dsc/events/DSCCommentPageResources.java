@@ -37,15 +37,18 @@ public class DSCCommentPageResources extends AbstractResourcesDSCComment {
 
     /**
      * Creates a new instance.
-     * @param resources a Collection of PSResource instances
+     * 
+     * @param resources
+     *            a Collection of PSResource instances
      */
-    public DSCCommentPageResources(Collection resources) {
+    public DSCCommentPageResources(final Collection resources) {
         super(resources);
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#getName()
      */
+    @Override
     public String getName() {
         return DSCConstants.PAGE_RESOURCES;
     }

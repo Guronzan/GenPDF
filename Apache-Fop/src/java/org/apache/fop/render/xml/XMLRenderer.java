@@ -30,15 +30,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import org.apache.xmlgraphics.util.QName;
-import org.apache.xmlgraphics.util.XMLizable;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
@@ -87,22 +84,26 @@ import org.apache.fop.render.RendererContext;
 import org.apache.fop.render.XMLHandler;
 import org.apache.fop.util.ColorUtil;
 import org.apache.fop.util.XMLUtil;
+import org.apache.xmlgraphics.util.QName;
+import org.apache.xmlgraphics.util.XMLizable;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
- * Renderer that renders areas to XML for debugging purposes.
- * This creates an xml that contains the information of the area
- * tree. It does not output any state or derived information.
- * The output can be used to build a new area tree which can be
- * rendered to any renderer.
+ * Renderer that renders areas to XML for debugging purposes. This creates an
+ * xml that contains the information of the area tree. It does not output any
+ * state or derived information. The output can be used to build a new area tree
+ * which can be rendered to any renderer.
  */
+@Slf4j
 public class XMLRenderer extends AbstractXMLRenderer {
 
     /**
-     * Area Tree  (AT) version, used to express an @version attribute
-     * in the root element of the AT document, the initial value of which
-     * is set to '2.0' to signify that something preceded it (but didn't
-     * happen to be marked as such), and that this version is not necessarily
-     * backwards compatible with the unmarked (<2.0) version.
+     * Area Tree (AT) version, used to express an @version attribute in the root
+     * element of the AT document, the initial value of which is set to '2.0' to
+     * signify that something preceded it (but didn't happen to be marked as
+     * such), and that this version is not necessarily backwards compatible with
+     * the unmarked (<2.0) version.
      */
     public static final String VERSION = "2.0";
 
@@ -112,47 +113,59 @@ public class XMLRenderer extends AbstractXMLRenderer {
     private boolean startedSequence = false;
     private boolean compactFormat = false;
 
-    /** If not null, the XMLRenderer will mimic another renderer by using its font setup. */
+    /**
+     * If not null, the XMLRenderer will mimic another renderer by using its
+     * font setup.
+     */
     protected Renderer mimic;
 
     /**
-     * @param userAgent the user agent that contains configuration details. This cannot be null.
+     * @param userAgent
+     *            the user agent that contains configuration details. This
+     *            cannot be null.
      */
-    public XMLRenderer(FOUserAgent userAgent) {
+    public XMLRenderer(final FOUserAgent userAgent) {
         super(userAgent);
-        context = new RendererContext(this, XML_MIME_TYPE);
-        XMLHandler xmlHandler = new XMLXMLHandler();
+        this.context = new RendererContext(this, XML_MIME_TYPE);
+        final XMLHandler xmlHandler = new XMLXMLHandler();
         userAgent.getXMLHandlerRegistry().addXMLHandler(xmlHandler);
-        Boolean b = (Boolean)userAgent.getRendererOptions().get("compact-format");
+        final Boolean b = (Boolean) userAgent.getRendererOptions().get(
+                "compact-format");
         if (b != null) {
             setCompactFormat(b.booleanValue());
         }
     }
 
     /**
-     * Call this method to make the XMLRenderer mimic a different renderer by using its font
-     * setup. This is useful when working with the intermediate format parser.
-     * @param renderer the renderer to mimic
+     * Call this method to make the XMLRenderer mimic a different renderer by
+     * using its font setup. This is useful when working with the intermediate
+     * format parser.
+     *
+     * @param renderer
+     *            the renderer to mimic
      */
-    public void mimicRenderer(Renderer renderer) {
+    public void mimicRenderer(final Renderer renderer) {
         this.mimic = renderer;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setupFontInfo(FontInfo inFontInfo) throws FOPException {
-        if (mimic != null) {
-            mimic.setupFontInfo(inFontInfo);
+    public void setupFontInfo(final FontInfo inFontInfo) throws FOPException {
+        if (this.mimic != null) {
+            this.mimic.setupFontInfo(inFontInfo);
         } else {
             super.setupFontInfo(inFontInfo);
         }
     }
 
     /**
-     * Controls whether to create a more compact format which omit certain attributes.
-     * @param compact true to activate the compact format
+     * Controls whether to create a more compact format which omit certain
+     * attributes.
+     *
+     * @param compact
+     *            true to activate the compact format
      */
-    public void setCompactFormat(boolean compact) {
+    public void setCompactFormat(final boolean compact) {
         this.compactFormat = compact;
     }
 
@@ -162,9 +175,11 @@ public class XMLRenderer extends AbstractXMLRenderer {
 
     /**
      * Adds the general Area attributes.
-     * @param area Area to extract attributes from
+     *
+     * @param area
+     *            Area to extract attributes from
      */
-    protected void addAreaAttributes(Area area) {
+    protected void addAreaAttributes(final Area area) {
         addAttribute("ipd", area.getIPD());
         addAttribute("bpd", area.getBPD());
         maybeAddLevelAttribute(area);
@@ -175,49 +190,55 @@ public class XMLRenderer extends AbstractXMLRenderer {
             if (area.getBPD() != 0) {
                 addAttribute("bpda", area.getAllocBPD());
             }
-            addAttribute("bap", area.getBorderAndPaddingWidthStart() + " "
-                    + area.getBorderAndPaddingWidthEnd() + " "
-                    + area.getBorderAndPaddingWidthBefore() + " "
-                    + area.getBorderAndPaddingWidthAfter());
+            addAttribute(
+                    "bap",
+                    area.getBorderAndPaddingWidthStart() + " "
+                            + area.getBorderAndPaddingWidthEnd() + " "
+                            + area.getBorderAndPaddingWidthBefore() + " "
+                            + area.getBorderAndPaddingWidthAfter());
         }
     }
 
     /**
      * Adds attributes from traits of an Area.
-     * @param area Area to extract traits from
+     *
+     * @param area
+     *            Area to extract traits from
      */
-    protected void addTraitAttributes(Area area) {
-        Map traitMap = area.getTraits();
+    protected void addTraitAttributes(final Area area) {
+        final Map traitMap = area.getTraits();
         if (traitMap != null) {
-            Iterator iter = traitMap.entrySet().iterator();
+            final Iterator iter = traitMap.entrySet().iterator();
             while (iter.hasNext()) {
-                Map.Entry traitEntry = (Map.Entry) iter.next();
-                Object key = traitEntry.getKey();
-                String name = Trait.getTraitName(key);
-                Class clazz = Trait.getTraitClass(key);
+                final Map.Entry traitEntry = (Map.Entry) iter.next();
+                final Object key = traitEntry.getKey();
+                final String name = Trait.getTraitName(key);
+                final Class clazz = Trait.getTraitClass(key);
                 if ("break-before".equals(name) || "break-after".equals(name)) {
                     continue;
                 }
-                Object value = traitEntry.getValue();
+                final Object value = traitEntry.getValue();
                 if (key == Trait.FONT) {
-                    FontTriplet triplet = (FontTriplet)value;
+                    final FontTriplet triplet = (FontTriplet) value;
                     addAttribute("font-name", triplet.getName());
                     addAttribute("font-style", triplet.getStyle());
                     addAttribute("font-weight", triplet.getWeight());
                 } else if (clazz.equals(InternalLink.class)) {
-                    InternalLink iLink = (InternalLink)value;
+                    final InternalLink iLink = (InternalLink) value;
                     addAttribute(name, iLink.xmlAttribute());
                 } else if (clazz.equals(Background.class)) {
-                    Background bkg = (Background)value;
-                    //TODO Remove the following line (makes changes in the test checks necessary)
+                    final Background bkg = (Background) value;
+                    // TODO Remove the following line (makes changes in the test
+                    // checks necessary)
                     addAttribute(name, bkg.toString());
                     if (bkg.getColor() != null) {
-                        addAttribute("bkg-color", ColorUtil.colorToString(bkg.getColor()));
+                        addAttribute("bkg-color",
+                                ColorUtil.colorToString(bkg.getColor()));
                     }
                     if (bkg.getURL() != null) {
                         addAttribute("bkg-img", bkg.getURL());
                         String repString;
-                        int repeat = bkg.getRepeat();
+                        final int repeat = bkg.getRepeat();
                         switch (repeat) {
                         case Constants.EN_REPEAT:
                             repString = "repeat";
@@ -233,17 +254,18 @@ public class XMLRenderer extends AbstractXMLRenderer {
                             break;
                         default:
                             throw new IllegalStateException(
-                                    "Illegal value for repeat encountered: " + repeat);
+                                    "Illegal value for repeat encountered: "
+                                            + repeat);
                         }
                         addAttribute("bkg-repeat", repString);
                         addAttribute("bkg-horz-offset", bkg.getHoriz());
                         addAttribute("bkg-vert-offset", bkg.getVertical());
                     }
                 } else if (clazz.equals(Color.class)) {
-                    Color c = (Color)value;
+                    final Color c = (Color) value;
                     addAttribute(name, ColorUtil.colorToString(c));
                 } else if (key == Trait.START_INDENT || key == Trait.END_INDENT) {
-                    if (((Integer)value).intValue() != 0) {
+                    if (((Integer) value).intValue() != 0) {
                         addAttribute(name, value.toString());
                     }
                 } else {
@@ -255,56 +277,61 @@ public class XMLRenderer extends AbstractXMLRenderer {
         transferForeignObjects(area);
     }
 
-    private void transferForeignObjects(AreaTreeObject ato) {
-        Map prefixes = new java.util.HashMap();
+    private void transferForeignObjects(final AreaTreeObject ato) {
+        final Map prefixes = new java.util.HashMap();
         Iterator iter = ato.getForeignAttributes().entrySet().iterator();
         while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry)iter.next();
-            QName qname = (QName)entry.getKey();
+            final Map.Entry entry = (Map.Entry) iter.next();
+            final QName qname = (QName) entry.getKey();
             prefixes.put(qname.getPrefix(), qname.getNamespaceURI());
-            addAttribute(qname, (String)entry.getValue());
+            addAttribute(qname, (String) entry.getValue());
         }
-        //Namespace declarations
+        // Namespace declarations
         iter = prefixes.entrySet().iterator();
         while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry)iter.next();
-            String qn = "xmlns:" + (String)entry.getKey();
-            atts.addAttribute("", (String)entry.getKey(), qn,
-                    CDATA, (String)entry.getValue());
+            final Map.Entry entry = (Map.Entry) iter.next();
+            final String qn = "xmlns:" + (String) entry.getKey();
+            this.atts.addAttribute("", (String) entry.getKey(), qn, CDATA,
+                    (String) entry.getValue());
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void processOffDocumentItem(OffDocumentItem oDI) {
+    public void processOffDocumentItem(final OffDocumentItem oDI) {
         if (oDI instanceof BookmarkData) {
             renderBookmarkTree((BookmarkData) oDI);
         } else if (oDI instanceof DestinationData) {
             renderDestination((DestinationData) oDI);
         } else if (oDI instanceof OffDocumentExtensionAttachment) {
-            ExtensionAttachment attachment = ((OffDocumentExtensionAttachment)oDI).getAttachment();
-            if (extensionAttachments == null) {
-                extensionAttachments = new java.util.ArrayList();
+            final ExtensionAttachment attachment = ((OffDocumentExtensionAttachment) oDI)
+                    .getAttachment();
+            if (this.extensionAttachments == null) {
+                this.extensionAttachments = new java.util.ArrayList();
             }
-            extensionAttachments.add(attachment);
+            this.extensionAttachments.add(attachment);
         } else {
-            String warn = "Ignoring OffDocumentItem: " + oDI;
+            final String warn = "Ignoring OffDocumentItem: " + oDI;
             log.warn(warn);
         }
     }
 
     /**
      * Renders a BookmarkTree object
-     * @param bookmarkRoot the BookmarkData object representing the top of the tree
+     *
+     * @param bookmarkRoot
+     *            the BookmarkData object representing the top of the tree
      */
     @Override
-    protected void renderBookmarkTree(BookmarkData bookmarkRoot) {
+    protected void renderBookmarkTree(final BookmarkData bookmarkRoot) {
         if (bookmarkRoot.getWhenToProcess() == OffDocumentItem.END_OF_DOC) {
             endPageSequence();
         }
-        /* If this kind of handling is also necessary for other renderers, then
-           better add endPageSequence to the Renderer interface and call it
-           explicitly from model.endDocument() */
+        /*
+         * If this kind of handling is also necessary for other renderers, then
+         * better add endPageSequence to the Renderer interface and call it
+         * explicitly from model.endDocument()
+         */
 
         startElement("bookmarkTree");
         for (int i = 0; i < bookmarkRoot.getCount(); i++) {
@@ -313,15 +340,15 @@ public class XMLRenderer extends AbstractXMLRenderer {
         endElement("bookmarkTree");
     }
 
-    private void renderBookmarkItem(BookmarkData bm) {
-        atts.clear();
+    private void renderBookmarkItem(final BookmarkData bm) {
+        this.atts.clear();
         addAttribute("title", bm.getBookmarkTitle());
         addAttribute("show-children", String.valueOf(bm.showChildItems()));
-        PageViewport pv = bm.getPageViewport();
-        String pvKey = pv == null ? null : pv.getKey();
+        final PageViewport pv = bm.getPageViewport();
+        final String pvKey = pv == null ? null : pv.getKey();
         addAttribute("internal-link",
-                     InternalLink.makeXMLAttribute(pvKey, bm.getIDRef()));
-        startElement("bookmark", atts);
+                InternalLink.makeXMLAttribute(pvKey, bm.getIDRef()));
+        startElement("bookmark", this.atts);
         for (int i = 0; i < bm.getCount(); i++) {
             renderBookmarkItem(bm.getSubData(i));
         }
@@ -330,36 +357,39 @@ public class XMLRenderer extends AbstractXMLRenderer {
 
     /**
      * Renders a DestinationData object (named destination)
-     * @param destination the destination object
+     *
+     * @param destination
+     *            the destination object
      */
-    protected void renderDestination(DestinationData destination) {
+    protected void renderDestination(final DestinationData destination) {
         if (destination.getWhenToProcess() == OffDocumentItem.END_OF_DOC) {
             endPageSequence();
         }
-        atts.clear();
-        PageViewport pv = destination.getPageViewport();
-        String pvKey = pv == null ? null : pv.getKey();
+        this.atts.clear();
+        final PageViewport pv = destination.getPageViewport();
+        final String pvKey = pv == null ? null : pv.getKey();
         addAttribute("internal-link",
                 InternalLink.makeXMLAttribute(pvKey, destination.getIDRef()));
-        startElement("destination", atts);
+        startElement("destination", this.atts);
         endElement("destination");
     }
 
     /** {@inheritDoc} */
     @Override
-    public void startRenderer(OutputStream outputStream)
-                throws IOException {
+    public void startRenderer(final OutputStream outputStream)
+            throws IOException {
         log.debug("Rendering areas to Area Tree XML");
 
         if (this.handler == null) {
-            SAXTransformerFactory factory
-                = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
+            final SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactory
+                    .newInstance();
             try {
-                TransformerHandler transformerHandler = factory.newTransformerHandler();
+                final TransformerHandler transformerHandler = factory
+                        .newTransformerHandler();
                 this.handler = transformerHandler;
-                StreamResult res = new StreamResult(outputStream);
+                final StreamResult res = new StreamResult(outputStream);
                 transformerHandler.setResult(res);
-            } catch (TransformerConfigurationException tce) {
+            } catch (final TransformerConfigurationException tce) {
                 throw new RuntimeException(tce.getMessage());
             }
 
@@ -367,16 +397,16 @@ public class XMLRenderer extends AbstractXMLRenderer {
         }
 
         try {
-            handler.startDocument();
-        } catch (SAXException saxe) {
+            this.handler.startDocument();
+        } catch (final SAXException saxe) {
             handleSAXException(saxe);
         }
-        if (userAgent.getProducer() != null) {
-            comment("Produced by " + userAgent.getProducer());
+        if (this.userAgent.getProducer() != null) {
+            comment("Produced by " + this.userAgent.getProducer());
         }
-        atts.clear();
+        this.atts.clear();
         addAttribute("version", VERSION);
-        startElement("areaTree", atts);
+        startElement("areaTree", this.atts);
     }
 
     /** {@inheritDoc} */
@@ -385,8 +415,8 @@ public class XMLRenderer extends AbstractXMLRenderer {
         endPageSequence();
         endElement("areaTree");
         try {
-            handler.endDocument();
-        } catch (SAXException saxe) {
+            this.handler.endDocument();
+        } catch (final SAXException saxe) {
             handleSAXException(saxe);
         }
         if (this.out != null) {
@@ -397,20 +427,22 @@ public class XMLRenderer extends AbstractXMLRenderer {
 
     /** {@inheritDoc} */
     @Override
-    public void renderPage(PageViewport page) throws IOException, FOPException {
-        atts.clear();
+    public void renderPage(final PageViewport page) throws IOException,
+    FOPException {
+        this.atts.clear();
         addAttribute("bounds", page.getViewArea());
         addAttribute("key", page.getKey());
         addAttribute("nr", page.getPageNumber());
         addAttribute("formatted-nr", page.getPageNumberString());
         if (page.getSimplePageMasterName() != null) {
-            addAttribute("simple-page-master-name", page.getSimplePageMasterName());
+            addAttribute("simple-page-master-name",
+                    page.getSimplePageMasterName());
         }
         if (page.isBlank()) {
             addAttribute("blank", "true");
         }
         transferForeignObjects(page);
-        startElement("pageViewport", atts);
+        startElement("pageViewport", this.atts);
         startElement("page");
 
         handlePageExtensionAttachments(page);
@@ -422,20 +454,24 @@ public class XMLRenderer extends AbstractXMLRenderer {
 
     /** {@inheritDoc} */
     @Override
-    protected void handleExtensionAttachments(List attachments) {
+    protected void handleExtensionAttachments(final List attachments) {
         if (attachments != null && attachments.size() > 0) {
             startElement("extension-attachments");
-            Iterator i = attachments.iterator();
+            final Iterator i = attachments.iterator();
             while (i.hasNext()) {
-                ExtensionAttachment attachment = (ExtensionAttachment)i.next();
+                final ExtensionAttachment attachment = (ExtensionAttachment) i
+                        .next();
                 if (attachment instanceof XMLizable) {
                     try {
-                        ((XMLizable)attachment).toSAX(this.handler);
-                    } catch (SAXException e) {
-                        log.error("Error while serializing Extension Attachment", e);
+                        ((XMLizable) attachment).toSAX(this.handler);
+                    } catch (final SAXException e) {
+                        log.error(
+                                "Error while serializing Extension Attachment",
+                                e);
                     }
                 } else {
-                    String warn = "Ignoring non-XMLizable ExtensionAttachment: " + attachment;
+                    final String warn = "Ignoring non-XMLizable ExtensionAttachment: "
+                            + attachment;
                     log.warn(warn);
                 }
             }
@@ -445,11 +481,12 @@ public class XMLRenderer extends AbstractXMLRenderer {
 
     /** {@inheritDoc} */
     @Override
-    public void startPageSequence(PageSequence pageSequence) {
+    public void startPageSequence(final PageSequence pageSequence) {
         handleDocumentExtensionAttachments();
-        endPageSequence();  // move this before handleDocumentExtensionAttachments() ?
-        startedSequence = true;
-        atts.clear();
+        endPageSequence(); // move this before
+        // handleDocumentExtensionAttachments() ?
+        this.startedSequence = true;
+        this.atts.clear();
         if (pageSequence.getLanguage() != null) {
             addAttribute("language", pageSequence.getLanguage());
         }
@@ -457,15 +494,15 @@ public class XMLRenderer extends AbstractXMLRenderer {
             addAttribute("country", pageSequence.getCountry());
         }
         transferForeignObjects(pageSequence);
-        startElement("pageSequence", atts);
+        startElement("pageSequence", this.atts);
         handleExtensionAttachments(pageSequence.getExtensionAttachments());
-        LineArea seqTitle = pageSequence.getTitle();
+        final LineArea seqTitle = pageSequence.getTitle();
         if (seqTitle != null) {
             startElement("title");
-            List children = seqTitle.getInlineAreas();
+            final List children = seqTitle.getInlineAreas();
 
             for (int count = 0; count < children.size(); count++) {
-                InlineArea inline = (InlineArea) children.get(count);
+                final InlineArea inline = (InlineArea) children.get(count);
                 renderInlineArea(inline);
             }
 
@@ -477,55 +514,55 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * Tells the renderer to finish the current PageSequence
      */
     public void endPageSequence() {
-        if (startedSequence) {
+        if (this.startedSequence) {
             endElement("pageSequence");
         }
-        startedSequence = false;
+        this.startedSequence = false;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void renderRegionViewport(RegionViewport port) {
+    protected void renderRegionViewport(final RegionViewport port) {
         if (port != null) {
-            atts.clear();
+            this.atts.clear();
             addAreaAttributes(port);
             addTraitAttributes(port);
             addAttribute("rect", port.getViewArea());
             if (port.hasClip()) {
                 addAttribute("clipped", "true");
             }
-            startElement("regionViewport", atts);
-            RegionReference region = port.getRegionReference();
-            atts.clear();
+            startElement("regionViewport", this.atts);
+            final RegionReference region = port.getRegionReference();
+            this.atts.clear();
             addAreaAttributes(region);
             addTraitAttributes(region);
             addAttribute("name", region.getRegionName());
             addAttribute("ctm", region.getCTM().toString());
             if (region.getRegionClass() == FO_REGION_BEFORE) {
-                startElement("regionBefore", atts);
+                startElement("regionBefore", this.atts);
                 renderRegion(region);
                 endElement("regionBefore");
             } else if (region.getRegionClass() == FO_REGION_START) {
-                startElement("regionStart", atts);
+                startElement("regionStart", this.atts);
                 renderRegion(region);
                 endElement("regionStart");
             } else if (region.getRegionClass() == FO_REGION_BODY) {
-                BodyRegion body = (BodyRegion)region;
+                final BodyRegion body = (BodyRegion) region;
                 if (body.getColumnCount() != 1) {
                     addAttribute("columnGap", body.getColumnGap());
                     addAttribute("columnCount", body.getColumnCount());
                 }
-                startElement("regionBody", atts);
+                startElement("regionBody", this.atts);
                 renderBodyRegion(body);
                 endElement("regionBody");
             } else if (region.getRegionClass() == FO_REGION_END) {
-                startElement("regionEnd", atts);
+                startElement("regionEnd", this.atts);
                 renderRegion(region);
                 endElement("regionEnd");
             } else if (region.getRegionClass() == FO_REGION_AFTER) {
-                startElement("regionAfter", atts);
+                startElement("regionAfter", this.atts);
                 renderRegion(region);
                 endElement("regionAfter");
             }
@@ -534,30 +571,29 @@ public class XMLRenderer extends AbstractXMLRenderer {
     }
 
     @Override
-    protected void startVParea(CTM ctm, Rectangle clippingRect) {
-        //only necessary for graphical output
+    protected void startVParea(final CTM ctm, final Rectangle clippingRect) {
+        // only necessary for graphical output
     }
 
     /** {@inheritDoc} */
     @Override
     protected void endVParea() {
-        //only necessary for graphical output
+        // only necessary for graphical output
+    }
+
+    /**
+     * {@inheritDoc} org.apache.fop.area.inline.InlineArea)
+     */
+    @Override
+    protected void renderInlineAreaBackAndBorders(final InlineArea area) {
+        // only necessary for graphical output
     }
 
     /**
      * {@inheritDoc}
-     *          org.apache.fop.area.inline.InlineArea)
      */
     @Override
-    protected void renderInlineAreaBackAndBorders(InlineArea area) {
-        //only necessary for graphical output
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void renderBeforeFloat(BeforeFloat bf) {
+    protected void renderBeforeFloat(final BeforeFloat bf) {
         startElement("beforeFloat");
         super.renderBeforeFloat(bf);
         endElement("beforeFloat");
@@ -567,10 +603,10 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    protected void renderFootnote(Footnote footnote) {
-        atts.clear();
+    protected void renderFootnote(final Footnote footnote) {
+        this.atts.clear();
         addAttribute("top-offset", footnote.getTop());
-        startElement("footnote", atts);
+        startElement("footnote", this.atts);
         super.renderFootnote(footnote);
         endElement("footnote");
     }
@@ -579,28 +615,28 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    protected void renderMainReference(MainReference mr) {
-        atts.clear();
+    protected void renderMainReference(final MainReference mr) {
+        this.atts.clear();
         addAreaAttributes(mr);
         addTraitAttributes(mr);
         if (mr.getColumnCount() != 1) {
             addAttribute("columnGap", mr.getColumnGap());
         }
-        startElement("mainReference", atts);
+        startElement("mainReference", this.atts);
 
         Span span = null;
-        List spans = mr.getSpans();
+        final List spans = mr.getSpans();
         for (int count = 0; count < spans.size(); count++) {
             span = (Span) spans.get(count);
-            atts.clear();
+            this.atts.clear();
             if (span.getColumnCount() != 1) {
                 addAttribute("columnCount", span.getColumnCount());
             }
             addAreaAttributes(span);
             addTraitAttributes(span);
-            startElement("span", atts);
+            startElement("span", this.atts);
             for (int c = 0; c < span.getColumnCount(); c++) {
-                NormalFlow flow = span.getNormalFlow(c);
+                final NormalFlow flow = span.getNormalFlow(c);
 
                 renderFlow(flow);
             }
@@ -613,22 +649,22 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    protected void renderFlow(NormalFlow flow) {
+    protected void renderFlow(final NormalFlow flow) {
         // the normal flow reference area contains stacked blocks
-        atts.clear();
+        this.atts.clear();
         addAreaAttributes(flow);
         addTraitAttributes(flow);
-        startElement("flow", atts);
+        startElement("flow", this.atts);
         super.renderFlow(flow);
         endElement("flow");
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void renderReferenceArea(Block block) {
+    protected void renderReferenceArea(final Block block) {
         handleBlockTraits(block);
 
-        List children = block.getChildAreas();
+        final List children = block.getChildAreas();
         if (children != null) {
             renderBlocks(block, children);
         }
@@ -636,13 +672,13 @@ public class XMLRenderer extends AbstractXMLRenderer {
 
     /** {@inheritDoc} */
     @Override
-    protected void renderBlock(Block block) {
-        atts.clear();
+    protected void renderBlock(final Block block) {
+        this.atts.clear();
         addAreaAttributes(block);
         addTraitAttributes(block);
-        int positioning = block.getPositioning();
+        final int positioning = block.getPositioning();
         if (block instanceof BlockViewport) {
-            BlockViewport bvp = (BlockViewport)block;
+            final BlockViewport bvp = (BlockViewport) block;
             boolean abspos = false;
             if (bvp.getPositioning() == Block.ABSOLUTE
                     || bvp.getPositioning() == Block.FIXED) {
@@ -674,9 +710,9 @@ public class XMLRenderer extends AbstractXMLRenderer {
         case Block.FIXED:
             addAttribute("positioning", "fixed");
             break;
-        default: //nop
+        default: // nop
         }
-        startElement("block", atts);
+        startElement("block", this.atts);
         super.renderBlock(block);
         endElement("block");
     }
@@ -685,11 +721,11 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    protected void renderLineArea(LineArea line) {
-        atts.clear();
+    protected void renderLineArea(final LineArea line) {
+        this.atts.clear();
         addAreaAttributes(line);
         addTraitAttributes(line);
-        startElement("lineArea", atts);
+        startElement("lineArea", this.atts);
         super.renderLineArea(line);
         endElement("lineArea");
     }
@@ -698,14 +734,14 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    protected void renderInlineArea(InlineArea inlineArea) {
-        atts.clear();
+    protected void renderInlineArea(final InlineArea inlineArea) {
+        this.atts.clear();
         if (inlineArea.getClass() == InlineArea.class) {
             // Generic inline area. This is implemented to allow the 0x0 "dummy"
             // area generated by fo:wrapper to pass its id.
             addAreaAttributes(inlineArea);
             addTraitAttributes(inlineArea);
-            startElement("inline", atts);
+            startElement("inline", this.atts);
             endElement("inline");
         } else {
             super.renderInlineArea(inlineArea);
@@ -717,8 +753,8 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    protected void renderInlineViewport(InlineViewport viewport) {
-        atts.clear();
+    protected void renderInlineViewport(final InlineViewport viewport) {
+        this.atts.clear();
         addAreaAttributes(viewport);
         addTraitAttributes(viewport);
         addAttribute("offset", viewport.getBlockProgressionOffset());
@@ -726,7 +762,7 @@ public class XMLRenderer extends AbstractXMLRenderer {
         if (viewport.hasClip()) {
             addAttribute("clip", "true");
         }
-        startElement("viewport", atts);
+        startElement("viewport", this.atts);
         super.renderInlineViewport(viewport);
         endElement("viewport");
     }
@@ -735,13 +771,13 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    public void renderImage(Image image, Rectangle2D pos) {
-        atts.clear();
+    public void renderImage(final Image image, final Rectangle2D pos) {
+        this.atts.clear();
         addAreaAttributes(image);
         addTraitAttributes(image);
         addAttribute("url", image.getURL());
-        //addAttribute("pos", pos);
-        startElement("image", atts);
+        // addAttribute("pos", pos);
+        startElement("image", this.atts);
         endElement("image");
     }
 
@@ -749,7 +785,7 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    public void renderContainer(Container cont) {
+    public void renderContainer(final Container cont) {
         startElement("container");
         super.renderContainer(cont);
         endElement("container");
@@ -757,21 +793,26 @@ public class XMLRenderer extends AbstractXMLRenderer {
 
     /**
      * Renders an fo:foreing-object.
-     * @param fo the foreign object
-     * @param pos the position of the foreign object
-     * @see org.apache.fop.render.AbstractRenderer#renderForeignObject(ForeignObject, Rectangle2D)
+     *
+     * @param fo
+     *            the foreign object
+     * @param pos
+     *            the position of the foreign object
+     * @see org.apache.fop.render.AbstractRenderer#renderForeignObject(ForeignObject,
+     *      Rectangle2D)
      */
     @Override
-    public void renderForeignObject(ForeignObject fo, Rectangle2D pos) {
-        atts.clear();
+    public void renderForeignObject(final ForeignObject fo,
+            final Rectangle2D pos) {
+        this.atts.clear();
         addAreaAttributes(fo);
         addTraitAttributes(fo);
-        String ns = fo.getNameSpace();
+        final String ns = fo.getNameSpace();
         addAttribute("ns", ns);
-        startElement("foreignObject", atts);
-        Document doc = fo.getDocument();
-        context.setProperty(XMLXMLHandler.HANDLER, handler);
-        renderXML(context, doc, ns);
+        startElement("foreignObject", this.atts);
+        final Document doc = fo.getDocument();
+        this.context.setProperty(XMLXMLHandler.HANDLER, this.handler);
+        renderXML(this.context, doc, ns);
         endElement("foreignObject");
     }
 
@@ -779,12 +820,12 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    protected void renderInlineSpace(Space space) {
-        atts.clear();
+    protected void renderInlineSpace(final Space space) {
+        this.atts.clear();
         addAreaAttributes(space);
         addTraitAttributes(space);
         addAttribute("offset", space.getBlockProgressionOffset());
-        startElement("space", atts);
+        startElement("space", this.atts);
         endElement("space");
     }
 
@@ -792,8 +833,8 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    protected void renderText(TextArea text) {
-        atts.clear();
+    protected void renderText(final TextArea text) {
+        this.atts.clear();
         if (text.getTextWordSpaceAdjust() != 0) {
             addAttribute("twsadjust", text.getTextWordSpaceAdjust());
         }
@@ -804,7 +845,7 @@ public class XMLRenderer extends AbstractXMLRenderer {
         addAttribute("baseline", text.getBaselineOffset());
         addAreaAttributes(text);
         addTraitAttributes(text);
-        startElement("text", atts);
+        startElement("text", this.atts);
         super.renderText(text);
         endElement("text");
     }
@@ -813,22 +854,22 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    protected void renderWord(WordArea word) {
-        atts.clear();
-        int offset = word.getBlockProgressionOffset();
-        if ( offset != 0 ) {
+    protected void renderWord(final WordArea word) {
+        this.atts.clear();
+        final int offset = word.getBlockProgressionOffset();
+        if (offset != 0) {
             addAttribute("offset", offset);
         }
-        int[] letterAdjust = word.getLetterAdjustArray();
+        final int[] letterAdjust = word.getLetterAdjustArray();
         if (letterAdjust != null) {
-            StringBuffer sb = new StringBuffer(64);
+            final StringBuffer sb = new StringBuffer(64);
             boolean nonZeroFound = false;
             for (int i = 0, c = letterAdjust.length; i < c; i++) {
                 if (i > 0) {
                     sb.append(' ');
                 }
                 sb.append(letterAdjust[i]);
-                nonZeroFound |= (letterAdjust[i] != 0);
+                nonZeroFound |= letterAdjust[i] != 0;
             }
             if (nonZeroFound) {
                 addAttribute("letter-adjust", sb.toString());
@@ -836,9 +877,9 @@ public class XMLRenderer extends AbstractXMLRenderer {
         }
         maybeAddLevelAttribute(word);
         maybeAddPositionAdjustAttribute(word);
-        String text = word.getWord();
+        final String text = word.getWord();
         maybeAddReversedAttribute(word, text);
-        startElement("word", atts);
+        startElement("word", this.atts);
         characters(text);
         endElement("word");
         super.renderWord(word);
@@ -848,17 +889,17 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    protected void renderSpace(SpaceArea space) {
-        atts.clear();
-        int offset = space.getBlockProgressionOffset();
-        if ( offset != 0 ) {
+    protected void renderSpace(final SpaceArea space) {
+        this.atts.clear();
+        final int offset = space.getBlockProgressionOffset();
+        if (offset != 0) {
             addAttribute("offset", offset);
         }
         maybeAddLevelAttribute(space);
         if (!space.isAdjustable()) {
-            addAttribute("adj", "false"); //default is true
+            addAttribute("adj", "false"); // default is true
         }
-        startElement("space", atts);
+        startElement("space", this.atts);
         characters(space.getSpace());
         endElement("space");
         super.renderSpace(space);
@@ -868,12 +909,12 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    protected void renderInlineParent(InlineParent ip) {
-        atts.clear();
+    protected void renderInlineParent(final InlineParent ip) {
+        this.atts.clear();
         addAreaAttributes(ip);
         addTraitAttributes(ip);
         addAttribute("offset", ip.getBlockProgressionOffset());
-        startElement("inlineparent", atts);
+        startElement("inlineparent", this.atts);
         super.renderInlineParent(ip);
         endElement("inlineparent");
     }
@@ -882,12 +923,12 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    protected void renderInlineBlockParent(InlineBlockParent ibp) {
-        atts.clear();
+    protected void renderInlineBlockParent(final InlineBlockParent ibp) {
+        this.atts.clear();
         addAreaAttributes(ibp);
         addTraitAttributes(ibp);
         addAttribute("offset", ibp.getBlockProgressionOffset());
-        startElement("inlineblockparent", atts);
+        startElement("inlineblockparent", this.atts);
         super.renderInlineBlockParent(ibp);
         endElement("inlineblockparent");
     }
@@ -896,42 +937,43 @@ public class XMLRenderer extends AbstractXMLRenderer {
      * {@inheritDoc}
      */
     @Override
-    protected void renderLeader(Leader area) {
-        atts.clear();
+    protected void renderLeader(final Leader area) {
+        this.atts.clear();
         addAreaAttributes(area);
         addTraitAttributes(area);
         addAttribute("offset", area.getBlockProgressionOffset());
         addAttribute("ruleStyle", area.getRuleStyleAsString());
         addAttribute("ruleThickness", area.getRuleThickness());
-        startElement("leader", atts);
+        startElement("leader", this.atts);
         endElement("leader");
         super.renderLeader(area);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return XML_MIME_TYPE;
     }
 
-    private void maybeAddLevelAttribute ( Area a ) {
-        int level = a.getBidiLevel();
-        if ( level >= 0 ) {
-            addAttribute ( "level", level );
+    private void maybeAddLevelAttribute(final Area a) {
+        final int level = a.getBidiLevel();
+        if (level >= 0) {
+            addAttribute("level", level);
         }
     }
 
-    private void maybeAddPositionAdjustAttribute ( WordArea w ) {
-        int[][] adjustments = w.getGlyphPositionAdjustments();
-        if ( adjustments != null ) {
-            addAttribute ( "position-adjust", XMLUtil.encodePositionAdjustments ( adjustments ) );
+    private void maybeAddPositionAdjustAttribute(final WordArea w) {
+        final int[][] adjustments = w.getGlyphPositionAdjustments();
+        if (adjustments != null) {
+            addAttribute("position-adjust",
+                    XMLUtil.encodePositionAdjustments(adjustments));
         }
     }
 
-    private void maybeAddReversedAttribute ( WordArea w, String text ) {
-        if ( w.isReversed() && ( text.length() > 1 )  ) {
+    private void maybeAddReversedAttribute(final WordArea w, final String text) {
+        if (w.isReversed() && text.length() > 1) {
             addAttribute("reversed", "true");
         }
     }
-
 
 }

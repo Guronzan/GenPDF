@@ -19,28 +19,28 @@
 
 package org.apache.fop.image.loader.batik;
 
+import org.apache.fop.svg.AbstractFOPImageElementBridge;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 
-import org.apache.fop.svg.AbstractFOPImageElementBridge;
-
 /**
- * Image Element Bridge class for the SVG to Java2D converter, used to make Batik load images
- * through FOP and XGC's image loading framework.
+ * Image Element Bridge class for the SVG to Java2D converter, used to make
+ * Batik load images through FOP and XGC's image loading framework.
  */
 class GenericFOPImageElementBridge extends AbstractFOPImageElementBridge {
 
     /**
      * Constructs a new bridge for the &lt;image&gt; element.
      */
-    public GenericFOPImageElementBridge() { }
+    public GenericFOPImageElementBridge() {
+    }
 
-    private final ImageFlavor[] supportedFlavors = new ImageFlavor[]
-                                               {ImageFlavor.GRAPHICS2D,
-                                                BatikImageFlavors.SVG_DOM};
+    private final ImageFlavor[] supportedFlavors = new ImageFlavor[] {
+            ImageFlavor.GRAPHICS2D, BatikImageFlavors.SVG_DOM };
 
     /** {@inheritDoc} */
+    @Override
     protected ImageFlavor[] getSupportedFlavours() {
-        return supportedFlavors;
+        return this.supportedFlavors;
     }
 
 }

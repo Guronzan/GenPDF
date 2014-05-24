@@ -19,8 +19,8 @@
 
 package org.apache.fop.fotreetest.ext;
 
-import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.ElementMapping;
+import org.apache.fop.fo.FONode;
 
 /**
  * This class provides the element mapping for FOP.
@@ -38,15 +38,17 @@ public class TestElementMapping extends ElementMapping {
     }
 
     /** @see org.apache.fop.fo.ElementMapping#initialize() */
+    @Override
     protected void initialize() {
-        if (foObjs == null) {
-            foObjs = new java.util.HashMap<String, Maker>();
-            foObjs.put("assert", new AssertMaker());
+        if (this.foObjs == null) {
+            this.foObjs = new java.util.HashMap<String, Maker>();
+            this.foObjs.put("assert", new AssertMaker());
         }
     }
 
     static class AssertMaker extends ElementMapping.Maker {
-        public FONode make(FONode parent) {
+        @Override
+        public FONode make(final FONode parent) {
             return new AssertElement(parent);
         }
     }

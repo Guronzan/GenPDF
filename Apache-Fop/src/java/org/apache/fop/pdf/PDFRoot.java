@@ -51,23 +51,21 @@ public class PDFRoot extends PDFDictionary {
     public static final int PAGEMODE_FULLSCREEN = 3;
 
     private static final PDFName[] PAGEMODE_NAMES = new PDFName[] {
-        new PDFName("UseNone"),
-        new PDFName("UseOutlines"),
-        new PDFName("UseThumbs"),
-        new PDFName("FullScreen"),
-    };
+            new PDFName("UseNone"), new PDFName("UseOutlines"),
+            new PDFName("UseThumbs"), new PDFName("FullScreen"), };
 
     /**
-     * create a Root (/Catalog) object. NOTE: The PDFRoot
-     * object must be created before the PDF document is
-     * generated, but it is not assigned an object ID until
-     * it is about to be written (immediately before the xref
-     * table as part of the trailer). (mark-fop@inomial.com)
+     * create a Root (/Catalog) object. NOTE: The PDFRoot object must be created
+     * before the PDF document is generated, but it is not assigned an object ID
+     * until it is about to be written (immediately before the xref table as
+     * part of the trailer). (mark-fop@inomial.com)
      *
-     * @param objnum the object's number
-     * @param pages the PDFPages object
+     * @param objnum
+     *            the object's number
+     * @param pages
+     *            the PDFPages object
      */
-    public PDFRoot(int objnum, PDFPages pages) {
+    public PDFRoot(final int objnum, final PDFPages pages) {
         super();
         setObjectNumber(objnum);
         put("Type", new PDFName("Catalog"));
@@ -76,7 +74,8 @@ public class PDFRoot extends PDFDictionary {
     }
 
     /** {@inheritDoc} */
-    public int output(OutputStream stream) throws IOException {
+    @Override
+    public int output(final OutputStream stream) throws IOException {
         getDocument().getProfile().verifyTaggedPDF();
         return super.output(stream);
     }
@@ -84,25 +83,28 @@ public class PDFRoot extends PDFDictionary {
     /**
      * Set the page mode for the PDF document.
      *
-     * @param mode the page mode (one of PAGEMODE_*)
+     * @param mode
+     *            the page mode (one of PAGEMODE_*)
      */
-    public void setPageMode(int mode) {
+    public void setPageMode(final int mode) {
         put("PageMode", PAGEMODE_NAMES[mode]);
     }
 
     /**
      * Returns the currently active /PageMode.
+     * 
      * @return the /PageMode (one of PAGEMODE_*)
      */
     public int getPageMode() {
-        PDFName mode = (PDFName)get("PageMode");
+        final PDFName mode = (PDFName) get("PageMode");
         if (mode != null) {
             for (int i = 0; i < PAGEMODE_NAMES.length; i++) {
                 if (PAGEMODE_NAMES[i].equals(mode)) {
                     return i;
                 }
             }
-            throw new IllegalStateException("Unknown /PageMode encountered: " + mode);
+            throw new IllegalStateException("Unknown /PageMode encountered: "
+                    + mode);
         } else {
             return PAGEMODE_USENONE;
         }
@@ -111,60 +113,68 @@ public class PDFRoot extends PDFDictionary {
     /**
      * add a /Page object to the root /Pages object
      *
-     * @param page the /Page object to add
+     * @param page
+     *            the /Page object to add
      */
-    public void addPage(PDFPage page) {
-        PDFPages pages = getRootPages();
+    public void addPage(final PDFPage page) {
+        final PDFPages pages = getRootPages();
         pages.addPage(page);
     }
 
     /**
      * set the root /Pages object
      *
-     * @param pages the /Pages object to set as root
+     * @param pages
+     *            the /Pages object to set as root
      */
-    public void setRootPages(PDFPages pages) {
+    public void setRootPages(final PDFPages pages) {
         put("Pages", pages.makeReference());
     }
 
     /**
      * Returns the /PageLabels object.
+     * 
      * @return the /PageLabels object if set, null otherwise.
      * @since PDF 1.3
      */
     public PDFPages getRootPages() {
-        PDFReference ref = (PDFReference)get("Pages");
-        return (ref != null ? (PDFPages)ref.getObject() : null);
+        final PDFReference ref = (PDFReference) get("Pages");
+        return ref != null ? (PDFPages) ref.getObject() : null;
     }
 
     /**
      * Sets the /PageLabels object.
-     * @param pageLabels the /PageLabels object
+     * 
+     * @param pageLabels
+     *            the /PageLabels object
      */
-    public void setPageLabels(PDFPageLabels pageLabels) {
+    public void setPageLabels(final PDFPageLabels pageLabels) {
         put("PageLabels", pageLabels.makeReference());
     }
 
     /**
      * Returns the /PageLabels object.
+     * 
      * @return the /PageLabels object if set, null otherwise.
      * @since PDF 1.3
      */
     public PDFPageLabels getPageLabels() {
-        PDFReference ref = (PDFReference)get("PageLabels");
-        return (ref != null ? (PDFPageLabels)ref.getObject() : null);
+        final PDFReference ref = (PDFReference) get("PageLabels");
+        return ref != null ? (PDFPageLabels) ref.getObject() : null;
     }
 
     /**
      * Set the root outline for the PDF document.
      *
-     * @param out the root PDF Outline
+     * @param out
+     *            the root PDF Outline
      */
-    public void setRootOutline(PDFOutline out) {
+    public void setRootOutline(final PDFOutline out) {
         put("Outlines", out.makeReference());
 
-        //Set /PageMode to /UseOutlines by default if no other mode has been set
-        PDFName mode = (PDFName)get("PageMode");
+        // Set /PageMode to /UseOutlines by default if no other mode has been
+        // set
+        final PDFName mode = (PDFName) get("PageMode");
         if (mode == null) {
             setPageMode(PAGEMODE_USEOUTLINES);
         }
@@ -176,35 +186,40 @@ public class PDFRoot extends PDFDictionary {
      * @return the root PDF Outline
      */
     public PDFOutline getRootOutline() {
-        PDFReference ref = (PDFReference)get("Outlines");
-        return (ref != null ? (PDFOutline)ref.getObject() : null);
+        final PDFReference ref = (PDFReference) get("Outlines");
+        return ref != null ? (PDFOutline) ref.getObject() : null;
     }
 
     /**
      * Set the /Names object.
-     * @param names the Names object
+     * 
+     * @param names
+     *            the Names object
      * @since PDF 1.2
      */
-    public void setNames(PDFNames names) {
+    public void setNames(final PDFNames names) {
         put("Names", names.makeReference());
     }
 
     /**
      * Returns the /Names object.
+     * 
      * @return the Names object if set, null otherwise.
      * @since PDF 1.2
      */
     public PDFNames getNames() {
-        PDFReference ref = (PDFReference)get("Names");
-        return (ref != null ? (PDFNames)ref.getObject() : null);
+        final PDFReference ref = (PDFReference) get("Names");
+        return ref != null ? (PDFNames) ref.getObject() : null;
     }
 
     /**
      * Set the optional Metadata object.
-     * @param meta the Metadata object
+     * 
+     * @param meta
+     *            the Metadata object
      * @since PDF 1.4
      */
-    public void setMetadata(PDFMetadata meta) {
+    public void setMetadata(final PDFMetadata meta) {
         if (getDocumentSafely().getPDFVersion().compareTo(Version.V1_4) >= 0) {
             put("Metadata", meta.makeReference());
         }
@@ -212,29 +227,33 @@ public class PDFRoot extends PDFDictionary {
 
     /**
      * Returns the /Metadata object
+     * 
      * @return the /Metadata object if set, null otherwise.
      * @since PDF 1.4
      */
     public PDFMetadata getMetadata() {
-        PDFReference ref = (PDFReference)get("Metadata");
-        return (ref != null ? (PDFMetadata)ref.getObject() : null);
+        final PDFReference ref = (PDFReference) get("Metadata");
+        return ref != null ? (PDFMetadata) ref.getObject() : null;
     }
 
     /**
      * Returns the /OutputIntents array.
+     * 
      * @return the /OutputIntents array or null if it doesn't exist
      * @since PDF 1.4
      */
     public PDFArray getOutputIntents() {
-        return (PDFArray)get("OutputIntents");
+        return (PDFArray) get("OutputIntents");
     }
 
     /**
      * Adds an OutputIntent to the PDF
-     * @param outputIntent the OutputIntent dictionary
+     * 
+     * @param outputIntent
+     *            the OutputIntent dictionary
      * @since PDF 1.4
      */
-    public void addOutputIntent(PDFOutputIntent outputIntent) {
+    public void addOutputIntent(final PDFOutputIntent outputIntent) {
         if (getDocumentSafely().getPDFVersion().compareTo(Version.V1_4) >= 0) {
             PDFArray outputIntents = getOutputIntents();
             if (outputIntents == null) {
@@ -246,45 +265,52 @@ public class PDFRoot extends PDFDictionary {
     }
 
     /**
-     * Sets the "Version" entry. If this version is greater than that specified in the header, this
-     * version takes precedence.
+     * Sets the "Version" entry. If this version is greater than that specified
+     * in the header, this version takes precedence.
      *
-     * @param version the PDF document version
+     * @param version
+     *            the PDF document version
      * @since PDF 1.4
      */
-    void setVersion(Version version) {
+    void setVersion(final Version version) {
         put("Version", new PDFName(version.toString()));
     }
 
     /**
      * Returns the language identifier of the document.
-     * @return the language identifier of the document (or null if not set or undefined)
+     * 
+     * @return the language identifier of the document (or null if not set or
+     *         undefined)
      * @since PDF 1.4
      */
     public String getLanguage() {
-        return (String)get("Lang");
+        return (String) get("Lang");
     }
 
     /**
      * Sets the locale of the document.
-     * @param locale the locale of the document.
+     * 
+     * @param locale
+     *            the locale of the document.
      */
-    public void setLanguage(Locale locale) {
+    public void setLanguage(final Locale locale) {
         if (locale == null) {
             throw new NullPointerException("locale must not be null");
         }
         setLanguage(LanguageTags.toLanguageTag(locale));
     }
 
-    private void setLanguage(String lang) {
+    private void setLanguage(final String lang) {
         put("Lang", lang);
     }
 
     /**
      * Sets the StructTreeRoot object. Used for accessibility.
-     * @param structTreeRoot of this document
+     * 
+     * @param structTreeRoot
+     *            of this document
      */
-    public void setStructTreeRoot(PDFStructTreeRoot structTreeRoot) {
+    public void setStructTreeRoot(final PDFStructTreeRoot structTreeRoot) {
         if (structTreeRoot == null) {
             throw new NullPointerException("structTreeRoot must not be null");
         }
@@ -293,26 +319,28 @@ public class PDFRoot extends PDFDictionary {
 
     /**
      * Returns the StructTreeRoot object.
+     * 
      * @return the structure tree root (or null if accessibility is not enabled)
      */
     public PDFStructTreeRoot getStructTreeRoot() {
-        return (PDFStructTreeRoot)get("StructTreeRoot");
+        return (PDFStructTreeRoot) get("StructTreeRoot");
     }
 
     /**
      * Marks this document as conforming to the Tagged PDF conventions.
      */
     public void makeTagged() {
-        PDFDictionary dict = new PDFDictionary();
+        final PDFDictionary dict = new PDFDictionary();
         dict.put("Marked", Boolean.TRUE);
-        put("MarkInfo", dict);  //new PDFMarkInfo()
+        put("MarkInfo", dict); // new PDFMarkInfo()
     }
 
     /**
      * Returns the MarkInfo dictionary.
+     * 
      * @return the MarkInfo dictionary (or null if it's not present)
      */
     public PDFDictionary getMarkInfo() {
-        return (PDFDictionary)get("MarkInfo");
+        return (PDFDictionary) get("MarkInfo");
     }
 }

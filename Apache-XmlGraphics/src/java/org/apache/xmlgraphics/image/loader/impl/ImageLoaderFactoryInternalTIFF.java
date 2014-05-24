@@ -24,24 +24,24 @@ import org.apache.xmlgraphics.image.loader.spi.ImageLoader;
 import org.apache.xmlgraphics.util.MimeConstants;
 
 /**
- * Factory class for the ImageLoader for TIFF (based on Commons' internal TIFF codec).
+ * Factory class for the ImageLoader for TIFF (based on Commons' internal TIFF
+ * codec).
  */
 public class ImageLoaderFactoryInternalTIFF extends AbstractImageLoaderFactory {
 
-    private static final String[] MIMES = new String[] {
-        MimeConstants.MIME_TIFF};
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_TIFF };
 
-    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {
-        ImageFlavor.RENDERED_IMAGE};
-
+    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] { ImageFlavor.RENDERED_IMAGE };
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMIMETypes() {
         return MIMES;
     }
 
     /** {@inheritDoc} */
-    public ImageFlavor[] getSupportedFlavors(String mime) {
+    @Override
+    public ImageFlavor[] getSupportedFlavors(final String mime) {
         if (MimeConstants.MIME_TIFF.equals(mime)) {
             return FLAVORS;
         }
@@ -49,11 +49,13 @@ public class ImageLoaderFactoryInternalTIFF extends AbstractImageLoaderFactory {
     }
 
     /** {@inheritDoc} */
-    public ImageLoader newImageLoader(ImageFlavor targetFlavor) {
+    @Override
+    public ImageLoader newImageLoader(final ImageFlavor targetFlavor) {
         return new ImageLoaderInternalTIFF();
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isAvailable() {
         return true;
     }

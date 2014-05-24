@@ -26,27 +26,36 @@ import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
 
 /**
- * This class is an implementation of the Image interface exposing a JPEG file. It provides an
- * InputStream to access the JPEG content and some additional information on the image.
+ * This class is an implementation of the Image interface exposing a JPEG file.
+ * It provides an InputStream to access the JPEG content and some additional
+ * information on the image.
  */
 public class ImageRawJPEG extends ImageRawStream {
 
-    private int sofType;
-    private ColorSpace colorSpace;
-    private ICC_Profile iccProfile;
+    private final int sofType;
+    private final ColorSpace colorSpace;
+    private final ICC_Profile iccProfile;
     private boolean invertImage = false;
 
     /**
      * Main constructor.
-     * @param info the image info object
-     * @param in the ImageInputStream with the raw content
-     * @param sofType the SOFn identifier
-     * @param colorSpace the color space
-     * @param iccProfile an ICC color profile or null if no profile is associated
-     * @param invertImage true if the image should be inverted when painting it
+     * 
+     * @param info
+     *            the image info object
+     * @param in
+     *            the ImageInputStream with the raw content
+     * @param sofType
+     *            the SOFn identifier
+     * @param colorSpace
+     *            the color space
+     * @param iccProfile
+     *            an ICC color profile or null if no profile is associated
+     * @param invertImage
+     *            true if the image should be inverted when painting it
      */
-    public ImageRawJPEG(ImageInfo info, java.io.InputStream in,
-                int sofType, ColorSpace colorSpace, ICC_Profile iccProfile, boolean invertImage) {
+    public ImageRawJPEG(final ImageInfo info, final java.io.InputStream in,
+            final int sofType, final ColorSpace colorSpace,
+            final ICC_Profile iccProfile, final boolean invertImage) {
         super(info, ImageFlavor.RAW_JPEG, in);
         this.sofType = sofType;
         this.colorSpace = colorSpace;
@@ -55,7 +64,9 @@ public class ImageRawJPEG extends ImageRawStream {
     }
 
     /**
-     * Returns the SOFn identifier of the image which describes the coding format of the image.
+     * Returns the SOFn identifier of the image which describes the coding
+     * format of the image.
+     * 
      * @return the SOFn identifier
      */
     public int getSOFType() {
@@ -64,14 +75,17 @@ public class ImageRawJPEG extends ImageRawStream {
 
     /**
      * Returns the ICC color profile if one is associated with the JPEG image.
+     * 
      * @return the ICC color profile or null if there's no profile
      */
+    @Override
     public ICC_Profile getICCProfile() {
         return this.iccProfile;
     }
 
     /**
      * Indicates whether the image should be inverted when interpreting it.
+     * 
      * @return true if the image is to be inverted
      */
     public boolean isInverted() {
@@ -80,8 +94,10 @@ public class ImageRawJPEG extends ImageRawStream {
 
     /**
      * Returns the image's color space
+     * 
      * @return the color space
      */
+    @Override
     public ColorSpace getColorSpace() {
         return this.colorSpace;
     }

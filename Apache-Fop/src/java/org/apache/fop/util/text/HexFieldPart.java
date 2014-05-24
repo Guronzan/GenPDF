@@ -29,40 +29,47 @@ import org.apache.fop.util.text.AdvancedMessageFormat.PartFactory;
  */
 public class HexFieldPart implements Part {
 
-    private String fieldName;
+    private final String fieldName;
 
     /**
      * Creates a new hex field part
-     * @param fieldName the field name
+     * 
+     * @param fieldName
+     *            the field name
      */
-    public HexFieldPart(String fieldName) {
+    public HexFieldPart(final String fieldName) {
         this.fieldName = fieldName;
     }
 
     /** {@inheritDoc} */
-    public boolean isGenerated(Map params) {
-        Object obj = params.get(fieldName);
+    @Override
+    public boolean isGenerated(final Map params) {
+        final Object obj = params.get(this.fieldName);
         return obj != null;
     }
 
     /** {@inheritDoc} */
-    public void write(StringBuffer sb, Map params) {
-        if (!params.containsKey(fieldName)) {
+    @Override
+    public void write(final StringBuffer sb, final Map params) {
+        if (!params.containsKey(this.fieldName)) {
             throw new IllegalArgumentException(
-                    "Message pattern contains unsupported field name: " + fieldName);
+                    "Message pattern contains unsupported field name: "
+                            + this.fieldName);
         }
-        Object obj = params.get(fieldName);
+        final Object obj = params.get(this.fieldName);
         if (obj instanceof Character) {
-            sb.append(Integer.toHexString(((Character)obj).charValue()));
+            sb.append(Integer.toHexString(((Character) obj).charValue()));
         } else if (obj instanceof Number) {
-            sb.append(Integer.toHexString(((Number)obj).intValue()));
+            sb.append(Integer.toHexString(((Number) obj).intValue()));
         } else {
-            throw new IllegalArgumentException("Incompatible value for hex field part: "
-                    + obj.getClass().getName());
+            throw new IllegalArgumentException(
+                    "Incompatible value for hex field part: "
+                            + obj.getClass().getName());
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "{" + this.fieldName + ",hex}";
     }
@@ -71,11 +78,13 @@ public class HexFieldPart implements Part {
     public static class Factory implements PartFactory {
 
         /** {@inheritDoc} */
-        public Part newPart(String fieldName, String values) {
+        @Override
+        public Part newPart(final String fieldName, final String values) {
             return new HexFieldPart(fieldName);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String getFormat() {
             return "hex";
         }

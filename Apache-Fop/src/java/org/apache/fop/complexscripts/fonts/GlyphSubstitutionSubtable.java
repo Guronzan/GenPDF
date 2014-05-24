@@ -26,81 +26,109 @@ import org.apache.fop.complexscripts.util.ScriptContextTester;
 // CSOFF: NoWhitespaceAfterCheck
 
 /**
- * <p>The <code>GlyphSubstitutionSubtable</code> implements an abstract base of a glyph substitution subtable,
- * providing a default implementation of the <code>GlyphSubstitution</code> interface.</p>
+ * <p>
+ * The <code>GlyphSubstitutionSubtable</code> implements an abstract base of a
+ * glyph substitution subtable, providing a default implementation of the
+ * <code>GlyphSubstitution</code> interface.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
-public abstract class GlyphSubstitutionSubtable extends GlyphSubtable implements GlyphSubstitution {
+public abstract class GlyphSubstitutionSubtable extends GlyphSubtable implements
+        GlyphSubstitution {
 
     /**
      * Instantiate a <code>GlyphSubstitutionSubtable</code>.
-     * @param id subtable identifier
-     * @param sequence subtable sequence
-     * @param flags subtable flags
-     * @param format subtable format
-     * @param coverage subtable coverage table
+     * 
+     * @param id
+     *            subtable identifier
+     * @param sequence
+     *            subtable sequence
+     * @param flags
+     *            subtable flags
+     * @param format
+     *            subtable format
+     * @param coverage
+     *            subtable coverage table
      */
-    protected GlyphSubstitutionSubtable ( String id, int sequence, int flags, int format, GlyphCoverageTable coverage ) {
-        super ( id, sequence, flags, format, coverage );
+    protected GlyphSubstitutionSubtable(final String id, final int sequence,
+            final int flags, final int format, final GlyphCoverageTable coverage) {
+        super(id, sequence, flags, format, coverage);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getTableType() {
         return GlyphTable.GLYPH_TABLE_TYPE_SUBSTITUTION;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getTypeName() {
-        return GlyphSubstitutionTable.getLookupTypeName ( getType() );
+        return GlyphSubstitutionTable.getLookupTypeName(getType());
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible ( GlyphSubtable subtable ) {
+    @Override
+    public boolean isCompatible(final GlyphSubtable subtable) {
         return subtable instanceof GlyphSubstitutionSubtable;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean usesReverseScan() {
         return false;
     }
 
     /** {@inheritDoc} */
-    public boolean substitute ( GlyphSubstitutionState ss ) {
+    @Override
+    public boolean substitute(final GlyphSubstitutionState ss) {
         return false;
     }
 
     /**
-     * Apply substitutions using specified state and subtable array. For each position in input sequence,
-     * apply subtables in order until some subtable applies or none remain. If no subtable applied or no
-     * input was consumed for a given position, then apply default action (copy input glyph and advance).
-     * If <code>sequenceIndex</code> is non-negative, then apply subtables only when current position
-     * matches <code>sequenceIndex</code> in relation to the starting position. Furthermore, upon
-     * successful application at <code>sequenceIndex</code>, then apply default action for all remaining
-     * glyphs in input sequence.
-     * @param ss substitution state
-     * @param sta array of subtables to apply
-     * @param sequenceIndex if non negative, then apply subtables only at specified sequence index
+     * Apply substitutions using specified state and subtable array. For each
+     * position in input sequence, apply subtables in order until some subtable
+     * applies or none remain. If no subtable applied or no input was consumed
+     * for a given position, then apply default action (copy input glyph and
+     * advance). If <code>sequenceIndex</code> is non-negative, then apply
+     * subtables only when current position matches <code>sequenceIndex</code>
+     * in relation to the starting position. Furthermore, upon successful
+     * application at <code>sequenceIndex</code>, then apply default action for
+     * all remaining glyphs in input sequence.
+     * 
+     * @param ss
+     *            substitution state
+     * @param sta
+     *            array of subtables to apply
+     * @param sequenceIndex
+     *            if non negative, then apply subtables only at specified
+     *            sequence index
      * @return output glyph sequence
      */
-    public static final GlyphSequence substitute ( GlyphSubstitutionState ss, GlyphSubstitutionSubtable[] sta, int sequenceIndex ) {
-        int sequenceStart = ss.getPosition();
+    public static final GlyphSequence substitute(
+            final GlyphSubstitutionState ss,
+            final GlyphSubstitutionSubtable[] sta, final int sequenceIndex) {
+        final int sequenceStart = ss.getPosition();
         boolean appliedOneShot = false;
-        while ( ss.hasNext() ) {
+        while (ss.hasNext()) {
             boolean applied = false;
-            if ( ! appliedOneShot && ss.maybeApplicable() ) {
-                for ( int i = 0, n = sta.length; ! applied && ( i < n ); i++ ) {
-                    if ( sequenceIndex < 0 ) {
-                        applied = ss.apply ( sta [ i ] );
-                    } else if ( ss.getPosition() == ( sequenceStart + sequenceIndex ) ) {
-                        applied = ss.apply ( sta [ i ] );
-                        if ( applied ) {
+            if (!appliedOneShot && ss.maybeApplicable()) {
+                for (int i = 0, n = sta.length; !applied && i < n; i++) {
+                    if (sequenceIndex < 0) {
+                        applied = ss.apply(sta[i]);
+                    } else if (ss.getPosition() == sequenceStart
+                            + sequenceIndex) {
+                        applied = ss.apply(sta[i]);
+                        if (applied) {
                             appliedOneShot = true;
                         }
                     }
                 }
             }
-            if ( ! applied || ! ss.didConsume() ) {
+            if (!applied || !ss.didConsume()) {
                 ss.applyDefault();
             }
             ss.next();
@@ -110,16 +138,26 @@ public abstract class GlyphSubstitutionSubtable extends GlyphSubtable implements
 
     /**
      * Apply substitutions.
-     * @param gs input glyph sequence
-     * @param script tag
-     * @param language tag
-     * @param feature tag
-     * @param sta subtable array
-     * @param sct script context tester
+     * 
+     * @param gs
+     *            input glyph sequence
+     * @param script
+     *            tag
+     * @param language
+     *            tag
+     * @param feature
+     *            tag
+     * @param sta
+     *            subtable array
+     * @param sct
+     *            script context tester
      * @return output glyph sequence
      */
-    public static final GlyphSequence substitute ( GlyphSequence gs, String script, String language, String feature, GlyphSubstitutionSubtable[] sta, ScriptContextTester sct ) {
-        return substitute ( new GlyphSubstitutionState ( gs, script, language, feature, sct ), sta, -1 );
+    public static final GlyphSequence substitute(final GlyphSequence gs,
+            final String script, final String language, final String feature,
+            final GlyphSubstitutionSubtable[] sta, final ScriptContextTester sct) {
+        return substitute(new GlyphSubstitutionState(gs, script, language,
+                feature, sct), sta, -1);
     }
 
 }

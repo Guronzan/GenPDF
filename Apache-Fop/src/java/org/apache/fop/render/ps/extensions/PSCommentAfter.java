@@ -38,15 +38,18 @@ public class PSCommentAfter extends PSExtensionAttachment {
 
     /**
      * Constructor
-     * @param content comment
+     * 
+     * @param content
+     *            comment
      */
-    public PSCommentAfter(String content) {
+    public PSCommentAfter(final String content) {
         super(content);
     }
 
     /**
      * @return the element name
      */
+    @Override
     protected String getElement() {
         return ELEMENT;
     }

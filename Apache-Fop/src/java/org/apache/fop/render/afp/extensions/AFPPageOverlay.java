@@ -24,8 +24,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * This extension allows to include an AFP Page Overlay resource. It is implemented as an extension
- * attachment ({@link org.apache.fop.fo.extensions.ExtensionAttachment}).
+ * This extension allows to include an AFP Page Overlay resource. It is
+ * implemented as an extension attachment (
+ * {@link org.apache.fop.fo.extensions.ExtensionAttachment}).
  */
 public class AFPPageOverlay extends AFPExtensionAttachment {
 
@@ -55,49 +56,57 @@ public class AFPPageOverlay extends AFPExtensionAttachment {
 
     /**
      * returns X coordinate
+     * 
      * @return x integer
      */
     public int getX() {
-        return x;
+        return this.x;
     }
 
     /**
      * Sets the X coordinate
-     * @param x The integer to be set.
+     * 
+     * @param x
+     *            The integer to be set.
      */
-    public void setX(int x) {
+    public void setX(final int x) {
         this.x = x;
     }
 
     /**
      * returns Y coordinate
+     * 
      * @return y integer
      */
     public int getY() {
-        return y;
+        return this.y;
     }
 
     /**
      * Sets the Y coordinate
-     * @param y The integer to be set.
+     * 
+     * @param y
+     *            The integer to be set.
      */
-    public void setY(int y) {
+    public void setY(final int y) {
         this.y = y;
     }
 
     /** {@inheritDoc} */
-    public void toSAX(ContentHandler handler) throws SAXException {
-        AttributesImpl atts = new AttributesImpl();
-        if (name != null && name.length() > 0) {
-            atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", name);
+    @Override
+    public void toSAX(final ContentHandler handler) throws SAXException {
+        final AttributesImpl atts = new AttributesImpl();
+        if (this.name != null && this.name.length() > 0) {
+            atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", this.name);
         }
-        handler.startElement(CATEGORY, elementName, elementName, atts);
-        handler.endElement(CATEGORY, elementName, elementName);
+        handler.startElement(CATEGORY, this.elementName, this.elementName, atts);
+        handler.endElement(CATEGORY, this.elementName, this.elementName);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return getClass().getName() + "(element-name=" + getElementName()
-            + " name=" + getName() + " x=" + getX() + " y=" + getY() + ")";
+                + " name=" + getName() + " x=" + getX() + " y=" + getY() + ")";
     }
 }

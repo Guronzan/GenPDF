@@ -23,23 +23,25 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * This class manages actions and action references. Some action (like {@link GoToXYAction}s)
- * cannot be fully resolved at the time they are needed, so they are deferred. This class
- * helps manages the references and resolution.
+ * This class manages actions and action references. Some action (like
+ * {@link GoToXYAction}s) cannot be fully resolved at the time they are needed,
+ * so they are deferred. This class helps manages the references and resolution.
  */
 public class ActionSet {
 
     private int lastGeneratedID = 0;
-    private Map actionRegistry = new java.util.HashMap();
+    private final Map actionRegistry = new java.util.HashMap();
 
     /**
      * Generates a new synthetic ID for an action.
-     * @param action the action
+     * 
+     * @param action
+     *            the action
      * @return the generated ID
      */
-    public synchronized String generateNewID(AbstractAction action) {
+    public synchronized String generateNewID(final AbstractAction action) {
         this.lastGeneratedID++;
-        String prefix = action.getIDPrefix();
+        final String prefix = action.getIDPrefix();
         if (prefix == null) {
             throw new IllegalArgumentException("Action class is not compatible");
         }
@@ -48,24 +50,28 @@ public class ActionSet {
 
     /**
      * Returns the action with the given ID.
-     * @param id the ID
+     * 
+     * @param id
+     *            the ID
      * @return the action or null if no action with this ID is stored
      */
-    public AbstractAction get(String id) {
-        return (AbstractAction)this.actionRegistry.get(id);
+    public AbstractAction get(final String id) {
+        return (AbstractAction) this.actionRegistry.get(id);
     }
 
     /**
-     * Puts an action into the set and returns the normalized instance (another one if the given
-     * one is equal to another.
-     * @param action the action
+     * Puts an action into the set and returns the normalized instance (another
+     * one if the given one is equal to another.
+     * 
+     * @param action
+     *            the action
      * @return the action instance that should be used in place of the given one
      */
-    public AbstractAction put(AbstractAction action) {
+    public AbstractAction put(final AbstractAction action) {
         if (!action.hasID()) {
             action.setID(generateNewID(action));
         }
-        AbstractAction effAction = normalize(action);
+        final AbstractAction effAction = normalize(action);
         if (effAction == action) {
             this.actionRegistry.put(action.getID(), action);
         }
@@ -79,10 +85,10 @@ public class ActionSet {
         this.actionRegistry.clear();
     }
 
-    private AbstractAction normalize(AbstractAction action) {
-        Iterator iter = this.actionRegistry.values().iterator();
+    private AbstractAction normalize(final AbstractAction action) {
+        final Iterator iter = this.actionRegistry.values().iterator();
         while (iter.hasNext()) {
-            AbstractAction a = (AbstractAction)iter.next();
+            final AbstractAction a = (AbstractAction) iter.next();
             if (a.isSame(action)) {
                 return a;
             }

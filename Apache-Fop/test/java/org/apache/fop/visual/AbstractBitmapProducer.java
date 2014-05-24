@@ -22,25 +22,23 @@ package org.apache.fop.visual;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Abstract base class for converters.
  */
 public abstract class AbstractBitmapProducer implements BitmapProducer {
 
-    /** Logger */
-    protected static Log log = LogFactory.getLog(AbstractBitmapProducer.class);
-
     /**
-     * Returns a new JAXP Transformer based on information in the ProducerContext.
-     * @param context context information for the process
+     * Returns a new JAXP Transformer based on information in the
+     * ProducerContext.
+     *
+     * @param context
+     *            context information for the process
      * @return a new Transformer instance (identity or set up with a stylesheet)
-     * @throws TransformerConfigurationException in case creating the Transformer fails.
+     * @throws TransformerConfigurationException
+     *             in case creating the Transformer fails.
      */
-    protected Transformer getTransformer(ProducerContext context)
-                throws TransformerConfigurationException {
+    protected Transformer getTransformer(final ProducerContext context)
+            throws TransformerConfigurationException {
         if (context.getTemplates() != null) {
             return context.getTemplates().newTransformer();
         } else {

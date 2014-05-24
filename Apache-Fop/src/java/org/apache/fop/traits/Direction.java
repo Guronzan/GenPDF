@@ -24,18 +24,18 @@ import java.io.ObjectStreamException;
 import org.apache.fop.fo.Constants;
 
 /**
- * Enumeration class for direction traits, namely {inline,block}-progression-direction
- * and shift-direction.
+ * Enumeration class for direction traits, namely
+ * {inline,block}-progression-direction and shift-direction.
  */
 public final class Direction extends TraitEnum {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] DIRECTION_NAMES = new String[]
-        {"lr", "rl", "tb", "bt"};
+    private static final String[] DIRECTION_NAMES = new String[] { "lr", "rl",
+            "tb", "bt" };
 
-    private static final int[] DIRECTION_VALUES = new int[]
-        {Constants.EN_LR, Constants.EN_RL, Constants.EN_TB, Constants.EN_BT};
+    private static final int[] DIRECTION_VALUES = new int[] { Constants.EN_LR,
+            Constants.EN_RL, Constants.EN_TB, Constants.EN_BT };
 
     /** direction: left-to-right */
     public static final Direction LR = new Direction(0);
@@ -46,34 +46,41 @@ public final class Direction extends TraitEnum {
     /** direction: bottom-to-top */
     public static final Direction BT = new Direction(3);
 
-    private static final Direction[] DIRECTIONS = new Direction[] {LR, RL, TB, BT};
+    private static final Direction[] DIRECTIONS = new Direction[] { LR, RL, TB,
+            BT };
 
-    private Direction(int index) {
+    private Direction(final int index) {
         super(DIRECTION_NAMES[index], DIRECTION_VALUES[index]);
     }
 
     /**
      * Determine if direction is vertical or not.
+     * 
      * @return true if vertical
      */
     public boolean isVertical() {
-        return ( getEnumValue() == Constants.EN_TB ) || ( getEnumValue() == Constants.EN_BT );
+        return getEnumValue() == Constants.EN_TB
+                || getEnumValue() == Constants.EN_BT;
     }
 
     /**
      * Determine if direction is horizontal or not.
+     * 
      * @return true if horizontal
      */
     public boolean isHorizontal() {
-        return ( getEnumValue() == Constants.EN_LR ) || ( getEnumValue() == Constants.EN_RL );
+        return getEnumValue() == Constants.EN_LR
+                || getEnumValue() == Constants.EN_RL;
     }
 
     /**
      * Returns the enumeration/singleton object based on its name.
-     * @param name the name of the enumeration value
+     * 
+     * @param name
+     *            the name of the enumeration value
      * @return the enumeration object
      */
-    public static Direction valueOf(String name) {
+    public static Direction valueOf(final String name) {
         for (int i = 0; i < DIRECTIONS.length; i++) {
             if (DIRECTIONS[i].getName().equalsIgnoreCase(name)) {
                 return DIRECTIONS[i];
@@ -84,10 +91,12 @@ public final class Direction extends TraitEnum {
 
     /**
      * Returns the enumeration/singleton object based on its name.
-     * @param enumValue the enumeration value
+     * 
+     * @param enumValue
+     *            the enumeration value
      * @return the enumeration object
      */
-    public static Direction valueOf(int enumValue) {
+    public static Direction valueOf(final int enumValue) {
         for (int i = 0; i < DIRECTIONS.length; i++) {
             if (DIRECTIONS[i].getEnumValue() == enumValue) {
                 return DIRECTIONS[i];
@@ -101,6 +110,7 @@ public final class Direction extends TraitEnum {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return getName();
     }

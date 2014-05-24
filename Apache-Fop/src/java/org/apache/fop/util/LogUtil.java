@@ -19,9 +19,8 @@
 
 package org.apache.fop.util;
 
-import org.apache.commons.logging.Log;
-
 import org.apache.fop.apps.FOPException;
+import org.slf4j.Logger;
 
 /**
  * Convenience Logging utility methods used in FOP
@@ -33,26 +32,38 @@ public final class LogUtil {
 
     /**
      * Convenience method that handles any error appropriately
-     * @param log log
-     * @param errorStr error string
-     * @param strict validate strictly
-     * @throws FOPException fop exception
+     *
+     * @param log
+     *            log
+     * @param errorStr
+     *            error string
+     * @param strict
+     *            validate strictly
+     * @throws FOPException
+     *             fop exception
      */
-    public static void handleError(Log log, String errorStr, boolean strict) throws FOPException {
+    public static void handleError(final Logger log, final String errorStr,
+            final boolean strict) throws FOPException {
         handleException(log, new FOPException(errorStr), strict);
     }
 
     /**
      * Convenience method that handles any error appropriately
-     * @param log log
-     * @param e exception
-     * @param strict validate strictly
-     * @throws FOPException fop exception
+     *
+     * @param log
+     *            log
+     * @param e
+     *            exception
+     * @param strict
+     *            validate strictly
+     * @throws FOPException
+     *             fop exception
      */
-    public static void handleException(Log log, Exception e, boolean strict) throws FOPException {
+    public static void handleException(final Logger log, final Exception e,
+            final boolean strict) throws FOPException {
         if (strict) {
             if (e instanceof FOPException) {
-                throw (FOPException)e;
+                throw (FOPException) e;
             }
             throw new FOPException(e);
         }

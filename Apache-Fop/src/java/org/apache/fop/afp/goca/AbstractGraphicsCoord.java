@@ -27,7 +27,8 @@ import org.apache.fop.afp.util.BinaryUtils;
 /**
  * A base class encapsulating the structure of coordinate based GOCA objects
  */
-public abstract class AbstractGraphicsCoord extends AbstractGraphicsDrawingOrder {
+public abstract class AbstractGraphicsCoord extends
+        AbstractGraphicsDrawingOrder {
 
     /** array of x/y coordinates */
     protected int[] coords = null;
@@ -38,11 +39,12 @@ public abstract class AbstractGraphicsCoord extends AbstractGraphicsDrawingOrder
     /**
      * Constructor
      *
-     * @param coords the x/y coordinates for this object
+     * @param coords
+     *            the x/y coordinates for this object
      */
-    public AbstractGraphicsCoord(int[] coords) {
+    public AbstractGraphicsCoord(final int[] coords) {
         if (coords == null) {
-            relative = true;
+            this.relative = true;
         } else {
             this.coords = coords;
         }
@@ -51,10 +53,12 @@ public abstract class AbstractGraphicsCoord extends AbstractGraphicsDrawingOrder
     /**
      * Constructor
      *
-     * @param coords the x/y coordinates for this object
-     * @param relative true if relative drawing order
+     * @param coords
+     *            the x/y coordinates for this object
+     * @param relative
+     *            true if relative drawing order
      */
-    public AbstractGraphicsCoord(int[] coords, boolean relative) {
+    public AbstractGraphicsCoord(final int[] coords, final boolean relative) {
         this(coords);
         this.relative = relative;
     }
@@ -62,28 +66,36 @@ public abstract class AbstractGraphicsCoord extends AbstractGraphicsDrawingOrder
     /**
      * Constructor
      *
-     * @param x the x coordinate for this object
-     * @param y the y coordinate for this object
+     * @param x
+     *            the x coordinate for this object
+     * @param y
+     *            the y coordinate for this object
      */
-    public AbstractGraphicsCoord(int x, int y) {
-        this(new int[] {x, y});
+    public AbstractGraphicsCoord(final int x, final int y) {
+        this(new int[] { x, y });
     }
 
     /**
      * Constructor
      *
-     * @param x1 the x1 coordinate for this object
-     * @param y1 the y1 coordinate for this object
-     * @param x2 the x2 coordinate for this object
-     * @param y2 the y2 coordinate for this object
+     * @param x1
+     *            the x1 coordinate for this object
+     * @param y1
+     *            the y1 coordinate for this object
+     * @param x2
+     *            the x2 coordinate for this object
+     * @param y2
+     *            the y2 coordinate for this object
      */
-    public AbstractGraphicsCoord(int x1, int y1, int x2, int y2) {
-        this(new int[] {x1, y1, x2, y2});
+    public AbstractGraphicsCoord(final int x1, final int y1, final int x2,
+            final int y2) {
+        this(new int[] { x1, y1, x2, y2 });
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
-        return 2 + (coords != null ? coords.length * 2 : 0);
+        return 2 + (this.coords != null ? this.coords.length * 2 : 0);
     }
 
     /**
@@ -100,40 +112,45 @@ public abstract class AbstractGraphicsCoord extends AbstractGraphicsDrawingOrder
      *
      * @return the coordinate data
      */
+    @Override
     byte[] getData() {
-        byte[] data = super.getData();
-        if (coords != null) {
+        final byte[] data = super.getData();
+        if (this.coords != null) {
             addCoords(data, getCoordinateDataStartIndex());
         }
         return data;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
         os.write(getData());
     }
 
     /**
      * Adds the coordinates to the structured field data
      *
-     * @param data the structured field data
-     * @param fromIndex the start index
+     * @param data
+     *            the structured field data
+     * @param fromIndex
+     *            the start index
      */
-    protected void addCoords(byte[] data, int fromIndex) {
+    protected void addCoords(final byte[] data, int fromIndex) {
         // X/Y POS
-        for (int i = 0; i < coords.length; i++, fromIndex += 2) {
-            byte[] coord = BinaryUtils.convert(coords[i], 2);
+        for (int i = 0; i < this.coords.length; i++, fromIndex += 2) {
+            final byte[] coord = BinaryUtils.convert(this.coords[i], 2);
             data[fromIndex] = coord[0];
             data[fromIndex + 1] = coord[1];
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         String coordsStr = "";
-        for (int i = 0; i < coords.length; i++) {
-            coordsStr += (i % 2 == 0) ? "x" : "y";
-            coordsStr += (i / 2) + "=" + coords[i] + ",";
+        for (int i = 0; i < this.coords.length; i++) {
+            coordsStr += i % 2 == 0 ? "x" : "y";
+            coordsStr += i / 2 + "=" + this.coords[i] + ",";
         }
         coordsStr = coordsStr.substring(0, coordsStr.length() - 1);
         return getName() + "{" + coordsStr + "}";

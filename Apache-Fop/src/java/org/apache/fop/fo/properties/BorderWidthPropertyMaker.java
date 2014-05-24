@@ -24,8 +24,8 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.expr.PropertyException;
 
 /**
- * This subclass of LengthProperty.Maker handles the special treatment of
- * border width described in 7.7.20.
+ * This subclass of LengthProperty.Maker handles the special treatment of border
+ * width described in 7.7.20.
  */
 public class BorderWidthPropertyMaker extends LengthProperty.Maker {
 
@@ -34,33 +34,38 @@ public class BorderWidthPropertyMaker extends LengthProperty.Maker {
     /**
      * Create a length property which check the value of the border-*-style
      * property and return a length of 0 when the style is "none".
-     * @param propId the border-*-width of the property.
+     * 
+     * @param propId
+     *            the border-*-width of the property.
      */
-    public BorderWidthPropertyMaker(int propId) {
+    public BorderWidthPropertyMaker(final int propId) {
         super(propId);
     }
 
     /**
      * Set the propId of the style property for the same side.
-     * @param borderStyleId the border style id
+     * 
+     * @param borderStyleId
+     *            the border style id
      */
-    public void setBorderStyleId(int borderStyleId) {
+    public void setBorderStyleId(final int borderStyleId) {
         this.borderStyleId = borderStyleId;
     }
 
     /**
-     * Check the value of the style property and return a length of 0 when
-     * the style is NONE.
-     * {@inheritDoc}
+     * Check the value of the style property and return a length of 0 when the
+     * style is NONE. {@inheritDoc}
      */
 
-    public Property get(int subpropId, PropertyList propertyList, boolean bTryInherit,
-            boolean bTryDefault) throws PropertyException {
-        Property p = super.get(subpropId, propertyList,
-                               bTryInherit, bTryDefault);
+    @Override
+    public Property get(final int subpropId, final PropertyList propertyList,
+            final boolean bTryInherit, final boolean bTryDefault)
+            throws PropertyException {
+        final Property p = super.get(subpropId, propertyList, bTryInherit,
+                bTryDefault);
 
         // Calculate the values as described in 7.7.20.
-        Property style = propertyList.get(borderStyleId);
+        final Property style = propertyList.get(this.borderStyleId);
         if (style.getEnum() == Constants.EN_NONE) {
             return FixedLength.ZERO_FIXED_LENGTH;
         }

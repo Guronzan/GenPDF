@@ -37,39 +37,42 @@ public class PFBData {
     /**
      * PC format
      */
-    public static final int PFB_PC  = 1;
+    public static final int PFB_PC = 1;
 
     /**
      * MAC Format (unsupported, yet)
      */
     public static final int PFB_MAC = 2;
 
-    private int pfbFormat; //One of the PFB_* constants
+    private int pfbFormat; // One of the PFB_* constants
     private byte[] headerSegment;
     private byte[] encryptedSegment;
     private byte[] trailerSegment;
 
-
     /**
      * Sets the PFB format the font was loaded with.
-     * @param format one of the PFB_* constants
+     * 
+     * @param format
+     *            one of the PFB_* constants
      */
-    public void setPFBFormat(int format) {
+    public void setPFBFormat(final int format) {
         switch (format) {
-            case PFB_RAW:
-            case PFB_PC:
-                this.pfbFormat = format;
-                break;
-            case PFB_MAC:
-                throw new UnsupportedOperationException("Mac format is not yet implemented");
-            default:
-                throw new IllegalArgumentException("Invalid value for PFB format: " + format);
+        case PFB_RAW:
+        case PFB_PC:
+            this.pfbFormat = format;
+            break;
+        case PFB_MAC:
+            throw new UnsupportedOperationException(
+                    "Mac format is not yet implemented");
+        default:
+            throw new IllegalArgumentException("Invalid value for PFB format: "
+                    + format);
         }
     }
 
-
     /**
      * Returns the format the font was loaded with.
+     * 
      * @return int one of the PFB_* constants
      */
     public int getPFBFormat() {
@@ -78,84 +81,91 @@ public class PFBData {
 
     /**
      * Sets the header segment of the font file.
-     * @param headerSeg the header segment
+     * 
+     * @param headerSeg
+     *            the header segment
      */
-    public void setHeaderSegment(byte[] headerSeg) {
+    public void setHeaderSegment(final byte[] headerSeg) {
         this.headerSegment = headerSeg;
     }
 
     /**
      * Sets the encrypted segment of the font file.
-     * @param encryptedSeg the encrypted segment
+     * 
+     * @param encryptedSeg
+     *            the encrypted segment
      */
-    public void setEncryptedSegment(byte[] encryptedSeg) {
+    public void setEncryptedSegment(final byte[] encryptedSeg) {
         this.encryptedSegment = encryptedSeg;
     }
 
     /**
      * Sets the trailer segment of the font file.
-     * @param trailerSeg the trailer segment
+     * 
+     * @param trailerSeg
+     *            the trailer segment
      */
-    public void setTrailerSegment(byte[] trailerSeg) {
+    public void setTrailerSegment(final byte[] trailerSeg) {
         this.trailerSegment = trailerSeg;
     }
 
     /**
      * Returns the full length of the raw font file.
+     * 
      * @return int the raw file length
      */
     public int getLength() {
         return getLength1() + getLength2() + getLength3();
     }
 
-
     /**
      * Returns the Length1 (length of the header segment).
+     * 
      * @return int Length1
      */
     public int getLength1() {
         return this.headerSegment.length;
     }
 
-
     /**
      * Returns the Length2 (length of the encrypted segment).
+     * 
      * @return int Length2
      */
     public int getLength2() {
         return this.encryptedSegment.length;
     }
 
-
     /**
      * Returns the Length3 (length of the trailer segment).
+     * 
      * @return int Length3
      */
     public int getLength3() {
         return this.trailerSegment.length;
     }
 
-
     /**
      * Writes the PFB file in raw format to an OutputStream.
-     * @param out the OutputStream to write to
-     * @throws IOException In case of an I/O problem
+     * 
+     * @param out
+     *            the OutputStream to write to
+     * @throws IOException
+     *             In case of an I/O problem
      */
-    public void outputAllParts(OutputStream out) throws IOException {
+    public void outputAllParts(final OutputStream out) throws IOException {
         out.write(this.headerSegment);
         out.write(this.encryptedSegment);
         out.write(this.trailerSegment);
     }
 
-
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
-        return "PFB: format=" + getPFBFormat()
-                + " len1=" + getLength1()
-                + " len2=" + getLength2()
-                + " len3=" + getLength3();
+        return "PFB: format=" + getPFBFormat() + " len1=" + getLength1()
+                + " len2=" + getLength2() + " len3=" + getLength3();
     }
 
 }

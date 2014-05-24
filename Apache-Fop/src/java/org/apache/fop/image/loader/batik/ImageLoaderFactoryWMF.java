@@ -28,28 +28,30 @@ import org.apache.xmlgraphics.image.loader.spi.ImageLoader;
  */
 public class ImageLoaderFactoryWMF extends AbstractImageLoaderFactory {
 
-    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {
-        ImageWMF.WMF_IMAGE};
+    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] { ImageWMF.WMF_IMAGE };
 
-    private static final String[] MIMES = new String[] {
-        ImageWMF.MIME_WMF};
+    private static final String[] MIMES = new String[] { ImageWMF.MIME_WMF };
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMIMETypes() {
         return MIMES;
     }
 
     /** {@inheritDoc} */
-    public ImageFlavor[] getSupportedFlavors(String mime) {
+    @Override
+    public ImageFlavor[] getSupportedFlavors(final String mime) {
         return FLAVORS;
     }
 
     /** {@inheritDoc} */
-    public ImageLoader newImageLoader(ImageFlavor targetFlavor) {
+    @Override
+    public ImageLoader newImageLoader(final ImageFlavor targetFlavor) {
         return new ImageLoaderWMF(targetFlavor);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isAvailable() {
         return BatikUtil.isBatikAvailable();
     }

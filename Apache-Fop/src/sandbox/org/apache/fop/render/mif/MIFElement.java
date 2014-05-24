@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * The is the basis for MIF document elements.
- * This enables the creation of the element and to write it
- * to an output stream including sub-elements or a single value.
+ * The is the basis for MIF document elements. This enables the creation of the
+ * element and to write it to an output stream including sub-elements or a
+ * single value.
  */
 public class MIFElement {
     /** name */
@@ -45,41 +45,52 @@ public class MIFElement {
     protected boolean finished = false;
 
     /**
-     * @param name a name
+     * @param name
+     *            a name
      */
-    public MIFElement(String name) {
+    public MIFElement(final String name) {
         this.name = name;
     }
 
-    /** @param str a string value */
-    public void setValue(String str) {
-        valueStr = str;
-    }
-
-    /** @param el an MIF element */
-    public void addElement(MIFElement el) {
-        if (valueElements == null) {
-            valueElements = new java.util.ArrayList();
-        }
-        valueElements.add(el);
+    /**
+     * @param str
+     *            a string value
+     */
+    public void setValue(final String str) {
+        this.valueStr = str;
     }
 
     /**
-     * Output this element to an output stream.
-     * This will output only so far as the fisrt unfinished child element.
-     * This method can be called again to continue from the previous point.
-     * An element that contains child elements will only be finished when
-     * the finish method is called.
-     * @param os output stream
-     * @param indent indentation
-     * @return true if finished
-     * @throws IOException if not caught
+     * @param el
+     *            an MIF element
      */
-    public boolean output(OutputStream os, int indent) throws IOException {
-        if (finished) {
+    public void addElement(final MIFElement el) {
+        if (this.valueElements == null) {
+            this.valueElements = new java.util.ArrayList();
+        }
+        this.valueElements.add(el);
+    }
+
+    /**
+     * Output this element to an output stream. This will output only so far as
+     * the fisrt unfinished child element. This method can be called again to
+     * continue from the previous point. An element that contains child elements
+     * will only be finished when the finish method is called.
+     * 
+     * @param os
+     *            output stream
+     * @param indent
+     *            indentation
+     * @return true if finished
+     * @throws IOException
+     *             if not caught
+     */
+    public boolean output(final OutputStream os, final int indent)
+            throws IOException {
+        if (this.finished) {
             return true;
         }
-        if (valueElements == null && valueStr == null) {
+        if (this.valueElements == null && this.valueStr == null) {
             return false;
         }
 
@@ -87,18 +98,19 @@ public class MIFElement {
         for (int c = 0; c < indent; c++) {
             indentStr += " ";
         }
-        if (!started) {
-            os.write((indentStr + "<" + name).getBytes());
-            if (valueElements != null) {
-                os.write(("\n").getBytes());
+        if (!this.started) {
+            os.write((indentStr + "<" + this.name).getBytes());
+            if (this.valueElements != null) {
+                os.write("\n".getBytes());
             }
-            started = true;
+            this.started = true;
         }
-        if (valueElements != null) {
+        if (this.valueElements != null) {
             boolean done = true;
-            for (Iterator iter = valueElements.iterator(); iter.hasNext();) {
-                MIFElement el = (MIFElement)iter.next();
-                boolean d = el.output(os, indent + 1);
+            for (final Iterator iter = this.valueElements.iterator(); iter
+                    .hasNext();) {
+                final MIFElement el = (MIFElement) iter.next();
+                final boolean d = el.output(os, indent + 1);
                 if (d) {
                     iter.remove();
                 } else {
@@ -106,26 +118,29 @@ public class MIFElement {
                     break;
                 }
             }
-            if (!finish || !done) {
+            if (!this.finish || !done) {
                 return false;
             }
-            os.write((indentStr + "> # end of " + name + "\n").getBytes());
+            os.write((indentStr + "> # end of " + this.name + "\n").getBytes());
         } else {
-            os.write((" " + valueStr + ">\n").getBytes());
+            os.write((" " + this.valueStr + ">\n").getBytes());
         }
-        finished = true;
+        this.finished = true;
         return true;
     }
 
-    /** @param deep if true, also perform finish over value elements */
-    public void finish(boolean deep) {
-        finish = true;
-        if (deep && valueElements != null) {
-            for (Iterator iter = valueElements.iterator(); iter.hasNext();) {
-                MIFElement el = (MIFElement)iter.next();
+    /**
+     * @param deep
+     *            if true, also perform finish over value elements
+     */
+    public void finish(final boolean deep) {
+        this.finish = true;
+        if (deep && this.valueElements != null) {
+            for (final Iterator iter = this.valueElements.iterator(); iter
+                    .hasNext();) {
+                final MIFElement el = (MIFElement) iter.next();
                 el.finish(deep);
             }
         }
     }
 }
-

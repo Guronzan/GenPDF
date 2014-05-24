@@ -48,7 +48,7 @@ public class PreviewDialogAboutBox extends Dialog implements ActionListener {
 
     /**
      * Creates modal "About" dialog, attached to a given parent frame.
-     * 
+     *
      * @param parent
      *            parent frame
      * @param translator

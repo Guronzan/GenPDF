@@ -22,11 +22,10 @@ package org.apache.fop.area;
 import java.awt.Rectangle;
 
 /**
- * A BlockViewport.
- * This is used for block level Viewport/reference pairs.
- * The block-container creates this area.
+ * A BlockViewport. This is used for block level Viewport/reference pairs. The
+ * block-container creates this area.
  */
-public class BlockViewport extends Block implements Viewport  {
+public class BlockViewport extends Block implements Viewport {
 
     private static final long serialVersionUID = -7840580922580735157L;
 
@@ -44,54 +43,58 @@ public class BlockViewport extends Block implements Viewport  {
 
     /**
      * Create a new block viewport area.
-     * @param allowBPDUpdate true allows the BPD to be updated when children are added
+     * 
+     * @param allowBPDUpdate
+     *            true allows the BPD to be updated when children are added
      */
-    public BlockViewport(boolean allowBPDUpdate) {
+    public BlockViewport(final boolean allowBPDUpdate) {
         this.allowBPDUpdate = allowBPDUpdate;
     }
 
     /**
-     * Set the transform of this viewport.
-     * If the viewport is rotated or has an absolute positioning
-     * this transform will do the work.
+     * Set the transform of this viewport. If the viewport is rotated or has an
+     * absolute positioning this transform will do the work.
      *
-     * @param ctm the transformation
+     * @param ctm
+     *            the transformation
      */
-    public void setCTM(CTM ctm) {
-        viewportCTM = ctm;
+    public void setCTM(final CTM ctm) {
+        this.viewportCTM = ctm;
     }
 
     /**
      * Get the transform of this block viewport.
      *
-     * @return the transformation of this viewport
-     *         or null if normally stacked without rotation
+     * @return the transformation of this viewport or null if normally stacked
+     *         without rotation
      */
     public CTM getCTM() {
-        return viewportCTM;
+        return this.viewportCTM;
     }
 
     /**
      * Set the clipping for this viewport.
      *
-     * @param cl the clipping for the viewport
+     * @param cl
+     *            the clipping for the viewport
      */
-    public void setClip(boolean cl) {
-        clip = cl;
+    public void setClip(final boolean cl) {
+        this.clip = cl;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasClip() {
-        return clip;
+        return this.clip;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Rectangle getClipRectangle() {
-        if (clip) {
+        if (this.clip) {
             return new Rectangle(getIPD(), getBPD());
         } else {
             return null;
         }
     }
 }
-

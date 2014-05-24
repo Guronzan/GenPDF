@@ -19,22 +19,23 @@
 
 package org.apache.fop.fo.flow.table;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.apache.fop.fo.LoadingException;
 import org.apache.fop.fo.ValidationException;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
- * Abstract class for testing erroneous files, checking that a ValidationException is thrown.
+ * Abstract class for testing erroneous files, checking that a
+ * ValidationException is thrown.
  */
 abstract class ErrorCheckTest extends AbstractTableTest {
 
-    protected void launchTest(String filename) throws Exception {
+    protected void launchTest(final String filename) throws Exception {
         try {
             setUp(filename);
             fail("Expected ValidationException to be thrown");
-        } catch (LoadingException e) {
+        } catch (final LoadingException e) {
             // TODO check location
             assertTrue(e.getCause() instanceof ValidationException);
         }

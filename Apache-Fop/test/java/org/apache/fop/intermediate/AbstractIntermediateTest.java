@@ -37,7 +37,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.NullOutputStream;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.events.model.EventSeverity;
 import org.apache.fop.util.ConsoleEventListenerForTests;
 import org.custommonkey.xmlunit.XMLAssert;
@@ -71,7 +70,7 @@ public abstract class AbstractIntermediateTest {
 
     /**
      * Constructor for the test suite that is used for each test file.
-     * 
+     *
      * @param testFile
      *            the test file to run
      * @throws IOException
@@ -105,7 +104,7 @@ public abstract class AbstractIntermediateTest {
 
     /**
      * Returns the file extension for the intermediate file format.
-     * 
+     *
      * @return the file extension
      */
     protected abstract String getIntermediateFileExtension();
@@ -113,16 +112,16 @@ public abstract class AbstractIntermediateTest {
     /**
      * Returns the MIME type for which to test or to mimic for the intermediate
      * format.
-     * 
+     *
      * @return the MIME type
      */
     protected String getTargetMIME() {
-        return MimeConstants.MIME_PDF;
+        return org.apache.xmlgraphics.util.MimeConstants.MIME_PDF;
     }
 
     /**
      * Validates the intermediate format file.
-     * 
+     *
      * @param doc
      *            the intermediate file
      * @throws IOException
@@ -132,13 +131,13 @@ public abstract class AbstractIntermediateTest {
      *             occurs
      */
     protected void validate(final Document doc) throws SAXException,
-            IOException {
+    IOException {
         // nop by default
     }
 
     /**
      * Builds an intermediate format document from a source file.
-     * 
+     *
      * @param templates
      *            the (optional) stylesheet
      * @return the intermediate format document as a DOM
@@ -150,7 +149,7 @@ public abstract class AbstractIntermediateTest {
 
     /**
      * Creates a new FOP user agent.
-     * 
+     *
      * @return the user agent
      */
     protected FOUserAgent createUserAgent() {
@@ -182,7 +181,7 @@ public abstract class AbstractIntermediateTest {
      * Tests the area tree parser by running the parsed area tree again through
      * the area tree renderer. The source and result documents are compared to
      * each other.
-     * 
+     *
      * @throws Exception
      *             if the test fails
      */
@@ -203,7 +202,7 @@ public abstract class AbstractIntermediateTest {
     /**
      * Parses the intermediate file and renders it back to the intermediate
      * format.
-     * 
+     *
      * @param src
      *            the source for the intermediate file
      * @return a DOM Document with the re-created intermediate file
@@ -216,7 +215,7 @@ public abstract class AbstractIntermediateTest {
     /**
      * Tests the area tree parser by sending the parsed area tree to the PDF
      * Renderer. Some errors might be caught by the PDFRenderer.
-     * 
+     *
      * @throws Exception
      *             if the test fails
      */
@@ -240,7 +239,7 @@ public abstract class AbstractIntermediateTest {
 
     /**
      * Parses and renders an intermediate format document to a final format.
-     * 
+     *
      * @param src
      *            the source document
      * @param out
@@ -262,7 +261,7 @@ public abstract class AbstractIntermediateTest {
     /**
      * Sets an error listener which doesn't swallow errors like Xalan's default
      * one.
-     * 
+     *
      * @param transformer
      *            the transformer to set the error listener on
      */

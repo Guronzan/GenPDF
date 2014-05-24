@@ -44,18 +44,19 @@ public class PreloaderBMP extends AbstractImagePreloader {
     private static final int WIDTH_OFFSET = 18;
 
     /** {@inheritDoc} */
-    public ImageInfo preloadImage(String uri, Source src, ImageContext context)
-                throws IOException, ImageException {
+    @Override
+    public ImageInfo preloadImage(final String uri, final Source src,
+            final ImageContext context) throws IOException, ImageException {
         if (!ImageUtil.hasImageInputStream(src)) {
             return null;
         }
-        ImageInputStream in = ImageUtil.needImageInputStream(src);
-        byte[] header = getHeader(in, BMP_SIG_LENGTH);
-        boolean supported = ((header[0] == (byte) 0x42)
-                && (header[1] == (byte) 0x4d));
+        final ImageInputStream in = ImageUtil.needImageInputStream(src);
+        final byte[] header = getHeader(in, BMP_SIG_LENGTH);
+        final boolean supported = header[0] == (byte) 0x42
+                && header[1] == (byte) 0x4d;
 
         if (supported) {
-            ImageInfo info = new ImageInfo(uri, "image/bmp");
+            final ImageInfo info = new ImageInfo(uri, "image/bmp");
             info.setSize(determineSize(in, context));
             return info;
         } else {
@@ -63,29 +64,29 @@ public class PreloaderBMP extends AbstractImagePreloader {
         }
     }
 
-    private ImageSize determineSize(ImageInputStream in, ImageContext context)
-            throws IOException, ImageException {
+    private ImageSize determineSize(final ImageInputStream in,
+            final ImageContext context) throws IOException {
         in.mark();
-        ByteOrder oldByteOrder = in.getByteOrder();
+        final ByteOrder oldByteOrder = in.getByteOrder();
         try {
-            ImageSize size = new ImageSize();
+            final ImageSize size = new ImageSize();
 
             // BMP uses little endian notation!
             in.setByteOrder(ByteOrder.LITTLE_ENDIAN);
 
             in.skipBytes(WIDTH_OFFSET);
-            int width = in.readInt();
-            int height = in.readInt();
+            final int width = in.readInt();
+            final int height = in.readInt();
             size.setSizeInPixels(width, height);
 
             in.skipBytes(12);
-            int xRes = in.readInt();
+            final int xRes = in.readInt();
             double xResDPI = UnitConv.in2mm(xRes / 1000d);
             if (xResDPI == 0) {
                 xResDPI = context.getSourceResolution();
             }
 
-            int yRes = in.readInt();
+            final int yRes = in.readInt();
             double yResDPI = UnitConv.in2mm(yRes / 1000d);
             if (yResDPI == 0) {
                 yResDPI = context.getSourceResolution();

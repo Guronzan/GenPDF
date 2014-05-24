@@ -22,34 +22,36 @@ package org.apache.fop.pdf;
 import java.text.MessageFormat;
 
 /**
- * This class allows tracks the enabled PDF profiles (PDF/A and PDF/X) and provides methods to
- * the libarary and its users to enable the generation of PDFs conforming to the enabled PDF
- * profiles.
+ * This class allows tracks the enabled PDF profiles (PDF/A and PDF/X) and
+ * provides methods to the libarary and its users to enable the generation of
+ * PDFs conforming to the enabled PDF profiles.
  * <p>
- * Some profile from PDF/X and PDF/A can be active simultaneously (example: PDF/A-1 and
- * PDF/X-3:2003).
+ * Some profile from PDF/X and PDF/A can be active simultaneously (example:
+ * PDF/A-1 and PDF/X-3:2003).
  */
 public class PDFProfile {
 
     /**
-     * Indicates the PDF/A mode currently active. Defaults to "no restrictions", i.e.
-     * PDF/A not active.
+     * Indicates the PDF/A mode currently active. Defaults to "no restrictions",
+     * i.e. PDF/A not active.
      */
     protected PDFAMode pdfAMode = PDFAMode.DISABLED;
 
     /**
-     * Indicates the PDF/X mode currently active. Defaults to "no restrictions", i.e.
-     * PDF/X not active.
+     * Indicates the PDF/X mode currently active. Defaults to "no restrictions",
+     * i.e. PDF/X not active.
      */
     protected PDFXMode pdfXMode = PDFXMode.DISABLED;
 
-    private PDFDocument doc;
+    private final PDFDocument doc;
 
     /**
      * Main constructor
-     * @param doc the PDF document
+     * 
+     * @param doc
+     *            the PDF document
      */
-    public PDFProfile(PDFDocument doc) {
+    public PDFProfile(final PDFDocument doc) {
         this.doc = doc;
     }
 
@@ -57,11 +59,12 @@ public class PDFProfile {
      * Validates if the requested profile combination is compatible.
      */
     protected void validateProfileCombination() {
-        if (pdfAMode != PDFAMode.DISABLED) {
-            if (pdfAMode == PDFAMode.PDFA_1B) {
-                if (pdfXMode != PDFXMode.DISABLED && pdfXMode != PDFXMode.PDFX_3_2003) {
-                    throw new PDFConformanceException(
-                            pdfAMode + " and " + pdfXMode + " are not compatible!");
+        if (this.pdfAMode != PDFAMode.DISABLED) {
+            if (this.pdfAMode == PDFAMode.PDFA_1B) {
+                if (this.pdfXMode != PDFXMode.DISABLED
+                        && this.pdfXMode != PDFXMode.PDFX_3_2003) {
+                    throw new PDFConformanceException(this.pdfAMode + " and "
+                            + this.pdfXMode + " are not compatible!");
                 }
             }
         }
@@ -84,7 +87,9 @@ public class PDFProfile {
 
     /**
      * Sets the PDF/A mode
-     * @param mode the PDF/A mode
+     * 
+     * @param mode
+     *            the PDF/A mode
      */
     public void setPDFAMode(PDFAMode mode) {
         if (mode == null) {
@@ -106,7 +111,9 @@ public class PDFProfile {
 
     /**
      * Sets the PDF/X mode
-     * @param mode the PDF/X mode
+     * 
+     * @param mode
+     *            the PDF/X mode
      */
     public void setPDFXMode(PDFXMode mode) {
         if (mode == null) {
@@ -117,10 +124,12 @@ public class PDFProfile {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         if (isPDFAActive() && isPDFXActive()) {
-            sb.append("[").append(getPDFAMode()).append(",").append(getPDFXMode()).append("]");
+            sb.append("[").append(getPDFAMode()).append(",")
+                    .append(getPDFXMode()).append("]");
         } else if (isPDFAActive()) {
             sb.append(getPDFAMode());
         } else if (isPDFXActive()) {
@@ -131,14 +140,14 @@ public class PDFProfile {
         return sb.toString();
     }
 
-    //---------=== Info and validation methods ===---------
+    // ---------=== Info and validation methods ===---------
 
-    private String format(String pattern, Object[] args) {
+    private String format(final String pattern, final Object[] args) {
         return MessageFormat.format(pattern, args);
     }
 
-    private String format(String pattern, Object arg) {
-        return format(pattern, new Object[] {arg});
+    private String format(final String pattern, final Object arg) {
+        return format(pattern, new Object[] { arg });
     }
 
     /** Checks if encryption is allowed. */
@@ -166,17 +175,19 @@ public class PDFProfile {
 
     /**
      * Checks if the use of transparency is allowed.
-     * @param context Context information for the user to identify the problem spot
+     * 
+     * @param context
+     *            Context information for the user to identify the problem spot
      */
-    public void verifyTransparencyAllowed(String context) {
+    public void verifyTransparencyAllowed(final String context) {
         final String err = "{0} does not allow the use of transparency. ({1})";
         if (isPDFAActive()) {
             throw new PDFConformanceException(MessageFormat.format(err,
-                    new Object[] {getPDFAMode(), context}));
+                    new Object[] { getPDFAMode(), context }));
         }
         if (isPDFXActive()) {
             throw new PDFConformanceException(MessageFormat.format(err,
-                    new Object[] {getPDFXMode(), context}));
+                    new Object[] { getPDFXMode(), context }));
         }
     }
 
@@ -199,22 +210,24 @@ public class PDFProfile {
     public void verifyTaggedPDF() {
         if (getPDFAMode().isPDFA1LevelA()) {
             final String err = "{0} requires the {1} dictionary entry to be set";
-            PDFDictionary markInfo = getDocument().getRoot().getMarkInfo();
+            final PDFDictionary markInfo = getDocument().getRoot()
+                    .getMarkInfo();
             if (markInfo == null) {
                 throw new PDFConformanceException(format(
-                        "{0} requires the MarkInfo dictionary to be present", getPDFAMode()));
+                        "{0} requires the MarkInfo dictionary to be present",
+                        getPDFAMode()));
             }
             if (!Boolean.TRUE.equals(markInfo.get("Marked"))) {
-                throw new PDFConformanceException(format(err,
-                        new Object[] {getPDFAMode(), "Marked"}));
+                throw new PDFConformanceException(format(err, new Object[] {
+                        getPDFAMode(), "Marked" }));
             }
             if (getDocument().getRoot().getStructTreeRoot() == null) {
-                throw new PDFConformanceException(format(err,
-                        new Object[] {getPDFAMode(), "StructTreeRoot"}));
+                throw new PDFConformanceException(format(err, new Object[] {
+                        getPDFAMode(), "StructTreeRoot" }));
             }
             if (getDocument().getRoot().getLanguage() == null) {
-                throw new PDFConformanceException(format(err,
-                        new Object[] {getPDFAMode(), "Lang"}));
+                throw new PDFConformanceException(format(err, new Object[] {
+                        getPDFAMode(), "Lang" }));
             }
         }
     }
@@ -256,7 +269,7 @@ public class PDFProfile {
     public void verifyAnnotAllowed() {
         if (!isAnnotationAllowed()) {
             final String err = "{0} does not allow annotations inside the printable area.";
-            //Note: this rule is simplified. Refer to the standard for details.
+            // Note: this rule is simplified. Refer to the standard for details.
             throw new PDFConformanceException(format(err, getPDFXMode()));
         }
     }
@@ -276,7 +289,7 @@ public class PDFProfile {
             throw new PDFConformanceException(format(err, getPDFAMode()));
         }
         if (isPDFXActive()) {
-            //Implicit since file specs are forbidden
+            // Implicit since file specs are forbidden
             throw new PDFConformanceException(format(err, getPDFXMode()));
         }
     }

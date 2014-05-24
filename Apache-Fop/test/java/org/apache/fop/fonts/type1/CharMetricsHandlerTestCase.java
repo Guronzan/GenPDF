@@ -19,20 +19,19 @@
 
 package org.apache.fop.fonts.type1;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import org.junit.Test;
-
 import org.apache.fop.fonts.NamedCharacter;
 import org.apache.fop.fonts.type1.AFMParser.ValueHandler;
+import org.junit.Test;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Test case for {@link CharMetricsHandler}.
@@ -58,19 +57,21 @@ public class CharMetricsHandlerTestCase {
         testEncodingWithMetricsLine("AdobeStandardEncoding", GOOD_LINE);
     }
 
-    private void testEncodingWithMetricsLine(String encoding, String line) throws IOException {
-        Map<String, ValueHandler> valueParsers = mock(HashMap.class);
-        ValueHandler cHandler = mock(ValueHandler.class);
-        ValueHandler wxHandler = mock(ValueHandler.class);
-        ValueHandler nHandler = mock(ValueHandler.class);
-        ValueHandler bHandler = mock(ValueHandler.class);
+    private void testEncodingWithMetricsLine(final String encoding,
+            final String line) throws IOException {
+        final Map<String, ValueHandler> valueParsers = mock(HashMap.class);
+        final ValueHandler cHandler = mock(ValueHandler.class);
+        final ValueHandler wxHandler = mock(ValueHandler.class);
+        final ValueHandler nHandler = mock(ValueHandler.class);
+        final ValueHandler bHandler = mock(ValueHandler.class);
         when(valueParsers.get("C")).thenReturn(cHandler);
         when(valueParsers.get("WX")).thenReturn(wxHandler);
         when(valueParsers.get("N")).thenReturn(nHandler);
         when(valueParsers.get("B")).thenReturn(bHandler);
 
-        CharMetricsHandler handler = CharMetricsHandler.getHandler(valueParsers, encoding);
-        Stack<Object> stack = new Stack<Object>();
+        final CharMetricsHandler handler = CharMetricsHandler.getHandler(
+                valueParsers, encoding);
+        final Stack<Object> stack = new Stack<Object>();
         handler.parse(line, stack, null);
 
         verify(valueParsers).get("C");

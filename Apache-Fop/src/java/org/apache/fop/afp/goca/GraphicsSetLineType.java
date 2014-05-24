@@ -23,7 +23,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Sets the value of the current line type attribute when stroking GOCA shapes (structured fields)
+ * Sets the value of the current line type attribute when stroking GOCA shapes
+ * (structured fields)
  */
 public class GraphicsSetLineType extends AbstractGraphicsDrawingOrder {
 
@@ -60,37 +61,40 @@ public class GraphicsSetLineType extends AbstractGraphicsDrawingOrder {
     /**
      * Main constructor
      *
-     * @param type line type
+     * @param type
+     *            line type
      */
-    public GraphicsSetLineType(byte type) {
-       this.type = type;
+    public GraphicsSetLineType(final byte type) {
+        this.type = type;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 2;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[] {
-            getOrderCode(), // GSLW order code
-            type // line type
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[] { getOrderCode(), // GSLW order code
+                this.type // line type
         };
         os.write(data);
     }
 
-    private static final String[] TYPES = {
-        "default (solid)", "dotted", "short dashed", "dash dotted", "double dotted",
-        "long dashed", "dash double dotted", "solid", "invisible"
-    };
+    private static final String[] TYPES = { "default (solid)", "dotted",
+            "short dashed", "dash dotted", "double dotted", "long dashed",
+            "dash double dotted", "solid", "invisible" };
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "GraphicsSetLineType{type=" + TYPES[type] + "}";
+        return "GraphicsSetLineType{type=" + TYPES[this.type] + "}";
     }
 
     /** {@inheritDoc} */
+    @Override
     byte getOrderCode() {
         return 0x18;
     }

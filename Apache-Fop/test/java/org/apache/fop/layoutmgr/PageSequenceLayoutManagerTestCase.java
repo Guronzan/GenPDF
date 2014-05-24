@@ -19,11 +19,6 @@
 
 package org.apache.fop.layoutmgr;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import org.apache.fop.area.AreaTreeHandler;
 import org.apache.fop.area.PageViewport;
 import org.apache.fop.fo.pagination.Flow;
@@ -32,6 +27,12 @@ import org.apache.fop.fo.pagination.Region;
 import org.apache.fop.fo.pagination.Root;
 import org.apache.fop.fo.pagination.SimplePageMaster;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class PageSequenceLayoutManagerTestCase {
 
@@ -47,14 +48,14 @@ public class PageSequenceLayoutManagerTestCase {
     public void testGetNextPageBlank() throws Exception {
 
         final Page expectedPage = createPageForRegionName(EMPTY_FLOW_NAME);
-        final Page[] providedPages = new Page[]{expectedPage};
+        final Page[] providedPages = new Page[] { expectedPage };
 
         testGetNextPage(providedPages, expectedPage, true);
     }
 
     /**
-     * Empty pages should not be provided by the PageSequenceLayoutManager
-     * to layout the main flow
+     * Empty pages should not be provided by the PageSequenceLayoutManager to
+     * layout the main flow
      *
      * @throws Exception
      */
@@ -63,12 +64,13 @@ public class PageSequenceLayoutManagerTestCase {
 
         final Page emptyPage = createPageForRegionName(EMPTY_FLOW_NAME);
         final Page expectedPage = createPageForRegionName(MAIN_FLOW_NAME);
-        final Page[] providedPages = new Page[]{emptyPage, expectedPage};
+        final Page[] providedPages = new Page[] { emptyPage, expectedPage };
 
         testGetNextPage(providedPages, expectedPage, false);
     }
 
-    private void testGetNextPage(final Page[] providedPages, Page expectedPage, boolean isBlank) {
+    private void testGetNextPage(final Page[] providedPages,
+            final Page expectedPage, final boolean isBlank) {
 
         final Flow flow = mock(Flow.class);
         final PageSequence pseq = mock(PageSequence.class);
@@ -79,27 +81,28 @@ public class PageSequenceLayoutManagerTestCase {
         when(pseq.getMainFlow()).thenReturn(flow);
         when(pseq.getRoot()).thenReturn(root);
 
-        PageSequenceLayoutManager sut = new PageSequenceLayoutManager(ath, pseq) {
+        final PageSequenceLayoutManager sut = new PageSequenceLayoutManager(
+                ath, pseq) {
 
             @Override
-            protected Page createPage(int i, boolean b) {
+            protected Page createPage(final int i, final boolean b) {
                 return providedPages[i - 1];
             }
 
             @Override
             protected void finishPage() {
-                //nop
+                // nop
             }
 
             // Expose the protected method for testing
-            public Page makeNewPage(boolean isBlank) {
+            @Override
+            public Page makeNewPage(final boolean isBlank) {
                 return super.makeNewPage(isBlank);
             }
         };
 
         assertEquals(expectedPage, sut.makeNewPage(isBlank));
     }
-
 
     private static Page createPageForRegionName(final String regionName) {
         final Page page = mock(Page.class);

@@ -31,14 +31,18 @@ public class EventProducingFilter extends IFDocumentHandlerProxy {
 
     private int pageNumberEnded;
 
-    private FOUserAgent userAgent;
+    private final FOUserAgent userAgent;
 
     /**
      * Constructor
-     * @param ifDocumentHandler the IFDocumentHandler to filter
-     * @param userAgent the FOUerAgent
+     * 
+     * @param ifDocumentHandler
+     *            the IFDocumentHandler to filter
+     * @param userAgent
+     *            the FOUerAgent
      */
-    public EventProducingFilter(IFDocumentHandler ifDocumentHandler, FOUserAgent userAgent) {
+    public EventProducingFilter(final IFDocumentHandler ifDocumentHandler,
+            final FOUserAgent userAgent) {
         super(ifDocumentHandler);
         this.userAgent = userAgent;
     }
@@ -46,9 +50,10 @@ public class EventProducingFilter extends IFDocumentHandlerProxy {
     @Override
     public void endPage() throws IFException {
         super.endPage();
-        pageNumberEnded++;
-        RendererEventProducer.Provider.get(userAgent.getEventBroadcaster())
-                .endPage(this, pageNumberEnded);
+        this.pageNumberEnded++;
+        RendererEventProducer.Provider
+                .get(this.userAgent.getEventBroadcaster()).endPage(this,
+                        this.pageNumberEnded);
     }
 
 }

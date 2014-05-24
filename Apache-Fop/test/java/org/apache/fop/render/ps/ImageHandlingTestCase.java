@@ -18,17 +18,14 @@
 /* $Id: ImageHandlingTestCase.java 1198853 2011-11-07 18:18:29Z vhennebert $ */
 
 package org.apache.fop.render.ps;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Test;
-
 import org.apache.commons.io.IOUtils;
-
+import org.apache.fop.apps.FOUserAgent;
+import org.apache.fop.render.intermediate.IFContext;
 import org.apache.xmlgraphics.ps.DSCConstants;
 import org.apache.xmlgraphics.ps.PSResource;
 import org.apache.xmlgraphics.ps.dsc.DSCException;
@@ -37,9 +34,10 @@ import org.apache.xmlgraphics.ps.dsc.events.DSCCommentPage;
 import org.apache.xmlgraphics.ps.dsc.events.DSCCommentPages;
 import org.apache.xmlgraphics.ps.dsc.events.DSCCommentTitle;
 import org.apache.xmlgraphics.ps.dsc.events.DSCEvent;
+import org.junit.Test;
 
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.render.intermediate.IFContext;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the image handling in PostScript output.
@@ -48,7 +46,9 @@ public class ImageHandlingTestCase extends AbstractPostScriptTest {
 
     /**
      * Tests JPEG handling.
-     * @throws Exception if an error occurs
+     * 
+     * @throws Exception
+     *             if an error occurs
      */
     @Test
     public void testJPEGImageLevel3() throws Exception {
@@ -57,48 +57,54 @@ public class ImageHandlingTestCase extends AbstractPostScriptTest {
 
     /**
      * Tests JPEG handling.
-     * @throws Exception if an error occurs
+     * 
+     * @throws Exception
+     *             if an error occurs
      */
     @Test
     public void testJPEGImageLevel2() throws Exception {
         innerTestJPEGImage(2);
     }
 
-    private void innerTestJPEGImage(int level) throws Exception {
-        FOUserAgent ua = fopFactory.newFOUserAgent();
-        PSDocumentHandler handler = new PSDocumentHandler();
+    private void innerTestJPEGImage(final int level) throws Exception {
+        final FOUserAgent ua = this.fopFactory.newFOUserAgent();
+        final PSDocumentHandler handler = new PSDocumentHandler();
         handler.setContext(new IFContext(ua));
-        PSRenderingUtil psUtil = handler.getPSUtil();
+        final PSRenderingUtil psUtil = handler.getPSUtil();
         psUtil.setLanguageLevel(level);
         psUtil.setOptimizeResources(true);
         ua.setDocumentHandlerOverride(handler);
 
         // Prepare output file
-        File outputFile = renderFile(ua, "ps-jpeg-image.fo",
-                "-if-l" + psUtil.getLanguageLevel());
+        final File outputFile = renderFile(ua, "ps-jpeg-image.fo", "-if-l"
+                + psUtil.getLanguageLevel());
         verifyPostScriptFile(outputFile, psUtil.getLanguageLevel());
     }
 
-    private void verifyPostScriptFile(File psFile, int level)
-                throws IOException, DSCException {
+    private void verifyPostScriptFile(final File psFile, final int level)
+            throws IOException, DSCException {
         InputStream in = new java.io.FileInputStream(psFile);
         in = new java.io.BufferedInputStream(in);
         try {
-            DSCParser parser = new DSCParser(in);
+            final DSCParser parser = new DSCParser(in);
 
-            DSCCommentPages pages = (DSCCommentPages)gotoDSCComment(parser, DSCConstants.PAGES);
+            final DSCCommentPages pages = (DSCCommentPages) gotoDSCComment(
+                    parser, DSCConstants.PAGES);
             assertEquals(1, pages.getPageCount());
 
-            //Skip procsets and encoding
+            // Skip procsets and encoding
             gotoDSCComment(parser, DSCConstants.BEGIN_RESOURCE);
             gotoDSCComment(parser, DSCConstants.BEGIN_RESOURCE);
             gotoDSCComment(parser, DSCConstants.BEGIN_RESOURCE);
             gotoDSCComment(parser, DSCConstants.BEGIN_RESOURCE);
 
-            PSResource form2 = new PSResource(PSResource.TYPE_FORM, "FOPForm:2");
+            final PSResource form2 = new PSResource(PSResource.TYPE_FORM,
+                    "FOPForm:2");
             checkResourceComment(parser, DSCConstants.BEGIN_RESOURCE, form2);
-            DSCCommentTitle title = (DSCCommentTitle)parser.nextEvent().asDSCComment();
-            assertEquals("image/jpeg test/resources/images/bgimg300dpi.jpg", title.getTitle());
+            DSCCommentTitle title = (DSCCommentTitle) parser.nextEvent()
+                    .asDSCComment();
+            assertEquals("image/jpeg test/resources/images/bgimg300dpi.jpg",
+                    title.getTitle());
 
             String resourceContent = getResourceContent(parser);
 
@@ -112,14 +118,17 @@ public class ImageHandlingTestCase extends AbstractPostScriptTest {
                 assertAbsent(resourceContent, "/ReusableStreamDecode filter");
             }
 
-            //---=== Page 1 ===---
-            DSCCommentPage page = (DSCCommentPage)gotoDSCComment(parser, DSCConstants.PAGE);
+            // ---=== Page 1 ===---
+            final DSCCommentPage page = (DSCCommentPage) gotoDSCComment(parser,
+                    DSCConstants.PAGE);
             assertEquals(1, page.getPagePosition());
 
-            PSResource form1 = new PSResource(PSResource.TYPE_FORM, "FOPForm:1");
+            final PSResource form1 = new PSResource(PSResource.TYPE_FORM,
+                    "FOPForm:1");
             checkResourceComment(parser, DSCConstants.BEGIN_RESOURCE, form1);
-            title = (DSCCommentTitle)parser.nextEvent().asDSCComment();
-            assertEquals("image/jpeg test/resources/images/bgimg72dpi.jpg", title.getTitle());
+            title = (DSCCommentTitle) parser.nextEvent().asDSCComment();
+            assertEquals("image/jpeg test/resources/images/bgimg72dpi.jpg",
+                    title.getTitle());
             resourceContent = getResourceContent(parser);
 
             if (level == 3) {
@@ -137,22 +146,26 @@ public class ImageHandlingTestCase extends AbstractPostScriptTest {
         }
     }
 
-    private void assertContains(String text, String searchString) {
-        assertTrue("Text doesn't contain '" + searchString + "'", text.indexOf(searchString) >= 0);
+    private void assertContains(final String text, final String searchString) {
+        assertTrue("Text doesn't contain '" + searchString + "'",
+                text.indexOf(searchString) >= 0);
     }
 
-    private void assertAbsent(String text, String searchString) {
-        assertTrue("Text contains '" + searchString + "'", text.indexOf(searchString) < 0);
+    private void assertAbsent(final String text, final String searchString) {
+        assertTrue("Text contains '" + searchString + "'",
+                text.indexOf(searchString) < 0);
     }
 
-    private String getResourceContent(DSCParser parser) throws IOException, DSCException {
-        StringBuffer sb = new StringBuffer();
+    private String getResourceContent(final DSCParser parser)
+            throws IOException, DSCException {
+        final StringBuffer sb = new StringBuffer();
         while (parser.hasNext()) {
-            DSCEvent event = parser.nextEvent();
+            final DSCEvent event = parser.nextEvent();
             if (event.isLine()) {
                 sb.append(event.asLine().getLine()).append('\n');
             } else if (event.isDSCComment()) {
-                if (DSCConstants.END_RESOURCE.equals(event.asDSCComment().getName())) {
+                if (DSCConstants.END_RESOURCE.equals(event.asDSCComment()
+                        .getName())) {
                     break;
                 }
             }

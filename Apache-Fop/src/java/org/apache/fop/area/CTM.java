@@ -41,12 +41,12 @@ public class CTM implements Serializable {
 
     private static final long serialVersionUID = -8743287485623778341L;
 
-    private double a;
-    private double b;
-    private double c;
-    private double d;
+    private final double a;
+    private final double b;
+    private final double c;
+    private final double d;
     private double e;
-    private double f;
+    private final double f;
 
     private static final CTM CTM_LRTB = new CTM(1, 0, 0, 1, 0, 0);
     private static final CTM CTM_RLTB = new CTM(1, 0, 0, 1, 0, 0);
@@ -56,25 +56,32 @@ public class CTM implements Serializable {
      * Create the identity matrix
      */
     public CTM() {
-        a = 1;
-        b = 0;
-        c = 0;
-        d = 1;
-        e = 0;
-        f = 0;
+        this.a = 1;
+        this.b = 0;
+        this.c = 0;
+        this.d = 1;
+        this.e = 0;
+        this.f = 0;
     }
 
     /**
      * Initialize a CTM from the passed arguments.
      *
-     * @param a the x scale
-     * @param b the x shear
-     * @param c the y shear
-     * @param d the y scale
-     * @param e the x shift
-     * @param f the y shift
+     * @param a
+     *            the x scale
+     * @param b
+     *            the x shear
+     * @param c
+     *            the y shear
+     * @param d
+     *            the y scale
+     * @param e
+     *            the x shift
+     * @param f
+     *            the y shift
      */
-    public CTM(double a, double b, double c, double d, double e, double f) {
+    public CTM(final double a, final double b, final double c, final double d,
+            final double e, final double f) {
         this.a = a;
         this.b = b;
         this.c = c;
@@ -84,13 +91,15 @@ public class CTM implements Serializable {
     }
 
     /**
-     * Initialize a CTM to the identity matrix with a translation
-     * specified by x and y
+     * Initialize a CTM to the identity matrix with a translation specified by x
+     * and y
      *
-     * @param x the x shift
-     * @param y the y shift.
+     * @param x
+     *            the x shift
+     * @param y
+     *            the y shift.
      */
-    public CTM(double x, double y) {
+    public CTM(final double x, final double y) {
         this.a = 1;
         this.b = 0;
         this.c = 0;
@@ -102,9 +111,10 @@ public class CTM implements Serializable {
     /**
      * Initialize a CTM with the values of another CTM.
      *
-     * @param ctm another CTM
+     * @param ctm
+     *            another CTM
      */
-    protected CTM(CTM ctm) {
+    protected CTM(final CTM ctm) {
         this.a = ctm.a;
         this.b = ctm.b;
         this.c = ctm.c;
@@ -116,10 +126,11 @@ public class CTM implements Serializable {
     /**
      * Initialize a CTM with the values of an AffineTransform.
      *
-     * @param at the transformation matrix
+     * @param at
+     *            the transformation matrix
      */
-    public CTM(AffineTransform at) {
-        double[] matrix = new double[6];
+    public CTM(final AffineTransform at) {
+        final double[] matrix = new double[6];
         at.getMatrix(matrix);
         this.a = matrix[0];
         this.b = matrix[1];
@@ -130,56 +141,64 @@ public class CTM implements Serializable {
     }
 
     /**
-     * Return a CTM which will transform coordinates for a particular writing-mode
-     * into normalized first quandrant coordinates.
-     * @param wm A writing mode constant from fo.properties.WritingMode, ie.
-     * one of LR_TB, RL_TB, TB_RL, TB_LR.
-     * @param ipd The inline-progression dimension of the reference area whose
-     * CTM is being set..
-     * @param bpd The block-progression dimension of the reference area whose
-     * CTM is being set.
+     * Return a CTM which will transform coordinates for a particular
+     * writing-mode into normalized first quandrant coordinates.
+     * 
+     * @param wm
+     *            A writing mode constant from fo.properties.WritingMode, ie.
+     *            one of LR_TB, RL_TB, TB_RL, TB_LR.
+     * @param ipd
+     *            The inline-progression dimension of the reference area whose
+     *            CTM is being set..
+     * @param bpd
+     *            The block-progression dimension of the reference area whose
+     *            CTM is being set.
      * @return a new CTM with the required transform
      */
-    public static CTM getWMctm(WritingMode wm, int ipd, int bpd) {
+    public static CTM getWMctm(final WritingMode wm, final int ipd,
+            final int bpd) {
         CTM wmctm;
         switch (wm.getEnumValue()) {
-            case EN_LR_TB:
-                return new CTM(CTM_LRTB);
-            case EN_RL_TB:
-                return new CTM(CTM_RLTB);
-            case EN_TB_RL:  // CJK
-            case EN_TB_LR:  // CJK
-                wmctm = new CTM(CTM_TBRL);
-                wmctm.e = bpd;
-                return wmctm;
-            default:
-                return null;
+        case EN_LR_TB:
+            return new CTM(CTM_LRTB);
+        case EN_RL_TB:
+            return new CTM(CTM_RLTB);
+        case EN_TB_RL: // CJK
+        case EN_TB_LR: // CJK
+            wmctm = new CTM(CTM_TBRL);
+            wmctm.e = bpd;
+            return wmctm;
+        default:
+            return null;
         }
     }
 
     /**
      * Multiply new passed CTM with this one and generate a new result CTM.
-     * @param premult The CTM to multiply with this one. The new one will be
-     * the first multiplicand.
+     * 
+     * @param premult
+     *            The CTM to multiply with this one. The new one will be the
+     *            first multiplicand.
      * @return CTM The result of multiplying premult * this.
      */
-    public CTM multiply(CTM premult) {
-        return new CTM ((premult.a * a) + (premult.b * c),
-                              (premult.a * b) + (premult.b * d),
-                              (premult.c * a) + (premult.d * c),
-                              (premult.c * b) + (premult.d * d),
-                              (premult.e * a) + (premult.f * c) + e,
-                              (premult.e * b) + (premult.f * d) + f);
+    public CTM multiply(final CTM premult) {
+        return new CTM(premult.a * this.a + premult.b * this.c, premult.a
+                * this.b + premult.b * this.d, premult.c * this.a + premult.d
+                * this.c, premult.c * this.b + premult.d * this.d, premult.e
+                * this.a + premult.f * this.c + this.e, premult.e * this.b
+                + premult.f * this.d + this.f);
     }
 
     /**
-     * Rotate this CTM by "angle" radians and return a new result CTM.
-     * This is used to account for reference-orientation.
-     * @param angle The angle in radians. Positive angles are measured counter-
-     * clockwise.
+     * Rotate this CTM by "angle" radians and return a new result CTM. This is
+     * used to account for reference-orientation.
+     * 
+     * @param angle
+     *            The angle in radians. Positive angles are measured counter-
+     *            clockwise.
      * @return CTM The result of rotating this CTM.
      */
-    public CTM rotate(double angle) {
+    public CTM rotate(final double angle) {
         double cos;
         double sin;
         if (angle == 90.0 || angle == -270.0) {
@@ -192,59 +211,68 @@ public class CTM implements Serializable {
             cos = -1.0;
             sin = 0.0;
         } else {
-            double rad = Math.toRadians(angle);
+            final double rad = Math.toRadians(angle);
             cos = Math.cos(rad);
             sin = Math.sin(rad);
         }
-        CTM rotate = new CTM(cos, -sin, sin, cos, 0, 0);
+        final CTM rotate = new CTM(cos, -sin, sin, cos, 0, 0);
         return multiply(rotate);
     }
 
     /**
-     * Translate this CTM by the passed x and y values and return a new result CTM.
-     * @param x The amount to translate along the x axis.
-     * @param y The amount to translate along the y axis.
+     * Translate this CTM by the passed x and y values and return a new result
+     * CTM.
+     * 
+     * @param x
+     *            The amount to translate along the x axis.
+     * @param y
+     *            The amount to translate along the y axis.
      * @return CTM The result of translating this CTM.
      */
-    public CTM translate(double x, double y) {
-        CTM translate = new CTM(1, 0, 0, 1, x, y);
+    public CTM translate(final double x, final double y) {
+        final CTM translate = new CTM(1, 0, 0, 1, x, y);
         return multiply(translate);
     }
 
     /**
      * Scale this CTM by the passed x and y values and return a new result CTM.
-     * @param x The amount to scale along the x axis.
-     * @param y The amount to scale along the y axis.
+     * 
+     * @param x
+     *            The amount to scale along the x axis.
+     * @param y
+     *            The amount to scale along the y axis.
      * @return CTM The result of scaling this CTM.
      */
-    public CTM scale(double x, double y) {
-        CTM scale = new CTM(x, 0, 0, y, 0, 0);
+    public CTM scale(final double x, final double y) {
+        final CTM scale = new CTM(x, 0, 0, y, 0, 0);
         return multiply(scale);
     }
 
     /**
-     * Transform a rectangle by the CTM to produce a rectangle in the transformed
-     * coordinate system.
-     * @param inRect The rectangle in the original coordinate system
+     * Transform a rectangle by the CTM to produce a rectangle in the
+     * transformed coordinate system.
+     * 
+     * @param inRect
+     *            The rectangle in the original coordinate system
      * @return Rectangle2D The rectangle in the transformed coordinate system.
      */
-    public Rectangle2D transform(Rectangle2D inRect) {
+    public Rectangle2D transform(final Rectangle2D inRect) {
         // Store as 2 sets of 2 points and transform those, then
         // recalculate the width and height
-        int x1t = (int)(inRect.getX() * a + inRect.getY() * c + e);
-        int y1t = (int)(inRect.getX() * b + inRect.getY() * d + f);
-        int x2t = (int)((inRect.getX() + inRect.getWidth()) * a
-                        + (inRect.getY() + inRect.getHeight()) * c + e);
-        int y2t = (int)((inRect.getX() + inRect.getWidth()) * b
-                        + (inRect.getY() + inRect.getHeight()) * d + f);
+        int x1t = (int) (inRect.getX() * this.a + inRect.getY() * this.c + this.e);
+        int y1t = (int) (inRect.getX() * this.b + inRect.getY() * this.d + this.f);
+        int x2t = (int) ((inRect.getX() + inRect.getWidth()) * this.a
+                + (inRect.getY() + inRect.getHeight()) * this.c + this.e);
+        int y2t = (int) ((inRect.getX() + inRect.getWidth()) * this.b
+                + (inRect.getY() + inRect.getHeight()) * this.d + this.f);
         // Normalize with x1 < x2
         if (x1t > x2t) {
-            int tmp = x2t;
+            final int tmp = x2t;
             x2t = x1t;
             x1t = tmp;
         }
         if (y1t > y2t) {
-            int tmp = y2t;
+            final int tmp = y2t;
             y2t = y1t;
             y1t = tmp;
         }
@@ -258,22 +286,23 @@ public class CTM implements Serializable {
      */
     @Override
     public String toString() {
-        return "[" + a + " " + b + " " + c + " " + d + " " + e + " "
-               + f + "]";
+        return "[" + this.a + " " + this.b + " " + this.c + " " + this.d + " "
+                + this.e + " " + this.f + "]";
     }
 
     /**
-     * Get an array containing the values of this transform.
-     * This creates and returns a new transform with the values in it.
+     * Get an array containing the values of this transform. This creates and
+     * returns a new transform with the values in it.
      *
      * @return an array containing the transform values
      */
     public double[] toArray() {
-        return new double[]{a, b, c, d, e, f};
+        return new double[] { this.a, this.b, this.c, this.d, this.e, this.f };
     }
 
     /**
      * Returns this CTM as an AffineTransform object.
+     * 
      * @return the AffineTransform representation
      */
     public AffineTransform toAffineTransform() {
@@ -282,16 +311,20 @@ public class CTM implements Serializable {
 
     /**
      * Construct a coordinate transformation matrix (CTM).
-     * @param absRefOrient absolute reference orientation
-     * @param writingMode the writing mode
-     * @param absVPrect absolute viewpoint rectangle
-     * @param reldims relative dimensions
+     * 
+     * @param absRefOrient
+     *            absolute reference orientation
+     * @param writingMode
+     *            the writing mode
+     * @param absVPrect
+     *            absolute viewpoint rectangle
+     * @param reldims
+     *            relative dimensions
      * @return CTM the coordinate transformation matrix (CTM)
      */
-    public static CTM getCTMandRelDims(int absRefOrient,
-                                       WritingMode writingMode,
-                                       Rectangle2D absVPrect,
-                                       FODimension reldims) {
+    public static CTM getCTMandRelDims(final int absRefOrient,
+            final WritingMode writingMode, final Rectangle2D absVPrect,
+            final FODimension reldims) {
         int width;
         int height;
         // We will use the absolute reference-orientation to set up the CTM.
@@ -300,17 +333,17 @@ public class CTM implements Serializable {
             width = (int) absVPrect.getWidth();
             height = (int) absVPrect.getHeight();
         } else {
-            // invert width and height since top left are rotated by 90 (cl or ccl)
+            // invert width and height since top left are rotated by 90 (cl or
+            // ccl)
             height = (int) absVPrect.getWidth();
             width = (int) absVPrect.getHeight();
         }
-        /* Set up the CTM for the content of this reference area.
-         * This will transform region content coordinates in
-         * writing-mode relative into absolute page-relative
-         * which will then be translated based on the position of
-         * the region viewport.
-         * (Note: scrolling between region vp and ref area when
-         * doing online content!)
+        /*
+         * Set up the CTM for the content of this reference area. This will
+         * transform region content coordinates in writing-mode relative into
+         * absolute page-relative which will then be translated based on the
+         * position of the region viewport. (Note: scrolling between region vp
+         * and ref area when doing online content!)
          */
         CTM ctm = new CTM(absVPrect.getX(), absVPrect.getY());
 
@@ -319,29 +352,30 @@ public class CTM implements Serializable {
             // Rotation implies translation to keep the drawing area in the
             // first quadrant. Note: rotation is counter-clockwise
             switch (absRefOrient) {
-                case 90:
-                case -270:
-                    ctm = ctm.translate(0, width); // width = absVPrect.height
-                    break;
-                case 180:
-                case -180:
-                    ctm = ctm.translate(width, height);
-                    break;
-                case 270:
-                case -90:
-                    ctm = ctm.translate(height, 0); // height = absVPrect.width
-                    break;
-                default:
-                    throw new RuntimeException();
+            case 90:
+            case -270:
+                ctm = ctm.translate(0, width); // width = absVPrect.height
+                break;
+            case 180:
+            case -180:
+                ctm = ctm.translate(width, height);
+                break;
+            case 270:
+            case -90:
+                ctm = ctm.translate(height, 0); // height = absVPrect.width
+                break;
+            default:
+                throw new RuntimeException();
             }
             ctm = ctm.rotate(absRefOrient);
         }
-        /* Since we've already put adjusted width and height values for the
-         * top and left positions implied by the reference-orientation, we
-         * can set ipd and bpd appropriately based on the writing mode.
+        /*
+         * Since we've already put adjusted width and height values for the top
+         * and left positions implied by the reference-orientation, we can set
+         * ipd and bpd appropriately based on the writing mode.
          */
 
-        switch ( writingMode.getEnumValue() ) {
+        switch (writingMode.getEnumValue()) {
         case EN_TB_LR:
         case EN_TB_RL:
             reldims.ipd = height;
@@ -356,7 +390,8 @@ public class CTM implements Serializable {
         }
         // Set a rectangle to be the writing-mode relative version???
         // Now transform for writing mode
-        return ctm.multiply(CTM.getWMctm(writingMode, reldims.ipd, reldims.bpd));
+        return ctm
+                .multiply(CTM.getWMctm(writingMode, reldims.ipd, reldims.bpd));
     }
 
 }

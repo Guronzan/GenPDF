@@ -53,8 +53,9 @@ public class GraphicsDataDescriptor extends AbstractDescriptor {
      * @param heightRes
      *            the height resolution of the graphics window
      */
-    public GraphicsDataDescriptor(int xlwind, int xrwind, int ybwind,
-            int ytwind, int widthRes, int heightRes) {
+    public GraphicsDataDescriptor(final int xlwind, final int xrwind,
+            final int ybwind, final int ytwind, final int widthRes,
+            final int heightRes) {
         this.xlwind = xlwind;
         this.xrwind = xrwind;
         this.ybwind = ybwind;
@@ -64,15 +65,16 @@ public class GraphicsDataDescriptor extends AbstractDescriptor {
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] headerData = new byte[9];
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] headerData = new byte[9];
         copySF(headerData, Type.DESCRIPTOR, Category.GRAPHICS);
 
-        byte[] drawingOrderSubsetData = getDrawingOrderSubset();
+        final byte[] drawingOrderSubsetData = getDrawingOrderSubset();
 
-        byte[] windowSpecificationData = getWindowSpecification();
+        final byte[] windowSpecificationData = getWindowSpecification();
 
-        byte[] len = BinaryUtils.convert(headerData.length
+        final byte[] len = BinaryUtils.convert(headerData.length
                 + drawingOrderSubsetData.length
                 + windowSpecificationData.length - 1, 2);
         headerData[1] = len[0];
@@ -90,16 +92,15 @@ public class GraphicsDataDescriptor extends AbstractDescriptor {
      */
     private byte[] getDrawingOrderSubset() {
         final byte[] data = new byte[] {
-            // Drawing order subset
-            (byte) 0xF7,
-            7, // LENGTH
-            (byte) 0xB0, // drawing order subset
-            0x00, // reserved (must be zero)
-            0x00, // reserved (must be zero)
-            0x02, // SUBLEV
-            0x00, // VERSION 0
-            0x01, // LENGTH (of following field)
-            0x00 // GEOM
+                // Drawing order subset
+                (byte) 0xF7, 7, // LENGTH
+                (byte) 0xB0, // drawing order subset
+                0x00, // reserved (must be zero)
+                0x00, // reserved (must be zero)
+                0x02, // SUBLEV
+                0x00, // VERSION 0
+                0x01, // LENGTH (of following field)
+                0x00 // GEOM
         };
         return data;
     }
@@ -113,40 +114,34 @@ public class GraphicsDataDescriptor extends AbstractDescriptor {
      * @return the window specification data
      */
     private byte[] getWindowSpecification() {
-        byte[] xlcoord = BinaryUtils.convert(xlwind, 2);
-        byte[] xrcoord = BinaryUtils.convert(xrwind, 2);
-        byte[] xbcoord = BinaryUtils.convert(ybwind, 2);
-        byte[] ytcoord = BinaryUtils.convert(ytwind, 2);
-        byte[] xResol = BinaryUtils.convert(widthRes * 10, 2);
-        byte[] yResol = BinaryUtils.convert(heightRes * 10, 2);
-        byte[] imxyres = xResol;
+        final byte[] xlcoord = BinaryUtils.convert(this.xlwind, 2);
+        final byte[] xrcoord = BinaryUtils.convert(this.xrwind, 2);
+        final byte[] xbcoord = BinaryUtils.convert(this.ybwind, 2);
+        final byte[] ytcoord = BinaryUtils.convert(this.ytwind, 2);
+        final byte[] xResol = BinaryUtils.convert(this.widthRes * 10, 2);
+        final byte[] yResol = BinaryUtils.convert(this.heightRes * 10, 2);
+        final byte[] imxyres = xResol;
 
         // Window specification
-        final byte[] data = new byte[] {
-            (byte) 0xF6,
-            18, // LENGTH
-            (ABS + IMGRES), // FLAGS (ABS)
-            0x00, // reserved (must be zero)
-            0x00, // CFORMAT (coordinate format - 16bit high byte first signed)
-            0x00, // UBASE (unit base - ten inches)
+        final byte[] data = new byte[] { (byte) 0xF6, 18, // LENGTH
+                ABS + IMGRES, // FLAGS (ABS)
+                0x00, // reserved (must be zero)
+                0x00, // CFORMAT (coordinate format - 16bit high byte first
+                      // signed)
+                0x00, // UBASE (unit base - ten inches)
 
-            xResol[0], // XRESOL
-            xResol[1],
-            yResol[0], // YRESOL
-            yResol[1],
+                xResol[0], // XRESOL
+                xResol[1], yResol[0], // YRESOL
+                yResol[1],
 
-            imxyres[0], // IMXYRES (Number of image points per ten inches
-            imxyres[1], // in X and Y directions)
+                imxyres[0], // IMXYRES (Number of image points per ten inches
+                imxyres[1], // in X and Y directions)
 
-            xlcoord[0], // XLWIND
-            xlcoord[1],
-            xrcoord[0], // XRWIND
-            xrcoord[1],
-            xbcoord[0], // YBWIND
-            xbcoord[1],
-            ytcoord[0], // YTWIND
-            ytcoord[1]
-        };
+                xlcoord[0], // XLWIND
+                xlcoord[1], xrcoord[0], // XRWIND
+                xrcoord[1], xbcoord[0], // YBWIND
+                xbcoord[1], ytcoord[0], // YTWIND
+                ytcoord[1] };
         return data;
     }
 }

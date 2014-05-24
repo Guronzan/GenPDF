@@ -19,8 +19,6 @@
 
 package org.apache.fop.traits;
 
-import java.io.ObjectStreamException;
-
 import org.apache.fop.fo.Constants;
 
 /** Enumeration class for border styles. */
@@ -28,15 +26,15 @@ public final class BorderStyle extends TraitEnum {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String[] BORDER_STYLE_NAMES = new String[]
-            {"none", "hidden", "dotted", "dashed",
-             "solid", "double", "groove", "ridge",
-             "inset", "outset"};
+    private static final String[] BORDER_STYLE_NAMES = new String[] { "none",
+        "hidden", "dotted", "dashed", "solid", "double", "groove", "ridge",
+        "inset", "outset" };
 
-    private static final int[] BORDER_STYLE_VALUES = new int[]
-            {Constants.EN_NONE, Constants.EN_HIDDEN, Constants.EN_DOTTED, Constants.EN_DASHED,
-             Constants.EN_SOLID, Constants.EN_DOUBLE, Constants.EN_GROOVE, Constants.EN_RIDGE,
-             Constants.EN_INSET, Constants.EN_OUTSET};
+    private static final int[] BORDER_STYLE_VALUES = new int[] {
+        Constants.EN_NONE, Constants.EN_HIDDEN, Constants.EN_DOTTED,
+        Constants.EN_DASHED, Constants.EN_SOLID, Constants.EN_DOUBLE,
+        Constants.EN_GROOVE, Constants.EN_RIDGE, Constants.EN_INSET,
+        Constants.EN_OUTSET };
 
     /** border-style: none */
     public static final BorderStyle NONE = new BorderStyle(0);
@@ -59,22 +57,24 @@ public final class BorderStyle extends TraitEnum {
     /** border-style: outset */
     public static final BorderStyle OUTSET = new BorderStyle(9);
 
-    private static final BorderStyle[] STYLES = new BorderStyle[] {
-        NONE, HIDDEN, DOTTED, DASHED, SOLID, DOUBLE, GROOVE, RIDGE, INSET, OUTSET};
+    private static final BorderStyle[] STYLES = new BorderStyle[] { NONE,
+        HIDDEN, DOTTED, DASHED, SOLID, DOUBLE, GROOVE, RIDGE, INSET, OUTSET };
 
-    private BorderStyle(int index) {
+    private BorderStyle(final int index) {
         super(BORDER_STYLE_NAMES[index], BORDER_STYLE_VALUES[index]);
     }
 
     /**
      * Returns the enumeration/singleton object based on its name.
-     * @param name the name of the enumeration value
+     *
+     * @param name
+     *            the name of the enumeration value
      * @return the enumeration object
      */
-    public static BorderStyle valueOf(String name) {
-        for (int i = 0; i < STYLES.length; i++) {
-            if (STYLES[i].getName().equalsIgnoreCase(name)) {
-                return STYLES[i];
+    public static BorderStyle valueOf(final String name) {
+        for (final BorderStyle element : STYLES) {
+            if (element.getName().equalsIgnoreCase(name)) {
+                return element;
             }
         }
         throw new IllegalArgumentException("Illegal border style: " + name);
@@ -82,23 +82,26 @@ public final class BorderStyle extends TraitEnum {
 
     /**
      * Returns the enumeration/singleton object based on its name.
-     * @param enumValue the enumeration value
+     *
+     * @param enumValue
+     *            the enumeration value
      * @return the enumeration object
      */
-    public static BorderStyle valueOf(int enumValue) {
-        for (int i = 0; i < STYLES.length; i++) {
-            if (STYLES[i].getEnumValue() == enumValue) {
-                return STYLES[i];
+    public static BorderStyle valueOf(final int enumValue) {
+        for (final BorderStyle element : STYLES) {
+            if (element.getEnumValue() == enumValue) {
+                return element;
             }
         }
         throw new IllegalArgumentException("Illegal border style: " + enumValue);
     }
 
-    private Object readResolve() throws ObjectStreamException {
+    private Object readResolve() {
         return valueOf(getName());
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "BorderStyle:" + getName();
     }

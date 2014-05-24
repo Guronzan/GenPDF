@@ -28,6 +28,6 @@ import org.w3c.dom.Document;
  */
 public interface PlanDrawer {
 
-    Document createDocument(EventList data, float w, float h,
-                                   HashMap hints);
+    Document createDocument(final EventList data, final float w, final float h,
+            final HashMap hints);
 }

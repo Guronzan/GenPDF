@@ -31,32 +31,32 @@ public class XMLLangShorthandParser extends GenericShorthandParser {
     private static final char HYPHEN_MINUS = '-';
 
     /** {@inheritDoc} */
-    public Property getValueForProperty(int propId,
-                                        Property property,
-                                        PropertyMaker maker,
-                                        PropertyList propertyList)
-                    throws PropertyException {
+    @Override
+    public Property getValueForProperty(final int propId,
+            final Property property, final PropertyMaker maker,
+            final PropertyList propertyList) throws PropertyException {
 
-        String shorthandValue = property.getString();
-        int hyphenIndex = shorthandValue.indexOf(HYPHEN_MINUS);
+        final String shorthandValue = property.getString();
+        final int hyphenIndex = shorthandValue.indexOf(HYPHEN_MINUS);
         if (propId == Constants.PR_LANGUAGE) {
             if (hyphenIndex == -1) {
                 /* only language specified; use the whole property */
                 return property;
             } else {
                 /* use only the primary tag */
-                return StringProperty.getInstance(
-                        shorthandValue.substring(0, hyphenIndex));
+                return StringProperty.getInstance(shorthandValue.substring(0,
+                        hyphenIndex));
             }
         } else if (propId == Constants.PR_COUNTRY) {
             if (hyphenIndex != -1) {
-                int nextHyphenIndex = shorthandValue.indexOf(HYPHEN_MINUS, hyphenIndex + 1);
+                final int nextHyphenIndex = shorthandValue.indexOf(
+                        HYPHEN_MINUS, hyphenIndex + 1);
                 if (nextHyphenIndex != -1) {
-                    return StringProperty.getInstance(
-                            shorthandValue.substring(hyphenIndex + 1, nextHyphenIndex));
+                    return StringProperty.getInstance(shorthandValue.substring(
+                            hyphenIndex + 1, nextHyphenIndex));
                 } else {
-                    return StringProperty.getInstance(
-                            shorthandValue.substring(hyphenIndex + 1));
+                    return StringProperty.getInstance(shorthandValue
+                            .substring(hyphenIndex + 1));
                 }
             }
         }

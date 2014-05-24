@@ -24,48 +24,63 @@ package org.apache.fop.render.pdf;
  */
 public interface PDFConfigurationConstants {
 
-    /** PDF encryption parameter: all parameters as object, datatype: PDFEncryptionParams */
+    /**
+     * PDF encryption parameter: all parameters as object, datatype:
+     * PDFEncryptionParams
+     */
     String ENCRYPTION_PARAMS = "encryption-params";
     /** PDF encryption parameter: user password, datatype: String */
     String USER_PASSWORD = "user-password";
     /** PDF encryption parameter: owner password, datatype: String */
     String OWNER_PASSWORD = "owner-password";
-    /** PDF encryption parameter: Forbids printing, datatype: Boolean or "true"/"false" */
+    /**
+     * PDF encryption parameter: Forbids printing, datatype: Boolean or
+     * "true"/"false"
+     */
     String NO_PRINT = "noprint";
-    /** PDF encryption parameter: Forbids copying content, datatype: Boolean or "true"/"false" */
+    /**
+     * PDF encryption parameter: Forbids copying content, datatype: Boolean or
+     * "true"/"false"
+     */
     String NO_COPY_CONTENT = "nocopy";
-    /** PDF encryption parameter: Forbids editing content, datatype: Boolean or "true"/"false" */
+    /**
+     * PDF encryption parameter: Forbids editing content, datatype: Boolean or
+     * "true"/"false"
+     */
     String NO_EDIT_CONTENT = "noedit";
-    /** PDF encryption parameter: Forbids annotations, datatype: Boolean or "true"/"false" */
+    /**
+     * PDF encryption parameter: Forbids annotations, datatype: Boolean or
+     * "true"/"false"
+     */
     String NO_ANNOTATIONS = "noannotations";
 
     /**
-     * PDF encryption parameter: Forbids filling in existing interactive forms, datatype:
-     * Boolean or "true"/"false"
+     * PDF encryption parameter: Forbids filling in existing interactive forms,
+     * datatype: Boolean or "true"/"false"
      */
     String NO_FILLINFORMS = "nofillinforms";
 
     /**
-     * PDF encryption parameter: Forbids extracting text and graphics, datatype: Boolean
-     * or "true"/"false"
+     * PDF encryption parameter: Forbids extracting text and graphics, datatype:
+     * Boolean or "true"/"false"
      */
     String NO_ACCESSCONTENT = "noaccesscontent";
 
     /**
-     * PDF encryption parameter: Forbids assembling document, datatype: Boolean or
-     * "true"/"false"
+     * PDF encryption parameter: Forbids assembling document, datatype: Boolean
+     * or "true"/"false"
      */
     String NO_ASSEMBLEDOC = "noassembledoc";
 
     /**
-     * PDF encryption parameter: Forbids printing to high quality, datatype: Boolean or
-     * "true"/"false"
+     * PDF encryption parameter: Forbids printing to high quality, datatype:
+     * Boolean or "true"/"false"
      */
     String NO_PRINTHQ = "noprinthq";
 
     /**
-     * PDF encryption length parameter: must be a multiple of 8 between 40 and 128,
-     * default value 40, datatype: int.
+     * PDF encryption length parameter: must be a multiple of 8 between 40 and
+     * 128, default value 40, datatype: int.
      */
     String ENCRYPTION_LENGTH = "encryption-length";
     /** Rendering Options key for the PDF/A mode. */
@@ -74,11 +89,14 @@ public interface PDFConfigurationConstants {
     String PDF_X_MODE = "pdf-x-mode";
     /** Rendering Options key for the ICC profile for the output intent. */
     String KEY_OUTPUT_PROFILE = "output-profile";
-    /** PDF version entry: specify the version of the PDF document created, datatype: String */
+    /**
+     * PDF version entry: specify the version of the PDF document created,
+     * datatype: String
+     */
     String PDF_VERSION = "version";
     /**
-     * Rendering Options key for disabling the sRGB color space (only possible if no PDF/A or
-     * PDF/X profile is active).
+     * Rendering Options key for disabling the sRGB color space (only possible
+     * if no PDF/A or PDF/X profile is active).
      */
     String KEY_DISABLE_SRGB_COLORSPACE = "disable-srgb-colorspace";
 }

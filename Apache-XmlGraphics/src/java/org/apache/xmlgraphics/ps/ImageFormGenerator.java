@@ -31,50 +31,66 @@ import java.io.IOException;
  */
 public class ImageFormGenerator extends FormGenerator {
 
-    //Mode 1 (RenderedImage)
+    // Mode 1 (RenderedImage)
     private RenderedImage image;
 
-    //Mode 2 (ImageEncoder)
-    private ImageEncoder encoder;
+    // Mode 2 (ImageEncoder)
+    private final ImageEncoder encoder;
     private ColorSpace colorSpace;
     private int bitsPerComponent = 8;
 
-    private boolean invertImage;
-    private Dimension pixelDimensions;
+    private final boolean invertImage;
+    private final Dimension pixelDimensions;
 
     /**
      * Main constructor.
-     * @param formName the form's name
-     * @param title the form's title or null
-     * @param dimensions the form's dimensions in units (usually points)
-     * @param image the image
-     * @param invertImage true if the image shall be inverted
+     * 
+     * @param formName
+     *            the form's name
+     * @param title
+     *            the form's title or null
+     * @param dimensions
+     *            the form's dimensions in units (usually points)
+     * @param image
+     *            the image
+     * @param invertImage
+     *            true if the image shall be inverted
      */
-    public ImageFormGenerator(String formName, String title,
-            Dimension2D dimensions,
-            RenderedImage image, boolean invertImage) {
+    public ImageFormGenerator(final String formName, final String title,
+            final Dimension2D dimensions, final RenderedImage image,
+            final boolean invertImage) {
         super(formName, title, dimensions);
         this.image = image;
         this.encoder = ImageEncodingHelper.createRenderedImageEncoder(image);
         this.invertImage = invertImage;
-        this.pixelDimensions = new Dimension(image.getWidth(), image.getHeight());
+        this.pixelDimensions = new Dimension(image.getWidth(),
+                image.getHeight());
     }
 
     /**
      * Main constructor.
-     * @param formName the form's name
-     * @param title the form's title or null
-     * @param dimensions the form's dimensions in units (usually points)
-     * @param dimensionsPx the form's dimensions in pixels
-     * @param encoder the image encoder
-     * @param colorSpace the target color space
-     * @param bitsPerComponent the bits per component
-     * @param invertImage true if the image shall be inverted
+     * 
+     * @param formName
+     *            the form's name
+     * @param title
+     *            the form's title or null
+     * @param dimensions
+     *            the form's dimensions in units (usually points)
+     * @param dimensionsPx
+     *            the form's dimensions in pixels
+     * @param encoder
+     *            the image encoder
+     * @param colorSpace
+     *            the target color space
+     * @param bitsPerComponent
+     *            the bits per component
+     * @param invertImage
+     *            true if the image shall be inverted
      */
-    public ImageFormGenerator(String formName, String title,
-            Dimension2D dimensions, Dimension dimensionsPx,
-            ImageEncoder encoder,
-            ColorSpace colorSpace, int bitsPerComponent, boolean invertImage) {
+    public ImageFormGenerator(final String formName, final String title,
+            final Dimension2D dimensions, final Dimension dimensionsPx,
+            final ImageEncoder encoder, final ColorSpace colorSpace,
+            final int bitsPerComponent, final boolean invertImage) {
         super(formName, title, dimensions);
         this.pixelDimensions = dimensionsPx;
         this.encoder = encoder;
@@ -85,31 +101,41 @@ public class ImageFormGenerator extends FormGenerator {
 
     /**
      * Main constructor.
-     * @param formName the form's name
-     * @param title the form's title or null
-     * @param dimensions the form's dimensions in units (usually points)
-     * @param dimensionsPx the form's dimensions in pixels
-     * @param encoder the image encoder
-     * @param colorSpace the target color space
-     * @param invertImage true if the image shall be inverted
+     * 
+     * @param formName
+     *            the form's name
+     * @param title
+     *            the form's title or null
+     * @param dimensions
+     *            the form's dimensions in units (usually points)
+     * @param dimensionsPx
+     *            the form's dimensions in pixels
+     * @param encoder
+     *            the image encoder
+     * @param colorSpace
+     *            the target color space
+     * @param invertImage
+     *            true if the image shall be inverted
      */
-    public ImageFormGenerator(String formName, String title,
-            Dimension2D dimensions, Dimension dimensionsPx,
-            ImageEncoder encoder,
-            ColorSpace colorSpace, boolean invertImage) {
-        this(formName, title, dimensions, dimensionsPx, encoder, colorSpace, 8, invertImage);
+    public ImageFormGenerator(final String formName, final String title,
+            final Dimension2D dimensions, final Dimension dimensionsPx,
+            final ImageEncoder encoder, final ColorSpace colorSpace,
+            final boolean invertImage) {
+        this(formName, title, dimensions, dimensionsPx, encoder, colorSpace, 8,
+                invertImage);
     }
 
     /**
      * Returns the name of the data segment associated with this image form.
+     * 
      * @return the data segment name
      */
     protected String getDataName() {
         return getFormName() + ":Data";
     }
 
-    private String getAdditionalFilters(PSGenerator gen) {
-        String implicitFilter = encoder.getImplicitFilter();
+    private String getAdditionalFilters(final PSGenerator gen) {
+        final String implicitFilter = this.encoder.getImplicitFilter();
         if (implicitFilter != null) {
             return "/ASCII85Decode filter " + implicitFilter + " filter";
         } else {
@@ -122,45 +148,51 @@ public class ImageFormGenerator extends FormGenerator {
     }
 
     /** {@inheritDoc} */
-    protected void generatePaintProc(PSGenerator gen) throws IOException {
+    @Override
+    protected void generatePaintProc(final PSGenerator gen) throws IOException {
         if (gen.getPSLevel() == 2) {
-            gen.writeln("    userdict /i 0 put"); //rewind image data
+            gen.writeln("    userdict /i 0 put"); // rewind image data
         } else {
-            gen.writeln("    " + getDataName() + " 0 setfileposition"); //rewind image data
+            gen.writeln("    " + getDataName() + " 0 setfileposition"); // rewind
+                                                                        // image
+                                                                        // data
         }
         String dataSource;
         if (gen.getPSLevel() == 2) {
-            dataSource = "{ " + getDataName() + " i get /i i 1 add store } bind";
+            dataSource = "{ " + getDataName()
+                    + " i get /i i 1 add store } bind";
         } else {
             dataSource = getDataName();
         }
-        AffineTransform at = new AffineTransform();
+        final AffineTransform at = new AffineTransform();
         at.scale(getDimensions().getWidth(), getDimensions().getHeight());
         gen.concatMatrix(at);
-        PSDictionary imageDict = new PSDictionary();
+        final PSDictionary imageDict = new PSDictionary();
         imageDict.put("/DataSource", dataSource);
         if (this.image != null) {
             PSImageUtils.writeImageCommand(this.image, imageDict, gen);
         } else {
-            imageDict.put("/BitsPerComponent", Integer.toString(this.bitsPerComponent));
-            PSImageUtils.writeImageCommand(imageDict,
-                    this.pixelDimensions, this.colorSpace, this.invertImage,
-                    gen);
+            imageDict.put("/BitsPerComponent",
+                    Integer.toString(this.bitsPerComponent));
+            PSImageUtils.writeImageCommand(imageDict, this.pixelDimensions,
+                    this.colorSpace, this.invertImage, gen);
         }
     }
 
     /** {@inheritDoc} */
-    protected void generateAdditionalDataStream(PSGenerator gen) throws IOException {
+    @Override
+    protected void generateAdditionalDataStream(final PSGenerator gen)
+            throws IOException {
         gen.writeln("/" + getDataName() + " currentfile");
         gen.writeln(getAdditionalFilters(gen));
         if (gen.getPSLevel() == 2) {
-            //Creates a data array from the inline file
+            // Creates a data array from the inline file
             gen.writeln("{ /temp exch def ["
                     + " { temp 16384 string readstring not {exit } if } loop ] } exec");
         } else {
             gen.writeln("/ReusableStreamDecode filter");
         }
-        PSImageUtils.compressAndWriteBitmap(encoder, gen);
+        PSImageUtils.compressAndWriteBitmap(this.encoder, gen);
         gen.writeln("def");
     }
 

@@ -21,21 +21,20 @@ package org.apache.fop.fo.flow;
 
 import java.awt.geom.Point2D;
 
-import org.xml.sax.Locator;
-
-import org.apache.xmlgraphics.util.QName;
-
 import org.apache.fop.ResourceEventProducer;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.datatypes.Length;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.ValidationException;
 import org.apache.fop.fo.XMLObj;
+import org.apache.xmlgraphics.util.QName;
+import org.xml.sax.Locator;
 
 /**
- * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_instream-foreign-object">
- * <code>fo:instream-foreign-object</code></a> object.
- * This is an atomic inline object that contains XML data.
+ * Class modelling the <a
+ * href="http://www.w3.org/TR/xsl/#fo_instream-foreign-object">
+ * <code>fo:instream-foreign-object</code></a> object. This is an atomic inline
+ * object that contains XML data.
  */
 public class InstreamForeignObject extends AbstractGraphics {
 
@@ -43,19 +42,20 @@ public class InstreamForeignObject extends AbstractGraphics {
     // All property values contained in AbstractGraphics
     // End of property values
 
-    //Additional value
+    // Additional value
     private Point2D intrinsicDimensions;
     private boolean instrisicSizeDetermined;
 
     private Length intrinsicAlignmentAdjust;
 
     /**
-     * Constructs an instream-foreign-object object
-     * (called by {@link org.apache.fop.fo.ElementMapping.Maker}).
+     * Constructs an instream-foreign-object object (called by
+     * {@link org.apache.fop.fo.ElementMapping.Maker}).
      *
-     * @param parent the parent {@link FONode}
+     * @param parent
+     *            the parent {@link FONode}
      */
-    public InstreamForeignObject(FONode parent) {
+    public InstreamForeignObject(final FONode parent) {
         super(parent);
     }
 
@@ -67,39 +67,43 @@ public class InstreamForeignObject extends AbstractGraphics {
 
     /**
      * Make sure content model satisfied, if so then tell the
-     * {@link org.apache.fop.fo.FOEventHandler} that we are at
-     * the end of the instream-foreign-object.
-     * {@inheritDoc}
+     * {@link org.apache.fop.fo.FOEventHandler} that we are at the end of the
+     * instream-foreign-object. {@inheritDoc}
      */
+    @Override
     protected void endOfNode() throws FOPException {
-        if (firstChild == null) {
+        if (this.firstChild == null) {
             missingChildElementError("one (1) non-XSL namespace child");
         }
         getFOEventHandler().endInstreamForeignObject(this);
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL Content Model: one (1) non-XSL namespace child
+     * {@inheritDoc} <br>
+     * XSL Content Model: one (1) non-XSL namespace child
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-        throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             invalidChildError(loc, nsURI, localName);
-        } else if (firstChild != null) {
+        } else if (this.firstChild != null) {
             tooManyNodesError(loc, new QName(nsURI, null, localName));
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "instream-foreign-object";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_INSTREAM_FOREIGN_OBJECT}
      */
+    @Override
     public int getNameId() {
         return FO_INSTREAM_FOREIGN_OBJECT;
     }
@@ -107,53 +111,57 @@ public class InstreamForeignObject extends AbstractGraphics {
     /** Preloads the image so the intrinsic size is available. */
     private void prepareIntrinsicSize() {
         if (!this.instrisicSizeDetermined) {
-            XMLObj child = (XMLObj) firstChild;
-            Point2D csize = new Point2D.Float(-1, -1);
-            intrinsicDimensions = child.getDimension(csize);
-            if (intrinsicDimensions == null) {
-                ResourceEventProducer eventProducer = ResourceEventProducer.Provider.get(
-                        getUserAgent().getEventBroadcaster());
+            final XMLObj child = (XMLObj) this.firstChild;
+            final Point2D csize = new Point2D.Float(-1, -1);
+            this.intrinsicDimensions = child.getDimension(csize);
+            if (this.intrinsicDimensions == null) {
+                final ResourceEventProducer eventProducer = ResourceEventProducer.Provider
+                        .get(getUserAgent().getEventBroadcaster());
                 eventProducer.ifoNoIntrinsicSize(this, getLocator());
             }
-            intrinsicAlignmentAdjust = child.getIntrinsicAlignmentAdjust();
+            this.intrinsicAlignmentAdjust = child.getIntrinsicAlignmentAdjust();
             this.instrisicSizeDetermined = true;
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getIntrinsicWidth() {
         prepareIntrinsicSize();
-        if (intrinsicDimensions != null) {
-            return (int)(intrinsicDimensions.getX() * 1000);
+        if (this.intrinsicDimensions != null) {
+            return (int) (this.intrinsicDimensions.getX() * 1000);
         } else {
             return 0;
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getIntrinsicHeight() {
         prepareIntrinsicSize();
-        if (intrinsicDimensions != null) {
-            return (int)(intrinsicDimensions.getY() * 1000);
+        if (this.intrinsicDimensions != null) {
+            return (int) (this.intrinsicDimensions.getY() * 1000);
         } else {
             return 0;
         }
     }
 
     /** {@inheritDoc} */
-    public  Length getIntrinsicAlignmentAdjust() {
+    @Override
+    public Length getIntrinsicAlignmentAdjust() {
         prepareIntrinsicSize();
-        return intrinsicAlignmentAdjust;
+        return this.intrinsicAlignmentAdjust;
     }
 
     /** {@inheritDoc} */
-    protected void addChildNode(FONode child) throws FOPException {
+    @Override
+    protected void addChildNode(final FONode child) throws FOPException {
         super.addChildNode(child);
     }
 
     /** @return the {@link XMLObj} child node of the instream-foreign-object. */
     public XMLObj getChildXMLObj() {
-        return (XMLObj) firstChild;
+        return (XMLObj) this.firstChild;
     }
 
 }

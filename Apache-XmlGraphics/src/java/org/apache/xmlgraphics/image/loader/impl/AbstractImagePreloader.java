@@ -27,31 +27,37 @@ import javax.imageio.stream.ImageInputStream;
 import org.apache.xmlgraphics.image.loader.spi.ImagePreloader;
 
 /**
- * Abstract base class for image preloaders. It provides helper methods for often-used tasks.
+ * Abstract base class for image preloaders. It provides helper methods for
+ * often-used tasks.
  */
 public abstract class AbstractImagePreloader implements ImagePreloader {
 
     /**
-     * Allows to read an image header (usually just a magic number). The InputStream is reset
-     * to the position before the header was read.
-     * @param in the ImageInputStream to read from
-     * @param size the size of the header
+     * Allows to read an image header (usually just a magic number). The
+     * InputStream is reset to the position before the header was read.
+     * 
+     * @param in
+     *            the ImageInputStream to read from
+     * @param size
+     *            the size of the header
      * @return the loaded header
-     * @throws IOException if an I/O error occurs while reading the header
+     * @throws IOException
+     *             if an I/O error occurs while reading the header
      */
-    protected byte[] getHeader(ImageInputStream in, int size)
-                throws IOException {
-        byte[] header = new byte[size];
-        long startPos = in.getStreamPosition();
-        int read = in.read(header);
+    protected byte[] getHeader(final ImageInputStream in, final int size)
+            throws IOException {
+        final byte[] header = new byte[size];
+        final long startPos = in.getStreamPosition();
+        final int read = in.read(header);
         if (read < size) {
-            Arrays.fill(header, (byte)0);
+            Arrays.fill(header, (byte) 0);
         }
-        in.seek(startPos); //Seek back to start position
+        in.seek(startPos); // Seek back to start position
         return header;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getPriority() {
         return DEFAULT_PRIORITY;
     }

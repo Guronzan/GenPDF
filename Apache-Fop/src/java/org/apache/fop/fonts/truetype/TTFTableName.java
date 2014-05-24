@@ -19,15 +19,18 @@
 
 package org.apache.fop.fonts.truetype;
 
-
 /**
  * Represents table names as found in a TrueType font's Table Directory.
  * TrueType fonts may have custom tables so we cannot use an enum.
  */
 public final class TTFTableName {
 
-    /** The first table in a TrueType font file containing metadata about other tables. */
-    public static final TTFTableName TABLE_DIRECTORY = new TTFTableName("tableDirectory");
+    /**
+     * The first table in a TrueType font file containing metadata about other
+     * tables.
+     */
+    public static final TTFTableName TABLE_DIRECTORY = new TTFTableName(
+            "tableDirectory");
 
     /** Embedded bitmap data. */
     public static final TTFTableName EBDT = new TTFTableName("EBDT");
@@ -41,7 +44,10 @@ public final class TTFTableName {
     /** A FontForge specific table. */
     public static final TTFTableName FFTM = new TTFTableName("FFTM");
 
-    /** Divides glyphs into various classes that make using the GPOS/GSUB tables easier. */
+    /**
+     * Divides glyphs into various classes that make using the GPOS/GSUB tables
+     * easier.
+     */
     public static final TTFTableName GDEF = new TTFTableName("GDEF");
 
     /** Provides kerning information, mark-to-base, etc. for opentype fonts. */
@@ -115,7 +121,7 @@ public final class TTFTableName {
 
     private final String name;
 
-    private TTFTableName(String name) {
+    private TTFTableName(final String name) {
         this.name = name;
     }
 
@@ -123,41 +129,45 @@ public final class TTFTableName {
      * Returns the name of the table as it should be in the Directory Table.
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
-     * Returns an instance of this class corresponding to the given string representation.
-     * @param tableName table name as in the Table Directory
+     * Returns an instance of this class corresponding to the given string
+     * representation.
+     * 
+     * @param tableName
+     *            table name as in the Table Directory
      * @return TTFTableName
      */
-    public static TTFTableName getValue(String tableName) {
+    public static TTFTableName getValue(final String tableName) {
         if (tableName != null) {
             return new TTFTableName(tableName);
         }
-        throw new IllegalArgumentException("A TrueType font table name must not be null");
+        throw new IllegalArgumentException(
+                "A TrueType font table name must not be null");
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return this.name.hashCode();
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == this) {
             return true;
         }
         if (!(o instanceof TTFTableName)) {
             return false;
         }
-        TTFTableName to = (TTFTableName) o;
+        final TTFTableName to = (TTFTableName) o;
         return this.name.equals(to.getName());
     }
 
     @Override
     public String toString() {
-        return name;
+        return this.name;
     }
 
 }

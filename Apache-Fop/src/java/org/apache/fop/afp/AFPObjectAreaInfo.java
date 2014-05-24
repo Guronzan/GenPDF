@@ -20,8 +20,8 @@
 package org.apache.fop.afp;
 
 /**
- * A common class used to convey locations,
- * dimensions and resolutions of data objects.
+ * A common class used to convey locations, dimensions and resolutions of data
+ * objects.
  */
 public class AFPObjectAreaInfo {
     private final int x;
@@ -35,14 +35,21 @@ public class AFPObjectAreaInfo {
     /**
      * Constructor
      *
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param width the width
-     * @param height the height
-     * @param resolution the resolution (sets both width and height resolutions)
-     * @param rotation the rotation angle
+     * @param x
+     *            the x coordinate
+     * @param y
+     *            the y coordinate
+     * @param width
+     *            the width
+     * @param height
+     *            the height
+     * @param resolution
+     *            the resolution (sets both width and height resolutions)
+     * @param rotation
+     *            the rotation angle
      */
-    public AFPObjectAreaInfo(int x, int y, int width, int height, int resolution, int rotation) {
+    public AFPObjectAreaInfo(final int x, final int y, final int width,
+            final int height, final int resolution, final int rotation) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -55,9 +62,10 @@ public class AFPObjectAreaInfo {
     /**
      * Sets both the width and the height resolutions.
      *
-     * @param resolution the resolution
+     * @param resolution
+     *            the resolution
      */
-    public void setResolution(int resolution) {
+    public void setResolution(final int resolution) {
         this.widthRes = resolution;
         this.heightRes = resolution;
     }
@@ -65,18 +73,20 @@ public class AFPObjectAreaInfo {
     /**
      * Sets the width resolution.
      *
-     * @param resolution the resolution
+     * @param resolution
+     *            the resolution
      */
-    public void setWidthRes(int resolution) {
+    public void setWidthRes(final int resolution) {
         this.widthRes = resolution;
     }
 
     /**
      * Sets the height resolution.
      *
-     * @param resolution the resolution
+     * @param resolution
+     *            the resolution
      */
-    public void setHeightRes(int resolution) {
+    public void setHeightRes(final int resolution) {
         this.heightRes = resolution;
     }
 
@@ -86,7 +96,7 @@ public class AFPObjectAreaInfo {
      * @return the x coordinate of this data object
      */
     public int getX() {
-        return x;
+        return this.x;
     }
 
     /**
@@ -95,7 +105,7 @@ public class AFPObjectAreaInfo {
      * @return the y coordinate of this data object
      */
     public int getY() {
-        return y;
+        return this.y;
     }
 
     /**
@@ -104,7 +114,7 @@ public class AFPObjectAreaInfo {
      * @return the width of this data object
      */
     public int getWidth() {
-        return width;
+        return this.width;
     }
 
     /**
@@ -113,7 +123,7 @@ public class AFPObjectAreaInfo {
      * @return the height of this data object
      */
     public int getHeight() {
-        return height;
+        return this.height;
     }
 
     /**
@@ -122,7 +132,7 @@ public class AFPObjectAreaInfo {
      * @return the resolution of this data object
      */
     public int getWidthRes() {
-        return widthRes;
+        return this.widthRes;
     }
 
     /**
@@ -131,7 +141,7 @@ public class AFPObjectAreaInfo {
      * @return the resolution of this data object
      */
     public int getHeightRes() {
-        return heightRes;
+        return this.heightRes;
     }
 
     /**
@@ -140,18 +150,16 @@ public class AFPObjectAreaInfo {
      * @return the rotation of this data object
      */
     public int getRotation() {
-        return rotation;
+        return this.rotation;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "x=" + x
-                + ", y=" + y
-                + ", width=" + width
-                + ", height=" + height
-                + ", widthRes=" + widthRes
-                + ", heigtRes=" + heightRes
-                + ", rotation=" + rotation;
+        return "x=" + this.x + ", y=" + this.y + ", width=" + this.width
+                + ", height=" + this.height + ", widthRes=" + this.widthRes
+                + ", heigtRes=" + this.heightRes + ", rotation="
+                + this.rotation;
     }
 
 }

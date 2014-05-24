@@ -30,21 +30,19 @@ public class TTXFileTestCase {
 
     private static String ttxFilesRoot = "test/resources/complexscripts";
 
-    private static String[] ttxFiles = {
-        "arab/ttx/arab-001.ttx",
-        "arab/ttx/arab-002.ttx",
-        "arab/ttx/arab-003.ttx",
-        "arab/ttx/arab-004.ttx",
-    };
+    private static String[] ttxFiles = { "arab/ttx/arab-001.ttx",
+        "arab/ttx/arab-002.ttx", "arab/ttx/arab-003.ttx",
+        "arab/ttx/arab-004.ttx", };
 
     @Test
-    public void testTTXFiles() throws Exception {
-        for ( String tfn : ttxFiles ) {
+    public void testTTXFiles() {
+        for (final String tfn : ttxFiles) {
             try {
-                TTXFile tf = TTXFile.getFromCache ( ttxFilesRoot + File.separator + tfn );
-                assertTrue ( tf != null );
-            } catch ( Exception e ) {
-                fail ( e.getMessage() );
+                final TTXFile tf = TTXFile.getFromCache(ttxFilesRoot
+                        + File.separator + tfn);
+                assertTrue(tf != null);
+            } catch (final Exception e) {
+                fail(e.getMessage());
             }
         }
     }

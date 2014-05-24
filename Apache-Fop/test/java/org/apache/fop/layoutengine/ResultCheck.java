@@ -19,47 +19,53 @@
 
 package org.apache.fop.layoutengine;
 
+import org.apache.fop.apps.FormattingResults;
 import org.w3c.dom.Node;
 
-import org.apache.fop.apps.FormattingResults;
-
 /**
- * Simple check that requires a result property to evaluate to the expected value
+ * Simple check that requires a result property to evaluate to the expected
+ * value
  */
 public class ResultCheck implements LayoutEngineCheck {
 
-    private String expected;
-    private String property;
+    private final String expected;
+    private final String property;
 
     /**
      * Creates a new instance from a DOM node.
-     * @param node DOM node that defines this check
+     * 
+     * @param node
+     *            DOM node that defines this check
      */
-    public ResultCheck(Node node) {
-        this.expected = node.getAttributes().getNamedItem("expected").getNodeValue();
-        this.property = node.getAttributes().getNamedItem("property").getNodeValue();
+    public ResultCheck(final Node node) {
+        this.expected = node.getAttributes().getNamedItem("expected")
+                .getNodeValue();
+        this.property = node.getAttributes().getNamedItem("property")
+                .getNodeValue();
     }
 
     /** {@inheritDoc} */
-    public void check(LayoutResult result) {
-        FormattingResults results = result.getResults();
+    @Override
+    public void check(final LayoutResult result) {
+        final FormattingResults results = result.getResults();
         String actual;
-        if (property.equals("pagecount")) {
+        if (this.property.equals("pagecount")) {
             actual = Integer.toString(results.getPageCount());
         } else {
-            throw new RuntimeException("No such property test: " + property);
+            throw new RuntimeException("No such property test: "
+                    + this.property);
         }
-        if (!expected.equals(actual)) {
-            throw new RuntimeException(
-                    "Expected property to evaluate to '" + expected + "', but got '"
-                    + actual + "' (" + this + ")");
+        if (!this.expected.equals(actual)) {
+            throw new RuntimeException("Expected property to evaluate to '"
+                    + this.expected + "', but got '" + actual + "' (" + this
+                    + ")");
         }
 
     }
 
     @Override
     public String toString() {
-        return "Property: " + property;
+        return "Property: " + this.property;
     }
 
 }

@@ -32,9 +32,13 @@ import java.io.Writer;
 import org.apache.fop.apps.FOPException;
 
 /**
- * <p>Container for RtfRow elements.</p>
+ * <p>
+ * Container for RtfRow elements.
+ * </p>
  *
- * <p>This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch).</p>
+ * <p>
+ * This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch).
+ * </p>
  */
 
 public class RtfTable extends RtfContainer {
@@ -43,80 +47,93 @@ public class RtfTable extends RtfContainer {
     private Boolean isNestedTable = null;
     private RtfAttributes borderAttributes = null;
 
-    /** Added by Boris Poudérous on 07/22/2002 in order to process
-     *  number-columns-spanned attribute */
-    private ITableColumnsInfo tableContext;
+    /**
+     * Added by Boris Poudérous on 07/22/2002 in order to process
+     * number-columns-spanned attribute
+     */
+    private final ITableColumnsInfo tableContext;
 
     /** Shows the table depth necessary for nested tables */
     private int nestedTableDepth = 0;
 
     /** Create an RTF element as a child of given container */
-    RtfTable(IRtfTableContainer parent, Writer w, ITableColumnsInfo tc)
-            throws IOException {
-        super((RtfContainer)parent, w);
+    RtfTable(final IRtfTableContainer parent, final Writer w,
+            final ITableColumnsInfo tc) throws IOException {
+        super((RtfContainer) parent, w);
         // Line added by Boris Poudérous on 07/22/2002
-        tableContext = tc;
+        this.tableContext = tc;
     }
 
-    /** Create an RTF element as a child of given container
-   * Modified by Boris Poudérous in order to process 'number-columns-spanned' attribute
-   */
-  RtfTable(IRtfTableContainer parent, Writer w, RtfAttributes attrs,
-           ITableColumnsInfo tc) throws IOException {
-        super((RtfContainer)parent, w, attrs);
-    // Line added by Boris Poudérous on 07/22/2002
-    tableContext = tc;
+    /**
+     * Create an RTF element as a child of given container Modified by Boris
+     * Poudérous in order to process 'number-columns-spanned' attribute
+     */
+    RtfTable(final IRtfTableContainer parent, final Writer w,
+            final RtfAttributes attrs, final ITableColumnsInfo tc)
+            throws IOException {
+        super((RtfContainer) parent, w, attrs);
+        // Line added by Boris Poudérous on 07/22/2002
+        this.tableContext = tc;
     }
 
     /**
      * Close current row if any and start a new one
+     * 
      * @return new RtfTableRow
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
     public RtfTableRow newTableRow() throws IOException {
-        if (row != null) {
-            row.close();
+        if (this.row != null) {
+            this.row.close();
         }
 
-        highestRow++;
-        row = new RtfTableRow(this, writer, attrib, highestRow);
-        return row;
+        this.highestRow++;
+        this.row = new RtfTableRow(this, this.writer, this.attrib,
+                this.highestRow);
+        return this.row;
     }
 
     /**
      * Close current row if any and start a new one
-     * @param attrs attributs of new RtfTableRow
+     * 
+     * @param attrs
+     *            attributs of new RtfTableRow
      * @return new RtfTableRow
-     * @throws IOException for I/O problems
-     * @throws FOPException if attributes cannot be cloned
+     * @throws IOException
+     *             for I/O problems
+     * @throws FOPException
+     *             if attributes cannot be cloned
      */
-    public RtfTableRow newTableRow(RtfAttributes attrs) throws IOException, FOPException {
+    public RtfTableRow newTableRow(final RtfAttributes attrs)
+            throws IOException, FOPException {
         RtfAttributes attr = null;
-        if (attrib != null) {
+        if (this.attrib != null) {
             try {
-                attr = (RtfAttributes) attrib.clone ();
-            } catch (CloneNotSupportedException e) {
+                attr = (RtfAttributes) this.attrib.clone();
+            } catch (final CloneNotSupportedException e) {
                 throw new FOPException(e);
             }
-            attr.set (attrs);
+            attr.set(attrs);
         } else {
             attr = attrs;
         }
-        if (row != null) {
-            row.close();
+        if (this.row != null) {
+            this.row.close();
         }
-        highestRow++;
+        this.highestRow++;
 
-        row = new RtfTableRow(this, writer, attr, highestRow);
-        return row;
+        this.row = new RtfTableRow(this, this.writer, attr, this.highestRow);
+        return this.row;
     }
-
-
 
     /**
      * Overridden to write RTF prefix code, what comes before our children
-     * @throws IOException for I/O problems
+     * 
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeRtfPrefix() throws IOException {
         if (isNestedTable()) {
             writeControlWordNS("pard");
@@ -127,8 +144,11 @@ public class RtfTable extends RtfContainer {
 
     /**
      * Overridden to write RTF suffix code, what comes after our children
-     * @throws IOException for I/O problems
+     * 
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeRtfSuffix() throws IOException {
         writeGroupMark(false);
 
@@ -139,30 +159,34 @@ public class RtfTable extends RtfContainer {
 
     /**
      *
-     * @param id row to check (??)
+     * @param id
+     *            row to check (??)
      * @return true if id is the highestRow
      */
-    public boolean isHighestRow(int id) {
-        return (highestRow == id) ? true : false;
+    public boolean isHighestRow(final int id) {
+        return this.highestRow == id ? true : false;
     }
 
     /**
      * Added by Boris Poudérous on 07/22/2002
+     * 
      * @return ITableColumnsInfo for this table
      */
     public ITableColumnsInfo getITableColumnsInfo() {
-      return this.tableContext;
+        return this.tableContext;
     }
 
     private RtfAttributes headerAttribs = null;
 
     /**
-     * Added by Normand Masse
-     * Support for table-header attributes (used instead of table attributes)
-     * @param attrs attributes to be set
+     * Added by Normand Masse Support for table-header attributes (used instead
+     * of table attributes)
+     * 
+     * @param attrs
+     *            attributes to be set
      */
-    public void setHeaderAttribs(RtfAttributes attrs) {
-        headerAttribs = attrs;
+    public void setHeaderAttribs(final RtfAttributes attrs) {
+        this.headerAttribs = attrs;
     }
 
     /**
@@ -170,17 +194,19 @@ public class RtfTable extends RtfContainer {
      * @return RtfAttributes of Header
      */
     public RtfAttributes getHeaderAttribs() {
-        return headerAttribs;
+        return this.headerAttribs;
     }
 
     /**
      * Added by Normand Masse
+     * 
      * @return the table-header attributes if they are present, otherwise the
-     * parent's attributes are returned normally.
+     *         parent's attributes are returned normally.
      */
+    @Override
     public RtfAttributes getRtfAttributes() {
-        if (headerAttribs != null) {
-            return headerAttribs;
+        if (this.headerAttribs != null) {
+            return this.headerAttribs;
         }
 
         return super.getRtfAttributes();
@@ -188,20 +214,20 @@ public class RtfTable extends RtfContainer {
 
     /** @return true if the the table is a nested table */
     public boolean isNestedTable() {
-        if (isNestedTable == null) {
+        if (this.isNestedTable == null) {
             RtfElement e = this;
             while (e.parent != null) {
                 if (e.parent instanceof RtfTableCell) {
-                    isNestedTable = Boolean.TRUE;
+                    this.isNestedTable = Boolean.TRUE;
                     return true;
                 }
 
                 e = e.parent;
             }
 
-            isNestedTable = false;
+            this.isNestedTable = false;
         } else {
-            return isNestedTable.booleanValue();
+            return this.isNestedTable.booleanValue();
         }
 
         return false;
@@ -226,14 +252,17 @@ public class RtfTable extends RtfContainer {
 
     /**
      * Sets the nested table depth.
-     * @param nestedTableDepth the nested table depth
+     * 
+     * @param nestedTableDepth
+     *            the nested table depth
      */
-    public void setNestedTableDepth(int nestedTableDepth) {
+    public void setNestedTableDepth(final int nestedTableDepth) {
         this.nestedTableDepth = nestedTableDepth;
     }
 
     /**
      * Returns the nested table depth.
+     * 
      * @return the nested table depth
      */
     public int getNestedTableDepth() {
@@ -242,17 +271,20 @@ public class RtfTable extends RtfContainer {
 
     /**
      * Sets the RtfAttributes for the borders of the table.
-     * @param attributes Border attributes of the table.
+     * 
+     * @param attributes
+     *            Border attributes of the table.
      */
-    public void setBorderAttributes(RtfAttributes attributes) {
-        borderAttributes = attributes;
+    public void setBorderAttributes(final RtfAttributes attributes) {
+        this.borderAttributes = attributes;
     }
 
     /**
      * Returns the RtfAttributes for the borders of the table.
+     * 
      * @return Border attributes of the table.
      */
     public RtfAttributes getBorderAttributes() {
-        return borderAttributes;
+        return this.borderAttributes;
     }
 }

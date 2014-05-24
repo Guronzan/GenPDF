@@ -19,58 +19,68 @@
 
 package org.apache.fop.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.events.Event;
 import org.apache.fop.events.EventFormatter;
 import org.apache.fop.events.EventListener;
 import org.apache.fop.events.model.EventSeverity;
 
+@Slf4j
 /** A simple event listener that writes the events to stdout and sterr. */
 public class ConsoleEventListenerForTests implements EventListener {
 
     private String name;
-    private EventSeverity logLevel;
+    private final EventSeverity logLevel;
 
     /**
-     * Creates a new event listener with console output on severity INFO. This object will
-     * write out the name of the test before the first log message.
-     * @param name the name of the test
+     * Creates a new event listener with console output on severity INFO. This
+     * object will write out the name of the test before the first log message.
+     *
+     * @param name
+     *            the name of the test
      */
-    public ConsoleEventListenerForTests(String name) {
+    public ConsoleEventListenerForTests(final String name) {
         this(name, EventSeverity.INFO);
     }
 
     /**
-     * Creates a new event listener with console output. This object will
-     * write out the name of the test before the first log message.
-     * @param name the name of the test
-     * @param logLevel the logging level
+     * Creates a new event listener with console output. This object will write
+     * out the name of the test before the first log message.
+     *
+     * @param name
+     *            the name of the test
+     * @param logLevel
+     *            the logging level
      */
-    public ConsoleEventListenerForTests(String name, EventSeverity logLevel) {
+    public ConsoleEventListenerForTests(final String name,
+            final EventSeverity logLevel) {
         this.name = name;
         this.logLevel = logLevel;
     }
 
     /** {@inheritDoc} */
-    public void processEvent(Event event) {
-        EventSeverity severity = event.getSeverity();
+    @Override
+    public void processEvent(final Event event) {
+        final EventSeverity severity = event.getSeverity();
         if (severity == EventSeverity.FATAL) {
             log("FATAL", event);
             return;
         }
-        if (logLevel == EventSeverity.FATAL) {
+        if (this.logLevel == EventSeverity.FATAL) {
             return;
         }
         if (severity == EventSeverity.ERROR) {
             log("ERROR", event);
             return;
         }
-        if (logLevel == EventSeverity.ERROR) {
+        if (this.logLevel == EventSeverity.ERROR) {
             return;
         }
         if (severity == EventSeverity.WARN) {
             log("WARN ", event);
         }
-        if (logLevel == EventSeverity.WARN) {
+        if (this.logLevel == EventSeverity.WARN) {
             return;
         }
         if (severity == EventSeverity.INFO) {
@@ -78,12 +88,12 @@ public class ConsoleEventListenerForTests implements EventListener {
         }
     }
 
-    private void log(String levelString, Event event) {
+    private void log(final String levelString, final Event event) {
         if (this.name != null) {
-            System.out.println("Test: " + this.name);
+            log.info("Test: " + this.name);
             this.name = null;
         }
-        String msg = EventFormatter.format(event);
-        System.out.println("  [" + levelString + "] " + msg);
+        final String msg = EventFormatter.format(event);
+        log.info("  [" + levelString + "] " + msg);
     }
 }

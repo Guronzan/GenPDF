@@ -37,16 +37,24 @@ public class BorderPaintingInfo implements PaintingInfo {
     /**
      * Main constructor
      *
-     * @param x1 the x1 coordinate
-     * @param y1 the y1 coordinate
-     * @param x2 the x2 coordinate
-     * @param y2 the y2 coordinate
-     * @param isHorizontal true when the border line is horizontal
-     * @param style the border style
-     * @param color the border color
+     * @param x1
+     *            the x1 coordinate
+     * @param y1
+     *            the y1 coordinate
+     * @param x2
+     *            the x2 coordinate
+     * @param y2
+     *            the y2 coordinate
+     * @param isHorizontal
+     *            true when the border line is horizontal
+     * @param style
+     *            the border style
+     * @param color
+     *            the border color
      */
-    public BorderPaintingInfo(float x1, float y1, float x2, float y2,
-            boolean isHorizontal, int style, Color color) {
+    public BorderPaintingInfo(final float x1, final float y1, final float x2,
+            final float y2, final boolean isHorizontal, final int style,
+            final Color color) {
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
@@ -62,7 +70,7 @@ public class BorderPaintingInfo implements PaintingInfo {
      * @return the x1 coordinate
      */
     public float getX1() {
-        return x1;
+        return this.x1;
     }
 
     /**
@@ -71,7 +79,7 @@ public class BorderPaintingInfo implements PaintingInfo {
      * @return the y1 coordinate
      */
     public float getY1() {
-        return y1;
+        return this.y1;
     }
 
     /**
@@ -80,7 +88,7 @@ public class BorderPaintingInfo implements PaintingInfo {
      * @return the x2 coordinate
      */
     public float getX2() {
-        return x2;
+        return this.x2;
     }
 
     /**
@@ -89,7 +97,7 @@ public class BorderPaintingInfo implements PaintingInfo {
      * @return the y2 coordinate
      */
     public float getY2() {
-        return y2;
+        return this.y2;
     }
 
     /**
@@ -98,7 +106,7 @@ public class BorderPaintingInfo implements PaintingInfo {
      * @return true when this is a horizontal line
      */
     public boolean isHorizontal() {
-        return isHorizontal;
+        return this.isHorizontal;
     }
 
     /**
@@ -107,7 +115,7 @@ public class BorderPaintingInfo implements PaintingInfo {
      * @return the style
      */
     public int getStyle() {
-        return style;
+        return this.style;
     }
 
     /**
@@ -116,6 +124,6 @@ public class BorderPaintingInfo implements PaintingInfo {
      * @return the color
      */
     public Color getColor() {
-        return color;
+        return this.color;
     }
 }

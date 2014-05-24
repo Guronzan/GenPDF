@@ -23,17 +23,17 @@ import java.util.List;
 
 public class EventList {
 
-    private List data = new java.util.ArrayList();
+    private final List data = new java.util.ArrayList();
 
-    public void addGroupInfo(GroupInfo set) {
-        data.add(set);
+    public void addGroupInfo(final GroupInfo set) {
+        this.data.add(set);
     }
 
     public int getSize() {
-        return data.size();
+        return this.data.size();
     }
 
-    public GroupInfo getGroupInfo(int count) {
-        return (GroupInfo) data.get(count);
+    public GroupInfo getGroupInfo(final int count) {
+        return (GroupInfo) this.data.get(count);
     }
 }

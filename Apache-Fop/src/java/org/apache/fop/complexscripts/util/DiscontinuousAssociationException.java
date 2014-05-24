@@ -20,10 +20,15 @@
 package org.apache.fop.complexscripts.util;
 
 /**
- * <p>Exception thrown during when attempting to map glyphs to associated characters
- * in the case that the associated characters do not represent a compact interval.</p>
+ * <p>
+ * Exception thrown during when attempting to map glyphs to associated
+ * characters in the case that the associated characters do not represent a
+ * compact interval.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 public class DiscontinuousAssociationException extends RuntimeException {
     /**
@@ -32,11 +37,14 @@ public class DiscontinuousAssociationException extends RuntimeException {
     public DiscontinuousAssociationException() {
         super();
     }
+
     /**
      * Instantiate discontinuous association exception
-     * @param message a message string
+     * 
+     * @param message
+     *            a message string
      */
-    public DiscontinuousAssociationException(String message) {
+    public DiscontinuousAssociationException(final String message) {
         super(message);
     }
 }

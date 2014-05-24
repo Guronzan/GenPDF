@@ -40,14 +40,18 @@ final class DOMResultUtil {
     /**
      * Streams the given result into a file of the given name.
      *
-     * @param result the result of a transformation
-     * @param filename name of the file into which to stream the result
-     * @throws TransformerException if a problem occurs when streaming
+     * @param result
+     *            the result of a transformation
+     * @param filename
+     *            name of the file into which to stream the result
+     * @throws TransformerException
+     *             if a problem occurs when streaming
      */
-    public static void streamToFile(DOMResult result, String filename) throws TransformerException {
-        DOMSource source = new DOMSource(result.getNode());
-        TransformerFactory tFactory = TransformerFactory.newInstance();
-        Transformer transformer = tFactory.newTransformer();
+    public static void streamToFile(final DOMResult result,
+            final String filename) throws TransformerException {
+        final DOMSource source = new DOMSource(result.getNode());
+        final TransformerFactory tFactory = TransformerFactory.newInstance();
+        final Transformer transformer = tFactory.newTransformer();
         transformer.transform(source, new StreamResult(new File(filename)));
     }
 

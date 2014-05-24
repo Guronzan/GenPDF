@@ -19,7 +19,6 @@
 
 package org.apache.fop.render.bitmap;
 
-import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.render.intermediate.IFDocumentHandlerConfigurator;
 
 /**
@@ -29,16 +28,19 @@ import org.apache.fop.render.intermediate.IFDocumentHandlerConfigurator;
 public class TIFFDocumentHandler extends AbstractBitmapDocumentHandler {
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
-        return MimeConstants.MIME_TIFF;
+        return org.apache.xmlgraphics.util.MimeConstants.MIME_TIFF;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getDefaultExtension() {
         return "tif";
     }
 
     /** {@inheritDoc} */
+    @Override
     public IFDocumentHandlerConfigurator getConfigurator() {
         return new TIFFRendererConfigurator(getUserAgent());
     }

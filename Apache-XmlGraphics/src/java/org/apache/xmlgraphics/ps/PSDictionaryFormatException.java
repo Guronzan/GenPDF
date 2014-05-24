@@ -20,8 +20,8 @@
 package org.apache.xmlgraphics.ps;
 
 /**
- * Thrown to indicate that a formatting error has occurred when
- * trying to parse a PostScript dictionary object
+ * Thrown to indicate that a formatting error has occurred when trying to parse
+ * a PostScript dictionary object
  */
 public class PSDictionaryFormatException extends Exception {
 
@@ -29,9 +29,11 @@ public class PSDictionaryFormatException extends Exception {
 
     /**
      * Default constructor
-     * @param string error message
+     * 
+     * @param string
+     *            error message
      */
-    public PSDictionaryFormatException(String string) {
+    public PSDictionaryFormatException(final String string) {
         super(string);
     }
 }

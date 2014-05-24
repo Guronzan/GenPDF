@@ -31,14 +31,17 @@ package org.apache.fop.render.rtf.rtflib.rtfdoc;
  */
 public interface IRtfOptions {
     /**
-     * Sets  the compression rate for the external graphic in percent.
-     * @param percent Compression rate
+     * Sets the compression rate for the external graphic in percent.
+     * 
+     * @param percent
+     *            Compression rate
      */
-    void setRtfExternalGraphicCompressionRate (int percent);
+    void setRtfExternalGraphicCompressionRate(final int percent);
 
     /**
-     * Gets  the compression rate for the external graphic in percent.
+     * Gets the compression rate for the external graphic in percent.
+     * 
      * @return Compression rate
      */
-    int getRtfExternalGraphicCompressionRate ();
+    int getRtfExternalGraphicCompressionRate();
 }

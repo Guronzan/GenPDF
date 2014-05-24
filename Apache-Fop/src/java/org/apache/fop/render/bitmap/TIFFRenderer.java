@@ -33,18 +33,17 @@ import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.logging.Log;
+import lombok.extern.slf4j.Slf4j;
 
+import org.apache.fop.apps.FOPException;
+import org.apache.fop.apps.FOUserAgent;
+import org.apache.fop.render.java2d.Java2DRenderer;
 import org.apache.xmlgraphics.image.GraphicsUtil;
 import org.apache.xmlgraphics.image.rendered.FormatRed;
 import org.apache.xmlgraphics.image.writer.ImageWriter;
 import org.apache.xmlgraphics.image.writer.ImageWriterParams;
 import org.apache.xmlgraphics.image.writer.ImageWriterRegistry;
 import org.apache.xmlgraphics.image.writer.MultiImageWriter;
-
-import org.apache.fop.apps.FOPException;
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.render.java2d.Java2DRenderer;
 
 /**
  * <p>
@@ -67,17 +66,22 @@ import org.apache.fop.render.java2d.Java2DRenderer;
  * <code>org.apache.fop.render.java2D.Java2DRenderer</code> and just encode
  * rendering results into TIFF format using Batik's image codec
  */
+@Slf4j
 public class TIFFRenderer extends Java2DRenderer implements TIFFConstants {
 
     /** ImageWriter parameters */
-    private ImageWriterParams writerParams;
+    private final ImageWriterParams writerParams;
 
-    /** Image Type as parameter for the BufferedImage constructor (see BufferedImage.TYPE_*) */
+    /**
+     * Image Type as parameter for the BufferedImage constructor (see
+     * BufferedImage.TYPE_*)
+     */
     private int bufferedImageType = BufferedImage.TYPE_INT_ARGB;
 
     private OutputStream outputStream;
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return MIME_TYPE;
     }
@@ -85,46 +89,54 @@ public class TIFFRenderer extends Java2DRenderer implements TIFFConstants {
     /**
      * Creates TIFF renderer.
      *
-     * @param userAgent the user agent that contains configuration details. This cannot be null.
+     * @param userAgent
+     *            the user agent that contains configuration details. This
+     *            cannot be null.
      */
-    public TIFFRenderer(FOUserAgent userAgent) {
+    public TIFFRenderer(final FOUserAgent userAgent) {
         super(userAgent);
-        writerParams = new ImageWriterParams();
-        writerParams.setCompressionMethod(COMPRESSION_PACKBITS);
+        this.writerParams = new ImageWriterParams();
+        this.writerParams.setCompressionMethod(COMPRESSION_PACKBITS);
 
-        int dpi = Math.round(userAgent.getTargetResolution());
-        writerParams.setResolution(dpi);
+        final int dpi = Math.round(userAgent.getTargetResolution());
+        this.writerParams.setResolution(dpi);
     }
 
     /** {@inheritDoc} */
-    public void startRenderer(OutputStream outputStream) throws IOException {
+    @Override
+    public void startRenderer(final OutputStream outputStream)
+            throws IOException {
         this.outputStream = outputStream;
         super.startRenderer(outputStream);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stopRenderer() throws IOException {
         super.stopRenderer();
         log.debug("Starting TIFF encoding ...");
 
         // Creates lazy iterator over generated page images
-        Iterator pageImagesItr = new LazyPageImagesIterator(getNumberOfPages(), log);
+        final Iterator pageImagesItr = new LazyPageImagesIterator(
+                getNumberOfPages());
 
         // Creates writer
-        ImageWriter writer = ImageWriterRegistry.getInstance().getWriterFor(getMimeType());
+        final ImageWriter writer = ImageWriterRegistry.getInstance()
+                .getWriterFor(getMimeType());
         if (writer == null) {
-            BitmapRendererEventProducer eventProducer
-                = BitmapRendererEventProducer.Provider.get(
-                        getUserAgent().getEventBroadcaster());
+            final BitmapRendererEventProducer eventProducer = BitmapRendererEventProducer.Provider
+                    .get(getUserAgent().getEventBroadcaster());
             eventProducer.noImageWriterFound(this, getMimeType());
         }
         if (writer.supportsMultiImageWriter()) {
-            MultiImageWriter multiWriter = writer.createMultiImageWriter(outputStream);
+            final MultiImageWriter multiWriter = writer
+                    .createMultiImageWriter(this.outputStream);
             try {
                 // Write all pages/images
                 while (pageImagesItr.hasNext()) {
-                    RenderedImage img = (RenderedImage) pageImagesItr.next();
-                    multiWriter.writeImage(img, writerParams);
+                    final RenderedImage img = (RenderedImage) pageImagesItr
+                            .next();
+                    multiWriter.writeImage(img, this.writerParams);
                 }
             } finally {
                 multiWriter.close();
@@ -134,98 +146,115 @@ public class TIFFRenderer extends Java2DRenderer implements TIFFConstants {
             if (pageImagesItr.hasNext()) {
                 renderedImage = (RenderedImage) pageImagesItr.next();
             }
-            writer.writeImage(renderedImage, outputStream, writerParams);
+            writer.writeImage(renderedImage, this.outputStream,
+                    this.writerParams);
             if (pageImagesItr.hasNext()) {
-                BitmapRendererEventProducer eventProducer
-                    = BitmapRendererEventProducer.Provider.get(
-                            getUserAgent().getEventBroadcaster());
+                final BitmapRendererEventProducer eventProducer = BitmapRendererEventProducer.Provider
+                        .get(getUserAgent().getEventBroadcaster());
                 eventProducer.stoppingAfterFirstPageNoFilename(this);
             }
         }
 
         // Cleaning
-        outputStream.flush();
+        this.outputStream.flush();
         clearViewportList();
         log.debug("TIFF encoding done.");
     }
 
     /** {@inheritDoc} */
-    protected BufferedImage getBufferedImage(int bitmapWidth, int bitmapHeight) {
-        return new BufferedImage(bitmapWidth, bitmapHeight, bufferedImageType);
+    @Override
+    protected BufferedImage getBufferedImage(final int bitmapWidth,
+            final int bitmapHeight) {
+        return new BufferedImage(bitmapWidth, bitmapHeight,
+                this.bufferedImageType);
     }
 
     /** Private inner class to lazy page rendering. */
     private class LazyPageImagesIterator implements Iterator {
-        /** logging instance */
-        private Log log;
 
-        private int count;
+        private final int count;
 
         private int current = 0;
 
         /**
          * Main constructor
-         * @param c number of pages to iterate over
-         * @param log the logger to use (this is a hack so this compiles under JDK 1.3)
+         *
+         * @param c
+         *            number of pages to iterate over
+         * @param log
+         *            the logger to use (this is a hack so this compiles under
+         *            JDK 1.3)
          */
-        public LazyPageImagesIterator(int c, Log log) {
-            count = c;
-            this.log = log;
+        public LazyPageImagesIterator(final int c) {
+            this.count = c;
         }
 
+        @Override
         public boolean hasNext() {
-            return current < count;
+            return this.current < this.count;
         }
 
+        @Override
         public Object next() {
             if (log.isDebugEnabled()) {
-                log.debug("[" + (current + 1) + "]");
+                log.debug("[" + (this.current + 1) + "]");
             }
 
             // Renders current page as image
             BufferedImage pageImage = null;
             try {
-                pageImage = getPageImage(current++);
-            } catch (FOPException e) {
+                pageImage = getPageImage(this.current++);
+            } catch (final FOPException e) {
                 throw new NoSuchElementException(e.getMessage());
             }
 
-            if (COMPRESSION_CCITT_T4.equalsIgnoreCase(writerParams.getCompressionMethod())
-                   || COMPRESSION_CCITT_T6.equalsIgnoreCase(writerParams.getCompressionMethod())) {
+            if (COMPRESSION_CCITT_T4
+                    .equalsIgnoreCase(TIFFRenderer.this.writerParams
+                            .getCompressionMethod())
+                            || COMPRESSION_CCITT_T6
+                            .equalsIgnoreCase(TIFFRenderer.this.writerParams
+                                    .getCompressionMethod())) {
                 return pageImage;
             } else {
-                //Decorate the image with a packed sample model for encoding by the codec
+                // Decorate the image with a packed sample model for encoding by
+                // the codec
                 SinglePixelPackedSampleModel sppsm;
-                sppsm = (SinglePixelPackedSampleModel)pageImage.getSampleModel();
+                sppsm = (SinglePixelPackedSampleModel) pageImage
+                        .getSampleModel();
 
-                int bands = sppsm.getNumBands();
-                int[] off = new int[bands];
-                int w = pageImage.getWidth();
-                int h = pageImage.getHeight();
+                final int bands = sppsm.getNumBands();
+                final int[] off = new int[bands];
+                final int w = pageImage.getWidth();
+                final int h = pageImage.getHeight();
                 for (int i = 0; i < bands; i++) {
                     off[i] = i;
                 }
-                SampleModel sm = new PixelInterleavedSampleModel(
+                final SampleModel sm = new PixelInterleavedSampleModel(
                         DataBuffer.TYPE_BYTE, w, h, bands, w * bands, off);
 
-                RenderedImage rimg = new FormatRed(GraphicsUtil.wrap(pageImage), sm);
+                final RenderedImage rimg = new FormatRed(
+                        GraphicsUtil.wrap(pageImage), sm);
                 return rimg;
             }
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException(
                     "Method 'remove' is not supported.");
         }
     }
 
-    /** @param bufferedImageType an image type */
-    public void setBufferedImageType(int bufferedImageType) {
+    /**
+     * @param bufferedImageType
+     *            an image type
+     */
+    public void setBufferedImageType(final int bufferedImageType) {
         this.bufferedImageType = bufferedImageType;
     }
 
     /** @return image writer parameters */
     public ImageWriterParams getWriterParams() {
-        return writerParams;
+        return this.writerParams;
     }
 }

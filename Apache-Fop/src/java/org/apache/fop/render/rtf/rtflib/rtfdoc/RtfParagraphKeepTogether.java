@@ -43,48 +43,52 @@ public class RtfParagraphKeepTogether extends RtfContainer {
 
     private int status = STATUS_NULL;
 
-
-    /**    RtfParagraphKeepTogether*/
-    RtfParagraphKeepTogether(IRtfParagraphContainer parent, Writer w) throws IOException {
-        super((RtfContainer)parent, w);
+    /** RtfParagraphKeepTogether */
+    RtfParagraphKeepTogether(final IRtfParagraphContainer parent, final Writer w)
+            throws IOException {
+        super((RtfContainer) parent, w);
     }
 
     /**
      * Write the content
-     * @throws IOException for I/O problems
+     * 
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeRtfContent() throws IOException {
 
-        //First reet paragraph properties
+        // First reet paragraph properties
         // create a new one with keepn
-        if (status == STATUS_OPEN_PARAGRAPH) {
+        if (this.status == STATUS_OPEN_PARAGRAPH) {
             writeControlWord("pard");
             writeControlWord("par");
             writeControlWord("keepn");
             writeGroupMark(true);
-            status = STATUS_NULL;
+            this.status = STATUS_NULL;
         }
 
-
-        if (status == STATUS_CLOSE_PARAGRAPH) {
+        if (this.status == STATUS_CLOSE_PARAGRAPH) {
             writeGroupMark(false);
-            status = STATUS_NULL;
+            this.status = STATUS_NULL;
         }
 
     }
 
-
     /**
      * set the status
-     * @param status the status to be set
+     * 
+     * @param status
+     *            the status to be set
      */
-    public void setStatus(int status) {
+    public void setStatus(final int status) {
         this.status = status;
     }
 
     /**
      * @return true if this element would generate no "useful" RTF content
      */
+    @Override
     public boolean isEmpty() {
         return false;
     }

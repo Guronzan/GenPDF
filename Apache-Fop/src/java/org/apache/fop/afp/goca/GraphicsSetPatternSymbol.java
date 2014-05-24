@@ -84,33 +84,36 @@ public class GraphicsSetPatternSymbol extends AbstractGraphicsDrawingOrder {
     /**
      * Main constructor
      *
-     * @param pattern the pattern symbol to use
+     * @param pattern
+     *            the pattern symbol to use
      */
-    public GraphicsSetPatternSymbol(byte pattern) {
+    public GraphicsSetPatternSymbol(final byte pattern) {
         this.pattern = pattern;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 2;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[] {
-            getOrderCode(), // GSPT order code
-            pattern
-        };
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[] { getOrderCode(), // GSPT order code
+                this.pattern };
         os.write(data);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "GraphicsSetPatternSymbol(fill="
-            + (pattern == SOLID_FILL ? true : false)  + ")";
+                + (this.pattern == SOLID_FILL ? true : false) + ")";
     }
 
     /** {@inheritDoc} */
+    @Override
     byte getOrderCode() {
         return 0x28;
     }

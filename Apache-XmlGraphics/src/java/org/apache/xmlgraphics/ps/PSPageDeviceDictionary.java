@@ -23,8 +23,8 @@ package org.apache.xmlgraphics.ps;
  * Postscript page device dictionary object
  *
  * This object is used by the postscript renderer to hold postscript page device
- * values.  It can also be used to minimize the number of setpagedevice calls when
- * DSC compliance is false.
+ * values. It can also be used to minimize the number of setpagedevice calls
+ * when DSC compliance is false.
  */
 public class PSPageDeviceDictionary extends PSDictionary {
 
@@ -41,16 +41,19 @@ public class PSPageDeviceDictionary extends PSDictionary {
     private PSDictionary unRetrievedContentDictionary;
 
     /**
-     * @param key key with which the specified value is to be associated.
-     * @param value value to be associated with the specified key.
+     * @param key
+     *            key with which the specified value is to be associated.
+     * @param value
+     *            value to be associated with the specified key.
      * @return the previous value associated with the key or null
      * @see java.util.Map#put(Object, Object)
      */
-    public Object put(Object key, Object value) {
-        Object previousValue = super.put(key, value);
-        if (flushOnRetrieval) {
+    @Override
+    public Object put(final Object key, final Object value) {
+        final Object previousValue = super.put(key, value);
+        if (this.flushOnRetrieval) {
             if (previousValue == null || !previousValue.equals(value)) {
-                unRetrievedContentDictionary.put(key, value);
+                this.unRetrievedContentDictionary.put(key, value);
             }
         }
         return previousValue;
@@ -59,10 +62,11 @@ public class PSPageDeviceDictionary extends PSDictionary {
     /**
      * @see java.util.Map#clear()
      */
+    @Override
     public void clear() {
         super.clear();
-        if (unRetrievedContentDictionary != null) {
-            unRetrievedContentDictionary.clear();
+        if (this.unRetrievedContentDictionary != null) {
+            this.unRetrievedContentDictionary.clear();
         }
     }
 
@@ -71,21 +75,24 @@ public class PSPageDeviceDictionary extends PSDictionary {
      *
      * @return <tt>true</tt> if this map contains no key-value mappings.
      */
+    @Override
     public boolean isEmpty() {
-        if (flushOnRetrieval) {
-            return unRetrievedContentDictionary.isEmpty();
+        if (this.flushOnRetrieval) {
+            return this.unRetrievedContentDictionary.isEmpty();
         }
         return super.isEmpty();
     }
 
     /**
      * The contents of the dictionary are flushed when written
-     * @param flushOnRetrieval boolean value
+     * 
+     * @param flushOnRetrieval
+     *            boolean value
      */
-    public void setFlushOnRetrieval(boolean flushOnRetrieval) {
+    public void setFlushOnRetrieval(final boolean flushOnRetrieval) {
         this.flushOnRetrieval = flushOnRetrieval;
         if (flushOnRetrieval) {
-            unRetrievedContentDictionary = new PSDictionary();
+            this.unRetrievedContentDictionary = new PSDictionary();
         }
     }
 
@@ -99,9 +106,9 @@ public class PSPageDeviceDictionary extends PSDictionary {
      */
     public String getContent() {
         String content;
-        if (flushOnRetrieval) {
-            content = unRetrievedContentDictionary.toString();
-            unRetrievedContentDictionary.clear();
+        if (this.flushOnRetrieval) {
+            content = this.unRetrievedContentDictionary.toString();
+            this.unRetrievedContentDictionary.clear();
         } else {
             content = super.toString();
         }

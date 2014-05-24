@@ -19,6 +19,8 @@
 
 package org.apache.fop.layoutmgr;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.datatypes.PercentBaseContext;
 import org.apache.fop.fo.properties.CondLengthProperty;
 import org.apache.fop.traits.MinOptMax;
@@ -26,29 +28,42 @@ import org.apache.fop.traits.MinOptMax;
 /**
  * This represents an unresolved padding element.
  */
+@Slf4j
 public class PaddingElement extends BorderOrPaddingElement {
 
     /**
      * Main constructor
-     * @param position the Position instance needed by the addAreas stage of the LMs.
-     * @param side the side to which this space element applies.
-     * @param condLength the length-conditional property for a border or padding specification
-     * @param isFirst true if this is a padding- or border-before of the first area generated.
-     * @param isLast true if this is a padding- or border-after of the last area generated.
-     * @param context the property evaluation context
+     *
+     * @param position
+     *            the Position instance needed by the addAreas stage of the LMs.
+     * @param side
+     *            the side to which this space element applies.
+     * @param condLength
+     *            the length-conditional property for a border or padding
+     *            specification
+     * @param isFirst
+     *            true if this is a padding- or border-before of the first area
+     *            generated.
+     * @param isLast
+     *            true if this is a padding- or border-after of the last area
+     *            generated.
+     * @param context
+     *            the property evaluation context
      */
-    public PaddingElement(Position position, CondLengthProperty condLength,
-            RelSide side,
-            boolean isFirst, boolean isLast, PercentBaseContext context) {
+    public PaddingElement(final Position position,
+            final CondLengthProperty condLength, final RelSide side,
+            final boolean isFirst, final boolean isLast,
+            final PercentBaseContext context) {
         super(position, condLength, side, isFirst, isLast, context);
     }
 
     /** {@inheritDoc} */
-    public void notifyLayoutManager(MinOptMax effectiveLength) {
-        LayoutManager lm = getOriginatingLayoutManager();
+    @Override
+    public void notifyLayoutManager(final MinOptMax effectiveLength) {
+        final LayoutManager lm = getOriginatingLayoutManager();
         if (lm instanceof ConditionalElementListener) {
-            ((ConditionalElementListener)lm).notifyPadding(
-                    getSide(), effectiveLength);
+            ((ConditionalElementListener) lm).notifyPadding(getSide(),
+                    effectiveLength);
         } else {
             log.warn("Cannot notify LM. It does not implement ConditionalElementListene: "
                     + lm.getClass().getName());
@@ -56,8 +71,9 @@ public class PaddingElement extends BorderOrPaddingElement {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("Padding[");
+        final StringBuffer sb = new StringBuffer("Padding[");
         sb.append(super.toString());
         sb.append("]");
         return sb.toString();

@@ -23,7 +23,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * A representation of the cross-reference data to be output at the end of a PDF file.
+ * A representation of the cross-reference data to be output at the end of a PDF
+ * file.
  */
 public abstract class CrossReferenceObject {
 
@@ -31,7 +32,8 @@ public abstract class CrossReferenceObject {
 
     protected final long startxref;
 
-    CrossReferenceObject(TrailerDictionary trailerDictionary, long startxref) {
+    CrossReferenceObject(final TrailerDictionary trailerDictionary,
+            final long startxref) {
         this.trailerDictionary = trailerDictionary;
         this.startxref = startxref;
     }
@@ -39,8 +41,10 @@ public abstract class CrossReferenceObject {
     /**
      * Writes the cross reference data to a PDF stream
      *
-     * @param stream the stream to write the cross reference to
-     * @throws IOException if an I/O exception occurs while writing the data
+     * @param stream
+     *            the stream to write the cross reference to
+     * @throws IOException
+     *             if an I/O exception occurs while writing the data
      */
-    public abstract void output(OutputStream stream) throws IOException;
+    public abstract void output(final OutputStream stream) throws IOException;
 }

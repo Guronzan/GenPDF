@@ -35,172 +35,200 @@ import java.io.Writer;
 import org.apache.fop.render.rtf.rtflib.exceptions.RtfStructureException;
 
 /**
- * <p>Models the top-level structure of an RTF file.</p>
+ * <p>
+ * Models the top-level structure of an RTF file.
+ * </p>
  *
- * <p>This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch),
- * Andreas Putz (a.putz@skynamics.com), and
- * Christopher Scott (scottc@westinghouse.com).</p>
+ * <p>
+ * This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch),
+ * Andreas Putz (a.putz@skynamics.com), and Christopher Scott
+ * (scottc@westinghouse.com).
+ * </p>
  */
 
-public class RtfFile
-extends RtfContainer {
+public class RtfFile extends RtfContainer {
     private RtfHeader header;
     private RtfPageArea pageArea;
     private RtfListTable listTable;
     private RtfDocumentArea docArea;
-//    private ConverterLogChannel m_log;
+    // private ConverterLogChannel m_log;
     private RtfContainer listTableContainer;
     private int listNum = 0;
 
     /**
      * Create an RTF file that outputs to the given Writer
-     * @param w the Writer to write to
-     * @throws IOException for I/O problems
+     *
+     * @param w
+     *            the Writer to write to
+     * @throws IOException
+     *             for I/O problems
      */
-    public RtfFile(Writer w) throws IOException {
+    public RtfFile(final Writer w) throws IOException {
         super(null, w);
     }
 
     /** optional log channel */
-//    public void setLogChannel(ConverterLogChannel log)
-//    {
-//        m_log = log;
-//    }
+    // public void setLogChannel(ConverterLogChannel log)
+    // {
+    // m_log = log;
+    // }
 
     /**
-     * Gets the log channel.
-     * If logchannel not set, it will return a empty log channel.
-     * @return our log channel, it is never null */
-//    ConverterLogChannel getLog()
-//    {
-//        if (m_log == null)
-//            m_log = new ConverterLogChannel (null);
-//        return m_log;
-//    }
+     * Gets the log channel. If logchannel not set, it will return a empty log
+     * channel.
+     *
+     * @return our log channel, it is never null
+     */
+    // ConverterLogChannel getLog()
+    // {
+    // if (m_log == null)
+    // m_log = new ConverterLogChannel (null);
+    // return m_log;
+    // }
 
     /**
      * If called, must be called before startDocumentArea
+     *
      * @return the new RtfHeader
-     * @throws IOException for I/O problems
-     * @throws RtfStructureException for illegal RTF structure
+     * @throws IOException
+     *             for I/O problems
+     * @throws RtfStructureException
+     *             for illegal RTF structure
      */
-    public RtfHeader startHeader()
-    throws IOException, RtfStructureException {
-        if (header != null) {
+    public RtfHeader startHeader() throws IOException, RtfStructureException {
+        if (this.header != null) {
             throw new RtfStructureException("startHeader called more than once");
         }
-        header = new RtfHeader(this, writer);
-        listTableContainer = new RtfContainer(this, writer);
-        return header;
+        this.header = new RtfHeader(this, this.writer);
+        this.listTableContainer = new RtfContainer(this, this.writer);
+        return this.header;
     }
 
     /**
      * Creates the list table.
-     * @param attr attributes for the RtfListTable
+     *
+     * @param attr
+     *            attributes for the RtfListTable
      * @return the new RtfListTable
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    public RtfListTable startListTable(RtfAttributes attr)
-    throws IOException {
-        listNum++;
-        if (listTable != null) {
-            return listTable;
+    public RtfListTable startListTable(final RtfAttributes attr)
+            throws IOException {
+        this.listNum++;
+        if (this.listTable != null) {
+            return this.listTable;
         } else {
-            listTable = new RtfListTable(this, writer, new Integer(listNum), attr);
-            listTableContainer.addChild(listTable);
+            this.listTable = new RtfListTable(this, this.writer, new Integer(
+                    this.listNum), attr);
+            this.listTableContainer.addChild(this.listTable);
         }
 
-        return listTable;
+        return this.listTable;
     }
 
     /**
      * Get the list table.
+     *
      * @return the RtfListTable
      */
     public RtfListTable getListTable() {
-        return listTable;
+        return this.listTable;
     }
 
     /**
-     * Closes the RtfHeader if not done yet, and starts the docment area.
-     * Like startDocumentArea, is only called once. This is not optimal,
-     * must be able to have multiple page definition, and corresponding
-     * Document areas
+     * Closes the RtfHeader if not done yet, and starts the docment area. Like
+     * startDocumentArea, is only called once. This is not optimal, must be able
+     * to have multiple page definition, and corresponding Document areas
+     *
      * @return the RtfPageArea
-     * @throws IOException for I/O problems
-     * @throws RtfStructureException for illegal RTF structure
+     * @throws IOException
+     *             for I/O problems
+     * @throws RtfStructureException
+     *             for illegal RTF structure
      */
-    public RtfPageArea startPageArea()
-    throws IOException, RtfStructureException {
-        if (pageArea != null) {
-            throw new RtfStructureException("startPageArea called more than once");
+    public RtfPageArea startPageArea() throws IOException,
+    RtfStructureException {
+        if (this.pageArea != null) {
+            throw new RtfStructureException(
+                    "startPageArea called more than once");
         }
         // create an empty header if there was none
-        if (header == null) {
+        if (this.header == null) {
             startHeader();
         }
-        header.close();
-        pageArea = new RtfPageArea(this, writer);
-        addChild(pageArea);
-        return pageArea;
+        this.header.close();
+        this.pageArea = new RtfPageArea(this, this.writer);
+        addChild(this.pageArea);
+        return this.pageArea;
     }
 
     /**
      * Call startPageArea if needed and return the page area object.
+     *
      * @return the RtfPageArea
-     * @throws IOException for I/O problems
-     * @throws RtfStructureException for illegal RTF structure
+     * @throws IOException
+     *             for I/O problems
+     * @throws RtfStructureException
+     *             for illegal RTF structure
      */
-    public RtfPageArea getPageArea()
-    throws IOException, RtfStructureException {
-        if (pageArea == null) {
+    public RtfPageArea getPageArea() throws IOException, RtfStructureException {
+        if (this.pageArea == null) {
             return startPageArea();
         }
-        return pageArea;
+        return this.pageArea;
     }
 
     /**
-     * Closes the RtfHeader if not done yet, and starts the document area.
-     * Must be called once only.
+     * Closes the RtfHeader if not done yet, and starts the document area. Must
+     * be called once only.
+     *
      * @return the RtfDocumentArea
-     * @throws IOException for I/O problems
-     * @throws RtfStructureException for illegal RTF structure
+     * @throws IOException
+     *             for I/O problems
+     * @throws RtfStructureException
+     *             for illegal RTF structure
      */
-    public RtfDocumentArea startDocumentArea()
-        throws IOException, RtfStructureException {
-        if (docArea != null) {
-            throw new RtfStructureException("startDocumentArea called more than once");
+    public RtfDocumentArea startDocumentArea() throws IOException,
+    RtfStructureException {
+        if (this.docArea != null) {
+            throw new RtfStructureException(
+                    "startDocumentArea called more than once");
         }
         // create an empty header if there was none
-        if (header == null) {
+        if (this.header == null) {
             startHeader();
         }
-        header.close();
-        docArea = new RtfDocumentArea(this, writer);
-        addChild(docArea);
-        return docArea;
+        this.header.close();
+        this.docArea = new RtfDocumentArea(this, this.writer);
+        addChild(this.docArea);
+        return this.docArea;
     }
-
-
 
     /**
      * Call startDocumentArea if needed and return the document area object.
+     *
      * @return the RtfDocumentArea
-     * @throws IOException for I/O problems
-     * @throws RtfStructureException for illegal RTF structure
+     * @throws IOException
+     *             for I/O problems
+     * @throws RtfStructureException
+     *             for illegal RTF structure
      */
-    public RtfDocumentArea getDocumentArea()
-    throws IOException, RtfStructureException {
-        if (docArea == null) {
+    public RtfDocumentArea getDocumentArea() throws IOException,
+    RtfStructureException {
+        if (this.docArea == null) {
             return startDocumentArea();
         }
-        return docArea;
+        return this.docArea;
     }
 
     /**
      * overridden to write RTF prefix code, what comes before our children
-     * @throws IOException for I/O problems
+     *
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeRtfPrefix() throws IOException {
         writeGroupMark(true);
         writeControlWord("rtf1");
@@ -208,28 +236,35 @@ extends RtfContainer {
 
     /**
      * overridden to write RTF suffix code, what comes after our children
-     * @throws IOException for I/O problems
+     *
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeRtfSuffix() throws IOException {
         writeGroupMark(false);
     }
 
     /**
      * must be called when done creating the document
-     * @throws IOException for I/O problems
+     *
+     * @throws IOException
+     *             for I/O problems
      */
     public synchronized void flush() throws IOException {
         writeRtf();
-        writer.flush();
+        this.writer.flush();
     }
 
     /**
      * minimal test and usage example
-     * @param args command-line arguments
-     * @throws Exception for problems
+     *
+     * @param args
+     *            command-line arguments
+     * @throws IOException
+     * @for problems
      */
-    public static void main(String[] args)
-    throws Exception {
+    public static void main(final String[] args) throws IOException {
         Writer w = null;
         if (args.length != 0) {
             final String outFile = args[0];

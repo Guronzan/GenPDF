@@ -50,7 +50,8 @@ public class RendererFactoryTestCase {
         IFDocumentHandler overrideHandler;
 
         ua = fopFactory.newFOUserAgent();
-        handler = factory.createDocumentHandler(ua, MimeConstants.MIME_PDF);
+        handler = factory.createDocumentHandler(ua,
+                org.apache.xmlgraphics.util.MimeConstants.MIME_PDF);
 
         ua = fopFactory.newFOUserAgent();
         overrideHandler = new PDFDocumentHandler();
@@ -76,7 +77,8 @@ public class RendererFactoryTestCase {
         Renderer renderer;
 
         ua = fopFactory.newFOUserAgent();
-        renderer = factory.createRenderer(ua, MimeConstants.MIME_PDF);
+        renderer = factory.createRenderer(ua,
+                org.apache.xmlgraphics.util.MimeConstants.MIME_PDF);
         assertTrue(renderer instanceof IFRenderer);
 
         ua = fopFactory.newFOUserAgent();
@@ -110,12 +112,14 @@ public class RendererFactoryTestCase {
 
         ua = fopFactory.newFOUserAgent();
         foEventHandler = factory.createFOEventHandler(ua,
-                MimeConstants.MIME_PDF, new NullOutputStream());
+                org.apache.xmlgraphics.util.MimeConstants.MIME_PDF,
+                new NullOutputStream());
         assertTrue(foEventHandler instanceof AreaTreeHandler);
 
         ua = fopFactory.newFOUserAgent();
         foEventHandler = factory.createFOEventHandler(ua,
-                MimeConstants.MIME_RTF, new NullOutputStream());
+                org.apache.xmlgraphics.util.MimeConstants.MIME_RTF,
+                new NullOutputStream());
         assertTrue(foEventHandler instanceof RTFHandler);
 
         ua = fopFactory.newFOUserAgent();
@@ -130,7 +134,7 @@ public class RendererFactoryTestCase {
         ua = fopFactory.newFOUserAgent();
         try {
             foEventHandler = factory.createFOEventHandler(ua,
-                    MimeConstants.MIME_PDF, null);
+                    org.apache.xmlgraphics.util.MimeConstants.MIME_PDF, null);
             fail("Expected FOPException because of missing OutputStream");
         } catch (final FOPException fe) {
             // expected

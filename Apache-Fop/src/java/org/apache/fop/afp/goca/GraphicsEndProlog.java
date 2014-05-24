@@ -28,15 +28,16 @@ import java.io.OutputStream;
 public class GraphicsEndProlog extends AbstractGraphicsDrawingOrder {
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[] {
-            getOrderCode(), // GEPROL order code
-            0x00, // Reserved
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[] { getOrderCode(), // GEPROL order code
+                0x00, // Reserved
         };
         os.write(data);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 2;
     }

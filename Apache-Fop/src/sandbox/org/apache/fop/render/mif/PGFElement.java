@@ -20,9 +20,8 @@
 package org.apache.fop.render.mif;
 
 /**
- * Font Catalog element.
- * This is the reference lookup element for fonts in
- * the MIF document.
+ * Font Catalog element. This is the reference lookup element for fonts in the
+ * MIF document.
  */
 public class PGFElement extends RefElement {
 
@@ -34,13 +33,15 @@ public class PGFElement extends RefElement {
     }
 
     /**
-     * @param key an object
+     * @param key
+     *            an object
      * @return an MIF element
      */
-    public MIFElement lookupElement(Object key) {
+    @Override
+    public MIFElement lookupElement(final Object key) {
         if (key == null) {
-            MIFElement pgf = new MIFElement("Pgf");
-            MIFElement prop = new MIFElement("PgfTag");
+            final MIFElement pgf = new MIFElement("Pgf");
+            final MIFElement prop = new MIFElement("PgfTag");
             prop.setValue("`Body'");
             pgf.addElement(prop);
             addElement(pgf);
@@ -50,4 +51,3 @@ public class PGFElement extends RefElement {
         return null;
     }
 }
-

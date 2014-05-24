@@ -22,33 +22,43 @@ package org.apache.fop.fonts;
 import java.util.Locale;
 
 /**
- * This enumerates the embedding mode of fonts; full; subset; auto (auto defaults to full for
- * Type 1 fonts and subset for TrueType fonts.
+ * This enumerates the embedding mode of fonts; full; subset; auto (auto
+ * defaults to full for Type 1 fonts and subset for TrueType fonts.
  */
 public enum EmbeddingMode {
-    /** Default option: assumes FULL for Type 1 fonts and SUBSET for TrueType fonts. */
+    /**
+     * Default option: assumes FULL for Type 1 fonts and SUBSET for TrueType
+     * fonts.
+     */
     AUTO,
-    /** Full font embedding: This means the whole of the font is written to file. */
+    /**
+     * Full font embedding: This means the whole of the font is written to file.
+     */
     FULL,
-    /** Subset font embedding: Only the mandatory tables and a subset of glyphs are written
-     * to file.*/
+    /**
+     * Subset font embedding: Only the mandatory tables and a subset of glyphs
+     * are written to file.
+     */
     SUBSET;
 
     /**
      * Returns the name of this embedding mode.
+     * 
      * @return the name of this embedding mode in lower case.
      */
     public String getName() {
-        return this.toString().toLowerCase(Locale.ENGLISH);
+        return toString().toLowerCase(Locale.ENGLISH);
     }
 
     /**
      * Returns the embedding mode corresponding to the given name.
-     * @param value the name of an embedding mode (not case sensitive)
+     * 
+     * @param value
+     *            the name of an embedding mode (not case sensitive)
      * @return the corresponding embedding mode
      */
-    public static EmbeddingMode getValue(String value) {
-        for (EmbeddingMode mode : EmbeddingMode.values()) {
+    public static EmbeddingMode getValue(final String value) {
+        for (final EmbeddingMode mode : EmbeddingMode.values()) {
             if (mode.toString().equalsIgnoreCase(value)) {
                 return mode;
             }

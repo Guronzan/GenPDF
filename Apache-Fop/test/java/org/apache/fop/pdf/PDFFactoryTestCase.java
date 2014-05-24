@@ -19,11 +19,11 @@
 
 package org.apache.fop.pdf;
 
-import static org.junit.Assert.assertEquals;
-
 import org.apache.fop.fonts.CIDSubset;
 import org.apache.fop.fonts.MultiByteFont;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for {@link PDFFactory}.
@@ -31,8 +31,8 @@ import org.junit.Test;
 public class PDFFactoryTestCase {
 
     /**
-     * This tests that when a font is subset embedded in a PDF, the font name is prefixed with a
-     * pseudo-random tag as per the PDF spec.
+     * This tests that when a font is subset embedded in a PDF, the font name is
+     * prefixed with a pseudo-random tag as per the PDF spec.
      */
     @Test
     public void testSubsetFontNamePrefix() {
@@ -47,14 +47,16 @@ public class PDFFactoryTestCase {
                 return new CIDSubset();
             }
         }
-        PDFDocument doc = new PDFDocument("Test");
-        PDFFactory pdfFactory = new PDFFactory(doc);
-        MockedFont font = new MockedFont();
+        final PDFDocument doc = new PDFDocument("Test");
+        final PDFFactory pdfFactory = new PDFFactory(doc);
+        final MockedFont font = new MockedFont();
 
-        PDFFont pdfDejaVu = pdfFactory.makeFont("DejaVu", "DejaVu", "TTF", font, font);
+        final PDFFont pdfDejaVu = pdfFactory.makeFont("DejaVu", "DejaVu",
+                "TTF", font, font);
         assertEquals("/EAAAAA+DejaVu", pdfDejaVu.getBaseFont().toString());
 
-        PDFFont pdfArial = pdfFactory.makeFont("Arial", "Arial", "TTF", font, font);
+        final PDFFont pdfArial = pdfFactory.makeFont("Arial", "Arial", "TTF",
+                font, font);
         assertEquals("/EAAAAB+Arial", pdfArial.getBaseFont().toString());
     }
 }

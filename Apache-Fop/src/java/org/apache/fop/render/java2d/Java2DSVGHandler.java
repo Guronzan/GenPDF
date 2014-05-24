@@ -23,15 +23,11 @@ import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.util.Map;
 
-import org.w3c.dom.Document;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.gvt.GraphicsNode;
-
 import org.apache.fop.image.loader.batik.BatikUtil;
 import org.apache.fop.render.AbstractGenericSVGHandler;
 import org.apache.fop.render.ImageHandlerUtil;
@@ -40,39 +36,43 @@ import org.apache.fop.render.RendererContext;
 import org.apache.fop.render.RendererContextConstants;
 import org.apache.fop.svg.SVGEventProducer;
 import org.apache.fop.svg.SVGUserAgent;
+import org.w3c.dom.Document;
 
 /**
- * Java2D XML handler for SVG (uses Apache Batik).
- * This handler handles XML for foreign objects when rendering to Java2D.
- * The properties from the Java2D renderer are subject to change.
+ * Java2D XML handler for SVG (uses Apache Batik). This handler handles XML for
+ * foreign objects when rendering to Java2D. The properties from the Java2D
+ * renderer are subject to change.
  */
-public class Java2DSVGHandler extends AbstractGenericSVGHandler
-            implements Java2DRendererContextConstants {
-
-    /** logging instance */
-    private static Log log = LogFactory.getLog(Java2DSVGHandler.class);
+@Slf4j
+public class Java2DSVGHandler extends AbstractGenericSVGHandler implements
+Java2DRendererContextConstants {
 
     /**
-     * Create a new Java2D XML handler for use by the Java2D renderer and its subclasses.
+     * Create a new Java2D XML handler for use by the Java2D renderer and its
+     * subclasses.
      */
     public Java2DSVGHandler() {
-        //nop
+        // nop
     }
 
     /**
      * Get the pdf information from the render context.
      *
-     * @param context the renderer context
+     * @param context
+     *            the renderer context
      * @return the pdf information retrieved from the context
      */
-    public static Java2DInfo getJava2DInfo(RendererContext context) {
-        Java2DInfo pdfi = new Java2DInfo();
-        pdfi.state = (Java2DGraphicsState)context.getProperty(JAVA2D_STATE);
-        pdfi.width = ((Integer)context.getProperty(WIDTH)).intValue();
-        pdfi.height = ((Integer)context.getProperty(HEIGHT)).intValue();
-        pdfi.currentXPosition = ((Integer)context.getProperty(XPOS)).intValue();
-        pdfi.currentYPosition = ((Integer)context.getProperty(YPOS)).intValue();
-        Map foreign = (Map)context.getProperty(RendererContextConstants.FOREIGN_ATTRIBUTES);
+    public static Java2DInfo getJava2DInfo(final RendererContext context) {
+        final Java2DInfo pdfi = new Java2DInfo();
+        pdfi.state = (Java2DGraphicsState) context.getProperty(JAVA2D_STATE);
+        pdfi.width = ((Integer) context.getProperty(WIDTH)).intValue();
+        pdfi.height = ((Integer) context.getProperty(HEIGHT)).intValue();
+        pdfi.currentXPosition = ((Integer) context.getProperty(XPOS))
+                .intValue();
+        pdfi.currentYPosition = ((Integer) context.getProperty(YPOS))
+                .intValue();
+        final Map foreign = (Map) context
+                .getProperty(RendererContextConstants.FOREIGN_ATTRIBUTES);
         pdfi.paintAsBitmap = ImageHandlerUtil.isConversionModeBitmap(foreign);
         return pdfi;
     }
@@ -82,97 +82,102 @@ public class Java2DSVGHandler extends AbstractGenericSVGHandler
      */
     public static class Java2DInfo {
         /** see Java2D_STATE */
-        public Java2DGraphicsState state;                       // CSOK: VisibilityModifier
+        public Java2DGraphicsState state; // CSOK: VisibilityModifier
         /** see Java2D_WIDTH */
-        public int width;                                       // CSOK: VisibilityModifier
+        public int width; // CSOK: VisibilityModifier
         /** see Java2D_HEIGHT */
-        public int height;                                      // CSOK: VisibilityModifier
+        public int height; // CSOK: VisibilityModifier
         /** see Java2D_XPOS */
-        public int currentXPosition;                            // CSOK: VisibilityModifier
+        public int currentXPosition; // CSOK: VisibilityModifier
         /** see Java2D_YPOS */
-        public int currentYPosition;                            // CSOK: VisibilityModifier
+        public int currentYPosition; // CSOK: VisibilityModifier
         /** paint as bitmap */
-        public boolean paintAsBitmap;                           // CSOK: VisibilityModifier
+        public boolean paintAsBitmap; // CSOK: VisibilityModifier
 
         /** {@inheritDoc} */
+        @Override
         public String toString() {
-            return "Java2DInfo {"
-                + "state = " + state + ", "
-                + "width = " + width + ", "
-                + "height = " + height + ", "
-                + "currentXPosition = " + currentXPosition + ", "
-                + "currentYPosition = " + currentYPosition  + ", "
-                + "paintAsBitmap = " + paintAsBitmap + "}";
+            return "Java2DInfo {" + "state = " + this.state + ", " + "width = "
+                    + this.width + ", " + "height = " + this.height + ", "
+                    + "currentXPosition = " + this.currentXPosition + ", "
+                    + "currentYPosition = " + this.currentYPosition + ", "
+                    + "paintAsBitmap = " + this.paintAsBitmap + "}";
         }
     }
 
     /** {@inheritDoc} */
-    protected void renderSVGDocument(RendererContext context,
-                                     Document doc) {
-        Java2DInfo info = getJava2DInfo(context);
+    @Override
+    protected void renderSVGDocument(final RendererContext context,
+            final Document doc) {
+        final Java2DInfo info = getJava2DInfo(context);
         if (log.isDebugEnabled()) {
-            log.debug("renderSVGDocument(" + context + ", " + doc + ", " + info + ")");
+            log.debug("renderSVGDocument(" + context + ", " + doc + ", " + info
+                    + ")");
         }
 
         // fallback paint as bitmap
         if (info.paintAsBitmap) {
             try {
                 super.renderSVGDocument(context, doc);
-            } catch (IOException ioe) {
-                SVGEventProducer eventProducer = SVGEventProducer.Provider.get(
-                        context.getUserAgent().getEventBroadcaster());
+            } catch (final IOException ioe) {
+                final SVGEventProducer eventProducer = SVGEventProducer.Provider
+                        .get(context.getUserAgent().getEventBroadcaster());
                 eventProducer.svgRenderingError(this, ioe, getDocumentURI(doc));
             }
             return;
         }
 
-        int x = info.currentXPosition;
-        int y = info.currentYPosition;
+        final int x = info.currentXPosition;
+        final int y = info.currentYPosition;
 
-        SVGUserAgent ua = new SVGUserAgent(context.getUserAgent(), new AffineTransform());
+        final SVGUserAgent ua = new SVGUserAgent(context.getUserAgent(),
+                new AffineTransform());
 
-        BridgeContext ctx = new BridgeContext(ua);
+        final BridgeContext ctx = new BridgeContext(ua);
 
-        //Cloning SVG DOM as Batik attaches non-thread-safe facilities (like the CSS engine)
-        //to it.
-        Document clonedDoc = BatikUtil.cloneSVGDocument(doc);
+        // Cloning SVG DOM as Batik attaches non-thread-safe facilities (like
+        // the CSS engine)
+        // to it.
+        final Document clonedDoc = BatikUtil.cloneSVGDocument(doc);
 
         GraphicsNode root;
         try {
-            GVTBuilder builder = new GVTBuilder();
+            final GVTBuilder builder = new GVTBuilder();
             root = builder.build(ctx, clonedDoc);
-        } catch (Exception e) {
-            SVGEventProducer eventProducer = SVGEventProducer.Provider.get(
-                    context.getUserAgent().getEventBroadcaster());
+        } catch (final Exception e) {
+            final SVGEventProducer eventProducer = SVGEventProducer.Provider
+                    .get(context.getUserAgent().getEventBroadcaster());
             eventProducer.svgNotBuilt(this, e, getDocumentURI(doc));
             return;
         }
 
         // If no viewbox is defined in the svg file, a viewbox of 100x100 is
         // assumed, as defined in SVGUserAgent.getViewportSize()
-        float iw = (float) ctx.getDocumentSize().getWidth() * 1000f;
-        float ih = (float) ctx.getDocumentSize().getHeight() * 1000f;
+        final float iw = (float) ctx.getDocumentSize().getWidth() * 1000f;
+        final float ih = (float) ctx.getDocumentSize().getHeight() * 1000f;
 
-        float w = info.width;
-        float h = info.height;
+        final float w = info.width;
+        final float h = info.height;
 
-        AffineTransform origTransform = info.state.getGraph().getTransform();
+        final AffineTransform origTransform = info.state.getGraph()
+                .getTransform();
 
         // correct integer roundoff
         info.state.getGraph().translate(x / 1000f, y / 1000f);
 
-        //SVGSVGElement svg = ((SVGDocument) doc).getRootElement();
+        // SVGSVGElement svg = ((SVGDocument) doc).getRootElement();
         // Aspect ratio preserved by layout engine, not here
-        AffineTransform at = AffineTransform.getScaleInstance(w / iw, h / ih);
+        final AffineTransform at = AffineTransform.getScaleInstance(w / iw, h
+                / ih);
         if (!at.isIdentity()) {
             info.state.getGraph().transform(at);
         }
 
         try {
             root.paint(info.state.getGraph());
-        } catch (Exception e) {
-            SVGEventProducer eventProducer = SVGEventProducer.Provider.get(
-                    context.getUserAgent().getEventBroadcaster());
+        } catch (final Exception e) {
+            final SVGEventProducer eventProducer = SVGEventProducer.Provider
+                    .get(context.getUserAgent().getEventBroadcaster());
             eventProducer.svgRenderingError(this, e, getDocumentURI(doc));
         }
 
@@ -180,8 +185,9 @@ public class Java2DSVGHandler extends AbstractGenericSVGHandler
     }
 
     /** {@inheritDoc} */
-    public boolean supportsRenderer(Renderer renderer) {
-        return (renderer instanceof Java2DRenderer);
+    @Override
+    public boolean supportsRenderer(final Renderer renderer) {
+        return renderer instanceof Java2DRenderer;
     }
 
 }

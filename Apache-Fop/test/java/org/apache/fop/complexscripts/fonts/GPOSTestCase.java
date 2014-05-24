@@ -20,19 +20,12 @@
 package org.apache.fop.complexscripts.fonts;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
 
-import org.apache.fop.complexscripts.fonts.GlyphSubtable;
-import org.apache.fop.complexscripts.fonts.GlyphPositioningSubtable;
-import org.apache.fop.complexscripts.fonts.GlyphPositioningTable;
-import org.apache.fop.complexscripts.fonts.GlyphTable.LookupSpec;
 import org.apache.fop.complexscripts.fonts.GlyphTable.LookupTable;
 import org.apache.fop.complexscripts.fonts.ttx.TTXFile;
 import org.apache.fop.complexscripts.util.GlyphContextTester;
 import org.apache.fop.complexscripts.util.GlyphSequence;
 import org.apache.fop.complexscripts.util.ScriptContextTester;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -44,131 +37,100 @@ public class GPOSTestCase implements ScriptContextTester, GlyphContextTester {
 
     private static String ttxFilesRoot = "test/resources/complexscripts";
 
-    private static String[][] ttxFonts = {
-        { "f0", "arab/ttx/arab-001.ttx" },              // simplified arabic
-        { "f1", "arab/ttx/arab-002.ttx" },              // traditional arabic
-        { "f2", "arab/ttx/arab-003.ttx" },              // lateef
-        { "f3", "arab/ttx/arab-004.ttx" },              // scheherazade
+    private static String[][] ttxFonts = { { "f0", "arab/ttx/arab-001.ttx" }, // simplified
+        // arabic
+        { "f1", "arab/ttx/arab-002.ttx" }, // traditional arabic
+        { "f2", "arab/ttx/arab-003.ttx" }, // lateef
+        { "f3", "arab/ttx/arab-004.ttx" }, // scheherazade
     };
 
     private static Object[][] ltSingle = {
         { GlyphPositioningTable.GPOS_LOOKUP_TYPE_SINGLE },
         // arab-001.ttx
-        { "f0", "lu1", "arab", "dflt", "mark",
-          new Object[][] {
-                {
-                    new String[] { "fathatan" },
-                    new int[][] {
-                        { 0, 0, -412, 0 }
-                    }
-                },
-                {
-                    new String[] { "fatha" },
-                    new int[][] {
-                        { 0, 0, -410, 0 }
-                    }
-                },
-          },
-        },
-        { "f0", "lu9", "arab", "*", "*",
-          new Object[][] {
-                {
-                    new String[] { "fathatan" },
-                    new int[][] {
-                        { 50, 0, 0, 0 }
-                    }
-                },
-                {
-                    new String[] { "fatha" },
-                    new int[][] {
-                        { 50, 0, 0, 0 }
-                    }
-                },
-          },
-        },
-        { "f0", "lu10", "arab", "*", "*",
-          new Object[][] {
-                {
-                    new String[] { "kasratan" },
-                    new int[][] {
-                        { 0, -200, 0, 0 }
-                    }
-                },
-                {
-                    new String[] { "kasra" },
-                    new int[][] {
-                        { 0, -200, 0, 0 }
-                    }
-                },
-          },
-        },
-        { "f0", "lu11", "arab", "*", "*",
-          new Object[][] {
-                {
-                    new String[] { "kasratan" },
-                    new int[][] {
-                        { 0, -300, 0, 0 }
-                    }
-                },
-                {
-                    new String[] { "kasra" },
-                    new int[][] {
-                        { 0, -300, 0, 0 }
-                    }
-                },
-                {
-                    new String[] { "uni0655" },
-                    new int[][] {
-                        { 0, -250, 0, 0 }
-                    }
-                },
-          },
-        },
-        // arab-002.ttx - maybe add tests
-        // arab-003.ttx - maybe add tests
-        // arab-004.ttx - maybe add tests
+        {
+            "f0",
+            "lu1",
+            "arab",
+            "dflt",
+            "mark",
+            new Object[][] {
+                    { new String[] { "fathatan" },
+                        new int[][] { { 0, 0, -412, 0 } } },
+                        { new String[] { "fatha" },
+                            new int[][] { { 0, 0, -410, 0 } } }, }, },
+                            {
+                                "f0",
+                                "lu9",
+                                "arab",
+                                "*",
+                                "*",
+                                new Object[][] {
+                                        { new String[] { "fathatan" },
+                                            new int[][] { { 50, 0, 0, 0 } } },
+                                            { new String[] { "fatha" },
+                                                new int[][] { { 50, 0, 0, 0 } } }, }, },
+                                                {
+                                                    "f0",
+                                                    "lu10",
+                                                    "arab",
+                                                    "*",
+                                                    "*",
+                                                    new Object[][] {
+                                                            { new String[] { "kasratan" },
+                                                                new int[][] { { 0, -200, 0, 0 } } },
+                                                                { new String[] { "kasra" },
+                                                                    new int[][] { { 0, -200, 0, 0 } } }, }, },
+                                                                    {
+                                                                        "f0",
+                                                                        "lu11",
+                                                                        "arab",
+                                                                        "*",
+                                                                        "*",
+                                                                        new Object[][] {
+                                                                                { new String[] { "kasratan" },
+                                                                                    new int[][] { { 0, -300, 0, 0 } } },
+                                                                                    { new String[] { "kasra" },
+                                                                                        new int[][] { { 0, -300, 0, 0 } } },
+                                                                                        { new String[] { "uni0655" },
+                                                                                            new int[][] { { 0, -250, 0, 0 } } }, }, },
+                                                                                            // arab-002.ttx - maybe add tests
+                                                                                            // arab-003.ttx - maybe add tests
+                                                                                            // arab-004.ttx - maybe add tests
     };
 
     private static Object[][] ltPair = {
         { GlyphPositioningTable.GPOS_LOOKUP_TYPE_PAIR },
         // arab-001.ttx
-        { "f0", "lu0", "arab", "dflt", "kern",
-          new Object[][] {
-                {
-                    new String[] { "wawwithhamzaabove", "hamza" },
-                    new int[][] {
-                        { -300, 0, -300, 0 }, { 0, 0, 0, 0 }
-                    }
-                },
-                {
-                    new String[] { "reh", "alefwithmaddaabove" },
-                    new int[][] {
-                        { -500, 0, -500, 0 }, { 0, 0, 0, 0 }
-                    }
-                },
-                {
-                    new String[] { "zain", "zain" },
-                    new int[][] {
-                        { -190, 0, -190, 0 }, { 0, 0, 0, 0 }
-                    }
-                },
-                {
-                    new String[] { "waw", "uni0649.init" },
-                    new int[][] {
-                        { -145, 0, -145, 0 }, { 0, 0, 0, 0 }
-                    }
-                },
-                {
-                    new String[] { "jeh", "uni06A5.init" },
-                    new int[][] {
-                        { -345, 0, -345, 0 }, { 0, 0, 0, 0 }
-                    }
-                },
-          },
-        },
-        // arab-002.ttx - maybe add tests
-        // arab-003.ttx - maybe add tests
-        // arab-004.ttx - maybe add tests
+        {
+            "f0",
+            "lu0",
+            "arab",
+            "dflt",
+            "kern",
+            new Object[][] {
+                    {
+                        new String[] { "wawwithhamzaabove", "hamza" },
+                        new int[][] { { -300, 0, -300, 0 },
+                                { 0, 0, 0, 0 } } },
+                                {
+                                    new String[] { "reh", "alefwithmaddaabove" },
+                                    new int[][] { { -500, 0, -500, 0 },
+                                            { 0, 0, 0, 0 } } },
+                                            {
+                                                new String[] { "zain", "zain" },
+                                                new int[][] { { -190, 0, -190, 0 },
+                                                        { 0, 0, 0, 0 } } },
+                                                        {
+                                                            new String[] { "waw", "uni0649.init" },
+                                                            new int[][] { { -145, 0, -145, 0 },
+                                                                    { 0, 0, 0, 0 } } },
+                                                                    {
+                                                                        new String[] { "jeh", "uni06A5.init" },
+                                                                        new int[][] { { -345, 0, -345, 0 },
+                                                                                { 0, 0, 0, 0 } } }, }, },
+                                                                                // arab-002.ttx - maybe add tests
+                                                                                // arab-003.ttx - maybe add tests
+                                                                                // arab-004.ttx - maybe add tests
     };
 
     private static Object[][] ltCursive = {
@@ -176,75 +138,86 @@ public class GPOSTestCase implements ScriptContextTester, GlyphContextTester {
         // arab-001.ttx - none used
         // arab-002.ttx - none used
         // arab-003.ttx - maybe add tests
-        { "f2", "lu0", "arab", "dflt", "curs",
-          new Object[][] {
-                {
-                    new String[] { "uni0644.init.preAlef", "uni0622.fina.postLamIni" },
-                    new int[][] {
-                        // { 576, 0, 0, 0 }, { 0, 0, 0, 0 } - with zero widths
-                        { 295, 0, 0, 0 }, { 0, 0, 0, 0 }
-                    }
-                },
-                {
-                    new String[] { "uni0644.medi.preAlef", "uni0622.fina.postLamMed" },
-                    new int[][] {
-                        // { 550, 0, 0, 0 }, { 0, 0, 0, 0 } - with zero widths
-                        { 282, 0, 0, 0 }, { 0, 0, 0, 0 }
-                    }
-                },
-          },
-        },
-        // arab-004.ttx - none used
+        {
+            "f2",
+            "lu0",
+            "arab",
+            "dflt",
+            "curs",
+            new Object[][] {
+                    {
+                        new String[] { "uni0644.init.preAlef",
+                        "uni0622.fina.postLamIni" },
+                        new int[][] {
+                                // { 576, 0, 0, 0 }, { 0, 0, 0, 0 }
+                                // - with zero widths
+                                { 295, 0, 0, 0 }, { 0, 0, 0, 0 } } },
+                                {
+                                    new String[] { "uni0644.medi.preAlef",
+                                    "uni0622.fina.postLamMed" },
+                                    new int[][] {
+                                            // { 550, 0, 0, 0 }, { 0, 0, 0, 0 }
+                                            // - with zero widths
+                                            { 282, 0, 0, 0 }, { 0, 0, 0, 0 } } }, }, },
+                                            // arab-004.ttx - none used
     };
 
     private static Object[][] ltMarkToBase = {
         { GlyphPositioningTable.GPOS_LOOKUP_TYPE_MARK_TO_BASE },
         // arab-001.ttx - maybe add tests
         // arab-002.ttx
-        { "f1", "lu4", "arab", "dflt", "mark",
-          new Object[][] {
-                {
-                    new String[] { "beh", "fatha" },
-                    new int[][] {
-                        // { 0, 0, 0, 0 }, { 266, -672, 0, 0 } - with zero widths
-                        { 0, 0, 0, 0 }, { 266, -672, -199, 0 }
-                    }
-                },
-                {
-                    new String[] { "alefwithhamzabelow", "kasra" },
-                    new int[][] {
-                        // { 0, 0, 0, 0 }, { -48, 344, 0, 0 } - with zero widths
-                        { 0, 0, 0, 0 }, { -48, 344, -199, 0 }
-                    }
-                },
-          },
-        },
-        // arab-003.ttx - maybe add tests
-        // arab-004.ttx - maybe add tests
+        {
+            "f1",
+            "lu4",
+            "arab",
+            "dflt",
+            "mark",
+            new Object[][] {
+                    { new String[] { "beh", "fatha" }, new int[][] {
+                            // { 0, 0, 0, 0 }, { 266, -672, 0, 0 } -
+                            // with zero widths
+                            { 0, 0, 0, 0 }, { 266, -672, -199, 0 } } },
+                            {
+                                new String[] { "alefwithhamzabelow",
+                                "kasra" },
+                                new int[][] {
+                                        // { 0, 0, 0, 0 }, { -48, 344, 0, 0
+                                        // } - with zero widths
+                                        { 0, 0, 0, 0 },
+                                        { -48, 344, -199, 0 } } }, }, },
+                                        // arab-003.ttx - maybe add tests
+                                        // arab-004.ttx - maybe add tests
     };
 
     private static Object[][] ltMarkToLigature = {
         { GlyphPositioningTable.GPOS_LOOKUP_TYPE_MARK_TO_LIGATURE },
         // arab-001.ttx
-        { "f0", "lu4", "arab", "dflt", "mark",
-          new Object[][] {
-                {
-                    new String[] { "rayaleflam", "fatha", "fatha", "fatha", "fatha" },
-                    new int[][] {
-                        { 0, 0, 0, 0 }, { 1260, -1150, 0, 0 }, { 910, -1020, 0, 0 }, { 590, -630, 0, 0 }, { 110, -720, 0, 0 }
-                    }
-                },
-                {
-                    new String[] { "rayaleflam", "kasra", "kasra", "kasra", "kasra" },
-                    new int[][] {
-                        { 0, 0, 0, 0 }, { 1110 , 225, 0, 0 }, { 760, 275, 0, 0 }, { 520, 475, 0, 0 }, { 110, 425, 0, 0 }
-                    }
-                },
-          },
-        },
-        // arab-002.ttx - maybe add tests
-        // arab-003.ttx - maybe add tests
-        // arab-004.ttx - maybe add tests
+        {
+            "f0",
+            "lu4",
+            "arab",
+            "dflt",
+            "mark",
+            new Object[][] {
+                    {
+                        new String[] { "rayaleflam", "fatha",
+                                "fatha", "fatha", "fatha" },
+                                new int[][] { { 0, 0, 0, 0 },
+                                { 1260, -1150, 0, 0 },
+                                { 910, -1020, 0, 0 },
+                                { 590, -630, 0, 0 },
+                                { 110, -720, 0, 0 } } },
+                                {
+                                    new String[] { "rayaleflam", "kasra",
+                                            "kasra", "kasra", "kasra" },
+                                            new int[][] { { 0, 0, 0, 0 },
+                                            { 1110, 225, 0, 0 },
+                                            { 760, 275, 0, 0 },
+                                            { 520, 475, 0, 0 },
+                                            { 110, 425, 0, 0 } } }, }, },
+                                            // arab-002.ttx - maybe add tests
+                                            // arab-003.ttx - maybe add tests
+                                            // arab-004.ttx - maybe add tests
     };
 
     private static Object[][] ltMarkToMark = {
@@ -253,26 +226,23 @@ public class GPOSTestCase implements ScriptContextTester, GlyphContextTester {
         // arab-002.ttx - maybe add tests
         // arab-003.ttx - maybe add tests
         // arab-004.ttx
-        { "f3", "lu3", "arab", "dflt", "mkmk",
-          new Object[][] {
-                {
-                    new String[] { "uni064F", "uni064E" },
-                    new int[][] {
-                        { 0, 0, 0, 0 }, { -15, 495, 0, 0 }
-                    }
-                },
-                {
-                    new String[] { "uni0651", "uni0670" },
-                    new int[][] {
-                        { 0, 0, 0, 0 }, { -30, 705, 0, 0 }
-                    }
-                },
-          },
-        },
-    };
+        {
+            "f3",
+            "lu3",
+            "arab",
+            "dflt",
+            "mkmk",
+            new Object[][] {
+                    {
+                        new String[] { "uni064F", "uni064E" },
+                        new int[][] { { 0, 0, 0, 0 },
+                                { -15, 495, 0, 0 } } },
+                                {
+                                    new String[] { "uni0651", "uni0670" },
+                                    new int[][] { { 0, 0, 0, 0 },
+                                            { -30, 705, 0, 0 } } }, }, }, };
 
-    private static Object[][] ltContextual = {
-        { GlyphPositioningTable.GPOS_LOOKUP_TYPE_CONTEXTUAL },
+    private static Object[][] ltContextual = { { GlyphPositioningTable.GPOS_LOOKUP_TYPE_CONTEXTUAL },
         // arab-001.ttx - none used
         // arab-002.ttx - none used
         // arab-003.ttx - none used
@@ -282,136 +252,148 @@ public class GPOSTestCase implements ScriptContextTester, GlyphContextTester {
     private static Object[][] ltChainedContextual = {
         { GlyphPositioningTable.GPOS_LOOKUP_TYPE_CHAINED_CONTEXTUAL },
         // arab-001.ttx
-        { "f0", "lu3", "arab", "dflt", "mark",
-          new Object[][] {
-                {
-                    new String[] { "behmedial", "fatha", "lam" },
-                    new int[][] {
-                        { 0, 0, 0, 0 }, { 50, 0, 0, 0 }, { 0, 0, 0, 0 }
-                    }
-                },
-          },
-        },
-        // arab-002.ttx
-        { "f1", "lu6", "arab", "dflt", "mark",
-          new Object[][] {
-                {
-                    new String[] { "zain", "fatha", "kafinitial" },
-                    new int[][] {
-                        { 0, 0, 0, 0 }, { 0, 250, 0, 0 }, { 0, 0, 0, 0 }
-                    }
-                },
-          },
-        },
-        // arab-003.ttx - none used
-        // arab-004.ttx
-        { "f3", "lu5", "arab", "dflt", "mark",
-          new Object[][] {
-                {
-                    new String[] { "uni064D", "uni0622.fina.postLamIni", "uni0650" },
-                    new int[][] {
-                        { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 55, 424, 0, 0 }
-                    }
-                },
-          },
-        },
-    };
+        {
+            "f0",
+            "lu3",
+            "arab",
+            "dflt",
+            "mark",
+            new Object[][] { {
+                new String[] { "behmedial", "fatha", "lam" },
+                new int[][] { { 0, 0, 0, 0 }, { 50, 0, 0, 0 },
+                        { 0, 0, 0, 0 } } }, }, },
+                        // arab-002.ttx
+                        {
+                            "f1",
+                            "lu6",
+                            "arab",
+                            "dflt",
+                            "mark",
+                            new Object[][] { {
+                                new String[] { "zain", "fatha", "kafinitial" },
+                                new int[][] { { 0, 0, 0, 0 }, { 0, 250, 0, 0 },
+                                        { 0, 0, 0, 0 } } }, }, },
+                                        // arab-003.ttx - none used
+                                        // arab-004.ttx
+                                        {
+                                            "f3",
+                                            "lu5",
+                                            "arab",
+                                            "dflt",
+                                            "mark",
+                                            new Object[][] { {
+                                                new String[] { "uni064D",
+                                                        "uni0622.fina.postLamIni", "uni0650" },
+                                                        new int[][] { { 0, 0, 0, 0 }, { 0, 0, 0, 0 },
+                                                        { 55, 424, 0, 0 } } }, }, }, };
 
     @Test
-    public void testGPOSSingle() throws Exception {
-        performPositioning ( ltSingle );
+    public void testGPOSSingle() {
+        performPositioning(ltSingle);
     }
 
     @Test
-    public void testGPOSPair() throws Exception {
-        performPositioning ( ltPair );
+    public void testGPOSPair() {
+        performPositioning(ltPair);
     }
 
     @Test
-    public void testGPOSCursive() throws Exception {
-        performPositioning ( ltCursive );
+    public void testGPOSCursive() {
+        performPositioning(ltCursive);
     }
 
     @Test
-    public void testGPOSMarkToBase() throws Exception {
-        performPositioning ( ltMarkToBase );
+    public void testGPOSMarkToBase() {
+        performPositioning(ltMarkToBase);
     }
 
     @Test
-    public void testGPOSMarkToLigature() throws Exception {
-        performPositioning ( ltMarkToLigature );
+    public void testGPOSMarkToLigature() {
+        performPositioning(ltMarkToLigature);
     }
 
     @Test
-    public void testGPOSMarkToMark() throws Exception {
-        performPositioning ( ltMarkToMark );
+    public void testGPOSMarkToMark() {
+        performPositioning(ltMarkToMark);
     }
 
     @Test
-    public void testGPOSContextual() throws Exception {
-        performPositioning ( ltContextual );
+    public void testGPOSContextual() {
+        performPositioning(ltContextual);
     }
 
     @Test
-    public void testGPOSChainedContextual() throws Exception {
-        performPositioning ( ltChainedContextual );
+    public void testGPOSChainedContextual() {
+        performPositioning(ltChainedContextual);
     }
 
     /**
      * Perform positioning on all test data in test specification TS.
-     * @param ts test specification
+     *
+     * @param ts
+     *            test specification
      */
-    private void performPositioning ( Object[][] ts ) {
+    private void performPositioning(final Object[][] ts) {
         assert ts.length > 0;
-        Object[] tp = ts[0];
-        for ( int i = 1; i < ts.length; i++ ) {
-            performPositioning ( tp, ts[i] );
+        final Object[] tp = ts[0];
+        for (int i = 1; i < ts.length; i++) {
+            performPositioning(tp, ts[i]);
         }
     }
 
     /**
      * Perform positioning on all test data TD using test parameters TP.
-     * @param tp test parameters
-     * @param td test data
+     *
+     * @param tp
+     *            test parameters
+     * @param td
+     *            test data
      */
-    private void performPositioning ( Object[] tp, Object[] td ) {
+    private void performPositioning(final Object[] tp, final Object[] td) {
         assert tp.length > 0;
-        if ( td.length > 5 ) {
-            String fid = (String) td[0];
-            String lid = (String) td[1];
-            String script = (String) td[2];
-            String language = (String) td[3];
-            String feature = (String) td[4];
-            TTXFile tf = findTTX ( fid );
-            assertTrue ( tf != null );
-            GlyphPositioningTable gpos = tf.getGPOS();
-            assertTrue ( gpos != null );
-            GlyphPositioningSubtable[] sta = findGPOSSubtables ( gpos, script, language, feature, lid );
-            assertTrue ( sta != null );
-            assertTrue ( sta.length > 0 );
-            ScriptContextTester sct = findScriptContextTester ( script, language, feature );
-            Object[][] tia = (Object[][]) td[5];                // test instance array
-            for ( Object[] ti : tia ) {                         // test instance
-                if ( ti != null ) {
-                    if ( ti.length > 0 ) {                      // must have at least input glyphs
-                        String[] igia = (String[]) ti[0];       // input glyph id array
-                        int[][] ogpa = (int[][]) ti[1];         // output glyph positioning array
-                        GlyphSequence igs = tf.getGlyphSequence ( igia );
-                        int[] widths = tf.getWidths();
-                        int[][] tgpa = new int [ igia.length ] [ 4 ];
-                        boolean adjusted = GlyphPositioningSubtable.position ( igs, script, language, feature, 1000, sta, widths, tgpa, sct );
-                        assertTrue ( adjusted );
-                        assertSamePositions ( ogpa, tgpa );
+        if (td.length > 5) {
+            final String fid = (String) td[0];
+            final String lid = (String) td[1];
+            final String script = (String) td[2];
+            final String language = (String) td[3];
+            final String feature = (String) td[4];
+            final TTXFile tf = findTTX(fid);
+            assertTrue(tf != null);
+            final GlyphPositioningTable gpos = tf.getGPOS();
+            assertTrue(gpos != null);
+            final GlyphPositioningSubtable[] sta = findGPOSSubtables(gpos,
+                    script, language, feature, lid);
+            assertTrue(sta != null);
+            assertTrue(sta.length > 0);
+            final ScriptContextTester sct = findScriptContextTester(script,
+                    language, feature);
+            final Object[][] tia = (Object[][]) td[5]; // test instance array
+            for (final Object[] ti : tia) { // test instance
+                if (ti != null) {
+                    if (ti.length > 0) { // must have at least input glyphs
+                        final String[] igia = (String[]) ti[0]; // input glyph
+                        // id array
+                        final int[][] ogpa = (int[][]) ti[1]; // output glyph
+                        // positioning
+                        // array
+                        final GlyphSequence igs = tf.getGlyphSequence(igia);
+                        final int[] widths = tf.getWidths();
+                        final int[][] tgpa = new int[igia.length][4];
+                        final boolean adjusted = GlyphPositioningSubtable
+                                .position(igs, script, language, feature, 1000,
+                                        sta, widths, tgpa, sct);
+                        assertTrue(adjusted);
+                        assertSamePositions(ogpa, tgpa);
                     }
                 }
             }
         }
     }
 
-    private String findTTXPath ( String fid ) {
-        for ( String[] fs : ttxFonts ) {
-            if ( ( fs != null ) && ( fs.length > 1 ) ) {
-                if ( fs[0].equals ( fid ) ) {
+    private String findTTXPath(final String fid) {
+        for (final String[] fs : ttxFonts) {
+            if (fs != null && fs.length > 1) {
+                if (fs[0].equals(fid)) {
                     return ttxFilesRoot + File.separator + fs[1];
                 }
             }
@@ -419,54 +401,61 @@ public class GPOSTestCase implements ScriptContextTester, GlyphContextTester {
         return null;
     }
 
-    private TTXFile findTTX ( String fid ) {
-        String pn = findTTXPath ( fid );
-        assertTrue ( pn != null );
+    private TTXFile findTTX(final String fid) {
+        final String pn = findTTXPath(fid);
+        assertTrue(pn != null);
         try {
-            TTXFile tf = TTXFile.getFromCache ( pn );
+            final TTXFile tf = TTXFile.getFromCache(pn);
             return tf;
-        } catch ( Exception e ) {
-            fail ( e.getMessage() );
+        } catch (final Exception e) {
+            fail(e.getMessage());
             return null;
         }
     }
 
-    private GlyphPositioningSubtable[] findGPOSSubtables ( GlyphPositioningTable gpos, String script, String language, String feature, String lid ) {
-        LookupTable lt = gpos.getLookupTable ( lid );
-        if ( lt != null ) {
+    private GlyphPositioningSubtable[] findGPOSSubtables(
+            final GlyphPositioningTable gpos, final String script,
+            final String language, final String feature, final String lid) {
+        final LookupTable lt = gpos.getLookupTable(lid);
+        if (lt != null) {
             return (GlyphPositioningSubtable[]) lt.getSubtables();
         } else {
             return null;
         }
     }
 
-    private ScriptContextTester findScriptContextTester ( String script, String language, String feature ) {
+    private ScriptContextTester findScriptContextTester(final String script,
+            final String language, final String feature) {
         return this;
     }
 
-    public GlyphContextTester getTester ( String feature ) {
+    @Override
+    public GlyphContextTester getTester(final String feature) {
         return this;
     }
 
-    public boolean test ( String script, String language, String feature, GlyphSequence gs, int index, int flags ) {
+    @Override
+    public boolean test(final String script, final String language,
+            final String feature, final GlyphSequence gs, final int index,
+            final int flags) {
         return true;
     }
 
-    private void assertSamePositions ( int[][] pa1, int[][] pa2 ) {
-        assertNotNull ( pa1 );
-        assertNotNull ( pa2 );
-        assertEquals ( "unequal adjustment count", pa1.length, pa2.length );
-        for ( int i = 0; i < pa1.length; i++ ) {
-            int[] a1 = pa1 [ i ];
-            int[] a2 = pa2 [ i ];
-            assertNotNull ( a1 );
-            assertNotNull ( a2 );
-            assertEquals ( "bad adjustment array length", 4, a1.length );
-            assertEquals ( "bad adjustment array length", 4, a2.length );
-            for ( int k = 0; k < a1.length; k++ ) {
-                int p1 = a1[k];
-                int p2 = a2[k];
-                assertEquals ( "bad adjustment", p1, p2 );
+    private void assertSamePositions(final int[][] pa1, final int[][] pa2) {
+        assertNotNull(pa1);
+        assertNotNull(pa2);
+        assertEquals("unequal adjustment count", pa1.length, pa2.length);
+        for (int i = 0; i < pa1.length; i++) {
+            final int[] a1 = pa1[i];
+            final int[] a2 = pa2[i];
+            assertNotNull(a1);
+            assertNotNull(a2);
+            assertEquals("bad adjustment array length", 4, a1.length);
+            assertEquals("bad adjustment array length", 4, a2.length);
+            for (int k = 0; k < a1.length; k++) {
+                final int p1 = a1[k];
+                final int p2 = a2[k];
+                assertEquals("bad adjustment", p1, p2);
             }
         }
     }

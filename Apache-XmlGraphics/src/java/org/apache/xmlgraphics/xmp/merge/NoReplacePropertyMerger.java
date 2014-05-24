@@ -23,17 +23,18 @@ import org.apache.xmlgraphics.xmp.Metadata;
 import org.apache.xmlgraphics.xmp.XMPProperty;
 
 /**
- * A basic PropertyMerger which only sets a value in the target metadata if there's not already
- * another value.
+ * A basic PropertyMerger which only sets a value in the target metadata if
+ * there's not already another value.
  */
 public class NoReplacePropertyMerger implements PropertyMerger {
 
     /**
-     * @see org.apache.xmlgraphics.xmp.merge.PropertyMerger#merge(
-     *          org.apache.xmlgraphics.xmp.XMPProperty, org.apache.xmlgraphics.xmp.Metadata)
+     * @see org.apache.xmlgraphics.xmp.merge.PropertyMerger#merge(org.apache.xmlgraphics.xmp.XMPProperty,
+     *      org.apache.xmlgraphics.xmp.Metadata)
      */
-    public void merge(XMPProperty sourceProp, Metadata target) {
-        XMPProperty prop = target.getProperty(sourceProp.getName());
+    @Override
+    public void merge(final XMPProperty sourceProp, final Metadata target) {
+        final XMPProperty prop = target.getProperty(sourceProp.getName());
         if (prop == null) {
             target.setProperty(sourceProp);
         }

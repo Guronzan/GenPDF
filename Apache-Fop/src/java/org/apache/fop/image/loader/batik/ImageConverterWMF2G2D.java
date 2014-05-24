@@ -24,12 +24,10 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.batik.transcoder.wmf.tosvg.WMFPainter;
 import org.apache.batik.transcoder.wmf.tosvg.WMFRecordStore;
-
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.impl.AbstractImageConverter;
@@ -37,68 +35,73 @@ import org.apache.xmlgraphics.image.loader.impl.ImageGraphics2D;
 import org.apache.xmlgraphics.java2d.Graphics2DImagePainter;
 
 /**
- * This ImageConverter converts WMF (Windows Metafile) images (represented by Batik's
- * WMFRecordStore) to Java2D.
+ * This ImageConverter converts WMF (Windows Metafile) images (represented by
+ * Batik's WMFRecordStore) to Java2D.
  */
+@Slf4j
 public class ImageConverterWMF2G2D extends AbstractImageConverter {
 
-    /** logger */
-    private static Log log = LogFactory.getLog(ImageConverterWMF2G2D.class);
-
     /** {@inheritDoc} */
-    public Image convert(Image src, Map hints) {
+    @Override
+    public Image convert(final Image src, final Map hints) {
         checkSourceFlavor(src);
-        ImageWMF wmf = (ImageWMF)src;
+        final ImageWMF wmf = (ImageWMF) src;
 
         Graphics2DImagePainter painter;
         painter = new Graphics2DImagePainterWMF(wmf);
 
-        ImageGraphics2D g2dImage = new ImageGraphics2D(src.getInfo(), painter);
+        final ImageGraphics2D g2dImage = new ImageGraphics2D(src.getInfo(),
+                painter);
         return g2dImage;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getSourceFlavor() {
         return ImageWMF.WMF_IMAGE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getTargetFlavor() {
         return ImageFlavor.GRAPHICS2D;
     }
 
-    private static class Graphics2DImagePainterWMF implements Graphics2DImagePainter {
+    private static class Graphics2DImagePainterWMF implements
+    Graphics2DImagePainter {
 
-        private ImageWMF wmf;
+        private final ImageWMF wmf;
 
-        public Graphics2DImagePainterWMF(ImageWMF wmf) {
+        public Graphics2DImagePainterWMF(final ImageWMF wmf) {
             this.wmf = wmf;
         }
 
         /** {@inheritDoc} */
+        @Override
         public Dimension getImageSize() {
-            return wmf.getSize().getDimensionMpt();
+            return this.wmf.getSize().getDimensionMpt();
         }
 
         /** {@inheritDoc} */
-        public void paint(Graphics2D g2d, Rectangle2D area) {
-            WMFRecordStore wmfStore = wmf.getRecordStore();
-            double w = area.getWidth();
-            double h = area.getHeight();
+        @Override
+        public void paint(final Graphics2D g2d, final Rectangle2D area) {
+            final WMFRecordStore wmfStore = this.wmf.getRecordStore();
+            final double w = area.getWidth();
+            final double h = area.getHeight();
 
-            //Fit in paint area
+            // Fit in paint area
             g2d.translate(area.getX(), area.getY());
-            double sx = w / wmfStore.getWidthPixels();
-            double sy = h / wmfStore.getHeightPixels();
+            final double sx = w / wmfStore.getWidthPixels();
+            final double sy = h / wmfStore.getHeightPixels();
             if (sx != 1.0 || sy != 1.0) {
                 g2d.scale(sx, sy);
             }
 
-            WMFPainter painter = new WMFPainter(wmfStore, 1.0f);
-            long start = System.currentTimeMillis();
+            final WMFPainter painter = new WMFPainter(wmfStore, 1.0f);
+            final long start = System.currentTimeMillis();
             painter.paint(g2d);
             if (log.isDebugEnabled()) {
-                long duration = System.currentTimeMillis() - start;
+                final long duration = System.currentTimeMillis() - start;
                 log.debug("Painting WMF took " + duration + " ms.");
             }
         }

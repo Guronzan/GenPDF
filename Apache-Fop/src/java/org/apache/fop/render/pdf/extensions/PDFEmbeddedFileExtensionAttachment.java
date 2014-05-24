@@ -58,11 +58,16 @@ public class PDFEmbeddedFileExtensionAttachment extends PDFExtensionAttachment {
 
     /**
      * Default constructor.
-     * @param filename the name of the file
-     * @param src the location of the file
-     * @param desc the description of the file
+     * 
+     * @param filename
+     *            the name of the file
+     * @param src
+     *            the location of the file
+     * @param desc
+     *            the description of the file
      */
-    public PDFEmbeddedFileExtensionAttachment(String filename, String src, String desc) {
+    public PDFEmbeddedFileExtensionAttachment(final String filename,
+            final String src, final String desc) {
         super();
         this.filename = filename;
         this.src = src;
@@ -71,58 +76,69 @@ public class PDFEmbeddedFileExtensionAttachment extends PDFExtensionAttachment {
 
     /**
      * Returns the file name.
+     * 
      * @return the file name
      */
     public String getFilename() {
-        return filename;
+        return this.filename;
     }
 
     /**
      * Sets the file name.
-     * @param name The file name to set.
+     * 
+     * @param name
+     *            The file name to set.
      */
-    public void setFilename(String name) {
+    public void setFilename(final String name) {
         this.filename = name;
     }
 
     /**
      * Returns the file description.
+     * 
      * @return the description
      */
     public String getDesc() {
-        return desc;
+        return this.desc;
     }
 
     /**
      * Sets the description of the file.
-     * @param desc the description to set
+     * 
+     * @param desc
+     *            the description to set
      */
-    public void setDesc(String desc) {
+    public void setDesc(final String desc) {
         this.desc = desc;
     }
 
     /**
      * Returns the source URI of the file.
+     * 
      * @return the source URI
      */
     public String getSrc() {
-        return src;
+        return this.src;
     }
 
     /**
      * Sets the source URI of the file.
-     * @param src the source URI
+     * 
+     * @param src
+     *            the source URI
      */
-    public void setSrc(String src) {
+    public void setSrc(final String src) {
         this.src = src;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getCategory() {
         return CATEGORY;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "PDFEmbeddedFile(name=" + getFilename() + ", " + getSrc() + ")";
     }
@@ -130,23 +146,25 @@ public class PDFEmbeddedFileExtensionAttachment extends PDFExtensionAttachment {
     /**
      * @return the element name
      */
+    @Override
     protected String getElement() {
         return ELEMENT;
     }
 
     /** {@inheritDoc} */
-    public void toSAX(ContentHandler handler) throws SAXException {
-        AttributesImpl atts = new AttributesImpl();
-        if (filename != null && filename.length() > 0) {
-            atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", filename);
+    @Override
+    public void toSAX(final ContentHandler handler) throws SAXException {
+        final AttributesImpl atts = new AttributesImpl();
+        if (this.filename != null && this.filename.length() > 0) {
+            atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", this.filename);
         }
-        if (src != null && src.length() > 0) {
-            atts.addAttribute(null, ATT_SRC, ATT_SRC, "CDATA", src);
+        if (this.src != null && this.src.length() > 0) {
+            atts.addAttribute(null, ATT_SRC, ATT_SRC, "CDATA", this.src);
         }
-        if (desc != null && desc.length() > 0) {
-            atts.addAttribute(null, ATT_DESC, ATT_DESC, "CDATA", desc);
+        if (this.desc != null && this.desc.length() > 0) {
+            atts.addAttribute(null, ATT_DESC, ATT_DESC, "CDATA", this.desc);
         }
-        String element = getElement();
+        final String element = getElement();
         handler.startElement(CATEGORY, element, element, atts);
         handler.endElement(CATEGORY, element, element);
     }

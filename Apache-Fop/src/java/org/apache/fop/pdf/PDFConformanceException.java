@@ -20,27 +20,29 @@
 package org.apache.fop.pdf;
 
 /**
- * RuntimeException descendant indicating a conformance problem during PDF generation. This
- * exception will be throws, for example, when PDF/A-1 Level B conformance is activated but the
- * PDF version produced is not PDF 1.4 as mandated by ISO 19005-1:2005(E).
+ * RuntimeException descendant indicating a conformance problem during PDF
+ * generation. This exception will be throws, for example, when PDF/A-1 Level B
+ * conformance is activated but the PDF version produced is not PDF 1.4 as
+ * mandated by ISO 19005-1:2005(E).
  */
 public class PDFConformanceException extends RuntimeException {
 
     /**
-     * Constructs an PDFConformanceException with no detail message.
-     * A detail message is a String that describes this particular exception.
+     * Constructs an PDFConformanceException with no detail message. A detail
+     * message is a String that describes this particular exception.
      */
     public PDFConformanceException() {
         super();
     }
 
     /**
-     * Constructs an PDFConformanceException with the specified detail
-     * message. A detail message is a String that describes this particular
-     * exception.
-     * @param message the String that contains a detailed message
+     * Constructs an PDFConformanceException with the specified detail message.
+     * A detail message is a String that describes this particular exception.
+     * 
+     * @param message
+     *            the String that contains a detailed message
      */
-    public PDFConformanceException(String message) {
+    public PDFConformanceException(final String message) {
         super(message);
     }
 

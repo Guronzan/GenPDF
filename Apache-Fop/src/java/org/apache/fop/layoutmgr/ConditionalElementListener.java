@@ -22,32 +22,45 @@ package org.apache.fop.layoutmgr;
 import org.apache.fop.traits.MinOptMax;
 
 /**
- * This interface is used to notify layout managers about the situation around spaces, borders
- * and padding just before the addArea() method is called when a part is being painted.
+ * This interface is used to notify layout managers about the situation around
+ * spaces, borders and padding just before the addArea() method is called when a
+ * part is being painted.
  */
 public interface ConditionalElementListener {
 
     /**
      * Notifies the layout manager about the effective length of its space.
-     * @param side the side to which the space applies
-     * @param effectiveLength the effective length after space-resolution (null means zero length)
+     * 
+     * @param side
+     *            the side to which the space applies
+     * @param effectiveLength
+     *            the effective length after space-resolution (null means zero
+     *            length)
      */
-    void notifySpace(RelSide side, MinOptMax effectiveLength);
+    void notifySpace(final RelSide side, final MinOptMax effectiveLength);
 
     /**
-     * Notifies the layout manager about the effective length/width of its border.
-     * @param side the side to which the border applies
-     * @param effectiveLength the effective length in the current break situation
-     *                        (null means zero length)
+     * Notifies the layout manager about the effective length/width of its
+     * border.
+     * 
+     * @param side
+     *            the side to which the border applies
+     * @param effectiveLength
+     *            the effective length in the current break situation (null
+     *            means zero length)
      */
-    void notifyBorder(RelSide side, MinOptMax effectiveLength);
+    void notifyBorder(final RelSide side, final MinOptMax effectiveLength);
 
     /**
-     * Notifies the layout manager about the effective length/width of its padding.
-     * @param side the side to which the padding applies
-     * @param effectiveLength the effective length in the current break situation
-     *                        (null means zero length)
+     * Notifies the layout manager about the effective length/width of its
+     * padding.
+     * 
+     * @param side
+     *            the side to which the padding applies
+     * @param effectiveLength
+     *            the effective length in the current break situation (null
+     *            means zero length)
      */
-    void notifyPadding(RelSide side, MinOptMax effectiveLength);
+    void notifyPadding(final RelSide side, final MinOptMax effectiveLength);
 
 }

@@ -33,39 +33,52 @@ class CellPart {
     /** Index of the ending element of this part */
     protected int end;
 
-    private int condBeforeContentLength;
-    private int length;
-    private int condAfterContentLength;
-    private int bpBeforeNormal;
-    private int bpBeforeFirst;
-    private int bpAfterNormal;
-    private int bpAfterLast;
-    private boolean isLast;
+    private final int condBeforeContentLength;
+    private final int length;
+    private final int condAfterContentLength;
+    private final int bpBeforeNormal;
+    private final int bpBeforeFirst;
+    private final int bpAfterNormal;
+    private final int bpAfterLast;
+    private final boolean isLast;
 
     /**
      * Creates a new CellPart.
      *
-     * @param pgu Primary grid unit
-     * @param start starting element
-     * @param end ending element
-     * @param last true if this cell part is the last one for the cell
-     * @param condBeforeContentLength length of the additional content that will have to
-     * be displayed if this part will be the first one on the page
-     * @param length length of the content represented by this cell part
-     * @param condAfterContentLength length of the additional content that will have to be
-     * displayed if this part will be the last one on the page
-     * @param bpBeforeNormal width of border- and padding-before in the normal case
-     * @param bpBeforeFirst width of (possibly optional) border- and padding-before if
-     * this part will be the first one on the page
-     * @param bpAfterNormal width of border- and padding-after in the normal case
-     * @param bpAfterLast width of (possibly optional) border- and padding-after if this
-     * part will be the last one on the page
+     * @param pgu
+     *            Primary grid unit
+     * @param start
+     *            starting element
+     * @param end
+     *            ending element
+     * @param last
+     *            true if this cell part is the last one for the cell
+     * @param condBeforeContentLength
+     *            length of the additional content that will have to be
+     *            displayed if this part will be the first one on the page
+     * @param length
+     *            length of the content represented by this cell part
+     * @param condAfterContentLength
+     *            length of the additional content that will have to be
+     *            displayed if this part will be the last one on the page
+     * @param bpBeforeNormal
+     *            width of border- and padding-before in the normal case
+     * @param bpBeforeFirst
+     *            width of (possibly optional) border- and padding-before if
+     *            this part will be the first one on the page
+     * @param bpAfterNormal
+     *            width of border- and padding-after in the normal case
+     * @param bpAfterLast
+     *            width of (possibly optional) border- and padding-after if this
+     *            part will be the last one on the page
      */
-    protected CellPart(                                          // CSOK: ParameterNumber
-            PrimaryGridUnit pgu, int start, int end, boolean last,
-            int condBeforeContentLength, int length, int condAfterContentLength,
-            int bpBeforeNormal, int bpBeforeFirst,
-            int bpAfterNormal, int bpAfterLast) {
+    protected CellPart(
+            // CSOK: ParameterNumber
+            final PrimaryGridUnit pgu, final int start, final int end,
+            final boolean last, final int condBeforeContentLength,
+            final int length, final int condAfterContentLength,
+            final int bpBeforeNormal, final int bpBeforeFirst,
+            final int bpAfterNormal, final int bpAfterLast) {
         this.pgu = pgu;
         this.start = start;
         this.end = end;
@@ -81,48 +94,50 @@ class CellPart {
 
     /** @return true if this part is the first part of a cell */
     public boolean isFirstPart() {
-        return (start == 0);
+        return this.start == 0;
     }
 
     /** @return true if this part is the last part of a cell */
     boolean isLastPart() {
-        return isLast;
+        return this.isLast;
     }
 
-    int getBorderPaddingBefore(boolean firstOnPage) {
+    int getBorderPaddingBefore(final boolean firstOnPage) {
         if (firstOnPage) {
-            return bpBeforeFirst;
+            return this.bpBeforeFirst;
         } else {
-            return bpBeforeNormal;
+            return this.bpBeforeNormal;
         }
     }
 
-    int getBorderPaddingAfter(boolean lastOnPage) {
+    int getBorderPaddingAfter(final boolean lastOnPage) {
         if (lastOnPage) {
-            return bpAfterLast;
+            return this.bpAfterLast;
         } else {
-            return bpAfterNormal;
+            return this.bpAfterNormal;
         }
     }
 
     int getConditionalBeforeContentLength() {
-        return condBeforeContentLength;
+        return this.condBeforeContentLength;
     }
 
     int getLength() {
-        return length;
+        return this.length;
     }
 
     int getConditionalAfterContentLength() {
-        return condAfterContentLength;
+        return this.condAfterContentLength;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("Part: ");
-        sb.append(start).append("-").append(end);
-        sb.append(" [").append(isFirstPart() ? "F" : "-").append(isLastPart() ? "L" : "-");
-        sb.append("] ").append(pgu);
+        final StringBuffer sb = new StringBuffer("Part: ");
+        sb.append(this.start).append("-").append(this.end);
+        sb.append(" [").append(isFirstPart() ? "F" : "-")
+                .append(isLastPart() ? "L" : "-");
+        sb.append("] ").append(this.pgu);
         return sb.toString();
     }
 

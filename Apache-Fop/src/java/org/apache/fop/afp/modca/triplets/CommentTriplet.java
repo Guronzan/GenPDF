@@ -33,23 +33,29 @@ public class CommentTriplet extends AbstractTriplet {
 
     /**
      * Construct a triplet.
-     * @param id the triplet identification number
-     * @param commentString a comment
+     * 
+     * @param id
+     *            the triplet identification number
+     * @param commentString
+     *            a comment
      */
-    public CommentTriplet(byte id, String commentString) {
+    public CommentTriplet(final byte id, final String commentString) {
         super(id);
         this.commentString = commentString;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
-        return 2 + commentString.length();
+        return 2 + this.commentString.length();
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = getData();
-        byte[] strData = commentString.getBytes(AFPConstants.EBCIDIC_ENCODING);
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = getData();
+        final byte[] strData = this.commentString
+                .getBytes(AFPConstants.EBCIDIC_ENCODING);
         System.arraycopy(strData, 0, data, 2, strData.length);
         os.write(data);
     }

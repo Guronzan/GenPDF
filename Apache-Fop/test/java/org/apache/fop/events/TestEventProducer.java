@@ -23,25 +23,33 @@ public interface TestEventProducer extends EventProducer {
 
     /**
      * Complain about something.
-     * @param source the event source
-     * @param reason the reason for the complaint
-     * @param blah the complaint
+     * 
+     * @param source
+     *            the event source
+     * @param reason
+     *            the reason for the complaint
+     * @param blah
+     *            the complaint
      * @event.severity WARN
      */
-    void complain(Object source, String reason, int blah);
+    void complain(final Object source, final String reason, final int blah);
 
     /**
      * Express joy about something.
-     * @param source the event source
-     * @param what the cause for the joy
+     * 
+     * @param source
+     *            the event source
+     * @param what
+     *            the cause for the joy
      * @event.severity INFO
      */
-    void enjoy(Object source, String what);
+    void enjoy(final Object source, final String what);
 
     public class Provider {
 
-        public static TestEventProducer get(EventBroadcaster broadcaster) {
-            return (TestEventProducer)broadcaster.getEventProducerFor(TestEventProducer.class);
+        public static TestEventProducer get(final EventBroadcaster broadcaster) {
+            return (TestEventProducer) broadcaster
+                    .getEventProducerFor(TestEventProducer.class);
         }
     }
 

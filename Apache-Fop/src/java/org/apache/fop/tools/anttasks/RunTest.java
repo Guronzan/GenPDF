@@ -29,15 +29,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 /**
- * Testing ant task.
- * This task is used to test FOP as a build target.
- * This uses the TestConverter (with weak code dependency)
- * to run the tests and check the results.
+ * Testing ant task. This task is used to test FOP as a build target. This uses
+ * the TestConverter (with weak code dependency) to run the tests and check the
+ * results.
  */
+@Slf4j
 public class RunTest extends Task {
 
     private String basedir;
@@ -47,68 +49,74 @@ public class RunTest extends Task {
 
     /**
      * Sets the test suite name.
-     * @param str name of the test suite
+     *
+     * @param str
+     *            name of the test suite
      */
-    public void setTestSuite(String str) {
-        testsuite = str;
+    public void setTestSuite(final String str) {
+        this.testsuite = str;
     }
 
     /**
      * Sets the base directory.
-     * @param str base directory
+     *
+     * @param str
+     *            base directory
      */
-    public void setBasedir(String str) {
-        basedir = str;
+    public void setBasedir(final String str) {
+        this.basedir = str;
     }
 
     /**
      * Sets the reference directory.
-     * @param str reference directory
+     *
+     * @param str
+     *            reference directory
      */
-    public void setReference(String str) {
-        referenceJar = str;
+    public void setReference(final String str) {
+        this.referenceJar = str;
     }
 
     /**
      * Sets the reference version.
-     * @param str reference version
+     *
+     * @param str
+     *            reference version
      */
-    public void setRefVersion(String str) {
-        refVersion = str;
+    public void setRefVersion(final String str) {
+        this.refVersion = str;
     }
 
     /**
-     * This creates the reference output, if required, then tests
-     * the current build.
-     * {@inheritDoc}
+     * This creates the reference output, if required, then tests the current
+     * build. {@inheritDoc}
      */
+    @Override
     public void execute() throws BuildException {
         runReference();
         testNewBuild();
     }
 
     /**
-     * Test the current build.
-     * This uses the current jar file (in build/fop.jar) to run the
-     * tests with.
-     * The output is then compared with the reference output.
+     * Test the current build. This uses the current jar file (in build/fop.jar)
+     * to run the tests with. The output is then compared with the reference
+     * output.
      */
     protected void testNewBuild() {
         try {
-            ClassLoader loader = new URLClassLoader(
-                                    createUrls("build/fop.jar"));
-            Map diff = runConverter(loader, "areatree",
-                                          "reference/output/");
+            final ClassLoader loader = new URLClassLoader(
+                    createUrls("build/fop.jar"));
+            final Map diff = runConverter(loader, "areatree",
+                    "reference/output/");
             if (diff != null && !diff.isEmpty()) {
-                System.out.println("====================================");
-                System.out.println("The following files differ:");
+                log.info("====================================");
+                log.info("The following files differ:");
                 boolean broke = false;
-                for (Iterator keys = diff.keySet().iterator();
-                        keys.hasNext();) {
-                    Object fname = keys.next();
-                    Boolean pass = (Boolean)diff.get(fname);
-                    System.out.println("file: " + fname
-                                       + " - reference success: " + pass);
+                for (final Iterator keys = diff.keySet().iterator(); keys
+                        .hasNext();) {
+                    final Object fname = keys.next();
+                    final Boolean pass = (Boolean) diff.get(fname);
+                    log.info("file: " + fname + " - reference success: " + pass);
                     if (pass.booleanValue()) {
                         broke = true;
                     }
@@ -117,115 +125,116 @@ public class RunTest extends Task {
                     throw new BuildException("Working tests have been changed.");
                 }
             }
-        } catch (MalformedURLException mue) {
+        } catch (final MalformedURLException mue) {
             mue.printStackTrace();
         }
     }
 
     /**
-     * Run the tests for the reference jar file.
-     * This checks that the reference output has not already been
-     * run and then checks the version of the reference jar against
-     * the version required.
-     * The reference output is then created.
-     * @throws BuildException if an error occurs
+     * Run the tests for the reference jar file. This checks that the reference
+     * output has not already been run and then checks the version of the
+     * reference jar against the version required. The reference output is then
+     * created.
+     *
+     * @throws BuildException
+     *             if an error occurs
      */
     protected void runReference() throws BuildException {
         // check not already done
-        File f = new File(basedir + "/reference/output/");
+        final File f = new File(this.basedir + "/reference/output/");
         // if(f.exists()) {
         // need to check that files have actually been created.
         // return;
         // } else {
         try {
-            ClassLoader loader = new URLClassLoader(createUrls(referenceJar));
+            final ClassLoader loader = new URLClassLoader(
+                    createUrls(this.referenceJar));
             boolean failed = false;
 
             try {
-                Class cla = Class.forName("org.apache.fop.apps.Fop", true,
-                                    loader);
-                Method get = cla.getMethod("getVersion", new Class[]{});
-                if (!get.invoke(null, new Object[]{}).equals(refVersion)) {
-                    throw new BuildException("Reference jar is not correct version it must be: "
-                                             + refVersion);
+                final Class cla = Class.forName("org.apache.fop.apps.Fop",
+                        true, loader);
+                final Method get = cla.getMethod("getVersion", new Class[] {});
+                if (!get.invoke(null, new Object[] {}).equals(this.refVersion)) {
+                    throw new BuildException(
+                            "Reference jar is not correct version it must be: "
+                                    + this.refVersion);
                 }
-            } catch (IllegalAccessException iae) {
+            } catch (final IllegalAccessException iae) {
                 failed = true;
-            } catch (IllegalArgumentException are) {
+            } catch (final IllegalArgumentException are) {
                 failed = true;
-            } catch (InvocationTargetException are) {
+            } catch (final InvocationTargetException are) {
                 failed = true;
-            } catch (ClassNotFoundException are) {
+            } catch (final ClassNotFoundException are) {
                 failed = true;
-            } catch (NoSuchMethodException are) {
+            } catch (final NoSuchMethodException are) {
                 failed = true;
             }
             if (failed) {
-                throw new BuildException("Reference jar could not be found in: "
-                                         + basedir + "/reference/");
+                throw new BuildException(
+                        "Reference jar could not be found in: " + this.basedir
+                        + "/reference/");
             }
             f.mkdirs();
             runConverter(loader, "reference/output/", null);
-        } catch (MalformedURLException mue) {
+        } catch (final MalformedURLException mue) {
             mue.printStackTrace();
         }
         // }
     }
 
     /**
-     * Run the Converter.
-     * Runs the test converter using the specified class loader.
-     * This loads the TestConverter using the class loader and
-     * then runs the test suite for the current test suite
-     * file in the base directory.
-     * (Note class loader option provided to allow for different
-     * fop.jar and other libraries to be activated.)
-     * @param loader the class loader to use to run the tests with
-     * @param dest destination directory
-     * @param compDir comparison directory
+     * Run the Converter. Runs the test converter using the specified class
+     * loader. This loads the TestConverter using the class loader and then runs
+     * the test suite for the current test suite file in the base directory.
+     * (Note class loader option provided to allow for different fop.jar and
+     * other libraries to be activated.)
+     *
+     * @param loader
+     *            the class loader to use to run the tests with
+     * @param dest
+     *            destination directory
+     * @param compDir
+     *            comparison directory
      * @return A Map with differences
      */
-    protected Map runConverter(ClassLoader loader, String dest,
-                                     String compDir) {
-        String converter = "org.apache.fop.tools.TestConverter";
+    protected Map runConverter(final ClassLoader loader, final String dest,
+            final String compDir) {
+        final String converter = "org.apache.fop.tools.TestConverter";
 
         Map diff = null;
         try {
-            Class cla = Class.forName(converter, true, loader);
-            Object tc = cla.newInstance();
+            final Class cla = Class.forName(converter, true, loader);
+            final Object tc = cla.newInstance();
             Method meth;
 
-            meth = cla.getMethod("setBaseDir", new Class[] {
-                String.class
-            });
-            meth.invoke(tc, new Object[] {
-                basedir
-            });
+            meth = cla.getMethod("setBaseDir", new Class[] { String.class });
+            meth.invoke(tc, new Object[] { this.basedir });
 
-            meth = cla.getMethod("runTests", new Class[] {
-                String.class, String.class, String.class
-            });
-            diff = (Map)meth.invoke(tc, new Object[] {
-                testsuite, dest, compDir
-            });
-        } catch (Exception e) {
+            meth = cla.getMethod("runTests", new Class[] { String.class,
+                    String.class, String.class });
+            diff = (Map) meth.invoke(tc, new Object[] { this.testsuite, dest,
+                    compDir });
+        } catch (final Exception e) {
             e.printStackTrace();
         }
         return diff;
     }
 
     /**
-     * Return a list of URL's with the specified URL first and followed
-     * by all the jar files from lib/.
+     * Return a list of URL's with the specified URL first and followed by all
+     * the jar files from lib/.
+     *
      * @return a list of urls to the runtime jar files.
      */
-    private URL[] createUrls(String mainJar) throws MalformedURLException {
-        ArrayList urls = new ArrayList();
+    private URL[] createUrls(final String mainJar) throws MalformedURLException {
+        final ArrayList urls = new ArrayList();
         urls.add(new File(mainJar).toURI().toURL());
-        File[] libFiles = new File("lib").listFiles();
-        for (int i = 0; i < libFiles.length; i++) {
-            if (libFiles[i].getPath().endsWith(".jar")) {
-                urls.add(libFiles[i].toURI().toURL());
+        final File[] libFiles = new File("lib").listFiles();
+        for (final File libFile : libFiles) {
+            if (libFile.getPath().endsWith(".jar")) {
+                urls.add(libFile.toURI().toURL());
             }
         }
         return (URL[]) urls.toArray(new URL[urls.size()]);

@@ -28,9 +28,11 @@ public class BidiLayoutManager extends InlineLayoutManager {
 
     /**
      * Construct bidi layout manager.
-     * @param node an BidiOverride FONode
+     * 
+     * @param node
+     *            an BidiOverride FONode
      */
-    public BidiLayoutManager(BidiOverride node) {
+    public BidiLayoutManager(final BidiOverride node) {
         super(node);
     }
 

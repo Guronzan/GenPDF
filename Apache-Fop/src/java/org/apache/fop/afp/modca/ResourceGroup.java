@@ -32,26 +32,32 @@ import org.apache.fop.afp.Streamable;
 public class ResourceGroup extends AbstractNamedAFPObject {
 
     /** Set of resource uri */
-    private final Set/*<String>*/ resourceSet = new java.util.HashSet/*<String>*/();
+    private final Set/* <String> */resourceSet = new java.util.HashSet/*
+                                                                       * <String>
+                                                                       */();
 
     /**
-     * Constructor for the ResourceGroup, this takes a
-     * name parameter which must be 8 characters long.
+     * Constructor for the ResourceGroup, this takes a name parameter which must
+     * be 8 characters long.
      *
-     * @param name the resource group name
+     * @param name
+     *            the resource group name
      */
-    public ResourceGroup(String name) {
+    public ResourceGroup(final String name) {
         super(name);
     }
 
     /**
      * Add this named object to this resource group
      *
-     * @param namedObject a named object
-     * @throws IOException thrown if an I/O exception of some sort has occurred.
+     * @param namedObject
+     *            a named object
+     * @throws IOException
+     *             thrown if an I/O exception of some sort has occurred.
      */
-    public void addObject(AbstractNamedAFPObject namedObject) throws IOException {
-        resourceSet.add(namedObject);
+    public void addObject(final AbstractNamedAFPObject namedObject)
+            throws IOException {
+        this.resourceSet.add(namedObject);
     }
 
     /**
@@ -60,48 +66,53 @@ public class ResourceGroup extends AbstractNamedAFPObject {
      * @return the number of resources contained in this resource group
      */
     public int getResourceCount() {
-        return resourceSet.size();
+        return this.resourceSet.size();
     }
 
     /**
-     * Returns true if the resource exists within this resource group,
-     * false otherwise.
+     * Returns true if the resource exists within this resource group, false
+     * otherwise.
      *
-     * @param uri the uri of the resource
+     * @param uri
+     *            the uri of the resource
      * @return true if the resource exists within this resource group
      */
-    public boolean resourceExists(String uri) {
-        return resourceSet.contains(uri);
+    public boolean resourceExists(final String uri) {
+        return this.resourceSet.contains(uri);
     }
 
     /** {@inheritDoc} */
-    public void writeStart(OutputStream os) throws IOException {
-        byte[] data = new byte[17];
+    @Override
+    public void writeStart(final OutputStream os) throws IOException {
+        final byte[] data = new byte[17];
         copySF(data, Type.BEGIN, Category.RESOURCE_GROUP);
         os.write(data);
     }
 
     /** {@inheritDoc} */
-    public void writeContent(OutputStream os) throws IOException {
-        Iterator it = resourceSet.iterator();
+    @Override
+    public void writeContent(final OutputStream os) throws IOException {
+        final Iterator it = this.resourceSet.iterator();
         while (it.hasNext()) {
-            Object object = it.next();
+            final Object object = it.next();
             if (object instanceof Streamable) {
-                Streamable streamableObject = (Streamable)object;
+                final Streamable streamableObject = (Streamable) object;
                 streamableObject.writeToStream(os);
             }
         }
     }
 
     /** {@inheritDoc} */
-    public void writeEnd(OutputStream os) throws IOException {
-        byte[] data = new byte[17];
+    @Override
+    public void writeEnd(final OutputStream os) throws IOException {
+        final byte[] data = new byte[17];
         copySF(data, Type.END, Category.RESOURCE_GROUP);
         os.write(data);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return this.name + " " + resourceSet/*getResourceMap()*/;
+        return this.name + " " + this.resourceSet/* getResourceMap() */;
     }
 }

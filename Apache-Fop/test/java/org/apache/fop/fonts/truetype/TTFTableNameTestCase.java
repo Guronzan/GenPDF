@@ -31,9 +31,11 @@ import static org.junit.Assert.assertTrue;
  */
 public class TTFTableNameTestCase {
     /**
-     * Test getName() - tests that the getName() method returns the expected String as expected in
-     * the Directory Table.
-     * @exception IllegalAccessException error
+     * Test getName() - tests that the getName() method returns the expected
+     * String as expected in the Directory Table.
+     * 
+     * @exception IllegalAccessException
+     *                error
      */
     @Test
     public void testGetName() throws IllegalAccessException {
@@ -67,14 +69,17 @@ public class TTFTableNameTestCase {
         assertEquals("vhea", TTFTableName.VHEA.getName());
         assertEquals("vmtx", TTFTableName.VMTX.getName());
         // make sure it works with other table names
-        TTFTableName test = TTFTableName.getValue("test");
+        final TTFTableName test = TTFTableName.getValue("test");
         assertEquals("test", test.getName());
     }
 
     /**
-     * Test getValue(String) - tests that the getValue(String) method returns the expected
-     * TTFTableNames value when it is given a String (name of a table).
-     * @exception IllegalAccessException error
+     * Test getValue(String) - tests that the getValue(String) method returns
+     * the expected TTFTableNames value when it is given a String (name of a
+     * table).
+     * 
+     * @exception IllegalAccessException
+     *                error
      */
     @Test
     public void testGetValue() throws IllegalAccessException {
@@ -103,46 +108,48 @@ public class TTFTableNameTestCase {
         assertEquals(TTFTableName.PREP, TTFTableName.getValue("prep"));
         assertEquals(TTFTableName.VHEA, TTFTableName.getValue("vhea"));
         assertEquals(TTFTableName.VMTX, TTFTableName.getValue("vmtx"));
-        // Test that we can store a random table name and it will not fail or throw an error.
-        TTFTableName test = TTFTableName.getValue("random");
+        // Test that we can store a random table name and it will not fail or
+        // throw an error.
+        final TTFTableName test = TTFTableName.getValue("random");
         assertTrue(test instanceof TTFTableName);
     }
 
     /**
-     * This class overrides hashCode() - we need to ensure it works properly by instantiating two
-     * objects and comparing their hash-codes.
-     * @exception IllegalAccessException error
+     * This class overrides hashCode() - we need to ensure it works properly by
+     * instantiating two objects and comparing their hash-codes.
+     * 
+     * @exception IllegalAccessException
+     *                error
      */
     @Test
     public void testHashCode() throws IllegalAccessException {
-        TTFTableName a = TTFTableName.getValue("testObject");
-        TTFTableName b = TTFTableName.getValue("testObject");
+        final TTFTableName a = TTFTableName.getValue("testObject");
+        final TTFTableName b = TTFTableName.getValue("testObject");
         assertTrue(a.hashCode() == b.hashCode());
-        TTFTableName c = TTFTableName.getValue("fail");
+        final TTFTableName c = TTFTableName.getValue("fail");
         assertFalse(a.hashCode() == c.hashCode());
     }
 
     /**
-     * This class overrides equals(object) - we need to test:
-     * 1) Reflexivity
-     * 2) Symmetry
-     * 3) Transitivity
-     * 4) Consistency
-     * 5) check it fails if you put in a null value
-     * @throws IllegalAccessException error
+     * This class overrides equals(object) - we need to test: 1) Reflexivity 2)
+     * Symmetry 3) Transitivity 4) Consistency 5) check it fails if you put in a
+     * null value
+     * 
+     * @throws IllegalAccessException
+     *             error
      */
     @Test
     public void testEquals() throws IllegalAccessException {
         // Reflexivity
-        TTFTableName a = TTFTableName.getValue("test");
+        final TTFTableName a = TTFTableName.getValue("test");
         assertTrue(a.equals(a));
         // Symmetry
-        TTFTableName b = TTFTableName.getValue("test");
+        final TTFTableName b = TTFTableName.getValue("test");
         assertTrue(a.equals(b));
         assertTrue(b.equals(a));
         // Transitivity (tested with symmetry)
         // Consistency (test that a == b is true and that a == c fails)
-        TTFTableName c = TTFTableName.getValue("fail");
+        final TTFTableName c = TTFTableName.getValue("fail");
         for (int i = 0; i < 100; i++) {
             assertTrue(a.equals(b));
             assertFalse(a.equals(c));

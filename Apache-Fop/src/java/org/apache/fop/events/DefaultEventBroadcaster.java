@@ -32,7 +32,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.fop.events.model.EventMethodModel;
 import org.apache.fop.events.model.EventModel;
 import org.apache.fop.events.model.EventModelParser;
@@ -40,8 +39,9 @@ import org.apache.fop.events.model.EventProducerModel;
 import org.apache.fop.events.model.EventSeverity;
 
 /**
- * Default implementation of the EventBroadcaster interface. It holds a list of event listeners
- * and can provide {@link EventProducer} instances for type-safe event production.
+ * Default implementation of the EventBroadcaster interface. It holds a list of
+ * event listeners and can provide {@link EventProducer} instances for type-safe
+ * event production.
  */
 public class DefaultEventBroadcaster implements EventBroadcaster {
 
@@ -49,46 +49,52 @@ public class DefaultEventBroadcaster implements EventBroadcaster {
     protected CompositeEventListener listeners = new CompositeEventListener();
 
     /** {@inheritDoc} */
-    public void addEventListener(EventListener listener) {
+    @Override
+    public void addEventListener(final EventListener listener) {
         this.listeners.addEventListener(listener);
     }
 
     /** {@inheritDoc} */
-    public void removeEventListener(EventListener listener) {
+    @Override
+    public void removeEventListener(final EventListener listener) {
         this.listeners.removeEventListener(listener);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasEventListeners() {
         return this.listeners.hasEventListeners();
     }
 
     /** {@inheritDoc} */
-    public void broadcastEvent(Event event) {
+    @Override
+    public void broadcastEvent(final Event event) {
         this.listeners.processEvent(event);
     }
 
-    private static List/*<EventModel>*/ eventModels = new java.util.ArrayList();
-    private Map proxies = new java.util.HashMap();
+    private static List/* <EventModel> */eventModels = new java.util.ArrayList();
+    private final Map proxies = new java.util.HashMap();
 
     /**
      * Loads an event model and returns its instance.
-     * @param resourceBaseClass base class to use for loading resources
+     * 
+     * @param resourceBaseClass
+     *            base class to use for loading resources
      * @return the newly loaded event model.
      */
-    private static EventModel loadModel(Class resourceBaseClass) {
-        String resourceName = "event-model.xml";
-        InputStream in = resourceBaseClass.getResourceAsStream(resourceName);
+    private static EventModel loadModel(final Class resourceBaseClass) {
+        final String resourceName = "event-model.xml";
+        final InputStream in = resourceBaseClass
+                .getResourceAsStream(resourceName);
         if (in == null) {
-            throw new MissingResourceException(
-                    "File " + resourceName + " not found",
-                    DefaultEventBroadcaster.class.getName(), "");
+            throw new MissingResourceException("File " + resourceName
+                    + " not found", DefaultEventBroadcaster.class.getName(), "");
         }
         try {
             return EventModelParser.parse(new StreamSource(in));
-        } catch (TransformerException e) {
-            throw new MissingResourceException(
-                    "Error reading " + resourceName + ": " + e.getMessage(),
+        } catch (final TransformerException e) {
+            throw new MissingResourceException("Error reading " + resourceName
+                    + ": " + e.getMessage(),
                     DefaultEventBroadcaster.class.getName(), "");
         } finally {
             IOUtils.closeQuietly(in);
@@ -97,34 +103,39 @@ public class DefaultEventBroadcaster implements EventBroadcaster {
 
     /**
      * Adds a new {@link EventModel} to the list of registered event models.
-     * @param eventModel the event model instance
+     * 
+     * @param eventModel
+     *            the event model instance
      */
-    public static synchronized void addEventModel(EventModel eventModel) {
+    public static synchronized void addEventModel(final EventModel eventModel) {
         eventModels.add(eventModel);
     }
 
-    private static synchronized EventProducerModel getEventProducerModel(Class clazz) {
+    private static synchronized EventProducerModel getEventProducerModel(
+            final Class clazz) {
         for (int i = 0, c = eventModels.size(); i < c; i++) {
-            EventModel eventModel = (EventModel)eventModels.get(i);
-            EventProducerModel producerModel = eventModel.getProducer(clazz);
+            final EventModel eventModel = (EventModel) eventModels.get(i);
+            final EventProducerModel producerModel = eventModel
+                    .getProducer(clazz);
             if (producerModel != null) {
                 return producerModel;
             }
         }
-        EventModel model = loadModel(clazz);
+        final EventModel model = loadModel(clazz);
         addEventModel(model);
         return model.getProducer(clazz);
     }
 
     /** {@inheritDoc} */
-    public EventProducer getEventProducerFor(Class clazz) {
+    @Override
+    public EventProducer getEventProducerFor(final Class clazz) {
         if (!EventProducer.class.isAssignableFrom(clazz)) {
             throw new IllegalArgumentException(
                     "Class must be an implementation of the EventProducer interface: "
-                    + clazz.getName());
+                            + clazz.getName());
         }
         EventProducer producer;
-        producer = (EventProducer)this.proxies.get(clazz);
+        producer = (EventProducer) this.proxies.get(clazz);
         if (producer == null) {
             producer = createProxyFor(clazz);
             this.proxies.put(clazz, producer);
@@ -133,51 +144,59 @@ public class DefaultEventBroadcaster implements EventBroadcaster {
     }
 
     /**
-     * Creates a dynamic proxy for the given EventProducer interface that will handle the
-     * conversion of the method call into the broadcasting of an event instance.
-     * @param clazz a descendant interface of EventProducer
+     * Creates a dynamic proxy for the given EventProducer interface that will
+     * handle the conversion of the method call into the broadcasting of an
+     * event instance.
+     * 
+     * @param clazz
+     *            a descendant interface of EventProducer
      * @return the EventProducer instance
      */
-    protected EventProducer createProxyFor(Class clazz) {
+    protected EventProducer createProxyFor(final Class clazz) {
         final EventProducerModel producerModel = getEventProducerModel(clazz);
         if (producerModel == null) {
-            throw new IllegalStateException("Event model doesn't contain the definition for "
-                    + clazz.getName());
+            throw new IllegalStateException(
+                    "Event model doesn't contain the definition for "
+                            + clazz.getName());
         }
-        return (EventProducer)Proxy.newProxyInstance(clazz.getClassLoader(),
-                new Class[] {clazz},
-                new InvocationHandler() {
-                    public Object invoke(Object proxy, Method method, Object[] args)
-                            throws Throwable {
-                        String methodName = method.getName();
-                        EventMethodModel methodModel = producerModel.getMethod(methodName);
-                        String eventID = producerModel.getInterfaceName() + "." + methodName;
-                        if (methodModel == null) {
-                            throw new IllegalStateException(
-                                    "Event model isn't consistent"
-                                    + " with the EventProducer interface. Please rebuild FOP!"
-                                    + " Affected method: "
-                                    + eventID);
-                        }
-                        Map params = new java.util.HashMap();
-                        int i = 1;
-                        Iterator iter = methodModel.getParameters().iterator();
-                        while (iter.hasNext()) {
-                            EventMethodModel.Parameter param
-                                = (EventMethodModel.Parameter)iter.next();
-                            params.put(param.getName(), args[i]);
-                            i++;
-                        }
-                        Event ev = new Event(args[0], eventID, methodModel.getSeverity(), params);
-                        broadcastEvent(ev);
+        return (EventProducer) Proxy.newProxyInstance(clazz.getClassLoader(),
+                new Class[] { clazz }, new InvocationHandler() {
+            @Override
+            public Object invoke(final Object proxy,
+                            final Method method, final Object[] args)
+                    throws Throwable {
+                final String methodName = method.getName();
+                final EventMethodModel methodModel = producerModel
+                                .getMethod(methodName);
+                final String eventID = producerModel.getInterfaceName()
+                                + "." + methodName;
+                if (methodModel == null) {
+                    throw new IllegalStateException(
+                            "Event model isn't consistent"
+                                            + " with the EventProducer interface. Please rebuild FOP!"
+                                            + " Affected method: " + eventID);
+                }
+                final Map params = new java.util.HashMap();
+                int i = 1;
+                final Iterator iter = methodModel.getParameters()
+                                .iterator();
+                while (iter.hasNext()) {
+                    final EventMethodModel.Parameter param = (EventMethodModel.Parameter) iter
+                                    .next();
+                    params.put(param.getName(), args[i]);
+                    i++;
+                }
+                final Event ev = new Event(args[0], eventID,
+                                methodModel.getSeverity(), params);
+                broadcastEvent(ev);
 
-                        if (ev.getSeverity() == EventSeverity.FATAL) {
-                            EventExceptionManager.throwException(ev,
-                                    methodModel.getExceptionClass());
-                        }
-                        return null;
-                    }
-                });
+                if (ev.getSeverity() == EventSeverity.FATAL) {
+                    EventExceptionManager.throwException(ev,
+                            methodModel.getExceptionClass());
+                }
+                return null;
+            }
+        });
     }
 
 }

@@ -40,7 +40,7 @@ public class PSState implements Serializable {
     public static final Color DEFAULT_RGB_COLOR = Color.black;
 
     private AffineTransform transform = new AffineTransform();
-    private List transformConcatList = new java.util.ArrayList();
+    private final List transformConcatList = new java.util.ArrayList();
 
     private int linecap = 0;
     private int linejoin = 0;
@@ -49,7 +49,7 @@ public class PSState implements Serializable {
     private String dashpattern = DEFAULT_DASH;
     private Color color = DEFAULT_RGB_COLOR;
 
-    //Font state
+    // Font state
     private String fontname;
     private float fontsize;
 
@@ -57,16 +57,19 @@ public class PSState implements Serializable {
      * Default constructor
      */
     public PSState() {
-        //nop
+        // nop
     }
 
     /**
      * Copy constructor
-     * @param org the original to copy from
-     * @param copyTransforms true if the list of matrix concats should be cloned, too
+     * 
+     * @param org
+     *            the original to copy from
+     * @param copyTransforms
+     *            true if the list of matrix concats should be cloned, too
      */
-    public PSState(PSState org, boolean copyTransforms) {
-        this.transform = (AffineTransform)org.transform.clone();
+    public PSState(final PSState org, final boolean copyTransforms) {
+        this.transform = (AffineTransform) org.transform.clone();
         if (copyTransforms) {
             this.transformConcatList.addAll(org.transformConcatList);
         }
@@ -82,6 +85,7 @@ public class PSState implements Serializable {
 
     /**
      * Returns the transform.
+     * 
      * @return the current transformation matrix
      */
     public AffineTransform getTransform() {
@@ -89,35 +93,39 @@ public class PSState implements Serializable {
     }
 
     /**
-     * Check the current transform.
-     * The transform for the current state is the combination of all
-     * transforms in the current state. The parameter is compared
-     * against this current transform.
+     * Check the current transform. The transform for the current state is the
+     * combination of all transforms in the current state. The parameter is
+     * compared against this current transform.
      *
-     * @param tf the transform the check against
+     * @param tf
+     *            the transform the check against
      * @return true if the new transform is different then the current transform
      */
-    public boolean checkTransform(AffineTransform tf) {
+    public boolean checkTransform(final AffineTransform tf) {
         return !tf.equals(this.transform);
     }
 
     /**
      * Concats the given transformation matrix with the current one.
-     * @param transform The new transformation matrix
+     * 
+     * @param transform
+     *            The new transformation matrix
      */
-    public void concatMatrix(AffineTransform transform) {
+    public void concatMatrix(final AffineTransform transform) {
         this.transformConcatList.add(transform);
         this.transform.concatenate(transform);
     }
 
     /**
      * Establishes the specified line cap.
-     * @param value line cap (0, 1 or 2) as defined by the setlinecap command
+     * 
+     * @param value
+     *            line cap (0, 1 or 2) as defined by the setlinecap command
      * @return true if the line cap changed compared to the previous setting
      */
-    public boolean useLineCap(int value) {
-        if (linecap != value) {
-            linecap = value;
+    public boolean useLineCap(final int value) {
+        if (this.linecap != value) {
+            this.linecap = value;
             return true;
         } else {
             return false;
@@ -126,12 +134,14 @@ public class PSState implements Serializable {
 
     /**
      * Establishes the specified line join.
-     * @param value line join (0, 1 or 2) as defined by the setlinejoin command
+     * 
+     * @param value
+     *            line join (0, 1 or 2) as defined by the setlinejoin command
      * @return true if the line join changed compared to the previous setting
      */
-    public boolean useLineJoin(int value) {
-        if (linejoin != value) {
-            linejoin = value;
+    public boolean useLineJoin(final int value) {
+        if (this.linejoin != value) {
+            this.linejoin = value;
             return true;
         } else {
             return false;
@@ -140,12 +150,14 @@ public class PSState implements Serializable {
 
     /**
      * Establishes the specified miter limit.
-     * @param value the miter limit as defined by the setmiterlimit command
+     * 
+     * @param value
+     *            the miter limit as defined by the setmiterlimit command
      * @return true if the miter limit changed compared to the previous setting
      */
-    public boolean useMiterLimit(float value) {
-        if (miterLimit != value) {
-            miterLimit = value;
+    public boolean useMiterLimit(final float value) {
+        if (this.miterLimit != value) {
+            this.miterLimit = value;
             return true;
         } else {
             return false;
@@ -154,12 +166,14 @@ public class PSState implements Serializable {
 
     /**
      * Establishes the specified line width.
-     * @param value line width as defined by the setlinewidth command
+     * 
+     * @param value
+     *            line width as defined by the setlinewidth command
      * @return true if the line width changed compared to the previous setting
      */
-    public boolean useLineWidth(double value) {
-        if (linewidth != value) {
-            linewidth = value;
+    public boolean useLineWidth(final double value) {
+        if (this.linewidth != value) {
+            this.linewidth = value;
             return true;
         } else {
             return false;
@@ -168,12 +182,14 @@ public class PSState implements Serializable {
 
     /**
      * Establishes the specified dash.
-     * @param pattern dash pattern as defined by the setdash command
+     * 
+     * @param pattern
+     *            dash pattern as defined by the setdash command
      * @return true if the dash pattern changed compared to the previous setting
      */
-    public boolean useDash(String pattern) {
-        if (!dashpattern.equals(pattern)) {
-            dashpattern = pattern;
+    public boolean useDash(final String pattern) {
+        if (!this.dashpattern.equals(pattern)) {
+            this.dashpattern = pattern;
             return true;
         } else {
             return false;
@@ -182,12 +198,14 @@ public class PSState implements Serializable {
 
     /**
      * Establishes the specified color (RGB).
-     * @param value color as defined by the setrgbcolor command
+     * 
+     * @param value
+     *            color as defined by the setrgbcolor command
      * @return true if the color changed compared to the previous setting
      */
-    public boolean useColor(Color value) {
-        if (!ColorUtil.isSameColor(color, value)) {
-            color = value;
+    public boolean useColor(final Color value) {
+        if (!ColorUtil.isSameColor(this.color, value)) {
+            this.color = value;
             return true;
         } else {
             return false;
@@ -196,17 +214,21 @@ public class PSState implements Serializable {
 
     /**
      * Establishes the specified font and size.
-     * @param name name of the font for the "F" command (see FOP Std Proc Set)
-     * @param size size of the font
+     * 
+     * @param name
+     *            name of the font for the "F" command (see FOP Std Proc Set)
+     * @param size
+     *            size of the font
      * @return true if the font changed compared to the previous setting
      */
-    public boolean useFont(String name, float size) {
+    public boolean useFont(final String name, final float size) {
         if (name == null) {
             throw new NullPointerException("font name must not be null");
         }
-        if (fontname == null || !fontname.equals(name) || fontsize != size) {
-            fontname = name;
-            fontsize = size;
+        if (this.fontname == null || !this.fontname.equals(name)
+                || this.fontsize != size) {
+            this.fontname = name;
+            this.fontsize = size;
             return true;
         } else {
             return false;
@@ -214,21 +236,24 @@ public class PSState implements Serializable {
     }
 
     /**
-     * Reestablishes the graphics state represented by this instance by issueing the
-     * necessary commands.
-     * @param gen The generator to use for output
-     * @exception IOException In case of an I/O problem
+     * Reestablishes the graphics state represented by this instance by issueing
+     * the necessary commands.
+     * 
+     * @param gen
+     *            The generator to use for output
+     * @exception IOException
+     *                In case of an I/O problem
      */
-    public void reestablish(PSGenerator gen) throws IOException {
-        for (int i = 0, len = transformConcatList.size(); i < len; i++) {
-            gen.concatMatrix((AffineTransform)transformConcatList.get(i));
+    public void reestablish(final PSGenerator gen) throws IOException {
+        for (int i = 0, len = this.transformConcatList.size(); i < len; i++) {
+            gen.concatMatrix((AffineTransform) this.transformConcatList.get(i));
         }
-        gen.useLineCap(linecap);
-        gen.useLineWidth(linewidth);
-        gen.useDash(dashpattern);
-        gen.useColor(color);
-        if (fontname != null) {
-            gen.useFont(fontname, fontsize);
+        gen.useLineCap(this.linecap);
+        gen.useLineWidth(this.linewidth);
+        gen.useDash(this.dashpattern);
+        gen.useColor(this.color);
+        if (this.fontname != null) {
+            gen.useFont(this.fontname, this.fontsize);
         }
     }
 

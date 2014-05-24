@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class provides some useful methods to print the structure of a TernaryTree object
+ * This class provides some useful methods to print the structure of a
+ * TernaryTree object
  */
 public class TernaryTreeAnalysis {
 
@@ -33,14 +34,16 @@ public class TernaryTreeAnalysis {
     protected TernaryTree tt;
 
     /**
-     * @param tt the TernaryTree object
+     * @param tt
+     *            the TernaryTree object
      */
-    public TernaryTreeAnalysis(TernaryTree tt) {
+    public TernaryTreeAnalysis(final TernaryTree tt) {
         this.tt = tt;
     }
 
     /**
-     * Class representing a string of nodes in the tree representation of a TernaryTree
+     * Class representing a string of nodes in the tree representation of a
+     * TernaryTree
      */
     public static class NodeString {
 
@@ -65,11 +68,12 @@ public class TernaryTreeAnalysis {
         public List low = new ArrayList();
 
         /**
-         * @param indent the indent of the nodestring
+         * @param indent
+         *            the indent of the nodestring
          */
-        public NodeString(int indent) {
+        public NodeString(final int indent) {
             this.indent = indent;
-            string.append("+");
+            this.string.append("+");
         }
 
     }
@@ -115,29 +119,30 @@ public class TernaryTreeAnalysis {
         protected boolean isPacked = false;
 
         /**
-         * @param index the index of the node
+         * @param index
+         *            the index of the node
          */
-        protected Node(int index) {
+        protected Node(final int index) {
             this.index = index;
-            if (tt.sc[index] == 0) {
-                isLeafNode = true;
-            } else if (tt.sc[index] == 0xFFFF) {
-                isLeafNode = true;
-                isPacked = true;
-                key = readKey().toString();
+            if (TernaryTreeAnalysis.this.tt.sc[index] == 0) {
+                this.isLeafNode = true;
+            } else if (TernaryTreeAnalysis.this.tt.sc[index] == 0xFFFF) {
+                this.isLeafNode = true;
+                this.isPacked = true;
+                this.key = readKey().toString();
             } else {
-                key = new String(tt.sc, index, 1);
-                high = tt.hi[index];
-                low = tt.lo[index];
-                equal = tt.eq[index];
+                this.key = new String(TernaryTreeAnalysis.this.tt.sc, index, 1);
+                this.high = TernaryTreeAnalysis.this.tt.hi[index];
+                this.low = TernaryTreeAnalysis.this.tt.lo[index];
+                this.equal = TernaryTreeAnalysis.this.tt.eq[index];
             }
         }
 
         private StringBuffer readKey() {
-            StringBuffer s = new StringBuffer();
-            int i = (int) tt.lo[index];
-            char c = tt.kv.get(i);
-            for (; c != 0; c = tt.kv.get(++i)) {
+            final StringBuffer s = new StringBuffer();
+            int i = TernaryTreeAnalysis.this.tt.lo[this.index];
+            char c = TernaryTreeAnalysis.this.tt.kv.get(i);
+            for (; c != 0; c = TernaryTreeAnalysis.this.tt.kv.get(++i)) {
                 s.append(c);
             }
             return s;
@@ -145,62 +150,69 @@ public class TernaryTreeAnalysis {
 
         /**
          * Construct the string representation of the node
+         * 
          * @return the string representing the node
          */
         public String toNodeString() {
-            StringBuffer s = new StringBuffer();
-            if (isLeafNode) {
-                s.append("-" + index);
-                if (isPacked) {
-                    s.append(",=>'" + key + "'");
+            final StringBuffer s = new StringBuffer();
+            if (this.isLeafNode) {
+                s.append("-" + this.index);
+                if (this.isPacked) {
+                    s.append(",=>'" + this.key + "'");
                 }
                 s.append(",leaf");
             } else {
-                s.append("-" + index + "--" + key + "-");
+                s.append("-" + this.index + "--" + this.key + "-");
             }
             return s.toString();
         }
 
         /**
          * Construct the compact string representation of the node
+         * 
          * @return the string representing the node
          */
         public String toCompactString() {
-            StringBuffer s = new StringBuffer();
-            if (isLeafNode) {
-                s.append("-" + index);
-                if (isPacked) {
-                    s.append(",=>'" + key + "'");
+            final StringBuffer s = new StringBuffer();
+            if (this.isLeafNode) {
+                s.append("-" + this.index);
+                if (this.isPacked) {
+                    s.append(",=>'" + this.key + "'");
                 }
                 s.append(",leaf\n");
             } else {
-                if (high != 0) {
-                    s.append("(+-" + high + ")\n |\n");
+                if (this.high != 0) {
+                    s.append("(+-" + this.high + ")\n |\n");
                 }
-                s.append("-" + index + "- " + key + " (-" + equal + ")\n");
-                if (low != 0) {
-                    s.append(" |\n(+-" + low + ")\n");
+                s.append("-" + this.index + "- " + this.key + " (-"
+                        + this.equal + ")\n");
+                if (this.low != 0) {
+                    s.append(" |\n(+-" + this.low + ")\n");
                 }
             }
             return s.toString();
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see java.lang.Object#toString()
          */
+        @Override
         public String toString() {
-            StringBuffer s = new StringBuffer();
-            s.append("Node " + index + ":\n");
-            if (isLeafNode) {
-                if (isPacked) {
-                    s.append("key: " + key + "\n");
+            final StringBuffer s = new StringBuffer();
+            s.append("Node " + this.index + ":\n");
+            if (this.isLeafNode) {
+                if (this.isPacked) {
+                    s.append("key: " + this.key + "\n");
                 }
             } else {
-                s.append("high: " + (high == 0 ? "-" : String.valueOf(high))
-                         + ", equal: " + equal
-                         + ", low: " + (low == 0 ? "-" : String.valueOf(low))
-                         + "\n");
-                s.append("key: " + key + "\n");
+                s.append("high: "
+                        + (this.high == 0 ? "-" : String.valueOf(this.high))
+                        + ", equal: " + this.equal + ", low: "
+                        + (this.low == 0 ? "-" : String.valueOf(this.low))
+                        + "\n");
+                s.append("key: " + this.key + "\n");
             }
             return s.toString();
         }
@@ -209,36 +221,38 @@ public class TernaryTreeAnalysis {
 
     /**
      * Construct the compact node representation of the TernaryTree object
+     * 
      * @return the string representing the tree
      */
     public String toCompactNodes() {
-        StringBuffer s = new StringBuffer();
-        for (int i = 1; i < tt.sc.length; ++i) {
+        final StringBuffer s = new StringBuffer();
+        for (int i = 1; i < this.tt.sc.length; ++i) {
             if (i != 1) {
                 s.append("\n");
             }
-            s.append((new Node(i)).toCompactString());
+            s.append(new Node(i).toCompactString());
         }
         return s.toString();
     }
 
     /**
      * Construct the node representation of the TernaryTree object
+     * 
      * @return the string representing the tree
      */
     public String toNodes() {
-        StringBuffer s = new StringBuffer();
-        for (int i = 1; i < tt.sc.length; ++i) {
+        final StringBuffer s = new StringBuffer();
+        for (int i = 1; i < this.tt.sc.length; ++i) {
             if (i != 1) {
                 s.append("\n");
             }
-            s.append((new Node(i)).toString());
+            s.append(new Node(i).toString());
         }
         return s.toString();
     }
 
-    private static StringBuffer toString(char[] c) {
-        StringBuffer s = new StringBuffer();
+    private static StringBuffer toString(final char[] c) {
+        final StringBuffer s = new StringBuffer();
         for (int i = 0; i < c.length; ++i) {
             s.append((int) c[i]);
             s.append(",");
@@ -246,56 +260,58 @@ public class TernaryTreeAnalysis {
         return s;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
-        StringBuffer s = new StringBuffer();
+        final StringBuffer s = new StringBuffer();
 
         s.append("hi: ");
-        s.append(toString(tt.hi));
+        s.append(toString(this.tt.hi));
         s.append("\n");
 
         s.append("eq: ");
-        s.append(toString(tt.eq));
+        s.append(toString(this.tt.eq));
         s.append("\n");
 
         s.append("lo: ");
-        s.append(toString(tt.lo));
+        s.append(toString(this.tt.lo));
         s.append("\n");
 
         s.append("sc: ");
-        for (int i = 0; i < tt.sc.length; ++i) {
-            if (tt.sc[i] == 0) {
+        for (int i = 0; i < this.tt.sc.length; ++i) {
+            if (this.tt.sc[i] == 0) {
                 s.append("-");
-            } else if (tt.sc[i] == 0xFFFF) {
+            } else if (this.tt.sc[i] == 0xFFFF) {
                 s.append("^");
             } else {
-                s.append(tt.sc[i]);
+                s.append(this.tt.sc[i]);
             }
         }
         s.append("\n");
 
         s.append("kv: ");
-        for (int i = 0; i < tt.kv.length(); ++i) {
-            if (tt.kv.get(i) == 0) {
+        for (int i = 0; i < this.tt.kv.length(); ++i) {
+            if (this.tt.kv.get(i) == 0) {
                 s.append("-");
             } else {
-                s.append(tt.kv.get(i));
+                s.append(this.tt.kv.get(i));
             }
         }
         s.append("\n");
 
         s.append("freenode: ");
-        s.append((int) tt.freenode);
+        s.append((int) this.tt.freenode);
         s.append("\n");
 
         s.append("root: ");
-        s.append((int) tt.root);
+        s.append((int) this.tt.root);
         s.append("\n");
 
         return s.toString();
     }
-
 
 }

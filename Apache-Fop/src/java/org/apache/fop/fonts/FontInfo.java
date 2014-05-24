@@ -27,8 +27,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * The FontInfo holds font information for the layout and rendering of a fo
@@ -36,10 +35,8 @@ import org.apache.commons.logging.LogFactory;
  * renderer. The font name can be retrieved for the family style and weight. <br>
  * Currently font supported font-variant small-caps is not implemented.
  */
+@Slf4j
 public class FontInfo {
-
-    /** logging instance */
-    protected static final Log log = LogFactory.getLog(FontInfo.class);
 
     /** Map containing fonts that have been used */
     private Map<String, Typeface> usedFonts = null; // (String = font key)
@@ -75,7 +72,7 @@ public class FontInfo {
     /**
      * Sets the font event listener that can be used to receive events about
      * particular events in this class.
-     * 
+     *
      * @param listener
      *            the font event listener
      */
@@ -86,7 +83,7 @@ public class FontInfo {
     /**
      * Checks if the font setup is valid (At least the ultimate fallback font
      * must be registered.)
-     * 
+     *
      * @return True if valid
      */
     public boolean isSetupValid() {
@@ -97,7 +94,7 @@ public class FontInfo {
 
     /**
      * Adds a new font triplet.
-     * 
+     *
      * @param name
      *            internal key
      * @param family
@@ -114,7 +111,7 @@ public class FontInfo {
 
     /**
      * Adds a series of new font triplets given an array of font family names.
-     * 
+     *
      * @param name
      *            internal key
      * @param families
@@ -133,7 +130,7 @@ public class FontInfo {
 
     /**
      * Adds a new font triplet.
-     * 
+     *
      * @param internalFontKey
      *            internal font key
      * @param triplet
@@ -197,7 +194,7 @@ public class FontInfo {
 
     /**
      * Adds font metrics for a specific font.
-     * 
+     *
      * @param internalFontKey
      *            internal key
      * @param metrics
@@ -218,7 +215,7 @@ public class FontInfo {
      * Locate the font name for a given family, style and weight. The font name
      * can then be used as a key as it is unique for the associated document.
      * This also adds the font to the list of used fonts.
-     * 
+     *
      * @param family
      *            font family
      * @param style
@@ -307,7 +304,7 @@ public class FontInfo {
     /**
      * Tells this class that the font with the given internal name has been
      * used.
-     * 
+     *
      * @param internalName
      *            the internal font name (F1, F2 etc.)
      */
@@ -407,7 +404,7 @@ public class FontInfo {
      * Locate the font name for a given family, style and weight. The font name
      * can then be used as a key as it is unique for the associated document.
      * This also adds the font to the list of used fonts.
-     * 
+     *
      * @param family
      *            font family
      * @param style
@@ -439,7 +436,7 @@ public class FontInfo {
      * Locate the font name(s) for the given families, style and weight. The
      * font name(s) can then be used as a key as they are unique for the
      * associated document. This also adds the fonts to the list of used fonts.
-     * 
+     *
      * @param families
      *            font families (priority list)
      * @param style
@@ -498,7 +495,7 @@ public class FontInfo {
     /**
      * Notify listeners that the SVG text for the given font will be stroked as
      * shapes.
-     * 
+     *
      * @param fontFamily
      *            a SVG font family
      */
@@ -511,7 +508,7 @@ public class FontInfo {
     /**
      * Find a font with a given family and style by trying different font
      * weights according to the spec.
-     * 
+     *
      * @param family
      *            font family
      * @param style
@@ -567,7 +564,7 @@ public class FontInfo {
 
     /**
      * Determines if a particular font is available.
-     * 
+     *
      * @param family
      *            font family
      * @param style
@@ -584,7 +581,7 @@ public class FontInfo {
 
     /**
      * Returns the internal font key (F1, F2, F3 etc.) for a given triplet.
-     * 
+     *
      * @param triplet
      *            the font triplet
      * @return the associated internal key or null, if not found
@@ -595,7 +592,7 @@ public class FontInfo {
 
     /**
      * Creates a key from the given strings.
-     * 
+     *
      * @param family
      *            font family
      * @param style
@@ -611,7 +608,7 @@ public class FontInfo {
 
     /**
      * Gets a Map of all registered fonts.
-     * 
+     *
      * @return a read-only Map with font key/FontMetrics pairs
      */
     public Map<String, Typeface> getFonts() {
@@ -620,7 +617,7 @@ public class FontInfo {
 
     /**
      * Gets a Map of all registered font triplets.
-     * 
+     *
      * @return a Map with FontTriplet/font key pairs
      */
     public Map<FontTriplet, String> getFontTriplets() {
@@ -630,7 +627,7 @@ public class FontInfo {
     /**
      * This is used by the renderers to retrieve all the fonts used in the
      * document. This is for embedded font or creating a list of used fonts.
-     * 
+     *
      * @return a read-only Map with font key/FontMetrics pairs
      */
     public Map<String, Typeface> getUsedFonts() {
@@ -639,7 +636,7 @@ public class FontInfo {
 
     /**
      * Returns the FontMetrics for a particular font
-     * 
+     *
      * @param fontName
      *            internal key
      * @return font metrics
@@ -652,7 +649,7 @@ public class FontInfo {
 
     /**
      * Returns all font triplet matching the given font name.
-     * 
+     *
      * @param fontName
      *            The font name we are looking for
      * @return A list of matching font triplets
@@ -672,7 +669,7 @@ public class FontInfo {
      * Returns the first triplet matching the given font name. As there may be
      * multiple triplets matching the font name the result set is sorted first
      * to guarantee consistent results.
-     * 
+     *
      * @param fontName
      *            The font name we are looking for
      * @return The first triplet for the given font name
@@ -690,7 +687,7 @@ public class FontInfo {
      * Returns the font style for a particular font. There may be multiple font
      * styles matching this font. Only the first found is returned. Searching is
      * done on a sorted list to guarantee consistent results.
-     * 
+     *
      * @param fontName
      *            internal key
      * @return font style
@@ -708,7 +705,7 @@ public class FontInfo {
      * Returns the font weight for a particular font. There may be multiple font
      * weights matching this font. Only the first found is returned. Searching
      * is done on a sorted list to guarantee consistent results.
-     * 
+     *
      * @param fontName
      *            internal key
      * @return font weight

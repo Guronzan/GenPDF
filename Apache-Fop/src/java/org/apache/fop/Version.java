@@ -20,33 +20,36 @@
 package org.apache.fop;
 
 /**
- * This class is used to evaluate the version information contained in the Manifest of FOP's JAR.
- * Note that this class can only find the version information if it's in the org.apache.fop package
- * as this package equals the one specified in the manifest.
+ * This class is used to evaluate the version information contained in the
+ * Manifest of FOP's JAR. Note that this class can only find the version
+ * information if it's in the org.apache.fop package as this package equals the
+ * one specified in the manifest.
  */
 public final class Version {
 
-    private Version() { }
+    private Version() {
+    }
 
     /**
      * Get the version of FOP
+     * 
      * @return the version string
      */
     public static String getVersion() {
         String version = null;
-        Package jarinfo = Version.class.getPackage();
+        final Package jarinfo = Version.class.getPackage();
         if (jarinfo != null) {
             version = jarinfo.getImplementationVersion();
         }
         if (version == null) {
-            //Fallback if FOP is used in a development environment
-            String headURL
-                = "$HeadURL: https://svn.apache.org/repos/asf/xmlgraphics/fop/tags/fop-1_1/src/java/org/apache/fop/Version.java $";
+            // Fallback if FOP is used in a development environment
+            final String headURL = "$HeadURL: https://svn.apache.org/repos/asf/xmlgraphics/fop/tags/fop-1_1/src/java/org/apache/fop/Version.java $";
             version = headURL;
             final String pathPrefix = "/xmlgraphics/fop/";
             int pos = version.indexOf(pathPrefix);
             if (pos >= 0) {
-                version = version.substring(pos + pathPrefix.length() - 1, version.length() - 2);
+                version = version.substring(pos + pathPrefix.length() - 1,
+                        version.length() - 2);
                 pos = version.indexOf("/src/");
                 version = version.substring(1, pos);
                 version = " " + version;

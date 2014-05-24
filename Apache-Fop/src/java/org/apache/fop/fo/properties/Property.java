@@ -22,8 +22,7 @@ package org.apache.fop.fo.properties;
 import java.awt.Color;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.datatypes.Length;
@@ -33,40 +32,42 @@ import org.apache.fop.fo.Constants;
 /**
  * Base class for all property objects
  */
+@Slf4j
 public abstract class Property {
 
-    /** Logger for all property classes */
-    protected static final Log log = LogFactory.getLog(PropertyMaker.class);
-
     /**
-     * The original specified value for properties which inherit
-     * specified values.
+     * The original specified value for properties which inherit specified
+     * values.
      */
     private String specVal;
 
     /**
      * Set the original value specified for the property attribute.
-     * @param value The specified value.
+     *
+     * @param value
+     *            The specified value.
      */
-    public void setSpecifiedValue(String value) {
+    public void setSpecifiedValue(final String value) {
         this.specVal = value;
     }
 
     /**
      * Return the original value specified for the property attribute.
+     *
      * @return The specified value as a String.
      */
     public String getSpecifiedValue() {
-        return specVal;
+        return this.specVal;
     }
 
-/*
- * This section contains accessor functions for all possible Property datatypes
- */
-
+    /*
+     * This section contains accessor functions for all possible Property
+     * datatypes
+     */
 
     /**
      * This method expects to be overridden by subclasses
+     *
      * @return Length property value
      */
     public Length getLength() {
@@ -75,15 +76,18 @@ public abstract class Property {
 
     /**
      * This method expects to be overridden by subclasses
-     * @param foUserAgent FOP user agent
+     *
+     * @param foUserAgent
+     *            FOP user agent
      * @return ColorType property value
      */
-    public Color getColor(FOUserAgent foUserAgent) {
+    public Color getColor(final FOUserAgent foUserAgent) {
         return null;
     }
 
     /**
      * This method expects to be overridden by subclasses
+     *
      * @return CondLength property value
      */
     public CondLengthProperty getCondLength() {
@@ -92,6 +96,7 @@ public abstract class Property {
 
     /**
      * This method expects to be overridden by subclasses
+     *
      * @return LenghtRange property value
      */
     public LengthRangeProperty getLengthRange() {
@@ -100,6 +105,7 @@ public abstract class Property {
 
     /**
      * This method expects to be overridden by subclasses
+     *
      * @return LengthPair property value
      */
     public LengthPairProperty getLengthPair() {
@@ -108,6 +114,7 @@ public abstract class Property {
 
     /**
      * This method expects to be overridden by subclasses
+     *
      * @return Space property value
      */
     public SpaceProperty getSpace() {
@@ -116,6 +123,7 @@ public abstract class Property {
 
     /**
      * This method expects to be overridden by subclasses
+     *
      * @return Keep property value
      */
     public KeepProperty getKeep() {
@@ -124,6 +132,7 @@ public abstract class Property {
 
     /**
      * This method expects to be overridden by subclasses
+     *
      * @return integer equivalent of enumerated property value
      */
     public int getEnum() {
@@ -132,11 +141,12 @@ public abstract class Property {
 
     /** @return true if the property is an enum and has value 'auto' */
     public boolean isAuto() {
-        return (getEnum() == Constants.EN_AUTO);
+        return getEnum() == Constants.EN_AUTO;
     }
 
     /**
      * This method expects to be overridden by subclasses
+     *
      * @return char property value
      */
     public char getCharacter() {
@@ -145,6 +155,7 @@ public abstract class Property {
 
     /**
      * This method expects to be overridden by subclasses
+     *
      * @return collection of other property (sub-property) objects
      */
     public List getList() {
@@ -153,6 +164,7 @@ public abstract class Property {
 
     /**
      * This method expects to be overridden by subclasses
+     *
      * @return Number property value
      */
     public Number getNumber() {
@@ -161,6 +173,7 @@ public abstract class Property {
 
     /**
      * This method expects to be overridden by subclasses
+     *
      * @return Numeric property value
      */
     public Numeric getNumeric() {
@@ -169,6 +182,7 @@ public abstract class Property {
 
     /**
      * This method expects to be overridden by subclasses
+     *
      * @return NCname property value
      */
     public String getNCname() {
@@ -177,6 +191,7 @@ public abstract class Property {
 
     /**
      * This method expects to be overridden by subclasses
+     *
      * @return Object property value
      */
     public Object getObject() {
@@ -185,6 +200,7 @@ public abstract class Property {
 
     /**
      * This method expects to be overridden by subclasses.
+     *
      * @return String property value
      */
     public String getString() {
@@ -192,8 +208,9 @@ public abstract class Property {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        Object obj = getObject();
+        final Object obj = getObject();
         if (obj != this) {
             return obj.toString();
         }

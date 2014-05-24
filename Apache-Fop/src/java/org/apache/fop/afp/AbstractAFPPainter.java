@@ -21,16 +21,10 @@ package org.apache.fop.afp;
 
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * A base AFP painter
  */
 public abstract class AbstractAFPPainter {
-
-    /** Static logging instance */
-    protected static final Log log = LogFactory.getLog("org.apache.xmlgraphics.afp");
 
     /** data stream */
     protected final DataStream dataStream;
@@ -40,10 +34,13 @@ public abstract class AbstractAFPPainter {
     /**
      * Main constructor
      *
-     * @param paintingState the AFP painting state
-     * @param dataStream the AFP Datastream
+     * @param paintingState
+     *            the AFP painting state
+     * @param dataStream
+     *            the AFP Datastream
      */
-    public AbstractAFPPainter(AFPPaintingState paintingState, DataStream dataStream) {
+    public AbstractAFPPainter(final AFPPaintingState paintingState,
+            final DataStream dataStream) {
         this.paintingState = paintingState;
         this.dataStream = dataStream;
     }
@@ -51,8 +48,10 @@ public abstract class AbstractAFPPainter {
     /**
      * Paints the painting item
      *
-     * @param paintInfo the painting information
-     * @throws IOException if an I/O error occurs
+     * @param paintInfo
+     *            the painting information
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public abstract void paint(PaintingInfo paintInfo) throws IOException;
+    public abstract void paint(final PaintingInfo paintInfo) throws IOException;
 }

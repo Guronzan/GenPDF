@@ -20,10 +20,10 @@
 package org.apache.fop.layoutmgr;
 
 /**
- * This class is the base class for all kinds of elements that are added to element lists. There
- * are basically two kinds of list elements: Knuth elements and unresolved elements like spaces,
- * border and padding elements which are converted to Knuth elements prior to the breaking
- * process.
+ * This class is the base class for all kinds of elements that are added to
+ * element lists. There are basically two kinds of list elements: Knuth elements
+ * and unresolved elements like spaces, border and padding elements which are
+ * converted to Knuth elements prior to the breaking process.
  */
 public abstract class ListElement {
 
@@ -31,9 +31,11 @@ public abstract class ListElement {
 
     /**
      * Main constructor
-     * @param position the Position instance needed by the addAreas stage of the LMs.
+     * 
+     * @param position
+     *            the Position instance needed by the addAreas stage of the LMs.
      */
-    public ListElement(Position position) {
+    public ListElement(final Position position) {
         this.position = position;
     }
 
@@ -46,9 +48,11 @@ public abstract class ListElement {
 
     /**
      * Change the Position stored in this element.
-     * @param position the Position instance
+     * 
+     * @param position
+     *            the Position instance
      */
-    public void setPosition(Position position) {
+    public void setPosition(final Position position) {
         this.position = position;
     }
 
@@ -56,8 +60,8 @@ public abstract class ListElement {
      * @return the LayoutManager responsible for this element.
      */
     public LayoutManager getLayoutManager() {
-        if (position != null) {
-            return position.getLM();
+        if (this.position != null) {
+            return this.position.getLM();
         } else {
             return null;
         }
@@ -83,7 +87,10 @@ public abstract class ListElement {
         return false;
     }
 
-    /** @return true if the element is an unresolved element such as a space or a border. */
+    /**
+     * @return true if the element is an unresolved element such as a space or a
+     *         border.
+     */
     public boolean isUnresolvedElement() {
         return true;
     }

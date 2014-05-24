@@ -36,15 +36,18 @@ public class PDFElementMapping extends ElementMapping {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void initialize() {
-        if (foObjs == null) {
-            foObjs = new java.util.HashMap<String, Maker>();
-            foObjs.put(PDFEmbeddedFileElement.ELEMENT, new PDFEmbeddedFileMaker());
+        if (this.foObjs == null) {
+            this.foObjs = new java.util.HashMap<String, Maker>();
+            this.foObjs.put(PDFEmbeddedFileElement.ELEMENT,
+                    new PDFEmbeddedFileMaker());
         }
     }
 
     static class PDFEmbeddedFileMaker extends ElementMapping.Maker {
-        public FONode make(FONode parent) {
+        @Override
+        public FONode make(final FONode parent) {
             return new PDFEmbeddedFileElement(parent);
         }
     }

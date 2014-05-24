@@ -36,19 +36,20 @@ public final class FontSelector {
         // Static since this is an utility class.
     }
 
-    private static Font selectFontForCharacter(char c, FONode fonode,
-            CommonFont commonFont, PercentBaseContext context) {
-        FontInfo fi = fonode.getFOEventHandler().getFontInfo();
-        FontTriplet[] fontkeys = commonFont.getFontState(fi);
+    private static Font selectFontForCharacter(final char c,
+            final FONode fonode, final CommonFont commonFont,
+            final PercentBaseContext context) {
+        final FontInfo fi = fonode.getFOEventHandler().getFontInfo();
+        final FontTriplet[] fontkeys = commonFont.getFontState(fi);
         for (int i = 0; i < fontkeys.length; i++) {
-            Font font = fi.getFontInstance(fontkeys[i], commonFont.fontSize
-                    .getValue(context));
+            final Font font = fi.getFontInstance(fontkeys[i],
+                    commonFont.fontSize.getValue(context));
             if (font.hasChar(c)) {
                 return font;
             }
         }
-        return fi.getFontInstance(fontkeys[0], commonFont.fontSize
-                .getValue(context));
+        return fi.getFontInstance(fontkeys[0],
+                commonFont.fontSize.getValue(context));
 
     }
 
@@ -62,8 +63,8 @@ public final class FontSelector {
      *            the Percent-based context needed for creating the actual font.
      * @return a Font object.
      */
-    public static Font selectFontForCharacter(Character fobj,
-            PercentBaseContext context) {
+    public static Font selectFontForCharacter(final Character fobj,
+            final PercentBaseContext context) {
         return FontSelector.selectFontForCharacter(fobj.getCharacter(), fobj,
                 fobj.getCommonFont(), context);
     }
@@ -79,10 +80,10 @@ public final class FontSelector {
      *            the Percent-based context needed for creating the actual font.
      * @return a Font object.
      */
-    public static Font selectFontForCharacterInText(char c, FOText text,
-            PercentBaseContext context) {
-        return FontSelector.selectFontForCharacter(c, text, text
-                .getCommonFont(), context);
+    public static Font selectFontForCharacterInText(final char c,
+            final FOText text, final PercentBaseContext context) {
+        return FontSelector.selectFontForCharacter(c, text,
+                text.getCommonFont(), context);
     }
 
     /**
@@ -100,9 +101,10 @@ public final class FontSelector {
      *            the Percent-based context needed for creating the actual font.
      * @return a Font object.
      */
-    public static Font selectFontForCharactersInText(CharSequence charSeq,
-            int firstIndex, int breakIndex, FOText text,
-            PercentBaseContext context) {
+    public static Font selectFontForCharactersInText(
+            final CharSequence charSeq, final int firstIndex,
+            final int breakIndex, final FOText text,
+            final PercentBaseContext context) {
 
         final FontInfo fi = text.getFOEventHandler().getFontInfo();
         final CommonFont commonFont = text.getCommonFont();
@@ -122,7 +124,7 @@ public final class FontSelector {
             }
 
             // quick fall through if all characters can be displayed
-            if (fontCount[fontnum] == (breakIndex - firstIndex)) {
+            if (fontCount[fontnum] == breakIndex - firstIndex) {
                 return font;
             }
         }

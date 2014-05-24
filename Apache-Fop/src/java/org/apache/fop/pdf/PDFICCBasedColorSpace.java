@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.xmlgraphics.java2d.color.profile.ColorProfileUtil;
 
 /**
@@ -33,16 +32,21 @@ import org.apache.xmlgraphics.java2d.color.profile.ColorProfileUtil;
  */
 public class PDFICCBasedColorSpace extends PDFObject implements PDFColorSpace {
 
-    private PDFICCStream iccStream;
-    private String explicitName;
-    private int numComponents;
+    private final PDFICCStream iccStream;
+    private final String explicitName;
+    private final int numComponents;
 
     /**
-     * Constructs a the ICCBased color space with an explicit name (ex. "DefaultRGB").
-     * @param explicitName an explicit name or null if a name should be generated
-     * @param iccStream the ICC stream to associate with this color space
+     * Constructs a the ICCBased color space with an explicit name (ex.
+     * "DefaultRGB").
+     * 
+     * @param explicitName
+     *            an explicit name or null if a name should be generated
+     * @param iccStream
+     *            the ICC stream to associate with this color space
      */
-    public PDFICCBasedColorSpace(String explicitName, PDFICCStream iccStream) {
+    public PDFICCBasedColorSpace(final String explicitName,
+            final PDFICCStream iccStream) {
         this.explicitName = explicitName;
         this.iccStream = iccStream;
         this.numComponents = iccStream.getICCProfile().getNumComponents();
@@ -50,9 +54,11 @@ public class PDFICCBasedColorSpace extends PDFObject implements PDFColorSpace {
 
     /**
      * Constructs a the ICCBased color space.
-     * @param iccStream the ICC stream to associate with this color space
+     * 
+     * @param iccStream
+     *            the ICC stream to associate with this color space
      */
-    public PDFICCBasedColorSpace(PDFICCStream iccStream) {
+    public PDFICCBasedColorSpace(final PDFICCStream iccStream) {
         this(null, iccStream);
     }
 
@@ -62,35 +68,41 @@ public class PDFICCBasedColorSpace extends PDFObject implements PDFColorSpace {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getNumComponents() {
         return this.numComponents;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getName() {
-        if (explicitName != null) {
-            return explicitName;
+        if (this.explicitName != null) {
+            return this.explicitName;
         } else {
-            return "ICC" + iccStream.getObjectNumber();
+            return "ICC" + this.iccStream.getObjectNumber();
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isDeviceColorSpace() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isRGBColorSpace() {
         return getNumComponents() == 3;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isCMYKColorSpace() {
         return getNumComponents() == 4;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isGrayColorSpace() {
         return getNumComponents() == 1;
     }
@@ -98,52 +110,65 @@ public class PDFICCBasedColorSpace extends PDFObject implements PDFColorSpace {
     /** {@inheritDoc} */
     @Override
     protected String toPDFString() {
-        StringBuffer sb = new StringBuffer(64);
-        sb.append("[/ICCBased ").append(getICCStream().referencePDF()).append("]");
+        final StringBuffer sb = new StringBuffer(64);
+        sb.append("[/ICCBased ").append(getICCStream().referencePDF())
+                .append("]");
         return sb.toString();
     }
 
     /**
      * Sets sRGB as the DefaultRGB color space in the PDF document.
-     * @param pdfDoc the PDF document
+     * 
+     * @param pdfDoc
+     *            the PDF document
      * @return the newly installed color space object
      */
-    public static PDFICCBasedColorSpace setupsRGBAsDefaultRGBColorSpace(PDFDocument pdfDoc) {
-        PDFICCStream sRGBProfile = setupsRGBColorProfile(pdfDoc);
+    public static PDFICCBasedColorSpace setupsRGBAsDefaultRGBColorSpace(
+            final PDFDocument pdfDoc) {
+        final PDFICCStream sRGBProfile = setupsRGBColorProfile(pdfDoc);
 
-        //Map sRGB as default RGB profile for DeviceRGB
-        return pdfDoc.getFactory().makeICCBasedColorSpace(null, "DefaultRGB", sRGBProfile);
+        // Map sRGB as default RGB profile for DeviceRGB
+        return pdfDoc.getFactory().makeICCBasedColorSpace(null, "DefaultRGB",
+                sRGBProfile);
     }
 
     /**
      * Installs the sRGB color space in the PDF document.
-     * @param pdfDoc the PDF document
+     * 
+     * @param pdfDoc
+     *            the PDF document
      * @return the newly installed color space object
      */
-    public static PDFICCBasedColorSpace setupsRGBColorSpace(PDFDocument pdfDoc) {
-        PDFICCStream sRGBProfile = setupsRGBColorProfile(pdfDoc);
+    public static PDFICCBasedColorSpace setupsRGBColorSpace(
+            final PDFDocument pdfDoc) {
+        final PDFICCStream sRGBProfile = setupsRGBColorProfile(pdfDoc);
 
-        //Map sRGB as default RGB profile for DeviceRGB
-        return pdfDoc.getFactory().makeICCBasedColorSpace(null, null, sRGBProfile);
+        // Map sRGB as default RGB profile for DeviceRGB
+        return pdfDoc.getFactory().makeICCBasedColorSpace(null, null,
+                sRGBProfile);
     }
 
     /**
-     * Sets up the sRGB color profile in the PDF document. It does so by trying to
-     * install a very small ICC profile (~4KB) instead of the very big one (~140KB)
-     * the Sun JVM uses.
-     * @param pdfDoc the PDF document
+     * Sets up the sRGB color profile in the PDF document. It does so by trying
+     * to install a very small ICC profile (~4KB) instead of the very big one
+     * (~140KB) the Sun JVM uses.
+     * 
+     * @param pdfDoc
+     *            the PDF document
      * @return the ICC stream with the sRGB profile
      */
-    public static PDFICCStream setupsRGBColorProfile(PDFDocument pdfDoc) {
+    public static PDFICCStream setupsRGBColorProfile(final PDFDocument pdfDoc) {
         ICC_Profile profile;
-        PDFICCStream sRGBProfile = pdfDoc.getFactory().makePDFICCStream();
-        InputStream in = PDFDocument.class.getResourceAsStream("sRGB Color Space Profile.icm");
+        final PDFICCStream sRGBProfile = pdfDoc.getFactory().makePDFICCStream();
+        final InputStream in = PDFDocument.class
+                .getResourceAsStream("sRGB Color Space Profile.icm");
         if (in != null) {
             try {
                 profile = ColorProfileUtil.getICC_Profile(in);
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 throw new RuntimeException(
-                        "Unexpected IOException loading the sRGB profile: " + ioe.getMessage());
+                        "Unexpected IOException loading the sRGB profile: "
+                                + ioe.getMessage());
             } finally {
                 IOUtils.closeQuietly(in);
             }

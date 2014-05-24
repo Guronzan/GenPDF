@@ -25,7 +25,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.xmlgraphics.util.WriterOutputStream;
 import org.apache.xmlgraphics.util.io.Base64EncodeStream;
 
@@ -39,32 +38,42 @@ public final class DataURLUtil {
 
     /**
      * Creates a new data URL and returns it as a String.
-     * @param in the InputStream to read the data from
-     * @param mediatype the MIME type of the content, or null
+     * 
+     * @param in
+     *            the InputStream to read the data from
+     * @param mediatype
+     *            the MIME type of the content, or null
      * @return the newly created data URL
-     * @throws IOException if an I/O error occurs
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public static String createDataURL(InputStream in, String mediatype) throws IOException {
-        StringWriter writer = new StringWriter();
+    public static String createDataURL(final InputStream in,
+            final String mediatype) throws IOException {
+        final StringWriter writer = new StringWriter();
         writeDataURL(in, mediatype, writer);
         return writer.toString();
     }
 
     /**
      * Generates a data URL and writes it to a Writer.
-     * @param in the InputStream to read the data from
-     * @param mediatype the MIME type of the content, or null
-     * @param writer the Writer to write to
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param in
+     *            the InputStream to read the data from
+     * @param mediatype
+     *            the MIME type of the content, or null
+     * @param writer
+     *            the Writer to write to
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public static void writeDataURL(InputStream in, String mediatype, Writer writer)
-            throws IOException {
+    public static void writeDataURL(final InputStream in,
+            final String mediatype, final Writer writer) throws IOException {
         writer.write("data:");
         if (mediatype != null) {
             writer.write(mediatype);
         }
         writer.write(";base64,");
-        Base64EncodeStream out = new Base64EncodeStream(
+        final Base64EncodeStream out = new Base64EncodeStream(
                 new WriterOutputStream(writer, "US-ASCII"), false);
         IOUtils.copy(in, out);
         out.close();

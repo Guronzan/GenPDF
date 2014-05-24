@@ -43,9 +43,9 @@ import org.apache.xmlgraphics.xmp.schemas.XMPBasicSchema;
  */
 public class XMPPropertyTest extends TestCase {
 
-    public void testPropertyAccess() throws Exception {
-        Metadata xmp = new Metadata();
-        DublinCoreAdapter dc = DublinCoreSchema.getAdapter(xmp);
+    public void testPropertyAccess() {
+        final Metadata xmp = new Metadata();
+        final DublinCoreAdapter dc = DublinCoreSchema.getAdapter(xmp);
         assertNull(dc.getContributors());
 
         dc.addContributor("Contributor1");
@@ -66,11 +66,11 @@ public class XMPPropertyTest extends TestCase {
         assertNull(dc.getContributors());
     }
 
-    public void testPropertyRemovalLangAlt() throws Exception {
-        Metadata xmp = new Metadata();
-        DublinCoreAdapter dc = DublinCoreSchema.getAdapter(xmp);
+    public void testPropertyRemovalLangAlt() {
+        final Metadata xmp = new Metadata();
+        final DublinCoreAdapter dc = DublinCoreSchema.getAdapter(xmp);
 
-        //dc:title is a "Lang Alt"
+        // dc:title is a "Lang Alt"
         dc.setTitle("en", "The title");
         String title = dc.removeTitle("en");
         assertEquals("The title", title);
@@ -91,25 +91,28 @@ public class XMPPropertyTest extends TestCase {
         Metadata xmp = new Metadata();
         DublinCoreAdapter dc = DublinCoreSchema.getAdapter(xmp);
         dc.setTitle("Default title");
-        StringWriter writer = new StringWriter();
+        final StringWriter writer = new StringWriter();
         XMPSerializer.writeXML(xmp, new StreamResult(writer));
-        String xmpString = writer.toString();
-        xmp = XMPParser.parseXMP(new StreamSource(new java.io.StringReader(xmpString)));
+        final String xmpString = writer.toString();
+        xmp = XMPParser.parseXMP(new StreamSource(new java.io.StringReader(
+                xmpString)));
         dc = DublinCoreSchema.getAdapter(xmp);
         assertEquals("Default title", dc.getTitle());
         dc.setTitle("Updated title");
-        XMPProperty prop = xmp.getProperty(new QName(DublinCoreSchema.NAMESPACE, "title"));
-        XMPArray array = prop.getArrayValue();
+        final XMPProperty prop = xmp.getProperty(new QName(
+                DublinCoreSchema.NAMESPACE, "title"));
+        final XMPArray array = prop.getArrayValue();
         assertNotNull(array);
-        //Check that only one title is present. There used to be a bug that didn't set the
-        //non-qualified value equal to the value qualified with "x-default".
+        // Check that only one title is present. There used to be a bug that
+        // didn't set the
+        // non-qualified value equal to the value qualified with "x-default".
         assertEquals(1, array.getSize());
         assertEquals("Updated title", array.getValue(0));
     }
 
-    public void testPropertyValues() throws Exception {
-        Metadata xmp = new Metadata();
-        DublinCoreAdapter dc = DublinCoreSchema.getAdapter(xmp);
+    public void testPropertyValues() {
+        final Metadata xmp = new Metadata();
+        final DublinCoreAdapter dc = DublinCoreSchema.getAdapter(xmp);
 
         String format = dc.getFormat();
         assertNull(format);
@@ -126,7 +129,7 @@ public class XMPPropertyTest extends TestCase {
         format = dc.getFormat();
         assertNull(format);
 
-        dc.setFormat(""); //Empty string same as null value
+        dc.setFormat(""); // Empty string same as null value
         format = dc.getFormat();
         assertNull(format);
 
@@ -147,32 +150,33 @@ public class XMPPropertyTest extends TestCase {
         assertNull(title);
     }
 
-    public void testDates() throws Exception {
-        Metadata xmp = new Metadata();
-        XMPBasicAdapter basic = XMPBasicSchema.getAdapter(xmp);
+    public void testDates() {
+        final Metadata xmp = new Metadata();
+        final XMPBasicAdapter basic = XMPBasicSchema.getAdapter(xmp);
 
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"), Locale.ENGLISH);
+        final Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"),
+                Locale.ENGLISH);
         cal.set(2008, Calendar.FEBRUARY, 07, 15, 11, 07);
         cal.set(Calendar.MILLISECOND, 0);
-        Date dt = cal.getTime();
+        final Date dt = cal.getTime();
 
         assertNull(basic.getCreateDate());
         basic.setCreateDate(dt);
-        Date dt2 = basic.getCreateDate();
+        final Date dt2 = basic.getCreateDate();
         assertEquals(dt2, dt);
     }
 
-    public void testQualifiers() throws Exception {
-        Metadata xmp = new Metadata();
-        XMPBasicAdapter basic = XMPBasicSchema.getAdapter(xmp);
+    public void testQualifiers() {
+        final Metadata xmp = new Metadata();
+        final XMPBasicAdapter basic = XMPBasicSchema.getAdapter(xmp);
 
         basic.addIdentifier("x123");
         basic.setIdentifier("id1", "system1");
         basic.setIdentifier("12345", "system2");
 
-        String[] ids = basic.getIdentifiers();
+        final String[] ids = basic.getIdentifiers();
         assertEquals(3, ids.length);
-        Set set = new java.util.HashSet(Arrays.asList(ids));
+        final Set set = new java.util.HashSet(Arrays.asList(ids));
         assertTrue(set.contains("x123"));
         assertTrue(set.contains("id1"));
         assertTrue(set.contains("12345"));

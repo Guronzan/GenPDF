@@ -17,7 +17,6 @@
 
 /* $Id: ExternalGraphic.java 679326 2008-07-24 09:35:34Z vhennebert $ */
 
-
 /*
  * This file is part of the RTF library of the FOP project, which was originally
  * created by Bertrand Delacretaz <bdelacretaz@codeconsult.ch> and by other
@@ -27,91 +26,93 @@
 
 package org.apache.fop.render.rtf.rtflib.testdocs;
 
+import java.io.IOException;
+
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfDocumentArea;
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfExternalGraphic;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfParagraph;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
 
-import java.io.IOException;
 /**
  * Generate a test document containing external graphics.
  *
  * @author <a href="mailto:a.putz@skynamics.com">Andreas Putz</a>
  */
 class ExternalGraphic extends TestDocument {
-    private String file = "file:///tmp/jfor-images/logo.";
+    private final String file = "file:///tmp/jfor-images/logo.";
 
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
     // @@ Construction
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
 
     /**
      * Default constructor.
      */
-    public ExternalGraphic () {
+    public ExternalGraphic() {
 
     }
+
     /** generate the body of the test document */
-    protected void generateDocument (RtfDocumentArea rda, RtfSection sect) throws IOException {
-        RtfParagraph p = sect.newParagraph ();
+    @Override
+    protected void generateDocument(final RtfDocumentArea rda,
+            final RtfSection sect) throws IOException {
+        RtfParagraph p = sect.newParagraph();
         p.newLineBreak();
         p.newLineBreak();
         p.newLineBreak();
-        p.newText ("EMF image with 150 % height");
+        p.newText("EMF image with 150 % height");
         p.newLineBreak();
-        RtfExternalGraphic imageA = p.newImage ();
-        imageA.setURL (file + "emf");
-        imageA.setHeight ("150%");
-        p.newLineBreak();
-        p.close();
-
-        p = sect.newParagraph();
-        p.newLineBreak();
-        p.newText ("PNG image with 150 % width");
-        p.newLineBreak();
-        RtfExternalGraphic imageB = sect.newImage ();
-        imageB.setURL (file + "png");
-        imageB.setWidth ("150%");
+        final RtfExternalGraphic imageA = p.newImage();
+        imageA.setURL(this.file + "emf");
+        imageA.setHeight("150%");
         p.newLineBreak();
         p.close();
 
         p = sect.newParagraph();
         p.newLineBreak();
+        p.newText("PNG image with 150 % width");
         p.newLineBreak();
-        p.newText ("JPG image with width = 200px and height = 20 px");
-        p.newLineBreak();
-        RtfExternalGraphic imageC = sect.newImage ();
-        imageC.setURL (file + "jpg");
-        imageC.setWidth ("200");
-        imageC.setHeight ("20");
+        final RtfExternalGraphic imageB = sect.newImage();
+        imageB.setURL(this.file + "png");
+        imageB.setWidth("150%");
         p.newLineBreak();
         p.close();
 
         p = sect.newParagraph();
         p.newLineBreak();
         p.newLineBreak();
-        p.newText ("GIF image with width = 200px and scaling = 'uniform', that means the image "
+        p.newText("JPG image with width = 200px and height = 20 px");
+        p.newLineBreak();
+        final RtfExternalGraphic imageC = sect.newImage();
+        imageC.setURL(this.file + "jpg");
+        imageC.setWidth("200");
+        imageC.setHeight("20");
+        p.newLineBreak();
+        p.close();
+
+        p = sect.newParagraph();
+        p.newLineBreak();
+        p.newLineBreak();
+        p.newText("GIF image with width = 200px and scaling = 'uniform', that means the image "
                 + "size will adjusted automatically");
         p.newLineBreak();
-        RtfExternalGraphic imageD = sect.newImage ();
-        imageD.setURL (file + "gif");
-        imageD.setWidth ("200");
-        imageD.setScaling ("uniform");
+        final RtfExternalGraphic imageD = sect.newImage();
+        imageD.setURL(this.file + "gif");
+        imageD.setWidth("200");
+        imageD.setScaling("uniform");
         p.newLineBreak();
         p.close();
 
         p = sect.newParagraph();
         p.newLineBreak();
         p.newLineBreak();
-        p.newText ("GIF image");
+        p.newText("GIF image");
         p.newLineBreak();
-        RtfExternalGraphic imageE = sect.newImage ();
-        imageE.setURL (file + "gif");
+        final RtfExternalGraphic imageE = sect.newImage();
+        imageE.setURL(this.file + "gif");
         p.newLineBreak();
         p.close();
 
     }
-
-
 
 }

@@ -23,111 +23,122 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.xmlgraphics.util.QName;
 import org.apache.xmlgraphics.util.XMLizable;
 import org.apache.xmlgraphics.xmp.merge.MergeRuleSet;
 import org.apache.xmlgraphics.xmp.merge.PropertyMerger;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * This class represents the root of an XMP metadata tree. It's more or less equivalent to the
- * x:xmpmeta element together with its nested rdf:RDF element.
+ * This class represents the root of an XMP metadata tree. It's more or less
+ * equivalent to the x:xmpmeta element together with its nested rdf:RDF element.
  */
 public class Metadata implements XMLizable, PropertyAccess {
 
-    private Map properties = new java.util.HashMap();
+    private final Map properties = new java.util.HashMap();
 
     /** {@inheritDoc} */
-    public void setProperty(XMPProperty prop) {
-        properties.put(prop.getName(), prop);
+    @Override
+    public void setProperty(final XMPProperty prop) {
+        this.properties.put(prop.getName(), prop);
     }
 
     /** {@inheritDoc} */
-    public XMPProperty getProperty(String uri, String localName) {
+    @Override
+    public XMPProperty getProperty(final String uri, final String localName) {
         return getProperty(new QName(uri, localName));
     }
 
     /** {@inheritDoc} */
-    public XMPProperty getProperty(QName name) {
-        XMPProperty prop = (XMPProperty)properties.get(name);
+    @Override
+    public XMPProperty getProperty(final QName name) {
+        final XMPProperty prop = (XMPProperty) this.properties.get(name);
         return prop;
     }
 
     /** {@inheritDoc} */
-    public XMPProperty removeProperty(QName name) {
-        return (XMPProperty)properties.remove(name);
+    @Override
+    public XMPProperty removeProperty(final QName name) {
+        return (XMPProperty) this.properties.remove(name);
     }
 
     /** {@inheritDoc} */
+    @Override
     public XMPProperty getValueProperty() {
         return getProperty(XMPConstants.RDF_VALUE);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getPropertyCount() {
         return this.properties.size();
     }
 
     /** {@inheritDoc} */
+    @Override
     public Iterator iterator() {
         return this.properties.keySet().iterator();
     }
 
     /**
-     * Merges this metadata object into a given target metadata object. The merge rule set provided
-     * by each schema is used for the merge.
-     * @param target the target metadata to merge the local metadata into
+     * Merges this metadata object into a given target metadata object. The
+     * merge rule set provided by each schema is used for the merge.
+     * 
+     * @param target
+     *            the target metadata to merge the local metadata into
      */
-    public void mergeInto(Metadata target) {
-        XMPSchemaRegistry registry = XMPSchemaRegistry.getInstance();
-        Iterator iter = properties.values().iterator();
+    public void mergeInto(final Metadata target) {
+        final XMPSchemaRegistry registry = XMPSchemaRegistry.getInstance();
+        final Iterator iter = this.properties.values().iterator();
         while (iter.hasNext()) {
-            XMPProperty prop = (XMPProperty)iter.next();
-            XMPSchema schema = registry.getSchema(prop.getNamespace());
-            MergeRuleSet rules = schema.getDefaultMergeRuleSet();
-            PropertyMerger merger = rules.getPropertyMergerFor(prop);
+            final XMPProperty prop = (XMPProperty) iter.next();
+            final XMPSchema schema = registry.getSchema(prop.getNamespace());
+            final MergeRuleSet rules = schema.getDefaultMergeRuleSet();
+            final PropertyMerger merger = rules.getPropertyMergerFor(prop);
             merger.merge(prop, target);
         }
     }
 
     /** {@inheritDoc} */
-    public void toSAX(ContentHandler handler) throws SAXException {
-        AttributesImpl atts = new AttributesImpl();
+    @Override
+    public void toSAX(final ContentHandler handler) throws SAXException {
+        final AttributesImpl atts = new AttributesImpl();
         handler.startPrefixMapping("x", XMPConstants.XMP_NAMESPACE);
-        handler.startElement(XMPConstants.XMP_NAMESPACE, "xmpmeta", "x:xmpmeta", atts);
+        handler.startElement(XMPConstants.XMP_NAMESPACE, "xmpmeta",
+                "x:xmpmeta", atts);
         handler.startPrefixMapping("rdf", XMPConstants.RDF_NAMESPACE);
         handler.startElement(XMPConstants.RDF_NAMESPACE, "RDF", "rdf:RDF", atts);
-        //Get all property namespaces
-        Set namespaces = new java.util.HashSet();
-        Iterator iter = properties.keySet().iterator();
+        // Get all property namespaces
+        final Set namespaces = new java.util.HashSet();
+        Iterator iter = this.properties.keySet().iterator();
         while (iter.hasNext()) {
-            QName n = ((QName)iter.next());
+            final QName n = (QName) iter.next();
             namespaces.add(n.getNamespaceURI());
         }
-        //One Description element per namespace
+        // One Description element per namespace
         iter = namespaces.iterator();
         while (iter.hasNext()) {
-            String ns = (String)iter.next();
-            XMPSchema schema = XMPSchemaRegistry.getInstance().getSchema(ns);
-            String prefix = (schema != null ? schema.getPreferredPrefix() : null);
+            final String ns = (String) iter.next();
+            final XMPSchema schema = XMPSchemaRegistry.getInstance().getSchema(
+                    ns);
+            String prefix = schema != null ? schema.getPreferredPrefix() : null;
 
             boolean first = true;
             boolean empty = true;
 
-            Iterator props = properties.values().iterator();
+            final Iterator props = this.properties.values().iterator();
             while (props.hasNext()) {
-                XMPProperty prop = (XMPProperty)props.next();
+                final XMPProperty prop = (XMPProperty) props.next();
                 if (prop.getName().getNamespaceURI().equals(ns)) {
                     if (first) {
                         if (prefix == null) {
                             prefix = prop.getName().getPrefix();
                         }
                         atts.clear();
-                        atts.addAttribute(XMPConstants.RDF_NAMESPACE,
-                                "about", "rdf:about", "CDATA", "");
+                        atts.addAttribute(XMPConstants.RDF_NAMESPACE, "about",
+                                "rdf:about", "CDATA", "");
                         if (prefix != null) {
                             handler.startPrefixMapping(prefix, ns);
                         }
@@ -140,7 +151,8 @@ public class Metadata implements XMLizable, PropertyAccess {
                 }
             }
             if (!empty) {
-                handler.endElement(XMPConstants.RDF_NAMESPACE, "Description", "rdf:Description");
+                handler.endElement(XMPConstants.RDF_NAMESPACE, "Description",
+                        "rdf:Description");
                 if (prefix != null) {
                     handler.endPrefixMapping(prefix);
                 }

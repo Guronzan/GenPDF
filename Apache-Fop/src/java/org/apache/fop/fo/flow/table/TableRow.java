@@ -19,9 +19,6 @@
 
 package org.apache.fop.fo.flow.table;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.datatypes.Length;
 import org.apache.fop.fo.FONode;
@@ -31,6 +28,8 @@ import org.apache.fop.fo.properties.BreakPropertySet;
 import org.apache.fop.fo.properties.CommonBorderPaddingBackground;
 import org.apache.fop.fo.properties.KeepProperty;
 import org.apache.fop.fo.properties.LengthRangeProperty;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_table-row">
@@ -46,91 +45,101 @@ public class TableRow extends TableCellContainer implements BreakPropertySet {
     private KeepProperty keepTogether;
     private KeepProperty keepWithNext;
     private KeepProperty keepWithPrevious;
+
     // Unused but valid items, commented out for performance:
-    //     private CommonAccessibility commonAccessibility;
-    //     private CommonAural commonAural;
-    //     private CommonRelativePosition commonRelativePosition;
-    //     private int visibility;
+    // private CommonAccessibility commonAccessibility;
+    // private CommonAural commonAural;
+    // private CommonRelativePosition commonRelativePosition;
+    // private int visibility;
     // End of property values
 
     /**
-     * Create a TableRow instance with the given {@link FONode}
-     * as parent.
-     * @param parent {@link FONode} that is the parent of this object
+     * Create a TableRow instance with the given {@link FONode} as parent.
+     * 
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public TableRow(FONode parent) {
+    public TableRow(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
-        blockProgressionDimension
-            = pList.get(PR_BLOCK_PROGRESSION_DIMENSION).getLengthRange();
-        commonBorderPaddingBackground = pList.getBorderPaddingBackgroundProps();
-        breakAfter = pList.get(PR_BREAK_AFTER).getEnum();
-        breakBefore = pList.get(PR_BREAK_BEFORE).getEnum();
-        height = pList.get(PR_HEIGHT).getLength();
-        keepTogether = pList.get(PR_KEEP_TOGETHER).getKeep();
-        keepWithNext = pList.get(PR_KEEP_WITH_NEXT).getKeep();
-        keepWithPrevious = pList.get(PR_KEEP_WITH_PREVIOUS).getKeep();
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
+        this.blockProgressionDimension = pList.get(
+                PR_BLOCK_PROGRESSION_DIMENSION).getLengthRange();
+        this.commonBorderPaddingBackground = pList
+                .getBorderPaddingBackgroundProps();
+        this.breakAfter = pList.get(PR_BREAK_AFTER).getEnum();
+        this.breakBefore = pList.get(PR_BREAK_BEFORE).getEnum();
+        this.height = pList.get(PR_HEIGHT).getLength();
+        this.keepTogether = pList.get(PR_KEEP_TOGETHER).getKeep();
+        this.keepWithNext = pList.get(PR_KEEP_WITH_NEXT).getKeep();
+        this.keepWithPrevious = pList.get(PR_KEEP_WITH_PREVIOUS).getKeep();
         super.bind(pList);
     }
 
     /** {@inheritDoc} */
-    public void processNode(String elementName, Locator locator,
-            Attributes attlist, PropertyList pList) throws FOPException {
+    @Override
+    public void processNode(final String elementName, final Locator locator,
+            final Attributes attlist, final PropertyList pList)
+            throws FOPException {
         super.processNode(elementName, locator, attlist, pList);
         if (!inMarker()) {
-            TablePart part = (TablePart) parent;
-            pendingSpans = part.pendingSpans;
-            columnNumberManager = part.columnNumberManager;
+            final TablePart part = (TablePart) this.parent;
+            this.pendingSpans = part.pendingSpans;
+            this.columnNumberManager = part.columnNumberManager;
         }
     }
 
     /** {@inheritDoc} */
-    protected void addChildNode(FONode child) throws FOPException {
+    @Override
+    protected void addChildNode(final FONode child) throws FOPException {
         if (!inMarker()) {
-            TableCell cell = (TableCell) child;
-            TablePart part = (TablePart) getParent();
+            final TableCell cell = (TableCell) child;
+            final TablePart part = (TablePart) getParent();
             addTableCellChild(cell, part.isFirst(this));
         }
         super.addChildNode(child);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
         super.startOfNode();
         getFOEventHandler().startRow(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
         super.endOfNode();
         getFOEventHandler().endRow(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void finalizeNode() throws FOPException {
-        if (firstChild == null) {
+        if (this.firstChild == null) {
             missingChildElementError("(table-cell+)");
         }
         if (!inMarker()) {
-            pendingSpans = null;
-            columnNumberManager = null;
+            this.pendingSpans = null;
+            this.columnNumberManager = null;
         }
     }
 
     /**
-     * {@inheritDoc} String, String)
-     * <br>XSL Content Model: (table-cell+)
+     * {@inheritDoc} String, String) <br>
+     * XSL Content Model: (table-cell+)
      */
-    protected void validateChildNode(Locator loc, String nsURI,
-                                     String localName)
-                throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             if ("marker".equals(localName)) {
                 if (this.firstChild != null) {
-                    //a table-cell has already been added to this row
+                    // a table-cell has already been added to this row
                     nodesOutOfOrderError(loc, "fo:marker", "(table-cell+)");
                 }
             } else if (!"table-cell".equals(localName)) {
@@ -140,8 +149,9 @@ public class TableRow extends TableCellContainer implements BreakPropertySet {
     }
 
     /** {@inheritDoc} */
+    @Override
     TablePart getTablePart() {
-        return (TablePart) parent;
+        return (TablePart) this.parent;
     }
 
     boolean isTableRow() {
@@ -149,33 +159,35 @@ public class TableRow extends TableCellContainer implements BreakPropertySet {
     }
 
     /** @return the "break-after" property. */
+    @Override
     public int getBreakAfter() {
-        return breakAfter;
+        return this.breakAfter;
     }
 
     /** @return the "break-before" property. */
+    @Override
     public int getBreakBefore() {
-        return breakBefore;
+        return this.breakBefore;
     }
 
     /** @return the "keep-with-previous" property. */
     public KeepProperty getKeepWithPrevious() {
-        return keepWithPrevious;
+        return this.keepWithPrevious;
     }
 
     /** @return the "keep-with-next" property. */
     public KeepProperty getKeepWithNext() {
-        return keepWithNext;
+        return this.keepWithNext;
     }
 
     /** @return the "keep-together" property. */
     public KeepProperty getKeepTogether() {
-        return keepTogether;
+        return this.keepTogether;
     }
 
     /**
-     * Convenience method to check if a keep-together
-     * constraint is specified.
+     * Convenience method to check if a keep-together constraint is specified.
+     * 
      * @return true if keep-together is active.
      */
     public boolean mustKeepTogether() {
@@ -184,8 +196,8 @@ public class TableRow extends TableCellContainer implements BreakPropertySet {
     }
 
     /**
-     * Convenience method to check if a keep-with-next
-     * constraint is specified.
+     * Convenience method to check if a keep-with-next constraint is specified.
+     * 
      * @return true if keep-with-next is active.
      */
     public boolean mustKeepWithNext() {
@@ -194,8 +206,9 @@ public class TableRow extends TableCellContainer implements BreakPropertySet {
     }
 
     /**
-     * Convenience method to check if a keep-with-previous
-     * constraint is specified.
+     * Convenience method to check if a keep-with-previous constraint is
+     * specified.
+     * 
      * @return true if keep-with-previous is active.
      */
     public boolean mustKeepWithPrevious() {
@@ -207,32 +220,36 @@ public class TableRow extends TableCellContainer implements BreakPropertySet {
      * @return the "block-progression-dimension" property.
      */
     public LengthRangeProperty getBlockProgressionDimension() {
-        return blockProgressionDimension;
+        return this.blockProgressionDimension;
     }
 
     /**
      * @return the "height" property.
      */
     public Length getHeight() {
-        return height;
+        return this.height;
     }
 
     /**
      * @return the Common Border, Padding, and Background Properties.
      */
+    @Override
     public CommonBorderPaddingBackground getCommonBorderPaddingBackground() {
-        return commonBorderPaddingBackground;
+        return this.commonBorderPaddingBackground;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "table-row";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_TABLE_ROW}
      */
+    @Override
     public int getNameId() {
         return FO_TABLE_ROW;
     }

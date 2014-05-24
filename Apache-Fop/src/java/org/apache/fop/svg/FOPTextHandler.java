@@ -20,10 +20,14 @@
 package org.apache.fop.svg;
 
 /** an fop extension to text handler */
-public interface FOPTextHandler extends org.apache.xmlgraphics.java2d.TextHandler {
+public interface FOPTextHandler extends
+        org.apache.xmlgraphics.java2d.TextHandler {
 
-    /** @param font override font */
-    void setOverrideFont(org.apache.fop.fonts.Font font);
+    /**
+     * @param font
+     *            override font
+     */
+    void setOverrideFont(final org.apache.fop.fonts.Font font);
 
     /** @return font info */
     org.apache.fop.fonts.FontInfo getFontInfo();

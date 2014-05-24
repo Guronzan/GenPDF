@@ -27,9 +27,6 @@ import org.junit.runners.Suite.SuiteClasses;
  * Test suite for bidirectional functionality.
  */
 @RunWith(Suite.class)
-@SuiteClasses({
-    BidiClassTestCase.class,
-    BidiAlgorithmTestCase.class
-})
+@SuiteClasses({ BidiClassTestCase.class, BidiAlgorithmTestCase.class })
 public class BidiTestSuite {
 }

@@ -34,6 +34,7 @@ public final class DummyPercentBaseContext implements PercentBaseContext {
 
     /**
      * Returns an instance of this dummy implementation
+     * 
      * @return an instance of this dummy implementation
      */
     public static DummyPercentBaseContext getInstance() {
@@ -41,7 +42,8 @@ public final class DummyPercentBaseContext implements PercentBaseContext {
     }
 
     /** {@inheritDoc} */
-    public int getBaseLength(int lengthBase, FObj fo) {
+    @Override
+    public int getBaseLength(final int lengthBase, final FObj fo) {
         return 0;
     }
 }

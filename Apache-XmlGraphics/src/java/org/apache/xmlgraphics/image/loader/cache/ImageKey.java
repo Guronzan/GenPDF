@@ -26,15 +26,18 @@ import org.apache.xmlgraphics.image.loader.ImageFlavor;
  */
 public class ImageKey {
 
-    private String uri;
-    private org.apache.xmlgraphics.image.loader.ImageFlavor flavor;
+    private final String uri;
+    private final org.apache.xmlgraphics.image.loader.ImageFlavor flavor;
 
     /**
      * Main constructor.
-     * @param uri the original URI
-     * @param flavor the image flavor
+     * 
+     * @param uri
+     *            the original URI
+     * @param flavor
+     *            the image flavor
      */
-    public ImageKey(String uri, ImageFlavor flavor) {
+    public ImageKey(final String uri, final ImageFlavor flavor) {
         if (uri == null) {
             throw new NullPointerException("URI must not be null");
         }
@@ -46,16 +49,19 @@ public class ImageKey {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((flavor == null) ? 0 : flavor.hashCode());
-        result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+        result = prime * result
+                + (this.flavor == null ? 0 : this.flavor.hashCode());
+        result = prime * result + (this.uri == null ? 0 : this.uri.hashCode());
         return result;
     }
 
     /** {@inheritDoc} */
-    public boolean equals(Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -65,19 +71,20 @@ public class ImageKey {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ImageKey other = (ImageKey)obj;
-        if (!uri.equals(other.uri)) {
+        final ImageKey other = (ImageKey) obj;
+        if (!this.uri.equals(other.uri)) {
             return false;
         }
-        if (!flavor.equals(other.flavor)) {
+        if (!this.flavor.equals(other.flavor)) {
             return false;
         }
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return uri + " (" + flavor + ")";
+        return this.uri + " (" + this.flavor + ")";
     }
 
 }

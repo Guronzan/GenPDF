@@ -23,55 +23,60 @@ package embedding;
 import java.io.File;
 import java.io.OutputStream;
 
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 //JAXP
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Source;
-import javax.xml.transform.Result;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamSource;
+
+import lombok.extern.slf4j.Slf4j;
 
 //FOP
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 
 /**
- * This class demonstrates the conversion of an XML file to PDF using
- * JAXP (XSLT) and FOP (XSL-FO).
+ * This class demonstrates the conversion of an XML file to PDF using JAXP
+ * (XSLT) and FOP (XSL-FO).
  */
+@Slf4j
 public class ExampleXML2PDF {
 
     /**
      * Main method.
-     * @param args command-line arguments
+     *
+     * @param args
+     *            command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
-            System.out.println("FOP ExampleXML2PDF\n");
-            System.out.println("Preparing...");
+            log.info("FOP ExampleXML2PDF\n");
+            log.info("Preparing...");
 
             // Setup directories
-            File baseDir = new File(".");
-            File outDir = new File(baseDir, "out");
+            final File baseDir = new File(".");
+            final File outDir = new File(baseDir, "out");
             outDir.mkdirs();
 
             // Setup input and output files
-            File xmlfile = new File(baseDir, "xml/xml/projectteam.xml");
-            File xsltfile = new File(baseDir, "xml/xslt/projectteam2fo.xsl");
-            File pdffile = new File(outDir, "ResultXML2PDF.pdf");
+            final File xmlfile = new File(baseDir, "xml/xml/projectteam.xml");
+            final File xsltfile = new File(baseDir,
+                    "xml/xslt/projectteam2fo.xsl");
+            final File pdffile = new File(outDir, "ResultXML2PDF.pdf");
 
-            System.out.println("Input: XML (" + xmlfile + ")");
-            System.out.println("Stylesheet: " + xsltfile);
-            System.out.println("Output: PDF (" + pdffile + ")");
-            System.out.println();
-            System.out.println("Transforming...");
+            log.info("Input: XML (" + xmlfile + ")");
+            log.info("Stylesheet: " + xsltfile);
+            log.info("Output: PDF (" + pdffile + ")");
+            log.info("");
+            log.info("Transforming...");
 
             // configure fopFactory as desired
-            FopFactory fopFactory = FopFactory.newInstance();
+            final FopFactory fopFactory = FopFactory.newInstance();
 
-            FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+            final FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             // configure foUserAgent as desired
 
             // Setup output
@@ -80,20 +85,25 @@ public class ExampleXML2PDF {
 
             try {
                 // Construct fop with desired output format
-                Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);
+                final Fop fop = fopFactory.newFop(
+                        org.apache.xmlgraphics.util.MimeConstants.MIME_PDF,
+                        foUserAgent, out);
 
                 // Setup XSLT
-                TransformerFactory factory = TransformerFactory.newInstance();
-                Transformer transformer = factory.newTransformer(new StreamSource(xsltfile));
+                final TransformerFactory factory = TransformerFactory
+                        .newInstance();
+                final Transformer transformer = factory
+                        .newTransformer(new StreamSource(xsltfile));
 
                 // Set the value of a <param> in the stylesheet
                 transformer.setParameter("versionParam", "2.0");
 
                 // Setup input for XSLT transformation
-                Source src = new StreamSource(xmlfile);
+                final Source src = new StreamSource(xmlfile);
 
-                // Resulting SAX events (the generated FO) must be piped through to FOP
-                Result res = new SAXResult(fop.getDefaultHandler());
+                // Resulting SAX events (the generated FO) must be piped through
+                // to FOP
+                final Result res = new SAXResult(fop.getDefaultHandler());
 
                 // Start XSLT transformation and FOP processing
                 transformer.transform(src, res);
@@ -101,8 +111,8 @@ public class ExampleXML2PDF {
                 out.close();
             }
 
-            System.out.println("Success!");
-        } catch (Exception e) {
+            log.info("Success!");
+        } catch (final Exception e) {
             e.printStackTrace(System.err);
             System.exit(-1);
         }

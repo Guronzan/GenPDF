@@ -36,13 +36,15 @@ public final class EventSeverity implements Serializable {
     /** fatal error */
     public static final EventSeverity FATAL = new EventSeverity("FATAL");
 
-    private String name;
+    private final String name;
 
     /**
      * Constructor to add a new named item.
-     * @param name Name of the item.
+     * 
+     * @param name
+     *            Name of the item.
      */
-    private EventSeverity(String name) {
+    private EventSeverity(final String name) {
         this.name = name;
     }
 
@@ -53,10 +55,12 @@ public final class EventSeverity implements Serializable {
 
     /**
      * Returns the enumeration/singleton object based on its name.
-     * @param name the name of the enumeration value
+     * 
+     * @param name
+     *            the name of the enumeration value
      * @return the enumeration object
      */
-    public static EventSeverity valueOf(String name) {
+    public static EventSeverity valueOf(final String name) {
         if (INFO.getName().equalsIgnoreCase(name)) {
             return INFO;
         } else if (WARN.getName().equalsIgnoreCase(name)) {
@@ -66,7 +70,8 @@ public final class EventSeverity implements Serializable {
         } else if (FATAL.getName().equalsIgnoreCase(name)) {
             return FATAL;
         } else {
-            throw new IllegalArgumentException("Illegal value for enumeration: " + name);
+            throw new IllegalArgumentException(
+                    "Illegal value for enumeration: " + name);
         }
     }
 
@@ -75,8 +80,9 @@ public final class EventSeverity implements Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "EventSeverity:" + name;
+        return "EventSeverity:" + this.name;
     }
 
 }

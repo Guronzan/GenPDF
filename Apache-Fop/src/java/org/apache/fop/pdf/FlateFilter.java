@@ -27,11 +27,10 @@ import org.apache.xmlgraphics.util.io.FlateEncodeOutputStream;
 /**
  * A filter to deflate a stream.
  * <p>
- * <b>Note</b> that the attributes for
- * prediction, colors, bitsPerComponent, and columns are not supported
- * when this filter is used to handle the data compression. They are
- * only valid for externally encoded data such as that from a graphics
- * file.
+ * <b>Note</b> that the attributes for prediction, colors, bitsPerComponent, and
+ * columns are not supported when this filter is used to handle the data
+ * compression. They are only valid for externally encoded data such as that
+ * from a graphics file.
  */
 public class FlateFilter extends PDFFilter {
     /**
@@ -74,7 +73,6 @@ public class FlateFilter extends PDFFilter {
      */
     public static final int PREDICTION_PNG_OPT = 15;
 
-
     private int predictor = PREDICTION_NONE;
     private int colors;
     private int bitsPerComponent;
@@ -85,6 +83,7 @@ public class FlateFilter extends PDFFilter {
      *
      * @return the pdf name of the flate decode filter
      */
+    @Override
     public String getName() {
         return "/FlateDecode";
     }
@@ -94,18 +93,19 @@ public class FlateFilter extends PDFFilter {
      *
      * @return a string containing the decode params for this filter
      */
+    @Override
     public PDFObject getDecodeParms() {
-        if (predictor > PREDICTION_NONE) {
-            PDFDictionary dict = new PDFDictionary();
-            dict.put("Predictor", predictor);
-            if (colors > 1) {
-                dict.put("Colors", colors);
+        if (this.predictor > PREDICTION_NONE) {
+            final PDFDictionary dict = new PDFDictionary();
+            dict.put("Predictor", this.predictor);
+            if (this.colors > 1) {
+                dict.put("Colors", this.colors);
             }
-            if (bitsPerComponent > 0 && bitsPerComponent != 8) {
-                dict.put("BitsPerComponent", bitsPerComponent);
+            if (this.bitsPerComponent > 0 && this.bitsPerComponent != 8) {
+                dict.put("BitsPerComponent", this.bitsPerComponent);
             }
-            if (columns > 1) {
-                dict.put("Columns", columns);
+            if (this.columns > 1) {
+                dict.put("Columns", this.columns);
             }
             return dict;
         }
@@ -115,10 +115,12 @@ public class FlateFilter extends PDFFilter {
     /**
      * Set the predictor for this filter.
      *
-     * @param predictor the predictor to use
-     * @throws PDFFilterException if there is an error with the predictor
+     * @param predictor
+     *            the predictor to use
+     * @throws PDFFilterException
+     *             if there is an error with the predictor
      */
-    public void setPredictor(int predictor) throws PDFFilterException {
+    public void setPredictor(final int predictor) throws PDFFilterException {
         this.predictor = predictor;
 
     }
@@ -129,22 +131,24 @@ public class FlateFilter extends PDFFilter {
      * @return the predictor used for this filter
      */
     public int getPredictor() {
-        return predictor;
+        return this.predictor;
     }
 
     /**
      * Set the colors for this filter.
      *
-     * @param colors the colors to use
-     * @throws PDFFilterException if predictor is not PREDICTION_NONE
+     * @param colors
+     *            the colors to use
+     * @throws PDFFilterException
+     *             if predictor is not PREDICTION_NONE
      */
-    public void setColors(int colors) throws PDFFilterException {
-        if (predictor != PREDICTION_NONE) {
+    public void setColors(final int colors) throws PDFFilterException {
+        if (this.predictor != PREDICTION_NONE) {
             this.colors = colors;
         } else {
             throw new PDFFilterException(
-                          "Prediction must not be PREDICTION_NONE in"
-                          + " order to set Colors");
+                    "Prediction must not be PREDICTION_NONE in"
+                            + " order to set Colors");
         }
     }
 
@@ -154,22 +158,24 @@ public class FlateFilter extends PDFFilter {
      * @return the colors for this filter
      */
     public int getColors() {
-        return colors;
+        return this.colors;
     }
 
     /**
      * Set the number of bits per component.
      *
-     * @param bits the number of bits per component
-     * @throws PDFFilterException if predictor is not PREDICTION_NONE
+     * @param bits
+     *            the number of bits per component
+     * @throws PDFFilterException
+     *             if predictor is not PREDICTION_NONE
      */
-    public void setBitsPerComponent(int bits) throws PDFFilterException {
-        if (predictor != PREDICTION_NONE) {
-            bitsPerComponent = bits;
+    public void setBitsPerComponent(final int bits) throws PDFFilterException {
+        if (this.predictor != PREDICTION_NONE) {
+            this.bitsPerComponent = bits;
         } else {
             throw new PDFFilterException(
-                         "Prediction must not be PREDICTION_NONE in order"
-                         + " to set bitsPerComponent");
+                    "Prediction must not be PREDICTION_NONE in order"
+                            + " to set bitsPerComponent");
         }
     }
 
@@ -179,22 +185,24 @@ public class FlateFilter extends PDFFilter {
      * @return the number of bits per component
      */
     public int getBitsPerComponent() {
-        return bitsPerComponent;
+        return this.bitsPerComponent;
     }
 
     /**
      * Set the number of columns for this filter.
      *
-     * @param columns the number of columns to use for the filter
-     * @throws PDFFilterException if predictor is not PREDICTION_NONE
+     * @param columns
+     *            the number of columns to use for the filter
+     * @throws PDFFilterException
+     *             if predictor is not PREDICTION_NONE
      */
-    public void setColumns(int columns) throws PDFFilterException {
-        if (predictor != PREDICTION_NONE) {
+    public void setColumns(final int columns) throws PDFFilterException {
+        if (this.predictor != PREDICTION_NONE) {
             this.columns = columns;
         } else {
             throw new PDFFilterException(
-                      "Prediction must not be PREDICTION_NONE in"
-                      + " order to set Columns");
+                    "Prediction must not be PREDICTION_NONE in"
+                            + " order to set Columns");
         }
     }
 
@@ -204,12 +212,12 @@ public class FlateFilter extends PDFFilter {
      * @return the number of columns
      */
     public int getColumns() {
-        return columns;
+        return this.columns;
     }
 
-
     /** {@inheritDoc} */
-    public OutputStream applyFilter(OutputStream out) throws IOException {
+    @Override
+    public OutputStream applyFilter(final OutputStream out) throws IOException {
         if (isApplied()) {
             return out;
         } else {

@@ -26,12 +26,17 @@ import java.awt.Color;
  */
 public class Java2DRenderingSettings {
 
-    /** false: paints a non-transparent white background, true: for a transparent background */
+    /**
+     * false: paints a non-transparent white background, true: for a transparent
+     * background
+     */
     private Color pageBackgroundColor = Color.WHITE;
 
     /**
      * Returns the page background color.
-     * @return the page background color or null if the page background is transparent
+     * 
+     * @return the page background color or null if the page background is
+     *         transparent
      */
     public Color getPageBackgroundColor() {
         return this.pageBackgroundColor;
@@ -39,20 +44,23 @@ public class Java2DRenderingSettings {
 
     /**
      * Sets the page background color.
-     * @param color the page background color or null if the page background shall be transparent
+     * 
+     * @param color
+     *            the page background color or null if the page background shall
+     *            be transparent
      */
-    public void setPageBackgroundColor(Color color) {
+    public void setPageBackgroundColor(final Color color) {
         this.pageBackgroundColor = color;
     }
 
     /**
-     * Indicates whether the pages have a transparent background or if it's painted in a
-     * particular color.
+     * Indicates whether the pages have a transparent background or if it's
+     * painted in a particular color.
+     * 
      * @return true if the pages have a transparent background
      */
     public boolean hasTransparentPageBackground() {
         return this.pageBackgroundColor == null;
     }
-
 
 }

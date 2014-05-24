@@ -25,62 +25,67 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.expr.PropertyException;
 
 /**
- * Store all common absolute position properties.
- * See Sec. 7.5 of the XSL-FO Standard.
- * Public "structure" allows direct member access.
+ * Store all common absolute position properties. See Sec. 7.5 of the XSL-FO
+ * Standard. Public "structure" allows direct member access.
  */
 public class CommonAbsolutePosition {
     /**
      * The "absolute-position" property.
      */
-    public int absolutePosition;                                // CSOK: VisibilityModifier
+    public int absolutePosition; // CSOK: VisibilityModifier
 
     /**
      * The "top" property.
      */
-    public Length top;                                          // CSOK: VisibilityModifier
+    public Length top; // CSOK: VisibilityModifier
 
     /**
      * The "right" property.
      */
-    public Length right;                                        // CSOK: VisibilityModifier
+    public Length right; // CSOK: VisibilityModifier
 
     /**
      * The "bottom" property.
      */
-    public Length bottom;                                       // CSOK: VisibilityModifier
+    public Length bottom; // CSOK: VisibilityModifier
 
     /**
      * The "left" property.
      */
-    public Length left;                                         // CSOK: VisibilityModifier
+    public Length left; // CSOK: VisibilityModifier
 
     /**
      * Create a CommonAbsolutePosition object.
-     * @param pList The PropertyList with propery values.
-     * @throws PropertyException if a property exception is raised
+     * 
+     * @param pList
+     *            The PropertyList with propery values.
+     * @throws PropertyException
+     *             if a property exception is raised
      */
-    public CommonAbsolutePosition(PropertyList pList) throws PropertyException {
-        absolutePosition = pList.get(Constants.PR_ABSOLUTE_POSITION).getEnum();
-        top = pList.get(Constants.PR_TOP).getLength();
-        bottom = pList.get(Constants.PR_BOTTOM).getLength();
-        left = pList.get(Constants.PR_LEFT).getLength();
-        right = pList.get(Constants.PR_RIGHT).getLength();
+    public CommonAbsolutePosition(final PropertyList pList)
+            throws PropertyException {
+        this.absolutePosition = pList.get(Constants.PR_ABSOLUTE_POSITION)
+                .getEnum();
+        this.top = pList.get(Constants.PR_TOP).getLength();
+        this.bottom = pList.get(Constants.PR_BOTTOM).getLength();
+        this.left = pList.get(Constants.PR_LEFT).getLength();
+        this.right = pList.get(Constants.PR_RIGHT).getLength();
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("CommonAbsolutePosition{");
+        final StringBuffer sb = new StringBuffer("CommonAbsolutePosition{");
         sb.append(" absPos=");
-        sb.append(absolutePosition);
+        sb.append(this.absolutePosition);
         sb.append(" top=");
-        sb.append(top);
+        sb.append(this.top);
         sb.append(" bottom=");
-        sb.append(bottom);
+        sb.append(this.bottom);
         sb.append(" left=");
-        sb.append(left);
+        sb.append(this.left);
         sb.append(" right=");
-        sb.append(right);
+        sb.append(this.right);
         sb.append("}");
         return sb.toString();
     }

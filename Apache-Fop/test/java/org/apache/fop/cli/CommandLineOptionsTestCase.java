@@ -19,14 +19,14 @@
 
 package org.apache.fop.cli;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 
 import org.apache.fop.apps.FOPException;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CommandLineOptionsTestCase {
 
@@ -37,36 +37,36 @@ public class CommandLineOptionsTestCase {
 
     @Before
     public void setUp() throws Exception {
-        cmd = commandLine.split(" ");
-        parsed = clo.parse(cmd);
+        this.cmd = this.commandLine.split(" ");
+        this.parsed = this.clo.parse(this.cmd);
     }
 
     @Test
     public void testParse() {
-        assertTrue(parsed);
+        assertTrue(this.parsed);
     }
 
     @Test
     public void testGetOutputFormat() throws FOPException {
-        assertEquals(clo.getOutputFormat(), "application/X-fop-print");
+        assertEquals(this.clo.getOutputFormat(), "application/X-fop-print");
     }
 
     @Test
     public void testVandVersionSwitchs() throws FOPException, IOException {
         // test -v
-        String cl1 = "-v";
-        String[] cmd1 = cl1.split(" ");
-        CommandLineOptions clo1 = new CommandLineOptions();
+        final String cl1 = "-v";
+        final String[] cmd1 = cl1.split(" ");
+        final CommandLineOptions clo1 = new CommandLineOptions();
         assertTrue(!clo1.parse(cmd1));
         // test -version
-        String cl2 = "-version";
-        String[] cmd2 = cl2.split(" ");
-        CommandLineOptions clo2 = new CommandLineOptions();
+        final String cl2 = "-version";
+        final String[] cmd2 = cl2.split(" ");
+        final CommandLineOptions clo2 = new CommandLineOptions();
         assertTrue(!clo2.parse(cmd2));
         // test -v + more switches
-        String cl3 = "-v " + commandLine;
-        String[] cmd3 = cl3.split(" ");
-        CommandLineOptions clo3 = new CommandLineOptions();
+        final String cl3 = "-v " + this.commandLine;
+        final String[] cmd3 = cl3.split(" ");
+        final CommandLineOptions clo3 = new CommandLineOptions();
         assertTrue(clo3.parse(cmd3));
     }
 }

@@ -24,50 +24,56 @@ import java.io.OutputStream;
 
 /**
  * Interface used to store the bytes for a PDFStream. It's actually a generic
- * cached byte array. There's a factory that returns either an
- * in-memory or tempfile based implementation based on a
- * cacheToFile setting.
+ * cached byte array. There's a factory that returns either an in-memory or
+ * tempfile based implementation based on a cacheToFile setting.
  */
 public interface StreamCache {
 
     /**
-     * Get the current OutputStream. Do not store it - it may change
-     * from call to call.
+     * Get the current OutputStream. Do not store it - it may change from call
+     * to call.
      *
      * @return an output stream for this cache
-     * @throws IOException if there is an IO error
+     * @throws IOException
+     *             if there is an IO error
      */
     OutputStream getOutputStream() throws IOException;
 
     /**
      * Convenience method for writing data to the stream cache.
-     * @param data byte array to write
-     * @throws IOException if there is an IO error
+     * 
+     * @param data
+     *            byte array to write
+     * @throws IOException
+     *             if there is an IO error
      */
-    void write(byte[] data) throws IOException;
+    void write(final byte[] data) throws IOException;
 
     /**
      * Outputs the cached bytes to the given stream.
      *
-     * @param out the stream to write to
+     * @param out
+     *            the stream to write to
      * @return the number of bytes written
-     * @throws IOException if there is an IO error
+     * @throws IOException
+     *             if there is an IO error
      */
-    int outputContents(OutputStream out) throws IOException;
+    int outputContents(final OutputStream out) throws IOException;
 
     /**
      * Returns the current size of the stream.
      *
      * @return the size of the cache
-     * @throws IOException if there is an IO error
+     * @throws IOException
+     *             if there is an IO error
      */
     int getSize() throws IOException;
 
     /**
      * Clears and resets the cache.
      *
-     * @throws IOException if there is an IO error
+     * @throws IOException
+     *             if there is an IO error
      */
     void clear() throws IOException;
 }
-

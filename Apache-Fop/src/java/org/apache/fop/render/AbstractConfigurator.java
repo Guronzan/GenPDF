@@ -19,20 +19,17 @@
 
 package org.apache.fop.render;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.apache.fop.apps.FOUserAgent;
 
 /**
  * An abstract configurator
  */
+@Slf4j
 public abstract class AbstractConfigurator {
-    /** logger instance */
-    protected static final Log log = LogFactory.getLog(AbstractConfigurator.class);
 
     private static final String MIME = "mime";
 
@@ -41,20 +38,25 @@ public abstract class AbstractConfigurator {
 
     /**
      * Default constructor
-     * @param userAgent user agent
+     *
+     * @param userAgent
+     *            user agent
      */
-    public AbstractConfigurator(FOUserAgent userAgent) {
+    public AbstractConfigurator(final FOUserAgent userAgent) {
         super();
         this.userAgent = userAgent;
     }
 
     /**
      * Returns the configuration subtree for a specific renderer.
-     * @param mimeType the MIME type of the renderer
-     * @return the requested configuration subtree, null if there's no configuration
+     *
+     * @param mimeType
+     *            the MIME type of the renderer
+     * @return the requested configuration subtree, null if there's no
+     *         configuration
      */
-    protected Configuration getConfig(String mimeType) {
-        Configuration cfg = userAgent.getFactory().getUserConfig();
+    protected Configuration getConfig(final String mimeType) {
+        final Configuration cfg = this.userAgent.getFactory().getUserConfig();
         if (cfg == null) {
             if (log.isDebugEnabled()) {
                 log.debug("userconfig is null");
@@ -64,27 +66,26 @@ public abstract class AbstractConfigurator {
 
         Configuration userConfig = null;
 
-        String type = getType();
-        Configuration[] cfgs
-            = cfg.getChild(type + "s").getChildren(type);
-        for (int i = 0; i < cfgs.length; ++i) {
-            Configuration child = cfgs[i];
+        final String type = getType();
+        final Configuration[] cfgs = cfg.getChild(type + "s").getChildren(type);
+        for (final Configuration child : cfgs) {
             try {
                 if (child.getAttribute(MIME).equals(mimeType)) {
                     userConfig = child;
                     break;
                 }
-            } catch (ConfigurationException e) {
+            } catch (final ConfigurationException e) {
                 // silently pass over configurations without mime type
             }
         }
         log.debug((userConfig == null ? "No u" : "U")
-                  + "ser configuration found for MIME type " + mimeType);
+                + "ser configuration found for MIME type " + mimeType);
         return userConfig;
     }
 
     /**
      * Returns the configurator type
+     *
      * @return the configurator type
      */
     public abstract String getType();

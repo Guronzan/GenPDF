@@ -26,42 +26,43 @@ import java.util.Set;
 import org.apache.fop.fonts.FontType;
 import org.apache.fop.fonts.Typeface;
 
-
 /**
- * This class implements org.apache.fop.layout.FontMetrics and
- * is added to the hash table in FontInfo. It  deferes the
- * actual calculation of the metrics to
- * Java2DFontMetrics.  It only keeps the java name and
- * style as member varibles
+ * This class implements org.apache.fop.layout.FontMetrics and is added to the
+ * hash table in FontInfo. It deferes the actual calculation of the metrics to
+ * Java2DFontMetrics. It only keeps the java name and style as member varibles
  */
 
-public class SystemFontMetricsMapper extends Typeface implements FontMetricsMapper {
+public class SystemFontMetricsMapper extends Typeface implements
+        FontMetricsMapper {
 
     /**
-     * This is a Java2DFontMetrics that does the real calculation.
-     * It is only one class that dynamically determines the font-size.
+     * This is a Java2DFontMetrics that does the real calculation. It is only
+     * one class that dynamically determines the font-size.
      */
     private final Java2DFontMetrics java2DFontMetrics;
 
     /**
-     * The java name of the font.
-     * #  Make the family name immutable.
+     * The java name of the font. # Make the family name immutable.
      */
     private final String family;
 
     /**
-     * The java style of the font.
-     * #  Make the style immutable.
+     * The java style of the font. # Make the style immutable.
      */
     private final int style;
 
     /**
      * Constructs a new Font-metrics.
-     * @param family the family name of the font (java value)
-     * @param style the java type style value of the font
-     * @param java2DFontMetrics metric calculations delegated to this
+     * 
+     * @param family
+     *            the family name of the font (java value)
+     * @param style
+     *            the java type style value of the font
+     * @param java2DFontMetrics
+     *            metric calculations delegated to this
      */
-    public SystemFontMetricsMapper(String family, int style, Java2DFontMetrics java2DFontMetrics) {
+    public SystemFontMetricsMapper(final String family, final int style,
+            final Java2DFontMetrics java2DFontMetrics) {
         this.family = family;
 
         this.style = style;
@@ -70,23 +71,27 @@ public class SystemFontMetricsMapper extends Typeface implements FontMetricsMapp
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getFontName() {
-        return family;
+        return this.family;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getEmbedFontName() {
         return getFontName();
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getFullName() {
         return getFontName();
     }
 
     /** {@inheritDoc} */
+    @Override
     public Set getFamilyNames() {
-        Set s = new java.util.HashSet();
+        final Set s = new java.util.HashSet();
         s.add(this.family);
         return s;
     }
@@ -94,6 +99,7 @@ public class SystemFontMetricsMapper extends Typeface implements FontMetricsMapp
     /**
      * {@inheritDoc}
      */
+    @Override
     public FontType getFontType() {
         return FontType.OTHER;
     }
@@ -101,63 +107,76 @@ public class SystemFontMetricsMapper extends Typeface implements FontMetricsMapp
     /**
      * {@inheritDoc}
      */
-    public int getMaxAscent(int size) {
-        return java2DFontMetrics.getMaxAscent(family, style, size);
+    @Override
+    public int getMaxAscent(final int size) {
+        return this.java2DFontMetrics.getMaxAscent(this.family, this.style,
+                size);
     }
 
     /**
      * {@inheritDoc}
      */
-    public int getAscender(int size) {
-        return java2DFontMetrics.getAscender(family, style, size);
+    @Override
+    public int getAscender(final int size) {
+        return this.java2DFontMetrics
+                .getAscender(this.family, this.style, size);
     }
 
     /**
      * {@inheritDoc}
      */
-    public int getCapHeight(int size) {
-        return java2DFontMetrics.getCapHeight(family, style, size);
+    @Override
+    public int getCapHeight(final int size) {
+        return this.java2DFontMetrics.getCapHeight(this.family, this.style,
+                size);
     }
 
     /**
      * {@inheritDoc}
      */
-    public int getDescender(int size) {
-        return java2DFontMetrics.getDescender(family, style, size);
+    @Override
+    public int getDescender(final int size) {
+        return this.java2DFontMetrics.getDescender(this.family, this.style,
+                size);
     }
 
     /**
      * {@inheritDoc}
      */
-    public int getXHeight(int size) {
-        return java2DFontMetrics.getXHeight(family, style, size);
+    @Override
+    public int getXHeight(final int size) {
+        return this.java2DFontMetrics.getXHeight(this.family, this.style, size);
     }
 
     /**
      * {@inheritDoc}
      */
-    public int getWidth(int i, int size) {
-        return java2DFontMetrics.width(i, family, style, size);
+    @Override
+    public int getWidth(final int i, final int size) {
+        return this.java2DFontMetrics.width(i, this.family, this.style, size);
     }
-
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public int[] getWidths() {
-        return java2DFontMetrics.getWidths(family, style, Java2DFontMetrics.FONT_SIZE);
+        return this.java2DFontMetrics.getWidths(this.family, this.style,
+                Java2DFontMetrics.FONT_SIZE);
     }
 
     /**
      * {@inheritDoc}
      */
-    public java.awt.Font getFont(int size) {
-        return java2DFontMetrics.getFont(family, style, size);
+    @Override
+    public java.awt.Font getFont(final int size) {
+        return this.java2DFontMetrics.getFont(this.family, this.style, size);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public Map getKerningInfo() {
         return java.util.Collections.EMPTY_MAP;
     }
@@ -165,28 +184,28 @@ public class SystemFontMetricsMapper extends Typeface implements FontMetricsMapp
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasKerningInfo() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getEncodingName() {
-        return null; //Not applicable to Java2D rendering
+        return null; // Not applicable to Java2D rendering
     }
 
     /** {@inheritDoc} */
-    public char mapChar(char c) {
+    @Override
+    public char mapChar(final char c) {
         return c;
     }
 
     /** {@inheritDoc} */
-    public boolean hasChar(char c) {
-        return java2DFontMetrics.hasChar(family, style, Java2DFontMetrics.FONT_SIZE, c);
+    @Override
+    public boolean hasChar(final char c) {
+        return this.java2DFontMetrics.hasChar(this.family, this.style,
+                Java2DFontMetrics.FONT_SIZE, c);
     }
 
 }
-
-
-
-
-

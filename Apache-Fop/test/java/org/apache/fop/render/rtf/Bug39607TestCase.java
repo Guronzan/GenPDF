@@ -36,23 +36,25 @@ public class Bug39607TestCase {
 
     /**
      * Test for the NPE describes in bug 39607
-     * @throws Exception If an error occurs
+     * 
+     * @throws Exception
+     *             If an error occurs
      */
     @Test
     public void testForNPE() throws Exception {
-        StringWriter writer = new StringWriter();
-        RtfFile f = new RtfFile(writer);
+        final StringWriter writer = new StringWriter();
+        final RtfFile f = new RtfFile(writer);
 
-        RtfDocumentArea doc = f.startDocumentArea();
+        final RtfDocumentArea doc = f.startDocumentArea();
 
-        RtfSection section = doc.newSection();
+        final RtfSection section = doc.newSection();
 
-        RtfParagraph paragraph = section.newParagraph();
+        final RtfParagraph paragraph = section.newParagraph();
         paragraph.newText("Testing fop - rtf module - class RtfTableRow");
         paragraph.close();
 
-        RtfTable table = section.newTable(null);
-        RtfTableRow row = table.newTableRow();
+        final RtfTable table = section.newTable(null);
+        final RtfTableRow row = table.newTableRow();
         row.newTableCell(2000).newParagraph().newText("blah");
         row.newTableCell(5000).newParagraph().newText("doubleBlah");
         row.close();

@@ -31,27 +31,30 @@ import org.apache.xmlgraphics.image.loader.spi.ImageLoader;
 public class ImageLoaderFactoryImageIO extends AbstractImageLoaderFactory {
 
     private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {
-        ImageFlavor.RENDERED_IMAGE,
-        ImageFlavor.BUFFERED_IMAGE};
+            ImageFlavor.RENDERED_IMAGE, ImageFlavor.BUFFERED_IMAGE };
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMIMETypes() {
         return ImageIO.getReaderMIMETypes();
     }
 
     /** {@inheritDoc} */
-    public ImageFlavor[] getSupportedFlavors(String mime) {
+    @Override
+    public ImageFlavor[] getSupportedFlavors(final String mime) {
         return FLAVORS;
     }
 
     /** {@inheritDoc} */
-    public ImageLoader newImageLoader(ImageFlavor targetFlavor) {
+    @Override
+    public ImageLoader newImageLoader(final ImageFlavor targetFlavor) {
         return new ImageLoaderImageIO(targetFlavor);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isAvailable() {
-        return (getSupportedMIMETypes().length > 0);
+        return getSupportedMIMETypes().length > 0;
     }
 
 }

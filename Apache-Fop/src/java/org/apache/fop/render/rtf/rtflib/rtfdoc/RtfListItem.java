@@ -30,17 +30,19 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * <p>Model of an RTF list item, which can contain RTF paragraphs.</p>
+ * <p>
+ * Model of an RTF list item, which can contain RTF paragraphs.
+ * </p>
  *
- * <p>This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch)
- * and Andreas Putz (a.putz@skynamics.com).</p>
+ * <p>
+ * This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch)
+ * and Andreas Putz (a.putz@skynamics.com).
+ * </p>
  */
-public class RtfListItem extends RtfContainer
-        implements IRtfTextrunContainer,
-                   IRtfListContainer,
-                   IRtfParagraphContainer {
+public class RtfListItem extends RtfContainer implements IRtfTextrunContainer,
+IRtfListContainer, IRtfParagraphContainer {
 
-    private RtfList parentList;
+    private final RtfList parentList;
     private RtfParagraph paragraph;
     private RtfListStyle listStyle;
     private int number = 0;
@@ -50,11 +52,12 @@ public class RtfListItem extends RtfContainer
      */
     private class RtfListItemParagraph extends RtfParagraph {
 
-        RtfListItemParagraph(RtfListItem rli, RtfAttributes attrs)
-        throws IOException {
+        RtfListItemParagraph(final RtfListItem rli, final RtfAttributes attrs)
+                throws IOException {
             super(rli, rli.writer, attrs);
         }
 
+        @Override
         protected void writeRtfPrefix() throws IOException {
             super.writeRtfPrefix();
             getRtfListStyle().writeParagraphPrefix(this);
@@ -64,146 +67,186 @@ public class RtfListItem extends RtfContainer
     /**
      * special RtfTextrun that is used as list item label
      */
-    public class RtfListItemLabel extends RtfTextrun implements IRtfTextrunContainer {
+    public class RtfListItemLabel extends RtfTextrun implements
+    IRtfTextrunContainer {
 
-        private RtfListItem rtfListItem;
+        private final RtfListItem rtfListItem;
 
         /**
          * Constructs the RtfListItemLabel
-         * @param item The RtfListItem the label belongs to
-         * @throws IOException Thrown when an IO-problem occurs
+         *
+         * @param item
+         *            The RtfListItem the label belongs to
+         * @throws IOException
+         *             Thrown when an IO-problem occurs
          */
-        public RtfListItemLabel(RtfListItem item) throws IOException {
+        public RtfListItemLabel(final RtfListItem item) throws IOException {
             super(null, item.writer, null);
 
-            rtfListItem = item;
+            this.rtfListItem = item;
         }
 
         /**
-         * Returns the current RtfTextrun object.
-         * Opens a new one if necessary.
+         * Returns the current RtfTextrun object. Opens a new one if necessary.
+         *
          * @return The RtfTextrun object
-         * @throws IOException Thrown when an IO-problem occurs
+         * @throws IOException
+         *             Thrown when an IO-problem occurs
          */
+        @Override
         public RtfTextrun getTextrun() throws IOException {
             return this;
         }
 
         /**
          * Sets the content of the list item label.
-         * @param s Content of the list item label.
-         * @throws IOException Thrown when an IO-problem occurs
+         *
+         * @param s
+         *            Content of the list item label.
+         * @throws IOException
+         *             Thrown when an IO-problem occurs
          */
-        public void addString(String s) throws IOException {
+        @Override
+        public void addString(final String s) throws IOException {
 
             final String label = s.trim();
             if (label.length() > 0 && Character.isDigit(label.charAt(0))) {
-                rtfListItem.setRtfListStyle(new RtfListStyleNumber());
+                this.rtfListItem.setRtfListStyle(new RtfListStyleNumber());
             } else {
-                rtfListItem.setRtfListStyle(new RtfListStyleText(label));
+                this.rtfListItem.setRtfListStyle(new RtfListStyleText(label));
             }
         }
     }
 
-    /** Create an RTF list item as a child of given container with default attributes */
-    RtfListItem(RtfList parent, Writer w) throws IOException {
-        super((RtfContainer)parent, w);
-        parentList = parent;
+    /**
+     * Create an RTF list item as a child of given container with default
+     * attributes
+     */
+    RtfListItem(final RtfList parent, final Writer w) throws IOException {
+        super(parent, w);
+        this.parentList = parent;
     }
 
     /**
      * Close current paragraph if any and start a new one
-     * @param attrs attributes of new paragraph
+     *
+     * @param attrs
+     *            attributes of new paragraph
      * @return new RtfParagraph
-     * @throws IOException Thrown when an IO-problem occurs
+     * @throws IOException
+     *             Thrown when an IO-problem occurs
      */
-    public RtfParagraph newParagraph(RtfAttributes attrs) throws IOException {
-        if (paragraph != null) {
-            paragraph.close();
+    @Override
+    public RtfParagraph newParagraph(final RtfAttributes attrs)
+            throws IOException {
+        if (this.paragraph != null) {
+            this.paragraph.close();
         }
-        paragraph = new RtfListItemParagraph(this, attrs);
-        return paragraph;
+        this.paragraph = new RtfListItemParagraph(this, attrs);
+        return this.paragraph;
     }
 
     /**
-     * Close current paragraph if any and start a new one with default attributes
+     * Close current paragraph if any and start a new one with default
+     * attributes
+     *
      * @return new RtfParagraph
-     * @throws IOException Thrown when an IO-problem occurs
+     * @throws IOException
+     *             Thrown when an IO-problem occurs
      */
+    @Override
     public RtfParagraph newParagraph() throws IOException {
         return newParagraph(null);
     }
 
-    /** Create an RTF list item as a child of given container with given attributes */
-    RtfListItem(RtfList parent, Writer w, RtfAttributes attr) throws IOException {
-        super((RtfContainer)parent, w, attr);
-        parentList = parent;
+    /**
+     * Create an RTF list item as a child of given container with given
+     * attributes
+     */
+    RtfListItem(final RtfList parent, final Writer w, final RtfAttributes attr)
+            throws IOException {
+        super(parent, w, attr);
+        this.parentList = parent;
     }
-
 
     /**
      * Get the current textrun.
+     *
      * @return current RtfTextrun object
-     * @throws IOException Thrown when an IO-problem occurs
+     * @throws IOException
+     *             Thrown when an IO-problem occurs
      */
+    @Override
     public RtfTextrun getTextrun() throws IOException {
-        RtfTextrun textrun = RtfTextrun.getTextrun(this, writer, null);
+        final RtfTextrun textrun = RtfTextrun.getTextrun(this, this.writer,
+                null);
         textrun.setRtfListItem(this);
         return textrun;
     }
 
     /**
      * Start a new list after closing current paragraph, list and table
-     * @param attrs attributes of new RftList object
+     *
+     * @param attrs
+     *            attributes of new RftList object
      * @return new RtfList
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    public RtfList newList(RtfAttributes attrs) throws IOException {
-        RtfList list = new RtfList(this, writer, attrs);
+    @Override
+    public RtfList newList(final RtfAttributes attrs) throws IOException {
+        final RtfList list = new RtfList(this, this.writer, attrs);
         return list;
     }
 
     /**
      * Overridden to setup the list: start a group with appropriate attributes
-     * @throws IOException for I/O problems
+     *
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeRtfPrefix() throws IOException {
 
-        // pard causes word97 (and sometimes 2000 too) to crash if the list is nested in a table
-        if (!parentList.getHasTableParent()) {
+        // pard causes word97 (and sometimes 2000 too) to crash if the list is
+        // nested in a table
+        if (!this.parentList.getHasTableParent()) {
             writeControlWord("pard");
         }
 
-        writeOneAttribute(RtfText.LEFT_INDENT_FIRST,
-                "360"); //attrib.getValue(RtfListTable.LIST_INDENT));
+        writeOneAttribute(RtfText.LEFT_INDENT_FIRST, "360"); // attrib.getValue(RtfListTable.LIST_INDENT));
 
         writeOneAttribute(RtfText.LEFT_INDENT_BODY,
-                attrib.getValue(RtfText.LEFT_INDENT_BODY));
+                this.attrib.getValue(RtfText.LEFT_INDENT_BODY));
 
         // group for list setup info
         writeGroupMark(true);
 
         writeStarControlWord("pn");
-        //Modified by Chris Scott
-        //fixes second line indentation
+        // Modified by Chris Scott
+        // fixes second line indentation
         getRtfListStyle().writeListPrefix(this);
 
         writeGroupMark(false);
-        writeOneAttribute(RtfListTable.LIST_NUMBER, new Integer(number));
+        writeOneAttribute(RtfListTable.LIST_NUMBER, new Integer(this.number));
     }
 
     /**
      * End the list group
-     * @throws IOException for I/O problems
+     *
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeRtfSuffix() throws IOException {
         super.writeRtfSuffix();
 
-        /* reset paragraph defaults to make sure list ends
-         * but pard causes word97 (and sometimes 2000 too) to crash if the list
-         * is nested in a table
+        /*
+         * reset paragraph defaults to make sure list ends but pard causes
+         * word97 (and sometimes 2000 too) to crash if the list is nested in a
+         * table
          */
-        if (!parentList.getHasTableParent()) {
+        if (!this.parentList.getHasTableParent()) {
             writeControlWord("pard");
         }
 
@@ -211,40 +254,45 @@ public class RtfListItem extends RtfContainer
 
     /**
      * Change list style
-     * @param ls ListStyle to set
+     *
+     * @param ls
+     *            ListStyle to set
      */
-    public void setRtfListStyle(RtfListStyle ls) {
-        listStyle = ls;
+    public void setRtfListStyle(final RtfListStyle ls) {
+        this.listStyle = ls;
 
-        listStyle.setRtfListItem(this);
-        number = getRtfFile().getListTable().addRtfListStyle(ls);
+        this.listStyle.setRtfListItem(this);
+        this.number = getRtfFile().getListTable().addRtfListStyle(ls);
     }
 
     /**
      * Get list style
+     *
      * @return ListSytle of the List
      */
     public RtfListStyle getRtfListStyle() {
-        if (listStyle == null) {
-            return parentList.getRtfListStyle();
+        if (this.listStyle == null) {
+            return this.parentList.getRtfListStyle();
         } else {
-            return listStyle;
+            return this.listStyle;
         }
     }
 
     /**
      * Get the parent list.
+     *
      * @return the parent list
      */
     public RtfList getParentList() {
-        return parentList;
+        return this.parentList;
     }
 
     /**
      * Returns the list number
+     *
      * @return list number
      */
     public int getNumber() {
-        return number;
+        return this.number;
     }
 }

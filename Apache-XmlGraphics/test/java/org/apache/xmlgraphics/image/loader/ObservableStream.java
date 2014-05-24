@@ -35,14 +35,14 @@ public interface ObservableStream {
 
     /**
      * Indicates whether the stream has been closed.
-     * 
+     *
      * @return true if the stream is closed
      */
     boolean isClosed();
 
     /**
      * Returns the system ID for the stream being observed.
-     * 
+     *
      * @return the system ID
      */
     String getSystemID();
@@ -53,16 +53,16 @@ public interface ObservableStream {
                 final String systemID) {
             return (ImageInputStream) Proxy.newProxyInstance(Factory.class
                     .getClassLoader(), new Class[] { ImageInputStream.class,
-                    ObservableStream.class },
-                    new ObservingImageInputStreamInvocationHandler(iin,
-                            systemID));
+                ObservableStream.class },
+                new ObservingImageInputStreamInvocationHandler(iin,
+                        systemID));
         }
 
     }
 
     @Slf4j
     public static class ObservingImageInputStreamInvocationHandler implements
-            InvocationHandler, ObservableStream {
+    InvocationHandler, ObservableStream {
 
         private final ImageInputStream iin;
         private boolean closed;

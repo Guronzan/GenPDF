@@ -20,17 +20,21 @@
 package org.apache.xmlgraphics.image.loader.cache;
 
 /**
- * Represents an expiration policy for cache entries that have a creation time stamp.
+ * Represents an expiration policy for cache entries that have a creation time
+ * stamp.
  */
 public interface ExpirationPolicy {
 
     /**
      * Indicates whether a cache entry is expired given its creation time stamp.
-     * @param provider the provider for new time stamps
-     * @param timestamp the creation time stamp (the semantics of
-     *                   {@link System#currentTimeMillis()} apply)
+     * 
+     * @param provider
+     *            the provider for new time stamps
+     * @param timestamp
+     *            the creation time stamp (the semantics of
+     *            {@link System#currentTimeMillis()} apply)
      * @return true if the entry is to be considered expired, false if not
      */
-    boolean isExpired(TimeStampProvider provider, long timestamp);
+    boolean isExpired(final TimeStampProvider provider, final long timestamp);
 
 }

@@ -52,57 +52,57 @@ import org.apache.xmlgraphics.image.loader.util.SoftMapCache;
  * invalid or temporarily unavailable images over slow connections.
  */
 @Slf4j
- public class ImageCache {
+public class ImageCache {
 
     // Handling of invalid URIs
-     private final Map invalidURIs = Collections
+    private final Map invalidURIs = Collections
             .synchronizedMap(new java.util.HashMap());
-     private final ExpirationPolicy invalidURIExpirationPolicy;
+    private final ExpirationPolicy invalidURIExpirationPolicy;
 
-     // Actual image cache
-     private final SoftMapCache imageInfos = new SoftMapCache(true);
-     private final SoftMapCache images = new SoftMapCache(true);
+    // Actual image cache
+    private final SoftMapCache imageInfos = new SoftMapCache(true);
+    private final SoftMapCache images = new SoftMapCache(true);
 
-     private ImageCacheListener cacheListener;
-     private final TimeStampProvider timeStampProvider;
-     private long lastHouseKeeping;
+    private ImageCacheListener cacheListener;
+    private final TimeStampProvider timeStampProvider;
+    private long lastHouseKeeping;
 
-     /**
-      * Default constructor with default settings.
-      */
-     public ImageCache() {
-         this(new TimeStampProvider(), new DefaultExpirationPolicy());
-     }
+    /**
+     * Default constructor with default settings.
+     */
+    public ImageCache() {
+        this(new TimeStampProvider(), new DefaultExpirationPolicy());
+    }
 
-     /**
-      * Constructor for customized behaviour and testing.
-      * 
+    /**
+     * Constructor for customized behaviour and testing.
+     *
      * @param timeStampProvider
      *            the time stamp provider to use
      * @param invalidURIExpirationPolicy
      *            the expiration policy for invalid URIs
-      */
-     public ImageCache(final TimeStampProvider timeStampProvider,
-             final ExpirationPolicy invalidURIExpirationPolicy) {
-         this.timeStampProvider = timeStampProvider;
-         this.invalidURIExpirationPolicy = invalidURIExpirationPolicy;
-         this.lastHouseKeeping = this.timeStampProvider.getTimeStamp();
-     }
+     */
+    public ImageCache(final TimeStampProvider timeStampProvider,
+            final ExpirationPolicy invalidURIExpirationPolicy) {
+        this.timeStampProvider = timeStampProvider;
+        this.invalidURIExpirationPolicy = invalidURIExpirationPolicy;
+        this.lastHouseKeeping = this.timeStampProvider.getTimeStamp();
+    }
 
-     /**
-      * Sets an ImageCacheListener instance so the events in the image cache can
+    /**
+     * Sets an ImageCacheListener instance so the events in the image cache can
      * be observed.
-     * 
+     *
      * @param listener
      *            the listener instance
-      */
-     public void setCacheListener(final ImageCacheListener listener) {
-         this.cacheListener = listener;
-     }
+     */
+    public void setCacheListener(final ImageCacheListener listener) {
+        this.cacheListener = listener;
+    }
 
-     /**
-      * Returns an ImageInfo instance for a given URI.
-      * 
+    /**
+     * Returns an ImageInfo instance for a given URI.
+     *
      * @param uri
      *            the image's URI
      * @param session
@@ -110,229 +110,229 @@ import org.apache.xmlgraphics.image.loader.util.SoftMapCache;
      * @param manager
      *            the ImageManager handling the images
      * @return the ImageInfo instance
-      * @throws ImageException
+     * @throws ImageException
      *             if an error occurs while parsing image data
      * @throws IOException
      *             if an I/O error occurs while loading image data
-      */
-     public ImageInfo needImageInfo(final String uri,
+     */
+    public ImageInfo needImageInfo(final String uri,
             final ImageSessionContext session, final ImageManager manager)
-             throws ImageException, IOException {
-         // Fetch unique version of the URI and use it for synchronization so we
+            throws ImageException, IOException {
+        // Fetch unique version of the URI and use it for synchronization so we
         // have some sort of
-         // "row-level" locking instead of "table-level" locking (to use a
+        // "row-level" locking instead of "table-level" locking (to use a
         // database analogy).
-         // The fine locking strategy is necessary since preloading an image is a
+        // The fine locking strategy is necessary since preloading an image is a
         // potentially long
-         // operation.
-         if (isInvalidURI(uri)) {
-             throw new FileNotFoundException("Image not found: " + uri);
-         }
-         final String lockURI = uri.intern();
-         synchronized (lockURI) {
-             ImageInfo info = getImageInfo(uri);
-             if (info == null) {
-                 try {
-                     final Source src = session.needSource(uri);
-                     if (src == null) {
-                         registerInvalidURI(uri);
-                         throw new FileNotFoundException("Image not found: "
+        // operation.
+        if (isInvalidURI(uri)) {
+            throw new FileNotFoundException("Image not found: " + uri);
+        }
+        final String lockURI = uri.intern();
+        synchronized (lockURI) {
+            ImageInfo info = getImageInfo(uri);
+            if (info == null) {
+                try {
+                    final Source src = session.needSource(uri);
+                    if (src == null) {
+                        registerInvalidURI(uri);
+                        throw new FileNotFoundException("Image not found: "
                                 + uri);
-                     }
-                     info = manager.preloadImage(uri, src);
-                     session.returnSource(uri, src);
-                 } catch (final IOException ioe) {
-                     registerInvalidURI(uri);
-                     throw ioe;
-                 } catch (final ImageException e) {
-                     registerInvalidURI(uri);
-                     throw e;
-                 }
-                 putImageInfo(info);
-             }
-             return info;
-         }
-     }
+                    }
+                    info = manager.preloadImage(uri, src);
+                    session.returnSource(uri, src);
+                } catch (final IOException ioe) {
+                    registerInvalidURI(uri);
+                    throw ioe;
+                } catch (final ImageException e) {
+                    registerInvalidURI(uri);
+                    throw e;
+                }
+                putImageInfo(info);
+            }
+            return info;
+        }
+    }
 
-     /**
-      * Indicates whether a URI has previously been identified as an invalid URI.
-      * 
+    /**
+     * Indicates whether a URI has previously been identified as an invalid URI.
+     *
      * @param uri
      *            the image's URI
      * @return true if the URI is invalid
-      */
-     public boolean isInvalidURI(final String uri) {
-         final boolean expired = removeInvalidURIIfExpired(uri);
-         if (expired) {
-             return false;
-         } else {
-             if (this.cacheListener != null) {
-                 this.cacheListener.invalidHit(uri);
-             }
-             return true;
-         }
-     }
+     */
+    public boolean isInvalidURI(final String uri) {
+        final boolean expired = removeInvalidURIIfExpired(uri);
+        if (expired) {
+            return false;
+        } else {
+            if (this.cacheListener != null) {
+                this.cacheListener.invalidHit(uri);
+            }
+            return true;
+        }
+    }
 
-     private boolean removeInvalidURIIfExpired(final String uri) {
-         final Long timestamp = (Long) this.invalidURIs.get(uri);
-         final boolean expired = timestamp == null
-                 || this.invalidURIExpirationPolicy.isExpired(
-                         this.timeStampProvider, timestamp.longValue());
-         if (expired) {
-             this.invalidURIs.remove(uri);
-         }
-         return expired;
-     }
+    private boolean removeInvalidURIIfExpired(final String uri) {
+        final Long timestamp = (Long) this.invalidURIs.get(uri);
+        final boolean expired = timestamp == null
+                || this.invalidURIExpirationPolicy.isExpired(
+                        this.timeStampProvider, timestamp.longValue());
+        if (expired) {
+            this.invalidURIs.remove(uri);
+        }
+        return expired;
+    }
 
-     /**
-      * Returns an ImageInfo instance from the cache or null if none is found.
-      * 
+    /**
+     * Returns an ImageInfo instance from the cache or null if none is found.
+     *
      * @param uri
      *            the image's URI
      * @return the ImageInfo instance or null if the requested information is
      *         not in the cache
-      */
-     protected ImageInfo getImageInfo(final String uri) {
-         final ImageInfo info = (ImageInfo) this.imageInfos.get(uri);
-         if (this.cacheListener != null) {
-             if (info != null) {
-                 this.cacheListener.cacheHitImageInfo(uri);
-             } else {
-                 if (!isInvalidURI(uri)) {
-                     this.cacheListener.cacheMissImageInfo(uri);
-                 }
-             }
-         }
-         return info;
-     }
+     */
+    protected ImageInfo getImageInfo(final String uri) {
+        final ImageInfo info = (ImageInfo) this.imageInfos.get(uri);
+        if (this.cacheListener != null) {
+            if (info != null) {
+                this.cacheListener.cacheHitImageInfo(uri);
+            } else {
+                if (!isInvalidURI(uri)) {
+                    this.cacheListener.cacheMissImageInfo(uri);
+                }
+            }
+        }
+        return info;
+    }
 
-     /**
-      * Registers an ImageInfo instance with the cache.
-      * 
+    /**
+     * Registers an ImageInfo instance with the cache.
+     *
      * @param info
      *            the ImageInfo instance
-      */
-     protected void putImageInfo(final ImageInfo info) {
-         // An already existing ImageInfo is replaced.
-         this.imageInfos.put(info.getOriginalURI(), info);
-     }
+     */
+    protected void putImageInfo(final ImageInfo info) {
+        // An already existing ImageInfo is replaced.
+        this.imageInfos.put(info.getOriginalURI(), info);
+    }
 
-     private static final long ONE_HOUR = 60 * 60 * 1000;
+    private static final long ONE_HOUR = 60 * 60 * 1000;
 
-     /**
-      * Registers a URI as invalid so getImageInfo can indicate that quickly with
+    /**
+     * Registers a URI as invalid so getImageInfo can indicate that quickly with
      * no I/O access.
-     * 
+     *
      * @param uri
      *            the URI of the invalid image
-      */
-     void registerInvalidURI(final String uri) {
-         this.invalidURIs.put(uri,
+     */
+    void registerInvalidURI(final String uri) {
+        this.invalidURIs.put(uri,
                 new Long(this.timeStampProvider.getTimeStamp()));
 
-         considerHouseKeeping();
-     }
+        considerHouseKeeping();
+    }
 
-     /**
-      * Returns an image from the cache or null if it wasn't found.
-      * 
+    /**
+     * Returns an image from the cache or null if it wasn't found.
+     *
      * @param info
      *            the ImageInfo instance representing the image
      * @param flavor
      *            the requested ImageFlavor for the image
      * @return the requested image or null if the image is not in the cache
-      */
-     public Image getImage(final ImageInfo info, final ImageFlavor flavor) {
-         return getImage(info.getOriginalURI(), flavor);
-     }
+     */
+    public Image getImage(final ImageInfo info, final ImageFlavor flavor) {
+        return getImage(info.getOriginalURI(), flavor);
+    }
 
-     /**
-      * Returns an image from the cache or null if it wasn't found.
-      * 
+    /**
+     * Returns an image from the cache or null if it wasn't found.
+     *
      * @param uri
      *            the image's URI
      * @param flavor
      *            the requested ImageFlavor for the image
      * @return the requested image or null if the image is not in the cache
-      */
-     public Image getImage(final String uri, final ImageFlavor flavor) {
-         if (uri == null || "".equals(uri)) {
-             return null;
-         }
-         final ImageKey key = new ImageKey(uri, flavor);
-         final Image img = (Image) this.images.get(key);
-         if (this.cacheListener != null) {
-             if (img != null) {
-                 this.cacheListener.cacheHitImage(key);
-             } else {
-                 this.cacheListener.cacheMissImage(key);
-             }
-         }
-         return img;
-     }
+     */
+    public Image getImage(final String uri, final ImageFlavor flavor) {
+        if (uri == null || "".equals(uri)) {
+            return null;
+        }
+        final ImageKey key = new ImageKey(uri, flavor);
+        final Image img = (Image) this.images.get(key);
+        if (this.cacheListener != null) {
+            if (img != null) {
+                this.cacheListener.cacheHitImage(key);
+            } else {
+                this.cacheListener.cacheMissImage(key);
+            }
+        }
+        return img;
+    }
 
-     /**
-      * Registers an image with the cache.
-      * 
+    /**
+     * Registers an image with the cache.
+     *
      * @param img
      *            the image
-      */
-     public void putImage(final Image img) {
-         final String originalURI = img.getInfo().getOriginalURI();
-         if (originalURI == null || "".equals(originalURI)) {
-             return; // Don't cache if there's no URI
-         }
-         // An already existing Image is replaced.
-         if (!img.isCacheable()) {
-             throw new IllegalArgumentException(
-                     "Image is not cacheable! (Flavor: " + img.getFlavor() + ")");
-         }
-         final ImageKey key = new ImageKey(originalURI, img.getFlavor());
-         this.images.put(key, img);
-     }
+     */
+    public void putImage(final Image img) {
+        final String originalURI = img.getInfo().getOriginalURI();
+        if (originalURI == null || "".equals(originalURI)) {
+            return; // Don't cache if there's no URI
+        }
+        // An already existing Image is replaced.
+        if (!img.isCacheable()) {
+            throw new IllegalArgumentException(
+                    "Image is not cacheable! (Flavor: " + img.getFlavor() + ")");
+        }
+        final ImageKey key = new ImageKey(originalURI, img.getFlavor());
+        this.images.put(key, img);
+    }
 
-     /**
-      * Clears the image cache (all ImageInfo and Image objects).
-      */
-     public void clearCache() {
-         this.invalidURIs.clear();
-         this.imageInfos.clear();
-         this.images.clear();
-         doHouseKeeping();
-     }
+    /**
+     * Clears the image cache (all ImageInfo and Image objects).
+     */
+    public void clearCache() {
+        this.invalidURIs.clear();
+        this.imageInfos.clear();
+        this.images.clear();
+        doHouseKeeping();
+    }
 
-     private void considerHouseKeeping() {
-         final long ts = this.timeStampProvider.getTimeStamp();
-         if (this.lastHouseKeeping + ONE_HOUR > ts) {
-             // Housekeeping is only triggered through registration of an invalid
+    private void considerHouseKeeping() {
+        final long ts = this.timeStampProvider.getTimeStamp();
+        if (this.lastHouseKeeping + ONE_HOUR > ts) {
+            // Housekeeping is only triggered through registration of an invalid
             // URI at the moment.
-             // Depending on the environment this could be triggered next to
+            // Depending on the environment this could be triggered next to
             // never.
-             // Doing this check for every image access could be relatively
+            // Doing this check for every image access could be relatively
             // costly.
-             // The only alternative is a cleanup thread which is rather
+            // The only alternative is a cleanup thread which is rather
             // heavy-weight.
-             this.lastHouseKeeping = ts;
-             doHouseKeeping();
-         }
-     }
+            this.lastHouseKeeping = ts;
+            doHouseKeeping();
+        }
+    }
 
-     /**
-      * Triggers some house-keeping, i.e. removes stale entries.
-      */
-     public void doHouseKeeping() {
-         this.imageInfos.doHouseKeeping();
-         this.images.doHouseKeeping();
-         doInvalidURIHouseKeeping();
-     }
+    /**
+     * Triggers some house-keeping, i.e. removes stale entries.
+     */
+    public void doHouseKeeping() {
+        this.imageInfos.doHouseKeeping();
+        this.images.doHouseKeeping();
+        doInvalidURIHouseKeeping();
+    }
 
-     private void doInvalidURIHouseKeeping() {
-         final Set currentEntries = new HashSet(this.invalidURIs.keySet());
-         final Iterator iter = currentEntries.iterator();
-         while (iter.hasNext()) {
-             final String key = (String) iter.next();
-             removeInvalidURIIfExpired(key);
-         }
-     }
+    private void doInvalidURIHouseKeeping() {
+        final Set currentEntries = new HashSet(this.invalidURIs.keySet());
+        final Iterator iter = currentEntries.iterator();
+        while (iter.hasNext()) {
+            final String key = (String) iter.next();
+            removeInvalidURIIfExpired(key);
+        }
+    }
 
- }
+}

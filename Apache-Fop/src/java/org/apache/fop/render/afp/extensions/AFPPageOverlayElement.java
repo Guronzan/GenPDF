@@ -19,11 +19,6 @@
 
 package org.apache.fop.render.afp.extensions;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
-import org.apache.xmlgraphics.util.UnitConv;
-
 import org.apache.fop.afp.AFPPaintingState;
 import org.apache.fop.afp.AFPUnitConverter;
 import org.apache.fop.apps.FOPException;
@@ -31,10 +26,14 @@ import org.apache.fop.fo.Constants;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.extensions.ExtensionAttachment;
+import org.apache.xmlgraphics.util.UnitConv;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 /**
- * This class extends the org.apache.fop.render.afp.extensions.AbstractAFPExtensionObject class.
- * This object will be used to map the page overlay object in  AFPElementMapping.
+ * This class extends the
+ * org.apache.fop.render.afp.extensions.AbstractAFPExtensionObject class. This
+ * object will be used to map the page overlay object in AFPElementMapping.
  * <p/>
  */
 public class AFPPageOverlayElement extends AbstractAFPExtensionObject {
@@ -45,53 +44,62 @@ public class AFPPageOverlayElement extends AbstractAFPExtensionObject {
     /**
      * Constructs an AFP object (called by Maker).
      *
-     * @param parent the parent formatting object
-     * @param name the name of the afp element
+     * @param parent
+     *            the parent formatting object
+     * @param name
+     *            the name of the afp element
      */
-    public AFPPageOverlayElement(FONode parent, String name) {
+    public AFPPageOverlayElement(final FONode parent, final String name) {
         super(parent, name);
     }
 
     private AFPPageOverlay getPageSetupAttachment() {
-        return (AFPPageOverlay)getExtensionAttachment();
+        return (AFPPageOverlay) getExtensionAttachment();
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
         super.startOfNode();
         if (AFPElementMapping.INCLUDE_PAGE_OVERLAY.equals(getLocalName())) {
-            if (parent.getNameId() != Constants.FO_SIMPLE_PAGE_MASTER
-                    && parent.getNameId() != Constants.FO_PAGE_SEQUENCE) {
-                invalidChildError(getLocator(), parent.getName(), getNamespaceURI(), getName(),
-                    "rule.childOfPageSequenceOrSPM");
+            if (this.parent.getNameId() != Constants.FO_SIMPLE_PAGE_MASTER
+                    && this.parent.getNameId() != Constants.FO_PAGE_SEQUENCE) {
+                invalidChildError(getLocator(), this.parent.getName(),
+                        getNamespaceURI(), getName(),
+                        "rule.childOfPageSequenceOrSPM");
             }
         } else {
-            if (parent.getNameId() != Constants.FO_SIMPLE_PAGE_MASTER) {
-                invalidChildError(getLocator(), parent.getName(), getNamespaceURI(), getName(),
-                    "rule.childOfSPM");
+            if (this.parent.getNameId() != Constants.FO_SIMPLE_PAGE_MASTER) {
+                invalidChildError(getLocator(), this.parent.getName(),
+                        getNamespaceURI(), getName(), "rule.childOfSPM");
             }
         }
     }
 
-
     /** {@inheritDoc} */
-    public void processNode(String elementName, Locator locator,
-                            Attributes attlist, PropertyList propertyList)
-                                throws FOPException {
+    @Override
+    public void processNode(final String elementName, final Locator locator,
+            final Attributes attlist, final PropertyList propertyList)
+            throws FOPException {
         super.processNode(elementName, locator, attlist, propertyList);
-        AFPPageOverlay pageOverlay = getPageSetupAttachment();
+        final AFPPageOverlay pageOverlay = getPageSetupAttachment();
         if (AFPElementMapping.INCLUDE_PAGE_OVERLAY.equals(elementName)) {
-            // convert user specific units to mpts and set the coordinates for the page overlay
-            AFPPaintingState paintingState = new AFPPaintingState();
-            AFPUnitConverter unitConverter = new AFPUnitConverter(paintingState);
-            int x = (int)unitConverter.mpt2units(UnitConv.convert(attlist.getValue(ATT_X)));
-            int y = (int)unitConverter.mpt2units(UnitConv.convert(attlist.getValue(ATT_Y)));
+            // convert user specific units to mpts and set the coordinates for
+            // the page overlay
+            final AFPPaintingState paintingState = new AFPPaintingState();
+            final AFPUnitConverter unitConverter = new AFPUnitConverter(
+                    paintingState);
+            final int x = (int) unitConverter.mpt2units(UnitConv
+                    .convert(attlist.getValue(ATT_X)));
+            final int y = (int) unitConverter.mpt2units(UnitConv
+                    .convert(attlist.getValue(ATT_Y)));
             pageOverlay.setX(x);
             pageOverlay.setY(y);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     protected ExtensionAttachment instantiateExtensionAttachment() {
         return new AFPPageOverlay();
     }

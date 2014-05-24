@@ -20,17 +20,24 @@
 package org.apache.fop.complexscripts.util;
 
 /**
- * <p>Interface for providing script specific context testers.</p>
+ * <p>
+ * Interface for providing script specific context testers.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 public interface ScriptContextTester {
 
     /**
      * Obtain a glyph context tester for the specified feature.
-     * @param feature a feature identifier
-     * @return a glyph context tester or null if none available for the specified feature
+     * 
+     * @param feature
+     *            a feature identifier
+     * @return a glyph context tester or null if none available for the
+     *         specified feature
      */
-    GlyphContextTester getTester ( String feature );
+    GlyphContextTester getTester(final String feature);
 
 }

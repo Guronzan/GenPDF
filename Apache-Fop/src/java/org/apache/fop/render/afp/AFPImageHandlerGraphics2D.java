@@ -23,10 +23,6 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
 
-import org.apache.xmlgraphics.image.loader.Image;
-import org.apache.xmlgraphics.image.loader.ImageFlavor;
-import org.apache.xmlgraphics.image.loader.impl.ImageGraphics2D;
-
 import org.apache.fop.afp.AFPDataObjectInfo;
 import org.apache.fop.afp.AFPGraphics2D;
 import org.apache.fop.afp.AFPGraphicsObjectInfo;
@@ -37,19 +33,23 @@ import org.apache.fop.afp.modca.ResourceObject;
 import org.apache.fop.render.ImageHandler;
 import org.apache.fop.render.ImageHandlerUtil;
 import org.apache.fop.render.RenderingContext;
+import org.apache.xmlgraphics.image.loader.Image;
+import org.apache.xmlgraphics.image.loader.ImageFlavor;
+import org.apache.xmlgraphics.image.loader.impl.ImageGraphics2D;
 
 /**
  * PDFImageHandler implementation which handles Graphics2D images.
  */
-public class AFPImageHandlerGraphics2D extends AFPImageHandler implements ImageHandler {
+public class AFPImageHandlerGraphics2D extends AFPImageHandler implements
+        ImageHandler {
 
-    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {
-        ImageFlavor.GRAPHICS2D
-    };
+    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] { ImageFlavor.GRAPHICS2D };
 
-    private void setDefaultResourceLevel(AFPGraphicsObjectInfo graphicsObjectInfo,
-            AFPResourceManager resourceManager) {
-        AFPResourceInfo resourceInfo = graphicsObjectInfo.getResourceInfo();
+    private void setDefaultResourceLevel(
+            final AFPGraphicsObjectInfo graphicsObjectInfo,
+            final AFPResourceManager resourceManager) {
+        final AFPResourceInfo resourceInfo = graphicsObjectInfo
+                .getResourceInfo();
         if (!resourceInfo.levelChanged()) {
             resourceInfo.setLevel(resourceManager.getResourceLevelDefaults()
                     .getDefaultResourceLevel(ResourceObject.TYPE_GRAPHIC));
@@ -57,16 +57,19 @@ public class AFPImageHandlerGraphics2D extends AFPImageHandler implements ImageH
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getPriority() {
         return 200;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class getSupportedImageClass() {
         return ImageGraphics2D.class;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor[] getSupportedImageFlavors() {
         return FLAVORS;
     }
@@ -78,38 +81,37 @@ public class AFPImageHandlerGraphics2D extends AFPImageHandler implements ImageH
     }
 
     /** {@inheritDoc} */
-    public void handleImage(RenderingContext context, Image image, Rectangle pos)
-            throws IOException {
-        AFPRenderingContext afpContext = (AFPRenderingContext)context;
+    @Override
+    public void handleImage(final RenderingContext context, final Image image,
+            final Rectangle pos) throws IOException {
+        final AFPRenderingContext afpContext = (AFPRenderingContext) context;
 
-        AFPGraphicsObjectInfo graphicsObjectInfo = (AFPGraphicsObjectInfo)createDataObjectInfo();
+        final AFPGraphicsObjectInfo graphicsObjectInfo = (AFPGraphicsObjectInfo) createDataObjectInfo();
 
         // set resource information
-        setResourceInformation(graphicsObjectInfo,
-                image.getInfo().getOriginalURI(),
-                afpContext.getForeignAttributes());
+        setResourceInformation(graphicsObjectInfo, image.getInfo()
+                .getOriginalURI(), afpContext.getForeignAttributes());
 
         // Positioning
-        graphicsObjectInfo.setObjectAreaInfo(
-                createObjectAreaInfo(afpContext.getPaintingState(), pos));
+        graphicsObjectInfo.setObjectAreaInfo(createObjectAreaInfo(
+                afpContext.getPaintingState(), pos));
 
-        setDefaultResourceLevel(graphicsObjectInfo, afpContext.getResourceManager());
+        setDefaultResourceLevel(graphicsObjectInfo,
+                afpContext.getResourceManager());
 
-        AFPPaintingState paintingState = afpContext.getPaintingState();
+        final AFPPaintingState paintingState = afpContext.getPaintingState();
         paintingState.save(); // save
-        AffineTransform placement = new AffineTransform();
+        final AffineTransform placement = new AffineTransform();
         placement.translate(pos.x, pos.y);
         paintingState.concatenate(placement);
 
         // Image content
-        ImageGraphics2D imageG2D = (ImageGraphics2D)image;
+        final ImageGraphics2D imageG2D = (ImageGraphics2D) image;
         final boolean textAsShapes = paintingState.isStrokeGOCAText();
-        AFPGraphics2D g2d = new AFPGraphics2D(
-                textAsShapes,
-                afpContext.getPaintingState(),
-                afpContext.getResourceManager(),
-                graphicsObjectInfo.getResourceInfo(),
-                (textAsShapes ? null : afpContext.getFontInfo()));
+        final AFPGraphics2D g2d = new AFPGraphics2D(textAsShapes,
+                afpContext.getPaintingState(), afpContext.getResourceManager(),
+                graphicsObjectInfo.getResourceInfo(), textAsShapes ? null
+                        : afpContext.getFontInfo());
         g2d.setGraphicContext(new org.apache.xmlgraphics.java2d.GraphicContext());
 
         graphicsObjectInfo.setGraphics2D(g2d);
@@ -122,17 +124,21 @@ public class AFPImageHandlerGraphics2D extends AFPImageHandler implements ImageH
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible(RenderingContext targetContext, Image image) {
-        boolean supported = (image == null || image instanceof ImageGraphics2D)
+    @Override
+    public boolean isCompatible(final RenderingContext targetContext,
+            final Image image) {
+        final boolean supported = (image == null || image instanceof ImageGraphics2D)
                 && targetContext instanceof AFPRenderingContext;
         if (supported) {
-            AFPRenderingContext afpContext = (AFPRenderingContext)targetContext;
+            final AFPRenderingContext afpContext = (AFPRenderingContext) targetContext;
             if (!afpContext.getPaintingState().isGOCAEnabled()) {
                 return false;
             }
-            String mode = (String)targetContext.getHint(ImageHandlerUtil.CONVERSION_MODE);
+            final String mode = (String) targetContext
+                    .getHint(ImageHandlerUtil.CONVERSION_MODE);
             if (ImageHandlerUtil.isConversionModeBitmap(mode)) {
-                //Disabling this image handler automatically causes a bitmap to be generated
+                // Disabling this image handler automatically causes a bitmap to
+                // be generated
                 return false;
             }
         }

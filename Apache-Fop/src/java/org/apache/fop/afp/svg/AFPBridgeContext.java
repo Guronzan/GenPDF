@@ -25,13 +25,11 @@ import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.gvt.TextPainter;
-
-import org.apache.xmlgraphics.image.loader.ImageManager;
-import org.apache.xmlgraphics.image.loader.ImageSessionContext;
-
 import org.apache.fop.afp.AFPGraphics2D;
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.svg.AbstractFOPBridgeContext;
+import org.apache.xmlgraphics.image.loader.ImageManager;
+import org.apache.xmlgraphics.image.loader.ImageSessionContext;
 
 /**
  * An AFP specific implementation of a Batik BridgeContext
@@ -43,40 +41,55 @@ public class AFPBridgeContext extends AbstractFOPBridgeContext {
     /**
      * Constructs a new bridge context.
      *
-     * @param userAgent the user agent
-     * @param fontInfo the font list for the text painter, may be null
-     *                 in which case text is painted as shapes
-     * @param imageManager an image manager
-     * @param imageSessionContext an image session context
-     * @param linkTransform AffineTransform to properly place links,
-     *                      may be null
-     * @param g2d an AFPGraphics 2D implementation
+     * @param userAgent
+     *            the user agent
+     * @param fontInfo
+     *            the font list for the text painter, may be null in which case
+     *            text is painted as shapes
+     * @param imageManager
+     *            an image manager
+     * @param imageSessionContext
+     *            an image session context
+     * @param linkTransform
+     *            AffineTransform to properly place links, may be null
+     * @param g2d
+     *            an AFPGraphics 2D implementation
      */
-    public AFPBridgeContext(UserAgent userAgent, FontInfo fontInfo,
-            ImageManager imageManager, ImageSessionContext imageSessionContext,
-            AffineTransform linkTransform, AFPGraphics2D g2d) {
-        super(userAgent, fontInfo, imageManager, imageSessionContext, linkTransform);
+    public AFPBridgeContext(final UserAgent userAgent, final FontInfo fontInfo,
+            final ImageManager imageManager,
+            final ImageSessionContext imageSessionContext,
+            final AffineTransform linkTransform, final AFPGraphics2D g2d) {
+        super(userAgent, fontInfo, imageManager, imageSessionContext,
+                linkTransform);
         this.g2d = g2d;
     }
 
     /**
      * Constructs a new bridge context.
-     * @param userAgent the user agent
-     * @param documentLoader the Document Loader to use for referenced documents.
-     * @param fontInfo the font list for the text painter, may be null
-     *                 in which case text is painted as shapes
-     * @param imageManager an image manager
-     * @param imageSessionContext an image session context
-     * @param linkTransform AffineTransform to properly place links,
-     *                      may be null
-     * @param g2d an AFPGraphics 2D implementation
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param documentLoader
+     *            the Document Loader to use for referenced documents.
+     * @param fontInfo
+     *            the font list for the text painter, may be null in which case
+     *            text is painted as shapes
+     * @param imageManager
+     *            an image manager
+     * @param imageSessionContext
+     *            an image session context
+     * @param linkTransform
+     *            AffineTransform to properly place links, may be null
+     * @param g2d
+     *            an AFPGraphics 2D implementation
      */
-    public AFPBridgeContext(UserAgent userAgent, DocumentLoader documentLoader,
-            FontInfo fontInfo, ImageManager imageManager,
-            ImageSessionContext imageSessionContext,
-            AffineTransform linkTransform, AFPGraphics2D g2d) {
+    public AFPBridgeContext(final UserAgent userAgent,
+            final DocumentLoader documentLoader, final FontInfo fontInfo,
+            final ImageManager imageManager,
+            final ImageSessionContext imageSessionContext,
+            final AffineTransform linkTransform, final AFPGraphics2D g2d) {
         super(userAgent, documentLoader, fontInfo, imageManager,
-              imageSessionContext, linkTransform);
+                imageSessionContext, linkTransform);
         this.g2d = g2d;
     }
 
@@ -85,11 +98,12 @@ public class AFPBridgeContext extends AbstractFOPBridgeContext {
     public void registerSVGBridges() {
         super.registerSVGBridges();
 
-        if (fontInfo != null) {
-            AFPTextHandler textHandler = new AFPTextHandler(fontInfo, g2d.getResourceManager());
-            g2d.setCustomTextHandler(textHandler);
+        if (this.fontInfo != null) {
+            final AFPTextHandler textHandler = new AFPTextHandler(
+                    this.fontInfo, this.g2d.getResourceManager());
+            this.g2d.setCustomTextHandler(textHandler);
 
-            TextPainter textPainter = new AFPTextPainter(textHandler);
+            final TextPainter textPainter = new AFPTextPainter(textHandler);
             setTextPainter(textPainter);
 
             putBridge(new AFPTextElementBridge(textPainter));
@@ -102,10 +116,8 @@ public class AFPBridgeContext extends AbstractFOPBridgeContext {
     @Override
     public BridgeContext createBridgeContext() {
         return new AFPBridgeContext(getUserAgent(), getDocumentLoader(),
-                fontInfo,
-                getImageManager(),
-                getImageSessionContext(),
-                linkTransform, g2d);
+                this.fontInfo, getImageManager(), getImageSessionContext(),
+                this.linkTransform, this.g2d);
     }
 
 }

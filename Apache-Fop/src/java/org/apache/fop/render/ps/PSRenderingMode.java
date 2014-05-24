@@ -20,9 +20,9 @@
 package org.apache.fop.render.ps;
 
 /**
- * Enumeration that specifies the rendering mode for PostScript output. {@link #SIZE} tries
- * to produce smaller files at the expense of quality, whereas {@link #QUALITY} tries to
- * produce the best possible quality.
+ * Enumeration that specifies the rendering mode for PostScript output.
+ * {@link #SIZE} tries to produce smaller files at the expense of quality,
+ * whereas {@link #QUALITY} tries to produce the best possible quality.
  */
 enum PSRenderingMode {
 

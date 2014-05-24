@@ -23,10 +23,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
- * A base class that encapsulates common features of
- * ActiveEnvironmentGroup and ResourceEnvironmentGroup
+ * A base class that encapsulates common features of ActiveEnvironmentGroup and
+ * ResourceEnvironmentGroup
  */
+@Slf4j
 public abstract class AbstractEnvironmentGroup extends AbstractNamedAFPObject {
 
     /** the collection of MapDataResource objects */
@@ -38,26 +41,28 @@ public abstract class AbstractEnvironmentGroup extends AbstractNamedAFPObject {
     /**
      * Main constructor
      *
-     * @param name the object name
+     * @param name
+     *            the object name
      */
-    public AbstractEnvironmentGroup(String name) {
+    public AbstractEnvironmentGroup(final String name) {
         super(name);
     }
 
     private List getMapPageOverlays() {
-        if (mapPageOverlays == null) {
-            mapPageOverlays = new java.util.ArrayList();
+        if (this.mapPageOverlays == null) {
+            this.mapPageOverlays = new java.util.ArrayList();
         }
-        return mapPageOverlays;
+        return this.mapPageOverlays;
     }
 
     /**
-     * Actually creates the MPO object.
-     * Also creates the supporting object (an IPO)
+     * Actually creates the MPO object. Also creates the supporting object (an
+     * IPO)
      *
-     * @param name the name of the overlay to be used
+     * @param name
+     *            the name of the overlay to be used
      */
-    public void createOverlay(String name) {
+    public void createOverlay(final String name) {
         MapPageOverlay mpo = getCurrentMapPageOverlay();
         if (mpo == null) {
             mpo = new MapPageOverlay();
@@ -66,34 +71,38 @@ public abstract class AbstractEnvironmentGroup extends AbstractNamedAFPObject {
 
         try {
             mpo.addOverlay(name);
-        } catch (MaximumSizeExceededException msee) {
+        } catch (final MaximumSizeExceededException msee) {
             mpo = new MapPageOverlay();
             getMapPageOverlays().add(mpo);
             try {
                 mpo.addOverlay(name);
-            } catch (MaximumSizeExceededException ex) {
+            } catch (final MaximumSizeExceededException ex) {
                 // Should never happen (but log just in case)
-                LOG.error("createOverlay():: resulted in a MaximumSizeExceededException");
+                log.error(
+                        "createOverlay():: resulted in a MaximumSizeExceededException",
+                        ex);
             }
         }
     }
 
     /**
-     * Getter method for the most recent MapPageOverlay added to the
-     * Active Environment Group (returns null if no MapPageOverlay exist)
+     * Getter method for the most recent MapPageOverlay added to the Active
+     * Environment Group (returns null if no MapPageOverlay exist)
      *
      * @return the most recent Map Coded Font
      */
     private MapPageOverlay getCurrentMapPageOverlay() {
-        return (MapPageOverlay)getLastElement(this.mapPageOverlays);
+        return (MapPageOverlay) getLastElement(this.mapPageOverlays);
     }
 
     /**
      * Get last element.
-     * @param list of elements
+     *
+     * @param list
+     *            of elements
      * @return last element or null if none
      */
-    protected Object getLastElement(List list) {
+    protected Object getLastElement(final List list) {
         if (list != null && list.size() > 0) {
             return list.get(list.size() - 1);
         } else {
@@ -102,7 +111,8 @@ public abstract class AbstractEnvironmentGroup extends AbstractNamedAFPObject {
     }
 
     /** {@inheritDoc} */
-    protected void writeContent(OutputStream os) throws IOException {
+    @Override
+    protected void writeContent(final OutputStream os) throws IOException {
         super.writeContent(os);
     }
 }

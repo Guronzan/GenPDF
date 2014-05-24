@@ -19,8 +19,6 @@
 
 package org.apache.fop.pdf.xref;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,12 +28,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-
 import org.apache.fop.pdf.PDFDocument;
 import org.apache.fop.pdf.PDFInfo;
 import org.apache.fop.pdf.PDFPages;
 import org.apache.fop.pdf.PDFRoot;
+import org.junit.Before;
+
+import static org.junit.Assert.assertArrayEquals;
 
 public abstract class CrossReferenceObjectTest {
 
@@ -49,56 +48,57 @@ public abstract class CrossReferenceObjectTest {
 
     @Before
     public void setUp() throws UnsupportedEncodingException {
-        pdfDocument = new PDFDocument("Apache FOP");
-        Map<String, List<String>> filterMap = pdfDocument.getFilterMap();
+        this.pdfDocument = new PDFDocument("Apache FOP");
+        final Map<String, List<String>> filterMap = this.pdfDocument
+                .getFilterMap();
         filterMap.put("default", Arrays.asList("null"));
-        PDFRoot root = new PDFRoot(1, new PDFPages(10));
-        PDFInfo info = new PDFInfo();
+        final PDFRoot root = new PDFRoot(1, new PDFPages(10));
+        final PDFInfo info = new PDFInfo();
         info.setObjectNumber(2);
-        byte[] fileID =
-                new byte[] {0x01, 0x23, 0x45, 0x67, (byte) 0x89, (byte) 0xab, (byte) 0xcd, (byte) 0xef};
-        trailerDictionary = new TrailerDictionary(pdfDocument)
-                .setRoot(root)
-                .setInfo(info)
-                .setFileID(fileID, fileID);
+        final byte[] fileID = new byte[] { 0x01, 0x23, 0x45, 0x67, (byte) 0x89,
+                (byte) 0xab, (byte) 0xcd, (byte) 0xef };
+        this.trailerDictionary = new TrailerDictionary(this.pdfDocument)
+        .setRoot(root).setInfo(info).setFileID(fileID, fileID);
     }
 
     protected void runTest() throws IOException {
-        crossReferenceObject = createCrossReferenceObject();
-        byte[] expected = createExpectedCrossReferenceData();
-        byte[] actual = createActualCrossReferenceData();
+        this.crossReferenceObject = createCrossReferenceObject();
+        final byte[] expected = createExpectedCrossReferenceData();
+        final byte[] actual = createActualCrossReferenceData();
         assertArrayEquals(expected, actual);
     }
 
     protected abstract CrossReferenceObject createCrossReferenceObject();
 
-    protected abstract byte[] createExpectedCrossReferenceData() throws IOException;
+    protected abstract byte[] createExpectedCrossReferenceData()
+            throws IOException;
 
     protected byte[] createActualCrossReferenceData() throws IOException {
-        ByteArrayOutputStream pdf = new ByteArrayOutputStream();
-        crossReferenceObject.output(pdf);
+        final ByteArrayOutputStream pdf = new ByteArrayOutputStream();
+        this.crossReferenceObject.output(pdf);
         pdf.close();
         return pdf.toByteArray();
     }
 
-    protected byte[] getBytes(StringBuilder stringBuilder) {
+    protected byte[] getBytes(final StringBuilder stringBuilder) {
         return getBytes(stringBuilder.toString());
     }
 
-    protected byte[] getBytes(String string) {
+    protected byte[] getBytes(final String string) {
         try {
             return string.getBytes("US-ASCII");
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * Outputs the given byte array to a file with the given name. Use for debugging
-     * purpose.
+     * Outputs the given byte array to a file with the given name. Use for
+     * debugging purpose.
      */
-    protected void streamToFile(byte[] bytes, String filename) throws IOException {
-        OutputStream output = new FileOutputStream(filename);
+    protected void streamToFile(final byte[] bytes, final String filename)
+            throws IOException {
+        final OutputStream output = new FileOutputStream(filename);
         output.write(bytes);
         output.close();
     }

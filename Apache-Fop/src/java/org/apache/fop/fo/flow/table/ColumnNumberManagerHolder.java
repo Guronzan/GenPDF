@@ -20,9 +20,9 @@
 package org.apache.fop.fo.flow.table;
 
 /**
- * Marking interface for table-related classes which contain a ColumnNumberManager
- * instance (Table, for registering columns, or TableCellContainer, for managing occupied
- * cells).
+ * Marking interface for table-related classes which contain a
+ * ColumnNumberManager instance (Table, for registering columns, or
+ * TableCellContainer, for managing occupied cells).
  */
 public interface ColumnNumberManagerHolder {
 

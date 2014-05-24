@@ -19,13 +19,13 @@
 
 package org.apache.fop.pdf.xref;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertArrayEquals;
 
 public class CompressedObjectReferenceTestCase extends ObjectReferenceTest {
 
@@ -39,11 +39,13 @@ public class CompressedObjectReferenceTestCase extends ObjectReferenceTest {
         runTest(Arrays.asList(0, 0, 0, 0, 0x11, 0xff, 0x15, 0xe9), 0xff);
     }
 
-    private void runTest(List<Integer> expectedObjectStreamBytes, int index) throws IOException {
-        int objectStreamNumber = (int) computeNumberFromBytes(expectedObjectStreamBytes);
-        sut = new CompressedObjectReference(0, objectStreamNumber, index);
-        byte[] expected = createExpectedOutput((byte) 2, expectedObjectStreamBytes, index);
-        byte[] actual = getActualOutput();
+    private void runTest(final List<Integer> expectedObjectStreamBytes,
+            final int index) throws IOException {
+        final int objectStreamNumber = (int) computeNumberFromBytes(expectedObjectStreamBytes);
+        this.sut = new CompressedObjectReference(0, objectStreamNumber, index);
+        final byte[] expected = createExpectedOutput((byte) 2,
+                expectedObjectStreamBytes, index);
+        final byte[] actual = getActualOutput();
         assertArrayEquals(expected, actual);
     }
 

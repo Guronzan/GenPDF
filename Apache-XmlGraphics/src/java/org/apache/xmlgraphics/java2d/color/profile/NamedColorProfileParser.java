@@ -32,105 +32,126 @@ import org.apache.xmlgraphics.java2d.color.NamedColorSpace;
 import org.apache.xmlgraphics.java2d.color.RenderingIntent;
 
 /**
- * This class is a parser for ICC named color profiles. It uses Java's {@link ICC_Profile} class
- * for parsing the basic structure but adds functionality to parse certain profile tags.
+ * This class is a parser for ICC named color profiles. It uses Java's
+ * {@link ICC_Profile} class for parsing the basic structure but adds
+ * functionality to parse certain profile tags.
  */
 public class NamedColorProfileParser {
 
-    private static final int MLUC = 0x6D6C7563; //'mluc'
-    private static final int NCL2 = 0x6E636C32; //'ncl2'
+    private static final int MLUC = 0x6D6C7563; // 'mluc'
+    private static final int NCL2 = 0x6E636C32; // 'ncl2'
 
     /**
      * Indicates whether the profile is a named color profile.
-     * @param profile the color profile
+     *
+     * @param profile
+     *            the color profile
      * @return true if the profile is a named color profile, false otherwise
      */
-    public static boolean isNamedColorProfile(ICC_Profile profile) {
+    public static boolean isNamedColorProfile(final ICC_Profile profile) {
         return profile.getProfileClass() == ICC_Profile.CLASS_NAMEDCOLOR;
     }
 
     /**
      * Parses a named color profile (NCP).
-     * @param profile the profile to analyze
-     * @param profileName Optional profile name associated with this color profile
-     * @param profileURI Optional profile URI associated with this color profile
+     *
+     * @param profile
+     *            the profile to analyze
+     * @param profileName
+     *            Optional profile name associated with this color profile
+     * @param profileURI
+     *            Optional profile URI associated with this color profile
      * @return an object representing the parsed NCP
-     * @throws IOException if an I/O error occurs
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public NamedColorProfile parseProfile(ICC_Profile profile,
-            String profileName, String profileURI) throws IOException {
+    public NamedColorProfile parseProfile(final ICC_Profile profile,
+            final String profileName, final String profileURI)
+                    throws IOException {
         if (!isNamedColorProfile(profile)) {
-            throw new IllegalArgumentException("Given profile is not a named color profile (NCP)");
+            throw new IllegalArgumentException(
+                    "Given profile is not a named color profile (NCP)");
         }
-        String profileDescription = getProfileDescription(profile);
-        String copyright = getCopyright(profile);
-        RenderingIntent intent = getRenderingIntent(profile);
-        NamedColorSpace[] ncs = readNamedColors(profile, profileName, profileURI);
+        final String profileDescription = getProfileDescription(profile);
+        final String copyright = getCopyright(profile);
+        final RenderingIntent intent = getRenderingIntent(profile);
+        final NamedColorSpace[] ncs = readNamedColors(profile, profileName,
+                profileURI);
         return new NamedColorProfile(profileDescription, copyright, ncs, intent);
     }
 
     /**
      * Parses a named color profile (NCP).
-     * @param profile the profile to analyze
+     *
+     * @param profile
+     *            the profile to analyze
      * @return an object representing the parsed NCP
-     * @throws IOException if an I/O error occurs
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public NamedColorProfile parseProfile(ICC_Profile profile) throws IOException {
+    public NamedColorProfile parseProfile(final ICC_Profile profile)
+            throws IOException {
         return parseProfile(profile, null, null);
     }
 
-    private String getProfileDescription(ICC_Profile profile) throws IOException {
-        byte[] tag = profile.getData(ICC_Profile.icSigProfileDescriptionTag);
+    private String getProfileDescription(final ICC_Profile profile)
+            throws IOException {
+        final byte[] tag = profile
+                .getData(ICC_Profile.icSigProfileDescriptionTag);
         return readSimpleString(tag);
     }
 
-    private String getCopyright(ICC_Profile profile) throws IOException {
-        byte[] tag = profile.getData(ICC_Profile.icSigCopyrightTag);
+    private String getCopyright(final ICC_Profile profile) throws IOException {
+        final byte[] tag = profile.getData(ICC_Profile.icSigCopyrightTag);
         return readSimpleString(tag);
     }
 
-    private RenderingIntent getRenderingIntent(ICC_Profile profile) throws IOException {
-        byte[] hdr = profile.getData(ICC_Profile.icSigHead);
-        int value = hdr[ICC_Profile.icHdrRenderingIntent];
+    private RenderingIntent getRenderingIntent(final ICC_Profile profile) {
+        final byte[] hdr = profile.getData(ICC_Profile.icSigHead);
+        final int value = hdr[ICC_Profile.icHdrRenderingIntent];
         return RenderingIntent.fromICCValue(value);
     }
 
-    private NamedColorSpace[] readNamedColors(ICC_Profile profile,
-            String profileName, String profileURI) throws IOException {
-        byte[] tag = profile.getData(ICC_Profile.icSigNamedColor2Tag);
-        DataInput din = new DataInputStream(new ByteArrayInputStream(tag));
-        int sig = din.readInt();
+    private NamedColorSpace[] readNamedColors(final ICC_Profile profile,
+            final String profileName, final String profileURI)
+                    throws IOException {
+        final byte[] tag = profile.getData(ICC_Profile.icSigNamedColor2Tag);
+        final DataInput din = new DataInputStream(new ByteArrayInputStream(tag));
+        final int sig = din.readInt();
         if (sig != NCL2) {
-            throw new UnsupportedOperationException("Unsupported structure type: "
-                    + toSignatureString(sig) + ". Expected " + toSignatureString(NCL2));
+            throw new UnsupportedOperationException(
+                    "Unsupported structure type: " + toSignatureString(sig)
+                    + ". Expected " + toSignatureString(NCL2));
         }
         din.skipBytes(8);
-        int numColors = din.readInt();
-        NamedColorSpace[] result = new NamedColorSpace[numColors];
-        int numDeviceCoord = din.readInt();
-        String prefix = readAscii(din, 32);
-        String suffix = readAscii(din, 32);
+        final int numColors = din.readInt();
+        final NamedColorSpace[] result = new NamedColorSpace[numColors];
+        final int numDeviceCoord = din.readInt();
+        final String prefix = readAscii(din, 32);
+        final String suffix = readAscii(din, 32);
         for (int i = 0; i < numColors; i++) {
-            String name = prefix + readAscii(din, 32) + suffix;
-            int[] pcs = readUInt16Array(din, 3);
-            float[] colorvalue = new float[3];
+            final String name = prefix + readAscii(din, 32) + suffix;
+            final int[] pcs = readUInt16Array(din, 3);
+            final float[] colorvalue = new float[3];
             for (int j = 0; j < pcs.length; j++) {
-                colorvalue[j] = ((float)pcs[j]) / 0x8000;
+                colorvalue[j] = (float) pcs[j] / 0x8000;
             }
 
-            //device coordinates are ignored for now
-            /*int[] deviceCoord =*/ readUInt16Array(din, numDeviceCoord);
+            // device coordinates are ignored for now
+            /* int[] deviceCoord = */readUInt16Array(din, numDeviceCoord);
 
             switch (profile.getPCSType()) {
             case ColorSpace.TYPE_XYZ:
-                result[i] = new NamedColorSpace(name, colorvalue, profileName, profileURI);
+                result[i] = new NamedColorSpace(name, colorvalue, profileName,
+                        profileURI);
                 break;
             case ColorSpace.TYPE_Lab:
-                //Not sure if this always D50 here,
-                //but the illuminant in the header is fixed to D50.
-                CIELabColorSpace labCS = ColorSpaces.getCIELabColorSpaceD50();
-                result[i] = new NamedColorSpace(name, labCS.toColor(colorvalue, 1.0f),
-                        profileName, profileURI);
+                // Not sure if this always D50 here,
+                // but the illuminant in the header is fixed to D50.
+                final CIELabColorSpace labCS = ColorSpaces
+                .getCIELabColorSpaceD50();
+                result[i] = new NamedColorSpace(name, labCS.toColor(colorvalue,
+                        1.0f), profileName, profileURI);
                 break;
             default:
                 throw new UnsupportedOperationException(
@@ -140,56 +161,58 @@ public class NamedColorProfileParser {
         return result;
     }
 
-    private int[] readUInt16Array(DataInput din, int count) throws IOException {
+    private int[] readUInt16Array(final DataInput din, final int count)
+            throws IOException {
         if (count == 0) {
             return null;
         }
-        int[] result = new int[count];
+        final int[] result = new int[count];
         for (int i = 0; i < count; i++) {
-            int v = din.readUnsignedShort();
+            final int v = din.readUnsignedShort();
             result[i] = v;
         }
         return result;
     }
 
-    private String readAscii(DataInput in, int maxLength) throws IOException {
-        byte[] data = new byte[maxLength];
+    private String readAscii(final DataInput in, final int maxLength)
+            throws IOException {
+        final byte[] data = new byte[maxLength];
         in.readFully(data);
         String result = new String(data, "US-ASCII");
-        int idx = result.indexOf('\0');
+        final int idx = result.indexOf('\0');
         if (idx >= 0) {
             result = result.substring(0, idx);
         }
         return result;
     }
 
-    private String readSimpleString(byte[] tag) throws IOException {
-        DataInput din = new DataInputStream(new ByteArrayInputStream(tag));
-        int sig = din.readInt();
+    private String readSimpleString(final byte[] tag) throws IOException {
+        final DataInput din = new DataInputStream(new ByteArrayInputStream(tag));
+        final int sig = din.readInt();
         if (sig == MLUC) {
             return readMLUC(din);
         } else {
-            return null; //Unsupported tag structure type
+            return null; // Unsupported tag structure type
         }
     }
 
-    private String readMLUC(DataInput din) throws IOException {
+    private String readMLUC(final DataInput din) throws IOException {
         din.skipBytes(16);
-        int firstLength = din.readInt();
-        int firstOffset = din.readInt();
-        int offset = 28;
+        final int firstLength = din.readInt();
+        final int firstOffset = din.readInt();
+        final int offset = 28;
         din.skipBytes(firstOffset - offset);
-        byte[] utf16 = new byte[firstLength];
+        final byte[] utf16 = new byte[firstLength];
         din.readFully(utf16);
         return new String(utf16, "UTF-16BE");
     }
 
-    private String toSignatureString(int sig) {
-        StringBuffer sb = new StringBuffer();
-        sb.append((char)(sig >> 24 & 0xFF));
-        sb.append((char)(sig >> 16 & 0xFF));
-        sb.append((char)(sig >> 8 & 0xFF));
-        sb.append((char)(sig & 0xFF));
+    private String toSignatureString(final int sig) {
+        final StringBuffer sb = new StringBuffer();
+        sb.append((char) (sig >> 24 & 0xFF));
+        sb.append((char) (sig >> 16 & 0xFF));
+        sb.append((char) (sig >> 8 & 0xFF));
+        sb.append((char) (sig & 0xFF));
         return sb.toString();
     }
 

@@ -26,8 +26,6 @@ package org.apache.fop.render.rtf.rtflib.rtfdoc;
  * the FOP project.
  */
 
-
-
 /** Constants for RTF border attribute names. */
 
 public interface IBorderAttributes {
@@ -102,16 +100,15 @@ public interface IBorderAttributes {
     String BORDER_WIDTH = "brdrw";
 
     /** String array of border attributes */
-    String [] BORDERS = new String[] {
-        BORDER_SINGLE_THICKNESS,    BORDER_DOUBLE_THICKNESS,            BORDER_SHADOWED,
-        BORDER_DOUBLE,              BORDER_DOTTED,                      BORDER_DASH,
-        BORDER_HAIRLINE,            BORDER_DASH_SMALL,                  BORDER_DOT_DASH,
-        BORDER_DOT_DOT_DASH,        BORDER_TRIPLE,                      BORDER_THINK_THIN_SMALL,
-        BORDER_THIN_THICK_SMALL,    BORDER_THIN_THICK_THIN_SMALL,       BORDER_THINK_THIN_MEDIUM,
-        BORDER_THIN_THICK_MEDIUM,   BORDER_THIN_THICK_THIN_MEDIUM,      BORDER_THINK_THIN_LARGE,
-        BORDER_THIN_THICK_LARGE,    BORDER_THIN_THICK_THIN_LARGE,       BORDER_WAVY,
-        BORDER_WAVY_DOUBLE,         BORDER_STRIPED,                     BORDER_EMBOSS,
-        BORDER_ENGRAVE,             BORDER_COLOR,                       BORDER_SPACE,
-        BORDER_WIDTH
-    };
+    String[] BORDERS = new String[] { BORDER_SINGLE_THICKNESS,
+            BORDER_DOUBLE_THICKNESS, BORDER_SHADOWED, BORDER_DOUBLE,
+            BORDER_DOTTED, BORDER_DASH, BORDER_HAIRLINE, BORDER_DASH_SMALL,
+            BORDER_DOT_DASH, BORDER_DOT_DOT_DASH, BORDER_TRIPLE,
+            BORDER_THINK_THIN_SMALL, BORDER_THIN_THICK_SMALL,
+            BORDER_THIN_THICK_THIN_SMALL, BORDER_THINK_THIN_MEDIUM,
+            BORDER_THIN_THICK_MEDIUM, BORDER_THIN_THICK_THIN_MEDIUM,
+            BORDER_THINK_THIN_LARGE, BORDER_THIN_THICK_LARGE,
+            BORDER_THIN_THICK_THIN_LARGE, BORDER_WAVY, BORDER_WAVY_DOUBLE,
+            BORDER_STRIPED, BORDER_EMBOSS, BORDER_ENGRAVE, BORDER_COLOR,
+            BORDER_SPACE, BORDER_WIDTH };
 }

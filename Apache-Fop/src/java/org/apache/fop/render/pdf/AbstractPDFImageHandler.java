@@ -22,36 +22,37 @@ package org.apache.fop.render.pdf;
 import java.awt.Rectangle;
 import java.io.IOException;
 
-import org.apache.xmlgraphics.image.loader.Image;
-
 import org.apache.fop.pdf.PDFImage;
 import org.apache.fop.pdf.PDFXObject;
 import org.apache.fop.render.ImageHandler;
 import org.apache.fop.render.RenderingContext;
 import org.apache.fop.render.pdf.PDFLogicalStructureHandler.MarkedContentInfo;
+import org.apache.xmlgraphics.image.loader.Image;
 
 /**
- * A partial implementation of a PDF-specific image handler, containing the code that is
- * common between image flavors.
+ * A partial implementation of a PDF-specific image handler, containing the code
+ * that is common between image flavors.
  */
 abstract class AbstractPDFImageHandler implements ImageHandler {
 
     /** {@inheritDoc} */
-    public void handleImage(RenderingContext context, Image image, Rectangle pos)
-            throws IOException {
+    @Override
+    public void handleImage(final RenderingContext context, final Image image,
+            final Rectangle pos) throws IOException {
         assert context instanceof PDFRenderingContext;
-        PDFRenderingContext pdfContext = (PDFRenderingContext)context;
-        PDFContentGenerator generator = pdfContext.getGenerator();
-        PDFImage pdfimage = createPDFImage(image, image.getInfo().getOriginalURI());
-        PDFXObject xobj = generator.getDocument().addImage(
+        final PDFRenderingContext pdfContext = (PDFRenderingContext) context;
+        final PDFContentGenerator generator = pdfContext.getGenerator();
+        final PDFImage pdfimage = createPDFImage(image, image.getInfo()
+                .getOriginalURI());
+        final PDFXObject xobj = generator.getDocument().addImage(
                 generator.getResourceContext(), pdfimage);
 
-        float x = (float)pos.getX() / 1000f;
-        float y = (float)pos.getY() / 1000f;
-        float w = (float)pos.getWidth() / 1000f;
-        float h = (float)pos.getHeight() / 1000f;
+        final float x = (float) pos.getX() / 1000f;
+        final float y = (float) pos.getY() / 1000f;
+        final float w = (float) pos.getWidth() / 1000f;
+        final float h = (float) pos.getHeight() / 1000f;
         if (context.getUserAgent().isAccessibilityEnabled()) {
-            MarkedContentInfo mci = pdfContext.getMarkedContentInfo();
+            final MarkedContentInfo mci = pdfContext.getMarkedContentInfo();
             generator.placeImage(x, y, w, h, xobj, mci.tag, mci.mcid);
         } else {
             generator.placeImage(x, y, w, h, xobj);
@@ -61,10 +62,13 @@ abstract class AbstractPDFImageHandler implements ImageHandler {
     /**
      * Creates a PDF image object out of the given image.
      *
-     * @param image an image
-     * @param xobjectKey a key for retrieval of the image from the document's XObject collection
-     * @return a suitable {@link PDFImage} implementation that can handle the flavour of
-     * the given image
+     * @param image
+     *            an image
+     * @param xobjectKey
+     *            a key for retrieval of the image from the document's XObject
+     *            collection
+     * @return a suitable {@link PDFImage} implementation that can handle the
+     *         flavour of the given image
      */
-    abstract PDFImage createPDFImage(Image image, String xobjectKey);
+    abstract PDFImage createPDFImage(final Image image, final String xobjectKey);
 }

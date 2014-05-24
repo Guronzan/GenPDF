@@ -23,18 +23,22 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * The interface is implemented by classes that can generate the raw bitmap field for an image
- * that might be further encoded/compressed by the image handler class.
+ * The interface is implemented by classes that can generate the raw bitmap
+ * field for an image that might be further encoded/compressed by the image
+ * handler class.
  */
 public interface ImageEncoder {
 
     /**
-     * Writes the whole raw bitmap field to the given OutputStream. The implementation must not
-     * close the OutputStream when it is finished!
-     * @param out the OutputStream to write to
-     * @throws IOException if an I/O error occurs
+     * Writes the whole raw bitmap field to the given OutputStream. The
+     * implementation must not close the OutputStream when it is finished!
+     * 
+     * @param out
+     *            the OutputStream to write to
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    void writeTo(OutputStream out) throws IOException;
+    void writeTo(final OutputStream out) throws IOException;
 
     String getImplicitFilter();
 

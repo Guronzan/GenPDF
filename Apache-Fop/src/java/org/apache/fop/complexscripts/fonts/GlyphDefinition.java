@@ -22,18 +22,25 @@ package org.apache.fop.complexscripts.fonts;
 // CSOFF: LineLengthCheck
 
 /**
- * <p>The <code>GlyphDefinition</code> interface is a marker interface implemented by a glyph definition
- * subtable.</p>
+ * <p>
+ * The <code>GlyphDefinition</code> interface is a marker interface implemented
+ * by a glyph definition subtable.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 public interface GlyphDefinition {
 
     /**
      * Determine if some definition is available for a specific glyph.
-     * @param gi a glyph index
-     * @return true if some (unspecified) definition is available for the specified glyph
+     * 
+     * @param gi
+     *            a glyph index
+     * @return true if some (unspecified) definition is available for the
+     *         specified glyph
      */
-    boolean hasDefinition ( int gi );
+    boolean hasDefinition(final int gi);
 
 }

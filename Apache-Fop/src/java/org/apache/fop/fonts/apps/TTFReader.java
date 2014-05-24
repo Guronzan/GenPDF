@@ -25,27 +25,26 @@ import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.Version;
 import org.apache.fop.fonts.CMapSegment;
 import org.apache.fop.fonts.FontUtil;
 import org.apache.fop.fonts.truetype.FontFileReader;
 import org.apache.fop.fonts.truetype.TTFFile;
-import org.apache.fop.util.CommandLineLogger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 // CSOFF: InnerAssignmentCheck
 // CSOFF: LineLengthCheck
 
 /**
- * A tool which reads TTF files and generates
- * XML font metrics file for use in FOP.
+ * A tool which reads TTF files and generates XML font metrics file for use in
+ * FOP.
  */
+@Slf4j
 public class TTFReader extends AbstractFontReader {
 
     /** Used to detect incompatible versions of the generated XML files */
@@ -61,56 +60,52 @@ public class TTFReader extends AbstractFontReader {
     }
 
     private static void displayUsage() {
-        System.out.println(
-                "java " + TTFReader.class.getName() + " [options] fontfile.ttf xmlfile.xml");
-        System.out.println();
-        System.out.println("where options can be:");
-        System.out.println("-t  Trace mode");
-        System.out.println("-d  Debug mode");
-        System.out.println("-q  Quiet mode");
-        System.out.println("-enc ansi");
-        System.out.println("    With this option you create a WinAnsi encoded font.");
-        System.out.println("    The default is to create a CID keyed font.");
-        System.out.println("    If you're not going to use characters outside the");
-        System.out.println("    pdfencoding range (almost the same as iso-8889-1)");
-        System.out.println("    you can add this option.");
-        System.out.println("-ttcname <fontname>");
-        System.out.println("    If you're reading data from a TrueType Collection");
-        System.out.println("    (.ttc file) you must specify which font from the");
-        System.out.println("    collection you will read metrics from. If you read");
-        System.out.println("    from a .ttc file without this option, the fontnames");
-        System.out.println("    will be listed for you.");
-        System.out.println(" -fn <fontname>");
-        System.out.println("    default is to use the fontname in the .ttf file, but");
-        System.out.println("    you can override that name to make sure that the");
-        System.out.println("    embedded font is used (if you're embedding fonts)");
-        System.out.println("    instead of installed fonts when viewing documents ");
-        System.out.println("    with Acrobat Reader.");
+        log.info("java " + TTFReader.class.getName()
+                + " [options] fontfile.ttf xmlfile.xml");
+        log.info("where options can be:");
+        log.info("-t  Trace mode");
+        log.info("-d  Debug mode");
+        log.info("-q  Quiet mode");
+        log.info("-enc ansi");
+        log.info("    With this option you create a WinAnsi encoded font.");
+        log.info("    The default is to create a CID keyed font.");
+        log.info("    If you're not going to use characters outside the");
+        log.info("    pdfencoding range (almost the same as iso-8889-1)");
+        log.info("    you can add this option.");
+        log.info("-ttcname <fontname>");
+        log.info("    If you're reading data from a TrueType Collection");
+        log.info("    (.ttc file) you must specify which font from the");
+        log.info("    collection you will read metrics from. If you read");
+        log.info("    from a .ttc file without this option, the fontnames");
+        log.info("    will be listed for you.");
+        log.info(" -fn <fontname>");
+        log.info("    default is to use the fontname in the .ttf file, but");
+        log.info("    you can override that name to make sure that the");
+        log.info("    embedded font is used (if you're embedding fonts)");
+        log.info("    instead of installed fonts when viewing documents ");
+        log.info("    with Acrobat Reader.");
     }
-
 
     /**
      * The main method for the TTFReader tool.
      *
-     * @param  args Command-line arguments: [options] fontfile.ttf xmlfile.xml
-     * where options can be:
-     * -fn <fontname>
-     * default is to use the fontname in the .ttf file, but you can override
-     * that name to make sure that the embedded font is used instead of installed
-     * fonts when viewing documents with Acrobat Reader.
-     * -cn <classname>
-     * default is to use the fontname
-     * -ef <path to the truetype fontfile>
-     * will add the possibility to embed the font. When running fop, fop will look
-     * for this file to embed it
-     * -er <path to truetype fontfile relative to org/apache/fop/render/pdf/fonts>
-     * you can also include the fontfile in the fop.jar file when building fop.
-     * You can use both -ef and -er. The file specified in -ef will be searched first,
-     * then the -er file.
-     * -nocs
-     * if complex script features are disabled
+     * @param args
+     *            Command-line arguments: [options] fontfile.ttf xmlfile.xml
+     *            where options can be: -fn <fontname> default is to use the
+     *            fontname in the .ttf file, but you can override that name to
+     *            make sure that the embedded font is used instead of installed
+     *            fonts when viewing documents with Acrobat Reader. -cn
+     *            <classname> default is to use the fontname -ef <path to the
+     *            truetype fontfile> will add the possibility to embed the font.
+     *            When running fop, fop will look for this file to embed it -er
+     *            <path to truetype fontfile relative to
+     *            org/apache/fop/render/pdf/fonts> you can also include the
+     *            fontfile in the fop.jar file when building fop. You can use
+     *            both -ef and -er. The file specified in -ef will be searched
+     *            first, then the -er file. -nocs if complex script features are
+     *            disabled
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         String embFile = null;
         String embResource = null;
         String className = null;
@@ -118,65 +113,57 @@ public class TTFReader extends AbstractFontReader {
         String ttcName = null;
         boolean isCid = true;
 
-        Map options = new java.util.HashMap();
-        String[] arguments = parseArguments(options, args);
+        final Map options = new java.util.HashMap();
+        final String[] arguments = parseArguments(options, args);
 
-        // Enable the simple command line logging when no other logger is
-        // defined.
-        LogFactory logFactory = LogFactory.getFactory();
-        if (System.getProperty("org.apache.commons.logging.Log") == null) {
-            logFactory.setAttribute("org.apache.commons.logging.Log",
-                                            CommandLineLogger.class.getName());
-        }
-
-        determineLogLevel(options);
-
-        TTFReader app = new TTFReader();
+        final TTFReader app = new TTFReader();
 
         log.info("TTF Reader for Apache FOP " + Version.getVersion() + "\n");
 
         if (options.get("-enc") != null) {
-            String enc = (String)options.get("-enc");
+            final String enc = (String) options.get("-enc");
             if ("ansi".equals(enc)) {
                 isCid = false;
             }
         }
 
         if (options.get("-ttcname") != null) {
-            ttcName = (String)options.get("-ttcname");
+            ttcName = (String) options.get("-ttcname");
         }
 
         if (options.get("-ef") != null) {
-            embFile = (String)options.get("-ef");
+            embFile = (String) options.get("-ef");
         }
 
         if (options.get("-er") != null) {
-            embResource = (String)options.get("-er");
+            embResource = (String) options.get("-er");
         }
 
         if (options.get("-fn") != null) {
-            fontName = (String)options.get("-fn");
+            fontName = (String) options.get("-fn");
         }
 
         if (options.get("-cn") != null) {
-            className = (String)options.get("-cn");
+            className = (String) options.get("-cn");
         }
 
-        boolean useKerning = true;
+        final boolean useKerning = true;
         boolean useAdvanced = true;
         if (options.get("-nocs") != null) {
             useAdvanced = false;
         }
 
         if (arguments.length != 2 || options.get("-h") != null
-            || options.get("-help") != null || options.get("--help") != null) {
+                || options.get("-help") != null
+                || options.get("--help") != null) {
             displayUsage();
         } else {
             try {
                 log.info("Parsing font...");
-                TTFFile ttf = app.loadTTF(arguments[0], ttcName, useKerning, useAdvanced);
+                final TTFFile ttf = app.loadTTF(arguments[0], ttcName,
+                        useKerning, useAdvanced);
                 if (ttf != null) {
-                    org.w3c.dom.Document doc = app.constructFontXML(ttf,
+                    final org.w3c.dom.Document doc = app.constructFontXML(ttf,
                             fontName, className, embResource, embFile, isCid,
                             ttcName);
 
@@ -194,12 +181,12 @@ public class TTFReader extends AbstractFontReader {
                         log.info("This font contains no embedding license restrictions.");
                     } else {
                         log.info("** Note: This font contains license retrictions for\n"
-                               + "         embedding. This font shouldn't be embedded.");
+                                + "         embedding. This font shouldn't be embedded.");
                     }
                 }
                 log.info("");
                 log.info("XML font metrics file successfully created.");
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 log.error("Error while building XML font metrics file.", e);
                 System.exit(-1);
             }
@@ -209,19 +196,26 @@ public class TTFReader extends AbstractFontReader {
     /**
      * Read a TTF file and returns it as an object.
      *
-     * @param  fileName The filename of the TTF file.
-     * @param  fontName The name of the font
-     * @param  useKerning true if should load kerning data
-     * @param  useAdvanced true if should load advanced typographic table data
+     * @param fileName
+     *            The filename of the TTF file.
+     * @param fontName
+     *            The name of the font
+     * @param useKerning
+     *            true if should load kerning data
+     * @param useAdvanced
+     *            true if should load advanced typographic table data
      * @return The TTF as an object, null if the font is incompatible.
-     * @throws IOException In case of an I/O problem
+     * @throws IOException
+     *             In case of an I/O problem
      */
-    public TTFFile loadTTF(String fileName, String fontName, boolean useKerning, boolean useAdvanced) throws IOException {
-        TTFFile ttfFile = new TTFFile(useKerning, useAdvanced);
+    public TTFFile loadTTF(final String fileName, final String fontName,
+            final boolean useKerning, final boolean useAdvanced)
+                    throws IOException {
+        final TTFFile ttfFile = new TTFFile(useKerning, useAdvanced);
         log.info("Reading " + fileName + "...");
 
-        FontFileReader reader = new FontFileReader(fileName);
-        boolean supported = ttfFile.readFont(reader, fontName);
+        final FontFileReader reader = new FontFileReader(fileName);
+        final boolean supported = ttfFile.readFont(reader, fontName);
         if (!supported) {
             return null;
         }
@@ -233,33 +227,41 @@ public class TTFReader extends AbstractFontReader {
         return ttfFile;
     }
 
-
     /**
      * Generates the font metrics file from the TTF/TTC file.
      *
-     * @param ttf The PFM file to generate the font metrics from.
-     * @param fontName Name of the font
-     * @param className Class name for the font
-     * @param resource path to the font as embedded resource
-     * @param file path to the font as file
-     * @param isCid True if the font is CID encoded
-     * @param ttcName Name of the TrueType Collection
+     * @param ttf
+     *            The PFM file to generate the font metrics from.
+     * @param fontName
+     *            Name of the font
+     * @param className
+     *            Class name for the font
+     * @param resource
+     *            path to the font as embedded resource
+     * @param file
+     *            path to the font as file
+     * @param isCid
+     *            True if the font is CID encoded
+     * @param ttcName
+     *            Name of the TrueType Collection
      * @return The DOM document representing the font metrics file.
      */
-    public org.w3c.dom.Document constructFontXML(TTFFile ttf,
-            String fontName, String className, String resource, String file,
-            boolean isCid, String ttcName) {
+    public org.w3c.dom.Document constructFontXML(final TTFFile ttf,
+            final String fontName, final String className,
+            final String resource, final String file, final boolean isCid,
+            final String ttcName) {
         log.info("Creating xml font file...");
 
         Document doc;
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            final DocumentBuilderFactory factory = DocumentBuilderFactory
+                    .newInstance();
             doc = factory.newDocumentBuilder().newDocument();
-        } catch (javax.xml.parsers.ParserConfigurationException e) {
+        } catch (final javax.xml.parsers.ParserConfigurationException e) {
             log.error("Can't create DOM implementation", e);
             return null;
         }
-        Element root = doc.createElement("font-metrics");
+        final Element root = doc.createElement("font-metrics");
         doc.appendChild(root);
         root.setAttribute(METRICS_VERSION_ATTR, String.valueOf(METRICS_VERSION));
         if (isCid) {
@@ -275,10 +277,11 @@ public class TTFReader extends AbstractFontReader {
         // "Perpetua-Bold", but the TrueType spec says that in the ttf file
         // it should be "Perpetua,Bold".
 
-        String s = FontUtil.stripWhiteSpace(ttf.getPostScriptName());
+        final String s = FontUtil.stripWhiteSpace(ttf.getPostScriptName());
 
         if (fontName != null) {
-            el.appendChild(doc.createTextNode(FontUtil.stripWhiteSpace(fontName)));
+            el.appendChild(doc.createTextNode(FontUtil
+                    .stripWhiteSpace(fontName)));
         } else {
             el.appendChild(doc.createTextNode(s));
         }
@@ -287,9 +290,9 @@ public class TTFReader extends AbstractFontReader {
             root.appendChild(el);
             el.appendChild(doc.createTextNode(ttf.getFullName()));
         }
-        Set<String> familyNames = ttf.getFamilyNames();
+        final Set<String> familyNames = ttf.getFamilyNames();
         if (familyNames.size() > 0) {
-            String familyName = familyNames.iterator().next();
+            final String familyName = familyNames.iterator().next();
             el = doc.createElement("family-name");
             root.appendChild(el);
             el.appendChild(doc.createTextNode(familyName));
@@ -314,16 +317,18 @@ public class TTFReader extends AbstractFontReader {
 
         el = doc.createElement("ascender");
         root.appendChild(el);
-        el.appendChild(doc.createTextNode(String.valueOf(ttf.getLowerCaseAscent())));
+        el.appendChild(doc.createTextNode(String.valueOf(ttf
+                .getLowerCaseAscent())));
 
         el = doc.createElement("descender");
         root.appendChild(el);
-        el.appendChild(doc.createTextNode(String.valueOf(ttf.getLowerCaseDescent())));
+        el.appendChild(doc.createTextNode(String.valueOf(ttf
+                .getLowerCaseDescent())));
 
-        Element bbox = doc.createElement("bbox");
+        final Element bbox = doc.createElement("bbox");
         root.appendChild(bbox);
-        int[] bb = ttf.getFontBBox();
-        final String[] names = {"left", "bottom", "right", "top"};
+        final int[] bb = ttf.getFontBBox();
+        final String[] names = { "left", "bottom", "right", "top" };
         for (int i = 0; i < names.length; i++) {
             el = doc.createElement(names[i]);
             bbox.appendChild(el);
@@ -368,11 +373,12 @@ public class TTFReader extends AbstractFontReader {
         return doc;
     }
 
-    private void generateDOM4MultiByteExtras(Element parent, TTFFile ttf, boolean isCid) {
+    private void generateDOM4MultiByteExtras(final Element parent,
+            final TTFFile ttf, final boolean isCid) {
         Element el;
-        Document doc = parent.getOwnerDocument();
+        final Document doc = parent.getOwnerDocument();
 
-        Element mel = doc.createElement("multibyte-extras");
+        final Element mel = doc.createElement("multibyte-extras");
         parent.appendChild(mel);
 
         el = doc.createElement("cid-type");
@@ -385,8 +391,8 @@ public class TTFReader extends AbstractFontReader {
 
         el = doc.createElement("bfranges");
         mel.appendChild(el);
-        for (CMapSegment ce : ttf.getCMaps()) {
-            Element el2 = doc.createElement("bf");
+        for (final CMapSegment ce : ttf.getCMaps()) {
+            final Element el2 = doc.createElement("bf");
             el.appendChild(el2);
             el2.setAttribute("us", String.valueOf(ce.getUnicodeStart()));
             el2.setAttribute("ue", String.valueOf(ce.getUnicodeEnd()));
@@ -397,19 +403,20 @@ public class TTFReader extends AbstractFontReader {
         el.setAttribute("start-index", "0");
         mel.appendChild(el);
 
-        int[] wx = ttf.getWidths();
-        for (int i = 0; i < wx.length; i++) {
-            Element wxel = doc.createElement("wx");
-            wxel.setAttribute("w", String.valueOf(wx[i]));
+        final int[] wx = ttf.getWidths();
+        for (final int element : wx) {
+            final Element wxel = doc.createElement("wx");
+            wxel.setAttribute("w", String.valueOf(element));
             el.appendChild(wxel);
         }
     }
 
-    private void generateDOM4SingleByteExtras(Element parent, TTFFile ttf, boolean isCid) {
+    private void generateDOM4SingleByteExtras(final Element parent,
+            final TTFFile ttf, final boolean isCid) {
         Element el;
-        Document doc = parent.getOwnerDocument();
+        final Document doc = parent.getOwnerDocument();
 
-        Element sel = doc.createElement("singlebyte-extras");
+        final Element sel = doc.createElement("singlebyte-extras");
         parent.appendChild(sel);
 
         el = doc.createElement("encoding");
@@ -424,7 +431,7 @@ public class TTFReader extends AbstractFontReader {
         sel.appendChild(el);
         el.appendChild(doc.createTextNode(String.valueOf(ttf.getLastChar())));
 
-        Element widths = doc.createElement("widths");
+        final Element widths = doc.createElement("widths");
         sel.appendChild(widths);
 
         for (short i = ttf.getFirstChar(); i <= ttf.getLastChar(); i++) {
@@ -435,9 +442,10 @@ public class TTFReader extends AbstractFontReader {
         }
     }
 
-    private void generateDOM4Kerning(Element parent, TTFFile ttf, boolean isCid) {
+    private void generateDOM4Kerning(final Element parent, final TTFFile ttf,
+            final boolean isCid) {
         Element el;
-        Document doc = parent.getOwnerDocument();
+        final Document doc = parent.getOwnerDocument();
 
         // Get kerning
         Set<Integer> kerningKeys;
@@ -447,7 +455,7 @@ public class TTFReader extends AbstractFontReader {
             kerningKeys = ttf.getAnsiKerning().keySet();
         }
 
-        for (Integer kpx1 : kerningKeys) {
+        for (final Integer kpx1 : kerningKeys) {
 
             el = doc.createElement("kerning");
             el.setAttribute("kpx1", kpx1.toString());
@@ -461,11 +469,11 @@ public class TTFReader extends AbstractFontReader {
                 h2 = ttf.getAnsiKerning().get(kpx1);
             }
 
-            for (Integer kpx2 : h2.keySet()) {
+            for (final Integer kpx2 : h2.keySet()) {
                 if (isCid || kpx2.intValue() < 256) {
                     el2 = doc.createElement("pair");
                     el2.setAttribute("kpx2", kpx2.toString());
-                    Integer val = (Integer)h2.get(kpx2);
+                    final Integer val = h2.get(kpx2);
                     el2.setAttribute("kern", val.toString());
                     el.appendChild(el2);
                 }
@@ -476,10 +484,14 @@ public class TTFReader extends AbstractFontReader {
     /**
      * Bugzilla 40739, check that attr has a metrics-version attribute
      * compatible with ours.
-     * @param attr attributes read from the root element of a metrics XML file
-     * @throws SAXException if incompatible
+     *
+     * @param attr
+     *            attributes read from the root element of a metrics XML file
+     * @throws SAXException
+     *             if incompatible
      */
-    public static void checkMetricsVersion(Attributes attr) throws SAXException {
+    public static void checkMetricsVersion(final Attributes attr)
+            throws SAXException {
         String err = null;
         final String str = attr.getValue(METRICS_VERSION_ATTR);
         if (str == null) {
@@ -489,24 +501,20 @@ public class TTFReader extends AbstractFontReader {
             try {
                 version = Integer.parseInt(str);
                 if (version < METRICS_VERSION) {
-                    err = "Incompatible " + METRICS_VERSION_ATTR
-                        + " value (" + version + ", should be " + METRICS_VERSION
-                        + ")";
+                    err = "Incompatible " + METRICS_VERSION_ATTR + " value ("
+                            + version + ", should be " + METRICS_VERSION + ")";
                 }
-            } catch (NumberFormatException e) {
-                err = "Invalid " + METRICS_VERSION_ATTR
-                    + " attribute value (" + str + ")";
+            } catch (final NumberFormatException e) {
+                err = "Invalid " + METRICS_VERSION_ATTR + " attribute value ("
+                        + str + ")";
             }
         }
 
         if (err != null) {
-            throw new SAXException(
-                err
-                + " - please regenerate the font metrics file with "
-                + "a more recent version of FOP."
-            );
+            throw new SAXException(err
+                    + " - please regenerate the font metrics file with "
+                    + "a more recent version of FOP.");
         }
     }
 
 }
-

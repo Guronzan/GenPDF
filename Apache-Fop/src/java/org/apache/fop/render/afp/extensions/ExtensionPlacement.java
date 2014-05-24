@@ -33,6 +33,7 @@ public enum ExtensionPlacement {
 
     /**
      * Returns the XML value that corresponds to this enum value.
+     * 
      * @return the XML value
      */
     public String getXMLValue() {
@@ -43,10 +44,12 @@ public enum ExtensionPlacement {
 
     /**
      * Returns the enum value from the given XML value for this enumeration.
-     * @param value the XML value
+     * 
+     * @param value
+     *            the XML value
      * @return the enum value
      */
-    public static ExtensionPlacement fromXMLValue(String value) {
+    public static ExtensionPlacement fromXMLValue(final String value) {
         String name = value.toUpperCase(Locale.ENGLISH);
         name = name.replace('-', '_');
         return ExtensionPlacement.valueOf(name);

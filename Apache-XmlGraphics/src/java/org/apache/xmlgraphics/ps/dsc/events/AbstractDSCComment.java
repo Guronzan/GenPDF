@@ -24,27 +24,29 @@ import java.util.List;
 /**
  * Abstract base class for DSC comments.
  */
-public abstract class AbstractDSCComment extends AbstractEvent implements DSCComment {
+public abstract class AbstractDSCComment extends AbstractEvent implements
+        DSCComment {
 
-    private boolean isWhitespace(char c) {
+    private boolean isWhitespace(final char c) {
         return c == ' ' || c == '\t';
     }
 
-    private int parseNextParam(String value, int pos, List lst) {
-        int startPos = pos;
+    private int parseNextParam(final String value, int pos, final List lst) {
+        final int startPos = pos;
         pos++;
         while (pos < value.length() && !isWhitespace(value.charAt(pos))) {
             pos++;
         }
-        String param = value.substring(startPos, pos);
+        final String param = value.substring(startPos, pos);
         lst.add(param);
         return pos;
     }
 
-    private int parseNextParentheseString(String value, int pos, List lst) {
+    private int parseNextParentheseString(final String value, int pos,
+            final List lst) {
         int nestLevel = 1;
         pos++;
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         while (pos < value.length() && nestLevel > 0) {
             final char c = value.charAt(pos);
             switch (c) {
@@ -62,7 +64,7 @@ public abstract class AbstractDSCComment extends AbstractEvent implements DSCCom
                 break;
             case '\\':
                 pos++;
-                char cnext = value.charAt(pos);
+                final char cnext = value.charAt(pos);
                 switch (cnext) {
                 case '\\':
                     sb.append(cnext);
@@ -89,8 +91,9 @@ public abstract class AbstractDSCComment extends AbstractEvent implements DSCCom
                     sb.append(')');
                     break;
                 default:
-                    int code = Integer.parseInt(value.substring(pos, pos + 3), 8);
-                    sb.append((char)code);
+                    final int code = Integer.parseInt(
+                            value.substring(pos, pos + 3), 8);
+                    sb.append((char) code);
                     pos += 2;
                 }
                 break;
@@ -106,11 +109,13 @@ public abstract class AbstractDSCComment extends AbstractEvent implements DSCCom
 
     /**
      * Splits the params of the DSC comment value in to a List.
-     * @param value the DSC comment value
+     * 
+     * @param value
+     *            the DSC comment value
      * @return the List of values
      */
     protected List splitParams(String value) {
-        List lst = new java.util.ArrayList();
+        final List lst = new java.util.ArrayList();
         int pos = 0;
         value = value.trim();
         while (pos < value.length()) {
@@ -130,6 +135,7 @@ public abstract class AbstractDSCComment extends AbstractEvent implements DSCCom
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#isAtend()
      */
+    @Override
     public boolean isAtend() {
         return false;
     }
@@ -137,6 +143,7 @@ public abstract class AbstractDSCComment extends AbstractEvent implements DSCCom
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.AbstractEvent#asDSCComment()
      */
+    @Override
     public DSCComment asDSCComment() {
         return this;
     }
@@ -144,6 +151,7 @@ public abstract class AbstractDSCComment extends AbstractEvent implements DSCCom
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.AbstractEvent#isDSCComment()
      */
+    @Override
     public boolean isDSCComment() {
         return true;
     }
@@ -151,6 +159,7 @@ public abstract class AbstractDSCComment extends AbstractEvent implements DSCCom
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#getEventType()
      */
+    @Override
     public int getEventType() {
         return DSC_COMMENT;
     }

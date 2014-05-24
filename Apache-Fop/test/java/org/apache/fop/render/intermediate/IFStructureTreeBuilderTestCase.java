@@ -19,14 +19,10 @@
 
 package org.apache.fop.render.intermediate;
 
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
+import org.apache.fop.fo.FOElementMapping;
+import org.apache.fop.fo.extensions.ExtensionElementMapping;
+import org.apache.fop.fo.extensions.InternalElementMapping;
+import org.apache.fop.util.XMLConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
@@ -36,10 +32,14 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import org.apache.fop.fo.FOElementMapping;
-import org.apache.fop.fo.extensions.ExtensionElementMapping;
-import org.apache.fop.fo.extensions.InternalElementMapping;
-import org.apache.fop.util.XMLUtil;
+import static org.junit.Assert.fail;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class IFStructureTreeBuilderTestCase {
 
@@ -47,7 +47,7 @@ public class IFStructureTreeBuilderTestCase {
 
     @Before
     public void setUp() {
-        sut = new IFStructureTreeBuilder();
+        this.sut = new IFStructureTreeBuilder();
     }
 
     @Test
@@ -55,45 +55,48 @@ public class IFStructureTreeBuilderTestCase {
         final ContentHandler handler = mock(ContentHandler.class);
 
         try {
-            sut.replayEventsForPageSequence(handler, 0);
+            this.sut.replayEventsForPageSequence(handler, 0);
             fail("No page sequences created");
-        } catch (IndexOutOfBoundsException e) {
+        } catch (final IndexOutOfBoundsException e) {
             // Expected
         }
 
-        sut.startPageSequence(null, null);
-        sut.endPageSequence();
+        this.sut.startPageSequence(null, null);
+        this.sut.endPageSequence();
 
-        sut.replayEventsForPageSequence(handler, 0);
+        this.sut.replayEventsForPageSequence(handler, 0);
 
-        InOrder inOrder = inOrder(handler);
+        final InOrder inOrder = inOrder(handler);
 
         inOrder.verify(handler).startPrefixMapping(
-                InternalElementMapping.STANDARD_PREFIX, InternalElementMapping.URI);
+                InternalElementMapping.STANDARD_PREFIX,
+                InternalElementMapping.URI);
         inOrder.verify(handler).startPrefixMapping(
-                ExtensionElementMapping.STANDARD_PREFIX, ExtensionElementMapping.URI);
+                ExtensionElementMapping.STANDARD_PREFIX,
+                ExtensionElementMapping.URI);
         inOrder.verify(handler).startElement(eq(IFConstants.NAMESPACE),
                 eq(IFConstants.EL_STRUCTURE_TREE),
-                eq(IFConstants.EL_STRUCTURE_TREE),
-                any(Attributes.class));
+                eq(IFConstants.EL_STRUCTURE_TREE), any(Attributes.class));
         inOrder.verify(handler).endElement(eq(IFConstants.NAMESPACE),
                 eq(IFConstants.EL_STRUCTURE_TREE),
                 eq(IFConstants.EL_STRUCTURE_TREE));
-        inOrder.verify(handler).endPrefixMapping(ExtensionElementMapping.STANDARD_PREFIX);
-        inOrder.verify(handler).endPrefixMapping(InternalElementMapping.STANDARD_PREFIX);
+        inOrder.verify(handler).endPrefixMapping(
+                ExtensionElementMapping.STANDARD_PREFIX);
+        inOrder.verify(handler).endPrefixMapping(
+                InternalElementMapping.STANDARD_PREFIX);
     }
 
     @Test
     public void startNode() throws Exception {
-        final String[] attributes = {"struct-id", "1"};
+        final String[] attributes = { "struct-id", "1" };
         final String nodeName = "block";
         final ContentHandler handler = mock(ContentHandler.class);
 
-        sut.startPageSequence(null, null);
-        sut.startNode(nodeName, createSimpleAttributes(attributes));
-        sut.endPageSequence();
+        this.sut.startPageSequence(null, null);
+        this.sut.startNode(nodeName, createSimpleAttributes(attributes));
+        this.sut.endPageSequence();
 
-        sut.replayEventsForPageSequence(handler, 0);
+        this.sut.replayEventsForPageSequence(handler, 0);
 
         verify(handler).startElement(eq(FOElementMapping.URI), eq(nodeName),
                 eq(FOElementMapping.STANDARD_PREFIX + ":" + nodeName),
@@ -105,44 +108,47 @@ public class IFStructureTreeBuilderTestCase {
         final String nodeName = "block";
         final ContentHandler handler = mock(ContentHandler.class);
 
-        sut.startPageSequence(null, null);
-        sut.endNode(nodeName);
-        sut.endPageSequence();
+        this.sut.startPageSequence(null, null);
+        this.sut.endNode(nodeName);
+        this.sut.endPageSequence();
 
-        sut.replayEventsForPageSequence(handler, 0);
+        this.sut.replayEventsForPageSequence(handler, 0);
 
         verify(handler).endElement(eq(FOElementMapping.URI), eq(nodeName),
                 eq(FOElementMapping.STANDARD_PREFIX + ":" + nodeName));
     }
 
-    private static Attributes createSimpleAttributes(String... attributes) {
-        assert (attributes.length % 2 == 0);
+    private static Attributes createSimpleAttributes(final String... attributes) {
+        assert attributes.length % 2 == 0;
         final AttributesImpl atts = new AttributesImpl();
         for (int i = 0; i < attributes.length; i += 2) {
-            String key = attributes[i];
-            String value = attributes[i + 1];
-            atts.addAttribute("", key, key, XMLUtil.CDATA, value);
+            final String key = attributes[i];
+            final String value = attributes[i + 1];
+            atts.addAttribute("", key, key, XMLConstants.CDATA, value);
         }
         return atts;
     }
 
-    private static final class AttributesMatcher extends ArgumentMatcher<Attributes> {
+    private static final class AttributesMatcher extends
+            ArgumentMatcher<Attributes> {
 
         private final Attributes expected;
 
-        private AttributesMatcher(Attributes expected) {
+        private AttributesMatcher(final Attributes expected) {
             this.expected = expected;
         }
 
-        public static Attributes match(Attributes expected) {
+        public static Attributes match(final Attributes expected) {
             return argThat(new AttributesMatcher(expected));
         }
 
-        public boolean matches(Object attributes) {
-            return attributesEqual(expected, (Attributes) attributes);
+        @Override
+        public boolean matches(final Object attributes) {
+            return attributesEqual(this.expected, (Attributes) attributes);
         }
 
-        private static boolean attributesEqual(Attributes attributes1, Attributes attributes2) {
+        private static boolean attributesEqual(final Attributes attributes1,
+                final Attributes attributes2) {
             if (attributes1.getLength() != attributes2.getLength()) {
                 return false;
             }

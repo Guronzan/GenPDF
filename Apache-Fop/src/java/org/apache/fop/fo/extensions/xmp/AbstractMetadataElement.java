@@ -19,52 +19,56 @@
 
 package org.apache.fop.fo.extensions.xmp;
 
-import org.apache.xmlgraphics.xmp.Metadata;
-
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.FObj;
 import org.apache.fop.fo.extensions.ExtensionAttachment;
 import org.apache.fop.util.ContentHandlerFactory;
 import org.apache.fop.util.ContentHandlerFactory.ObjectBuiltListener;
+import org.apache.xmlgraphics.xmp.Metadata;
 
 /**
  * Abstract base class for the XMP and RDF root nodes.
  */
-public abstract class AbstractMetadataElement extends FONode implements ObjectBuiltListener {
+public abstract class AbstractMetadataElement extends FONode implements
+        ObjectBuiltListener {
 
     private XMPMetadata attachment;
 
     /**
      * Main constructor.
-     * @param parent the parent formatting object
+     * 
+     * @param parent
+     *            the parent formatting object
      */
-    public AbstractMetadataElement(FONode parent) {
+    public AbstractMetadataElement(final FONode parent) {
         super(parent);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public ContentHandlerFactory getContentHandlerFactory() {
         return new XMPContentHandlerFactory();
     }
 
     /** {@inheritDoc} */
+    @Override
     public ExtensionAttachment getExtensionAttachment() {
-        if (parent instanceof FObj) {
-            if (attachment == null) {
-                attachment = new XMPMetadata();
+        if (this.parent instanceof FObj) {
+            if (this.attachment == null) {
+                this.attachment = new XMPMetadata();
             }
-            return attachment;
+            return this.attachment;
         } else {
             return super.getExtensionAttachment();
         }
     }
 
     /** {@inheritDoc} */
-    public void notifyObjectBuilt(Object obj) {
-        attachment.setMetadata((Metadata)obj);
+    @Override
+    public void notifyObjectBuilt(final Object obj) {
+        this.attachment.setMetadata((Metadata) obj);
     }
-
 
 }

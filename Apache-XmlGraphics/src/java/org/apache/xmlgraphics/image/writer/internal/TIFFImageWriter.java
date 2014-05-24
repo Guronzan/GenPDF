@@ -32,64 +32,73 @@ import org.apache.xmlgraphics.image.writer.ImageWriterParams;
 import org.apache.xmlgraphics.image.writer.MultiImageWriter;
 
 /**
- * ImageWriter implementation that uses the internal TIFF codec to
- * write TIFF files.
+ * ImageWriter implementation that uses the internal TIFF codec to write TIFF
+ * files.
  *
  * @version $Id: TIFFImageWriter.java 1028385 2010-10-28 17:02:39Z jeremias $
  */
 public class TIFFImageWriter extends AbstractImageWriter {
 
     /** {@inheritDoc} */
-    public void writeImage(RenderedImage image, OutputStream out)
+    @Override
+    public void writeImage(final RenderedImage image, final OutputStream out)
             throws IOException {
         writeImage(image, out, null);
     }
 
     /** {@inheritDoc} */
-    public void writeImage(RenderedImage image, OutputStream out,
-            ImageWriterParams params) throws IOException {
-        TIFFEncodeParam encodeParams = createTIFFEncodeParams(params);
-        TIFFImageEncoder encoder = new TIFFImageEncoder(out, encodeParams);
+    @Override
+    public void writeImage(final RenderedImage image, final OutputStream out,
+            final ImageWriterParams params) throws IOException {
+        final TIFFEncodeParam encodeParams = createTIFFEncodeParams(params);
+        final TIFFImageEncoder encoder = new TIFFImageEncoder(out, encodeParams);
         encoder.encode(image);
     }
 
-    private TIFFEncodeParam createTIFFEncodeParams(ImageWriterParams params) {
-        TIFFEncodeParam encodeParams = new TIFFEncodeParam();
+    private TIFFEncodeParam createTIFFEncodeParams(
+            final ImageWriterParams params) {
+        final TIFFEncodeParam encodeParams = new TIFFEncodeParam();
         if (params == null) {
             encodeParams.setCompression(TIFFEncodeParam.COMPRESSION_NONE);
         } else {
             if (params.getCompressionMethod() == null) {
-                //PackBits as default
-                encodeParams.setCompression(TIFFEncodeParam.COMPRESSION_PACKBITS);
-            } else if ("PackBits".equalsIgnoreCase(params.getCompressionMethod())) {
-                encodeParams.setCompression(TIFFEncodeParam.COMPRESSION_PACKBITS);
+                // PackBits as default
+                encodeParams
+                .setCompression(TIFFEncodeParam.COMPRESSION_PACKBITS);
+            } else if ("PackBits".equalsIgnoreCase(params
+                    .getCompressionMethod())) {
+                encodeParams
+                .setCompression(TIFFEncodeParam.COMPRESSION_PACKBITS);
             } else if ("NONE".equalsIgnoreCase(params.getCompressionMethod())) {
                 encodeParams.setCompression(TIFFEncodeParam.COMPRESSION_NONE);
-            } else if ("Deflate".equalsIgnoreCase(params.getCompressionMethod())) {
-                encodeParams.setCompression(TIFFEncodeParam.COMPRESSION_DEFLATE);
+            } else if ("Deflate"
+                    .equalsIgnoreCase(params.getCompressionMethod())) {
+                encodeParams
+                .setCompression(TIFFEncodeParam.COMPRESSION_DEFLATE);
             } else {
-                throw new UnsupportedOperationException("Compression method not supported: "
-                        + params.getCompressionMethod());
+                throw new UnsupportedOperationException(
+                        "Compression method not supported: "
+                                + params.getCompressionMethod());
             }
 
             if (params.getResolution() != null) {
                 // Set target resolution
-                float pixSzMM = 25.4f / params.getResolution().floatValue();
+                final float pixSzMM = 25.4f / params.getResolution()
+                        .floatValue();
                 // num Pixs in 100 Meters
-                int numPix = (int)(((1000 * 100) / pixSzMM) + 0.5);
-                int denom = 100 * 100;  // Centimeters per 100 Meters;
-                long [] rational = {numPix, denom};
-                TIFFField [] fields = {
-                    new TIFFField(TIFFImageDecoder.TIFF_RESOLUTION_UNIT,
-                                  TIFFField.TIFF_SHORT, 1,
-                                  new char[] {(char)3}),
-                    new TIFFField(TIFFImageDecoder.TIFF_X_RESOLUTION,
-                                  TIFFField.TIFF_RATIONAL, 1,
-                                  new long[][] {rational}),
-                    new TIFFField(TIFFImageDecoder.TIFF_Y_RESOLUTION,
-                                  TIFFField.TIFF_RATIONAL, 1,
-                                  new long[][] {rational})
-                        };
+                final int numPix = (int) (1000 * 100 / pixSzMM + 0.5);
+                final int denom = 100 * 100; // Centimeters per 100 Meters;
+                final long[] rational = { numPix, denom };
+                final TIFFField[] fields = {
+                        new TIFFField(TIFFImageDecoder.TIFF_RESOLUTION_UNIT,
+                                TIFFField.TIFF_SHORT, 1,
+                                new char[] { (char) 3 }),
+                                new TIFFField(TIFFImageDecoder.TIFF_X_RESOLUTION,
+                                        TIFFField.TIFF_RATIONAL, 1,
+                                        new long[][] { rational }),
+                                        new TIFFField(TIFFImageDecoder.TIFF_Y_RESOLUTION,
+                                                TIFFField.TIFF_RATIONAL, 1,
+                                                new long[][] { rational }) };
                 encodeParams.setExtraFields(fields);
             }
         }
@@ -97,49 +106,55 @@ public class TIFFImageWriter extends AbstractImageWriter {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMIMEType() {
         return "image/tiff";
     }
 
     /** {@inheritDoc} */
-    public MultiImageWriter createMultiImageWriter(OutputStream out) throws IOException {
+    @Override
+    public MultiImageWriter createMultiImageWriter(final OutputStream out)
+            throws IOException {
         return new TIFFMultiImageWriter(out);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean supportsMultiImageWriter() {
         return true;
     }
 
     private class TIFFMultiImageWriter implements MultiImageWriter {
 
-        private OutputStream out;
+        private final OutputStream out;
         private TIFFEncodeParam encodeParams;
         private TIFFImageEncoder encoder;
         private Object context;
 
-        public TIFFMultiImageWriter(OutputStream out) throws IOException {
+        public TIFFMultiImageWriter(final OutputStream out) {
             this.out = out;
         }
 
-        public void writeImage(RenderedImage image, ImageWriterParams params) throws IOException {
-            if (encoder == null) {
-                encodeParams = createTIFFEncodeParams(params);
-                encoder = new TIFFImageEncoder(out, encodeParams);
+        @Override
+        public void writeImage(final RenderedImage image,
+                final ImageWriterParams params) throws IOException {
+            if (this.encoder == null) {
+                this.encodeParams = createTIFFEncodeParams(params);
+                this.encoder = new TIFFImageEncoder(this.out, this.encodeParams);
             }
-            context = encoder.encodeMultiple(context, image);
+            this.context = this.encoder.encodeMultiple(this.context, image);
         }
 
+        @Override
         public void close() throws IOException {
-            if (encoder != null) {
-                encoder.finishMultiple(context);
+            if (this.encoder != null) {
+                this.encoder.finishMultiple(this.context);
             }
-            encoder = null;
-            encodeParams = null;
-            out.flush();
+            this.encoder = null;
+            this.encodeParams = null;
+            this.out.flush();
         }
 
     }
-
 
 }

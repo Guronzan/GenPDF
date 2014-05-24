@@ -32,17 +32,21 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
- * <p>RtfListTable: used to make the list table in the header section of the RtfFile.
- * This is the method that Word uses to make lists in RTF and the way most RTF readers,
- * esp. Adobe FrameMaker read lists from RTF.</p>
+ * <p>
+ * RtfListTable: used to make the list table in the header section of the
+ * RtfFile. This is the method that Word uses to make lists in RTF and the way
+ * most RTF readers, esp. Adobe FrameMaker read lists from RTF.
+ * </p>
  *
- * <p>This work was authored by Christopher Scott (scottc@westinghouse.com).</p>
+ * <p>
+ * This work was authored by Christopher Scott (scottc@westinghouse.com).
+ * </p>
  */
 public class RtfListTable extends RtfContainer {
     private LinkedList lists;
-    private LinkedList styles;
+    private final LinkedList styles;
 
-//static data members
+    // static data members
     /** constant for a list table */
     public static final String LIST_TABLE = "listtable";
     /** constant for a list */
@@ -83,78 +87,87 @@ public class RtfListTable extends RtfContainer {
     public static final String LIST_NUMBER = "ls";
 
     /** String array of list table attributes */
-    public static final String [] LIST_TABLE_ATTR = {
-        LIST_TABLE,             LIST,                   LIST_TEMPLATE_ID,
-        LIST_NUMBER_TYPE,       LIST_JUSTIFICATION,     LIST_FOLLOWING_CHAR,
-        LIST_START_AT,          LIST_SPACE,             LIST_INDENT,
-        LIST_TEXT_FORM,         LIST_NUM_POSITION,      LIST_ID,
-        LIST_OVR_TABLE,         LIST_OVR,               LIST_OVR_COUNT,
-        LIST_NUMBER,            LIST_LEVEL
-    };
+    public static final String[] LIST_TABLE_ATTR = { LIST_TABLE, LIST,
+        LIST_TEMPLATE_ID, LIST_NUMBER_TYPE, LIST_JUSTIFICATION,
+        LIST_FOLLOWING_CHAR, LIST_START_AT, LIST_SPACE, LIST_INDENT,
+        LIST_TEXT_FORM, LIST_NUM_POSITION, LIST_ID, LIST_OVR_TABLE,
+        LIST_OVR, LIST_OVR_COUNT, LIST_NUMBER, LIST_LEVEL };
 
     /**
-     * RtfListTable Constructor: sets the number of the list, and allocates
-     * for the RtfAttributes
-     * @param parent RtfContainer holding this RtfListTable
-     * @param w Writer
-     * @param num number of the list in the document
-     * @param attrs attributes of new RtfListTable
-     * @throws IOException for I/O problems
+     * RtfListTable Constructor: sets the number of the list, and allocates for
+     * the RtfAttributes
+     *
+     * @param parent
+     *            RtfContainer holding this RtfListTable
+     * @param w
+     *            Writer
+     * @param num
+     *            number of the list in the document
+     * @param attrs
+     *            attributes of new RtfListTable
+     * @throws IOException
+     *             for I/O problems
      */
-    public RtfListTable(RtfContainer parent, Writer w, Integer num, RtfAttributes attrs)
-    throws IOException {
+    public RtfListTable(final RtfContainer parent, final Writer w,
+            final Integer num, final RtfAttributes attrs) throws IOException {
         super(parent, w, attrs);
 
-        styles = new LinkedList();
+        this.styles = new LinkedList();
     }
 
     /**
      * Add List
-     * @param list RtfList to add
+     *
+     * @param list
+     *            RtfList to add
      * @return number of lists in the table after adding
      */
-    public int addList(RtfList list) {
-        if (lists == null) {
-            lists = new LinkedList();
+    public int addList(final RtfList list) {
+        if (this.lists == null) {
+            this.lists = new LinkedList();
         }
 
-        lists.add(list);
+        this.lists.add(list);
 
-        return lists.size();
+        return this.lists.size();
     }
 
     /**
      * Write the content
-     * @throws IOException for I/O problems
+     *
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     public void writeRtfContent() throws IOException {
         newLine();
-        if (lists != null) {
-            //write '\listtable'
+        if (this.lists != null) {
+            // write '\listtable'
             writeGroupMark(true);
             writeStarControlWordNS(LIST_TABLE);
             newLine();
-            for (Iterator it = lists.iterator(); it.hasNext();) {
-                final RtfList list = (RtfList)it.next();
+            for (final Iterator it = this.lists.iterator(); it.hasNext();) {
+                final RtfList list = (RtfList) it.next();
                 writeListTableEntry(list);
                 newLine();
             }
             writeGroupMark(false);
 
             newLine();
-            //write '\listoveridetable'
+            // write '\listoveridetable'
             writeGroupMark(true);
             writeStarControlWordNS(LIST_OVR_TABLE);
             int z = 1;
             newLine();
-            for (Iterator it = styles.iterator(); it.hasNext();) {
-                final RtfListStyle style = (RtfListStyle)it.next();
+            for (final Iterator it = this.styles.iterator(); it.hasNext();) {
+                final RtfListStyle style = (RtfListStyle) it.next();
 
                 writeGroupMark(true);
                 writeStarControlWordNS(LIST_OVR);
                 writeGroupMark(true);
 
-                writeOneAttributeNS(LIST_ID, style.getRtfList().getListId().toString());
+                writeOneAttributeNS(LIST_ID, style.getRtfList().getListId()
+                        .toString());
                 writeOneAttributeNS(LIST_OVR_COUNT, new Integer(0));
                 writeOneAttributeNS(LIST_NUMBER, new Integer(z++));
 
@@ -169,32 +182,36 @@ public class RtfListTable extends RtfContainer {
     }
 
     /**
-     * Since this has no text content we have to overwrite isEmpty to print
-     * the table
+     * Since this has no text content we have to overwrite isEmpty to print the
+     * table
+     *
      * @return false (always)
      */
+    @Override
     public boolean isEmpty() {
         return false;
     }
 
-    private void writeListTableEntry(RtfList list)
-    throws IOException {
-        //write list-specific attributes
+    private void writeListTableEntry(final RtfList list) throws IOException {
+        // write list-specific attributes
         writeGroupMark(true);
         writeControlWordNS(LIST);
-        writeOneAttributeNS(LIST_TEMPLATE_ID, list.getListTemplateId().toString());
-        writeOneAttributeNS(LIST, attrib.getValue(LIST));
+        writeOneAttributeNS(LIST_TEMPLATE_ID, list.getListTemplateId()
+                .toString());
+        writeOneAttributeNS(LIST, this.attrib.getValue(LIST));
 
         // write level-specific attributes
         writeGroupMark(true);
         writeControlWordNS(LIST_LEVEL);
 
-        writeOneAttributeNS(LIST_JUSTIFICATION, attrib.getValue(LIST_JUSTIFICATION));
-        writeOneAttributeNS(LIST_FOLLOWING_CHAR, attrib.getValue(LIST_FOLLOWING_CHAR));
+        writeOneAttributeNS(LIST_JUSTIFICATION,
+                this.attrib.getValue(LIST_JUSTIFICATION));
+        writeOneAttributeNS(LIST_FOLLOWING_CHAR,
+                this.attrib.getValue(LIST_FOLLOWING_CHAR));
         writeOneAttributeNS(LIST_SPACE, new Integer(0));
-        writeOneAttributeNS(LIST_INDENT, attrib.getValue(LIST_INDENT));
+        writeOneAttributeNS(LIST_INDENT, this.attrib.getValue(LIST_INDENT));
 
-        RtfListItem item = (RtfListItem)list.getChildren().get(0);
+        final RtfListItem item = (RtfListItem) list.getChildren().get(0);
         if (item != null) {
             item.getRtfListStyle().writeLevelGroup(this);
         }
@@ -212,11 +229,13 @@ public class RtfListTable extends RtfContainer {
 
     /**
      * Add list style
-     * @param ls ListStyle to set
+     *
+     * @param ls
+     *            ListStyle to set
      * @return number of styles after adding
      */
-    public int addRtfListStyle(RtfListStyle ls) {
-        styles.add(ls);
-        return styles.size();
+    public int addRtfListStyle(final RtfListStyle ls) {
+        this.styles.add(ls);
+        return this.styles.size();
     }
 }

@@ -20,9 +20,13 @@
 package org.apache.fop.hyphenation;
 
 /**
- * <p>An hyphenation exception.</p>
+ * <p>
+ * An hyphenation exception.
+ * </p>
  *
- * <p>This work was authored by Carlos Villegas (cav@uniscope.co.jp).</p>
+ * <p>
+ * This work was authored by Carlos Villegas (cav@uniscope.co.jp).
+ * </p>
  *
  * TODO Derive from FOPException
  */
@@ -30,10 +34,12 @@ public class HyphenationException extends Exception {
 
     /**
      * Construct a hyphenation exception.
-     * @param msg a message string
+     * 
+     * @param msg
+     *            a message string
      * @see java.lang.Throwable#Throwable(String)
      */
-    public HyphenationException(String msg) {
+    public HyphenationException(final String msg) {
         super(msg);
     }
 

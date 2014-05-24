@@ -19,38 +19,44 @@
 
 package org.apache.fop.layoutmgr;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.traits.MinOptMax;
 
 /**
- * This class represents an unresolved list element element with a (conditional) length. This
- * is the base class for spaces, borders and paddings.
+ * This class represents an unresolved list element element with a (conditional)
+ * length. This is the base class for spaces, borders and paddings.
  */
-public abstract class UnresolvedListElementWithLength extends UnresolvedListElement {
+@Slf4j
+public abstract class UnresolvedListElementWithLength extends
+UnresolvedListElement {
 
-    /** Logger instance */
-    protected static final Log log = LogFactory.getLog(UnresolvedListElementWithLength.class);
-
-    private MinOptMax length;
-    private boolean conditional;
-    private RelSide side;
-    private boolean isFirst;
-    private boolean isLast;
+    private final MinOptMax length;
+    private final boolean conditional;
+    private final RelSide side;
+    private final boolean isFirst;
+    private final boolean isLast;
 
     /**
      * Main constructor
-     * @param position the Position instance needed by the addAreas stage of the LMs.
-     * @param length the length of the element
-     * @param side the side to which this element applies
-     * @param conditional true if it's a conditional element (conditionality=discard)
-     * @param isFirst true if this is a space-before of the first area generated.
-     * @param isLast true if this is a space-after of the last area generated.
+     *
+     * @param position
+     *            the Position instance needed by the addAreas stage of the LMs.
+     * @param length
+     *            the length of the element
+     * @param side
+     *            the side to which this element applies
+     * @param conditional
+     *            true if it's a conditional element (conditionality=discard)
+     * @param isFirst
+     *            true if this is a space-before of the first area generated.
+     * @param isLast
+     *            true if this is a space-after of the last area generated.
      */
-    public UnresolvedListElementWithLength(Position position, MinOptMax length,
-            RelSide side,
-            boolean conditional, boolean isFirst, boolean isLast) {
+    public UnresolvedListElementWithLength(final Position position,
+            final MinOptMax length, final RelSide side,
+            final boolean conditional, final boolean isFirst,
+            final boolean isLast) {
         super(position);
         this.length = length;
         this.side = side;
@@ -60,6 +66,7 @@ public abstract class UnresolvedListElementWithLength extends UnresolvedListElem
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isConditional() {
         return this.conditional;
     }
@@ -85,16 +92,20 @@ public abstract class UnresolvedListElementWithLength extends UnresolvedListElem
     }
 
     /**
-     * Called to notify the affected layout manager about the effective length after resolution.
-     * This method is called once before each call to the layout manager's addAreas() method.
-     * @param effectiveLength the effective length after resolution (may be null which equals to
-     *                        zero effective length)
+     * Called to notify the affected layout manager about the effective length
+     * after resolution. This method is called once before each call to the
+     * layout manager's addAreas() method.
+     *
+     * @param effectiveLength
+     *            the effective length after resolution (may be null which
+     *            equals to zero effective length)
      */
-    public abstract void notifyLayoutManager(MinOptMax effectiveLength);
+    public abstract void notifyLayoutManager(final MinOptMax effectiveLength);
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         sb.append(getSide().getName()).append(", ");
         sb.append(this.length.toString());
         if (isConditional()) {

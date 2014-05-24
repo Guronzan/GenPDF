@@ -21,13 +21,11 @@ package org.apache.fop.svg;
 
 import java.io.IOException;
 
+import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 import org.w3c.dom.Document;
-
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import org.apache.batik.dom.svg.SAXSVGDocumentFactory;
 
 /**
  * This is a special subclass to allow setting a special EntityResolver.
@@ -38,35 +36,43 @@ public class FOPSAXSVGDocumentFactory extends SAXSVGDocumentFactory {
 
     /**
      * Creates a new DocumentFactory object.
-     * @param parser The SAX2 parser classname.
+     * 
+     * @param parser
+     *            The SAX2 parser classname.
      */
-    public FOPSAXSVGDocumentFactory(String parser) {
+    public FOPSAXSVGDocumentFactory(final String parser) {
         super(parser);
     }
 
     /**
      * Sets an additional entity resolver. It will be used before the default
      * entity resolving.
-     * @param resolver Additional resolver
+     * 
+     * @param resolver
+     *            Additional resolver
      */
-    public void setAdditionalEntityResolver(EntityResolver resolver) {
+    public void setAdditionalEntityResolver(final EntityResolver resolver) {
         this.additionalResolver = resolver;
     }
 
     /**
      * {@inheritDoc}
      */
-    public InputSource resolveEntity(String publicId, String systemId)
-                throws SAXException {
+    @Override
+    public InputSource resolveEntity(final String publicId,
+            final String systemId) throws SAXException {
         if (this.additionalResolver != null) {
             try {
-                InputSource result = this.additionalResolver.resolveEntity(publicId, systemId);
+                final InputSource result = this.additionalResolver
+                        .resolveEntity(publicId, systemId);
                 if (result != null) {
                     return result;
                 }
-            } catch (IOException ioe) {
-                /**@todo Batik's SAXSVGDocumentFactory should throw IOException,
-                 * so we don't have to handle it here. */
+            } catch (final IOException ioe) {
+                /**
+                 * @todo Batik's SAXSVGDocumentFactory should throw IOException,
+                 *       so we don't have to handle it here.
+                 */
                 throw new SAXException(ioe);
             }
         }
@@ -74,8 +80,10 @@ public class FOPSAXSVGDocumentFactory extends SAXSVGDocumentFactory {
     }
 
     /**
-     * Returns the document built up by handling the incoming SAX events. This method will not
-     * return any instance for the first SAX events have been received.
+     * Returns the document built up by handling the incoming SAX events. This
+     * method will not return any instance for the first SAX events have been
+     * received.
+     * 
      * @return the DOM document
      */
     public Document getDocument() {

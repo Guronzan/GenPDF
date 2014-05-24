@@ -31,6 +31,7 @@ public class PDFNumber extends PDFObject {
 
     /**
      * Returns the number.
+     * 
      * @return the number
      */
     public Number getNumber() {
@@ -39,60 +40,66 @@ public class PDFNumber extends PDFObject {
 
     /**
      * Sets the number.
-     * @param number the number
+     * 
+     * @param number
+     *            the number
      */
-    public void setNumber(Number number) {
+    public void setNumber(final Number number) {
         this.number = number;
     }
 
     /**
      * Output a Double value to a string suitable for PDF.
      *
-     * @param doubleDown the Double value
+     * @param doubleDown
+     *            the Double value
      * @return the value as a string
      */
-    public static String doubleOut(Double doubleDown) {
+    public static String doubleOut(final Double doubleDown) {
         return doubleOut(doubleDown.doubleValue());
     }
 
     /**
      * Output a double value to a string suitable for PDF (6 decimal digits).
      *
-     * @param doubleDown the double value
+     * @param doubleDown
+     *            the double value
      * @return the value as a string
      */
-    public static String doubleOut(double doubleDown) {
+    public static String doubleOut(final double doubleDown) {
         return doubleOut(doubleDown, 6);
     }
 
     /**
-     * Output a double value to a string suitable for PDF.
-     * In this method it is possible to set the maximum
-     * number of decimal places to output.
+     * Output a double value to a string suitable for PDF. In this method it is
+     * possible to set the maximum number of decimal places to output.
      *
-     * @param doubleDown the Double value
-     * @param dec the number of decimal places to output
+     * @param doubleDown
+     *            the Double value
+     * @param dec
+     *            the number of decimal places to output
      * @return the value as a string
      */
-    public static String doubleOut(double doubleDown, int dec) {
+    public static String doubleOut(final double doubleDown, final int dec) {
         if (dec < 0 || dec > 16) {
-            throw new IllegalArgumentException("Parameter dec must be between 1 and 16");
+            throw new IllegalArgumentException(
+                    "Parameter dec must be between 1 and 16");
         }
-        StringBuffer buf = new StringBuffer();
+        final StringBuffer buf = new StringBuffer();
         DoubleFormatUtil.formatDouble(doubleDown, dec, dec, buf);
         return buf.toString();
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String toPDFString() {
         if (getNumber() == null) {
             throw new IllegalArgumentException(
-                "The number of this PDFNumber must not be empty");
+                    "The number of this PDFNumber must not be empty");
         }
-        StringBuffer sb = new StringBuffer(64);
+        final StringBuffer sb = new StringBuffer(64);
         sb.append(doubleOut(getNumber().doubleValue(), 10));
         return sb.toString();
     }
 
 }
-

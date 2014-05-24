@@ -24,37 +24,42 @@ import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 
 /**
- * Class representing a PDF object reference. The object holds a soft reference to the actual
- * PDF object so the garbage collector can free the object if it's not referenced elsewhere. The
- * important thing about the class is the reference information to the actual PDF object in the
- * PDF file.
+ * Class representing a PDF object reference. The object holds a soft reference
+ * to the actual PDF object so the garbage collector can free the object if it's
+ * not referenced elsewhere. The important thing about the class is the
+ * reference information to the actual PDF object in the PDF file.
  */
 public class PDFReference implements PDFWritable {
 
-    private int objectNumber;
-    private int generation;
+    private final int objectNumber;
+    private final int generation;
 
     private Reference<PDFObject> objReference;
 
     /**
      * Creates a new PDF reference.
-     * @param obj the object to be referenced
+     * 
+     * @param obj
+     *            the object to be referenced
      */
-    public PDFReference(PDFObject obj) {
+    public PDFReference(final PDFObject obj) {
         this.objectNumber = obj.getObjectNumber();
         this.generation = obj.getGeneration();
         this.objReference = new SoftReference<PDFObject>(obj);
     }
 
     /**
-     * Creates a new PDF reference, but without a reference to the original object.
-     * @param ref an object reference
+     * Creates a new PDF reference, but without a reference to the original
+     * object.
+     * 
+     * @param ref
+     *            an object reference
      */
-    public PDFReference(String ref) {
+    public PDFReference(final String ref) {
         if (ref == null) {
             throw new NullPointerException("ref must not be null");
         }
-        String[] parts = ref.split(" ");
+        final String[] parts = ref.split(" ");
         assert parts.length == 3;
         this.objectNumber = Integer.parseInt(parts[0]);
         this.generation = Integer.parseInt(parts[1]);
@@ -63,11 +68,12 @@ public class PDFReference implements PDFWritable {
 
     /**
      * Returns the PDF object
+     * 
      * @return the PDF object, or null if it has been released
      */
     public PDFObject getObject() {
         if (this.objReference != null) {
-            PDFObject obj = this.objReference.get();
+            final PDFObject obj = this.objReference.get();
             if (obj == null) {
                 this.objReference = null;
             }
@@ -79,6 +85,7 @@ public class PDFReference implements PDFWritable {
 
     /**
      * Returns the object number.
+     * 
      * @return the object number
      */
     public int getObjectNumber() {
@@ -87,6 +94,7 @@ public class PDFReference implements PDFWritable {
 
     /**
      * Returns the generation.
+     * 
      * @return the generation
      */
     public int getGeneration() {
@@ -96,14 +104,17 @@ public class PDFReference implements PDFWritable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        StringBuilder textBuffer = new StringBuilder();
+        final StringBuilder textBuffer = new StringBuilder();
         outputInline(null, textBuffer);
         return textBuffer.toString();
     }
 
     /** {@inheritDoc} */
-    public void outputInline(OutputStream out, StringBuilder textBuffer) {
-        textBuffer.append(getObjectNumber()).append(' ').append(getGeneration()).append(" R");
+    @Override
+    public void outputInline(final OutputStream out,
+            final StringBuilder textBuffer) {
+        textBuffer.append(getObjectNumber()).append(' ')
+                .append(getGeneration()).append(" R");
     }
 
 }

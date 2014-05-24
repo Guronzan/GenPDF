@@ -36,35 +36,39 @@ public class ImageEncoderCCITTFax implements ImageEncoder {
 
     /**
      * Main constructor.
-     * @param ccitt the CCITT encoded image
+     * 
+     * @param ccitt
+     *            the CCITT encoded image
      */
-    public ImageEncoderCCITTFax(ImageRawCCITTFax ccitt) {
+    public ImageEncoderCCITTFax(final ImageRawCCITTFax ccitt) {
         this.ccitt = ccitt;
     }
 
     /** {@inheritDoc} */
-    public void writeTo(OutputStream out) throws IOException {
-        ccitt.writeTo(out);
+    @Override
+    public void writeTo(final OutputStream out) throws IOException {
+        this.ccitt.writeTo(out);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getImplicitFilter() {
-        PSDictionary dict = new PSDictionary();
-        dict.put("/Columns", new Integer(ccitt.getSize().getWidthPx()));
-        int compression = ccitt.getCompression();
+        final PSDictionary dict = new PSDictionary();
+        dict.put("/Columns", new Integer(this.ccitt.getSize().getWidthPx()));
+        final int compression = this.ccitt.getCompression();
         switch (compression) {
-        case TIFFImage.COMP_FAX_G3_1D :
+        case TIFFImage.COMP_FAX_G3_1D:
             dict.put("/K", new Integer(0));
             break;
-        case TIFFImage.COMP_FAX_G3_2D :
+        case TIFFImage.COMP_FAX_G3_2D:
             dict.put("/K", new Integer(1));
             break;
-        case TIFFImage.COMP_FAX_G4_2D :
+        case TIFFImage.COMP_FAX_G4_2D:
             dict.put("/K", new Integer(-1));
             break;
         default:
-            throw new IllegalStateException(
-                    "Invalid compression scheme: " + compression);
+            throw new IllegalStateException("Invalid compression scheme: "
+                    + compression);
         }
 
         return dict.toString() + " /CCITTFaxDecode";

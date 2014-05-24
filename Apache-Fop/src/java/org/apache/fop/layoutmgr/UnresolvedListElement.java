@@ -26,9 +26,11 @@ public abstract class UnresolvedListElement extends ListElement {
 
     /**
      * Main constructor
-     * @param position the Position instance needed by the addAreas stage of the LMs.
+     * 
+     * @param position
+     *            the Position instance needed by the addAreas stage of the LMs.
      */
-    public UnresolvedListElement(Position position) {
+    public UnresolvedListElement(final Position position) {
         super(position);
     }
 

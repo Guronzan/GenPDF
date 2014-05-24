@@ -57,12 +57,8 @@ public class PSDictionary extends java.util.HashMap {
             private String value;
         }
 
-        private static final String[][] BRACES = {
-            {"<<", ">>"},
-            {"[", "]"},
-            {"{", "}"},
-            {"(", ")"}
-        };
+        private static final String[][] BRACES = { { "<<", ">>" },
+                { "[", "]" }, { "{", "}" }, { "(", ")" } };
 
         private static final int OPENING = 0;
         private static final int CLOSING = 1;
@@ -72,24 +68,26 @@ public class PSDictionary extends java.util.HashMap {
         private static final int STRING = 3;
 
         /**
-         * Returns a Token containing the start, end index and value of the next token
-         * found in a given string
+         * Returns a Token containing the start, end index and value of the next
+         * token found in a given string
          *
          * @param str
          *            string to search
          * @param fromIndex
          *            search from index
-         * @return Token containing the start, end index and value of the next token
+         * @return Token containing the start, end index and value of the next
+         *         token
          */
-        protected Token nextToken(String str, int fromIndex) {
+        protected Token nextToken(final String str, final int fromIndex) {
             Token t = null;
             for (int i = fromIndex; i < str.length(); i++) {
-                boolean isWhitespace = Character.isWhitespace(str.charAt(i));
+                final boolean isWhitespace = Character.isWhitespace(str
+                        .charAt(i));
                 // start index found
                 if (t == null && !isWhitespace) {
                     t = new Token();
                     t.startIndex = i;
-                // end index found
+                    // end index found
                 } else if (t != null && isWhitespace) {
                     t.endIndex = i;
                     break;
@@ -118,10 +116,11 @@ public class PSDictionary extends java.util.HashMap {
          *            searches from index
          * @return matching brace index
          * @throws org.apache.xmlgraphics.ps.PSDictionaryFormatException
-         *            thrown in the event that a parsing error occurred
+         *             thrown in the event that a parsing error occurred
          */
-        private int indexOfMatchingBrace(String str, String[] braces,
-                int fromIndex) throws PSDictionaryFormatException {
+        private int indexOfMatchingBrace(final String str,
+                final String[] braces, int fromIndex)
+                throws PSDictionaryFormatException {
             final int len = str.length();
             if (braces.length != 2) {
                 throw new PSDictionaryFormatException("Wrong number of braces");
@@ -148,11 +147,12 @@ public class PSDictionary extends java.util.HashMap {
          *            String array containing opening and closing braces
          * @return String with braces stripped
          * @throws org.apache.xmlgraphics.ps.PSDictionaryFormatException
-         *            thrown in the event that a parsing error occurred
+         *             thrown in the event that a parsing error occurred
          */
-        private String stripBraces(String str, String[] braces) throws PSDictionaryFormatException {
+        private String stripBraces(String str, final String[] braces)
+                throws PSDictionaryFormatException {
             // find first opening brace
-            int firstIndex = str.indexOf(braces[OPENING]);
+            final int firstIndex = str.indexOf(braces[OPENING]);
             if (firstIndex == -1) {
                 throw new PSDictionaryFormatException(
                         "Failed to find opening parameter '" + braces[OPENING]
@@ -160,7 +160,7 @@ public class PSDictionary extends java.util.HashMap {
             }
 
             // find last matching brace
-            int lastIndex = indexOfMatchingBrace(str, braces, firstIndex);
+            final int lastIndex = indexOfMatchingBrace(str, braces, firstIndex);
             if (lastIndex == -1) {
                 throw new PSDictionaryFormatException(
                         "Failed to find matching closing parameter '"
@@ -168,7 +168,7 @@ public class PSDictionary extends java.util.HashMap {
             }
 
             // strip brace and trim
-            int braceLen = braces[OPENING].length();
+            final int braceLen = braces[OPENING].length();
             str = str.substring(firstIndex + braceLen, lastIndex).trim();
             return str;
         }
@@ -176,13 +176,15 @@ public class PSDictionary extends java.util.HashMap {
         /**
          * Parses a dictionary string and provides a dictionary object
          *
-         * @param str a dictionary string
+         * @param str
+         *            a dictionary string
          * @return A postscript dictionary object
          * @throws org.apache.xmlgraphics.ps.PSDictionaryFormatException
-         *            thrown in the event that a parsing error occurred
+         *             thrown in the event that a parsing error occurred
          */
-        public PSDictionary parseDictionary(String str) throws PSDictionaryFormatException {
-            PSDictionary dictionary = new PSDictionary();
+        public PSDictionary parseDictionary(String str)
+                throws PSDictionaryFormatException {
+            final PSDictionary dictionary = new PSDictionary();
             str = stripBraces(str.trim(), BRACES[DICTIONARY]);
             // length of dictionary string
             final int len = str.length();
@@ -191,9 +193,10 @@ public class PSDictionary extends java.util.HashMap {
             for (int currIndex = 0; (keyToken = nextToken(str, currIndex)) != null
                     && currIndex <= len;) {
                 if (keyToken.value == null) {
-                    throw new PSDictionaryFormatException("Failed to parse object key");
+                    throw new PSDictionaryFormatException(
+                            "Failed to parse object key");
                 }
-                Token valueToken = nextToken(str, keyToken.endIndex + 1);
+                final Token valueToken = nextToken(str, keyToken.endIndex + 1);
                 String[] braces = null;
                 for (int i = 0; i < BRACES.length; i++) {
                     if (valueToken.value.startsWith(BRACES[i][OPENING])) {
@@ -205,21 +208,25 @@ public class PSDictionary extends java.util.HashMap {
                 if (braces != null) {
                     // find closing brace
                     valueToken.endIndex = indexOfMatchingBrace(str, braces,
-                        valueToken.startIndex)
-                        + braces[OPENING].length();
+                            valueToken.startIndex) + braces[OPENING].length();
                     if (valueToken.endIndex < 0) {
-                        throw new PSDictionaryFormatException("Closing value brace '"
-                            + braces[CLOSING] + "' not found for key '"
-                            + keyToken.value + "'");
+                        throw new PSDictionaryFormatException(
+                                "Closing value brace '" + braces[CLOSING]
+                                        + "' not found for key '"
+                                        + keyToken.value + "'");
                     }
-                    valueToken.value = str.substring(valueToken.startIndex, valueToken.endIndex);
+                    valueToken.value = str.substring(valueToken.startIndex,
+                            valueToken.endIndex);
                 }
-                if (braces == null || braces == BRACES[PROCEDURE] || braces == BRACES[STRING]) {
+                if (braces == null || braces == BRACES[PROCEDURE]
+                        || braces == BRACES[STRING]) {
                     obj = valueToken.value;
                 } else if (BRACES[ARRAY] == braces) {
-                    List objList = new java.util.ArrayList();
-                    String objString = stripBraces(valueToken.value, braces);
-                    StringTokenizer tokenizer = new StringTokenizer(objString, ",");
+                    final List objList = new java.util.ArrayList();
+                    final String objString = stripBraces(valueToken.value,
+                            braces);
+                    final StringTokenizer tokenizer = new StringTokenizer(
+                            objString, ",");
                     while (tokenizer.hasMoreTokens()) {
                         objList.add(tokenizer.nextToken());
                     }
@@ -237,30 +244,34 @@ public class PSDictionary extends java.util.HashMap {
     /**
      * Parses a given a dictionary string and returns an object
      *
-     * @param str dictionary string
+     * @param str
+     *            dictionary string
      * @return dictionary object
      * @throws org.apache.xmlgraphics.ps.PSDictionaryFormatException
-     *            thrown in the event that a parsing error occurred
+     *             thrown in the event that a parsing error occurred
      */
-    public static PSDictionary valueOf(String str) throws PSDictionaryFormatException {
-        return (new Maker()).parseDictionary(str);
+    public static PSDictionary valueOf(final String str)
+            throws PSDictionaryFormatException {
+        return new Maker().parseDictionary(str);
     }
 
     /**
-     * @param obj object to test equality against
+     * @param obj
+     *            object to test equality against
      * @return whether a given object is equal to this dictionary object
      * @see java.lang.Object#equals(Object)
      */
-    public boolean equals(Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
         if (!(obj instanceof PSDictionary)) {
             return false;
         }
-        PSDictionary dictionaryObj = (PSDictionary) obj;
+        final PSDictionary dictionaryObj = (PSDictionary) obj;
         if (dictionaryObj.size() != size()) {
             return false;
         }
-        for (Iterator it = keySet().iterator(); it.hasNext();) {
-            String key = (String) it.next();
+        for (final Iterator it = keySet().iterator(); it.hasNext();) {
+            final String key = (String) it.next();
             if (!dictionaryObj.containsKey(key)) {
                 return false;
             }
@@ -272,30 +283,32 @@ public class PSDictionary extends java.util.HashMap {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode() {
         int hashCode = 7;
-        for (Iterator it = values().iterator(); it.hasNext();) {
-            Object value = it.next();
+        for (final Iterator it = values().iterator(); it.hasNext();) {
+            final Object value = it.next();
             hashCode += value.hashCode();
         }
         return hashCode;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         if (isEmpty()) {
             return "";
         }
-        StringBuffer sb = new StringBuffer("<<\n");
-        for (Iterator it = super.keySet().iterator(); it.hasNext();) {
-            String key = (String) it.next();
+        final StringBuffer sb = new StringBuffer("<<\n");
+        for (final Iterator it = super.keySet().iterator(); it.hasNext();) {
+            final String key = (String) it.next();
             sb.append("  " + key + " ");
-            Object obj = super.get(key);
+            final Object obj = super.get(key);
             if (obj instanceof java.util.ArrayList) {
-                List array = (List)obj;
+                final List array = (List) obj;
                 String str = "[";
                 for (int i = 0; i < array.size(); i++) {
-                    Object element = array.get(i);
+                    final Object element = array.get(i);
                     str += element + " ";
                 }
                 str = str.trim();

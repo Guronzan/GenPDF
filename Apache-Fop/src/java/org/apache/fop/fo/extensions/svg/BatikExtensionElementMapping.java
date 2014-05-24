@@ -23,16 +23,14 @@ import java.util.HashMap;
 
 import javax.xml.parsers.SAXParserFactory;
 
-import org.w3c.dom.DOMImplementation;
-
 import org.apache.batik.util.XMLResourceDescriptor;
-
 import org.apache.fop.fo.ElementMapping;
 import org.apache.fop.fo.FONode;
+import org.w3c.dom.DOMImplementation;
 
 /**
- * This Element Mapping is for Batik SVG Extension elements
- * of the http://xml.apache.org/batik/ext namespace.
+ * This Element Mapping is for Batik SVG Extension elements of the
+ * http://xml.apache.org/batik/ext namespace.
  */
 public class BatikExtensionElementMapping extends ElementMapping {
 
@@ -43,58 +41,63 @@ public class BatikExtensionElementMapping extends ElementMapping {
 
     /** Main constructor. */
     public BatikExtensionElementMapping() {
-        namespaceURI = URI;
+        this.namespaceURI = URI;
     }
 
     /** {@inheritDoc} */
+    @Override
     public DOMImplementation getDOMImplementation() {
-        return null; //no DOMImplementation necessary here
+        return null; // no DOMImplementation necessary here
     }
 
     /**
-     * Returns the fully qualified classname of an XML parser for
-     * Batik classes that apparently need it (error messages, perhaps)
+     * Returns the fully qualified classname of an XML parser for Batik classes
+     * that apparently need it (error messages, perhaps)
+     * 
      * @return an XML parser classname
      */
     private String getAParserClassName() {
         try {
-            //TODO Remove when Batik uses JAXP instead of SAX directly.
-            SAXParserFactory factory = SAXParserFactory.newInstance();
+            // TODO Remove when Batik uses JAXP instead of SAX directly.
+            final SAXParserFactory factory = SAXParserFactory.newInstance();
             return factory.newSAXParser().getXMLReader().getClass().getName();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }
 
     /** initialize mapping */
+    @Override
     protected void initialize() {
-        if (foObjs == null && batikAvail) {
+        if (this.foObjs == null && this.batikAvail) {
             // this sets the parser that will be used
             // by default (SVGBrokenLinkProvider)
             // normally the user agent value is used
             try {
-                XMLResourceDescriptor.setXMLParserClassName(
-                  getAParserClassName());
+                XMLResourceDescriptor
+                        .setXMLParserClassName(getAParserClassName());
 
-                foObjs = new HashMap<String, Maker>();
-                foObjs.put("batik", new SE());
-                foObjs.put(DEFAULT, new SVGMaker());
-            } catch (Throwable t) {
+                this.foObjs = new HashMap<String, Maker>();
+                this.foObjs.put("batik", new SE());
+                this.foObjs.put(DEFAULT, new SVGMaker());
+            } catch (final Throwable t) {
                 // if the classes are not available
                 // the DISPLAY is not checked
-                batikAvail = false;
+                this.batikAvail = false;
             }
         }
     }
 
     static class SVGMaker extends ElementMapping.Maker {
-        public FONode make(FONode parent) {
+        @Override
+        public FONode make(final FONode parent) {
             return new SVGObj(parent);
         }
     }
 
     static class SE extends ElementMapping.Maker {
-        public FONode make(FONode parent) {
+        @Override
+        public FONode make(final FONode parent) {
             return new SVGElement(parent);
         }
     }

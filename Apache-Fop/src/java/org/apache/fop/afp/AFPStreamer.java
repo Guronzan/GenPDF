@@ -29,8 +29,7 @@ import java.io.RandomAccessFile;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.afp.modca.ResourceGroup;
 import org.apache.fop.afp.modca.StreamedResourceGroup;
@@ -38,9 +37,8 @@ import org.apache.fop.afp.modca.StreamedResourceGroup;
 /**
  * Manages the streaming of the AFP output
  */
+@Slf4j
 public class AFPStreamer implements Streamable {
-    /** Static logging instance */
-    private static final Log LOG = LogFactory.getLog(AFPStreamer.class);
 
     private static final String AFPDATASTREAM_TEMP_FILE_PREFIX = "AFPDataStream_";
 
@@ -48,12 +46,16 @@ public class AFPStreamer implements Streamable {
 
     private static final String DEFAULT_EXTERNAL_RESOURCE_FILENAME = "resources.afp";
 
-
     private final Factory factory;
 
     /** A mapping of external resource destinations to resource groups */
-    private final Map/*<String,AFPExternalResourceGroup>*/pathResourceGroupMap
-        = new java.util.HashMap/*<String,AFPExternalResourceGroup>*/();
+    private final Map/* <String,AFPExternalResourceGroup> */pathResourceGroupMap = new java.util.HashMap/*
+     * <
+     * String
+     * ,
+     * AFPExternalResourceGroup
+     * >
+     */();
 
     private StreamedResourceGroup printFileResourceGroup;
 
@@ -75,44 +77,52 @@ public class AFPStreamer implements Streamable {
     /**
      * Main constructor
      *
-     * @param factory a factory
+     * @param factory
+     *            a factory
      */
-    public AFPStreamer(Factory factory) {
+    public AFPStreamer(final Factory factory) {
         this.factory = factory;
     }
 
     /**
      * Creates a new DataStream
      *
-     * @param paintingState the AFP painting state
+     * @param paintingState
+     *            the AFP painting state
      * @return a new {@link DataStream}
-     * @throws IOException thrown if an I/O exception of some sort has occurred
+     * @throws IOException
+     *             thrown if an I/O exception of some sort has occurred
      */
-    public DataStream createDataStream(AFPPaintingState paintingState) throws IOException {
-        this.tempFile = File.createTempFile(AFPDATASTREAM_TEMP_FILE_PREFIX, null);
-        this.documentFile = new RandomAccessFile(tempFile, "rw");
+    public DataStream createDataStream(final AFPPaintingState paintingState)
+            throws IOException {
+        this.tempFile = File.createTempFile(AFPDATASTREAM_TEMP_FILE_PREFIX,
+                null);
+        this.documentFile = new RandomAccessFile(this.tempFile, "rw");
         this.documentOutputStream = new BufferedOutputStream(
-                new FileOutputStream(documentFile.getFD()));
-        this.dataStream = factory.createDataStream(paintingState, documentOutputStream);
-        return dataStream;
+                new FileOutputStream(this.documentFile.getFD()));
+        this.dataStream = this.factory.createDataStream(paintingState,
+                this.documentOutputStream);
+        return this.dataStream;
     }
 
     /**
      * Sets the default resource group file path
      *
-     * @param filePath the default resource group file path
+     * @param filePath
+     *            the default resource group file path
      */
-    public void setDefaultResourceGroupFilePath(String filePath) {
+    public void setDefaultResourceGroupFilePath(final String filePath) {
         this.defaultResourceGroupFilePath = filePath;
     }
 
     /**
      * Returns the resource group for a given resource info
      *
-     * @param level a resource level
+     * @param level
+     *            a resource level
      * @return a resource group for the given resource info
      */
-    public ResourceGroup getResourceGroup(AFPResourceLevel level) {
+    public ResourceGroup getResourceGroup(final AFPResourceLevel level) {
         ResourceGroup resourceGroup = null;
         if (level.isInline()) { // no resource group for inline level
             return null;
@@ -120,33 +130,37 @@ public class AFPStreamer implements Streamable {
         if (level.isExternal()) {
             String filePath = level.getExternalFilePath();
             if (filePath == null) {
-                LOG.warn("No file path provided for external resource, using default.");
-                filePath = defaultResourceGroupFilePath;
+                log.warn("No file path provided for external resource, using default.");
+                filePath = this.defaultResourceGroupFilePath;
             }
-            resourceGroup = (ResourceGroup)pathResourceGroupMap.get(filePath);
+            resourceGroup = (ResourceGroup) this.pathResourceGroupMap
+                    .get(filePath);
             if (resourceGroup == null) {
                 OutputStream os = null;
                 try {
-                    os = new BufferedOutputStream(new FileOutputStream(filePath));
-                } catch (FileNotFoundException fnfe) {
-                    LOG.error("Failed to create/open external resource group file '"
+                    os = new BufferedOutputStream(
+                            new FileOutputStream(filePath));
+                } catch (final FileNotFoundException fnfe) {
+                    log.error("Failed to create/open external resource group file '"
                             + filePath + "'");
                 } finally {
                     if (os != null) {
-                        resourceGroup = factory.createStreamedResourceGroup(os);
-                        pathResourceGroupMap.put(filePath, resourceGroup);
+                        resourceGroup = this.factory
+                                .createStreamedResourceGroup(os);
+                        this.pathResourceGroupMap.put(filePath, resourceGroup);
                     }
                 }
             }
         } else if (level.isPrintFile()) {
-            if (printFileResourceGroup == null) {
+            if (this.printFileResourceGroup == null) {
                 // use final outputstream for print-file resource group
-                printFileResourceGroup = factory.createStreamedResourceGroup(outputStream);
+                this.printFileResourceGroup = this.factory
+                        .createStreamedResourceGroup(this.outputStream);
             }
-            resourceGroup = printFileResourceGroup;
+            resourceGroup = this.printFileResourceGroup;
         } else {
             // resource group in afp document datastream
-            resourceGroup = dataStream.getResourceGroup(level);
+            resourceGroup = this.dataStream.getResourceGroup(level);
         }
         return resourceGroup;
     }
@@ -154,71 +168,74 @@ public class AFPStreamer implements Streamable {
     /**
      * Closes off the AFP stream writing the document stream
      *
-     * @throws IOException if an an I/O exception of some sort has occurred
+     * @throws IOException
+     *             if an an I/O exception of some sort has occurred
      */
-        // write out any external resource groups
+    // write out any external resource groups
     public void close() throws IOException {
-        Iterator it = pathResourceGroupMap.values().iterator();
+        final Iterator it = this.pathResourceGroupMap.values().iterator();
         while (it.hasNext()) {
-            StreamedResourceGroup resourceGroup = (StreamedResourceGroup)it.next();
+            final StreamedResourceGroup resourceGroup = (StreamedResourceGroup) it
+                    .next();
             resourceGroup.close();
         }
 
         // close any open print-file resource group
-        if (printFileResourceGroup != null) {
-            printFileResourceGroup.close();
+        if (this.printFileResourceGroup != null) {
+            this.printFileResourceGroup.close();
         }
 
         // write out document
-        writeToStream(outputStream);
+        writeToStream(this.outputStream);
 
-        outputStream.close();
+        this.outputStream.close();
 
-
-        if (documentOutputStream != null) {
-            documentOutputStream.close();
+        if (this.documentOutputStream != null) {
+            this.documentOutputStream.close();
         }
 
-        if (documentFile != null) {
-            documentFile.close();
+        if (this.documentFile != null) {
+            this.documentFile.close();
         }
         // delete temporary file
-        tempFile.delete();
+        this.tempFile.delete();
     }
 
     /**
      * Sets the final outputstream
      *
-     * @param outputStream an outputstream
+     * @param outputStream
+     *            an outputstream
      */
-    public void setOutputStream(OutputStream outputStream) {
+    public void setOutputStream(final OutputStream outputStream) {
         this.outputStream = outputStream;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-//        long start = System.currentTimeMillis();
-        int len = (int)documentFile.length();
-        int numChunks = len / BUFFER_SIZE;
-        int remainingChunkSize = len % BUFFER_SIZE;
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        // long start = System.currentTimeMillis();
+        final int len = (int) this.documentFile.length();
+        final int numChunks = len / BUFFER_SIZE;
+        final int remainingChunkSize = len % BUFFER_SIZE;
         byte[] buffer;
 
-        documentFile.seek(0);
+        this.documentFile.seek(0);
         if (numChunks > 0) {
             buffer = new byte[BUFFER_SIZE];
             for (int i = 0; i < numChunks; i++) {
-                documentFile.read(buffer, 0, BUFFER_SIZE);
+                this.documentFile.read(buffer, 0, BUFFER_SIZE);
                 os.write(buffer, 0, BUFFER_SIZE);
             }
         } else {
             buffer = new byte[remainingChunkSize];
         }
         if (remainingChunkSize > 0) {
-            documentFile.read(buffer, 0, remainingChunkSize);
+            this.documentFile.read(buffer, 0, remainingChunkSize);
             os.write(buffer, 0, remainingChunkSize);
         }
         os.flush();
-//        long end = System.currentTimeMillis();
-//        log.debug("writing time " + (end - start) + "ms");
+        // long end = System.currentTimeMillis();
+        // log.debug("writing time " + (end - start) + "ms");
     }
 }

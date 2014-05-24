@@ -27,10 +27,9 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.apps.FopFactoryConfigurator;
-import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.render.intermediate.AbstractBinaryWritingIFDocumentHandler;
 import org.apache.fop.render.intermediate.IFContext;
@@ -46,11 +45,9 @@ import org.apache.xmlgraphics.util.UnitConv;
  * {@link org.apache.fop.render.intermediate.IFDocumentHandler} implementation
  * that produces PCL 5.
  */
+@Slf4j
 public class PCLDocumentHandler extends AbstractBinaryWritingIFDocumentHandler
         implements PCLConstants {
-
-    /** logging instance */
-    private static Log log = LogFactory.getLog(PCLDocumentHandler.class);
 
     /**
      * Utility class for handling all sorts of peripheral tasks around PCL
@@ -86,7 +83,7 @@ public class PCLDocumentHandler extends AbstractBinaryWritingIFDocumentHandler
     /** {@inheritDoc} */
     @Override
     public String getMimeType() {
-        return MimeConstants.MIME_PCL;
+        return org.apache.xmlgraphics.util.MimeConstants.MIME_PCL;
     }
 
     /** {@inheritDoc} */

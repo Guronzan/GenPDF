@@ -32,12 +32,11 @@ import static org.apache.fop.fo.Constants.PR_X_XML_BASE;
 
 /**
  * Class modeling a property that has a value of type &lt;uri-specification>.
- * The purpose is mainly to support resolution of a specified
- * relative URI against a specified or inherited <code>xml:base</code>
- * during the property refinement stage.
- * If no <code>xml:base</code> has been specified, only the original URI, as
- * it appears in the source document, is stored as the property's specified
- * value.
+ * The purpose is mainly to support resolution of a specified relative URI
+ * against a specified or inherited <code>xml:base</code> during the property
+ * refinement stage. If no <code>xml:base</code> has been specified, only the
+ * original URI, as it appears in the source document, is stored as the
+ * property's specified value.
  */
 public class URIProperty extends Property {
 
@@ -47,20 +46,26 @@ public class URIProperty extends Property {
     /**
      * Default constructor, to create a {@link URIProperty} from a
      * {@code java.net.URI} directly.
-     * @param uri   a resolved {@code java.net.URI}
+     * 
+     * @param uri
+     *            a resolved {@code java.net.URI}
      */
-    protected URIProperty(URI uri) {
+    protected URIProperty(final URI uri) {
         this.resolvedURI = uri;
     }
 
     /**
-     * Alternate constructor, to create a {@link URIProperty} from a
-     * string representation.
-     * @param uri   a {@code java.lang.String} representing the URI
-     * @param resolve flag indicating whether this URI was the result of resolution
-     * @throws IllegalArgumentException if the URI should be resolved, but is not valid.
+     * Alternate constructor, to create a {@link URIProperty} from a string
+     * representation.
+     * 
+     * @param uri
+     *            a {@code java.lang.String} representing the URI
+     * @param resolve
+     *            flag indicating whether this URI was the result of resolution
+     * @throws IllegalArgumentException
+     *             if the URI should be resolved, but is not valid.
      */
-    private URIProperty(String uri, boolean resolve) {
+    private URIProperty(final String uri, final boolean resolve) {
         if (resolve && !(uri == null || "".equals(uri))) {
             this.resolvedURI = URI.create(uri);
         } else {
@@ -69,75 +74,79 @@ public class URIProperty extends Property {
     }
 
     /**
-     * Return a string representing the resolved URI, or the
-     * specified value if the URI is not resolved against
-     * an <code>xml:base</code>
+     * Return a string representing the resolved URI, or the specified value if
+     * the URI is not resolved against an <code>xml:base</code>
+     * 
      * @return a string representing the URI
      */
     @Override
     public String getString() {
-        if (resolvedURI == null) {
+        if (this.resolvedURI == null) {
             return getSpecifiedValue();
         } else {
-            return resolvedURI.toString();
+            return this.resolvedURI.toString();
         }
     }
 
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return this.getString();
+        return getString();
     }
 
     /**
-     * Inner {@link PropertyMaker} subclass responsible
-     * for making instances of this type.
+     * Inner {@link PropertyMaker} subclass responsible for making instances of
+     * this type.
      */
     public static class Maker extends PropertyMaker {
 
         /**
          * Create a maker for the given property id
          *
-         * @param propId the id of the property for which a Maker should be created
+         * @param propId
+         *            the id of the property for which a Maker should be created
          */
-        public Maker(int propId) {
+        public Maker(final int propId) {
             super(propId);
         }
 
         /**
-         * {@inheritDoc}
-         * Check if {@code xml:base} has been specified and whether the
-         * given {@code value} represents a relative URI. If so, create
-         * a property representing the resolved URI.
+         * {@inheritDoc} Check if {@code xml:base} has been specified and
+         * whether the given {@code value} represents a relative URI. If so,
+         * create a property representing the resolved URI.
          */
         @Override
-        public Property make(PropertyList propertyList, String value,
-                             FObj fo) throws PropertyException {
+        public Property make(final PropertyList propertyList,
+                final String value, final FObj fo) throws PropertyException {
 
             Property p = null;
-            //special treament for data: URIs
+            // special treament for data: URIs
             if (value.matches("(?s)^(url\\(('|\")?)?data:.*$")) {
                 p = new URIProperty(value, false);
             } else {
                 try {
-                    URI specifiedURI = new URI(URISpecification.escapeURI(value));
-                    URIProperty xmlBase = (URIProperty)propertyList.get(PR_X_XML_BASE, true, false);
+                    final URI specifiedURI = new URI(
+                            URISpecification.escapeURI(value));
+                    final URIProperty xmlBase = (URIProperty) propertyList.get(
+                            PR_X_XML_BASE, true, false);
                     if (xmlBase == null) {
-                        //xml:base undefined
+                        // xml:base undefined
                         if (this.propId == PR_X_XML_BASE) {
-                            //if current property is xml:base, define a new one
+                            // if current property is xml:base, define a new one
                             p = new URIProperty(specifiedURI);
                             p.setSpecifiedValue(value);
                         } else {
-                            //otherwise, just store the specified value (for backward compatibility)
+                            // otherwise, just store the specified value (for
+                            // backward compatibility)
                             p = new URIProperty(value, false);
                         }
                     } else {
-                        //xml:base defined, so resolve
-                        p = new URIProperty(xmlBase.resolvedURI.resolve(specifiedURI));
+                        // xml:base defined, so resolve
+                        p = new URIProperty(
+                                xmlBase.resolvedURI.resolve(specifiedURI));
                         p.setSpecifiedValue(value);
                     }
-                } catch (URISyntaxException use) {
+                } catch (final URISyntaxException use) {
                     // Let PropertyList propagate the exception
                     throw new PropertyException("Invalid URI specified");
                 }
@@ -151,21 +160,22 @@ public class URIProperty extends Property {
         final int prime = 31;
         int result = 1;
         result = prime * result + CompareUtil.getHashCode(getSpecifiedValue());
-        result = prime * result + CompareUtil.getHashCode(resolvedURI);
+        result = prime * result + CompareUtil.getHashCode(this.resolvedURI);
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (!(obj instanceof URIProperty)) {
             return false;
         }
-        URIProperty other = (URIProperty) obj;
-        return CompareUtil.equal(getSpecifiedValue(), other.getSpecifiedValue())
-                && CompareUtil.equal(resolvedURI, other.resolvedURI);
+        final URIProperty other = (URIProperty) obj;
+        return CompareUtil
+                .equal(getSpecifiedValue(), other.getSpecifiedValue())
+                && CompareUtil.equal(this.resolvedURI, other.resolvedURI);
     }
 
 }

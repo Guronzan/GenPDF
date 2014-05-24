@@ -22,13 +22,12 @@ package org.apache.fop.area;
 import java.awt.Color;
 import java.io.Serializable;
 
-import org.apache.xmlgraphics.image.loader.ImageInfo;
-
 import org.apache.fop.fonts.FontTriplet;
 import org.apache.fop.traits.BorderProps;
 import org.apache.fop.traits.Direction;
 import org.apache.fop.traits.WritingMode;
 import org.apache.fop.util.ColorUtil;
+import org.apache.xmlgraphics.image.loader.ImageInfo;
 
 import static org.apache.fop.fo.Constants.EN_NOREPEAT;
 import static org.apache.fop.fo.Constants.EN_REPEAT;
@@ -37,8 +36,8 @@ import static org.apache.fop.fo.Constants.EN_REPEATY;
 
 // properties should be serialized by the holder
 /**
- * Area traits used for rendering.
- * This class represents an area trait that specifies a value for rendering.
+ * Area traits used for rendering. This class represents an area trait that
+ * specifies a value for rendering.
  */
 public final class Trait implements Serializable {
 
@@ -48,11 +47,11 @@ public final class Trait implements Serializable {
     }
 
     /** Id reference line, not resolved. (not sure if this is needed.) */
-    //public static final Integer ID_LINK = new Integer(0);
+    // public static final Integer ID_LINK = new Integer(0);
 
     /**
-     * Internal link trait.
-     * Contains the PageViewport key and the PROD_ID of the target area
+     * Internal link trait. Contains the PageViewport key and the PROD_ID of the
+     * target area
      */
     public static final Integer INTERNAL_LINK = 1;
 
@@ -84,10 +83,10 @@ public final class Trait implements Serializable {
     public static final Integer LINETHROUGH = 12;
 
     /** Shadow offset. */
-    //public static final Integer OFFSET = new Integer(13);
+    // public static final Integer OFFSET = new Integer(13);
 
     /** The shadow for text. */
-    //public static final Integer SHADOW = new Integer(14);
+    // public static final Integer SHADOW = new Integer(14);
 
     /** The border start. */
     public static final Integer BORDER_START = 15;
@@ -117,25 +116,25 @@ public final class Trait implements Serializable {
     public static final Integer SPACE_START = 23;
 
     /** The space end. */
-    public static final Integer SPACE_END  = 24;
+    public static final Integer SPACE_END = 24;
 
     /** break before */
-    //public static final Integer BREAK_BEFORE = new Integer(25);
+    // public static final Integer BREAK_BEFORE = new Integer(25);
 
     /** break after */
-    //public static final Integer BREAK_AFTER = new Integer(26);
+    // public static final Integer BREAK_AFTER = new Integer(26);
 
     /** The start-indent trait. */
     public static final Integer START_INDENT = 27;
 
     /** The end-indent trait. */
-    public static final Integer END_INDENT  = 28;
+    public static final Integer END_INDENT = 28;
 
     /** The space-before trait. */
-    public static final Integer SPACE_BEFORE  = 29;
+    public static final Integer SPACE_BEFORE = 29;
 
     /** The space-after trait. */
-    public static final Integer SPACE_AFTER  = 30;
+    public static final Integer SPACE_AFTER = 30;
 
     /** The is-reference-area trait. */
     public static final Integer IS_REFERENCE_AREA = 31;
@@ -175,10 +174,10 @@ public final class Trait implements Serializable {
     private static final TraitInfo[] TRAIT_INFO = new TraitInfo[MAX_TRAIT_KEY + 1];
 
     private static class TraitInfo {
-        private String name;
-        private Class clazz; // Class of trait data
+        private final String name;
+        private final Class clazz; // Class of trait data
 
-        public TraitInfo(String name, Class clazz) {
+        public TraitInfo(final String name, final Class clazz) {
             this.name = name;
             this.clazz = clazz;
         }
@@ -192,82 +191,86 @@ public final class Trait implements Serializable {
         }
     }
 
-    private static void put(Integer key, TraitInfo info) {
+    private static void put(final Integer key, final TraitInfo info) {
         TRAIT_INFO[key] = info;
     }
 
     static {
-        // Create a hashmap mapping trait code to name for external representation
-        //put(ID_LINK, new TraitInfo("id-link", String.class));
-        put(STRUCTURE_TREE_ELEMENT, new TraitInfo("structure-tree-element", String.class));
-        put(INTERNAL_LINK,  new TraitInfo("internal-link", InternalLink.class));
-        put(EXTERNAL_LINK,  new TraitInfo("external-link", ExternalLink.class));
-        put(FONT,           new TraitInfo("font", FontTriplet.class));
-        put(FONT_SIZE,      new TraitInfo("font-size", Integer.class));
-        put(COLOR,          new TraitInfo("color", Color.class));
-        put(PROD_ID,        new TraitInfo("prod-id", String.class));
-        put(BACKGROUND,     new TraitInfo("background", Background.class));
-        put(UNDERLINE,      new TraitInfo("underline-score", Boolean.class));
-        put(UNDERLINE_COLOR, new TraitInfo("underline-score-color", Color.class));
-        put(OVERLINE,       new TraitInfo("overline-score", Boolean.class));
+        // Create a hashmap mapping trait code to name for external
+        // representation
+        // put(ID_LINK, new TraitInfo("id-link", String.class));
+        put(STRUCTURE_TREE_ELEMENT, new TraitInfo("structure-tree-element",
+                String.class));
+        put(INTERNAL_LINK, new TraitInfo("internal-link", InternalLink.class));
+        put(EXTERNAL_LINK, new TraitInfo("external-link", ExternalLink.class));
+        put(FONT, new TraitInfo("font", FontTriplet.class));
+        put(FONT_SIZE, new TraitInfo("font-size", Integer.class));
+        put(COLOR, new TraitInfo("color", Color.class));
+        put(PROD_ID, new TraitInfo("prod-id", String.class));
+        put(BACKGROUND, new TraitInfo("background", Background.class));
+        put(UNDERLINE, new TraitInfo("underline-score", Boolean.class));
+        put(UNDERLINE_COLOR,
+                new TraitInfo("underline-score-color", Color.class));
+        put(OVERLINE, new TraitInfo("overline-score", Boolean.class));
         put(OVERLINE_COLOR, new TraitInfo("overline-score-color", Color.class));
-        put(LINETHROUGH,    new TraitInfo("through-score", Boolean.class));
-        put(LINETHROUGH_COLOR, new TraitInfo("through-score-color", Color.class));
-        put(BLINK,          new TraitInfo("blink", Boolean.class));
-        //put(OFFSET,       new TraitInfo("offset", Integer.class));
-        //put(SHADOW,       new TraitInfo("shadow", Integer.class));
-        put(BORDER_START,   new TraitInfo("border-start", BorderProps.class));
-        put(BORDER_END,     new TraitInfo("border-end", BorderProps.class));
-        put(BORDER_BEFORE,  new TraitInfo("border-before", BorderProps.class));
-        put(BORDER_AFTER,   new TraitInfo("border-after", BorderProps.class));
-        put(PADDING_START,  new TraitInfo("padding-start", Integer.class));
-        put(PADDING_END,    new TraitInfo("padding-end", Integer.class));
+        put(LINETHROUGH, new TraitInfo("through-score", Boolean.class));
+        put(LINETHROUGH_COLOR,
+                new TraitInfo("through-score-color", Color.class));
+        put(BLINK, new TraitInfo("blink", Boolean.class));
+        // put(OFFSET, new TraitInfo("offset", Integer.class));
+        // put(SHADOW, new TraitInfo("shadow", Integer.class));
+        put(BORDER_START, new TraitInfo("border-start", BorderProps.class));
+        put(BORDER_END, new TraitInfo("border-end", BorderProps.class));
+        put(BORDER_BEFORE, new TraitInfo("border-before", BorderProps.class));
+        put(BORDER_AFTER, new TraitInfo("border-after", BorderProps.class));
+        put(PADDING_START, new TraitInfo("padding-start", Integer.class));
+        put(PADDING_END, new TraitInfo("padding-end", Integer.class));
         put(PADDING_BEFORE, new TraitInfo("padding-before", Integer.class));
-        put(PADDING_AFTER,  new TraitInfo("padding-after", Integer.class));
-        put(SPACE_START,    new TraitInfo("space-start", Integer.class));
-        put(SPACE_END,      new TraitInfo("space-end", Integer.class));
-        //put(BREAK_BEFORE, new TraitInfo("break-before", Integer.class));
-        //put(BREAK_AFTER,  new TraitInfo("break-after", Integer.class));
-        put(START_INDENT,   new TraitInfo("start-indent", Integer.class));
-        put(END_INDENT,     new TraitInfo("end-indent", Integer.class));
-        put(SPACE_BEFORE,   new TraitInfo("space-before", Integer.class));
-        put(SPACE_AFTER,    new TraitInfo("space-after", Integer.class));
-        put(IS_REFERENCE_AREA,  new TraitInfo("is-reference-area", Boolean.class));
-        put(IS_VIEWPORT_AREA,   new TraitInfo("is-viewport-area", Boolean.class));
-        put(WRITING_MODE,
-                new TraitInfo("writing-mode", WritingMode.class));
-        put(INLINE_PROGRESSION_DIRECTION,
-                new TraitInfo("inline-progression-direction", Direction.class));
-        put(BLOCK_PROGRESSION_DIRECTION,
-                new TraitInfo("block-progression-direction", Direction.class));
-        put(SHIFT_DIRECTION,
-                new TraitInfo("shift-direction", Direction.class));
+        put(PADDING_AFTER, new TraitInfo("padding-after", Integer.class));
+        put(SPACE_START, new TraitInfo("space-start", Integer.class));
+        put(SPACE_END, new TraitInfo("space-end", Integer.class));
+        // put(BREAK_BEFORE, new TraitInfo("break-before", Integer.class));
+        // put(BREAK_AFTER, new TraitInfo("break-after", Integer.class));
+        put(START_INDENT, new TraitInfo("start-indent", Integer.class));
+        put(END_INDENT, new TraitInfo("end-indent", Integer.class));
+        put(SPACE_BEFORE, new TraitInfo("space-before", Integer.class));
+        put(SPACE_AFTER, new TraitInfo("space-after", Integer.class));
+        put(IS_REFERENCE_AREA,
+                new TraitInfo("is-reference-area", Boolean.class));
+        put(IS_VIEWPORT_AREA, new TraitInfo("is-viewport-area", Boolean.class));
+        put(WRITING_MODE, new TraitInfo("writing-mode", WritingMode.class));
+        put(INLINE_PROGRESSION_DIRECTION, new TraitInfo(
+                "inline-progression-direction", Direction.class));
+        put(BLOCK_PROGRESSION_DIRECTION, new TraitInfo(
+                "block-progression-direction", Direction.class));
+        put(SHIFT_DIRECTION, new TraitInfo("shift-direction", Direction.class));
 
     }
 
     /**
      * Get the trait name for a trait code.
      *
-     * @param traitCode the trait code to get the name for
+     * @param traitCode
+     *            the trait code to get the name for
      * @return the trait name
      */
-    public static String getTraitName(Object traitCode) {
-        return TRAIT_INFO[(Integer)traitCode].getName();
+    public static String getTraitName(final Object traitCode) {
+        return TRAIT_INFO[(Integer) traitCode].getName();
     }
 
     /**
      * Get the data storage class for the trait.
      *
-     * @param traitCode the trait code to lookup
+     * @param traitCode
+     *            the trait code to lookup
      * @return the class type for the trait
      */
-    public static Class getTraitClass(Object traitCode) {
-        return TRAIT_INFO[(Integer)traitCode].getClazz();
+    public static Class getTraitClass(final Object traitCode) {
+        return TRAIT_INFO[(Integer) traitCode].getClazz();
     }
 
     /**
-     * Class for internal link traits.
-     * Stores PageViewport key and producer ID
+     * Class for internal link traits. Stores PageViewport key and producer ID
      */
     public static class InternalLink implements Serializable {
 
@@ -282,22 +285,26 @@ public final class Trait implements Serializable {
         /**
          * Create an InternalLink to the given PageViewport and target ID
          *
-         * @param pvKey the PageViewport key
-         * @param idRef the target ID
+         * @param pvKey
+         *            the PageViewport key
+         * @param idRef
+         *            the target ID
          */
-        public InternalLink(String pvKey, String idRef) {
+        public InternalLink(final String pvKey, final String idRef) {
             setPVKey(pvKey);
             setIDRef(idRef);
         }
 
         /**
-         * Create an InternalLink based on the given XML attribute value.
-         * This is typically called when data are read from an XML area tree.
+         * Create an InternalLink based on the given XML attribute value. This
+         * is typically called when data are read from an XML area tree.
          *
-         * @param attrValue attribute value to be parsed by InternalLink.parseXMLAttribute
+         * @param attrValue
+         *            attribute value to be parsed by
+         *            InternalLink.parseXMLAttribute
          */
-        public InternalLink(String attrValue) {
-            String[] values = parseXMLAttribute(attrValue);
+        public InternalLink(final String attrValue) {
+            final String[] values = parseXMLAttribute(attrValue);
             setPVKey(values[0]);
             setIDRef(values[1]);
         }
@@ -305,9 +312,10 @@ public final class Trait implements Serializable {
         /**
          * Sets the key of the targeted PageViewport.
          *
-         * @param pvKey the PageViewport key
+         * @param pvKey
+         *            the PageViewport key
          */
-        public void setPVKey(String pvKey) {
+        public void setPVKey(final String pvKey) {
             this.pvKey = pvKey;
         }
 
@@ -317,15 +325,16 @@ public final class Trait implements Serializable {
          * @return the PageViewport key
          */
         public String getPVKey() {
-            return pvKey;
+            return this.pvKey;
         }
 
         /**
          * Sets the target ID.
          *
-         * @param idRef the target ID
+         * @param idRef
+         *            the target ID
          */
-        public void setIDRef(String idRef) {
+        public void setIDRef(final String idRef) {
             this.idRef = idRef;
         }
 
@@ -335,70 +344,76 @@ public final class Trait implements Serializable {
          * @return the target ID
          */
         public String getIDRef() {
-            return idRef;
+            return this.idRef;
         }
 
-       /**
-        * Returns the attribute value for this object as
-        * used in the area tree XML.
-        *
-        * @return a string of the type "(thisPVKey,thisIDRef)"
-        */
-       public String xmlAttribute() {
-           return makeXMLAttribute(pvKey, idRef);
-       }
-
-       /**
-        * Returns the XML attribute value for the given PV key and ID ref.
-        * This value is used in the area tree XML.
-        *
-        * @param pvKey the PageViewport key of the link target
-        * @param idRef the ID of the link target
-        * @return a string of the type "(thisPVKey,thisIDRef)"
-        */
-       public static String makeXMLAttribute(String pvKey, String idRef) {
-           return "(" + (pvKey == null ? "" : pvKey) + ","
-                      + (idRef == null ? "" : idRef) + ")";
-       }
-
-       /**
-        * Parses XML attribute value from the area tree into
-        * PageViewport key + IDRef strings. If the attribute value is
-        * formatted like "(s1,s2)", then s1 and s2 are considered to be
-        * the PV key and the IDRef, respectively.
-        * Otherwise, the entire string is the PV key and the IDRef is null.
-        *
-        * @param attrValue the atribute value (PV key and possibly IDRef)
-        * @return a 2-String array containing the PV key and the IDRef.
-        * Both may be null.
-        */
-       public static String[] parseXMLAttribute(String attrValue) {
-           String[] result = {null, null};
-           if (attrValue != null) {
-              int len = attrValue.length();
-              if (len >= 2 && attrValue.charAt(0) == '(' && attrValue.charAt(len - 1) == ')'
-                      && attrValue.indexOf(',') != -1) {
-                  String value = attrValue.substring(1, len - 1); // remove brackets
-                  int delimIndex = value.indexOf(',');
-                  result[0] = value.substring(0, delimIndex).trim(); // PV key
-                  result[1] = value.substring(delimIndex + 1, value.length()).trim(); // IDRef
-              } else {
-                  // PV key only, e.g. from old area tree XML:
-                  result[0] = attrValue;
-              }
-           }
-           return result;
-       }
+        /**
+         * Returns the attribute value for this object as used in the area tree
+         * XML.
+         *
+         * @return a string of the type "(thisPVKey,thisIDRef)"
+         */
+        public String xmlAttribute() {
+            return makeXMLAttribute(this.pvKey, this.idRef);
+        }
 
         /**
-         * Return the human-friendly string for debugging.
-         * {@inheritDoc}
+         * Returns the XML attribute value for the given PV key and ID ref. This
+         * value is used in the area tree XML.
+         *
+         * @param pvKey
+         *            the PageViewport key of the link target
+         * @param idRef
+         *            the ID of the link target
+         * @return a string of the type "(thisPVKey,thisIDRef)"
+         */
+        public static String makeXMLAttribute(final String pvKey,
+                final String idRef) {
+            return "(" + (pvKey == null ? "" : pvKey) + ","
+                    + (idRef == null ? "" : idRef) + ")";
+        }
+
+        /**
+         * Parses XML attribute value from the area tree into PageViewport key +
+         * IDRef strings. If the attribute value is formatted like "(s1,s2)",
+         * then s1 and s2 are considered to be the PV key and the IDRef,
+         * respectively. Otherwise, the entire string is the PV key and the
+         * IDRef is null.
+         *
+         * @param attrValue
+         *            the atribute value (PV key and possibly IDRef)
+         * @return a 2-String array containing the PV key and the IDRef. Both
+         *         may be null.
+         */
+        public static String[] parseXMLAttribute(final String attrValue) {
+            final String[] result = { null, null };
+            if (attrValue != null) {
+                final int len = attrValue.length();
+                if (len >= 2 && attrValue.charAt(0) == '('
+                        && attrValue.charAt(len - 1) == ')'
+                        && attrValue.indexOf(',') != -1) {
+                    final String value = attrValue.substring(1, len - 1); // remove
+                                                                          // brackets
+                    final int delimIndex = value.indexOf(',');
+                    result[0] = value.substring(0, delimIndex).trim(); // PV key
+                    result[1] = value.substring(delimIndex + 1, value.length())
+                            .trim(); // IDRef
+                } else {
+                    // PV key only, e.g. from old area tree XML:
+                    result[0] = attrValue;
+                }
+            }
+            return result;
+        }
+
+        /**
+         * Return the human-friendly string for debugging. {@inheritDoc}
          */
         @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer();
-            sb.append("pvKey=").append(pvKey);
-            sb.append(",idRef=").append(idRef);
+            final StringBuffer sb = new StringBuffer();
+            sb.append("pvKey=").append(this.pvKey);
+            sb.append(",idRef=").append(this.idRef);
             return sb.toString();
         }
     }
@@ -410,39 +425,46 @@ public final class Trait implements Serializable {
 
         private static final long serialVersionUID = -3720707599232620946L;
 
-        private String destination;
-        private boolean newWindow;
+        private final String destination;
+        private final boolean newWindow;
 
         /**
          * Constructs an ExternalLink object with the given destination
          *
-         * @param destination   target of the link
-         * @param newWindow     true if the target should be opened in a new window
+         * @param destination
+         *            target of the link
+         * @param newWindow
+         *            true if the target should be opened in a new window
          */
-        public ExternalLink(String destination, boolean newWindow) {
+        public ExternalLink(final String destination, final boolean newWindow) {
             this.destination = destination;
             this.newWindow = newWindow;
         }
 
         /**
-         * Create an <code>ExternalLink</code> from a trait value/attribute value in the
-         * area tree
-         * @param traitValue    the value to use (should match the result of {@link #toString()}
-         * @return an <code>ExternalLink</code> instance corresponding to the given value
+         * Create an <code>ExternalLink</code> from a trait value/attribute
+         * value in the area tree
+         * 
+         * @param traitValue
+         *            the value to use (should match the result of
+         *            {@link #toString()}
+         * @return an <code>ExternalLink</code> instance corresponding to the
+         *         given value
          */
-        protected static ExternalLink makeFromTraitValue(String traitValue) {
+        protected static ExternalLink makeFromTraitValue(final String traitValue) {
             String dest = null;
             boolean newWindow = false;
-            String[] values = traitValue.split(",");
+            final String[] values = traitValue.split(",");
             for (int i = 0, c = values.length; i < c; i++) {
-                String v = values[i];
+                final String v = values[i];
                 if (v.startsWith("dest=")) {
                     dest = v.substring(5);
                 } else if (v.startsWith("newWindow=")) {
                     newWindow = Boolean.valueOf(v.substring(10));
                 } else {
                     throw new IllegalArgumentException(
-                            "Malformed trait value for Trait.ExternalLink: " + traitValue);
+                            "Malformed trait value for Trait.ExternalLink: "
+                                    + traitValue);
                 }
             }
             return new ExternalLink(dest, newWindow);
@@ -450,7 +472,8 @@ public final class Trait implements Serializable {
 
         /**
          * Get the target/destination of the link
-         * @return  the destination of the link
+         * 
+         * @return the destination of the link
          */
         public String getDestination() {
             return this.destination;
@@ -458,7 +481,9 @@ public final class Trait implements Serializable {
 
         /**
          * Check if the target has to be displayed in a new window
-         * @return  <code>true</code> if the target has to be displayed in a new window
+         * 
+         * @return <code>true</code> if the target has to be displayed in a new
+         *         window
          */
         public boolean newWindow() {
             return this.newWindow;
@@ -466,21 +491,22 @@ public final class Trait implements Serializable {
 
         /**
          * Return a String representation of the object.
-         * @return  a <code>String</code> of the form
-         *          "org.apache.fop.area.Trait.ExternalLink[dest=someURL,newWindow=false]"
+         * 
+         * @return a <code>String</code> of the form
+         *         "org.apache.fop.area.Trait.ExternalLink[dest=someURL,newWindow=false]"
          */
         @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer(64);
-            sb.append("newWindow=").append(newWindow);
+            final StringBuffer sb = new StringBuffer(64);
+            sb.append("newWindow=").append(this.newWindow);
             sb.append(",dest=").append(this.destination);
             return sb.toString();
         }
     }
 
     /**
-     * Background trait structure.
-     * Used for storing back trait information which are related.
+     * Background trait structure. Used for storing back trait information which
+     * are related.
      */
     public static class Background implements Serializable {
 
@@ -506,119 +532,145 @@ public final class Trait implements Serializable {
 
         /**
          * Returns the background color.
+         * 
          * @return background color, null if n/a
          */
         public Color getColor() {
-            return color;
+            return this.color;
         }
 
         /**
          * Returns the horizontal offset for images.
+         * 
          * @return the horizontal offset
          */
         public int getHoriz() {
-            return horiz;
+            return this.horiz;
         }
 
         /**
          * Returns the image repetition behaviour for images.
+         * 
          * @return the image repetition behaviour
          */
         public int getRepeat() {
-            return repeat;
+            return this.repeat;
         }
 
         /**
          * Returns the URL to the background image
+         * 
          * @return URL to the background image, null if n/a
          */
         public String getURL() {
-            return url;
+            return this.url;
         }
 
         /**
          * Returns the ImageInfo object representing the background image
+         * 
          * @return the background image, null if n/a
          */
         public ImageInfo getImageInfo() {
-            return imageInfo;
+            return this.imageInfo;
         }
 
         /**
          * Returns the vertical offset for images.
+         * 
          * @return the vertical offset
          */
         public int getVertical() {
-            return vertical;
+            return this.vertical;
         }
 
         /**
          * Sets the color.
-         * @param color The color to set
+         * 
+         * @param color
+         *            The color to set
          */
-        public void setColor(Color color) {
+        public void setColor(final Color color) {
             this.color = color;
         }
 
         /**
          * Sets the horizontal offset.
-         * @param horiz The horizontal offset to set
+         * 
+         * @param horiz
+         *            The horizontal offset to set
          */
-        public void setHoriz(int horiz) {
+        public void setHoriz(final int horiz) {
             this.horiz = horiz;
         }
 
         /**
          * Sets the image repetition behaviour for images.
-         * @param repeat The image repetition behaviour to set
+         * 
+         * @param repeat
+         *            The image repetition behaviour to set
          */
-        public void setRepeat(int repeat) {
+        public void setRepeat(final int repeat) {
             this.repeat = repeat;
         }
 
         /**
          * Sets the image repetition behaviour for images.
-         * @param repeat The image repetition behaviour to set
+         * 
+         * @param repeat
+         *            The image repetition behaviour to set
          */
-        public void setRepeat(String repeat) {
+        public void setRepeat(final String repeat) {
             setRepeat(getConstantForRepeat(repeat));
         }
 
         /**
          * Sets the URL to the background image.
-         * @param url The URL to set
+         * 
+         * @param url
+         *            The URL to set
          */
-        public void setURL(String url) {
+        public void setURL(final String url) {
             this.url = url;
         }
 
         /**
          * Sets the ImageInfo of the image to use as the background image.
-         * @param info The background image's info object
+         * 
+         * @param info
+         *            The background image's info object
          */
-        public void setImageInfo(ImageInfo info) {
+        public void setImageInfo(final ImageInfo info) {
             this.imageInfo = info;
         }
 
         /**
          * Sets the vertical offset for images.
-         * @param vertical The vertical offset to set
+         * 
+         * @param vertical
+         *            The vertical offset to set
          */
-        public void setVertical(int vertical) {
+        public void setVertical(final int vertical) {
             this.vertical = vertical;
         }
 
         private String getRepeatString() {
             switch (getRepeat()) {
-            case EN_REPEAT: return "repeat";
-            case EN_REPEATX: return "repeat-x";
-            case EN_REPEATY: return "repeat-y";
-            case EN_NOREPEAT: return "no-repeat";
-            default: throw new IllegalStateException("Illegal repeat style: " + getRepeat());
+            case EN_REPEAT:
+                return "repeat";
+            case EN_REPEATX:
+                return "repeat-x";
+            case EN_REPEATY:
+                return "repeat-y";
+            case EN_NOREPEAT:
+                return "no-repeat";
+            default:
+                throw new IllegalStateException("Illegal repeat style: "
+                        + getRepeat());
             }
         }
 
-        private static int getConstantForRepeat(String repeat) {
+        private static int getConstantForRepeat(final String repeat) {
             if ("repeat".equalsIgnoreCase(repeat)) {
                 return EN_REPEAT;
             } else if ("repeat-x".equalsIgnoreCase(repeat)) {
@@ -628,32 +680,31 @@ public final class Trait implements Serializable {
             } else if ("no-repeat".equalsIgnoreCase(repeat)) {
                 return EN_NOREPEAT;
             } else {
-                throw new IllegalStateException("Illegal repeat style: " + repeat);
+                throw new IllegalStateException("Illegal repeat style: "
+                        + repeat);
             }
         }
 
         /**
-         * Return the string for debugging.
-         * {@inheritDoc}
+         * Return the string for debugging. {@inheritDoc}
          */
         @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer();
-            if (color != null) {
-                sb.append("color=").append(ColorUtil.colorToString(color));
+            final StringBuffer sb = new StringBuffer();
+            if (this.color != null) {
+                sb.append("color=").append(ColorUtil.colorToString(this.color));
             }
-            if (url != null) {
-                if (color != null) {
+            if (this.url != null) {
+                if (this.color != null) {
                     sb.append(",");
                 }
-                sb.append("url=").append(url);
+                sb.append("url=").append(this.url);
                 sb.append(",repeat=").append(getRepeatString());
-                sb.append(",horiz=").append(horiz);
-                sb.append(",vertical=").append(vertical);
+                sb.append(",horiz=").append(this.horiz);
+                sb.append(",vertical=").append(this.vertical);
             }
             return sb.toString();
         }
 
     }
 }
-

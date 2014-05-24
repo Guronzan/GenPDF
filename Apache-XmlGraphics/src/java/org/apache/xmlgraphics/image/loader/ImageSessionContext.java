@@ -23,61 +23,79 @@ import java.io.FileNotFoundException;
 
 import javax.xml.transform.Source;
 
-
 /**
- * This interface is used to tell the cache which images are used by a session (in FOP that would
- * be a rendering run). Images access within a session get a hard reference so they cannot be
- * discarded. That could increase memory usage but helps with performance because the images
- * don't get unloaded between layout and rendering which would mean that they have to be reloaded.
+ * This interface is used to tell the cache which images are used by a session
+ * (in FOP that would be a rendering run). Images access within a session get a
+ * hard reference so they cannot be discarded. That could increase memory usage
+ * but helps with performance because the images don't get unloaded between
+ * layout and rendering which would mean that they have to be reloaded.
  */
 public interface ImageSessionContext {
 
     /**
-     * Returns the session-independent context object which provides configuration information.
+     * Returns the session-independent context object which provides
+     * configuration information.
+     * 
      * @return the associated ImageContext instance
      */
     ImageContext getParentContext();
 
     /**
-     * Returns the resolution (in dpi) of the target device used when painting images.
+     * Returns the resolution (in dpi) of the target device used when painting
+     * images.
+     * 
      * @return the target resolution (in dpi)
      */
     float getTargetResolution();
 
     /**
-     * Attempts to create a Source object from the given URI. If possible this method returns
-     * an ImageSource instance which provides the best possible method to access the image.
-     * @param uri URI to access
+     * Attempts to create a Source object from the given URI. If possible this
+     * method returns an ImageSource instance which provides the best possible
+     * method to access the image.
+     * 
+     * @param uri
+     *            URI to access
      * @return A {@link javax.xml.transform.Source} object, or null if the URI
-     * cannot be resolved.
+     *         cannot be resolved.
      */
-    Source newSource(String uri);
+    Source newSource(final String uri);
 
     /**
-     * Returns a Source object for a URI. This method is not guaranteed to return an instance.
-     * Implementations normally return already created Sources from a pool (normally populated
-     * through the {@link #returnSource(String, Source)} method).
-     * @param uri the URI of the image
+     * Returns a Source object for a URI. This method is not guaranteed to
+     * return an instance. Implementations normally return already created
+     * Sources from a pool (normally populated through the
+     * {@link #returnSource(String, Source)} method).
+     * 
+     * @param uri
+     *            the URI of the image
      * @return the Source object to load the image from, or null
      */
-    Source getSource(String uri);
+    Source getSource(final String uri);
 
     /**
-     * Returns a Source object for a URI. This method is guaranteed to return a Source object. If
-     * the image cannot be found, a {@link FileNotFoundException} is thrown.
-     * @param uri the URI of the image
+     * Returns a Source object for a URI. This method is guaranteed to return a
+     * Source object. If the image cannot be found, a
+     * {@link FileNotFoundException} is thrown.
+     * 
+     * @param uri
+     *            the URI of the image
      * @return the Source object to load the image from
-     * @throws FileNotFoundException if the image cannot be found
+     * @throws FileNotFoundException
+     *             if the image cannot be found
      */
-    Source needSource(String uri) throws FileNotFoundException;
+    Source needSource(final String uri) throws FileNotFoundException;
 
     /**
-     * Returns a Source object to a pool. This is provided in order to reuse a Source object
-     * between the preloading and the final loading of an image. Note that not all Source objects
-     * can be reused! Non-reusable Sources are discarded.
-     * @param uri the URI of the image
-     * @param src the Source object belonging to the URI
+     * Returns a Source object to a pool. This is provided in order to reuse a
+     * Source object between the preloading and the final loading of an image.
+     * Note that not all Source objects can be reused! Non-reusable Sources are
+     * discarded.
+     * 
+     * @param uri
+     *            the URI of the image
+     * @param src
+     *            the Source object belonging to the URI
      */
-    void returnSource(String uri, Source src);
+    void returnSource(final String uri, final Source src);
 
 }

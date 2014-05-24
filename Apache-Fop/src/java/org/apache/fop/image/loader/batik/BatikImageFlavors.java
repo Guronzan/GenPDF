@@ -20,7 +20,6 @@
 package org.apache.fop.image.loader.batik;
 
 import org.apache.batik.dom.svg.SVGDOMImplementation;
-
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.XMLNamespaceEnabledImageFlavor;
 

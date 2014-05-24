@@ -29,12 +29,21 @@ public interface TextHandler {
 
     /**
      * Draw some text.
-     * @param g2d the graphics 2D implementation
-     * @param text the text to paint
-     * @param x the x-coordinate where the <code>String</code> should be rendered
-     * @param y the y-coordinate where the <code>String</code> should be rendered
-     * @throws IOException In case of an I/O error
+     * 
+     * @param g2d
+     *            the graphics 2D implementation
+     * @param text
+     *            the text to paint
+     * @param x
+     *            the x-coordinate where the <code>String</code> should be
+     *            rendered
+     * @param y
+     *            the y-coordinate where the <code>String</code> should be
+     *            rendered
+     * @throws IOException
+     *             In case of an I/O error
      */
-    void drawString(Graphics2D g2d, String text, float x, float y) throws IOException;
+    void drawString(final Graphics2D g2d, final String text, final float x,
+            final float y) throws IOException;
 
 }

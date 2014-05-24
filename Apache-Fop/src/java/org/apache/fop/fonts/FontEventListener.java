@@ -25,40 +25,63 @@ package org.apache.fop.fonts;
 public interface FontEventListener {
 
     /**
-     * Notifies about a font being substituted as the requested one isn't available.
-     * @param source the event source
-     * @param requested the requested font triplet
-     * @param effective the effective font triplet
+     * Notifies about a font being substituted as the requested one isn't
+     * available.
+     * 
+     * @param source
+     *            the event source
+     * @param requested
+     *            the requested font triplet
+     * @param effective
+     *            the effective font triplet
      */
-    void fontSubstituted(Object source, FontTriplet requested, FontTriplet effective);
+    void fontSubstituted(final Object source, final FontTriplet requested,
+            final FontTriplet effective);
 
     /**
      * An error occurred while loading a font for auto-detection.
-     * @param source the event source
-     * @param fontURL the font URL
-     * @param e the original exception
+     * 
+     * @param source
+     *            the event source
+     * @param fontURL
+     *            the font URL
+     * @param e
+     *            the original exception
      */
-    void fontLoadingErrorAtAutoDetection(Object source, String fontURL, Exception e);
+    void fontLoadingErrorAtAutoDetection(final Object source,
+            final String fontURL, final Exception e);
 
     /**
      * A glyph has been requested that is not available in the font.
-     * @param source the event source
-     * @param ch the character for which the glyph isn't available
-     * @param fontName the name of the font
+     * 
+     * @param source
+     *            the event source
+     * @param ch
+     *            the character for which the glyph isn't available
+     * @param fontName
+     *            the name of the font
      */
-    void glyphNotAvailable(Object source, char ch, String fontName);
+    void glyphNotAvailable(final Object source, final char ch,
+            final String fontName);
 
     /**
-     * An error occurred trying to find the font directory specified in the config file.
-     * @param source the event source
-     * @param dir the directory in the config file
+     * An error occurred trying to find the font directory specified in the
+     * config file.
+     * 
+     * @param source
+     *            the event source
+     * @param dir
+     *            the directory in the config file
      */
-    void fontDirectoryNotFound(Object source, String dir);
+    void fontDirectoryNotFound(final Object source, final String dir);
 
     /**
      * The SVG text will be stroked as shapes.
-     * @param source the event source
-     * @param fontFamily the family name of the font that is being stroked
+     * 
+     * @param source
+     *            the event source
+     * @param fontFamily
+     *            the family name of the font that is being stroked
      */
-    void svgTextStrokedAsShapes(Object source, String fontFamily);
+    void svgTextStrokedAsShapes(final Object source, final String fontFamily);
 }

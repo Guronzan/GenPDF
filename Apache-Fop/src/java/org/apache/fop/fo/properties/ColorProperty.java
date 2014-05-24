@@ -30,7 +30,7 @@ import org.apache.fop.util.ColorUtil;
 /**
  * Class for properties that wrap Color values
  */
-public final class ColorProperty extends Property  {
+public final class ColorProperty extends Property {
 
     /** cache holding canonical ColorProperty instances */
     private static final PropertyCache<ColorProperty> CACHE = new PropertyCache<ColorProperty>();
@@ -40,16 +40,16 @@ public final class ColorProperty extends Property  {
      */
     protected final Color color;
 
-
     /**
      * Inner class for creating instances of ColorTypeProperty
      */
     public static class Maker extends PropertyMaker {
 
         /**
-         * @param propId the id of the property for which a Maker should be created
+         * @param propId
+         *            the id of the property for which a Maker should be created
          */
-        public Maker(int propId) {
+        public Maker(final int propId) {
             super(propId);
         }
 
@@ -70,15 +70,15 @@ public final class ColorProperty extends Property  {
          *             for invalid or inconsistent FO input
          */
         @Override
-        public Property convertProperty(Property p,
-                                        PropertyList propertyList, FObj fo)
-                    throws PropertyException {
+        public Property convertProperty(final Property p,
+                final PropertyList propertyList, final FObj fo)
+                throws PropertyException {
             if (p instanceof ColorProperty) {
                 return p;
             }
-            FObj fobj = (fo == null ? propertyList.getFObj() : fo);
-            FOUserAgent ua = (fobj == null ? null : fobj.getUserAgent());
-            Color val = p.getColor(ua);
+            final FObj fobj = fo == null ? propertyList.getFObj() : fo;
+            final FOUserAgent ua = fobj == null ? null : fobj.getUserAgent();
+            final Color val = p.getColor(ua);
             if (val != null) {
                 return new ColorProperty(val);
             }
@@ -91,48 +91,54 @@ public final class ColorProperty extends Property  {
      * Set the color given a particular String. For a full List of supported
      * values please see ColorUtil.
      *
-     * @param foUserAgent FOP user agent
-     * @param value RGB value as String to be parsed
-     * @return the canonical ColorProperty instance corresponding
-     *         to the given value
-     * @throws PropertyException if the value can't be parsed
+     * @param foUserAgent
+     *            FOP user agent
+     * @param value
+     *            RGB value as String to be parsed
+     * @return the canonical ColorProperty instance corresponding to the given
+     *         value
+     * @throws PropertyException
+     *             if the value can't be parsed
      * @see ColorUtil#parseColorString(FOUserAgent, String)
      */
-    public static ColorProperty getInstance(FOUserAgent foUserAgent, String value)
-            throws PropertyException {
-        ColorProperty instance = new ColorProperty(
-                                       ColorUtil.parseColorString(
-                                               foUserAgent, value));
+    public static ColorProperty getInstance(final FOUserAgent foUserAgent,
+            final String value) throws PropertyException {
+        final ColorProperty instance = new ColorProperty(
+                ColorUtil.parseColorString(foUserAgent, value));
         return CACHE.fetch(instance);
     }
 
     /**
      * Create a new ColorProperty with a given color.
      *
-     * @param value the color to use.
+     * @param value
+     *            the color to use.
      */
-    private ColorProperty(Color value) {
+    private ColorProperty(final Color value) {
         this.color = value;
     }
 
     /**
      * Returns an AWT instance of this color
-     * @param foUserAgent FOP user agent
+     * 
+     * @param foUserAgent
+     *            FOP user agent
      * @return float the AWT color represented by this ColorType instance
      */
     @Override
-    public Color getColor(FOUserAgent foUserAgent) {
-        return color;
+    public Color getColor(final FOUserAgent foUserAgent) {
+        return this.color;
     }
 
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return ColorUtil.colorToString(color);
+        return ColorUtil.colorToString(this.color);
     }
 
     /**
      * Can't convert to any other types
+     * 
      * @return this.colorType
      */
     public ColorProperty getColorProperty() {
@@ -149,7 +155,7 @@ public final class ColorProperty extends Property  {
 
     /** {@inheritDoc} */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
@@ -167,4 +173,3 @@ public final class ColorProperty extends Property  {
         return this.color.hashCode();
     }
 }
-

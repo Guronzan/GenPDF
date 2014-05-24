@@ -22,26 +22,34 @@ package org.apache.fop.complexscripts.fonts;
 // CSOFF: LineLengthCheck
 
 /**
- * <p>The <code>GlyphCoverageMapping</code> interface provides glyph identifier to coverage
- * index mapping support.</p>
+ * <p>
+ * The <code>GlyphCoverageMapping</code> interface provides glyph identifier to
+ * coverage index mapping support.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 public interface GlyphCoverageMapping {
 
     /**
-     * Obtain size of coverage table, i.e., ciMax + 1, where ciMax is the maximum
-     * coverage index.
+     * Obtain size of coverage table, i.e., ciMax + 1, where ciMax is the
+     * maximum coverage index.
+     * 
      * @return size of coverage table
      */
     int getCoverageSize();
 
     /**
-     * Map glyph identifier (code) to coverge index. Returns -1 if glyph identifier is not in the domain of
-     * the coverage table.
-     * @param gid glyph identifier (code)
-     * @return non-negative glyph coverage index or -1 if glyph identifiers is not mapped by table
+     * Map glyph identifier (code) to coverge index. Returns -1 if glyph
+     * identifier is not in the domain of the coverage table.
+     * 
+     * @param gid
+     *            glyph identifier (code)
+     * @return non-negative glyph coverage index or -1 if glyph identifiers is
+     *         not mapped by table
      */
-    int getCoverageIndex ( int gid );
+    int getCoverageIndex(final int gid);
 
 }

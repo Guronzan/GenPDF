@@ -25,10 +25,10 @@ import java.io.OutputStream;
 import org.apache.fop.afp.util.BinaryUtils;
 
 /**
- * The Extended Resource Local Identifier triplet specifies a resource type and a
- * four byte local identifier or LID. The LID usually is associated with a specific
- * resource name by a map structured field, such as a Map Data Resource structured
- * field, or a Map Media Type structured field.
+ * The Extended Resource Local Identifier triplet specifies a resource type and
+ * a four byte local identifier or LID. The LID usually is associated with a
+ * specific resource name by a map structured field, such as a Map Data Resource
+ * structured field, or a Map Media Type structured field.
  */
 public class ExtendedResourceLocalIdentifierTriplet extends AbstractTriplet {
 
@@ -50,25 +50,30 @@ public class ExtendedResourceLocalIdentifierTriplet extends AbstractTriplet {
     /**
      * Main constructor
      *
-     * @param type the resource type
-     * @param localId the resource local id
+     * @param type
+     *            the resource type
+     * @param localId
+     *            the resource local id
      */
-    public ExtendedResourceLocalIdentifierTriplet(byte type, int localId) {
-        super(AbstractTriplet.EXTENDED_RESOURCE_LOCAL_IDENTIFIER);
+    public ExtendedResourceLocalIdentifierTriplet(final byte type,
+            final int localId) {
+        super(Triplet.EXTENDED_RESOURCE_LOCAL_IDENTIFIER);
         this.type = type;
         this.localId = localId;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = getData();
-        data[2] = type;
-        byte[] resLID = BinaryUtils.convert(localId, 4); // 4 bytes
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = getData();
+        data[2] = this.type;
+        final byte[] resLID = BinaryUtils.convert(this.localId, 4); // 4 bytes
         System.arraycopy(resLID, 0, data, 3, resLID.length);
         os.write(data);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 7;
     }

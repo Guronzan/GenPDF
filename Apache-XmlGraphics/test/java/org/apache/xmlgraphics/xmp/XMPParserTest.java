@@ -39,12 +39,12 @@ import org.apache.xmlgraphics.xmp.schemas.pdf.AdobePDFSchema;
 public class XMPParserTest extends TestCase {
 
     public void testParseBasics() throws Exception {
-        URL url = getClass().getResource("test-basics.xmp");
-        Metadata meta = XMPParser.parseXMP(url);
+        final URL url = getClass().getResource("test-basics.xmp");
+        final Metadata meta = XMPParser.parseXMP(url);
 
-        DublinCoreAdapter dcAdapter = DublinCoreSchema.getAdapter(meta);
-        XMPBasicAdapter basicAdapter = XMPBasicSchema.getAdapter(meta);
-        AdobePDFAdapter pdfAdapter = AdobePDFSchema.getAdapter(meta);
+        final DublinCoreAdapter dcAdapter = DublinCoreSchema.getAdapter(meta);
+        final XMPBasicAdapter basicAdapter = XMPBasicSchema.getAdapter(meta);
+        final AdobePDFAdapter pdfAdapter = AdobePDFSchema.getAdapter(meta);
 
         XMPProperty prop;
         prop = meta.getProperty(XMPConstants.DUBLIN_CORE_NAMESPACE, "creator");
@@ -58,8 +58,10 @@ public class XMPParserTest extends TestCase {
         assertEquals("Example document", prop.getValue().toString());
         assertEquals("Example document", dcAdapter.getTitle());
         prop = meta.getProperty(XMPConstants.XMP_BASIC_NAMESPACE, "CreateDate");
-        //System.out.println("Creation Date: " + prop.getValue() + " " + prop.getClass().getName());
-        prop = meta.getProperty(XMPConstants.XMP_BASIC_NAMESPACE, "CreatorTool");
+        // log.info("Creation Date: " + prop.getValue() + " " +
+        // prop.getClass().getName());
+        prop = meta
+                .getProperty(XMPConstants.XMP_BASIC_NAMESPACE, "CreatorTool");
         assertEquals("An XML editor", prop.getValue().toString());
         assertEquals("An XML editor", basicAdapter.getCreatorTool());
         prop = meta.getProperty(XMPConstants.ADOBE_PDF_NAMESPACE, "Producer");
@@ -71,36 +73,36 @@ public class XMPParserTest extends TestCase {
     }
 
     public void testParse1() throws Exception {
-        URL url = getClass().getResource("unknown-schema.xmp");
-        Metadata meta = XMPParser.parseXMP(url);
+        final URL url = getClass().getResource("unknown-schema.xmp");
+        final Metadata meta = XMPParser.parseXMP(url);
 
-        DublinCoreAdapter dcAdapter = DublinCoreSchema.getAdapter(meta);
+        final DublinCoreAdapter dcAdapter = DublinCoreSchema.getAdapter(meta);
 
         XMPProperty prop;
-        //Access through the known schema as reference
+        // Access through the known schema as reference
         prop = meta.getProperty(XMPConstants.DUBLIN_CORE_NAMESPACE, "title");
         assertEquals("Unknown Schema", prop.getValue().toString());
         assertEquals("Unknown Schema", dcAdapter.getTitle());
 
-        //Access through a schema unknown to the XMP framework
+        // Access through a schema unknown to the XMP framework
         prop = meta.getProperty("http://unknown.org/something", "dummy");
         assertEquals("Dummy!", prop.getValue().toString());
     }
 
     public void testParseStructures() throws Exception {
-        URL url = getClass().getResource("test-structures.xmp");
-        Metadata meta = XMPParser.parseXMP(url);
+        final URL url = getClass().getResource("test-structures.xmp");
+        final Metadata meta = XMPParser.parseXMP(url);
 
         XMPProperty prop;
 
-        String testns = "http://foo.bar/test/";
+        final String testns = "http://foo.bar/test/";
         prop = meta.getProperty(testns, "something");
         assertEquals("blablah", prop.getValue().toString());
 
         prop = meta.getProperty(testns, "ingredients");
-        XMPArray array = prop.getArrayValue();
+        final XMPArray array = prop.getArrayValue();
         assertEquals(3, array.getSize());
-        XMPStructure struct = array.getStructure(0);
+        final XMPStructure struct = array.getStructure(0);
         assertEquals(2, struct.getPropertyCount());
         prop = struct.getValueProperty();
         assertEquals("Apples", prop.getValue());
@@ -114,7 +116,7 @@ public class XMPParserTest extends TestCase {
         prop1 = prop.getStructureValue().getProperty(testns, "other-name");
         assertEquals("Palpatine", prop1.getValue());
 
-        //Test shorthand form
+        // Test shorthand form
         prop = meta.getProperty(testns, "project");
         prop1 = prop.getStructureValue().getProperty(testns, "name");
         assertEquals("Apache XML Graphics", prop1.getValue());
@@ -124,37 +126,39 @@ public class XMPParserTest extends TestCase {
     }
 
     public void testAttributeValues() throws Exception {
-        URL url = getClass().getResource("test-attribute-values.xmp");
-        Metadata meta = XMPParser.parseXMP(url);
+        final URL url = getClass().getResource("test-attribute-values.xmp");
+        final Metadata meta = XMPParser.parseXMP(url);
 
-        DublinCoreAdapter dcAdapter = DublinCoreSchema.getAdapter(meta);
+        final DublinCoreAdapter dcAdapter = DublinCoreSchema.getAdapter(meta);
         assertEquals("Ender's Game", dcAdapter.getTitle());
         assertEquals("Orson Scott Card", dcAdapter.getCreators()[0]);
     }
 
     public void testParseDates() throws Exception {
-        URL url = getClass().getResource("test-dates.xmp");
-        Metadata meta = XMPParser.parseXMP(url);
+        final URL url = getClass().getResource("test-dates.xmp");
+        final Metadata meta = XMPParser.parseXMP(url);
         XMPProperty prop;
 
-        DublinCoreAdapter dcAdapter = DublinCoreSchema.getAdapter(meta);
+        final DublinCoreAdapter dcAdapter = DublinCoreSchema.getAdapter(meta);
 
-        //Simple adapter access
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+2:00"));
+        // Simple adapter access
+        final Calendar cal = Calendar.getInstance(TimeZone
+                .getTimeZone("GMT+2:00"));
         cal.set(2006, Calendar.JUNE, 2, 10, 36, 40);
         cal.set(Calendar.MILLISECOND, 0);
         assertEquals(cal.getTime(), dcAdapter.getDate());
-        Date[] dates = dcAdapter.getDates();
+        final Date[] dates = dcAdapter.getDates();
         assertEquals(2, dates.length);
 
-        //The second is the most recent and should match the simple value
+        // The second is the most recent and should match the simple value
         assertEquals(dates[1], dcAdapter.getDate());
 
         prop = meta.getProperty(XMPConstants.DUBLIN_CORE_NAMESPACE, "date");
         assertNotNull(prop.getArrayValue());
         assertEquals(2, prop.getArrayValue().getSize());
 
-        //Now add a new date and check if the adapter's getDate() method returns the new date.
+        // Now add a new date and check if the adapter's getDate() method
+        // returns the new date.
         cal.set(2008, Calendar.NOVEMBER, 1, 10, 10, 0);
         dcAdapter.addDate(cal.getTime());
         assertEquals(3, dcAdapter.getDates().length);
@@ -165,18 +169,18 @@ public class XMPParserTest extends TestCase {
     }
 
     public void testParseEmptyValues() throws Exception {
-        URL url = getClass().getResource("empty-values.xmp");
-        Metadata meta = XMPParser.parseXMP(url);
+        final URL url = getClass().getResource("empty-values.xmp");
+        final Metadata meta = XMPParser.parseXMP(url);
 
-        DublinCoreAdapter dc = DublinCoreSchema.getAdapter(meta);
+        final DublinCoreAdapter dc = DublinCoreSchema.getAdapter(meta);
         String title = dc.getTitle();
         assertEquals("empty", title);
 
-        title = dc.getTitle("fr"); //Does not exist
+        title = dc.getTitle("fr"); // Does not exist
         assertNull(title);
 
         title = dc.getTitle("de");
-        assertNull(title); //Empty value treated same as not existant
+        assertNull(title); // Empty value treated same as not existant
     }
 
 }

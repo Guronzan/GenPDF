@@ -38,10 +38,10 @@ import java.util.Map;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.fop.fonts.CIDFont;
 import org.apache.fop.fonts.CIDSubset;
 import org.apache.fop.fonts.CodePointMapping;
@@ -66,6 +66,7 @@ import org.apache.xmlgraphics.xmp.Metadata;
 /**
  * This class provides method to create and register PDF objects.
  */
+@Slf4j
 public class PDFFactory {
 
     /** Resolution of the User Space coordinate system (72dpi). */
@@ -73,13 +74,11 @@ public class PDFFactory {
 
     private final PDFDocument document;
 
-    private final Log log = LogFactory.getLog(PDFFactory.class);
-
     private int subsetFontCounter = -1;
 
     /**
      * Creates a new PDFFactory.
-     * 
+     *
      * @param document
      *            the parent PDFDocument needed to register the generated
      *            objects
@@ -90,7 +89,7 @@ public class PDFFactory {
 
     /**
      * Returns the parent PDFDocument associated with this factory.
-     * 
+     *
      * @return PDFDocument the parent PDFDocument
      */
     public final PDFDocument getDocument() {
@@ -161,7 +160,7 @@ public class PDFFactory {
 
     /**
      * Make a Metadata object.
-     * 
+     *
      * @param meta
      *            the DOM Document containing the XMP metadata.
      * @param readOnly
@@ -176,7 +175,7 @@ public class PDFFactory {
 
     /**
      * Make a OutputIntent dictionary.
-     * 
+     *
      * @return the newly created OutputIntent dictionary
      */
     public PDFOutputIntent makeOutputIntent() {
@@ -380,7 +379,7 @@ public class PDFFactory {
     public PDFFunction makeFunction(final int theFunctionType,
             final List theDomain, final List theRange, final List theCZero,
             final List theCOne, final double theInterpolationExponentN) { // type
-                                                                          // 2
+        // 2
         PDFFunction function = new PDFFunction(theFunctionType, theDomain,
                 theRange, theCZero, theCOne, theInterpolationExponentN);
         final PDFFunction oldfunc = getDocument().findFunction(function);
@@ -863,10 +862,10 @@ public class PDFFactory {
         // to have a next color when creating the function.
 
         for (currentPosition = 0; currentPosition < lastPosition; currentPosition++) { // for
-                                                                                       // every
-                                                                                       // consecutive
-                                                                                       // color
-                                                                                       // pair
+            // every
+            // consecutive
+            // color
+            // pair
             Color currentColor = (Color) theColors.get(currentPosition);
             Color nextColor = (Color) theColors.get(currentPosition + 1);
 
@@ -972,7 +971,7 @@ public class PDFFactory {
 
     /**
      * Make a names dictionary (the /Names object).
-     * 
+     *
      * @return the new PDFNames object
      */
     public PDFNames makeNames() {
@@ -984,7 +983,7 @@ public class PDFFactory {
 
     /**
      * Make a names dictionary (the /PageLabels object).
-     * 
+     *
      * @return the new PDFPageLabels object
      */
     public PDFPageLabels makePageLabels() {
@@ -1178,13 +1177,13 @@ public class PDFFactory {
             // Bare PDF file name?
             return getGoToPDFAction(target, null, -1, newWindow);
         } else if ((index = targetLo.indexOf(".pdf#page=")) > 0) { // CSOK:
-                                                                   // InnerAssignment
+            // InnerAssignment
             // PDF file + page?
             final String filename = target.substring(0, index + 4);
             final int page = Integer.parseInt(target.substring(index + 10));
             return getGoToPDFAction(filename, null, page, newWindow);
         } else if ((index = targetLo.indexOf(".pdf#dest=")) > 0) { // CSOK:
-                                                                   // InnerAssignment
+            // InnerAssignment
             // PDF file + destination?
             final String filename = target.substring(0, index + 4);
             final String dest = target.substring(index + 10);
@@ -1200,7 +1199,7 @@ public class PDFFactory {
         final PDFNames names = getDocument().getRoot().getNames();
         if (names == null) {
             throw new IllegalStateException("No Names dictionary present."
-                            + " Cannot create Launch Action for embedded file: "
+                    + " Cannot create Launch Action for embedded file: "
                     + filename);
         }
         final PDFNameTreeNode embeddedFiles = names.getEmbeddedFiles();
@@ -1614,7 +1613,7 @@ public class PDFFactory {
 
     /**
      * Creates a PDFEncoding instance from a CodePointMapping instance.
-     * 
+     *
      * @param encoding
      *            the code point mapping (encoding)
      * @param fontNameHint
@@ -1661,7 +1660,7 @@ public class PDFFactory {
     /**
      * Creates and returns a width array with the widths of all the characters
      * in the subset.
-     * 
+     *
      * @param cidFont
      *            the font
      * @return the width array
@@ -1766,14 +1765,14 @@ public class PDFFactory {
             cidSet.setData(baout.toByteArray());
             descriptor.setCIDSet(cidSet);
         } catch (final IOException ioe) {
-            this.log.error("Failed to write CIDSet [" + cidFont + "] "
-                            + cidFont.getEmbedFontName(), ioe);
+            PDFFactory.log.error("Failed to write CIDSet [" + cidFont + "] "
+                    + cidFont.getEmbedFontName(), ioe);
         }
     }
 
     /**
      * Embeds a font.
-     * 
+     *
      * @param desc
      *            FontDescriptor of the font.
      * @return PDFStream The embedded font file
@@ -1856,7 +1855,7 @@ public class PDFFactory {
                 in.close();
             }
         } catch (final IOException ioe) {
-            this.log.error(
+            PDFFactory.log.error(
                     "Failed to embed font [" + desc + "] "
                             + desc.getEmbedFontName(), ioe);
             return null;
@@ -1907,7 +1906,7 @@ public class PDFFactory {
 
     /**
      * Create a PDFICCStream
-     * 
+     *
      * @see PDFImageXObject
      * @see org.apache.fop.pdf.PDFDeviceColorSpace
      * @return the new PDF ICC stream object
@@ -1925,7 +1924,7 @@ public class PDFFactory {
     /**
      * Makes a new ICCBased color space and registers it in the resource
      * context.
-     * 
+     *
      * @param res
      *            the PDF resource context to add the shading, may be null
      * @param explicitName
@@ -1953,7 +1952,7 @@ public class PDFFactory {
 
     /**
      * Create a new Separation color space.
-     * 
+     *
      * @param res
      *            the resource context (may be null)
      * @param ncs

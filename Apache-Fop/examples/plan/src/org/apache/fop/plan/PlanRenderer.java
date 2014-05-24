@@ -19,19 +19,17 @@
 
 package org.apache.fop.plan;
 
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
+import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.apache.batik.dom.svg.SVGDOMImplementation;
 
 public class PlanRenderer {
 
@@ -47,55 +45,55 @@ public class PlanRenderer {
     private float height;
     private float topEdge;
     private float rightEdge;
-    private HashMap hints = new HashMap();
+    private final HashMap hints = new HashMap();
 
     private String[] colours;
     private String[] darkcolours;
 
-    public void setFontInfo(String fam, float si) {
-        fontFamily = fam;
-        fontSize = si;
+    public void setFontInfo(final String fam, final float si) {
+        this.fontFamily = fam;
+        this.fontSize = si;
     }
 
     public float getWidth() {
-        return width;
+        return this.width;
     }
 
     public float getHeight() {
-        return height;
+        return this.height;
     }
 
-    protected float toFloat(String str) {
+    protected float toFloat(final String str) {
         return Float.parseFloat(str);
     }
 
-    public Document createSVGDocument(Document planDoc) {
+    public Document createSVGDocument(final Document planDoc) {
 
-        Element svgRoot = planDoc.getDocumentElement();
+        final Element svgRoot = planDoc.getDocumentElement();
 
-        width = toFloat(svgRoot.getAttribute("width"));
-        height = toFloat(svgRoot.getAttribute("height"));
-        type = svgRoot.getAttribute("type");
-        lang = svgRoot.getAttribute("lang");
-        country = svgRoot.getAttribute("country");
-        variant = svgRoot.getAttribute("variant");
-        String style = svgRoot.getAttribute("style");
+        this.width = toFloat(svgRoot.getAttribute("width"));
+        this.height = toFloat(svgRoot.getAttribute("height"));
+        this.type = svgRoot.getAttribute("type");
+        this.lang = svgRoot.getAttribute("lang");
+        this.country = svgRoot.getAttribute("country");
+        this.variant = svgRoot.getAttribute("variant");
+        final String style = svgRoot.getAttribute("style");
         parseStyle(style);
 
-        Locale locale = new Locale(lang, country == null ? "" : country,
-                                   variant == null ? "" : variant);
+        final Locale locale = new Locale(this.lang, this.country == null ? ""
+                : this.country, this.variant == null ? "" : this.variant);
 
-        String start = svgRoot.getAttribute("start");
-        String end = svgRoot.getAttribute("end");
-        Date sd = getDate(start, locale);
-        Date ed = getDate(end, locale);
+        final String start = svgRoot.getAttribute("start");
+        final String end = svgRoot.getAttribute("end");
+        final Date sd = getDate(start, locale);
+        final Date ed = getDate(end, locale);
 
         String title = "";
         EventList data = null;
-        NodeList childs = svgRoot.getChildNodes();
+        final NodeList childs = svgRoot.getChildNodes();
         for (int i = 0; i < childs.getLength(); i++) {
-            Node obj = childs.item(i);
-            String nname = obj.getNodeName();
+            final Node obj = childs.item(i);
+            final String nname = obj.getNodeName();
             if (nname.equals("title")) {
                 title = ((Element) obj).getFirstChild().getNodeValue();
             } else if (nname.equals("events")) {
@@ -103,48 +101,48 @@ public class PlanRenderer {
             }
         }
 
-        SimplePlanDrawer planDrawer = new SimplePlanDrawer();
+        final SimplePlanDrawer planDrawer = new SimplePlanDrawer();
         planDrawer.setStartDate(sd);
         planDrawer.setEndDate(ed);
-        hints.put(PlanHints.FONT_FAMILY, fontFamily);
-        hints.put(PlanHints.FONT_SIZE, new Float(fontSize));
-        hints.put(PlanHints.LOCALE, locale);
-        Document doc
-            = planDrawer.createDocument(data, width, height, hints);
+        this.hints.put(PlanHints.FONT_FAMILY, this.fontFamily);
+        this.hints.put(PlanHints.FONT_SIZE, new Float(this.fontSize));
+        this.hints.put(PlanHints.LOCALE, locale);
+        final Document doc = planDrawer.createDocument(data, this.width,
+                this.height, this.hints);
         return doc;
     }
 
-    protected void parseStyle(String style) {
-        hints.put(PlanHints.PLAN_BORDER, new Boolean(true));
-        hints.put(PlanHints.FONT_FAMILY, fontFamily);
-        hints.put(PlanHints.FONT_SIZE, new Float(fontSize));
-        hints.put(PlanHints.LABEL_FONT_SIZE, new Float(fontSize));
-        hints.put(PlanHints.LABEL_FONT, fontFamily);
-        hints.put(PlanHints.LABEL_TYPE, "textOnly");
+    protected void parseStyle(final String style) {
+        this.hints.put(PlanHints.PLAN_BORDER, new Boolean(true));
+        this.hints.put(PlanHints.FONT_FAMILY, this.fontFamily);
+        this.hints.put(PlanHints.FONT_SIZE, new Float(this.fontSize));
+        this.hints.put(PlanHints.LABEL_FONT_SIZE, new Float(this.fontSize));
+        this.hints.put(PlanHints.LABEL_FONT, this.fontFamily);
+        this.hints.put(PlanHints.LABEL_TYPE, "textOnly");
 
-        StringTokenizer st = new StringTokenizer(style, ";");
+        final StringTokenizer st = new StringTokenizer(style, ";");
         while (st.hasMoreTokens()) {
-            String pair = st.nextToken().trim();
-            int index = pair.indexOf(":");
-            String name = pair.substring(0, index).trim();
-            String val = pair.substring(index + 1).trim();
+            final String pair = st.nextToken().trim();
+            final int index = pair.indexOf(":");
+            final String name = pair.substring(0, index).trim();
+            final String val = pair.substring(index + 1).trim();
             if (name.equals(PlanHints.PLAN_BORDER)) {
-                hints.put(name, Boolean.valueOf(val));
+                this.hints.put(name, Boolean.valueOf(val));
             } else if (name.equals(PlanHints.FONT_SIZE)) {
-                hints.put(name, Float.valueOf(val));
+                this.hints.put(name, Float.valueOf(val));
             } else if (name.equals(PlanHints.LABEL_FONT_SIZE)) {
-                hints.put(name, Float.valueOf(val));
+                this.hints.put(name, Float.valueOf(val));
             } else {
-                hints.put(name, val);
+                this.hints.put(name, val);
             }
         }
     }
 
-    public ActionInfo getActionInfo(Element ele, Locale locale) {
-        String t = ele.getAttribute("type");
+    public ActionInfo getActionInfo(final Element ele, final Locale locale) {
+        final String t = ele.getAttribute("type");
 
-        NodeList childs = ele.getChildNodes();
-        ActionInfo data = new ActionInfo();
+        final NodeList childs = ele.getChildNodes();
+        final ActionInfo data = new ActionInfo();
         if (t.equals("milestone")) {
             data.setType(ActionInfo.MILESTONE);
         } else if (t.equals("task")) {
@@ -156,58 +154,60 @@ public class PlanRenderer {
         }
 
         for (int i = 0; i < childs.getLength(); i++) {
-            Node obj = childs.item(i);
-            String nname = obj.getNodeName();
+            final Node obj = childs.item(i);
+            final String nname = obj.getNodeName();
             if (nname.equals("label")) {
-                String dat = ((Element) obj).getFirstChild().getNodeValue();
+                final String dat = ((Element) obj).getFirstChild()
+                        .getNodeValue();
                 data.setLabel(dat);
             } else if (nname.equals("owner")) {
-                String dat = ((Element) obj).getFirstChild().getNodeValue();
+                final String dat = ((Element) obj).getFirstChild()
+                        .getNodeValue();
                 data.setOwner(dat);
             } else if (nname.equals("startdate")) {
-                Date dat = getDate((Element) obj, locale);
+                final Date dat = getDate((Element) obj, locale);
                 data.setStartDate(dat);
             } else if (nname.equals("enddate")) {
-                Date dat = getDate((Element) obj, locale);
+                final Date dat = getDate((Element) obj, locale);
                 data.setEndDate(dat);
             }
         }
         return data;
     }
 
-    public EventList getEvents(Element ele, Locale locale) {
-        EventList data = new EventList();
-        NodeList childs = ele.getChildNodes();
+    public EventList getEvents(final Element ele, final Locale locale) {
+        final EventList data = new EventList();
+        final NodeList childs = ele.getChildNodes();
         for (int i = 0; i < childs.getLength(); i++) {
-            Node obj = childs.item(i);
+            final Node obj = childs.item(i);
             if (obj.getNodeName().equals("group")) {
-                GroupInfo dat = getGroupInfo((Element) obj, locale);
+                final GroupInfo dat = getGroupInfo((Element) obj, locale);
                 data.addGroupInfo(dat);
             }
         }
         return data;
     }
 
-    public GroupInfo getGroupInfo(Element ele, Locale locale) {
-        NodeList childs = ele.getChildNodes();
-        GroupInfo data = new GroupInfo(ele.getAttribute("name"));
+    public GroupInfo getGroupInfo(final Element ele, final Locale locale) {
+        final NodeList childs = ele.getChildNodes();
+        final GroupInfo data = new GroupInfo(ele.getAttribute("name"));
         for (int i = 0; i < childs.getLength(); i++) {
-            Node obj = childs.item(i);
+            final Node obj = childs.item(i);
             if (obj.getNodeName().equals("action")) {
-                ActionInfo dat = getActionInfo((Element) obj, locale);
+                final ActionInfo dat = getActionInfo((Element) obj, locale);
                 data.addActionInfo(dat);
             }
         }
         return data;
     }
 
-    public Date getDate(Element ele, Locale locale) {
-        String label = ele.getFirstChild().getNodeValue();
+    public Date getDate(final Element ele, final Locale locale) {
+        final String label = ele.getFirstChild().getNodeValue();
         return getDate(label, locale);
     }
 
-    public Date getDate(String label, Locale locale) {
-        Calendar cal = Calendar.getInstance(locale);
+    public Date getDate(final String label, final Locale locale) {
+        final Calendar cal = Calendar.getInstance(locale);
 
         String str;
         str = label.substring(0, 4);
@@ -224,4 +224,3 @@ public class PlanRenderer {
         return cal.getTime();
     }
 }
-

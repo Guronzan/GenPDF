@@ -32,8 +32,8 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 
 public class ImageEncodingHelperTestCase extends TestCase {
 
-    private BufferedImage prepareImage(BufferedImage image) {
-        Graphics2D ig = image.createGraphics();
+    private BufferedImage prepareImage(final BufferedImage image) {
+        final Graphics2D ig = image.createGraphics();
         ig.scale(.5, .5);
         ig.setPaint(new Color(128, 0, 0));
         ig.fillRect(0, 0, 100, 50);
@@ -52,24 +52,29 @@ public class ImageEncodingHelperTestCase extends TestCase {
     }
 
     /**
-     * Tests a BGR versus RBG image. Debugging shows the BGR follows the optimizeWriteTo() (which is intended).
-     * The bytes are compared with the RBG image, which happens to follow the writeRGBTo().
-     * 
+     * Tests a BGR versus RBG image. Debugging shows the BGR follows the
+     * optimizeWriteTo() (which is intended). The bytes are compared with the
+     * RBG image, which happens to follow the writeRGBTo().
+     *
      * @throws IOException
      */
     public void testRGBAndBGRImages() throws IOException {
-        BufferedImage imageBGR = new BufferedImage(100, 75, BufferedImage.TYPE_3BYTE_BGR);
+        BufferedImage imageBGR = new BufferedImage(100, 75,
+                BufferedImage.TYPE_3BYTE_BGR);
         imageBGR = prepareImage(imageBGR);
-        BufferedImage imageRGB = new BufferedImage(100, 75, BufferedImage.TYPE_INT_BGR);
+        BufferedImage imageRGB = new BufferedImage(100, 75,
+                BufferedImage.TYPE_INT_BGR);
         imageRGB = prepareImage(imageRGB);
 
-        ImageEncodingHelper imageEncodingHelperBGR = new ImageEncodingHelper(imageBGR);
-        ImageEncodingHelper imageEncodingHelperRGB = new ImageEncodingHelper(imageRGB);
+        final ImageEncodingHelper imageEncodingHelperBGR = new ImageEncodingHelper(
+                imageBGR);
+        final ImageEncodingHelper imageEncodingHelperRGB = new ImageEncodingHelper(
+                imageRGB);
 
-        ByteArrayOutputStream baosBGR = new ByteArrayOutputStream();
+        final ByteArrayOutputStream baosBGR = new ByteArrayOutputStream();
         imageEncodingHelperBGR.encode(baosBGR);
 
-        ByteArrayOutputStream baosRGB = new ByteArrayOutputStream();
+        final ByteArrayOutputStream baosRGB = new ByteArrayOutputStream();
         imageEncodingHelperRGB.encode(baosRGB);
 
         assertTrue(Arrays.equals(baosBGR.toByteArray(), baosRGB.toByteArray()));

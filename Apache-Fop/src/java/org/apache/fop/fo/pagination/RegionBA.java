@@ -30,56 +30,65 @@ import org.apache.fop.traits.WritingMode;
 
 /**
  * Abstract base class for <a href="http://www.w3.org/TR/xsl/#fo_region-before">
- * <code>fo:region-before</code></a> and <a href="http://www.w3.org/TR/xsl/#fo_region-after">
+ * <code>fo:region-before</code></a> and <a
+ * href="http://www.w3.org/TR/xsl/#fo_region-after">
  * <code>fo:region-after</code></a>.
  */
 public abstract class RegionBA extends SideRegion {
     // The value of properties relevant for fo:region-[before|after].
     private int precedence;
+
     // End of property values
 
     /**
-     * Create a RegionBA instance that is a child of the
-     * given parent {@link FONode}.
-     * @param parent    the {@link FONode} that is to be the parent
+     * Create a RegionBA instance that is a child of the given parent
+     * {@link FONode}.
+     * 
+     * @param parent
+     *            the {@link FONode} that is to be the parent
      */
-    protected RegionBA(FONode parent) {
+    protected RegionBA(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        precedence = pList.get(PR_PRECEDENCE).getEnum();
+        this.precedence = pList.get(PR_PRECEDENCE).getEnum();
     }
 
     /**
      * Get the value of the <code>precedence</code> property.
+     * 
      * @return the "precedence" property
      */
     public int getPrecedence() {
-        return precedence;
+        return this.precedence;
     }
 
     /**
-     * Adjust the viewport reference rectangle for a region as a function
-     * of precedence.
-     * If precedence is false on a before or after region, its
-     * inline-progression-dimension is limited by the extent of the start
-     * and end regions if they are present.
-     * @param vpRefRect viewport reference rectangle
-     * @param wm writing mode
-     * @param siblingContext the context to use to resolve extent on siblings
+     * Adjust the viewport reference rectangle for a region as a function of
+     * precedence. If precedence is false on a before or after region, its
+     * inline-progression-dimension is limited by the extent of the start and
+     * end regions if they are present.
+     * 
+     * @param vpRefRect
+     *            viewport reference rectangle
+     * @param wm
+     *            writing mode
+     * @param siblingContext
+     *            the context to use to resolve extent on siblings
      */
-    protected void adjustIPD
-        ( Rectangle vpRefRect, WritingMode wm, PercentBaseContext siblingContext ) {
+    protected void adjustIPD(final Rectangle vpRefRect, final WritingMode wm,
+            final PercentBaseContext siblingContext) {
         int offset = 0;
-        RegionStart start = (RegionStart) getSiblingRegion(FO_REGION_START);
+        final RegionStart start = (RegionStart) getSiblingRegion(FO_REGION_START);
         if (start != null) {
             offset = start.getExtent().getValue(siblingContext);
-            vpRefRect.translate(offset, 0);  // move (x, y) units
+            vpRefRect.translate(offset, 0); // move (x, y) units
         }
-        RegionEnd end = (RegionEnd) getSiblingRegion(FO_REGION_END);
+        final RegionEnd end = (RegionEnd) getSiblingRegion(FO_REGION_END);
         if (end != null) {
             offset += end.getExtent().getValue(siblingContext);
         }
@@ -93,4 +102,3 @@ public abstract class RegionBA extends SideRegion {
         }
     }
 }
-

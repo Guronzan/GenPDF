@@ -30,13 +30,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
-import org.apache.xmlgraphics.util.QName;
-import org.apache.xmlgraphics.util.XMLizable;
-
 import org.apache.fop.accessibility.StructureTreeEventHandler;
 import org.apache.fop.fo.extensions.InternalElementMapping;
 import org.apache.fop.fonts.FontInfo;
@@ -56,20 +49,24 @@ import org.apache.fop.util.DOM2SAX;
 import org.apache.fop.util.LanguageTags;
 import org.apache.fop.util.XMLConstants;
 import org.apache.fop.util.XMLUtil;
-
+import org.apache.xmlgraphics.util.QName;
+import org.apache.xmlgraphics.util.XMLizable;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * IFPainter implementation that serializes the intermediate format to XML.
  */
-public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
-        implements IFConstants, IFPainter, IFDocumentNavigationHandler {
+public class IFSerializer extends AbstractXMLWritingIFDocumentHandler implements
+        IFConstants, IFPainter, IFDocumentNavigationHandler {
 
     /**
      * Intermediate Format (IF) version, used to express an @version attribute
-     * in the root element of the IF document, the initial value of which
-     * is set to '2.0' to signify that something preceded it (but didn't
-     * happen to be marked as such), and that this version is not necessarily
-     * backwards compatible with the unmarked (<2.0) version.
+     * in the root element of the IF document, the initial value of which is set
+     * to '2.0' to signify that something preceded it (but didn't happen to be
+     * marked as such), and that this version is not necessarily backwards
+     * compatible with the unmarked (<2.0) version.
      */
     public static final String VERSION = "2.0";
 
@@ -90,18 +87,21 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean supportsPagesOutOfOrder() {
         return false;
-        //Theoretically supported but disabled to improve performance when
-        //rendering the IF to the final format later on
+        // Theoretically supported but disabled to improve performance when
+        // rendering the IF to the final format later on
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return MIME_TYPE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public IFDocumentHandlerConfigurator getConfigurator() {
         if (this.mimicHandler != null) {
             return getMimickedDocumentHandler().getConfigurator();
@@ -117,23 +117,28 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
     }
 
     /**
-     * Tells this serializer to mimic the given document handler (mostly applies to the font set
-     * that is used during layout).
-     * @param targetHandler the document handler to mimic
+     * Tells this serializer to mimic the given document handler (mostly applies
+     * to the font set that is used during layout).
+     * 
+     * @param targetHandler
+     *            the document handler to mimic
      */
-    public void mimicDocumentHandler(IFDocumentHandler targetHandler) {
+    public void mimicDocumentHandler(final IFDocumentHandler targetHandler) {
         this.mimicHandler = targetHandler;
     }
 
     /**
      * Returns the document handler that is being mimicked by this serializer.
-     * @return the mimicked document handler or null if no such document handler has been set
+     * 
+     * @return the mimicked document handler or null if no such document handler
+     *         has been set
      */
     public IFDocumentHandler getMimickedDocumentHandler() {
         return this.mimicHandler;
     }
 
     /** {@inheritDoc} */
+    @Override
     public FontInfo getFontInfo() {
         if (this.mimicHandler != null) {
             return this.mimicHandler.getFontInfo();
@@ -143,14 +148,16 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
     }
 
     /** {@inheritDoc} */
-    public void setFontInfo(FontInfo fontInfo) {
+    @Override
+    public void setFontInfo(final FontInfo fontInfo) {
         if (this.mimicHandler != null) {
             this.mimicHandler.setFontInfo(fontInfo);
         }
     }
 
     /** {@inheritDoc} */
-    public void setDefaultFontInfo(FontInfo fontInfo) {
+    @Override
+    public void setDefaultFontInfo(final FontInfo fontInfo) {
         if (this.mimicHandler != null) {
             this.mimicHandler.setDefaultFontInfo(fontInfo);
         }
@@ -158,10 +165,10 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
 
     @Override
     public StructureTreeEventHandler getStructureTreeEventHandler() {
-        if (structureTreeBuilder == null) {
-            structureTreeBuilder = new IFStructureTreeBuilder();
+        if (this.structureTreeBuilder == null) {
+            this.structureTreeBuilder = new IFStructureTreeBuilder();
         }
-        return structureTreeBuilder;
+        return this.structureTreeBuilder;
     }
 
     /** {@inheritDoc} */
@@ -169,31 +176,34 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
     public void startDocument() throws IFException {
         super.startDocument();
         try {
-            handler.startDocument();
-            handler.startPrefixMapping("", NAMESPACE);
-            handler.startPrefixMapping(XLINK_PREFIX, XLINK_NAMESPACE);
-            handler.startPrefixMapping(DocumentNavigationExtensionConstants.PREFIX,
+            this.handler.startDocument();
+            this.handler.startPrefixMapping("", NAMESPACE);
+            this.handler.startPrefixMapping(XLINK_PREFIX, XLINK_NAMESPACE);
+            this.handler.startPrefixMapping(
+                    DocumentNavigationExtensionConstants.PREFIX,
                     DocumentNavigationExtensionConstants.NAMESPACE);
-            handler.startPrefixMapping(InternalElementMapping.STANDARD_PREFIX,
+            this.handler.startPrefixMapping(
+                    InternalElementMapping.STANDARD_PREFIX,
                     InternalElementMapping.URI);
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             addAttribute(atts, "version", VERSION);
-            handler.startElement(EL_DOCUMENT, atts);
-        } catch (SAXException e) {
+            this.handler.startElement(EL_DOCUMENT, atts);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startDocument()", e);
         }
     }
 
     @Override
-    public void setDocumentLocale(Locale locale) {
-        AttributesImpl atts  = new AttributesImpl();
-        atts.addAttribute(XML_NAMESPACE, "lang", "xml:lang", XMLUtil.CDATA,
-                LanguageTags.toLanguageTag(locale));
+    public void setDocumentLocale(final Locale locale) {
+        final AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute(XML_NAMESPACE, "lang", "xml:lang",
+                XMLConstants.CDATA, LanguageTags.toLanguageTag(locale));
         try {
-            handler.startElement(EL_LOCALE, atts);
-            handler.endElement(EL_LOCALE);
-        } catch (SAXException e) {
-            throw new RuntimeException("Unable to create the " + EL_LOCALE + " element.", e);
+            this.handler.startElement(EL_LOCALE, atts);
+            this.handler.endElement(EL_LOCALE);
+        } catch (final SAXException e) {
+            throw new RuntimeException("Unable to create the " + EL_LOCALE
+                    + " element.", e);
         }
     }
 
@@ -201,8 +211,8 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
     @Override
     public void startDocumentHeader() throws IFException {
         try {
-            handler.startElement(EL_HEADER);
-        } catch (SAXException e) {
+            this.handler.startElement(EL_HEADER);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startDocumentHeader()", e);
         }
     }
@@ -211,8 +221,8 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
     @Override
     public void endDocumentHeader() throws IFException {
         try {
-            handler.endElement(EL_HEADER);
-        } catch (SAXException e) {
+            this.handler.endElement(EL_HEADER);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startDocumentHeader()", e);
         }
     }
@@ -221,8 +231,8 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
     @Override
     public void startDocumentTrailer() throws IFException {
         try {
-            handler.startElement(EL_TRAILER);
-        } catch (SAXException e) {
+            this.handler.startElement(EL_TRAILER);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startDocumentTrailer()", e);
         }
     }
@@ -231,70 +241,77 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
     @Override
     public void endDocumentTrailer() throws IFException {
         try {
-            handler.endElement(EL_TRAILER);
-        } catch (SAXException e) {
+            this.handler.endElement(EL_TRAILER);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endDocumentTrailer()", e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endDocument() throws IFException {
         try {
-            handler.endElement(EL_DOCUMENT);
-            handler.endDocument();
+            this.handler.endElement(EL_DOCUMENT);
+            this.handler.endDocument();
             finishDocumentNavigation();
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endDocument()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void startPageSequence(String id) throws IFException {
+    @Override
+    public void startPageSequence(final String id) throws IFException {
         try {
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             if (id != null) {
-                atts.addAttribute(XML_NAMESPACE, "id", "xml:id", XMLUtil.CDATA, id);
+                atts.addAttribute(XML_NAMESPACE, "id", "xml:id",
+                        XMLConstants.CDATA, id);
             }
-            Locale lang = getContext().getLanguage();
+            final Locale lang = getContext().getLanguage();
             if (lang != null) {
-                atts.addAttribute(XML_NAMESPACE, "lang", "xml:lang", XMLUtil.CDATA,
-                        LanguageTags.toLanguageTag(lang));
+                atts.addAttribute(XML_NAMESPACE, "lang", "xml:lang",
+                        XMLConstants.CDATA, LanguageTags.toLanguageTag(lang));
             }
             XMLUtil.addAttribute(atts, XMLConstants.XML_SPACE, "preserve");
             addForeignAttributes(atts);
-            handler.startElement(EL_PAGE_SEQUENCE, atts);
-            if (this.getUserAgent().isAccessibilityEnabled()) {
-                assert (structureTreeBuilder != null);
-                structureTreeBuilder.replayEventsForPageSequence(handler, pageSequenceIndex++);
+            this.handler.startElement(EL_PAGE_SEQUENCE, atts);
+            if (getUserAgent().isAccessibilityEnabled()) {
+                assert this.structureTreeBuilder != null;
+                this.structureTreeBuilder.replayEventsForPageSequence(
+                        this.handler, this.pageSequenceIndex++);
             }
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startPageSequence()", e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endPageSequence() throws IFException {
         try {
 
-            handler.endElement(EL_PAGE_SEQUENCE);
-        } catch (SAXException e) {
+            this.handler.endElement(EL_PAGE_SEQUENCE);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endPageSequence()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void startPage(int index, String name, String pageMasterName, Dimension size)
-                throws IFException {
+    @Override
+    public void startPage(final int index, final String name,
+            final String pageMasterName, final Dimension size)
+            throws IFException {
         try {
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             addAttribute(atts, "index", Integer.toString(index));
             addAttribute(atts, "name", name);
             addAttribute(atts, "page-master-name", pageMasterName);
             addAttribute(atts, "width", Integer.toString(size.width));
             addAttribute(atts, "height", Integer.toString(size.height));
             addForeignAttributes(atts);
-            handler.startElement(EL_PAGE, atts);
-        } catch (SAXException e) {
+            this.handler.startElement(EL_PAGE, atts);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startPage()", e);
         }
     }
@@ -303,8 +320,8 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
     @Override
     public void startPageHeader() throws IFException {
         try {
-            handler.startElement(EL_PAGE_HEADER);
-        } catch (SAXException e) {
+            this.handler.startElement(EL_PAGE_HEADER);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startPageHeader()", e);
         }
     }
@@ -313,30 +330,32 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
     @Override
     public void endPageHeader() throws IFException {
         try {
-            handler.endElement(EL_PAGE_HEADER);
-        } catch (SAXException e) {
+            this.handler.endElement(EL_PAGE_HEADER);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endPageHeader()", e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public IFPainter startPageContent() throws IFException {
         try {
-            handler.startElement(EL_PAGE_CONTENT);
+            this.handler.startElement(EL_PAGE_CONTENT);
             this.state = IFState.create();
             return this;
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startPageContent()", e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endPageContent() throws IFException {
         try {
             this.state = null;
-            currentID = "";
-            handler.endElement(EL_PAGE_CONTENT);
-        } catch (SAXException e) {
+            this.currentID = "";
+            this.handler.endElement(EL_PAGE_CONTENT);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endPageContent()", e);
         }
     }
@@ -345,8 +364,8 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
     @Override
     public void startPageTrailer() throws IFException {
         try {
-            handler.startElement(EL_PAGE_TRAILER);
-        } catch (SAXException e) {
+            this.handler.startElement(EL_PAGE_TRAILER);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startPageTrailer()", e);
         }
     }
@@ -356,39 +375,42 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
     public void endPageTrailer() throws IFException {
         try {
             commitNavigation();
-            handler.endElement(EL_PAGE_TRAILER);
-        } catch (SAXException e) {
+            this.handler.endElement(EL_PAGE_TRAILER);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endPageTrailer()", e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endPage() throws IFException {
         try {
-            handler.endElement(EL_PAGE);
-        } catch (SAXException e) {
+            this.handler.endElement(EL_PAGE);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endPage()", e);
         }
     }
 
-    //---=== IFPainter ===---
+    // ---=== IFPainter ===---
 
     /** {@inheritDoc} */
-    public void startViewport(AffineTransform transform, Dimension size, Rectangle clipRect)
-            throws IFException {
+    @Override
+    public void startViewport(final AffineTransform transform,
+            final Dimension size, final Rectangle clipRect) throws IFException {
         startViewport(IFUtil.toString(transform), size, clipRect);
     }
 
     /** {@inheritDoc} */
-    public void startViewport(AffineTransform[] transforms, Dimension size, Rectangle clipRect)
-            throws IFException {
+    @Override
+    public void startViewport(final AffineTransform[] transforms,
+            final Dimension size, final Rectangle clipRect) throws IFException {
         startViewport(IFUtil.toString(transforms), size, clipRect);
     }
 
-    private void startViewport(String transform, Dimension size, Rectangle clipRect)
-                throws IFException {
+    private void startViewport(final String transform, final Dimension size,
+            final Rectangle clipRect) throws IFException {
         try {
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             if (transform != null && transform.length() > 0) {
                 addAttribute(atts, "transform", transform);
             }
@@ -397,57 +419,64 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
             if (clipRect != null) {
                 addAttribute(atts, "clip-rect", IFUtil.toString(clipRect));
             }
-            handler.startElement(EL_VIEWPORT, atts);
-        } catch (SAXException e) {
+            this.handler.startElement(EL_VIEWPORT, atts);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startViewport()", e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endViewport() throws IFException {
         try {
-            handler.endElement(EL_VIEWPORT);
-        } catch (SAXException e) {
+            this.handler.endElement(EL_VIEWPORT);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endViewport()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void startGroup(AffineTransform[] transforms) throws IFException {
+    @Override
+    public void startGroup(final AffineTransform[] transforms)
+            throws IFException {
         startGroup(IFUtil.toString(transforms));
     }
 
     /** {@inheritDoc} */
-    public void startGroup(AffineTransform transform) throws IFException {
+    @Override
+    public void startGroup(final AffineTransform transform) throws IFException {
         startGroup(IFUtil.toString(transform));
     }
 
-    private void startGroup(String transform) throws IFException {
+    private void startGroup(final String transform) throws IFException {
         try {
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             if (transform != null && transform.length() > 0) {
                 addAttribute(atts, "transform", transform);
             }
-            handler.startElement(EL_GROUP, atts);
-        } catch (SAXException e) {
+            this.handler.startElement(EL_GROUP, atts);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startGroup()", e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endGroup() throws IFException {
         try {
-            handler.endElement(EL_GROUP);
-        } catch (SAXException e) {
+            this.handler.endElement(EL_GROUP);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endGroup()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void drawImage(String uri, Rectangle rect) throws IFException {
+    @Override
+    public void drawImage(final String uri, final Rectangle rect)
+            throws IFException {
         try {
             addID();
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             addAttribute(atts, XLINK_HREF, uri);
             addAttribute(atts, "x", Integer.toString(rect.x));
             addAttribute(atts, "y", Integer.toString(rect.y));
@@ -455,90 +484,100 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
             addAttribute(atts, "height", Integer.toString(rect.height));
             addForeignAttributes(atts);
             addStructureReference(atts);
-            handler.element(EL_IMAGE, atts);
-        } catch (SAXException e) {
+            this.handler.element(EL_IMAGE, atts);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startGroup()", e);
         }
     }
 
-    private void addForeignAttributes(AttributesImpl atts) throws SAXException {
-        Map foreignAttributes = getContext().getForeignAttributes();
+    private void addForeignAttributes(final AttributesImpl atts)
+            throws SAXException {
+        final Map foreignAttributes = getContext().getForeignAttributes();
         if (!foreignAttributes.isEmpty()) {
-            Iterator iter = foreignAttributes.entrySet().iterator();
+            final Iterator iter = foreignAttributes.entrySet().iterator();
             while (iter.hasNext()) {
-                Map.Entry entry = (Map.Entry)iter.next();
-                addAttribute(atts, (QName)entry.getKey(), entry.getValue().toString());
+                final Map.Entry entry = (Map.Entry) iter.next();
+                addAttribute(atts, (QName) entry.getKey(), entry.getValue()
+                        .toString());
             }
         }
     }
 
     /** {@inheritDoc} */
-    public void drawImage(Document doc, Rectangle rect) throws IFException {
+    @Override
+    public void drawImage(final Document doc, final Rectangle rect)
+            throws IFException {
         try {
             addID();
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             addAttribute(atts, "x", Integer.toString(rect.x));
             addAttribute(atts, "y", Integer.toString(rect.y));
             addAttribute(atts, "width", Integer.toString(rect.width));
             addAttribute(atts, "height", Integer.toString(rect.height));
             addForeignAttributes(atts);
             addStructureReference(atts);
-            handler.startElement(EL_IMAGE, atts);
-            new DOM2SAX(handler).writeDocument(doc, true);
-            handler.endElement(EL_IMAGE);
-        } catch (SAXException e) {
+            this.handler.startElement(EL_IMAGE, atts);
+            new DOM2SAX(this.handler).writeDocument(doc, true);
+            this.handler.endElement(EL_IMAGE);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startGroup()", e);
         }
     }
 
-    private static String toString(Paint paint) {
+    private static String toString(final Paint paint) {
         if (paint instanceof Color) {
-            return ColorUtil.colorToString((Color)paint);
+            return ColorUtil.colorToString((Color) paint);
         } else {
-            throw new UnsupportedOperationException("Paint not supported: " + paint);
+            throw new UnsupportedOperationException("Paint not supported: "
+                    + paint);
         }
     }
 
     /** {@inheritDoc} */
-    public void clipRect(Rectangle rect) throws IFException {
+    @Override
+    public void clipRect(final Rectangle rect) throws IFException {
         try {
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             addAttribute(atts, "x", Integer.toString(rect.x));
             addAttribute(atts, "y", Integer.toString(rect.y));
             addAttribute(atts, "width", Integer.toString(rect.width));
             addAttribute(atts, "height", Integer.toString(rect.height));
-            handler.element(EL_CLIP_RECT, atts);
-        } catch (SAXException e) {
+            this.handler.element(EL_CLIP_RECT, atts);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in clipRect()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void fillRect(Rectangle rect, Paint fill) throws IFException {
+    @Override
+    public void fillRect(final Rectangle rect, final Paint fill)
+            throws IFException {
         if (fill == null) {
             return;
         }
         try {
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             addAttribute(atts, "x", Integer.toString(rect.x));
             addAttribute(atts, "y", Integer.toString(rect.y));
             addAttribute(atts, "width", Integer.toString(rect.width));
             addAttribute(atts, "height", Integer.toString(rect.height));
             addAttribute(atts, "fill", toString(fill));
-            handler.element(EL_RECT, atts);
-        } catch (SAXException e) {
+            this.handler.element(EL_RECT, atts);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in fillRect()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void drawBorderRect(Rectangle rect, BorderProps top, BorderProps bottom,
-            BorderProps left, BorderProps right) throws IFException {
+    @Override
+    public void drawBorderRect(final Rectangle rect, final BorderProps top,
+            final BorderProps bottom, final BorderProps left,
+            final BorderProps right) throws IFException {
         if (top == null && bottom == null && left == null && right == null) {
             return;
         }
         try {
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             addAttribute(atts, "x", Integer.toString(rect.x));
             addAttribute(atts, "y", Integer.toString(rect.y));
             addAttribute(atts, "width", Integer.toString(rect.width));
@@ -555,18 +594,19 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
             if (right != null) {
                 addAttribute(atts, "right", right.toString());
             }
-            handler.element(EL_BORDER_RECT, atts);
-        } catch (SAXException e) {
+            this.handler.element(EL_BORDER_RECT, atts);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in drawBorderRect()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void drawLine(Point start, Point end, int width, Color color, RuleStyle style)
-            throws IFException {
+    @Override
+    public void drawLine(final Point start, final Point end, final int width,
+            final Color color, final RuleStyle style) throws IFException {
         try {
             addID();
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             addAttribute(atts, "x1", Integer.toString(start.x));
             addAttribute(atts, "y1", Integer.toString(start.y));
             addAttribute(atts, "x2", Integer.toString(end.x));
@@ -574,266 +614,299 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
             addAttribute(atts, "stroke-width", Integer.toString(width));
             addAttribute(atts, "color", ColorUtil.colorToString(color));
             addAttribute(atts, "style", style.getName());
-            handler.element(EL_LINE, atts);
-        } catch (SAXException e) {
+            this.handler.element(EL_LINE, atts);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in drawLine()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void drawText(int x, int y, int letterSpacing, int wordSpacing,
-            int[][] dp, String text) throws IFException {
+    @Override
+    public void drawText(final int x, final int y, final int letterSpacing,
+            final int wordSpacing, final int[][] dp, final String text)
+            throws IFException {
         try {
             addID();
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             addAttribute(atts, "x", Integer.toString(x));
             addAttribute(atts, "y", Integer.toString(y));
             if (letterSpacing != 0) {
-                addAttribute(atts, "letter-spacing", Integer.toString(letterSpacing));
+                addAttribute(atts, "letter-spacing",
+                        Integer.toString(letterSpacing));
             }
             if (wordSpacing != 0) {
-                addAttribute(atts, "word-spacing", Integer.toString(wordSpacing));
+                addAttribute(atts, "word-spacing",
+                        Integer.toString(wordSpacing));
             }
             if (dp != null) {
-                if ( IFUtil.isDPIdentity(dp) ) {
+                if (IFUtil.isDPIdentity(dp)) {
                     // don't add dx or dp attribute
-                } else if ( IFUtil.isDPOnlyDX(dp) ) {
+                } else if (IFUtil.isDPOnlyDX(dp)) {
                     // add dx attribute only
-                    int[] dx = IFUtil.convertDPToDX(dp);
+                    final int[] dx = IFUtil.convertDPToDX(dp);
                     addAttribute(atts, "dx", IFUtil.toString(dx));
                 } else {
                     // add dp attribute only
-                    addAttribute(atts, "dp", XMLUtil.encodePositionAdjustments(dp));
+                    addAttribute(atts, "dp",
+                            XMLUtil.encodePositionAdjustments(dp));
                 }
             }
             addStructureReference(atts);
-            handler.startElement(EL_TEXT, atts);
-            char[] chars = text.toCharArray();
-            handler.characters(chars, 0, chars.length);
-            handler.endElement(EL_TEXT);
-        } catch (SAXException e) {
+            this.handler.startElement(EL_TEXT, atts);
+            final char[] chars = text.toCharArray();
+            this.handler.characters(chars, 0, chars.length);
+            this.handler.endElement(EL_TEXT);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in setFont()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void setFont(String family, String style, Integer weight, String variant, Integer size,
-            Color color) throws IFException {
+    @Override
+    public void setFont(final String family, final String style,
+            final Integer weight, final String variant, final Integer size,
+            final Color color) throws IFException {
         try {
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             boolean changed;
             if (family != null) {
-                changed = !family.equals(state.getFontFamily());
+                changed = !family.equals(this.state.getFontFamily());
                 if (changed) {
-                    state.setFontFamily(family);
+                    this.state.setFontFamily(family);
                     addAttribute(atts, "family", family);
                 }
             }
             if (style != null) {
-                changed = !style.equals(state.getFontStyle());
+                changed = !style.equals(this.state.getFontStyle());
                 if (changed) {
-                    state.setFontStyle(style);
+                    this.state.setFontStyle(style);
                     addAttribute(atts, "style", style);
                 }
             }
             if (weight != null) {
-                changed = (weight.intValue() != state.getFontWeight());
+                changed = weight.intValue() != this.state.getFontWeight();
                 if (changed) {
-                    state.setFontWeight(weight.intValue());
+                    this.state.setFontWeight(weight.intValue());
                     addAttribute(atts, "weight", weight.toString());
                 }
             }
             if (variant != null) {
-                changed = !variant.equals(state.getFontVariant());
+                changed = !variant.equals(this.state.getFontVariant());
                 if (changed) {
-                    state.setFontVariant(variant);
+                    this.state.setFontVariant(variant);
                     addAttribute(atts, "variant", variant);
                 }
             }
             if (size != null) {
-                changed = (size.intValue() != state.getFontSize());
+                changed = size.intValue() != this.state.getFontSize();
                 if (changed) {
-                    state.setFontSize(size.intValue());
+                    this.state.setFontSize(size.intValue());
                     addAttribute(atts, "size", size.toString());
                 }
             }
             if (color != null) {
-                changed = !org.apache.xmlgraphics.java2d.color.ColorUtil.isSameColor(
-                        color, state.getTextColor());
+                changed = !org.apache.xmlgraphics.java2d.color.ColorUtil
+                        .isSameColor(color, this.state.getTextColor());
                 if (changed) {
-                    state.setTextColor(color);
+                    this.state.setTextColor(color);
                     addAttribute(atts, "color", toString(color));
                 }
             }
             if (atts.getLength() > 0) {
-                handler.element(EL_FONT, atts);
+                this.handler.element(EL_FONT, atts);
             }
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             throw new IFException("SAX error in setFont()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void handleExtensionObject(Object extension) throws IFException {
+    @Override
+    public void handleExtensionObject(final Object extension)
+            throws IFException {
         if (extension instanceof XMLizable) {
             try {
-                ((XMLizable)extension).toSAX(this.handler);
-            } catch (SAXException e) {
-                throw new IFException("SAX error while handling extension object", e);
+                ((XMLizable) extension).toSAX(this.handler);
+            } catch (final SAXException e) {
+                throw new IFException(
+                        "SAX error while handling extension object", e);
             }
         } else {
             throw new UnsupportedOperationException(
-                    "Extension must implement XMLizable: "
-                    + extension + " (" + extension.getClass().getName() + ")");
+                    "Extension must implement XMLizable: " + extension + " ("
+                            + extension.getClass().getName() + ")");
         }
     }
 
     /**
      * @return a new rendering context
-     * @throws IllegalStateException unless overridden
+     * @throws IllegalStateException
+     *             unless overridden
      */
-    protected RenderingContext createRenderingContext() throws IllegalStateException {
+    protected RenderingContext createRenderingContext()
+            throws IllegalStateException {
         throw new IllegalStateException("Should never be called!");
     }
 
-    private void addAttribute(AttributesImpl atts,
-            org.apache.xmlgraphics.util.QName attribute, String value) throws SAXException {
-        handler.startPrefixMapping(attribute.getPrefix(), attribute.getNamespaceURI());
+    private void addAttribute(final AttributesImpl atts,
+            final org.apache.xmlgraphics.util.QName attribute,
+            final String value) throws SAXException {
+        this.handler.startPrefixMapping(attribute.getPrefix(),
+                attribute.getNamespaceURI());
         XMLUtil.addAttribute(atts, attribute, value);
     }
 
-    private void addAttribute(AttributesImpl atts, String localName, String value) {
+    private void addAttribute(final AttributesImpl atts,
+            final String localName, final String value) {
         XMLUtil.addAttribute(atts, localName, value);
     }
 
-    private void addStructureReference(AttributesImpl atts) {
-        IFStructureTreeElement structureTreeElement
-                = (IFStructureTreeElement) getContext().getStructureTreeElement();
+    private void addStructureReference(final AttributesImpl atts) {
+        final IFStructureTreeElement structureTreeElement = (IFStructureTreeElement) getContext()
+                .getStructureTreeElement();
         if (structureTreeElement != null) {
             addStructRefAttribute(atts, structureTreeElement.getId());
         }
     }
 
-    private void addStructRefAttribute(AttributesImpl atts, String id) {
+    private void addStructRefAttribute(final AttributesImpl atts,
+            final String id) {
         atts.addAttribute(InternalElementMapping.URI,
                 InternalElementMapping.STRUCT_REF,
-                InternalElementMapping.STANDARD_PREFIX + ":" + InternalElementMapping.STRUCT_REF,
-                XMLConstants.CDATA,
-                id);
+                InternalElementMapping.STANDARD_PREFIX + ":"
+                        + InternalElementMapping.STRUCT_REF,
+                XMLConstants.CDATA, id);
     }
 
     private void addID() throws SAXException {
-        String id = getContext().getID();
-        if (!currentID.equals(id)) {
-            AttributesImpl atts = new AttributesImpl();
+        final String id = getContext().getID();
+        if (!this.currentID.equals(id)) {
+            final AttributesImpl atts = new AttributesImpl();
             addAttribute(atts, "name", id);
-            handler.startElement(EL_ID, atts);
-            handler.endElement(EL_ID);
-            currentID = id;
+            this.handler.startElement(EL_ID, atts);
+            this.handler.endElement(EL_ID);
+            this.currentID = id;
         }
     }
 
-    private Map incompleteActions = new java.util.HashMap();
-    private List completeActions = new java.util.LinkedList();
+    private final Map incompleteActions = new java.util.HashMap();
+    private final List completeActions = new java.util.LinkedList();
 
-    private void noteAction(AbstractAction action) {
+    private void noteAction(final AbstractAction action) {
         if (action == null) {
             throw new NullPointerException("action must not be null");
         }
         if (!action.isComplete()) {
             assert action.hasID();
-            incompleteActions.put(action.getID(), action);
+            this.incompleteActions.put(action.getID(), action);
         }
     }
 
     /** {@inheritDoc} */
-    public void renderNamedDestination(NamedDestination destination) throws IFException {
+    @Override
+    public void renderNamedDestination(final NamedDestination destination)
+            throws IFException {
         noteAction(destination.getAction());
 
-        AttributesImpl atts = new AttributesImpl();
-        atts.addAttribute(null, "name", "name", XMLConstants.CDATA, destination.getName());
+        final AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute(null, "name", "name", XMLConstants.CDATA,
+                destination.getName());
         try {
-            handler.startElement(DocumentNavigationExtensionConstants.NAMED_DESTINATION, atts);
+            this.handler.startElement(
+                    DocumentNavigationExtensionConstants.NAMED_DESTINATION,
+                    atts);
             serializeXMLizable(destination.getAction());
-            handler.endElement(DocumentNavigationExtensionConstants.NAMED_DESTINATION);
-        } catch (SAXException e) {
+            this.handler
+                    .endElement(DocumentNavigationExtensionConstants.NAMED_DESTINATION);
+        } catch (final SAXException e) {
             throw new IFException("SAX error serializing named destination", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void renderBookmarkTree(BookmarkTree tree) throws IFException {
-        AttributesImpl atts = new AttributesImpl();
+    @Override
+    public void renderBookmarkTree(final BookmarkTree tree) throws IFException {
+        final AttributesImpl atts = new AttributesImpl();
         try {
-            handler.startElement(DocumentNavigationExtensionConstants.BOOKMARK_TREE, atts);
-            Iterator iter = tree.getBookmarks().iterator();
+            this.handler.startElement(
+                    DocumentNavigationExtensionConstants.BOOKMARK_TREE, atts);
+            final Iterator iter = tree.getBookmarks().iterator();
             while (iter.hasNext()) {
-                Bookmark b = (Bookmark)iter.next();
+                final Bookmark b = (Bookmark) iter.next();
                 if (b.getAction() != null) {
                     serializeBookmark(b);
                 }
             }
-            handler.endElement(DocumentNavigationExtensionConstants.BOOKMARK_TREE);
-        } catch (SAXException e) {
+            this.handler
+                    .endElement(DocumentNavigationExtensionConstants.BOOKMARK_TREE);
+        } catch (final SAXException e) {
             throw new IFException("SAX error serializing bookmark tree", e);
         }
     }
 
-    private void serializeBookmark(Bookmark bookmark) throws SAXException, IFException {
+    private void serializeBookmark(final Bookmark bookmark)
+            throws SAXException, IFException {
         noteAction(bookmark.getAction());
 
-        AttributesImpl atts = new AttributesImpl();
-        atts.addAttribute(null, "title", "title", XMLUtil.CDATA, bookmark.getTitle());
+        final AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute(null, "title", "title", XMLConstants.CDATA,
+                bookmark.getTitle());
         atts.addAttribute(null, "starting-state", "starting-state",
-                XMLUtil.CDATA, bookmark.isShown() ? "show" : "hide");
-        handler.startElement(DocumentNavigationExtensionConstants.BOOKMARK, atts);
+                XMLConstants.CDATA, bookmark.isShown() ? "show" : "hide");
+        this.handler.startElement(
+                DocumentNavigationExtensionConstants.BOOKMARK, atts);
         serializeXMLizable(bookmark.getAction());
-        Iterator iter = bookmark.getChildBookmarks().iterator();
+        final Iterator iter = bookmark.getChildBookmarks().iterator();
         while (iter.hasNext()) {
-            Bookmark b = (Bookmark)iter.next();
+            final Bookmark b = (Bookmark) iter.next();
             if (b.getAction() != null) {
                 serializeBookmark(b);
             }
         }
-        handler.endElement(DocumentNavigationExtensionConstants.BOOKMARK);
+        this.handler.endElement(DocumentNavigationExtensionConstants.BOOKMARK);
     }
 
     /** {@inheritDoc} */
-    public void renderLink(Link link) throws IFException {
+    @Override
+    public void renderLink(final Link link) throws IFException {
         noteAction(link.getAction());
 
-        AttributesImpl atts = new AttributesImpl();
-        atts.addAttribute(null, "rect", "rect",
-                XMLConstants.CDATA, IFUtil.toString(link.getTargetRect()));
+        final AttributesImpl atts = new AttributesImpl();
+        atts.addAttribute(null, "rect", "rect", XMLConstants.CDATA,
+                IFUtil.toString(link.getTargetRect()));
         if (getUserAgent().isAccessibilityEnabled()) {
-            addStructRefAttribute(atts,
-                    ((IFStructureTreeElement) link.getAction().getStructureTreeElement()).getId());
+            addStructRefAttribute(atts, ((IFStructureTreeElement) link
+                    .getAction().getStructureTreeElement()).getId());
         }
         try {
-            handler.startElement(DocumentNavigationExtensionConstants.LINK, atts);
+            this.handler.startElement(
+                    DocumentNavigationExtensionConstants.LINK, atts);
             serializeXMLizable(link.getAction());
-            handler.endElement(DocumentNavigationExtensionConstants.LINK);
-        } catch (SAXException e) {
+            this.handler.endElement(DocumentNavigationExtensionConstants.LINK);
+        } catch (final SAXException e) {
             throw new IFException("SAX error serializing link", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void addResolvedAction(AbstractAction action) throws IFException {
+    @Override
+    public void addResolvedAction(final AbstractAction action)
+            throws IFException {
         assert action.isComplete();
         assert action.hasID();
-        AbstractAction noted = (AbstractAction)incompleteActions.remove(action.getID());
+        final AbstractAction noted = (AbstractAction) this.incompleteActions
+                .remove(action.getID());
         if (noted != null) {
-            completeActions.add(action);
+            this.completeActions.add(action);
         } else {
-            //ignore as it was already complete when it was first used.
+            // ignore as it was already complete when it was first used.
         }
     }
 
     private void commitNavigation() throws IFException {
-        Iterator iter = this.completeActions.iterator();
+        final Iterator iter = this.completeActions.iterator();
         while (iter.hasNext()) {
-            AbstractAction action = (AbstractAction)iter.next();
+            final AbstractAction action = (AbstractAction) iter.next();
             iter.remove();
             serializeXMLizable(action);
         }
@@ -844,10 +917,10 @@ public class IFSerializer extends AbstractXMLWritingIFDocumentHandler
         assert this.incompleteActions.size() == 0 : "Still holding incomplete actions!";
     }
 
-    private void serializeXMLizable(XMLizable object) throws IFException {
+    private void serializeXMLizable(final XMLizable object) throws IFException {
         try {
-            object.toSAX(handler);
-        } catch (SAXException e) {
+            object.toSAX(this.handler);
+        } catch (final SAXException e) {
             throw new IFException("SAX error serializing object", e);
         }
     }

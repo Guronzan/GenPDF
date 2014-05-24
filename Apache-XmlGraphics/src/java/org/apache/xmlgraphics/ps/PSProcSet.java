@@ -24,24 +24,30 @@ package org.apache.xmlgraphics.ps;
  */
 public class PSProcSet extends PSResource {
 
-    private float version;
-    private int revision;
+    private final float version;
+    private final int revision;
 
     /**
      * Creates a new instance.
-     * @param name name of the resource
+     * 
+     * @param name
+     *            name of the resource
      */
-    public PSProcSet(String name) {
+    public PSProcSet(final String name) {
         this(name, 1.0f, 0);
     }
 
     /**
      * Creates a new instance.
-     * @param name name of the resource
-     * @param version version of the resource
-     * @param revision revision of the resource
+     * 
+     * @param name
+     *            name of the resource
+     * @param version
+     *            version of the resource
+     * @param revision
+     *            revision of the resource
      */
-    public PSProcSet(String name, float version, int revision) {
+    public PSProcSet(final String name, final float version, final int revision) {
         super(TYPE_PROCSET, name);
         this.version = version;
         this.revision = revision;
@@ -49,18 +55,20 @@ public class PSProcSet extends PSResource {
 
     /** @return the version */
     public float getVersion() {
-        return version;
+        return this.version;
     }
 
     /** @return the revision */
     public int getRevision() {
-        return revision;
+        return this.revision;
     }
 
     /** @return the <resource> specification as defined in DSC v3.0 spec. */
+    @Override
     public String getResourceSpecification() {
-        StringBuffer sb = new StringBuffer();
-        sb.append(getType()).append(" ").append(PSGenerator.convertStringToDSC(getName()));
+        final StringBuffer sb = new StringBuffer();
+        sb.append(getType()).append(" ")
+                .append(PSGenerator.convertStringToDSC(getName()));
         sb.append(" ").append(PSGenerator.convertRealToDSC(getVersion()));
         sb.append(" ").append(Integer.toString(getRevision()));
         return sb.toString();

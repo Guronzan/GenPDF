@@ -19,9 +19,7 @@
 
 package org.apache.fop.complexscripts.bidi;
 
-import org.apache.fop.complexscripts.bidi.BidiClass;
 import org.apache.fop.util.CharUtilities;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -30,27 +28,28 @@ import static org.junit.Assert.fail;
 public class BidiClassTestCase {
 
     @Test
-    public void testBidiClasses() throws Exception {
-        String tdPfx = BidiTestData.TD_PFX;
-        int tdCount = BidiTestData.TD_CNT;
-        for ( int i = 0; i < tdCount; i++ ) {
-            int[] da = BidiTestData.readTestData ( tdPfx, i );
-            if ( da != null ) {
-                testBidiClass ( da );
+    public void testBidiClasses() {
+        final String tdPfx = BidiTestData.TD_PFX;
+        final int tdCount = BidiTestData.TD_CNT;
+        for (int i = 0; i < tdCount; i++) {
+            final int[] da = BidiTestData.readTestData(tdPfx, i);
+            if (da != null) {
+                testBidiClass(da);
             } else {
-                fail ( "unable to read bidi test data for resource at index " + i );
+                fail("unable to read bidi test data for resource at index " + i);
             }
         }
     }
 
-    private void testBidiClass ( int[] da ) throws Exception {
-        int bc = da[0];
-        for ( int i = 1, n = da.length; i < n; i += 2 ) {
-            int s = da[i+0];
-            int e = da[i+1];
-            for ( int c = s; c < e; c++ ) {
-                int cbc = BidiClass.getBidiClass ( c );
-                assertEquals ( "bad bidi class for CH(" + CharUtilities.format ( c ) + ")", bc, cbc );
+    private void testBidiClass(final int[] da) {
+        final int bc = da[0];
+        for (int i = 1, n = da.length; i < n; i += 2) {
+            final int s = da[i + 0];
+            final int e = da[i + 1];
+            for (int c = s; c < e; c++) {
+                final int cbc = BidiClass.getBidiClass(c);
+                assertEquals("bad bidi class for CH(" + CharUtilities.format(c)
+                        + ")", bc, cbc);
             }
         }
     }

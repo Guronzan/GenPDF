@@ -20,14 +20,14 @@
 package org.apache.fop.layoutmgr;
 
 /**
- * Defines methods to evaluate break opportunities at a particular location in the tree of
- * layout managers.
+ * Defines methods to evaluate break opportunities at a particular location in
+ * the tree of layout managers.
  */
 public interface BreakOpportunity {
 
     /**
-     * Returns the highest priority break-before value on this layout manager or its
-     * relevant descendants.
+     * Returns the highest priority break-before value on this layout manager or
+     * its relevant descendants.
      *
      * @return the break-before value (Constants.EN_*)
      */

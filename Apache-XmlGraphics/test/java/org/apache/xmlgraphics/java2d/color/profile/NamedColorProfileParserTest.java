@@ -25,7 +25,6 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.xmlgraphics.java2d.color.NamedColorSpace;
 import org.apache.xmlgraphics.java2d.color.RenderingIntent;
 
@@ -37,7 +36,7 @@ public class NamedColorProfileParserTest extends TestCase {
     private static final String NCP_EXAMPLE_FILE = "ncp-example.icc";
 
     public void testParser() throws Exception {
-        InputStream in = getClass().getResourceAsStream(NCP_EXAMPLE_FILE);
+        final InputStream in = getClass().getResourceAsStream(NCP_EXAMPLE_FILE);
         assertNotNull(NCP_EXAMPLE_FILE + " is missing!", in);
         ICC_Profile iccProfile;
         try {
@@ -45,17 +44,17 @@ public class NamedColorProfileParserTest extends TestCase {
         } finally {
             IOUtils.closeQuietly(in);
         }
-        NamedColorProfileParser parser = new NamedColorProfileParser();
-        NamedColorProfile ncp = parser.parseProfile(iccProfile);
+        final NamedColorProfileParser parser = new NamedColorProfileParser();
+        final NamedColorProfile ncp = parser.parseProfile(iccProfile);
         assertEquals("Named Color Profile Example", ncp.getProfileName());
         assertEquals("The Apache Software Foundation", ncp.getCopyright());
         assertEquals(RenderingIntent.PERCEPTUAL, ncp.getRenderingIntent());
-        NamedColorSpace[] namedColors = ncp.getNamedColors();
+        final NamedColorSpace[] namedColors = ncp.getNamedColors();
         assertEquals(2, namedColors.length);
         NamedColorSpace ncs;
         ncs = namedColors[0];
         assertEquals("Postgelb", ncs.getColorName());
-        float[] xyz = ncs.getXYZ();
+        final float[] xyz = ncs.getXYZ();
         assertEquals(0.6763079f, xyz[0], 0.01f);
         assertEquals(0.6263507f, xyz[1], 0.01f);
         assertEquals(0.04217565f, xyz[2], 0.01f);

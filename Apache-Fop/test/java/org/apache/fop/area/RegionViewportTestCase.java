@@ -29,25 +29,26 @@ import org.junit.Test;
  */
 public class RegionViewportTestCase extends ViewportTest {
 
-    private RegionViewport createRegionViewport(int x, int y, int ipd, int bpd) {
-        Rectangle2D v = new Rectangle(x, y, ipd, bpd);
-        RegionViewport viewport = new RegionViewport(v);
+    private RegionViewport createRegionViewport(final int x, final int y,
+            final int ipd, final int bpd) {
+        final Rectangle2D v = new Rectangle(x, y, ipd, bpd);
+        final RegionViewport viewport = new RegionViewport(v);
         viewport.setIPD(ipd);
         viewport.setBPD(bpd);
         return viewport;
     }
 
     @Test
-    public void testNonClip() throws Exception {
-        RegionViewport viewport = createRegionViewport(10, 10, 100, 20);
+    public void testNonClip() {
+        final RegionViewport viewport = createRegionViewport(10, 10, 100, 20);
         checkNonClip(viewport);
     }
 
     @Test
-    public void testClip() throws Exception {
-        int ipd = 150;
-        int bpd = 20;
-        RegionViewport viewport = createRegionViewport(10, 10, ipd, bpd);
+    public void testClip() {
+        final int ipd = 150;
+        final int bpd = 20;
+        final RegionViewport viewport = createRegionViewport(10, 10, ipd, bpd);
         viewport.setClip(true);
         checkClip(viewport, ipd, bpd);
     }

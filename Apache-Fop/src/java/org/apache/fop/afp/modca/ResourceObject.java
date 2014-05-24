@@ -72,18 +72,20 @@ public class ResourceObject extends AbstractNamedAFPObject {
     /**
      * Default constructor
      *
-     * @param name the name of this resource (reference id)
+     * @param name
+     *            the name of this resource (reference id)
      */
-    public ResourceObject(String name) {
+    public ResourceObject(final String name) {
         super(name);
     }
 
     /**
      * Sets the data object referenced by this resource object
      *
-     * @param namedObject the named data object
+     * @param namedObject
+     *            the named data object
      */
-    public void setDataObject(AbstractNamedAFPObject namedObject) {
+    public void setDataObject(final AbstractNamedAFPObject namedObject) {
         this.namedObject = namedObject;
     }
 
@@ -93,19 +95,20 @@ public class ResourceObject extends AbstractNamedAFPObject {
      * @return the data object referenced by this resource object
      */
     public AbstractNamedAFPObject getDataObject() {
-        return namedObject;
+        return this.namedObject;
     }
 
     /** {@inheritDoc} */
-    protected void writeStart(OutputStream os) throws IOException {
+    @Override
+    protected void writeStart(final OutputStream os) throws IOException {
         super.writeStart(os);
 
-        byte[] data = new byte[19];
+        final byte[] data = new byte[19];
         copySF(data, Type.BEGIN, Category.NAME_RESOURCE);
 
         // Set the total record length
-        int tripletDataLength = getTripletDataLength();
-        byte[] len = BinaryUtils.convert(18 + tripletDataLength, 2);
+        final int tripletDataLength = getTripletDataLength();
+        final byte[] len = BinaryUtils.convert(18 + tripletDataLength, 2);
         data[1] = len[0]; // Length byte 1
         data[2] = len[1]; // Length byte 2
 
@@ -120,30 +123,34 @@ public class ResourceObject extends AbstractNamedAFPObject {
     }
 
     /** {@inheritDoc} */
-    protected void writeContent(OutputStream os) throws IOException {
-        if (namedObject != null) {
-            namedObject.writeToStream(os);
+    @Override
+    protected void writeContent(final OutputStream os) throws IOException {
+        if (this.namedObject != null) {
+            this.namedObject.writeToStream(os);
         }
     }
 
     /** {@inheritDoc} */
-    protected void writeEnd(OutputStream os) throws IOException {
-        byte[] data = new byte[17];
+    @Override
+    protected void writeEnd(final OutputStream os) throws IOException {
+        final byte[] data = new byte[17];
         copySF(data, Type.END, Category.NAME_RESOURCE);
         os.write(data);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return this.getName();
+        return getName();
     }
 
     /**
      * Sets Resource Object Type triplet
      *
-     * @param type the resource object type
+     * @param type
+     *            the resource object type
      */
-    public void setType(byte type) {
+    public void setType(final byte type) {
         getTriplets().add(new ResourceObjectTypeTriplet(type));
     }
 

@@ -30,20 +30,24 @@ import org.apache.fop.fo.expr.PropertyException;
 public class SpacePropertyMaker extends CorrespondingPropertyMaker {
 
     /**
-     * @param baseMaker base property maker
+     * @param baseMaker
+     *            base property maker
      */
-    public SpacePropertyMaker(PropertyMaker baseMaker) {
+    public SpacePropertyMaker(final PropertyMaker baseMaker) {
         super(baseMaker);
     }
 
     /**
      * {@inheritDoc}
      */
-    public Property compute(PropertyList propertyList) throws PropertyException {
-        Property prop = super.compute(propertyList);
+    @Override
+    public Property compute(final PropertyList propertyList)
+            throws PropertyException {
+        final Property prop = super.compute(propertyList);
         if (prop != null && prop instanceof SpaceProperty) {
-            ((SpaceProperty)prop).setConditionality(
-                    EnumProperty.getInstance(Constants.EN_RETAIN, "RETAIN"), false);
+            ((SpaceProperty) prop).setConditionality(
+                    EnumProperty.getInstance(Constants.EN_RETAIN, "RETAIN"),
+                    false);
         }
         return prop;
     }

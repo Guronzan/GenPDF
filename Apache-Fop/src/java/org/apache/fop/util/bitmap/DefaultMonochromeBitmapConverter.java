@@ -26,25 +26,28 @@ import java.awt.image.ColorConvertOp;
 import java.awt.image.RenderedImage;
 
 /**
- * Default implementation of the MonochromeBitmapConverter which uses the Java Class Library
- * to convert grayscale bitmaps to monochrome bitmaps.
+ * Default implementation of the MonochromeBitmapConverter which uses the Java
+ * Class Library to convert grayscale bitmaps to monochrome bitmaps.
  */
 public class DefaultMonochromeBitmapConverter implements
-        MonochromeBitmapConverter {
+MonochromeBitmapConverter {
 
     /** {@inheritDoc} */
-    public void setHint(String name, String value) {
-        //ignore, not supported
+    @Override
+    public void setHint(final String name, final String value) {
+        // ignore, not supported
     }
 
     /** {@inheritDoc} */
-    public RenderedImage convertToMonochrome(BufferedImage img) {
-        BufferedImage buf = new BufferedImage(img.getWidth(), img.getHeight(),
-                BufferedImage.TYPE_BYTE_BINARY);
-        RenderingHints hints = new RenderingHints(null);
-        //This hint doesn't seem to make a difference :-(
-        hints.put(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-        ColorConvertOp op = new ColorConvertOp(
+    @Override
+    public RenderedImage convertToMonochrome(final BufferedImage img) {
+        final BufferedImage buf = new BufferedImage(img.getWidth(),
+                img.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
+        final RenderingHints hints = new RenderingHints(null);
+        // This hint doesn't seem to make a difference :-(
+        hints.put(RenderingHints.KEY_DITHERING,
+                RenderingHints.VALUE_DITHER_ENABLE);
+        final ColorConvertOp op = new ColorConvertOp(
                 ColorSpace.getInstance(ColorSpace.CS_GRAY), hints);
         op.filter(img, buf);
         return buf;

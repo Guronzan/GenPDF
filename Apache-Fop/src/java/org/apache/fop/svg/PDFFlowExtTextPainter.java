@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.apache.batik.extension.svg.FlowExtTextPainter;
 import org.apache.batik.gvt.TextNode;
-
 import org.apache.fop.fonts.FontInfo;
 
 /**
@@ -34,16 +33,22 @@ public class PDFFlowExtTextPainter extends PDFTextPainter {
 
     /**
      * Main constructor
-     * @param fontInfo the font directory
+     * 
+     * @param fontInfo
+     *            the font directory
      */
-    public PDFFlowExtTextPainter(FontInfo fontInfo) {
+    public PDFFlowExtTextPainter(final FontInfo fontInfo) {
         super(fontInfo);
     }
 
     /** {@inheritDoc} */
-    public List getTextRuns(TextNode node, AttributedCharacterIterator aci) {
-        //Text runs are delegated to the normal FlowExtTextPainter, we just paint the text.
-        FlowExtTextPainter delegate = (FlowExtTextPainter)FlowExtTextPainter.getInstance();
+    @Override
+    public List getTextRuns(final TextNode node,
+            final AttributedCharacterIterator aci) {
+        // Text runs are delegated to the normal FlowExtTextPainter, we just
+        // paint the text.
+        final FlowExtTextPainter delegate = (FlowExtTextPainter) FlowExtTextPainter
+                .getInstance();
         return delegate.getTextRuns(node, aci);
     }
 

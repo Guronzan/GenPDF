@@ -19,45 +19,43 @@
 
 package org.apache.fop.render.ps.extensions;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.fop.util.ContentHandlerFactory;
+import org.apache.fop.util.ContentHandlerFactory.ObjectBuiltListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.apache.fop.util.ContentHandlerFactory;
-import org.apache.fop.util.ContentHandlerFactory.ObjectBuiltListener;
-
 /**
  * ContentHandler (parser) for restoring PSExtension objects from XML.
  */
-public class PSExtensionHandler extends DefaultHandler
-            implements ContentHandlerFactory.ObjectSource {
+@Slf4j
+public class PSExtensionHandler extends DefaultHandler implements
+ContentHandlerFactory.ObjectSource {
 
-    /** Logger instance */
-    protected static final Log log = LogFactory.getLog(PSExtensionHandler.class);
-
-    private StringBuffer content = new StringBuffer();
+    private final StringBuffer content = new StringBuffer();
     private Attributes lastAttributes;
 
     private PSExtensionAttachment returnedObject;
     private ObjectBuiltListener listener;
 
     /** {@inheritDoc} */
-    public void startElement(String uri, String localName, String qName, Attributes attributes)
-                throws SAXException {
+    @Override
+    public void startElement(final String uri, final String localName,
+            final String qName, final Attributes attributes)
+                    throws SAXException {
         boolean handled = false;
         if (PSExtensionAttachment.CATEGORY.equals(uri)) {
-            lastAttributes = new AttributesImpl(attributes);
+            this.lastAttributes = new AttributesImpl(attributes);
             handled = false;
             if (localName.equals(PSSetupCode.ELEMENT)
                     || localName.equals(PSPageTrailerCodeBefore.ELEMENT)
                     || localName.equals(PSSetPageDevice.ELEMENT)
                     || localName.equals(PSCommentBefore.ELEMENT)
                     || localName.equals(PSCommentAfter.ELEMENT)) {
-                //handled in endElement
+                // handled in endElement
                 handled = true;
             }
         }
@@ -66,51 +64,63 @@ public class PSExtensionHandler extends DefaultHandler
                 throw new SAXException("Unhandled element " + localName
                         + " in namespace: " + uri);
             } else {
-                log.warn("Unhandled element " + localName
-                        + " in namespace: " + uri);
+                log.warn("Unhandled element " + localName + " in namespace: "
+                        + uri);
             }
         }
     }
 
     /** {@inheritDoc} */
-    public void endElement(String uri, String localName, String qName) throws SAXException {
+    @Override
+    public void endElement(final String uri, final String localName,
+            final String qName) throws SAXException {
         if (PSExtensionAttachment.CATEGORY.equals(uri)) {
             if (PSSetupCode.ELEMENT.equals(localName)) {
-                String name = lastAttributes.getValue("name");
-                this.returnedObject = new PSSetupCode(name, content.toString());
+                final String name = this.lastAttributes.getValue("name");
+                this.returnedObject = new PSSetupCode(name,
+                        this.content.toString());
             } else if (PSSetPageDevice.ELEMENT.equals(localName)) {
-                String name = lastAttributes.getValue("name");
-                this.returnedObject = new PSSetPageDevice(name, content.toString());
+                final String name = this.lastAttributes.getValue("name");
+                this.returnedObject = new PSSetPageDevice(name,
+                        this.content.toString());
             } else if (PSCommentBefore.ELEMENT.equals(localName)) {
-                this.returnedObject = new PSCommentBefore(content.toString());
+                this.returnedObject = new PSCommentBefore(
+                        this.content.toString());
             } else if (PSCommentAfter.ELEMENT.equals(localName)) {
-                this.returnedObject = new PSCommentAfter(content.toString());
+                this.returnedObject = new PSCommentAfter(
+                        this.content.toString());
             } else if (PSPageTrailerCodeBefore.ELEMENT.equals(localName)) {
-                this.returnedObject = new PSPageTrailerCodeBefore(content.toString());
+                this.returnedObject = new PSPageTrailerCodeBefore(
+                        this.content.toString());
             }
         }
-        content.setLength(0); //Reset text buffer (see characters())
+        this.content.setLength(0); // Reset text buffer (see characters())
     }
 
     /** {@inheritDoc} */
-    public void characters(char[] ch, int start, int length) throws SAXException {
-        content.append(ch, start, length);
+    @Override
+    public void characters(final char[] ch, final int start, final int length)
+            throws SAXException {
+        this.content.append(ch, start, length);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endDocument() throws SAXException {
-        if (listener != null) {
-            listener.notifyObjectBuilt(getObject());
+        if (this.listener != null) {
+            this.listener.notifyObjectBuilt(getObject());
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public Object getObject() {
-        return returnedObject;
+        return this.returnedObject;
     }
 
     /** {@inheritDoc} */
-    public void setObjectBuiltListener(ObjectBuiltListener listener) {
+    @Override
+    public void setObjectBuiltListener(final ObjectBuiltListener listener) {
         this.listener = listener;
     }
 }

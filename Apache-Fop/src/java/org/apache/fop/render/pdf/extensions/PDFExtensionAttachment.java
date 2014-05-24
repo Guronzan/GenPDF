@@ -19,14 +19,14 @@
 
 package org.apache.fop.render.pdf.extensions;
 
-import org.apache.xmlgraphics.util.XMLizable;
-
 import org.apache.fop.fo.extensions.ExtensionAttachment;
+import org.apache.xmlgraphics.util.XMLizable;
 
 /**
  * This is the pass-through value object for the PDF extension.
  */
-public abstract class PDFExtensionAttachment implements ExtensionAttachment, XMLizable {
+public abstract class PDFExtensionAttachment implements ExtensionAttachment,
+        XMLizable {
 
     /** The category URI for this extension attachment. */
     public static final String CATEGORY = "apache:fop:extensions:pdf";
@@ -35,20 +35,21 @@ public abstract class PDFExtensionAttachment implements ExtensionAttachment, XML
      * Default constructor.
      */
     public PDFExtensionAttachment() {
-        //nop
+        // nop
     }
 
     /**
      * @return the category URI
      * @see org.apache.fop.fo.extensions.ExtensionAttachment#getCategory()
      */
+    @Override
     public String getCategory() {
         return CATEGORY;
     }
 
     /** @return type name */
     public String getType() {
-        String className = getClass().getName();
+        final String className = getClass().getName();
         return className.substring(className.lastIndexOf('.') + 3);
     }
 
@@ -56,6 +57,7 @@ public abstract class PDFExtensionAttachment implements ExtensionAttachment, XML
      * @return a string representation of this object
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         return getType();
     }

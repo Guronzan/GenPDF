@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.ResourceEventProducer;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
@@ -74,10 +74,8 @@ import org.w3c.dom.Document;
  * level processing of the area tree and adds some abstract methods to handle
  * viewports. This keeps track of the current block and inline position.
  */
+@Slf4j
 public abstract class AbstractRenderer implements Renderer, Constants {
-
-    /** logging instance */
-    protected static final Log log = LogFactory.getLog("org.apache.fop.render");
 
     /**
      * user agent
@@ -337,7 +335,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
     /**
      * Handle the traits for a region This is used to draw the traits for the
      * given page region. (See Sect. 6.4.1.2 of XSL-FO spec.)
-     * 
+     *
      * @param rv
      *            the RegionViewport whose region is to be drawn
      */
@@ -537,7 +535,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
     /**
      * Renders a block area that represents a reference area. The reference area
      * establishes a new coordinate system.
-     * 
+     *
      * @param block
      *            the block area
      */
@@ -691,7 +689,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
 
     /**
      * Render the given InlineArea.
-     * 
+     *
      * @param inlineArea
      *            inline area text to render
      */
@@ -720,7 +718,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
     /**
      * Common method to render the background and borders for any inline area.
      * The all borders and padding are drawn outside the specified area.
-     * 
+     *
      * @param area
      *            the inline area for which the background, border and padding
      *            is to be rendered
@@ -729,7 +727,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
 
     /**
      * Render the given Space.
-     * 
+     *
      * @param space
      *            the space to render
      */
@@ -744,7 +742,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
 
     /**
      * Render the given Leader.
-     * 
+     *
      * @param area
      *            the leader to render
      */
@@ -754,7 +752,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
 
     /**
      * Render the given TextArea.
-     * 
+     *
      * @param text
      *            the text to render
      */
@@ -771,7 +769,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
 
     /**
      * Render the given WordArea.
-     * 
+     *
      * @param word
      *            the word to render
      */
@@ -781,7 +779,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
 
     /**
      * Render the given SpaceArea.
-     * 
+     *
      * @param space
      *            the space to render
      */
@@ -791,7 +789,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
 
     /**
      * Render the given InlineParent.
-     * 
+     *
      * @param ip
      *            the inline parent to render
      */
@@ -836,7 +834,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
 
     /**
      * Render the given InlineBlockParent.
-     * 
+     *
      * @param ibp
      *            the inline block parent to render
      */
@@ -858,7 +856,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
 
     /**
      * Render the given Viewport.
-     * 
+     *
      * @param viewport
      *            the viewport to render
      */
@@ -896,7 +894,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
 
     /**
      * Tells the renderer to render an inline container.
-     * 
+     *
      * @param cont
      *            The inline container area
      */
@@ -928,7 +926,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
     /**
      * Render the xml document with the given xml namespace. The Render Context
      * is by the handle to render into the current rendering target.
-     * 
+     *
      * @param ctx
      *            rendering context
      * @param doc
@@ -969,7 +967,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
 
     /**
      * Converts a millipoint-based transformation matrix to points.
-     * 
+     *
      * @param at
      *            a millipoint-based transformation matrix
      * @return a point-based transformation matrix
@@ -985,7 +983,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
 
     /**
      * Converts a point-based transformation matrix to millipoints.
-     * 
+     *
      * @param at
      *            a point-based transformation matrix
      * @return a millipoint-based transformation matrix

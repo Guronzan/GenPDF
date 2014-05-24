@@ -42,50 +42,55 @@ public class Hyphen implements Serializable {
     private static final long serialVersionUID = 8989909741110279085L;
 
     /** pre break string */
-    public String preBreak;                                     // CSOK: VisibilityModifier
+    public String preBreak; // CSOK: VisibilityModifier
 
     /** no break string */
-    public String noBreak;                                      // CSOK: VisibilityModifier
+    public String noBreak; // CSOK: VisibilityModifier
 
     /** post break string */
-    public String postBreak;                                    // CSOK: VisibilityModifier
+    public String postBreak; // CSOK: VisibilityModifier
 
     /**
      * Construct a hyphen.
-     * @param pre break string
-     * @param no break string
-     * @param post break string
+     * 
+     * @param pre
+     *            break string
+     * @param no
+     *            break string
+     * @param post
+     *            break string
      */
-    Hyphen(String pre, String no, String post) {
-        preBreak = pre;
-        noBreak = no;
-        postBreak = post;
+    Hyphen(final String pre, final String no, final String post) {
+        this.preBreak = pre;
+        this.noBreak = no;
+        this.postBreak = post;
     }
 
     /**
      * Construct a hyphen.
-     * @param pre break string
+     * 
+     * @param pre
+     *            break string
      */
-    Hyphen(String pre) {
-        preBreak = pre;
-        noBreak = null;
-        postBreak = null;
+    Hyphen(final String pre) {
+        this.preBreak = pre;
+        this.noBreak = null;
+        this.postBreak = null;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        if (noBreak == null
-                && postBreak == null
-                && preBreak != null
-                && preBreak.equals("-")) {
+        if (this.noBreak == null && this.postBreak == null
+                && this.preBreak != null && this.preBreak.equals("-")) {
             return "-";
-                }
-        StringBuffer res = new StringBuffer("{");
-        res.append(preBreak);
+        }
+        final StringBuffer res = new StringBuffer("{");
+        res.append(this.preBreak);
         res.append("}{");
-        res.append(postBreak);
+        res.append(this.postBreak);
         res.append("}{");
-        res.append(noBreak);
+        res.append(this.noBreak);
         res.append('}');
         return res.toString();
     }

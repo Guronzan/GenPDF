@@ -30,74 +30,86 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * <p>RTF Bookmark container implementation.
- * Nearly all containers or elements can have a bookmark, that is why the bookmark container is
- * implemented as stand alone.</p>
+ * <p>
+ * RTF Bookmark container implementation. Nearly all containers or elements can
+ * have a bookmark, that is why the bookmark container is implemented as stand
+ * alone.
+ * </p>
  *
- * <p>This work was authored by Andreas Putz (a.putz@skynamics.com).</p>
+ * <p>
+ * This work was authored by Andreas Putz (a.putz@skynamics.com).
+ * </p>
  */
-public class RtfBookmarkContainerImpl extends RtfContainer implements IRtfBookmarkContainer {
-    //////////////////////////////////////////////////
+public class RtfBookmarkContainerImpl extends RtfContainer implements
+        IRtfBookmarkContainer {
+    // ////////////////////////////////////////////////
     // @@ Members
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
 
     /** Rtf bookmark */
     private RtfBookmark mBookmark = null;
 
-
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
     // @@ Construction
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
 
     /**
-     * Constructor.
-     * Create an RTF container as a child of given container.
+     * Constructor. Create an RTF container as a child of given container.
      *
-     * @param parent The parent container
-     * @param w Writer
+     * @param parent
+     *            The parent container
+     * @param w
+     *            Writer
      *
-     * @exception IOException On error
+     * @exception IOException
+     *                On error
      */
-    RtfBookmarkContainerImpl (RtfContainer parent, Writer w) throws IOException {
-        super (parent, w, null);
+    RtfBookmarkContainerImpl(final RtfContainer parent, final Writer w)
+            throws IOException {
+        super(parent, w, null);
     }
 
     /**
-     * Constructor.
-     * Create an RTF container as a child of given container.
+     * Constructor. Create an RTF container as a child of given container.
      *
-     * @param parent The parent container
-     * @param w Writer
-     * @param attr Rtf attributes
+     * @param parent
+     *            The parent container
+     * @param w
+     *            Writer
+     * @param attr
+     *            Rtf attributes
      *
-     * @exception IOException On error
+     * @exception IOException
+     *                On error
      */
-    RtfBookmarkContainerImpl (RtfContainer parent, Writer w, RtfAttributes attr) throws IOException
-    {
-        super (parent, w, attr);
+    RtfBookmarkContainerImpl(final RtfContainer parent, final Writer w,
+            final RtfAttributes attr) throws IOException {
+        super(parent, w, attr);
     }
 
-
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
     // @@ Public methods
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
 
     /**
      * Create a new RTF bookmark.
      *
-     * @param bookmark Name of the bookmark
+     * @param bookmark
+     *            Name of the bookmark
      *
      * @return RTF bookmark
      *
-     * @throws IOException On eror
+     * @throws IOException
+     *             On eror
      */
-    public RtfBookmark newBookmark (String bookmark) throws IOException {
-        if (mBookmark != null) {
-            mBookmark.close ();
+    @Override
+    public RtfBookmark newBookmark(final String bookmark) throws IOException {
+        if (this.mBookmark != null) {
+            this.mBookmark.close();
         }
 
-        mBookmark = new RtfBookmark (this, writer, bookmark);
+        this.mBookmark = new RtfBookmark(this, this.writer, bookmark);
 
-        return mBookmark;
+        return this.mBookmark;
     }
 }

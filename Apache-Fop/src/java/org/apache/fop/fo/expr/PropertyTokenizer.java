@@ -19,12 +19,9 @@
 
 package org.apache.fop.fo.expr;
 
-
-
 /**
- * Class to tokenize XSL FO property expression.
- * This class is heavily based on the epxression tokenizer in James Clark's
- * XT, an XSLT processor.
+ * Class to tokenize XSL FO property expression. This class is heavily based on
+ * the epxression tokenizer in James Clark's XT, an XSLT processor.
  */
 class PropertyTokenizer {
 
@@ -52,82 +49,81 @@ class PropertyTokenizer {
     protected int currentUnitLength = 0;
 
     private int currentTokenStartIndex = 0;
-    private /* final */ String expr;
+    private final/* final */String expr;
     private int exprIndex = 0;
-    private int exprLength;
+    private final int exprLength;
 
     /**
-     * Construct a new PropertyTokenizer object to tokenize the passed
-     * String.
-     * @param s The Property expressio to tokenize.
+     * Construct a new PropertyTokenizer object to tokenize the passed String.
+     * 
+     * @param s
+     *            The Property expressio to tokenize.
      */
-    PropertyTokenizer(String s) {
+    PropertyTokenizer(final String s) {
         this.expr = s;
         this.exprLength = s.length();
     }
 
     /**
-     * Parse the next token in the expression string.
-     * This sets the following package visible variables:
-     * currentToken  An enumerated value identifying the recognized token
-     * currentTokenValue  A String containing the token contents
-     * currentUnitLength  If currentToken = TOK_NUMERIC, the number of
+     * Parse the next token in the expression string. This sets the following
+     * package visible variables: currentToken An enumerated value identifying
+     * the recognized token currentTokenValue A String containing the token
+     * contents currentUnitLength If currentToken = TOK_NUMERIC, the number of
      * characters in the unit name.
-     * @throws PropertyException If un unrecognized token is encountered.
+     * 
+     * @throws PropertyException
+     *             If un unrecognized token is encountered.
      */
     void next() throws PropertyException {
-        currentTokenValue = null;
-        currentTokenStartIndex = exprIndex;
+        this.currentTokenValue = null;
+        this.currentTokenStartIndex = this.exprIndex;
         boolean bSawDecimal;
-        while ( true ) {
-            if (exprIndex >= exprLength) {
-                currentToken = TOK_EOF;
+        while (true) {
+            if (this.exprIndex >= this.exprLength) {
+                this.currentToken = TOK_EOF;
                 return;
             }
-            char c = expr.charAt(exprIndex++);
+            final char c = this.expr.charAt(this.exprIndex++);
             switch (c) {
             case ' ':
             case '\t':
             case '\r':
             case '\n':
-                currentTokenStartIndex = exprIndex;
+                this.currentTokenStartIndex = this.exprIndex;
                 break;
             case ',':
-                currentToken = TOK_COMMA;
+                this.currentToken = TOK_COMMA;
                 return;
             case '+':
-                currentToken = TOK_PLUS;
+                this.currentToken = TOK_PLUS;
                 return;
             case '-':
-                currentToken = TOK_MINUS;
+                this.currentToken = TOK_MINUS;
                 return;
             case '(':
-                currentToken = TOK_LPAR;
+                this.currentToken = TOK_LPAR;
                 return;
             case ')':
-                currentToken = TOK_RPAR;
+                this.currentToken = TOK_RPAR;
                 return;
             case '"':
             case '\'':
-                exprIndex = expr.indexOf(c, exprIndex);
-                if (exprIndex < 0) {
-                    exprIndex = currentTokenStartIndex + 1;
+                this.exprIndex = this.expr.indexOf(c, this.exprIndex);
+                if (this.exprIndex < 0) {
+                    this.exprIndex = this.currentTokenStartIndex + 1;
                     throw new PropertyException("missing quote");
                 }
-                currentTokenValue = expr.substring(currentTokenStartIndex
-                                                   + 1, exprIndex++);
-                currentToken = TOK_LITERAL;
+                this.currentTokenValue = this.expr.substring(
+                        this.currentTokenStartIndex + 1, this.exprIndex++);
+                this.currentToken = TOK_LITERAL;
                 return;
             case '*':
                 /*
-                 * if (currentMaybeOperator) {
-                 * recognizeOperator = false;
+                 * if (currentMaybeOperator) { recognizeOperator = false;
                  */
-                currentToken = TOK_MULTIPLY;
+                this.currentToken = TOK_MULTIPLY;
                 /*
-                 * }
-                 * else
-                 * throw new PropertyException("illegal operator *");
+                 * } else throw new PropertyException("illegal operator *");
                  */
                 return;
             case '0':
@@ -141,58 +137,62 @@ class PropertyTokenizer {
             case '8':
             case '9':
                 scanDigits();
-                if (exprIndex < exprLength && expr.charAt(exprIndex) == '.') {
-                    exprIndex++;
+                if (this.exprIndex < this.exprLength
+                        && this.expr.charAt(this.exprIndex) == '.') {
+                    this.exprIndex++;
                     bSawDecimal = true;
-                    if (exprIndex < exprLength
-                            && isDigit(expr.charAt(exprIndex))) {
-                        exprIndex++;
+                    if (this.exprIndex < this.exprLength
+                            && isDigit(this.expr.charAt(this.exprIndex))) {
+                        this.exprIndex++;
                         scanDigits();
                     }
                 } else {
                     bSawDecimal = false;
                 }
-                if (exprIndex < exprLength && expr.charAt(exprIndex) == '%') {
-                    exprIndex++;
-                    currentToken = TOK_PERCENT;
+                if (this.exprIndex < this.exprLength
+                        && this.expr.charAt(this.exprIndex) == '%') {
+                    this.exprIndex++;
+                    this.currentToken = TOK_PERCENT;
                 } else {
                     // Check for possible unit name following number
-                    currentUnitLength = exprIndex;
+                    this.currentUnitLength = this.exprIndex;
                     scanName();
-                    currentUnitLength = exprIndex - currentUnitLength;
-                    currentToken = (currentUnitLength > 0) ? TOK_NUMERIC
-                                   : (bSawDecimal ? TOK_FLOAT : TOK_INTEGER);
+                    this.currentUnitLength = this.exprIndex
+                            - this.currentUnitLength;
+                    this.currentToken = this.currentUnitLength > 0 ? TOK_NUMERIC
+                            : bSawDecimal ? TOK_FLOAT : TOK_INTEGER;
                 }
-                currentTokenValue = expr.substring(currentTokenStartIndex,
-                                                   exprIndex);
+                this.currentTokenValue = this.expr.substring(
+                        this.currentTokenStartIndex, this.exprIndex);
                 return;
 
             case '.':
                 nextDecimalPoint();
                 return;
 
-            case '#':    // Start of color value
+            case '#': // Start of color value
                 nextColor();
                 return;
 
             default:
-                --exprIndex;
+                --this.exprIndex;
                 scanName();
-                if (exprIndex == currentTokenStartIndex) {
+                if (this.exprIndex == this.currentTokenStartIndex) {
                     throw new PropertyException("illegal character");
                 }
-                currentTokenValue = expr.substring(currentTokenStartIndex, exprIndex);
-                if (currentTokenValue.equals("mod")) {
-                    currentToken = TOK_MOD;
+                this.currentTokenValue = this.expr.substring(
+                        this.currentTokenStartIndex, this.exprIndex);
+                if (this.currentTokenValue.equals("mod")) {
+                    this.currentToken = TOK_MOD;
                     return;
-                } else if (currentTokenValue.equals("div")) {
-                    currentToken = TOK_DIV;
+                } else if (this.currentTokenValue.equals("div")) {
+                    this.currentToken = TOK_DIV;
                     return;
                 }
                 if (followingParen()) {
-                    currentToken = TOK_FUNCTION_LPAR;
+                    this.currentToken = TOK_FUNCTION_LPAR;
                 } else {
-                    currentToken = TOK_NCNAME;
+                    this.currentToken = TOK_NCNAME;
                 }
                 return;
             }
@@ -200,44 +200,44 @@ class PropertyTokenizer {
     }
 
     private void nextDecimalPoint() throws PropertyException {
-        if (exprIndex < exprLength
-                && isDigit(expr.charAt(exprIndex))) {
-            ++exprIndex;
+        if (this.exprIndex < this.exprLength
+                && isDigit(this.expr.charAt(this.exprIndex))) {
+            ++this.exprIndex;
             scanDigits();
-            if (exprIndex < exprLength
-                    && expr.charAt(exprIndex) == '%') {
-                exprIndex++;
-                currentToken = TOK_PERCENT;
+            if (this.exprIndex < this.exprLength
+                    && this.expr.charAt(this.exprIndex) == '%') {
+                this.exprIndex++;
+                this.currentToken = TOK_PERCENT;
             } else {
                 // Check for possible unit name following number
-                currentUnitLength = exprIndex;
+                this.currentUnitLength = this.exprIndex;
                 scanName();
-                currentUnitLength = exprIndex - currentUnitLength;
-                currentToken = (currentUnitLength > 0) ? TOK_NUMERIC
+                this.currentUnitLength = this.exprIndex
+                        - this.currentUnitLength;
+                this.currentToken = this.currentUnitLength > 0 ? TOK_NUMERIC
                         : TOK_FLOAT;
             }
-            currentTokenValue = expr.substring(currentTokenStartIndex,
-                    exprIndex);
+            this.currentTokenValue = this.expr.substring(
+                    this.currentTokenStartIndex, this.exprIndex);
             return;
         }
         throw new PropertyException("illegal character '.'");
     }
 
-
     private void nextColor() throws PropertyException {
-        if (exprIndex < exprLength) {
-            ++exprIndex;
+        if (this.exprIndex < this.exprLength) {
+            ++this.exprIndex;
             scanHexDigits();
-            int len = exprIndex - currentTokenStartIndex - 1;
+            final int len = this.exprIndex - this.currentTokenStartIndex - 1;
             if (len % 3 == 0) {
-                currentToken = TOK_COLORSPEC;
+                this.currentToken = TOK_COLORSPEC;
             } else {
-                //Actually not a color at all, but an NCNAME starting with "#"
+                // Actually not a color at all, but an NCNAME starting with "#"
                 scanRestOfName();
-                currentToken = TOK_NCNAME;
+                this.currentToken = TOK_NCNAME;
             }
-            currentTokenValue = expr.substring(currentTokenStartIndex,
-                    exprIndex);
+            this.currentTokenValue = this.expr.substring(
+                    this.currentTokenStartIndex, this.exprIndex);
             return;
         } else {
             throw new PropertyException("illegal character '#'");
@@ -248,36 +248,39 @@ class PropertyTokenizer {
      * Attempt to recognize a valid NAME token in the input expression.
      */
     private void scanName() {
-        if (exprIndex < exprLength && isNameStartChar(expr.charAt(exprIndex))) {
+        if (this.exprIndex < this.exprLength
+                && isNameStartChar(this.expr.charAt(this.exprIndex))) {
             scanRestOfName();
         }
     }
 
     private void scanRestOfName() {
-        while ( ++exprIndex < exprLength ) {
-            if ( !isNameChar ( expr.charAt ( exprIndex ) ) ) {
+        while (++this.exprIndex < this.exprLength) {
+            if (!isNameChar(this.expr.charAt(this.exprIndex))) {
                 break;
             }
         }
     }
 
     /**
-     * Attempt to recognize a valid sequence of decimal DIGITS in the
-     * input expression.
+     * Attempt to recognize a valid sequence of decimal DIGITS in the input
+     * expression.
      */
     private void scanDigits() {
-        while (exprIndex < exprLength && isDigit(expr.charAt(exprIndex))) {
-            exprIndex++;
+        while (this.exprIndex < this.exprLength
+                && isDigit(this.expr.charAt(this.exprIndex))) {
+            this.exprIndex++;
         }
     }
 
     /**
-     * Attempt to recognize a valid sequence of hexadecimal DIGITS in the
-     * input expression.
+     * Attempt to recognize a valid sequence of hexadecimal DIGITS in the input
+     * expression.
      */
     private void scanHexDigits() {
-        while (exprIndex < exprLength && isHexDigit(expr.charAt(exprIndex))) {
-            exprIndex++;
+        while (this.exprIndex < this.exprLength
+                && isHexDigit(this.expr.charAt(this.exprIndex))) {
+            this.exprIndex++;
         }
     }
 
@@ -286,10 +289,10 @@ class PropertyTokenizer {
      * character is an opening parenthesis.
      */
     private boolean followingParen() {
-        for (int i = exprIndex; i < exprLength; i++) {
-            switch (expr.charAt(i)) {
+        for (int i = this.exprIndex; i < this.exprLength; i++) {
+            switch (this.expr.charAt(i)) {
             case '(':
-                exprIndex = i + 1;
+                this.exprIndex = i + 1;
                 return true;
             case ' ':
             case '\r':
@@ -303,37 +306,41 @@ class PropertyTokenizer {
         return false;
     }
 
-
-    private static final String NAME_START_CHARS
-        = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String NAME_START_CHARS = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String NAME_CHARS = ".-0123456789";
     private static final String DIGITS = "0123456789";
     private static final String HEX_CHARS = DIGITS + "abcdefABCDEF";
 
     /**
-     * Return a boolean value indicating whether the argument is a
-     * decimal digit (0-9).
-     * @param c The character to check
+     * Return a boolean value indicating whether the argument is a decimal digit
+     * (0-9).
+     * 
+     * @param c
+     *            The character to check
      */
-    private static boolean isDigit(char c) {
+    private static boolean isDigit(final char c) {
         return DIGITS.indexOf(c) >= 0;
     }
 
     /**
-     * Return a boolean value indicating whether the argument is a
-     * hexadecimal digit (0-9, A-F, a-f).
-     * @param c The character to check
+     * Return a boolean value indicating whether the argument is a hexadecimal
+     * digit (0-9, A-F, a-f).
+     * 
+     * @param c
+     *            The character to check
      */
-    private static boolean isHexDigit(char c) {
+    private static boolean isHexDigit(final char c) {
         return HEX_CHARS.indexOf(c) >= 0;
     }
 
     /**
-     * Return a boolean value indicating whether the argument is whitespace
-     * as defined by XSL (space, newline, CR, tab).
-     * @param c The character to check
+     * Return a boolean value indicating whether the argument is whitespace as
+     * defined by XSL (space, newline, CR, tab).
+     * 
+     * @param c
+     *            The character to check
      */
-    private static boolean isSpace(char c) {
+    private static boolean isSpace(final char c) {
         switch (c) {
         case ' ':
         case '\r':
@@ -346,23 +353,26 @@ class PropertyTokenizer {
     }
 
     /**
-     * Return a  boolean value indicating whether the argument is a valid name
+     * Return a boolean value indicating whether the argument is a valid name
      * start character, ie. can start a NAME as defined by XSL.
-     * @param c The character to check
+     * 
+     * @param c
+     *            The character to check
      */
-    private static boolean isNameStartChar(char c) {
+    private static boolean isNameStartChar(final char c) {
         return NAME_START_CHARS.indexOf(c) >= 0 || c >= 0x80;
     }
 
     /**
-     * Return a  boolean value indicating whether the argument is a valid name
+     * Return a boolean value indicating whether the argument is a valid name
      * character, ie. can occur in a NAME as defined by XSL.
-     * @param c The character to check
+     * 
+     * @param c
+     *            The character to check
      */
-    private static boolean isNameChar(char c) {
+    private static boolean isNameChar(final char c) {
         return NAME_START_CHARS.indexOf(c) >= 0 || NAME_CHARS.indexOf(c) >= 0
-               || c >= 0x80;
+                || c >= 0x80;
     }
 
 }
-

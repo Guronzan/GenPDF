@@ -19,36 +19,40 @@
 
 package org.apache.fop.pdf;
 
+import java.io.IOException;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.IOException;
 
 /**
  * Test case for {@link PDFNumsArray}.
  */
 public class PDFNumsArrayTestCase extends PDFObjectTestCase {
     private PDFNumsArray numsArray;
-    private String expectedString = "[0 /Test#20name 1 10]";
+    private final String expectedString = "[0 /Test#20name 1 10]";
 
+    @Override
     @Before
     public void setUp() {
-        numsArray = new PDFNumsArray(parent);
-        numsArray.put(0, new PDFName("Test name"));
-        PDFNumber num = new PDFNumber();
+        this.numsArray = new PDFNumsArray(this.parent);
+        this.numsArray.put(0, new PDFName("Test name"));
+        final PDFNumber num = new PDFNumber();
         num.setNumber(10);
-        numsArray.put(1, num);
-        numsArray.setDocument(doc);
+        this.numsArray.put(1, num);
+        this.numsArray.setDocument(this.doc);
 
-        pdfObjectUnderTest = numsArray;
+        this.pdfObjectUnderTest = this.numsArray;
     }
 
     /**
-     * Test output() - ensure that this object is properly outputted to the PDF document.
-     * @throws IOException if an I/O error occurs
+     * Test output() - ensure that this object is properly outputted to the PDF
+     * document.
+     * 
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Test
     public void testOutput() throws IOException {
-        testOutputStreams(expectedString, numsArray);
+        testOutputStreams(this.expectedString, this.numsArray);
     }
 }

@@ -22,7 +22,7 @@ package org.apache.fop.visual;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
+import org.slf4j.Logger;
 
 /**
  * Utilities for converting files with external converters.
@@ -31,56 +31,67 @@ public class ConvertUtils {
 
     /**
      * Calls an external converter application (GhostScript, for example).
-     * @param cmd the full command
-     * @param envp array of strings, each element of which has environment variable settings
-     * in format name=value.
-     * @param workDir the working directory of the subprocess, or null if the subprocess should
-     * inherit the working directory of the current process.
-     * @param log the logger to log output by the external application to
-     * @throws IOException in case the external call fails
+     *
+     * @param cmd
+     *            the full command
+     * @param envp
+     *            array of strings, each element of which has environment
+     *            variable settings in format name=value.
+     * @param workDir
+     *            the working directory of the subprocess, or null if the
+     *            subprocess should inherit the working directory of the current
+     *            process.
+     * @param log
+     *            the logger to log output by the external application to
+     * @throws IOException
+     *             in case the external call fails
      */
-    public static void convert(String cmd, String[] envp, File workDir, final Log log)
-                throws IOException {
+    public static void convert(final String cmd, final String[] envp,
+            final File workDir, final Logger log) throws IOException {
         log.debug(cmd);
 
         Process process = null;
         try {
             process = Runtime.getRuntime().exec(cmd, envp, null);
 
-            //Redirect stderr output
-            RedirectorLineHandler errorHandler = new AbstractRedirectorLineHandler() {
-                public void handleLine(String line) {
+            // Redirect stderr output
+            final RedirectorLineHandler errorHandler = new AbstractRedirectorLineHandler() {
+                @Override
+                public void handleLine(final String line) {
                     log.error("ERR> " + line);
                 }
             };
-            StreamRedirector errorRedirector
-                = new StreamRedirector(process.getErrorStream(), errorHandler);
+            final StreamRedirector errorRedirector = new StreamRedirector(
+                    process.getErrorStream(), errorHandler);
 
-            //Redirect stdout output
-            RedirectorLineHandler outputHandler = new AbstractRedirectorLineHandler() {
-                public void handleLine(String line) {
+            // Redirect stdout output
+            final RedirectorLineHandler outputHandler = new AbstractRedirectorLineHandler() {
+                @Override
+                public void handleLine(final String line) {
                     log.debug("OUT> " + line);
                 }
             };
-            StreamRedirector outputRedirector
-                = new StreamRedirector(process.getInputStream(), outputHandler);
+            final StreamRedirector outputRedirector = new StreamRedirector(
+                    process.getInputStream(), outputHandler);
             new Thread(errorRedirector).start();
             new Thread(outputRedirector).start();
 
             process.waitFor();
-        } catch (java.lang.InterruptedException ie) {
-            throw new IOException("The call to the external converter failed: " + ie.getMessage());
-        } catch (java.io.IOException ioe) {
-            throw new IOException("The call to the external converter failed: " + ioe.getMessage());
+        } catch (final java.lang.InterruptedException ie) {
+            throw new IOException("The call to the external converter failed: "
+                    + ie.getMessage());
+        } catch (final java.io.IOException ioe) {
+            throw new IOException("The call to the external converter failed: "
+                    + ioe.getMessage());
         }
 
-        int exitValue = process.exitValue();
+        final int exitValue = process.exitValue();
         if (exitValue != 0) {
-            throw new IOException("The call to the external converter failed. Result: "
-                    + exitValue);
+            throw new IOException(
+                    "The call to the external converter failed. Result: "
+                            + exitValue);
         }
 
     }
-
 
 }

@@ -27,6 +27,7 @@ public abstract class AbstractEvent implements DSCEvent {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#isComment()
      */
+    @Override
     public boolean isComment() {
         return false;
     }
@@ -34,6 +35,7 @@ public abstract class AbstractEvent implements DSCEvent {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#isDSCComment()
      */
+    @Override
     public boolean isDSCComment() {
         return false;
     }
@@ -41,6 +43,7 @@ public abstract class AbstractEvent implements DSCEvent {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#isHeaderComment()
      */
+    @Override
     public boolean isHeaderComment() {
         return false;
     }
@@ -48,6 +51,7 @@ public abstract class AbstractEvent implements DSCEvent {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#isLine()
      */
+    @Override
     public boolean isLine() {
         return false;
     }
@@ -55,6 +59,7 @@ public abstract class AbstractEvent implements DSCEvent {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#asDSCComment()
      */
+    @Override
     public DSCComment asDSCComment() {
         throw new ClassCastException(this.getClass().getName());
     }
@@ -62,6 +67,7 @@ public abstract class AbstractEvent implements DSCEvent {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#asLine()
      */
+    @Override
     public PostScriptLine asLine() {
         throw new ClassCastException(this.getClass().getName());
     }

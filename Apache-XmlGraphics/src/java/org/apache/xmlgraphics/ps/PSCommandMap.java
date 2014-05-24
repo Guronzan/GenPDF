@@ -20,17 +20,21 @@
 package org.apache.xmlgraphics.ps;
 
 /**
- * Interface to map standard PostScript commands to other commands or macros, for example
- * shorthands for compact PostScript code.
+ * Interface to map standard PostScript commands to other commands or macros,
+ * for example shorthands for compact PostScript code.
  */
 public interface PSCommandMap {
 
     /**
-     * Maps a standard PostScript command (like "setlinejoin" or "setrgbcolor") to a macro. If
-     * no mapping is available, the command itself is returned again.
-     * @param command the command
-     * @return the mapped command (or the "command" parameter if no mapping is available)
+     * Maps a standard PostScript command (like "setlinejoin" or "setrgbcolor")
+     * to a macro. If no mapping is available, the command itself is returned
+     * again.
+     * 
+     * @param command
+     *            the command
+     * @return the mapped command (or the "command" parameter if no mapping is
+     *         available)
      */
-    String mapCommand(String command);
+    String mapCommand(final String command);
 
 }

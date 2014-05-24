@@ -24,10 +24,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Locale;
 
-import org.xml.sax.SAXException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
@@ -46,6 +43,7 @@ import org.apache.fop.layoutmgr.LayoutManagerMaker;
 import org.apache.fop.layoutmgr.LayoutManagerMapping;
 import org.apache.fop.layoutmgr.PageSequenceLayoutManager;
 import org.apache.fop.layoutmgr.TopLevelLayoutManager;
+import org.xml.sax.SAXException;
 
 /**
  * Area tree handler for formatting objects.
@@ -60,9 +58,8 @@ import org.apache.fop.layoutmgr.TopLevelLayoutManager;
  * information. The area tree pages are organized in a model that depends on the
  * type of renderer.
  */
+@Slf4j
 public class AreaTreeHandler extends FOEventHandler {
-
-    private static Log log = LogFactory.getLog(AreaTreeHandler.class);
 
     // Recorder of debug statistics
     private Statistics statistics = null;
@@ -77,13 +74,13 @@ public class AreaTreeHandler extends FOEventHandler {
     private boolean useComplexScriptFeatures = true;
 
     // Keeps track of all meaningful id references
-    private IDTracker idTracker;
+    private final IDTracker idTracker;
 
     // The fo:root node of the document
     private Root rootFObj;
 
     // The formatting results to be handed back to the caller.
-    private FormattingResults results = new FormattingResults();
+    private final FormattingResults results = new FormattingResults();
 
     private TopLevelLayoutManager prevPageSeqLM;
 
@@ -92,47 +89,60 @@ public class AreaTreeHandler extends FOEventHandler {
     /**
      * Constructor.
      *
-     * @param userAgent FOUserAgent object for process
-     * @param outputFormat the MIME type of the output format to use (ex.
-     * "application/pdf").
-     * @param stream OutputStream
-     * @throws FOPException if the RenderPagesModel cannot be created
+     * @param userAgent
+     *            FOUserAgent object for process
+     * @param outputFormat
+     *            the MIME type of the output format to use (ex.
+     *            "application/pdf").
+     * @param stream
+     *            OutputStream
+     * @throws FOPException
+     *             if the RenderPagesModel cannot be created
      */
-    public AreaTreeHandler(FOUserAgent userAgent, String outputFormat,
-            OutputStream stream) throws FOPException {
+    public AreaTreeHandler(final FOUserAgent userAgent,
+            final String outputFormat, final OutputStream stream)
+                    throws FOPException {
         super(userAgent);
 
         setupModel(userAgent, outputFormat, stream);
 
         this.lmMaker = userAgent.getFactory().getLayoutManagerMakerOverride();
-        if (lmMaker == null) {
-            lmMaker = new LayoutManagerMapping();
+        if (this.lmMaker == null) {
+            this.lmMaker = new LayoutManagerMapping();
         }
 
         this.idTracker = new IDTracker();
 
-        this.useComplexScriptFeatures = userAgent.isComplexScriptFeaturesEnabled();
+        this.useComplexScriptFeatures = userAgent
+                .isComplexScriptFeaturesEnabled();
 
         if (log.isDebugEnabled()) {
-            statistics = new Statistics();
+            this.statistics = new Statistics();
         }
     }
 
     /**
      * Sets up the AreaTreeModel instance for use by the AreaTreeHandler.
      *
-     * @param userAgent FOUserAgent object for process
-     * @param outputFormat the MIME type of the output format to use (ex.
-     * "application/pdf").
-     * @param stream OutputStream
-     * @throws FOPException if the RenderPagesModel cannot be created
+     * @param userAgent
+     *            FOUserAgent object for process
+     * @param outputFormat
+     *            the MIME type of the output format to use (ex.
+     *            "application/pdf").
+     * @param stream
+     *            OutputStream
+     * @throws FOPException
+     *             if the RenderPagesModel cannot be created
      */
-    protected void setupModel(FOUserAgent userAgent, String outputFormat,
-            OutputStream stream) throws FOPException {
+    protected void setupModel(final FOUserAgent userAgent,
+            final String outputFormat, final OutputStream stream)
+                    throws FOPException {
         if (userAgent.isConserveMemoryPolicyEnabled()) {
-            this.model = new CachedRenderPagesModel(userAgent, outputFormat, fontInfo, stream);
+            this.model = new CachedRenderPagesModel(userAgent, outputFormat,
+                    this.fontInfo, stream);
         } else {
-            this.model = new RenderPagesModel(userAgent, outputFormat, fontInfo, stream);
+            this.model = new RenderPagesModel(userAgent, outputFormat,
+                    this.fontInfo, stream);
         }
     }
 
@@ -169,6 +179,7 @@ public class AreaTreeHandler extends FOEventHandler {
      *
      * @return the results structure
      */
+    @Override
     public FormattingResults getResults() {
         return this.results;
     }
@@ -179,7 +190,7 @@ public class AreaTreeHandler extends FOEventHandler {
      * @return true if using complex script features
      */
     public boolean isComplexScriptFeaturesEnabled() {
-        return useComplexScriptFeatures;
+        return this.useComplexScriptFeatures;
     }
 
     /**
@@ -192,47 +203,49 @@ public class AreaTreeHandler extends FOEventHandler {
     @Override
     public void startDocument() throws SAXException {
         // Initialize statistics
-        if (statistics != null) {
-            statistics.start();
+        if (this.statistics != null) {
+            this.statistics.start();
         }
     }
 
     @Override
-    public void startRoot(Root root) {
-        Locale locale = root.getLocale();
+    public void startRoot(final Root root) {
+        final Locale locale = root.getLocale();
         if (locale != null) {
-            model.setDocumentLocale(locale);
+            this.model.setDocumentLocale(locale);
         }
     }
 
     /**
      * finish the previous pageSequence
      */
-    private void finishPrevPageSequence(Numeric initialPageNumber) {
-        if (prevPageSeqLM != null) {
-            prevPageSeqLM.doForcePageCount(initialPageNumber);
-            prevPageSeqLM.finishPageSequence();
-            prevPageSeqLM = null;
+    private void finishPrevPageSequence(final Numeric initialPageNumber) {
+        if (this.prevPageSeqLM != null) {
+            this.prevPageSeqLM.doForcePageCount(initialPageNumber);
+            this.prevPageSeqLM.finishPageSequence();
+            this.prevPageSeqLM = null;
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void startPageSequence(PageSequence pageSequence) {
+    public void startPageSequence(final PageSequence pageSequence) {
         startAbstractPageSequence(pageSequence);
     }
 
-    private void startAbstractPageSequence(AbstractPageSequence pageSequence) {
-        rootFObj = pageSequence.getRoot();
+    private void startAbstractPageSequence(
+            final AbstractPageSequence pageSequence) {
+        this.rootFObj = pageSequence.getRoot();
 
-        //Before the first page-sequence...
+        // Before the first page-sequence...
         if (this.prevPageSeqLM == null) {
             // extension attachments from fo:root
-            wrapAndAddExtensionAttachments(rootFObj.getExtensionAttachments());
+            wrapAndAddExtensionAttachments(this.rootFObj
+                    .getExtensionAttachments());
             // extension attachments from fo:declarations
-            if (rootFObj.getDeclarations() != null) {
-                wrapAndAddExtensionAttachments(
-                        rootFObj.getDeclarations().getExtensionAttachments());
+            if (this.rootFObj.getDeclarations() != null) {
+                wrapAndAddExtensionAttachments(this.rootFObj.getDeclarations()
+                        .getExtensionAttachments());
             }
         }
 
@@ -240,8 +253,9 @@ public class AreaTreeHandler extends FOEventHandler {
         pageSequence.initPageNumber();
     }
 
-    private void wrapAndAddExtensionAttachments(List<ExtensionAttachment> list) {
-        for (ExtensionAttachment attachment : list) {
+    private void wrapAndAddExtensionAttachments(
+            final List<ExtensionAttachment> list) {
+        for (final ExtensionAttachment attachment : list) {
             addOffDocumentItem(new OffDocumentExtensionAttachment(attachment));
         }
     }
@@ -250,13 +264,14 @@ public class AreaTreeHandler extends FOEventHandler {
      * End the PageSequence. The PageSequence formats Pages and adds them to the
      * AreaTree. The area tree then handles what happens with the pages.
      *
-     * @param pageSequence the page sequence ending
+     * @param pageSequence
+     *            the page sequence ending
      */
     @Override
-    public void endPageSequence(PageSequence pageSequence) {
+    public void endPageSequence(final PageSequence pageSequence) {
 
-        if (statistics != null) {
-            statistics.end();
+        if (this.statistics != null) {
+            this.statistics.end();
         }
 
         // If no main flow, nothing to layout!
@@ -267,29 +282,30 @@ public class AreaTreeHandler extends FOEventHandler {
             pageSLM.activateLayout();
             // preserve the current PageSequenceLayoutManger for the
             // force-page-count check at the beginning of the next PageSequence
-            prevPageSeqLM = pageSLM;
+            this.prevPageSeqLM = pageSLM;
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void startExternalDocument(ExternalDocument document) {
+    public void startExternalDocument(final ExternalDocument document) {
         startAbstractPageSequence(document);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void endExternalDocument(ExternalDocument document) {
-        if (statistics != null) {
-            statistics.end();
+    public void endExternalDocument(final ExternalDocument document) {
+        if (this.statistics != null) {
+            this.statistics.end();
         }
 
         ExternalDocumentLayoutManager edLM;
-        edLM = getLayoutManagerMaker().makeExternalDocumentLayoutManager(this, document);
+        edLM = getLayoutManagerMaker().makeExternalDocumentLayoutManager(this,
+                document);
         edLM.activateLayout();
         // preserve the current PageSequenceLayoutManger for the
         // force-page-count check at the beginning of the next PageSequence
-        prevPageSeqLM = edLM;
+        this.prevPageSeqLM = edLM;
 
     }
 
@@ -297,11 +313,13 @@ public class AreaTreeHandler extends FOEventHandler {
      * Called by the PageSequenceLayoutManager when it is finished with a
      * page-sequence.
      *
-     * @param pageSequence the page-sequence just finished
-     * @param pageCount The number of pages generated for the page-sequence
+     * @param pageSequence
+     *            the page-sequence just finished
+     * @param pageCount
+     *            The number of pages generated for the page-sequence
      */
-    public void notifyPageSequenceFinished(AbstractPageSequence pageSequence,
-            int pageCount) {
+    public void notifyPageSequenceFinished(
+            final AbstractPageSequence pageSequence, final int pageCount) {
         this.results.haveFormattedPageSequence(pageSequence, pageCount);
         if (log.isDebugEnabled()) {
             log.debug("Last page-sequence produced " + pageCount + " pages.");
@@ -311,38 +329,42 @@ public class AreaTreeHandler extends FOEventHandler {
     /**
      * End the document.
      *
-     * @throws SAXException if there is some error
+     * @throws SAXException
+     *             if there is some error
      */
     @Override
     public void endDocument() throws SAXException {
 
         finishPrevPageSequence(null);
         // process fox:destination elements
-        if (rootFObj != null) {
-            List<Destination> destinationList = rootFObj.getDestinationList();
+        if (this.rootFObj != null) {
+            final List<Destination> destinationList = this.rootFObj
+                    .getDestinationList();
             if (destinationList != null) {
                 while (destinationList.size() > 0) {
-                    Destination destination = destinationList.remove(0);
-                    DestinationData destinationData = new DestinationData(destination);
+                    final Destination destination = destinationList.remove(0);
+                    final DestinationData destinationData = new DestinationData(
+                            destination);
                     addOffDocumentItem(destinationData);
                 }
             }
             // process fo:bookmark-tree
-            BookmarkTree bookmarkTree = rootFObj.getBookmarkTree();
+            final BookmarkTree bookmarkTree = this.rootFObj.getBookmarkTree();
             if (bookmarkTree != null) {
-                BookmarkData data = new BookmarkData(bookmarkTree);
+                final BookmarkData data = new BookmarkData(bookmarkTree);
                 addOffDocumentItem(data);
                 if (!data.isResolved()) {
-                    // bookmarks did not fully resolve, add anyway. (hacky? yeah)
-                    model.handleOffDocumentItem(data);
+                    // bookmarks did not fully resolve, add anyway. (hacky?
+                    // yeah)
+                    this.model.handleOffDocumentItem(data);
                 }
             }
-            idTracker.signalIDProcessed(rootFObj.getId());
+            this.idTracker.signalIDProcessed(this.rootFObj.getId());
         }
-        model.endDocument();
+        this.model.endDocument();
 
-        if (statistics != null) {
-            statistics.logResults();
+        if (this.statistics != null) {
+            this.statistics.logResults();
         }
     }
 
@@ -351,29 +373,32 @@ public class AreaTreeHandler extends FOEventHandler {
      * OffDocumentItem is resolvable and attempts to resolve or add the
      * resolvable ids for later resolution.
      *
-     * @param odi the OffDocumentItem to add.
+     * @param odi
+     *            the OffDocumentItem to add.
      */
-    private void addOffDocumentItem(OffDocumentItem odi) {
+    private void addOffDocumentItem(final OffDocumentItem odi) {
         if (odi instanceof Resolvable) {
-            Resolvable res = (Resolvable) odi;
-            String[] ids = res.getIDRefs();
-            for (String id : ids) {
-                List<PageViewport> pageVPList = idTracker.getPageViewportsContainingID(id);
+            final Resolvable res = (Resolvable) odi;
+            final String[] ids = res.getIDRefs();
+            for (final String id : ids) {
+                final List<PageViewport> pageVPList = this.idTracker
+                        .getPageViewportsContainingID(id);
                 if (pageVPList != null && !pageVPList.isEmpty()) {
                     res.resolveIDRef(id, pageVPList);
                 } else {
-                    AreaEventProducer eventProducer = AreaEventProducer.Provider.get(
-                            getUserAgent().getEventBroadcaster());
-                    eventProducer.unresolvedIDReference(this, odi.getName(), id);
-                    idTracker.addUnresolvedIDRef(id, res);
+                    final AreaEventProducer eventProducer = AreaEventProducer.Provider
+                            .get(getUserAgent().getEventBroadcaster());
+                    eventProducer
+                    .unresolvedIDReference(this, odi.getName(), id);
+                    this.idTracker.addUnresolvedIDRef(id, res);
                 }
             }
             // check to see if ODI is now fully resolved, if so process it
             if (res.isResolved()) {
-                model.handleOffDocumentItem(odi);
+                this.model.handleOffDocumentItem(odi);
             }
         } else {
-            model.handleOffDocumentItem(odi);
+            this.model.handleOffDocumentItem(odi);
         }
     }
 
@@ -392,13 +417,17 @@ public class AreaTreeHandler extends FOEventHandler {
      * an area with a given ID may be on more than one PV, hence an ID may have
      * more than one PV associated with it.
      *
-     * @param id the property ID of the area
-     * @param pv a page viewport that contains the area with this ID
-     * @deprecated use getIDTracker().associateIDWithPageViewport(id, pv) instead
+     * @param id
+     *            the property ID of the area
+     * @param pv
+     *            a page viewport that contains the area with this ID
+     * @deprecated use getIDTracker().associateIDWithPageViewport(id, pv)
+     *             instead
      */
     @Deprecated
-    public void associateIDWithPageViewport(String id, PageViewport pv) {
-        idTracker.associateIDWithPageViewport(id, pv);
+    public void associateIDWithPageViewport(final String id,
+            final PageViewport pv) {
+        this.idTracker.associateIDWithPageViewport(id, pv);
     }
 
     /**
@@ -406,12 +435,13 @@ public class AreaTreeHandler extends FOEventHandler {
      * be processed. This is used in page-number-citation-last processing so we
      * know when an id can be resolved.
      *
-     * @param id the id of the object being processed
+     * @param id
+     *            the id of the object being processed
      * @deprecated use getIDTracker().signalPendingID(id) instead
      */
     @Deprecated
-    public void signalPendingID(String id) {
-        idTracker.signalPendingID(id);
+    public void signalPendingID(final String id) {
+        this.idTracker.signalPendingID(id);
     }
 
     /**
@@ -419,64 +449,70 @@ public class AreaTreeHandler extends FOEventHandler {
      * been generated. This is used to determine when page-number-citation-last
      * ref-ids can be resolved.
      *
-     * @param id the id of the formatting object which was just finished
+     * @param id
+     *            the id of the formatting object which was just finished
      * @deprecated use getIDTracker().signalIDProcessed(id) instead
      */
     @Deprecated
-    public void signalIDProcessed(String id) {
-        idTracker.signalIDProcessed(id);
+    public void signalIDProcessed(final String id) {
+        this.idTracker.signalIDProcessed(id);
     }
 
     /**
      * Check if an ID has already been resolved
      *
-     * @param id the id to check
+     * @param id
+     *            the id to check
      * @return true if the ID has been resolved
      * @deprecated use getIDTracker().alreadyResolvedID(id) instead
      */
     @Deprecated
-    public boolean alreadyResolvedID(String id) {
-        return idTracker.alreadyResolvedID(id);
+    public boolean alreadyResolvedID(final String id) {
+        return this.idTracker.alreadyResolvedID(id);
     }
 
     /**
      * Tries to resolve all unresolved ID references on the given page.
      *
-     * @param pv page viewport whose ID refs to resolve
+     * @param pv
+     *            page viewport whose ID refs to resolve
      * @deprecated use getIDTracker().tryIDResolution(pv) instead
      */
     @Deprecated
-    public void tryIDResolution(PageViewport pv) {
-        idTracker.tryIDResolution(pv);
+    public void tryIDResolution(final PageViewport pv) {
+        this.idTracker.tryIDResolution(pv);
     }
 
     /**
      * Get the set of page viewports that have an area with a given id.
      *
-     * @param id the id to lookup
+     * @param id
+     *            the id to lookup
      * @return the list of PageViewports
      * @deprecated use getIDTracker().getPageViewportsContainingID(id) instead
      */
     @Deprecated
-    public List<PageViewport> getPageViewportsContainingID(String id) {
-        return idTracker.getPageViewportsContainingID(id);
+    public List<PageViewport> getPageViewportsContainingID(final String id) {
+        return this.idTracker.getPageViewportsContainingID(id);
     }
 
     /**
      * Add an Resolvable object with an unresolved idref
      *
-     * @param idref the idref whose target id has not yet been located
-     * @param res the Resolvable object needing the idref to be resolved
+     * @param idref
+     *            the idref whose target id has not yet been located
+     * @param res
+     *            the Resolvable object needing the idref to be resolved
      * @deprecated use getIDTracker().addUnresolvedIDRef(idref, res) instead
      */
     @Deprecated
-    public void addUnresolvedIDRef(String idref, Resolvable res) {
-        idTracker.addUnresolvedIDRef(idref, res);
+    public void addUnresolvedIDRef(final String idref, final Resolvable res) {
+        this.idTracker.addUnresolvedIDRef(idref, res);
     }
 
     private class Statistics {
         // for statistics gathering
-        private Runtime runtime;
+        private final Runtime runtime;
 
         // heap memory allocated (for statistics)
         private long initialMemory;
@@ -495,7 +531,8 @@ public class AreaTreeHandler extends FOEventHandler {
          * starts the area tree handler statistics gathering
          */
         protected void start() {
-            this.initialMemory = runtime.totalMemory() - runtime.freeMemory();
+            this.initialMemory = this.runtime.totalMemory()
+                    - this.runtime.freeMemory();
             this.startTime = System.currentTimeMillis();
         }
 
@@ -503,28 +540,32 @@ public class AreaTreeHandler extends FOEventHandler {
          * ends the area tree handler statistics gathering
          */
         protected void end() {
-            long memoryNow = runtime.totalMemory() - runtime.freeMemory();
-            log.debug("Current heap size: " + (memoryNow / 1024L) + "KB");
+            final long memoryNow = this.runtime.totalMemory()
+                    - this.runtime.freeMemory();
+            log.debug("Current heap size: " + memoryNow / 1024L + "KB");
         }
 
         /**
          * logs the results of the area tree handler statistics gathering
          */
         protected void logResults() {
-            long memoryNow = runtime.totalMemory() - runtime.freeMemory();
-            long memoryUsed = (memoryNow - initialMemory) / 1024L;
-            long timeUsed = System.currentTimeMillis() - startTime;
-            int pageCount = rootFObj.getTotalPagesGenerated();
-            log.debug("Initial heap size: " + (initialMemory / 1024L) + "KB");
-            log.debug("Current heap size: " + (memoryNow / 1024L) + "KB");
+            final long memoryNow = this.runtime.totalMemory()
+                    - this.runtime.freeMemory();
+            final long memoryUsed = (memoryNow - this.initialMemory) / 1024L;
+            final long timeUsed = System.currentTimeMillis() - this.startTime;
+            final int pageCount = AreaTreeHandler.this.rootFObj
+                    .getTotalPagesGenerated();
+            log.debug("Initial heap size: " + this.initialMemory / 1024L + "KB");
+            log.debug("Current heap size: " + memoryNow / 1024L + "KB");
             log.debug("Total memory used: " + memoryUsed + "KB");
             log.debug("Total time used: " + timeUsed + "ms");
             log.debug("Pages rendered: " + pageCount);
             if (pageCount > 0) {
-                long perPage = (timeUsed / pageCount);
-                long ppm = (timeUsed != 0 ? Math.round(60000 * pageCount
-                        / (double) timeUsed) : -1);
-                log.debug("Avg render time: " + perPage + "ms/page (" + ppm + "pages/min)");
+                final long perPage = timeUsed / pageCount;
+                final long ppm = timeUsed != 0 ? Math.round(60000 * pageCount
+                        / (double) timeUsed) : -1;
+                log.debug("Avg render time: " + perPage + "ms/page (" + ppm
+                        + "pages/min)");
             }
         }
     }

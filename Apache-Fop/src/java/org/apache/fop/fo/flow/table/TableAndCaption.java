@@ -20,8 +20,6 @@
 package org.apache.fop.fo.flow.table;
 
 // XML
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.FObj;
@@ -29,11 +27,11 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.ValidationException;
 import org.apache.fop.fo.properties.CommonAccessibility;
 import org.apache.fop.fo.properties.CommonAccessibilityHolder;
+import org.xml.sax.Locator;
 
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_table-and-caption">
- * <code>fo:table-and-caption</code></a> property.
- * TODO needs implementation
+ * <code>fo:table-and-caption</code></a> property. TODO needs implementation
  */
 public class TableAndCaption extends FObj implements CommonAccessibilityHolder {
 
@@ -41,85 +39,89 @@ public class TableAndCaption extends FObj implements CommonAccessibilityHolder {
 
     // The value of properties relevant for fo:table-and-caption.
     // Unused but valid items, commented out for performance:
-    //     private CommonAural commonAural;
-    //     private CommonBorderPaddingBackground commonBorderPaddingBackground;
-    //     private CommonMarginBlock commonMarginBlock;
-    //     private CommonRelativePosition commonRelativePosition;
-    //     private int breakAfter;
-    //     private int breakBefore;
-    //     private int captionSide;
-    //     private int intrusionDisplace;
-    //     private KeepProperty keepTogether;
-    //     private KeepProperty keepWithNext;
-    //     private KeepProperty keepWithPrevious;
-    //     private int textAlign;
+    // private CommonAural commonAural;
+    // private CommonBorderPaddingBackground commonBorderPaddingBackground;
+    // private CommonMarginBlock commonMarginBlock;
+    // private CommonRelativePosition commonRelativePosition;
+    // private int breakAfter;
+    // private int breakBefore;
+    // private int captionSide;
+    // private int intrusionDisplace;
+    // private KeepProperty keepTogether;
+    // private KeepProperty keepWithNext;
+    // private KeepProperty keepWithPrevious;
+    // private int textAlign;
     // End of property values
 
-    static boolean notImplementedWarningGiven = false; // CSOK: VisibilityModifier
+    static boolean notImplementedWarningGiven = false; // CSOK:
+                                                       // VisibilityModifier
 
     /** used for FO validation */
     private boolean tableCaptionFound = false;
     private boolean tableFound = false;
 
     /**
-     * Create a TableAndCaption instance with the given {@link FONode}
-     * as parent.
-     * @param parent FONode that is the parent of this object
+     * Create a TableAndCaption instance with the given {@link FONode} as
+     * parent.
+     * 
+     * @param parent
+     *            FONode that is the parent of this object
      */
-    public TableAndCaption(FONode parent) {
+    public TableAndCaption(final FONode parent) {
         super(parent);
 
         if (!notImplementedWarningGiven) {
-            getFOValidationEventProducer().unimplementedFeature(this, getName(),
-                    "fo:table-and-caption", getLocator());
+            getFOValidationEventProducer().unimplementedFeature(this,
+                    getName(), "fo:table-and-caption", getLocator());
             notImplementedWarningGiven = true;
         }
     }
 
     @Override
-    public void bind(PropertyList pList) throws FOPException {
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        commonAccessibility = CommonAccessibility.getInstance(pList);
+        this.commonAccessibility = CommonAccessibility.getInstance(pList);
     }
 
     /**
-     * Make sure content model satisfied, if so then tell the
-     * FOEventHandler that we are at the end of the flow.
-     * {@inheritDoc}
+     * Make sure content model satisfied, if so then tell the FOEventHandler
+     * that we are at the end of the flow. {@inheritDoc}
      */
+    @Override
     protected void endOfNode() throws FOPException {
-        if (!tableFound) {
+        if (!this.tableFound) {
             missingChildElementError("marker* table-caption? table");
         }
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL Content Model: marker* table-caption? table
+     * {@inheritDoc} <br>
+     * XSL Content Model: marker* table-caption? table
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-                throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
 
         if (FO_URI.equals(nsURI)) {
             if (localName.equals("marker")) {
-                if (tableCaptionFound) {
+                if (this.tableCaptionFound) {
                     nodesOutOfOrderError(loc, "fo:marker", "fo:table-caption");
-                } else if (tableFound) {
+                } else if (this.tableFound) {
                     nodesOutOfOrderError(loc, "fo:marker", "fo:table");
                 }
             } else if (localName.equals("table-caption")) {
-                if (tableCaptionFound) {
+                if (this.tableCaptionFound) {
                     tooManyNodesError(loc, "fo:table-caption");
-                } else if (tableFound) {
+                } else if (this.tableFound) {
                     nodesOutOfOrderError(loc, "fo:table-caption", "fo:table");
                 } else {
-                    tableCaptionFound = true;
+                    this.tableCaptionFound = true;
                 }
             } else if (localName.equals("table")) {
-                if (tableFound) {
+                if (this.tableFound) {
                     tooManyNodesError(loc, "fo:table");
                 } else {
-                    tableFound = true;
+                    this.tableFound = true;
                 }
             } else {
                 invalidChildError(loc, nsURI, localName);
@@ -128,22 +130,25 @@ public class TableAndCaption extends FObj implements CommonAccessibilityHolder {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "table-and-caption";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_TABLE_AND_CAPTION}
      */
+    @Override
     public int getNameId() {
         return FO_TABLE_AND_CAPTION;
     }
 
     /** {@inheritDoc} */
+    @Override
     public CommonAccessibility getCommonAccessibility() {
-        return commonAccessibility;
+        return this.commonAccessibility;
     }
 
 }
-

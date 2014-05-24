@@ -23,37 +23,40 @@ import org.apache.batik.extension.svg.BatikFlowTextElementBridge;
 import org.apache.batik.gvt.GraphicsNode;
 import org.apache.batik.gvt.TextNode;
 import org.apache.batik.gvt.TextPainter;
-
 import org.apache.fop.fonts.FontInfo;
 
 /**
- * Element Bridge for Batik's flow text extension, so those texts can be painted using
- * PDF primitives.
+ * Element Bridge for Batik's flow text extension, so those texts can be painted
+ * using PDF primitives.
  */
 public class PDFBatikFlowTextElementBridge extends BatikFlowTextElementBridge {
 
-    private PDFTextPainter textPainter;
+    private final PDFTextPainter textPainter;
 
     /**
      * Main Constructor.
-     * @param fontInfo the font directory
+     * 
+     * @param fontInfo
+     *            the font directory
      */
-    public PDFBatikFlowTextElementBridge(FontInfo fontInfo) {
+    public PDFBatikFlowTextElementBridge(final FontInfo fontInfo) {
         this.textPainter = new PDFFlowExtTextPainter(fontInfo);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected GraphicsNode instantiateGraphicsNode() {
-        GraphicsNode node = super.instantiateGraphicsNode();
+        final GraphicsNode node = super.instantiateGraphicsNode();
         if (node != null) {
-            //Set our own text painter
-            ((TextNode)node).setTextPainter(getTextPainter());
+            // Set our own text painter
+            ((TextNode) node).setTextPainter(getTextPainter());
         }
         return node;
     }
 
     /**
      * Returns the text painter used by this bridge.
+     * 
      * @return the text painter
      */
     public TextPainter getTextPainter() {

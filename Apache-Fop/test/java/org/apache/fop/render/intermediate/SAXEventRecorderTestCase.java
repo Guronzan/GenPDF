@@ -19,11 +19,8 @@
 
 package org.apache.fop.render.intermediate;
 
-
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
+import org.apache.fop.render.intermediate.IFStructureTreeBuilder.SAXEventRecorder;
+import org.apache.fop.util.XMLConstants;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -32,8 +29,9 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import org.apache.fop.render.intermediate.IFStructureTreeBuilder.SAXEventRecorder;
-import org.apache.fop.util.XMLUtil;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * Tests {@link SAXEventRecorder}.
@@ -46,7 +44,7 @@ public class SAXEventRecorderTestCase {
 
     @Before
     public void setUp() {
-        sut = new SAXEventRecorder();
+        this.sut = new SAXEventRecorder();
     }
 
     @Test
@@ -55,9 +53,9 @@ public class SAXEventRecorderTestCase {
         final String qName = "prefix:" + localName;
         final Attributes attributes = new AttributesImpl();
 
-        sut.startElement(URI, localName, qName, attributes);
-        ContentHandler handler = mock(ContentHandler.class);
-        sut.replay(handler);
+        this.sut.startElement(URI, localName, qName, attributes);
+        final ContentHandler handler = mock(ContentHandler.class);
+        this.sut.replay(handler);
         verify(handler).startElement(URI, localName, qName, attributes);
     }
 
@@ -65,9 +63,9 @@ public class SAXEventRecorderTestCase {
     public void testEndEvent() throws SAXException {
         final String localName = "element";
         final String qName = "prefix:" + localName;
-        sut.endElement(URI, localName, qName);
-        ContentHandler handler = mock(ContentHandler.class);
-        sut.replay(handler);
+        this.sut.endElement(URI, localName, qName);
+        final ContentHandler handler = mock(ContentHandler.class);
+        this.sut.replay(handler);
         verify(handler).endElement(URI, localName, qName);
     }
 
@@ -75,9 +73,9 @@ public class SAXEventRecorderTestCase {
     public void testStartPrefixMapping() throws SAXException {
         final String prefix = "prefix";
 
-        sut.startPrefixMapping(URI, prefix);
-        ContentHandler handler = mock(ContentHandler.class);
-        sut.replay(handler);
+        this.sut.startPrefixMapping(URI, prefix);
+        final ContentHandler handler = mock(ContentHandler.class);
+        this.sut.replay(handler);
         verify(handler).startPrefixMapping(URI, prefix);
     }
 
@@ -85,9 +83,9 @@ public class SAXEventRecorderTestCase {
     public void testEndPrefixMapping() throws SAXException {
         final String prefix = "prefix";
 
-        sut.endPrefixMapping(prefix);
-        ContentHandler handler = mock(ContentHandler.class);
-        sut.replay(handler);
+        this.sut.endPrefixMapping(prefix);
+        final ContentHandler handler = mock(ContentHandler.class);
+        this.sut.replay(handler);
         verify(handler).endPrefixMapping(prefix);
     }
 
@@ -95,36 +93,41 @@ public class SAXEventRecorderTestCase {
     public void completeTest() throws SAXException {
         final String localName1 = "element";
         final String qName1 = "prefix:" + localName1;
-        final Attributes attributes1 = createAttributes(URI, localName1, qName1, "value-1");
+        final Attributes attributes1 = createAttributes(URI, localName1,
+                qName1, "value-1");
         final String localName2 = "element2";
         final String qName2 = "prefix:" + localName2;
-        final Attributes attributes2 = createAttributes(URI, localName2, qName2, "value-2");
+        final Attributes attributes2 = createAttributes(URI, localName2,
+                qName2, "value-2");
         final ContentHandler handler = mock(ContentHandler.class);
         final String extensionUrl = "http://www.example.com/extension";
         final String extensionPrefix = "ext";
 
-        sut.startPrefixMapping(extensionPrefix, extensionUrl);
-        sut.startElement(URI, localName1, qName1, attributes1);
-        sut.startElement(URI, localName2, qName2, attributes2);
-        sut.endElement(URI, localName2, qName2);
-        sut.endElement(URI, localName1, qName1);
-        sut.endPrefixMapping(extensionPrefix);
+        this.sut.startPrefixMapping(extensionPrefix, extensionUrl);
+        this.sut.startElement(URI, localName1, qName1, attributes1);
+        this.sut.startElement(URI, localName2, qName2, attributes2);
+        this.sut.endElement(URI, localName2, qName2);
+        this.sut.endElement(URI, localName1, qName1);
+        this.sut.endPrefixMapping(extensionPrefix);
 
-        sut.replay(handler);
+        this.sut.replay(handler);
 
-        InOrder inOrder = inOrder(handler);
-        inOrder.verify(handler).startPrefixMapping(extensionPrefix, extensionUrl);
-        inOrder.verify(handler).startElement(URI, localName1, qName1, attributes1);
-        inOrder.verify(handler).startElement(URI, localName2, qName2, attributes2);
+        final InOrder inOrder = inOrder(handler);
+        inOrder.verify(handler).startPrefixMapping(extensionPrefix,
+                extensionUrl);
+        inOrder.verify(handler).startElement(URI, localName1, qName1,
+                attributes1);
+        inOrder.verify(handler).startElement(URI, localName2, qName2,
+                attributes2);
         inOrder.verify(handler).endElement(URI, localName2, qName2);
         inOrder.verify(handler).endElement(URI, localName1, qName1);
         inOrder.verify(handler).endPrefixMapping(extensionPrefix);
     }
 
-    private static Attributes createAttributes(String uri, String localName,
-            String qName, String value) {
+    private static Attributes createAttributes(final String uri,
+            final String localName, final String qName, final String value) {
         final AttributesImpl atts = new AttributesImpl();
-        atts.addAttribute(uri, localName, qName, XMLUtil.CDATA, value);
+        atts.addAttribute(uri, localName, qName, XMLConstants.CDATA, value);
         return atts;
     }
 

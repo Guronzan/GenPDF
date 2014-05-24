@@ -19,47 +19,56 @@
 
 package org.apache.fop.fo.flow.table;
 
-
 /**
  * GridUnit subclass for empty grid units.
  */
 public class EmptyGridUnit extends GridUnit {
 
     /**
-     * @param table the containing table
-     * @param row the table-row element this grid unit belongs to (if any)
-     * @param colIndex column index, 0-based
+     * @param table
+     *            the containing table
+     * @param row
+     *            the table-row element this grid unit belongs to (if any)
+     * @param colIndex
+     *            column index, 0-based
      */
-    EmptyGridUnit(Table table, TableRow row, int colIndex) {
+    EmptyGridUnit(final Table table, final TableRow row, final int colIndex) {
         super(table, 0, 0);
         setRow(row);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void setBordersFromCell() {
-        borderBefore = ConditionalBorder.getDefaultBorder(collapsingBorderModel);
-        borderAfter = ConditionalBorder.getDefaultBorder(collapsingBorderModel);
-        borderStart = BorderSpecification.getDefaultBorder();
-        borderEnd = BorderSpecification.getDefaultBorder();
+        this.borderBefore = ConditionalBorder
+                .getDefaultBorder(this.collapsingBorderModel);
+        this.borderAfter = ConditionalBorder
+                .getDefaultBorder(this.collapsingBorderModel);
+        this.borderStart = BorderSpecification.getDefaultBorder();
+        this.borderEnd = BorderSpecification.getDefaultBorder();
     }
 
     /** {@inheritDoc} */
+    @Override
     public PrimaryGridUnit getPrimary() {
         throw new UnsupportedOperationException();
-//        return this; TODO
+        // return this; TODO
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isPrimary() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isLastGridUnitColSpan() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isLastGridUnitRowSpan() {
         return true;
     }

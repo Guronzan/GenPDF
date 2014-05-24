@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
  * Test {@link IncludeObject}
  */
 public class IncludeObjectTestCase extends
-        AbstractNamedAFPObjectTest<IncludeObject> {
+AbstractNamedAFPObjectTest<IncludeObject> {
 
     @Before
     public void setUp() {
@@ -42,7 +42,7 @@ public class IncludeObjectTestCase extends
 
     /**
      * Test writeToStream()
-     * 
+     *
      * @throws IOException
      *             -
      */
@@ -59,7 +59,7 @@ public class IncludeObjectTestCase extends
     /**
      * Test writeToStream() - the orientation of the referenced object is a
      * right- handed with a 180 x-axis
-     * 
+     *
      * @throws IOException
      *             -
      */
@@ -103,7 +103,7 @@ public class IncludeObjectTestCase extends
                 (byte) 0xD3, // Structured field id byte 1
                 (byte) 0xAF, // Structured field id byte 2 - type 'input'
                 (byte) 0xC3, // Structured field id byte 3 - category 'data
-                             // resource'
+                // resource'
                 0x00, // Flags
                 0x00, // Reserved
                 0x00, // Reserved
@@ -122,9 +122,9 @@ public class IncludeObjectTestCase extends
 
         expected[27] = (byte) 0x2D; // orientation of the reference object
         writeOsetTo(expected, 29, -1); // the X-axis origin defined in the
-                                       // object
+        // object
         writeOsetTo(expected, 32, -1); // the Y-axis origin defined in the
-                                       // object
+        // object
 
         expected[35] = 0x01; // Page or overlay coordinate system
 

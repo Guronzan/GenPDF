@@ -32,9 +32,9 @@ import org.apache.xmlgraphics.image.loader.ImageInfo;
 
 public class ImageRawPNG extends ImageRawStream {
 
-    private ColorModel cm;
-    private ICC_Profile iccProfile;
-    private int bitDepth;
+    private final ColorModel cm;
+    private final ICC_Profile iccProfile;
+    private final int bitDepth;
     private boolean isTransparent;
     private int grayTransparentAlpha;
     private int redTransparentAlpha;
@@ -43,13 +43,21 @@ public class ImageRawPNG extends ImageRawStream {
 
     /**
      * Main constructor.
-     * @param info the image info object
-     * @param in the ImageInputStream with the raw content
-     * @param colorModel the color model
-     * @param bitDepth the bit depth
-     * @param iccProfile an ICC color profile or null if no profile is associated
+     * 
+     * @param info
+     *            the image info object
+     * @param in
+     *            the ImageInputStream with the raw content
+     * @param colorModel
+     *            the color model
+     * @param bitDepth
+     *            the bit depth
+     * @param iccProfile
+     *            an ICC color profile or null if no profile is associated
      */
-    public ImageRawPNG(ImageInfo info, InputStream in, ColorModel colorModel, int bitDepth, ICC_Profile iccProfile) {
+    public ImageRawPNG(final ImageInfo info, final InputStream in,
+            final ColorModel colorModel, final int bitDepth,
+            final ICC_Profile iccProfile) {
         super(info, ImageFlavor.RAW_PNG, in);
         this.iccProfile = iccProfile;
         this.cm = colorModel;
@@ -58,22 +66,26 @@ public class ImageRawPNG extends ImageRawStream {
 
     /**
      * The bit depth of each color channel.
+     * 
      * @return the bit depth of one channel (same for all)
      */
     public int getBitDepth() {
-        return bitDepth;
+        return this.bitDepth;
     }
 
     /**
      * Returns the ICC color profile if one is associated with the PNG image.
+     * 
      * @return the ICC color profile or null if there's no profile
      */
+    @Override
     public ICC_Profile getICCProfile() {
         return this.iccProfile;
     }
 
     /**
      * Returns the image's color model.
+     * 
      * @return the color model
      */
     public ColorModel getColorModel() {
@@ -82,28 +94,37 @@ public class ImageRawPNG extends ImageRawStream {
 
     /**
      * Returns the image's color space.
+     * 
      * @return the color space
      */
+    @Override
     public ColorSpace getColorSpace() {
         return this.cm.getColorSpace();
     }
 
     /**
      * Sets the gray transparent pixel value.
-     * @param gray the transparent pixel gray value (0...255)
+     * 
+     * @param gray
+     *            the transparent pixel gray value (0...255)
      */
-    protected void setGrayTransparentAlpha(int gray) {
+    protected void setGrayTransparentAlpha(final int gray) {
         this.isTransparent = true;
         this.grayTransparentAlpha = gray;
     }
 
     /**
      * Sets the RGB transparent pixel values.
-     * @param red the transparent pixel red value (0...255)
-     * @param green the transparent pixel green value (0...255)
-     * @param blue the transparent pixel blue value (0...255)
+     * 
+     * @param red
+     *            the transparent pixel red value (0...255)
+     * @param green
+     *            the transparent pixel green value (0...255)
+     * @param blue
+     *            the transparent pixel blue value (0...255)
      */
-    protected void setRGBTransparentAlpha(int red, int green, int blue) {
+    protected void setRGBTransparentAlpha(final int red, final int green,
+            final int blue) {
         this.isTransparent = true;
         this.redTransparentAlpha = red;
         this.greenTransparentAlpha = green;
@@ -119,6 +140,7 @@ public class ImageRawPNG extends ImageRawStream {
 
     /**
      * Whether the image is transparent (meaning there is a transparent pixel)
+     * 
      * @return true if transparent pixel exists
      */
     public boolean isTransparent() {
@@ -127,6 +149,7 @@ public class ImageRawPNG extends ImageRawStream {
 
     /**
      * The color of the transparent pixel.
+     * 
      * @return the color of the transparent pixel.
      */
     public Color getTransparentColor() {
@@ -134,8 +157,9 @@ public class ImageRawPNG extends ImageRawStream {
         if (!this.isTransparent) {
             return color;
         }
-        if (cm.getNumColorComponents() == 3) {
-            color = new Color(this.redTransparentAlpha, this.greenTransparentAlpha, this.blueTransparentAlpha);
+        if (this.cm.getNumColorComponents() == 3) {
+            color = new Color(this.redTransparentAlpha,
+                    this.greenTransparentAlpha, this.blueTransparentAlpha);
         } else {
             color = new Color(this.grayTransparentAlpha, 0, 0);
         }

@@ -27,9 +27,9 @@ import java.util.Map;
 import org.apache.fop.events.model.EventSeverity;
 
 /**
- * This is the default event class used by this package. Each event has a unique event identifier
- * (a String), a severity indicator, a locale (for formatting event messages), and a map of
- * name/value pairs.
+ * This is the default event class used by this package. Each event has a unique
+ * event identifier (a String), a severity indicator, a locale (for formatting
+ * event messages), and a map of name/value pairs.
  */
 public class Event extends EventObject {
 
@@ -38,38 +38,51 @@ public class Event extends EventObject {
     private String eventGroupID;
     private String eventKey;
     private EventSeverity severity;
-    private Locale locale;
-    private Map<String, Object> params;
+    private final Locale locale;
+    private final Map<String, Object> params;
 
     /**
      * Creates a new Event using default locale.
-     * @param source the object that creates the event
-     * @param eventID the unique identifier of the event
-     * @param severity the severity level
-     * @param params the event parameters (a map of name/value pairs)
+     * 
+     * @param source
+     *            the object that creates the event
+     * @param eventID
+     *            the unique identifier of the event
+     * @param severity
+     *            the severity level
+     * @param params
+     *            the event parameters (a map of name/value pairs)
      */
-    public Event(Object source, String eventID, EventSeverity severity, Map<String, Object> params)
-    {
-        this ( source, eventID, severity, Locale.getDefault(), params );
+    public Event(final Object source, final String eventID,
+            final EventSeverity severity, final Map<String, Object> params) {
+        this(source, eventID, severity, Locale.getDefault(), params);
     }
 
     /**
      * Creates a new Event.
-     * @param source the object that creates the event
-     * @param eventID the unique identifier of the event
-     * @param severity the severity level
-     * @param locale to use when formatting event (or null, which means use default locale)
-     * @param params the event parameters (a map of name/value pairs)
+     * 
+     * @param source
+     *            the object that creates the event
+     * @param eventID
+     *            the unique identifier of the event
+     * @param severity
+     *            the severity level
+     * @param locale
+     *            to use when formatting event (or null, which means use default
+     *            locale)
+     * @param params
+     *            the event parameters (a map of name/value pairs)
      */
-    public Event(Object source, String eventID, EventSeverity severity, Locale locale, Map<String, Object> params)
-    {
+    public Event(final Object source, final String eventID,
+            final EventSeverity severity, final Locale locale,
+            final Map<String, Object> params) {
         super(source);
-        int pos = eventID.lastIndexOf('.');
+        final int pos = eventID.lastIndexOf('.');
         if (pos < 0 || pos == eventID.length() - 1) {
-            eventKey = eventID;
+            this.eventKey = eventID;
         } else {
-            eventGroupID = eventID.substring(0, pos);
-            eventKey = eventID.substring(pos + 1);
+            this.eventGroupID = eventID.substring(0, pos);
+            this.eventKey = eventID.substring(pos + 1);
         }
         setSeverity(severity);
         this.locale = locale;
@@ -78,34 +91,39 @@ public class Event extends EventObject {
 
     /**
      * Returns the event identifier.
+     * 
      * @return the event identifier
      */
     public String getEventID() {
-        if (eventGroupID == null) {
-            return eventKey;
+        if (this.eventGroupID == null) {
+            return this.eventKey;
         } else {
-            return eventGroupID + '.' + eventKey;
+            return this.eventGroupID + '.' + this.eventKey;
         }
     }
 
     /**
      * Returns the event group identifier.
-     * @return the event group identifier (or null if there is no group identifier)
+     * 
+     * @return the event group identifier (or null if there is no group
+     *         identifier)
      */
     public String getEventGroupID() {
-        return eventGroupID;
+        return this.eventGroupID;
     }
 
     /**
      * Returns the event key.
+     * 
      * @return the event key
      */
     public String getEventKey() {
-        return eventKey;
+        return this.eventKey;
     }
 
     /**
      * Returns the severity level.
+     * 
      * @return the severity level
      */
     public EventSeverity getSeverity() {
@@ -113,16 +131,19 @@ public class Event extends EventObject {
     }
 
     /**
-     * Sets the event's severity level. This method can be used to increase or decrease the
-     * severity level in a listener.
-     * @param severity the new event severity
+     * Sets the event's severity level. This method can be used to increase or
+     * decrease the severity level in a listener.
+     * 
+     * @param severity
+     *            the new event severity
      */
-    public void setSeverity(EventSeverity severity) {
+    public void setSeverity(final EventSeverity severity) {
         this.severity = severity;
     }
 
     /**
      * Returns the locale.
+     * 
      * @return the locale
      */
     public Locale getLocale() {
@@ -131,10 +152,12 @@ public class Event extends EventObject {
 
     /**
      * Returns a parameter.
-     * @param key the key to the parameter
+     * 
+     * @param key
+     *            the key to the parameter
      * @return the parameter value or null if no value with this key is found
      */
-    public Object getParam(String key) {
+    public Object getParam(final String key) {
         if (this.params != null) {
             return this.params.get(key);
         } else {
@@ -144,6 +167,7 @@ public class Event extends EventObject {
 
     /**
      * Returns an unmodifiable {@link java.util.Map} with all event parameters.
+     * 
      * @return the parameter map
      */
     public Map<String, Object> getParams() {
@@ -151,7 +175,9 @@ public class Event extends EventObject {
     }
 
     /**
-     * Creates and returns a fluent builder object for building up the parameter map.
+     * Creates and returns a fluent builder object for building up the parameter
+     * map.
+     * 
      * @return the parameter builder
      */
     public static ParamsBuilder paramsBuilder() {
@@ -166,11 +192,14 @@ public class Event extends EventObject {
 
         /**
          * Adds a new parameter (a name/value pair).
-         * @param name the name of the parameter
-         * @param value the value of the parameter
+         * 
+         * @param name
+         *            the name of the parameter
+         * @param value
+         *            the value of the parameter
          * @return this instance
          */
-        public ParamsBuilder param(String name, Object value) {
+        public ParamsBuilder param(final String name, final Object value) {
             if (this.params == null) {
                 this.params = new java.util.HashMap<String, Object>();
             }
@@ -180,6 +209,7 @@ public class Event extends EventObject {
 
         /**
          * Returns the accumulated parameter map.
+         * 
          * @return the accumulated parameter map
          */
         public Map<String, Object> build() {

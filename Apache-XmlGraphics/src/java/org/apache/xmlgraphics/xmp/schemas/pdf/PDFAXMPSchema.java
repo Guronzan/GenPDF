@@ -40,15 +40,19 @@ public class PDFAXMPSchema extends XMPSchema {
     }
 
     /**
-     * Creates and returns an adapter for this schema around the given metadata object.
-     * @param meta the metadata object
+     * Creates and returns an adapter for this schema around the given metadata
+     * object.
+     * 
+     * @param meta
+     *            the metadata object
      * @return the newly instantiated adapter
      */
-    public static PDFAAdapter getAdapter(Metadata meta) {
+    public static PDFAAdapter getAdapter(final Metadata meta) {
         return new PDFAAdapter(meta, NAMESPACE);
     }
 
     /** @see org.apache.xmlgraphics.xmp.XMPSchema#getDefaultMergeRuleSet() */
+    @Override
     public MergeRuleSet getDefaultMergeRuleSet() {
         return mergeRuleSet;
     }

@@ -26,7 +26,6 @@ import org.apache.fop.render.DummyPercentBaseContext;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfAttributes;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfColorTable;
 
-
 /**
  * A RtfAttributes subclass that adds some helper set methods.
  */
@@ -34,51 +33,68 @@ public class FOPRtfAttributes extends RtfAttributes {
 
     /**
      * Set an attribute that has a Length value (internal units in twips)
-     * @param name name of attribute
-     * @param value value of attribute
+     * 
+     * @param name
+     *            name of attribute
+     * @param value
+     *            value of attribute
      * @return this (which now contains the new entry)
      */
-    public RtfAttributes setTwips(String name, Length value) {
-        set(name, value.getValue() / (1000 / 20)); //Convert millipoints to twips
+    public RtfAttributes setTwips(final String name, final Length value) {
+        set(name, value.getValue() / (1000 / 20)); // Convert millipoints to
+                                                   // twips
         return this;
     }
 
     /**
      * Set an attribute using a value in millipoints (internal units in twips)
-     * @param name name of attribute
-     * @param value value of attribute (in millipoints)
+     * 
+     * @param name
+     *            name of attribute
+     * @param value
+     *            value of attribute (in millipoints)
      * @return this (which now contains the new entry)
      */
-    public RtfAttributes setTwips(String name, int value) {
-        set(name, value / (1000 / 20)); //Convert millipoints to twips
+    public RtfAttributes setTwips(final String name, final int value) {
+        set(name, value / (1000 / 20)); // Convert millipoints to twips
         return this;
     }
 
     /**
      * Set an attribute that has a Length value (internal units in half-points)
-     * @param name name of attribute
-     * @param value value of attribute
+     * 
+     * @param name
+     *            name of attribute
+     * @param value
+     *            value of attribute
      * @return this (which now contains the new entry)
      */
-    public RtfAttributes setHalfPoints(String name, Length value) {
-        //Convert millipoints to half-points
-        set(name, value.getValue(DummyPercentBaseContext.getInstance()) / (1000 / 2));
+    public RtfAttributes setHalfPoints(final String name, final Length value) {
+        // Convert millipoints to half-points
+        set(name, value.getValue(DummyPercentBaseContext.getInstance())
+                / (1000 / 2));
         return this;
     }
 
     /**
      * Set an attribute that has a Color value.
-     * @param name name of attribute
-     * @param color value of attribute
+     * 
+     * @param name
+     *            name of attribute
+     * @param color
+     *            value of attribute
      * @return this (which now contains the new entry)
      */
-    public RtfAttributes set(String name, Color color) {
+    public RtfAttributes set(final String name, final Color color) {
         // TODO: This code is duplicated in TextAttributesConverter
-        int redComponent = color.getRed();
-        int greenComponent = color.getGreen();
-        int blueComponent = color.getBlue();
-        set(name, RtfColorTable.getInstance().getColorNumber(
-                redComponent, greenComponent, blueComponent).intValue());
+        final int redComponent = color.getRed();
+        final int greenComponent = color.getGreen();
+        final int blueComponent = color.getBlue();
+        set(name,
+                RtfColorTable
+                        .getInstance()
+                        .getColorNumber(redComponent, greenComponent,
+                                blueComponent).intValue());
         return this;
     }
 

@@ -29,16 +29,21 @@ public class PageChangeEvent extends EventObject {
 
     private static final long serialVersionUID = -5969283475959932887L;
 
-    private int oldPage;
-    private int newPage;
+    private final int oldPage;
+    private final int newPage;
 
     /**
      * Creates an new page change event.
-     * @param panel the preview panel the event is produced for.
-     * @param oldPage the old page (zero based)
-     * @param newPage the new page (zero based)
+     * 
+     * @param panel
+     *            the preview panel the event is produced for.
+     * @param oldPage
+     *            the old page (zero based)
+     * @param newPage
+     *            the new page (zero based)
      */
-    public PageChangeEvent(PreviewPanel panel, int oldPage, int newPage) {
+    public PageChangeEvent(final PreviewPanel panel, final int oldPage,
+            final int newPage) {
         super(panel);
         this.oldPage = oldPage;
         this.newPage = newPage;
@@ -46,18 +51,20 @@ public class PageChangeEvent extends EventObject {
 
     /**
      * Returns the new page.
+     * 
      * @return the new page (zero based)
      */
     public int getNewPage() {
-        return newPage;
+        return this.newPage;
     }
 
     /**
      * Returns the old page.
+     * 
      * @return the old page (zero based)
      */
     public int getOldPage() {
-        return oldPage;
+        return this.oldPage;
     }
 
 }

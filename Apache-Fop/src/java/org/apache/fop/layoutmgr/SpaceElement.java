@@ -19,6 +19,8 @@
 
 package org.apache.fop.layoutmgr;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.datatypes.PercentBaseContext;
 import org.apache.fop.fo.Constants;
 import org.apache.fop.fo.properties.SpaceProperty;
@@ -27,28 +29,38 @@ import org.apache.fop.traits.MinOptMax;
 /**
  * This class represents an unresolved space element.
  */
+@Slf4j
 public class SpaceElement extends UnresolvedListElementWithLength {
 
     private int precedence;
 
     /**
      * Main constructor
-     * @param position the Position instance needed by the addAreas stage of the LMs.
-     * @param space the space property
-     * @param side the side to which this space element applies.
-     * @param isFirst true if this is a space-before of the first area generated.
-     * @param isLast true if this is a space-after of the last area generated.
-     * @param context the property evaluation context
+     *
+     * @param position
+     *            the Position instance needed by the addAreas stage of the LMs.
+     * @param space
+     *            the space property
+     * @param side
+     *            the side to which this space element applies.
+     * @param isFirst
+     *            true if this is a space-before of the first area generated.
+     * @param isLast
+     *            true if this is a space-after of the last area generated.
+     * @param context
+     *            the property evaluation context
      */
-    public SpaceElement(Position position, SpaceProperty space, RelSide side, boolean isFirst,
-                        boolean isLast, PercentBaseContext context) {
-        super(position, space.getSpace().getLengthRange().toMinOptMax(context), side,
-                space.isDiscard(), isFirst, isLast);
-        int en = space.getSpace().getPrecedence().getEnum();
+    public SpaceElement(final Position position, final SpaceProperty space,
+            final RelSide side, final boolean isFirst, final boolean isLast,
+            final PercentBaseContext context) {
+        super(position, space.getSpace().getLengthRange().toMinOptMax(context),
+                side, space.isDiscard(), isFirst, isLast);
+        final int en = space.getSpace().getPrecedence().getEnum();
         if (en == Constants.EN_FORCE) {
             this.precedence = Integer.MAX_VALUE;
         } else {
-            this.precedence = space.getSpace().getPrecedence().getNumber().intValue();
+            this.precedence = space.getSpace().getPrecedence().getNumber()
+                    .intValue();
         }
     }
 
@@ -63,11 +75,12 @@ public class SpaceElement extends UnresolvedListElementWithLength {
     }
 
     /** {@inheritDoc} */
-    public void notifyLayoutManager(MinOptMax effectiveLength) {
-        LayoutManager lm = getOriginatingLayoutManager();
+    @Override
+    public void notifyLayoutManager(final MinOptMax effectiveLength) {
+        final LayoutManager lm = getOriginatingLayoutManager();
         if (lm instanceof ConditionalElementListener) {
-            ((ConditionalElementListener)lm).notifySpace(
-                    getSide(), effectiveLength);
+            ((ConditionalElementListener) lm).notifySpace(getSide(),
+                    effectiveLength);
         } else {
             log.warn("Cannot notify LM. It does not implement ConditionalElementListener:"
                     + lm.getClass().getName());
@@ -75,8 +88,9 @@ public class SpaceElement extends UnresolvedListElementWithLength {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("Space[");
+        final StringBuffer sb = new StringBuffer("Space[");
         sb.append(super.toString());
         sb.append(", precedence=");
         if (isForcing()) {

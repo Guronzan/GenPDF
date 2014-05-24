@@ -22,14 +22,14 @@ package org.apache.fop.fo.flow.table;
 import org.apache.fop.layoutmgr.table.CollapsingBorderModel;
 
 /**
- * A class that holds the three possible values for a border-before/after on a table-cell,
- * in the collapsing model. These three values are (for border-before, similar for
- * border-after):
+ * A class that holds the three possible values for a border-before/after on a
+ * table-cell, in the collapsing model. These three values are (for
+ * border-before, similar for border-after):
  * <ul>
  * <li>normal: common case, when a cell follows the cell before on a same page;</li>
- * <li>leading: when the table is broken and the cell appears at the top of a page, in
- * which case its border must be resolved with the header (or the top of the table)
- * instead of with the previous cell;</li>
+ * <li>leading: when the table is broken and the cell appears at the top of a
+ * page, in which case its border must be resolved with the header (or the top
+ * of the table) instead of with the previous cell;</li>
  * <li>rest: when a cell is broken over several pages; same as leading but with
  * conditionality taken into account.</li>
  * </ul>
@@ -46,20 +46,21 @@ public class ConditionalBorder {
     public static final int REST = 2;
 
     /** Normal case, no break. */
-    BorderSpecification normal;                  // CSOK: VisibilityModifier
+    BorderSpecification normal; // CSOK: VisibilityModifier
 
     /** Special case: the cell is at the top or the bottom of the page. */
-    BorderSpecification leadingTrailing;         // CSOK: VisibilityModifier
+    BorderSpecification leadingTrailing; // CSOK: VisibilityModifier
 
     /** Special case: break inside the cell. */
-    BorderSpecification rest;                    // CSOK: VisibilityModifier
+    BorderSpecification rest; // CSOK: VisibilityModifier
 
     /** The model used to resolve borders. */
-    private CollapsingBorderModel collapsingBorderModel;
+    private final CollapsingBorderModel collapsingBorderModel;
 
-    private ConditionalBorder(BorderSpecification normal,
-            BorderSpecification leadingTrailing, BorderSpecification rest,
-            CollapsingBorderModel collapsingBorderModel) {
+    private ConditionalBorder(final BorderSpecification normal,
+            final BorderSpecification leadingTrailing,
+            final BorderSpecification rest,
+            final CollapsingBorderModel collapsingBorderModel) {
         assert collapsingBorderModel != null;
         this.normal = normal;
         this.leadingTrailing = leadingTrailing;
@@ -70,48 +71,52 @@ public class ConditionalBorder {
     /**
      * Creates a new conditional border.
      *
-     * @param borderSpecification the border specification to take as a basis
-     * @param collapsingBorderModel the model that will be used to resolved borders
+     * @param borderSpecification
+     *            the border specification to take as a basis
+     * @param collapsingBorderModel
+     *            the model that will be used to resolved borders
      */
-    ConditionalBorder(BorderSpecification borderSpecification,
-            CollapsingBorderModel collapsingBorderModel) {
-        this ( borderSpecification, borderSpecification,
-               borderSpecification.getBorderInfo().getWidth().isDiscard()
-                 ? BorderSpecification.getDefaultBorder() : borderSpecification,
-               collapsingBorderModel );
+    ConditionalBorder(final BorderSpecification borderSpecification,
+            final CollapsingBorderModel collapsingBorderModel) {
+        this(borderSpecification, borderSpecification, borderSpecification
+                .getBorderInfo().getWidth().isDiscard() ? BorderSpecification
+                .getDefaultBorder() : borderSpecification,
+                collapsingBorderModel);
     }
 
     /**
-     * Resolves and updates the relevant parts of this border as well as the given one.
+     * Resolves and updates the relevant parts of this border as well as the
+     * given one.
      *
      * @param competitor
      * @param withNormal
      * @param withLeadingTrailing
      * @param withRest
      */
-    void resolve(ConditionalBorder competitor, boolean withNormal,
-            boolean withLeadingTrailing, boolean withRest) {
+    void resolve(final ConditionalBorder competitor, final boolean withNormal,
+            final boolean withLeadingTrailing, final boolean withRest) {
         if (withNormal) {
-            BorderSpecification resolvedBorder = collapsingBorderModel.determineWinner(
-                    normal, competitor.normal);
+            final BorderSpecification resolvedBorder = this.collapsingBorderModel
+                    .determineWinner(this.normal, competitor.normal);
             if (resolvedBorder != null) {
-                normal = resolvedBorder;
+                this.normal = resolvedBorder;
                 competitor.normal = resolvedBorder;
             }
         }
         if (withLeadingTrailing) {
-            BorderSpecification resolvedBorder = collapsingBorderModel.determineWinner(
-                    leadingTrailing, competitor.leadingTrailing);
+            final BorderSpecification resolvedBorder = this.collapsingBorderModel
+                    .determineWinner(this.leadingTrailing,
+                            competitor.leadingTrailing);
             if (resolvedBorder != null) {
-                leadingTrailing = resolvedBorder;
+                this.leadingTrailing = resolvedBorder;
                 competitor.leadingTrailing = resolvedBorder;
             }
         }
         if (withRest) {
-            BorderSpecification resolvedBorder = collapsingBorderModel.determineWinner(rest,
-                    competitor.rest);
+            final BorderSpecification resolvedBorder = this.collapsingBorderModel
+                    .determineWinner(this.rest, competitor.rest);
             if (resolvedBorder != null) {
-                rest = resolvedBorder;
+                this.rest = resolvedBorder;
                 competitor.rest = resolvedBorder;
             }
         }
@@ -119,36 +124,38 @@ public class ConditionalBorder {
 
     /**
      * Integrates the given segment in this border. Unlike for
-     * {@link #integrateSegment(ConditionalBorder, boolean, boolean, boolean)}, this
-     * method nicely handles the case where the CollapsingBorderModel returns null, by
-     * keeping the components to their old values.
+     * {@link #integrateSegment(ConditionalBorder, boolean, boolean, boolean)},
+     * this method nicely handles the case where the CollapsingBorderModel
+     * returns null, by keeping the components to their old values.
      *
      * @param competitor
      * @param withNormal
      * @param withLeadingTrailing
      * @param withRest
      */
-    void integrateCompetingSegment(ConditionalBorder competitor, boolean withNormal,
-            boolean withLeadingTrailing, boolean withRest) {
+    void integrateCompetingSegment(final ConditionalBorder competitor,
+            final boolean withNormal, final boolean withLeadingTrailing,
+            final boolean withRest) {
         if (withNormal) {
-            BorderSpecification resolvedBorder = collapsingBorderModel.determineWinner(
-                    normal, competitor.normal);
+            final BorderSpecification resolvedBorder = this.collapsingBorderModel
+                    .determineWinner(this.normal, competitor.normal);
             if (resolvedBorder != null) {
-                normal = resolvedBorder;
+                this.normal = resolvedBorder;
             }
         }
         if (withLeadingTrailing) {
-            BorderSpecification resolvedBorder = collapsingBorderModel.determineWinner(
-                    leadingTrailing, competitor.leadingTrailing);
+            final BorderSpecification resolvedBorder = this.collapsingBorderModel
+                    .determineWinner(this.leadingTrailing,
+                            competitor.leadingTrailing);
             if (resolvedBorder != null) {
-                leadingTrailing = resolvedBorder;
+                this.leadingTrailing = resolvedBorder;
             }
         }
         if (withRest) {
-            BorderSpecification resolvedBorder = collapsingBorderModel.determineWinner(rest,
-                    competitor.rest);
+            final BorderSpecification resolvedBorder = this.collapsingBorderModel
+                    .determineWinner(this.rest, competitor.rest);
             if (resolvedBorder != null) {
-                rest = resolvedBorder;
+                this.rest = resolvedBorder;
             }
         }
     }
@@ -162,20 +169,23 @@ public class ConditionalBorder {
      * @param withLeadingTrailing
      * @param withRest
      */
-    void integrateSegment(ConditionalBorder segment, boolean withNormal,
-            boolean withLeadingTrailing, boolean withRest) {
+    void integrateSegment(final ConditionalBorder segment,
+            final boolean withNormal, final boolean withLeadingTrailing,
+            final boolean withRest) {
         if (withNormal) {
-            normal = collapsingBorderModel.determineWinner(normal, segment.normal);
-            assert normal != null;
+            this.normal = this.collapsingBorderModel.determineWinner(
+                    this.normal, segment.normal);
+            assert this.normal != null;
         }
         if (withLeadingTrailing) {
-            leadingTrailing = collapsingBorderModel.determineWinner(leadingTrailing,
-                    segment.leadingTrailing);
-            assert leadingTrailing != null;
+            this.leadingTrailing = this.collapsingBorderModel.determineWinner(
+                    this.leadingTrailing, segment.leadingTrailing);
+            assert this.leadingTrailing != null;
         }
         if (withRest) {
-            rest = collapsingBorderModel.determineWinner(rest, segment.rest);
-            assert rest != null;
+            this.rest = this.collapsingBorderModel.determineWinner(this.rest,
+                    segment.rest);
+            assert this.rest != null;
         }
     }
 
@@ -185,23 +195,29 @@ public class ConditionalBorder {
      * @return a copy of this border
      */
     ConditionalBorder copy() {
-        return new ConditionalBorder(normal, leadingTrailing, rest, collapsingBorderModel);
+        return new ConditionalBorder(this.normal, this.leadingTrailing,
+                this.rest, this.collapsingBorderModel);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "{normal: " + normal + ", leading: " + leadingTrailing + ", rest: " + rest + "}";
+        return "{normal: " + this.normal + ", leading: " + this.leadingTrailing
+                + ", rest: " + this.rest + "}";
     }
 
     /**
      * Returns a default border specification.
      *
-     * @param collapsingBorderModel the model that will be used to resolve borders
+     * @param collapsingBorderModel
+     *            the model that will be used to resolve borders
      * @return a border with style 'none' for all of the three components
      */
-    static ConditionalBorder getDefaultBorder(CollapsingBorderModel collapsingBorderModel) {
-        BorderSpecification defaultBorderSpec = BorderSpecification.getDefaultBorder();
-        return new ConditionalBorder(defaultBorderSpec, defaultBorderSpec, defaultBorderSpec,
-                collapsingBorderModel);
+    static ConditionalBorder getDefaultBorder(
+            final CollapsingBorderModel collapsingBorderModel) {
+        final BorderSpecification defaultBorderSpec = BorderSpecification
+                .getDefaultBorder();
+        return new ConditionalBorder(defaultBorderSpec, defaultBorderSpec,
+                defaultBorderSpec, collapsingBorderModel);
     }
 }

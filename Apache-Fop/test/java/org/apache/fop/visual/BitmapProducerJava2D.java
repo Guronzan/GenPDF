@@ -29,15 +29,15 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.avalon.framework.configuration.Configurable;
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.commons.io.IOUtils;
-
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.util.DefaultErrorListener;
 
 /**
@@ -45,6 +45,7 @@ import org.apache.fop.util.DefaultErrorListener;
  * <p>
  * Here's what the configuration element looks like for the class:
  * <p>
+ *
  * <pre>
  * <producer classname="org.apache.fop.visual.BitmapProducerJava2D">
  *   <delete-temp-files>false</delete-temp-files>
@@ -53,51 +54,60 @@ import org.apache.fop.util.DefaultErrorListener;
  * <p>
  * The "delete-temp-files" element is optional and defaults to true.
  */
-public class BitmapProducerJava2D extends AbstractBitmapProducer implements Configurable {
+@Slf4j
+public class BitmapProducerJava2D extends AbstractBitmapProducer implements
+Configurable {
 
     // configure fopFactory as desired
-    private FopFactory fopFactory = FopFactory.newInstance();
+    private final FopFactory fopFactory = FopFactory.newInstance();
 
     private boolean deleteTempFiles;
 
     /** @see org.apache.avalon.framework.configuration.Configurable */
-    public void configure(Configuration cfg) throws ConfigurationException {
-        this.deleteTempFiles = cfg.getChild("delete-temp-files").getValueAsBoolean(true);
+    @Override
+    public void configure(final Configuration cfg)
+            throws ConfigurationException {
+        this.deleteTempFiles = cfg.getChild("delete-temp-files")
+                .getValueAsBoolean(true);
     }
 
     /** @see org.apache.fop.visual.BitmapProducer */
-    public BufferedImage produce(File src, int index, ProducerContext context) {
+    @Override
+    public BufferedImage produce(final File src, final int index,
+            final ProducerContext context) {
         try {
-            FOUserAgent userAgent = fopFactory.newFOUserAgent();
+            final FOUserAgent userAgent = this.fopFactory.newFOUserAgent();
             userAgent.setTargetResolution(context.getTargetResolution());
-            userAgent.setBaseURL(src.getParentFile().toURI().toURL().toString());
+            userAgent
+            .setBaseURL(src.getParentFile().toURI().toURL().toString());
 
-            File outputFile = new File(context.getTargetDir(),
+            final File outputFile = new File(context.getTargetDir(),
                     src.getName() + "." + index + ".java2d.png");
             OutputStream out = new FileOutputStream(outputFile);
             out = new BufferedOutputStream(out);
             try {
-                Fop fop = fopFactory.newFop(MimeConstants.MIME_PNG, userAgent, out);
-                SAXResult res = new SAXResult(fop.getDefaultHandler());
+                final Fop fop = this.fopFactory.newFop(
+                        org.apache.xmlgraphics.util.MimeConstants.MIME_PNG,
+                        userAgent, out);
+                final SAXResult res = new SAXResult(fop.getDefaultHandler());
 
-                Transformer transformer = getTransformer(context);
+                final Transformer transformer = getTransformer(context);
                 transformer.setErrorListener(new DefaultErrorListener(log));
                 transformer.transform(new StreamSource(src), res);
             } finally {
                 IOUtils.closeQuietly(out);
             }
 
-            BufferedImage img = BitmapComparator.getImage(outputFile);
-            if (deleteTempFiles) {
+            final BufferedImage img = BitmapComparator.getImage(outputFile);
+            if (this.deleteTempFiles) {
                 if (!outputFile.delete()) {
                     log.warn("Cannot delete " + outputFile);
                     outputFile.deleteOnExit();
                 }
             }
             return img;
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.error(e);
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
             return null;
         }
     }

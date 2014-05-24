@@ -39,25 +39,31 @@ public class DSCCommentHiResBoundingBox extends DSCCommentBoundingBox {
 
     /**
      * Creates a new instance.
-     * @param bbox the bounding box
+     * 
+     * @param bbox
+     *            the bounding box
      */
-    public DSCCommentHiResBoundingBox(Rectangle2D bbox) {
+    public DSCCommentHiResBoundingBox(final Rectangle2D bbox) {
         super(bbox);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return DSCConstants.HIRES_BBOX;
     }
 
     /** {@inheritDoc} */
-    public void generate(PSGenerator gen) throws IOException {
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
         if (getBoundingBox() != null) {
             gen.writeDSCComment(getName(), new Object[] {
-                new Double(getBoundingBox().getX()),
-                new Double(getBoundingBox().getY()),
-                new Double(getBoundingBox().getX() + getBoundingBox().getWidth()),
-                new Double(getBoundingBox().getY() + getBoundingBox().getHeight())});
+                    new Double(getBoundingBox().getX()),
+                    new Double(getBoundingBox().getY()),
+                    new Double(getBoundingBox().getX()
+                            + getBoundingBox().getWidth()),
+                    new Double(getBoundingBox().getY()
+                            + getBoundingBox().getHeight()) });
         } else {
             gen.writeDSCComment(getName(), DSCConstants.ATEND);
         }

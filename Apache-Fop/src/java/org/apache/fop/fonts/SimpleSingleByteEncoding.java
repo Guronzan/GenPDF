@@ -25,13 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.fop.util.CharUtilities;
 import org.apache.xmlgraphics.fonts.Glyphs;
 
-import org.apache.fop.util.CharUtilities;
-
 /**
- * A simple implementation of the OneByteEncoding mostly used for encodings that are constructed
- * on-the-fly.
+ * A simple implementation of the OneByteEncoding mostly used for encodings that
+ * are constructed on-the-fly.
  */
 public class SimpleSingleByteEncoding implements SingleByteEncoding {
 
@@ -41,20 +40,24 @@ public class SimpleSingleByteEncoding implements SingleByteEncoding {
 
     /**
      * Main constructor.
-     * @param name the encoding's name
+     * 
+     * @param name
+     *            the encoding's name
      */
-    public SimpleSingleByteEncoding(String name) {
+    public SimpleSingleByteEncoding(final String name) {
         this.name = name;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return this.name;
     }
 
     /** {@inheritDoc} */
-    public char mapChar(char c) {
-        Character nc = charMap.get(Character.valueOf(c));
+    @Override
+    public char mapChar(final char c) {
+        final Character nc = this.charMap.get(Character.valueOf(c));
         if (nc != null) {
             return nc.charValue();
         }
@@ -62,11 +65,12 @@ public class SimpleSingleByteEncoding implements SingleByteEncoding {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getCharNameMap() {
-        String[] map = new String[getSize()];
+        final String[] map = new String[getSize()];
         Arrays.fill(map, Glyphs.NOTDEF);
         for (int i = getFirstChar(); i <= getLastChar(); i++) {
-            NamedCharacter ch = this.mapping.get(i - 1);
+            final NamedCharacter ch = this.mapping.get(i - 1);
             map[i] = ch.getName();
         }
         return map;
@@ -74,7 +78,9 @@ public class SimpleSingleByteEncoding implements SingleByteEncoding {
 
     /**
      * Returns the index of the first defined character.
-     * @return the index of the first defined character (always 1 for this class)
+     * 
+     * @return the index of the first defined character (always 1 for this
+     *         class)
      */
     public int getFirstChar() {
         return 1;
@@ -82,6 +88,7 @@ public class SimpleSingleByteEncoding implements SingleByteEncoding {
 
     /**
      * Returns the index of the last defined character.
+     * 
      * @return the index of the last defined character
      */
     public int getLastChar() {
@@ -90,6 +97,7 @@ public class SimpleSingleByteEncoding implements SingleByteEncoding {
 
     /**
      * Returns the number of characters defined by this encoding.
+     * 
      * @return the number of characters
      */
     public int getSize() {
@@ -98,39 +106,47 @@ public class SimpleSingleByteEncoding implements SingleByteEncoding {
 
     /**
      * Indicates whether the encoding is full (with 256 code points).
+     * 
      * @return true if the encoding is full
      */
     public boolean isFull() {
-        return (getSize() == 256);
+        return getSize() == 256;
     }
 
     /**
      * Adds a new character to the encoding.
-     * @param ch the named character
+     * 
+     * @param ch
+     *            the named character
      * @return the code point assigned to the character
      */
-    public char addCharacter(NamedCharacter ch) {
+    public char addCharacter(final NamedCharacter ch) {
         if (!ch.hasSingleUnicodeValue()) {
-            throw new IllegalArgumentException("Only NamedCharacters with a single Unicode value"
-                    + " are currently supported!");
+            throw new IllegalArgumentException(
+                    "Only NamedCharacters with a single Unicode value"
+                            + " are currently supported!");
         }
         if (isFull()) {
             throw new IllegalStateException("Encoding is full!");
         }
-        char newSlot = (char)(getLastChar() + 1);
+        final char newSlot = (char) (getLastChar() + 1);
         this.mapping.add(ch);
-        this.charMap.put(Character.valueOf(ch.getSingleUnicodeValue()), Character.valueOf(newSlot));
+        this.charMap.put(Character.valueOf(ch.getSingleUnicodeValue()),
+                Character.valueOf(newSlot));
         return newSlot;
     }
 
     /**
      * Returns the named character at a given code point in the encoding.
-     * @param codePoint the code point of the character
+     * 
+     * @param codePoint
+     *            the code point of the character
      * @return the NamedCharacter (or null if no character is at this position)
      */
-    public NamedCharacter getCharacterForIndex(int codePoint) {
+    public NamedCharacter getCharacterForIndex(final int codePoint) {
         if (codePoint < 0 || codePoint > 255) {
-            throw new IllegalArgumentException("codePoint must be between 0 and 255");
+            throw new IllegalArgumentException(
+                    "codePoint must be between 0 and 255");
         }
         if (codePoint <= getLastChar()) {
             return this.mapping.get(codePoint - 1);
@@ -140,8 +156,9 @@ public class SimpleSingleByteEncoding implements SingleByteEncoding {
     }
 
     /** {@inheritDoc} */
+    @Override
     public char[] getUnicodeCharMap() {
-        char[] map = new char[getLastChar() + 1];
+        final char[] map = new char[getLastChar() + 1];
         for (int i = 0; i < getFirstChar(); i++) {
             map[i] = CharUtilities.NOT_A_CHARACTER;
         }

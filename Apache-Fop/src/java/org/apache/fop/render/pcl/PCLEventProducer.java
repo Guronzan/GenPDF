@@ -35,23 +35,31 @@ public interface PCLEventProducer extends EventProducer {
 
         /**
          * Returns an event producer.
-         * @param broadcaster the event broadcaster to use
+         * 
+         * @param broadcaster
+         *            the event broadcaster to use
          * @return the event producer
          */
-        public static PCLEventProducer get(EventBroadcaster broadcaster) {
-            return (PCLEventProducer)broadcaster.getEventProducerFor(
-                    PCLEventProducer.class);
+        public static PCLEventProducer get(final EventBroadcaster broadcaster) {
+            return (PCLEventProducer) broadcaster
+                    .getEventProducerFor(PCLEventProducer.class);
         }
     }
 
     /**
      * Paper type could not be determined. Falling back to another.
-     * @param source the event source
-     * @param pageWidth the page width (in millipoints)
-     * @param pageHeight the page height (in millipoints)
-     * @param fallbackPaper the paper type that will be used instead
+     * 
+     * @param source
+     *            the event source
+     * @param pageWidth
+     *            the page width (in millipoints)
+     * @param pageHeight
+     *            the page height (in millipoints)
+     * @param fallbackPaper
+     *            the paper type that will be used instead
      * @event.severity WARN
      */
-    void paperTypeUnavailable(Object source, long pageWidth, long pageHeight, String fallbackPaper);
+    void paperTypeUnavailable(final Object source, final long pageWidth,
+            final long pageHeight, final String fallbackPaper);
 
 }

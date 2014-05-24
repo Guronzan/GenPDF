@@ -30,33 +30,37 @@ public class PenaltyTestCase extends TestCase {
 
     /**
      * Tests for penalty handling.
-     * @throws Exception if an error occurs
+     * 
+     * @throws Exception
+     *             if an error occurs
      */
     public void testTruncatePenalty() throws Exception {
         assertEquals(0, Penalty.truncate(0));
         long penalty = Integer.MAX_VALUE;
         assertEquals(Integer.MAX_VALUE, Penalty.truncate(penalty));
 
-        //Force integer wrap-around
+        // Force integer wrap-around
         penalty++;
         assertEquals(Integer.MAX_VALUE, Penalty.truncate(penalty));
-        //For comparison, normal casting does this
-        assertEquals(Integer.MIN_VALUE, (int)penalty);
+        // For comparison, normal casting does this
+        assertEquals(Integer.MIN_VALUE, (int) penalty);
 
-        //Now on the other end of the spectrum...
+        // Now on the other end of the spectrum...
         penalty = Integer.MIN_VALUE;
         assertEquals(Integer.MIN_VALUE, Penalty.truncate(penalty));
 
-        //Force integer wrap-around
+        // Force integer wrap-around
         penalty -= 500;
         assertEquals(Integer.MIN_VALUE, Penalty.truncate(penalty));
-        //For comparison, normal casting does this
-        assertEquals(Integer.MAX_VALUE - 499, (int)penalty);
+        // For comparison, normal casting does this
+        assertEquals(Integer.MAX_VALUE - 499, (int) penalty);
     }
 
     /**
      * Tests for the {@link Penalty} class.
-     * @throws Exception if an error occurs
+     * 
+     * @throws Exception
+     *             if an error occurs
      */
     public void testPenalty() throws Exception {
         Penalty p1 = Penalty.toPenalty(100);

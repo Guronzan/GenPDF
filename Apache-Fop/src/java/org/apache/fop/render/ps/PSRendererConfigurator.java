@@ -36,7 +36,7 @@ public class PSRendererConfigurator extends PrintRendererConfigurator {
 
     /**
      * Default constructor
-     * 
+     *
      * @param userAgent
      *            user agent
      */
@@ -72,7 +72,7 @@ public class PSRendererConfigurator extends PrintRendererConfigurator {
         if (child != null) {
             psUtil.setRenderingMode(PSRenderingMode.valueOf(child.getValue(
                     psUtil.getRenderingMode().toString()).toUpperCase(
-                    Locale.ENGLISH)));
+                            Locale.ENGLISH)));
         }
         psUtil.setSafeSetPageDevice(cfg.getChild("safe-set-page-device")
                 .getValueAsBoolean(false));

@@ -30,133 +30,152 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * <p>RTF Bookmark.
- * Create an RTF bookmark as a child of given container with default attributes.
- * This class belongs to the "id" attribute processing.</p>
+ * <p>
+ * RTF Bookmark. Create an RTF bookmark as a child of given container with
+ * default attributes. This class belongs to the "id" attribute processing.
+ * </p>
  *
- * <p>This work was authored by Andreas Putz (a.putz@skynamics.com).</p>
+ * <p>
+ * This work was authored by Andreas Putz (a.putz@skynamics.com).
+ * </p>
  */
 public class RtfBookmark extends RtfElement {
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
     // @@ Members
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
 
     /** Name of the bokkmark */
     private String bookmark = null;
     /** Word 2000 supports a length of 40 characters only */
     public static final int MAX_BOOKMARK_LENGTH = 40;
-    /** Word 2000 converts '.' in bookmarks to "_", thats why we control this replacement. */
+    /**
+     * Word 2000 converts '.' in bookmarks to "_", thats why we control this
+     * replacement.
+     */
     public static final char REPLACE_CHARACTER = '_';
 
-
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
     // @@ Construction
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
 
     /**
      * Constructor.
      *
-     * @param parent a <code>RtfBookmarkContainer</code> value
-     * @param writer a <code>Writer</code> value
-     * @param bookmark Name of the bookmark
+     * @param parent
+     *            a <code>RtfBookmarkContainer</code> value
+     * @param writer
+     *            a <code>Writer</code> value
+     * @param bookmark
+     *            Name of the bookmark
      */
-    RtfBookmark (RtfContainer parent, Writer writer, String bookmark) throws IOException {
-        super (parent, writer);
+    RtfBookmark(final RtfContainer parent, final Writer writer,
+            final String bookmark) throws IOException {
+        super(parent, writer);
 
-        int now = bookmark.length ();
+        final int now = bookmark.length();
 
-        this.bookmark = bookmark.substring (0,
-                now < MAX_BOOKMARK_LENGTH ? now : MAX_BOOKMARK_LENGTH);
-        this.bookmark = this.bookmark.replace ('.', REPLACE_CHARACTER);
-        this.bookmark = this.bookmark.replace (' ', REPLACE_CHARACTER);
+        this.bookmark = bookmark.substring(0, now < MAX_BOOKMARK_LENGTH ? now
+                : MAX_BOOKMARK_LENGTH);
+        this.bookmark = this.bookmark.replace('.', REPLACE_CHARACTER);
+        this.bookmark = this.bookmark.replace(' ', REPLACE_CHARACTER);
     }
 
-
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
     // @@ RtfElement implementation
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
 
     /**
      * Is called before writing the Rtf content.
      *
-     * @throws IOException On Error
+     * @throws IOException
+     *             On Error
      */
-    public void writeRtfPrefix () throws IOException {
-        startBookmark ();
+    @Override
+    public void writeRtfPrefix() throws IOException {
+        startBookmark();
     }
 
     /**
      * Writes the RTF content to m_writer.
      *
-     * @exception IOException On error
+     * @exception IOException
+     *                On error
      */
-    public void writeRtfContent () throws IOException {
-//        this.getRtfFile ().getLog ().logInfo ("Write bookmark '" + bookmark + "'.");
+    @Override
+    public void writeRtfContent() throws IOException {
+        // this.getRtfFile ().getLog ().logInfo ("Write bookmark '" + bookmark +
+        // "'.");
         // No content to write
     }
 
     /**
      * Is called after writing the Rtf content.
      *
-     * @throws IOException On Error
+     * @throws IOException
+     *             On Error
      */
-    public void writeRtfSuffix () throws IOException {
-        endBookmark ();
+    @Override
+    public void writeRtfSuffix() throws IOException {
+        endBookmark();
     }
 
-
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
     // @@ Private methods
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
 
     /**
      * Writes RTF content to begin the bookmark.
      *
-     * @throws IOException On error
+     * @throws IOException
+     *             On error
      */
-    private void startBookmark () throws IOException {
+    private void startBookmark() throws IOException {
 
         // {\*\bkmkstart test}
-        writeRtfBookmark ("bkmkstart");
+        writeRtfBookmark("bkmkstart");
     }
 
     /**
      * Writes RTF content to close the bookmark.
      *
-     * @throws IOException On error
+     * @throws IOException
+     *             On error
      */
-    private void endBookmark () throws IOException {
+    private void endBookmark() throws IOException {
 
         // {\*\bkmkend test}
-        writeRtfBookmark ("bkmkend");
+        writeRtfBookmark("bkmkend");
     }
 
     /**
      * Writes the rtf bookmark.
      *
-     * @param tag Begin or close tag
+     * @param tag
+     *            Begin or close tag
      *
-     * @throws IOException On error
+     * @throws IOException
+     *             On error
      */
-    private void writeRtfBookmark (String tag) throws IOException {
-        if (bookmark == null) {
+    private void writeRtfBookmark(final String tag) throws IOException {
+        if (this.bookmark == null) {
             return;
 
         }
 
-        this.writeGroupMark (true);
+        writeGroupMark(true);
 
-        //changed. Now using writeStarControlWord
-        this.writeStarControlWord (tag);
+        // changed. Now using writeStarControlWord
+        writeStarControlWord(tag);
 
-        writer.write (bookmark);
-        this.writeGroupMark (false);
+        this.writer.write(this.bookmark);
+        writeGroupMark(false);
     }
 
-        /**
-         * @return true if this element would generate no "useful" RTF content
-         */
-        public boolean isEmpty() {
-            return bookmark == null || bookmark.trim().length() == 0;
-        }
+    /**
+     * @return true if this element would generate no "useful" RTF content
+     */
+    @Override
+    public boolean isEmpty() {
+        return this.bookmark == null || this.bookmark.trim().length() == 0;
+    }
 }

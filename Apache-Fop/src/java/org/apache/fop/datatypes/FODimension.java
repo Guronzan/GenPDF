@@ -20,8 +20,7 @@
 package org.apache.fop.datatypes;
 
 /**
- * This datatype hold a pair of resolved lengths,
- * specifiying the dimensions in
+ * This datatype hold a pair of resolved lengths, specifiying the dimensions in
  * both inline and block-progression-directions.
  */
 public class FODimension {
@@ -33,29 +32,33 @@ public class FODimension {
 
     /**
      * Constructor
-     * @param ipd length (in millipoints) of the inline-progression-direction
-     * @param bpd length (in millipoints) of the block-progression-direction
+     * 
+     * @param ipd
+     *            length (in millipoints) of the inline-progression-direction
+     * @param bpd
+     *            length (in millipoints) of the block-progression-direction
      */
-    public FODimension(int ipd, int bpd) {
+    public FODimension(final int ipd, final int bpd) {
         this.ipd = ipd;
         this.bpd = bpd;
     }
 
     /** @return ipd */
     public int getIPD() {
-        return ipd;
+        return this.ipd;
     }
 
     /** @return bpd */
     public int getBPD() {
-        return bpd;
+        return this.bpd;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(super.toString());
-        sb.append(" {ipd=").append(Integer.toString(ipd));
-        sb.append(", bpd=").append(Integer.toString(bpd));
+        final StringBuffer sb = new StringBuffer(super.toString());
+        sb.append(" {ipd=").append(Integer.toString(this.ipd));
+        sb.append(", bpd=").append(Integer.toString(this.bpd));
         sb.append("}");
         return sb.toString();
     }

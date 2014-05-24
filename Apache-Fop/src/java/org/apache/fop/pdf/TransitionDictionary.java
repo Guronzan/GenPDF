@@ -20,8 +20,7 @@
 package org.apache.fop.pdf;
 
 /**
- * Transition Dictionary
- * This class is used to build a transition dictionary to
+ * Transition Dictionary This class is used to build a transition dictionary to
  * specify the transition between pages.
  */
 public class TransitionDictionary extends PDFDictionary {
@@ -34,4 +33,3 @@ public class TransitionDictionary extends PDFDictionary {
     }
 
 }
-

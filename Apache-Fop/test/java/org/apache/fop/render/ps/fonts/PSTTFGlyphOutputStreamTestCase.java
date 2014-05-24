@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.mockito.InOrder;
 
 import static org.junit.Assert.fail;
+
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -40,70 +41,81 @@ public class PSTTFGlyphOutputStreamTestCase {
 
     @Before
     public void setUp() {
-        mockGen = mock(PSTTFGenerator.class);
-        glyphOut = new PSTTFGlyphOutputStream(mockGen);
+        this.mockGen = mock(PSTTFGenerator.class);
+        this.glyphOut = new PSTTFGlyphOutputStream(this.mockGen);
     }
 
     /**
-     * Test startGlyphStream() - test that startGlyphStream() invokes reset() and startString() in
-     * PSTTFGenerator.
-     * @exception IOException file write error
+     * Test startGlyphStream() - test that startGlyphStream() invokes reset()
+     * and startString() in PSTTFGenerator.
+     * 
+     * @exception IOException
+     *                file write error
      */
     @Test
     public void testStartGlyphStream() throws IOException {
-        glyphOut.startGlyphStream();
-        verify(mockGen).startString();
+        this.glyphOut.startGlyphStream();
+        verify(this.mockGen).startString();
     }
 
     /**
-     * Test streamGlyph(byte[],int,int) - tests several paths:
-     * 1) strings are properly appended
-     * 2) when total strings size > PSTTFGenerator.MAX_BUFFER_SIZE, the strings is closed and a new
-     * strings is started.
-     * 3) if a glyph of size > PSTTFGenerator.MAX_BUFFER_SIZE is attempted, an exception is thrown.
-     * @throws IOException file write error.
+     * Test streamGlyph(byte[],int,int) - tests several paths: 1) strings are
+     * properly appended 2) when total strings size >
+     * PSTTFGenerator.MAX_BUFFER_SIZE, the strings is closed and a new strings
+     * is started. 3) if a glyph of size > PSTTFGenerator.MAX_BUFFER_SIZE is
+     * attempted, an exception is thrown.
+     * 
+     * @throws IOException
+     *             file write error.
      */
     @Test
     public void testStreamGlyph() throws IOException {
-        int byteArraySize = 10;
-        byte[] byteArray = new byte[byteArraySize];
-        int runs = 100;
+        final int byteArraySize = 10;
+        final byte[] byteArray = new byte[byteArraySize];
+        final int runs = 100;
         for (int i = 0; i < runs; i++) {
-            glyphOut.streamGlyph(byteArray, 0, byteArraySize);
+            this.glyphOut.streamGlyph(byteArray, 0, byteArraySize);
         }
-        verify(mockGen, times(runs)).streamBytes(byteArray, 0, byteArraySize);
+        verify(this.mockGen, times(runs)).streamBytes(byteArray, 0,
+                byteArraySize);
 
         /*
-         * We want to run this for MAX_BUFFER_SIZE / byteArraySize so that go over the string
-         * boundary and enforce the ending and starting of a new string. Using mockito to ensure
-         * that this behaviour is performed in order (since this is an integral behavioural aspect)
+         * We want to run this for MAX_BUFFER_SIZE / byteArraySize so that go
+         * over the string boundary and enforce the ending and starting of a new
+         * string. Using mockito to ensure that this behaviour is performed in
+         * order (since this is an integral behavioural aspect)
          */
-        int stringLimit = PSTTFGenerator.MAX_BUFFER_SIZE / byteArraySize;
+        final int stringLimit = PSTTFGenerator.MAX_BUFFER_SIZE / byteArraySize;
         for (int i = 0; i < stringLimit; i++) {
-            glyphOut.streamGlyph(byteArray, 0, byteArraySize);
+            this.glyphOut.streamGlyph(byteArray, 0, byteArraySize);
         }
-        InOrder inOrder = inOrder(mockGen);
-        inOrder.verify(mockGen, times(stringLimit)).streamBytes(byteArray, 0, byteArraySize);
-        inOrder.verify(mockGen).endString();
-        inOrder.verify(mockGen).startString();
-        inOrder.verify(mockGen, times(runs)).streamBytes(byteArray, 0, byteArraySize);
+        final InOrder inOrder = inOrder(this.mockGen);
+        inOrder.verify(this.mockGen, times(stringLimit)).streamBytes(byteArray,
+                0, byteArraySize);
+        inOrder.verify(this.mockGen).endString();
+        inOrder.verify(this.mockGen).startString();
+        inOrder.verify(this.mockGen, times(runs)).streamBytes(byteArray, 0,
+                byteArraySize);
 
         try {
-            glyphOut.streamGlyph(byteArray, 0, PSTTFGenerator.MAX_BUFFER_SIZE + 1);
+            this.glyphOut.streamGlyph(byteArray, 0,
+                    PSTTFGenerator.MAX_BUFFER_SIZE + 1);
             fail("Shouldn't allow a length > PSTTFGenerator.MAX_BUFFER_SIZE");
-        } catch (UnsupportedOperationException e) {
+        } catch (final UnsupportedOperationException e) {
             // PASS
         }
     }
 
     /**
-     * Test endGlyphStream() - tests that PSTTFGenerator.endString() is invoked when this method
-     * is called.
-     * @throws IOException file write exception
+     * Test endGlyphStream() - tests that PSTTFGenerator.endString() is invoked
+     * when this method is called.
+     * 
+     * @throws IOException
+     *             file write exception
      */
     @Test
     public void testEndGlyphStream() throws IOException {
-        glyphOut.endGlyphStream();
-        verify(mockGen).endString();
+        this.glyphOut.endGlyphStream();
+        verify(this.mockGen).endString();
     }
 }

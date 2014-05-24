@@ -19,41 +19,52 @@
 
 package org.apache.xmlgraphics.image.loader.impl;
 
-import org.w3c.dom.Document;
-
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
 import org.apache.xmlgraphics.image.loader.XMLNamespaceEnabledImageFlavor;
+import org.w3c.dom.Document;
 
 /**
- * This class is an implementation of the Image interface exposing an XML DOM (W3C).
+ * This class is an implementation of the Image interface exposing an XML DOM
+ * (W3C).
  */
 public class ImageXMLDOM extends AbstractImage {
 
-    private ImageFlavor flavor;
-    private Document doc;
-    private String rootNamespace;
+    private final ImageFlavor flavor;
+    private final Document doc;
+    private final String rootNamespace;
 
     /**
      * Main constructor.
-     * @param info the image info object
-     * @param doc the W3C DOM document
-     * @param rootNamespace the root XML namespace of the XML document in the DOM
+     * 
+     * @param info
+     *            the image info object
+     * @param doc
+     *            the W3C DOM document
+     * @param rootNamespace
+     *            the root XML namespace of the XML document in the DOM
      */
-    public ImageXMLDOM(ImageInfo info, Document doc, String rootNamespace) {
+    public ImageXMLDOM(final ImageInfo info, final Document doc,
+            final String rootNamespace) {
         super(info);
         this.doc = doc;
         this.rootNamespace = rootNamespace;
-        this.flavor = new XMLNamespaceEnabledImageFlavor(ImageFlavor.XML_DOM, rootNamespace);
+        this.flavor = new XMLNamespaceEnabledImageFlavor(ImageFlavor.XML_DOM,
+                rootNamespace);
     }
 
     /**
      * Main constructor.
-     * @param info the image info object
-     * @param doc the W3C DOM document
-     * @param flavor the image flavor
+     * 
+     * @param info
+     *            the image info object
+     * @param doc
+     *            the W3C DOM document
+     * @param flavor
+     *            the image flavor
      */
-    public ImageXMLDOM(ImageInfo info, Document doc, XMLNamespaceEnabledImageFlavor flavor) {
+    public ImageXMLDOM(final ImageInfo info, final Document doc,
+            final XMLNamespaceEnabledImageFlavor flavor) {
         super(info);
         this.doc = doc;
         this.rootNamespace = flavor.getNamespace();
@@ -61,17 +72,20 @@ public class ImageXMLDOM extends AbstractImage {
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getFlavor() {
         return this.flavor;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isCacheable() {
         return true;
     }
 
     /**
      * Returns the contained W3C DOM document.
+     * 
      * @return the DOM
      */
     public Document getDocument() {
@@ -80,6 +94,7 @@ public class ImageXMLDOM extends AbstractImage {
 
     /**
      * Returns the root XML namespace of the XML document.
+     * 
      * @return the root namespace
      */
     public String getRootNamespace() {

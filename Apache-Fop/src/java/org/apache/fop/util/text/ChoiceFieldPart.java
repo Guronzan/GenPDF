@@ -32,36 +32,42 @@ import org.apache.fop.util.text.AdvancedMessageFormat.PartFactory;
  */
 public class ChoiceFieldPart implements Part {
 
-    private static final Pattern VARIABLE_REGEX = Pattern.compile("\\{([^\\}]+)\\}");
+    private static final Pattern VARIABLE_REGEX = Pattern
+            .compile("\\{([^\\}]+)\\}");
 
-    private String fieldName;
-    private ChoiceFormat choiceFormat;
+    private final String fieldName;
+    private final ChoiceFormat choiceFormat;
 
     /**
      * Creates a new choice part.
-     * @param fieldName the field name to work on
-     * @param choicesPattern the choices pattern (as used by {@link ChoiceFormat})
+     * 
+     * @param fieldName
+     *            the field name to work on
+     * @param choicesPattern
+     *            the choices pattern (as used by {@link ChoiceFormat})
      */
-    public ChoiceFieldPart(String fieldName, String choicesPattern) {
+    public ChoiceFieldPart(final String fieldName, final String choicesPattern) {
         this.fieldName = fieldName;
         this.choiceFormat = new ChoiceFormat(choicesPattern);
     }
 
     /** {@inheritDoc} */
-    public boolean isGenerated(Map params) {
-        Object obj = params.get(fieldName);
+    @Override
+    public boolean isGenerated(final Map params) {
+        final Object obj = params.get(this.fieldName);
         return obj != null;
     }
 
     /** {@inheritDoc} */
-    public void write(StringBuffer sb, Map params) {
-        Object obj = params.get(fieldName);
-        Number num = (Number)obj;
-        String result = this.choiceFormat.format(num.doubleValue());
-        Matcher m = VARIABLE_REGEX.matcher(result);
+    @Override
+    public void write(final StringBuffer sb, final Map params) {
+        final Object obj = params.get(this.fieldName);
+        final Number num = (Number) obj;
+        final String result = this.choiceFormat.format(num.doubleValue());
+        final Matcher m = VARIABLE_REGEX.matcher(result);
         if (m.find()) {
-            //Resolve inner variables
-            AdvancedMessageFormat f = new AdvancedMessageFormat(result);
+            // Resolve inner variables
+            final AdvancedMessageFormat f = new AdvancedMessageFormat(result);
             f.format(params, sb);
         } else {
             sb.append(result);
@@ -69,6 +75,7 @@ public class ChoiceFieldPart implements Part {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "{" + this.fieldName + ",choice, ....}";
     }
@@ -77,11 +84,13 @@ public class ChoiceFieldPart implements Part {
     public static class Factory implements PartFactory {
 
         /** {@inheritDoc} */
-        public Part newPart(String fieldName, String values) {
+        @Override
+        public Part newPart(final String fieldName, final String values) {
             return new ChoiceFieldPart(fieldName, values);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String getFormat() {
             return "choice";
         }

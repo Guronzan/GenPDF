@@ -63,7 +63,7 @@ public final class ClasspathResource {
     private static ClasspathResource classpathResource;
 
     private ClasspathResource() {
-        contentMappings = new HashMap();
+        this.contentMappings = new HashMap();
         loadManifests();
     }
 
@@ -81,29 +81,30 @@ public final class ClasspathResource {
 
     /* Actual return type: Set<ClassLoader> */
     private Set getClassLoadersForResources() {
-        Set v = new HashSet();
+        final Set v = new HashSet();
         try {
-            ClassLoader l = ClassLoader.getSystemClassLoader();
+            final ClassLoader l = ClassLoader.getSystemClassLoader();
             if (l != null) {
                 v.add(l);
             }
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             // Ignore
         }
         try {
-            ClassLoader l = Thread.currentThread().getContextClassLoader();
+            final ClassLoader l = Thread.currentThread()
+                    .getContextClassLoader();
             if (l != null) {
                 v.add(l);
             }
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             // Ignore
         }
         try {
-            ClassLoader l = ClasspathResource.class.getClassLoader();
+            final ClassLoader l = ClasspathResource.class.getClassLoader();
             if (l != null) {
                 v.add(l);
             }
-        } catch (SecurityException e) {
+        } catch (final SecurityException e) {
             // Ignore
         }
         return v;
@@ -113,9 +114,9 @@ public final class ClasspathResource {
         Enumeration e;
         try {
 
-            Iterator it = getClassLoadersForResources().iterator();
+            final Iterator it = getClassLoadersForResources().iterator();
             while (it.hasNext()) {
-                ClassLoader classLoader = (ClassLoader) it.next();
+                final ClassLoader classLoader = (ClassLoader) it.next();
 
                 e = classLoader.getResources(MANIFEST_PATH);
 
@@ -138,23 +139,23 @@ public final class ClasspathResource {
                                 addToMapping(contentType, name, classLoader);
                             }
                         }
-                    } catch (IOException io) {
+                    } catch (final IOException io) {
                         // TODO: Log.
                     }
                 }
             }
 
-        } catch (IOException io) {
+        } catch (final IOException io) {
             // TODO: Log.
         }
     }
 
     private void addToMapping(final String contentType, final String name,
             final ClassLoader classLoader) {
-        List existingFiles = (List) contentMappings.get(contentType);
+        List existingFiles = (List) this.contentMappings.get(contentType);
         if (existingFiles == null) {
             existingFiles = new Vector();
-            contentMappings.put(contentType, existingFiles);
+            this.contentMappings.put(contentType, existingFiles);
         }
         final URL url = classLoader.getResource(name);
         if (url != null) {
@@ -170,7 +171,7 @@ public final class ClasspathResource {
      * @return a List&lt;URL&gt;, guaranteed to be != null.
      */
     public List listResourcesOfMimeType(final String mimeType) {
-        final List content = (List) contentMappings.get(mimeType);
+        final List content = (List) this.contentMappings.get(mimeType);
         if (content == null) {
             return Collections.EMPTY_LIST;
         } else {

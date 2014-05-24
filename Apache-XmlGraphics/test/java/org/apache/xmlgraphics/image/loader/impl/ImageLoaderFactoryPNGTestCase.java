@@ -19,11 +19,10 @@
 
 package org.apache.xmlgraphics.image.loader.impl;
 
-import org.junit.Test;
-
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.spi.ImageLoader;
 import org.apache.xmlgraphics.util.MimeConstants;
+import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
@@ -31,34 +30,36 @@ import static org.junit.Assert.fail;
 
 public class ImageLoaderFactoryPNGTestCase {
 
-    private ImageLoaderFactoryPNG ilfpng = new ImageLoaderFactoryPNG();
+    private final ImageLoaderFactoryPNG ilfpng = new ImageLoaderFactoryPNG();
 
     @Test
     public void testGetSupportedMIMETypes() {
-        assertArrayEquals(new String[] {MimeConstants.MIME_PNG}, ilfpng.getSupportedMIMETypes());
+        assertArrayEquals(new String[] { MimeConstants.MIME_PNG },
+                this.ilfpng.getSupportedMIMETypes());
     }
 
     @Test
     public void testGetSupportedFlavors() {
-        assertArrayEquals(new ImageFlavor[] {ImageFlavor.RENDERED_IMAGE},
-                ilfpng.getSupportedFlavors(MimeConstants.MIME_PNG));
+        assertArrayEquals(new ImageFlavor[] { ImageFlavor.RENDERED_IMAGE },
+                this.ilfpng.getSupportedFlavors(MimeConstants.MIME_PNG));
         try {
-            ilfpng.getSupportedFlavors(MimeConstants.MIME_JPEG);
+            this.ilfpng.getSupportedFlavors(MimeConstants.MIME_JPEG);
             fail("An exception should have been thrown above....");
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             // do nothing; this is expected
         }
     }
 
     @Test
     public void testNewImageLoader() {
-        ImageLoader il = ilfpng.newImageLoader(ImageFlavor.RENDERED_IMAGE);
+        final ImageLoader il = this.ilfpng
+                .newImageLoader(ImageFlavor.RENDERED_IMAGE);
         assertTrue(il instanceof ImageLoaderPNG);
     }
 
     @Test
     public void testIsAvailable() {
-        assertTrue(ilfpng.isAvailable());
+        assertTrue(this.ilfpng.isAvailable());
     }
 
 }

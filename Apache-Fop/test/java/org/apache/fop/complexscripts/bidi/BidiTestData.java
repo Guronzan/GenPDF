@@ -49,24 +49,27 @@ public final class BidiTestData {
 
     public static final int NUM_TEST_SEQUENCES = 216357;
 
-    public static int[] readTestData ( String prefix, int index ) {
+    public static int[] readTestData(final String prefix, final int index) {
         int[] data = null;
         InputStream is = null;
-        Class btc = BidiTestData.class;
-        String name = btc.getSimpleName() + "$" + prefix + index + ".ser";
+        final Class btc = BidiTestData.class;
+        final String name = btc.getSimpleName() + "$" + prefix + index + ".ser";
         try {
-            if ( ( is = btc.getResourceAsStream ( name ) ) != null ) {
-                ObjectInputStream ois = new ObjectInputStream ( is );
+            if ((is = btc.getResourceAsStream(name)) != null) {
+                final ObjectInputStream ois = new ObjectInputStream(is);
                 data = (int[]) ois.readObject();
                 ois.close();
             }
-        } catch ( IOException e ) {
+        } catch (final IOException e) {
             data = null;
-        } catch ( ClassNotFoundException e ) {
+        } catch (final ClassNotFoundException e) {
             data = null;
         } finally {
-            if ( is != null ) {
-                try { is.close(); } catch ( Exception e ) {}
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (final Exception e) {
+                }
             }
         }
         return data;

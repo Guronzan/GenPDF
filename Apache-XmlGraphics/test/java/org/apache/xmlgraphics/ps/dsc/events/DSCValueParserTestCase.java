@@ -21,18 +21,16 @@ package org.apache.xmlgraphics.ps.dsc.events;
 
 import java.util.List;
 
-import org.apache.xmlgraphics.ps.dsc.events.DSCCommentBeginResource;
-
 import junit.framework.TestCase;
 
 public class DSCValueParserTestCase extends TestCase {
 
-    private String[] toArray(List params) {
-        return (String[])params.toArray(new String[params.size()]);
+    private String[] toArray(final List params) {
+        return (String[]) params.toArray(new String[params.size()]);
     }
 
-    public void testText() throws Exception {
-        DSCCommentBeginResource obj = new DSCCommentBeginResource();
+    public void testText() {
+        final DSCCommentBeginResource obj = new DSCCommentBeginResource();
         String[] res = toArray(obj.splitParams("procset Test"));
         assertEquals(2, res.length);
         assertEquals("procset", res[0]);
@@ -44,26 +42,29 @@ public class DSCValueParserTestCase extends TestCase {
         assertEquals("Test", res[1]);
     }
 
-    public void testParentheseText() throws Exception {
-        DSCCommentBeginResource obj = new DSCCommentBeginResource();
+    public void testParentheseText() {
+        final DSCCommentBeginResource obj = new DSCCommentBeginResource();
         String[] res = toArray(obj.splitParams("procset (Hello World!)"));
         assertEquals(2, res.length);
         assertEquals("procset", res[0]);
         assertEquals("Hello World!", res[1]);
 
-        res = toArray(obj.splitParams("procset\t(Hello\t\\\\wonderful/ World!)"));
+        res = toArray(obj
+                .splitParams("procset\t(Hello\t\\\\wonderful/ World!)"));
         assertEquals(2, res.length);
         assertEquals("procset", res[0]);
         assertEquals("Hello\t\\wonderful/ World!", res[1]);
 
-        res = toArray(obj.splitParams("procset (Hello \\042wonderful\\042 World!) blahblah"));
+        res = toArray(obj
+                .splitParams("procset (Hello \\042wonderful\\042 World!) blahblah"));
         assertEquals(3, res.length);
         assertEquals("procset", res[0]);
         assertEquals("Hello \"wonderful\" World!", res[1]);
         assertEquals("blahblah", res[2]);
 
-        //Parentheses not balanced
-        res = toArray(obj.splitParams("procset (Hello (wonderful) World! blahblah"));
+        // Parentheses not balanced
+        res = toArray(obj
+                .splitParams("procset (Hello (wonderful) World! blahblah"));
         assertEquals(2, res.length);
         assertEquals("procset", res[0]);
         assertEquals("Hello (wonderful) World! blahblah", res[1]);

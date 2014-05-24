@@ -36,9 +36,11 @@ public class PDFArray extends PDFObject {
 
     /**
      * Create a new, empty array object
-     * @param parent the array's parent if any
+     * 
+     * @param parent
+     *            the array's parent if any
      */
-    public PDFArray(PDFObject parent) {
+    public PDFArray(final PDFObject parent) {
         /* generic creation of PDF object */
         super(parent);
     }
@@ -52,10 +54,13 @@ public class PDFArray extends PDFObject {
 
     /**
      * Create an array object.
-     * @param parent the array's parent if any
-     * @param values the actual array wrapped by this object
+     * 
+     * @param parent
+     *            the array's parent if any
+     * @param values
+     *            the actual array wrapped by this object
      */
-    public PDFArray(PDFObject parent, int[] values) {
+    public PDFArray(final PDFObject parent, final int[] values) {
         /* generic creation of PDF object */
         super(parent);
 
@@ -66,10 +71,13 @@ public class PDFArray extends PDFObject {
 
     /**
      * Create an array object.
-     * @param parent the array's parent if any
-     * @param values the actual array wrapped by this object
+     * 
+     * @param parent
+     *            the array's parent if any
+     * @param values
+     *            the actual array wrapped by this object
      */
-    public PDFArray(PDFObject parent, double[] values) {
+    public PDFArray(final PDFObject parent, final double[] values) {
         /* generic creation of PDF object */
         super(parent);
 
@@ -80,10 +88,13 @@ public class PDFArray extends PDFObject {
 
     /**
      * Create an array object.
-     * @param parent the array's parent if any
-     * @param values the actual values wrapped by this object
+     * 
+     * @param parent
+     *            the array's parent if any
+     * @param values
+     *            the actual values wrapped by this object
      */
-    public PDFArray(PDFObject parent, List<?> values) {
+    public PDFArray(final PDFObject parent, final List<?> values) {
         /* generic creation of PDF object */
         super(parent);
 
@@ -93,18 +104,22 @@ public class PDFArray extends PDFObject {
     /**
      * Creates an array object made of the given elements.
      *
-     * @param elements the array content
+     * @param elements
+     *            the array content
      */
-    public PDFArray(Object... elements) {
+    public PDFArray(final Object... elements) {
         this(null, elements);
     }
 
     /**
      * Create the array object
-     * @param parent the array's parent if any
-     * @param values the actual array wrapped by this object
+     * 
+     * @param parent
+     *            the array's parent if any
+     * @param values
+     *            the actual array wrapped by this object
      */
-    public PDFArray(PDFObject parent, Object[] values) {
+    public PDFArray(final PDFObject parent, final Object[] values) {
         /* generic creation of PDF object */
         super(parent);
 
@@ -115,15 +130,18 @@ public class PDFArray extends PDFObject {
 
     /**
      * Indicates whether the given object exists in the array.
-     * @param obj the object to look for
+     * 
+     * @param obj
+     *            the object to look for
      * @return true if obj is contained
      */
-    public boolean contains(Object obj) {
+    public boolean contains(final Object obj) {
         return this.values.contains(obj);
     }
 
     /**
      * Returns the length of the array
+     * 
      * @return the length of the array
      */
     public int length() {
@@ -132,38 +150,48 @@ public class PDFArray extends PDFObject {
 
     /**
      * Sets an entry at a given location.
-     * @param index the index of the value to set
-     * @param obj the new value
+     * 
+     * @param index
+     *            the index of the value to set
+     * @param obj
+     *            the new value
      */
-    public void set(int index, Object obj) {
+    public void set(final int index, final Object obj) {
         this.values.set(index, obj);
     }
 
     /**
      * Sets an entry at a given location.
-     * @param index the index of the value to set
-     * @param value the new value
+     * 
+     * @param index
+     *            the index of the value to set
+     * @param value
+     *            the new value
      */
-    public void set(int index, double value) {
+    public void set(final int index, final double value) {
         this.values.set(index, new Double(value));
     }
 
     /**
      * Gets an entry at a given location.
-     * @param index the index of the value to set
+     * 
+     * @param index
+     *            the index of the value to set
      * @return the requested value
      */
-    public Object get(int index) {
+    public Object get(final int index) {
         return this.values.get(index);
     }
 
     /**
      * Adds a new value to the array.
-     * @param obj the value
+     * 
+     * @param obj
+     *            the value
      */
-    public void add(Object obj) {
+    public void add(final Object obj) {
         if (obj instanceof PDFObject) {
-            PDFObject pdfObj = (PDFObject)obj;
+            final PDFObject pdfObj = (PDFObject) obj;
             if (!pdfObj.hasObjectNumber()) {
                 pdfObj.setParent(this);
             }
@@ -173,9 +201,11 @@ public class PDFArray extends PDFObject {
 
     /**
      * Adds a new value to the array.
-     * @param value the value
+     * 
+     * @param value
+     *            the value
      */
-    public void add(double value) {
+    public void add(final double value) {
         this.values.add(new Double(value));
     }
 
@@ -188,15 +218,15 @@ public class PDFArray extends PDFObject {
 
     /** {@inheritDoc} */
     @Override
-    public int output(OutputStream stream) throws IOException {
-        CountingOutputStream cout = new CountingOutputStream(stream);
-        StringBuilder textBuffer = new StringBuilder(64);
+    public int output(final OutputStream stream) throws IOException {
+        final CountingOutputStream cout = new CountingOutputStream(stream);
+        final StringBuilder textBuffer = new StringBuilder(64);
         textBuffer.append('[');
-        for (int i = 0; i < values.size(); i++) {
+        for (int i = 0; i < this.values.size(); i++) {
             if (i > 0) {
                 textBuffer.append(' ');
             }
-            Object obj = this.values.get(i);
+            final Object obj = this.values.get(i);
             formatObject(obj, cout, textBuffer);
         }
         textBuffer.append(']');

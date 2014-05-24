@@ -41,15 +41,15 @@ public class FontFileReaderTestCase {
     private final byte[] byteArray;
 
     /**
-     * Constructor - initialises an array that only needs to be created once. It creates a byte[]
-     * of form { 0x00, 0x01, 0x02, 0x03..., 0xff};
+     * Constructor - initialises an array that only needs to be created once. It
+     * creates a byte[] of form { 0x00, 0x01, 0x02, 0x03..., 0xff};
      */
     public FontFileReaderTestCase() {
-        byteArray = new byte[256];
+        this.byteArray = new byte[256];
         for (int i = 0; i < 256; i++) {
-            byteArray[i] = (byte) i;
+            this.byteArray[i] = (byte) i;
         }
-        in = new ByteArrayInputStream(byteArray);
+        this.in = new ByteArrayInputStream(this.byteArray);
     }
 
     /**
@@ -58,8 +58,8 @@ public class FontFileReaderTestCase {
     @Before
     public void setUp() {
         try {
-            fontReader = new FontFileReader(in);
-        } catch (Exception e) {
+            this.fontReader = new FontFileReader(this.in);
+        } catch (final Exception e) {
             fail("Error: " + e.getMessage());
         }
     }
@@ -69,67 +69,76 @@ public class FontFileReaderTestCase {
      *
      */
     public void tearDown() {
-        fontReader = null;
+        this.fontReader = null;
     }
 
     /**
      * Test readTTFByte()
-     * @throws IOException exception
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testReadTTFByte() throws IOException {
         for (int i = 0; i < 256; i++) {
-            assertEquals((byte) i, fontReader.readTTFByte());
+            assertEquals((byte) i, this.fontReader.readTTFByte());
         }
     }
 
     /**
-     * Test seekSet() - check that it moves to the correct position and enforce a failure case.
-     * @throws IOException exception
+     * Test seekSet() - check that it moves to the correct position and enforce
+     * a failure case.
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testSeekSet() throws IOException {
-        fontReader.seekSet(10);
-        assertEquals(10, fontReader.readTTFByte());
+        this.fontReader.seekSet(10);
+        assertEquals(10, this.fontReader.readTTFByte());
         try {
-            fontReader.seekSet(257);
+            this.fontReader.seekSet(257);
             fail("FileFontReaderTest Failed testSeekSet");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // Passed
         }
     }
 
     /**
-     * Test skip() - check that it moves to the correct position and enforce a failure case.
-     * @throws IOException exception
+     * Test skip() - check that it moves to the correct position and enforce a
+     * failure case.
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testSkip() throws IOException {
-        fontReader.skip(100);
-        assertEquals(100, fontReader.readTTFByte());
+        this.fontReader.skip(100);
+        assertEquals(100, this.fontReader.readTTFByte());
         try {
             // 100 (seekAdd) + 1 (read() = 1 byte) + 156 = 257
-            fontReader.skip(156);
+            this.fontReader.skip(156);
             fail("FileFontReaderTest Failed testSkip");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // Passed
         }
     }
 
     /**
-     * Test getCurrentPos() - 3 checks:
-     * 1) test with seekSet(int)
-     * 2) test with skip(int)
-     * 3) test with a readTTFByte() (this moves the position by the size of the data being read)
-     * @throws IOException exception
+     * Test getCurrentPos() - 3 checks: 1) test with seekSet(int) 2) test with
+     * skip(int) 3) test with a readTTFByte() (this moves the position by the
+     * size of the data being read)
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testGetCurrentPos() throws IOException {
-        fontReader.seekSet(10);
-        fontReader.skip(100);
-        assertEquals(110, fontReader.getCurrentPos());
-        fontReader.readTTFByte();
-        assertEquals(111, fontReader.getCurrentPos());
+        this.fontReader.seekSet(10);
+        this.fontReader.skip(100);
+        assertEquals(110, this.fontReader.getCurrentPos());
+        this.fontReader.readTTFByte();
+        assertEquals(111, this.fontReader.getCurrentPos());
     }
 
     /**
@@ -137,150 +146,177 @@ public class FontFileReaderTestCase {
      */
     @Test
     public void testGetFileSize() {
-        assertEquals(256, fontReader.getFileSize());
+        assertEquals(256, this.fontReader.getFileSize());
     }
 
     /**
      * Test readTTFUByte()
-     * @throws IOException exception
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testReadTTFUByte() throws IOException {
         for (int i = 0; i < 256; i++) {
-            assertEquals(i, fontReader.readTTFUByte());
+            assertEquals(i, this.fontReader.readTTFUByte());
         }
     }
 
     /**
-     * Test readTTFShort() - Test positive and negative numbers (two's compliment).
-     * @throws IOException exception
+     * Test readTTFShort() - Test positive and negative numbers (two's
+     * compliment).
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testReadTTFShort() throws IOException {
         // 0x0001 = 1
-        assertEquals("Should have been 1 (0x0001)", 1, fontReader.readTTFShort());
+        assertEquals("Should have been 1 (0x0001)", 1,
+                this.fontReader.readTTFShort());
         // 0x0203 = 515
-        assertEquals(515, fontReader.readTTFShort());
+        assertEquals(515, this.fontReader.readTTFShort());
         // now test negative numbers
-        fontReader.seekSet(250);
+        this.fontReader.seekSet(250);
         // 0xfafb
-        assertEquals(-1285, fontReader.readTTFShort());
+        assertEquals(-1285, this.fontReader.readTTFShort());
     }
 
     /**
-     * Test readTTFUShort() - Test positive and potentially negative numbers (two's compliment).
-     * @throws IOException exception
+     * Test readTTFUShort() - Test positive and potentially negative numbers
+     * (two's compliment).
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testReadTTFUShort() throws IOException {
         // 0x0001
-        assertEquals(1, fontReader.readTTFUShort());
+        assertEquals(1, this.fontReader.readTTFUShort());
         // 0x0203
-        assertEquals(515, fontReader.readTTFUShort());
+        assertEquals(515, this.fontReader.readTTFUShort());
         // test potential negatives
-        fontReader.seekSet(250);
+        this.fontReader.seekSet(250);
         // 0xfafb
-        assertEquals((250 << 8)  + 251, fontReader.readTTFUShort());
+        assertEquals((250 << 8) + 251, this.fontReader.readTTFUShort());
     }
 
     /**
-     * Test readTTFShort(int) - test reading ahead of current position and behind current position
-     * and in both cases ensure that our current position isn't changed.
-     * @throws IOException exception
+     * Test readTTFShort(int) - test reading ahead of current position and
+     * behind current position and in both cases ensure that our current
+     * position isn't changed.
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testReadTTFShortWithArg() throws IOException {
         // 0x6465
-        assertEquals(25701, fontReader.readTTFShort(100));
-        assertEquals(0, fontReader.getCurrentPos());
+        assertEquals(25701, this.fontReader.readTTFShort(100));
+        assertEquals(0, this.fontReader.getCurrentPos());
         // read behind current position (and negative)
-        fontReader.seekSet(255);
+        this.fontReader.seekSet(255);
         // 0xfafb
-        assertEquals(-1285, fontReader.readTTFShort(250));
-        assertEquals(255, fontReader.getCurrentPos());
+        assertEquals(-1285, this.fontReader.readTTFShort(250));
+        assertEquals(255, this.fontReader.getCurrentPos());
     }
 
     /**
-     * Test readTTFUShort(int arg) - test reading ahead of current position and behind current
-     * position and in both cases ensure that our current position isn't changed.
-     * @throws IOException exception
+     * Test readTTFUShort(int arg) - test reading ahead of current position and
+     * behind current position and in both cases ensure that our current
+     * position isn't changed.
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testReadTTFUShortWithArg() throws IOException {
         // 0x6465
-        assertEquals(25701, fontReader.readTTFUShort(100));
-        assertEquals(0, fontReader.getCurrentPos());
+        assertEquals(25701, this.fontReader.readTTFUShort(100));
+        assertEquals(0, this.fontReader.getCurrentPos());
         // read behind current position (and potential negative)
-        fontReader.seekSet(255);
+        this.fontReader.seekSet(255);
         // 0xfafb
-        assertEquals(64251, fontReader.readTTFUShort(250));
-        assertEquals(255, fontReader.getCurrentPos());
+        assertEquals(64251, this.fontReader.readTTFUShort(250));
+        assertEquals(255, this.fontReader.getCurrentPos());
     }
 
     /**
      * Test readTTFLong()
-     * @throws IOException exception
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testReadTTFLong() throws IOException {
         // 0x00010203
-        assertEquals(66051, fontReader.readTTFLong());
+        assertEquals(66051, this.fontReader.readTTFLong());
         // test negative numbers
-        fontReader.seekSet(250);
+        this.fontReader.seekSet(250);
         // 0xf0f1f2f3
-        assertEquals(-84148995, fontReader.readTTFLong());
+        assertEquals(-84148995, this.fontReader.readTTFLong());
     }
 
     /**
      * Test readTTFULong()
-     * @throws IOException exception
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testReadTTFULong() throws IOException {
         // 0x00010203
-        assertEquals(66051, fontReader.readTTFULong());
+        assertEquals(66051, this.fontReader.readTTFULong());
         // test negative numbers
-        fontReader.seekSet(250);
+        this.fontReader.seekSet(250);
         // 0xfafbfcfd
-        assertEquals(4210818301L, fontReader.readTTFULong());
+        assertEquals(4210818301L, this.fontReader.readTTFULong());
     }
 
     /**
-     * Test readTTFString() - there are two paths to test here:
-     * 1) A null terminated string
-     * 2) A string not terminated with a null (we expect this to throw an EOFException)
-     * @throws IOException exception
+     * Test readTTFString() - there are two paths to test here: 1) A null
+     * terminated string 2) A string not terminated with a null (we expect this
+     * to throw an EOFException)
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testReadTTFString() throws IOException {
-        byte[] strByte = {(byte)'t', (byte)'e', (byte)'s', (byte)'t', 0x00};
-        fontReader = new FontFileReader(new ByteArrayInputStream(strByte));
-        assertEquals("test", fontReader.readTTFString());
+        final byte[] strByte = { (byte) 't', (byte) 'e', (byte) 's',
+                (byte) 't', 0x00 };
+        this.fontReader = new FontFileReader(new ByteArrayInputStream(strByte));
+        assertEquals("test", this.fontReader.readTTFString());
         try {
             // not NUL terminated
-            byte[] strByteNoNull = {(byte)'t', (byte)'e', (byte)'s', (byte)'t'};
-            fontReader = new FontFileReader(new ByteArrayInputStream(strByteNoNull));
-            assertEquals("test", fontReader.readTTFString());
+            final byte[] strByteNoNull = { (byte) 't', (byte) 'e', (byte) 's',
+                    (byte) 't' };
+            this.fontReader = new FontFileReader(new ByteArrayInputStream(
+                    strByteNoNull));
+            assertEquals("test", this.fontReader.readTTFString());
             fail("FontFileReaderTest testReadTTFString Fails.");
-        } catch (EOFException e) {
+        } catch (final EOFException e) {
             // Pass
         }
     }
 
     /**
      * Test readTTFString(int arg)
-     * @throws IOException exception
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testReadTTFStringIntArg() throws IOException {
-        byte[] strByte = {(byte)'t', (byte)'e', (byte)'s', (byte)'t'};
-        fontReader = new FontFileReader(new ByteArrayInputStream(strByte));
-        assertEquals("test", fontReader.readTTFString(4));
+        final byte[] strByte = { (byte) 't', (byte) 'e', (byte) 's', (byte) 't' };
+        this.fontReader = new FontFileReader(new ByteArrayInputStream(strByte));
+        assertEquals("test", this.fontReader.readTTFString(4));
         try {
-            fontReader = new FontFileReader(new ByteArrayInputStream(strByte));
-            assertEquals("test", fontReader.readTTFString(5));
+            this.fontReader = new FontFileReader(new ByteArrayInputStream(
+                    strByte));
+            assertEquals("test", this.fontReader.readTTFString(5));
             fail("FontFileReaderTest testReadTTFStringIntArg Fails.");
-        } catch (EOFException e) {
+        } catch (final EOFException e) {
             // Pass
         }
     }
@@ -294,11 +330,13 @@ public class FontFileReaderTestCase {
 
     /**
      * Test getBytes()
-     * @throws IOException exception
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testGetBytes() throws IOException {
-        byte[] retrievedBytes = fontReader.getBytes(0, 256);
-        assertTrue(Arrays.equals(byteArray, retrievedBytes));
+        final byte[] retrievedBytes = this.fontReader.getBytes(0, 256);
+        assertTrue(Arrays.equals(this.byteArray, retrievedBytes));
     }
 }

@@ -23,8 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Enumerates the {@linkplain http://unicode.org/Public/MAPPINGS/VENDORS/ADOBE/stdenc.txt} for
- * characters  found in a Type1 font.
+ * Enumerates the {@linkplain http
+ * ://unicode.org/Public/MAPPINGS/VENDORS/ADOBE/stdenc.txt} for characters found
+ * in a Type1 font.
  */
 enum AdobeStandardEncoding {
     /** space character */
@@ -244,11 +245,14 @@ enum AdobeStandardEncoding {
     /** double left quotation mark */
     quotedblleft(0x201C, 0xAA, "LEFT DOUBLE QUOTATION MARK", "quotedblleft"),
     /** left-pointing double angle quotation mark */
-    guillemotleft(0x00AB, 0xAB, "LEFT-POINTING DOUBLE ANGLE QUOTATION MARK", "guillemotleft"),
-    /** left-pointing  single quotation mark */
-    guilsinglleft(0x2039, 0xAC, "SINGLE LEFT-POINTING ANGLE QUOTATION MARK", "guilsinglleft"),
-    /** right-pointing  single quotation mark */
-    guilsinglright(0x203A, 0xAD, "SINGLE RIGHT-POINTING ANGLE QUOTATION MARK", "guilsinglright"),
+    guillemotleft(0x00AB, 0xAB, "LEFT-POINTING DOUBLE ANGLE QUOTATION MARK",
+            "guillemotleft"),
+    /** left-pointing single quotation mark */
+    guilsinglleft(0x2039, 0xAC, "SINGLE LEFT-POINTING ANGLE QUOTATION MARK",
+            "guilsinglleft"),
+    /** right-pointing single quotation mark */
+    guilsinglright(0x203A, 0xAD, "SINGLE RIGHT-POINTING ANGLE QUOTATION MARK",
+            "guilsinglright"),
     /** fi ligature */
     fi(0xFB01, 0xAE, "LATIN SMALL LIGATURE FI", "fi"),
     /** fl ligature */
@@ -262,19 +266,22 @@ enum AdobeStandardEncoding {
     /** centered period character */
     periodcentered(0x00B7, 0xB4, "MIDDLE DOT", "periodcentered"),
     /** centered period character */
-    periodcentered_bullet_operator(0x2219, 0xB4, "BULLET OPERATOR", "periodcentered"),
+    periodcentered_bullet_operator(0x2219, 0xB4, "BULLET OPERATOR",
+            "periodcentered"),
     /** paragraph character */
     paragraph(0x00B6, 0xB6, "PILCROW SIGN", "paragraph"),
     /** bullet character */
     bullet(0x2022, 0xB7, "BULLET", "bullet"),
     /** single low-9 quotation mark */
-    quotesinglbase(0x201A, 0xB8, "SINGLE LOW-9 QUOTATION MARK", "quotesinglbase"),
+    quotesinglbase(0x201A, 0xB8, "SINGLE LOW-9 QUOTATION MARK",
+            "quotesinglbase"),
     /** double low-9 quotation mark */
     quotedblbase(0x201E, 0xB9, "DOUBLE LOW-9 QUOTATION MARK", "quotedblbase"),
     /** right double quotation mark */
     quotedblright(0x201D, 0xBA, "RIGHT DOUBLE QUOTATION MARK", "quotedblright"),
     /** right-pointing double angle quotation mark */
-    guillemotright(0x00BB, 0xBB, "RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK", "guillemotright"),
+    guillemotright(0x00BB, 0xBB, "RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK",
+            "guillemotright"),
     /** horizontal ellipsis character */
     ellipsis(0x2026, 0xBC, "HORIZONTAL ELLIPSIS", "ellipsis"),
     /** per-mille character */
@@ -344,16 +351,17 @@ enum AdobeStandardEncoding {
     /** The name of the Adobe Standard Encoding as seen in an AFM file. */
     public static final String NAME = "AdobeStandardEncoding";
 
-    private static final Map<String, AdobeStandardEncoding> CACHE
-            = new HashMap<String, AdobeStandardEncoding>();
+    private static final Map<String, AdobeStandardEncoding> CACHE = new HashMap<String, AdobeStandardEncoding>();
     static {
-        for (AdobeStandardEncoding encoding : AdobeStandardEncoding.values()) {
+        for (final AdobeStandardEncoding encoding : AdobeStandardEncoding
+                .values()) {
             CACHE.put(encoding.getAdobeName(), encoding);
         }
     }
 
-    private AdobeStandardEncoding(int unicodeIndex, int adobeCodePoint, String unicodeName,
-            String adobeName) {
+    private AdobeStandardEncoding(final int unicodeIndex,
+            final int adobeCodePoint, final String unicodeName,
+            final String adobeName) {
         this.unicodeIndex = unicodeIndex;
         this.adobeCodePoint = adobeCodePoint;
         this.unicodeName = unicodeName;
@@ -366,7 +374,7 @@ enum AdobeStandardEncoding {
      * @return the Unicode index
      */
     int getUnicodeIndex() {
-        return unicodeIndex;
+        return this.unicodeIndex;
     }
 
     /**
@@ -375,7 +383,7 @@ enum AdobeStandardEncoding {
      * @return the Adobe code point
      */
     int getAdobeCodePoint() {
-        return adobeCodePoint;
+        return this.adobeCodePoint;
     }
 
     /**
@@ -384,7 +392,7 @@ enum AdobeStandardEncoding {
      * @return the Unicode name
      */
     String getUnicodeName() {
-        return unicodeName;
+        return this.unicodeName;
     }
 
     /**
@@ -393,18 +401,19 @@ enum AdobeStandardEncoding {
      * @return the Adobe name
      */
     String getAdobeName() {
-        return adobeName;
+        return this.adobeName;
     }
 
     /**
-     * Returns the code point of a Adobe standard encoded character given its name. If the name
-     * cannot be found, -1 is returned.
+     * Returns the code point of a Adobe standard encoded character given its
+     * name. If the name cannot be found, -1 is returned.
      *
-     * @param adobeName the name of the character
+     * @param adobeName
+     *            the name of the character
      * @return the Adobe code point
      */
-    public static int getAdobeCodePoint(String adobeName) {
-        AdobeStandardEncoding encoding = CACHE.get(adobeName);
+    public static int getAdobeCodePoint(final String adobeName) {
+        final AdobeStandardEncoding encoding = CACHE.get(adobeName);
         return encoding != null ? encoding.getAdobeCodePoint() : -1;
     }
 }

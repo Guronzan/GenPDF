@@ -30,39 +30,46 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * <p>Page area container.</p>
+ * <p>
+ * Page area container.
+ * </p>
  *
- * <p>This work was authored by Christopher Scott (scottc@westinghouse.com).</p>
+ * <p>
+ * This work was authored by Christopher Scott (scottc@westinghouse.com).
+ * </p>
  */
-public class RtfPageArea
-extends RtfContainer {
+public class RtfPageArea extends RtfContainer {
     private RtfPage currentPage;
     private RtfNull nullChild;
     private RtfAttributes childAttributes;
 
     /** Create an RTF element as a child of given container */
-    RtfPageArea(RtfFile f, Writer w) throws IOException {
+    RtfPageArea(final RtfFile f, final Writer w) throws IOException {
         super(f, w);
     }
 
     /**
      * Close current Rtfpage if any and create a new one
-     * @param attr attributes for new RtfPage
+     * 
+     * @param attr
+     *            attributes for new RtfPage
      * @return new RtfPage
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    public RtfPage newPage(RtfAttributes attr) throws IOException {
-        if (currentPage != null) {
-            currentPage.close();
+    public RtfPage newPage(final RtfAttributes attr) throws IOException {
+        if (this.currentPage != null) {
+            this.currentPage.close();
         }
-        currentPage = new RtfPage(this, writer, attr);
+        this.currentPage = new RtfPage(this, this.writer, attr);
 
-        return currentPage;
+        return this.currentPage;
     }
 
     /**
      * @return true
      */
+    @Override
     protected boolean okToWriteRtf() {
         return true;
     }

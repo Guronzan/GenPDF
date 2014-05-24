@@ -34,7 +34,7 @@ public class ObjectStream extends PDFStream {
 
     private static final PDFName OBJ_STM = new PDFName("ObjStm");
 
-    private List<CompressedObject> objects = new ArrayList<CompressedObject>();
+    private final List<CompressedObject> objects = new ArrayList<CompressedObject>();
 
     private int firstObjectOffset;
 
@@ -42,44 +42,43 @@ public class ObjectStream extends PDFStream {
         super(false);
     }
 
-    ObjectStream(ObjectStream previous) {
+    ObjectStream(final ObjectStream previous) {
         this();
         put("Extends", previous);
     }
 
-    CompressedObjectReference addObject(CompressedObject obj) {
+    CompressedObjectReference addObject(final CompressedObject obj) {
         if (obj == null) {
             throw new NullPointerException("obj must not be null");
         }
-        CompressedObjectReference reference = new CompressedObjectReference(obj.getObjectNumber(),
-                getObjectNumber(), objects.size());
-        objects.add(obj);
+        final CompressedObjectReference reference = new CompressedObjectReference(
+                obj.getObjectNumber(), getObjectNumber(), this.objects.size());
+        this.objects.add(obj);
         return reference;
     }
 
     @Override
-    protected void outputRawStreamData(OutputStream out) throws IOException {
+    protected void outputRawStreamData(final OutputStream out)
+            throws IOException {
         int currentOffset = 0;
-        StringBuilder offsetsPart = new StringBuilder();
-        ByteArrayOutputStream streamContent = new ByteArrayOutputStream();
-        for (CompressedObject object : objects) {
-            offsetsPart.append(object.getObjectNumber())
-                    .append(' ')
-                    .append(currentOffset)
-                    .append('\n');
+        final StringBuilder offsetsPart = new StringBuilder();
+        final ByteArrayOutputStream streamContent = new ByteArrayOutputStream();
+        for (final CompressedObject object : this.objects) {
+            offsetsPart.append(object.getObjectNumber()).append(' ')
+            .append(currentOffset).append('\n');
             currentOffset += object.output(streamContent);
         }
-        byte[] offsets = PDFDocument.encode(offsetsPart.toString());
-        firstObjectOffset = offsets.length;
+        final byte[] offsets = PDFDocument.encode(offsetsPart.toString());
+        this.firstObjectOffset = offsets.length;
         out.write(offsets);
         streamContent.writeTo(out);
     }
 
     @Override
-    protected void populateStreamDict(Object lengthEntry) {
+    protected void populateStreamDict(final Object lengthEntry) {
         put("Type", OBJ_STM);
-        put("N", objects.size());
-        put("First", firstObjectOffset);
+        put("N", this.objects.size());
+        put("First", this.firstObjectOffset);
         super.populateStreamDict(lengthEntry);
     }
 }

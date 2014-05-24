@@ -20,7 +20,8 @@
 package org.apache.xmlgraphics.image.loader;
 
 /**
- * Special image flavor subclass which enables the restriction to a particular XML namespace.
+ * Special image flavor subclass which enables the restriction to a particular
+ * XML namespace.
  */
 public class XMLNamespaceEnabledImageFlavor extends RefinedImageFlavor {
 
@@ -28,19 +29,24 @@ public class XMLNamespaceEnabledImageFlavor extends RefinedImageFlavor {
     public static final ImageFlavor SVG_DOM = new XMLNamespaceEnabledImageFlavor(
             ImageFlavor.XML_DOM, "http://www.w3.org/2000/svg");
 
-    private String namespace;
+    private final String namespace;
 
     /**
      * Constructs a new image flavor.
-     * @param parentFlavor the parent image flavor
-     * @param namespace an XML namespace URI refining the parent image flavor
+     * 
+     * @param parentFlavor
+     *            the parent image flavor
+     * @param namespace
+     *            an XML namespace URI refining the parent image flavor
      */
-    public XMLNamespaceEnabledImageFlavor(ImageFlavor parentFlavor, String namespace) {
+    public XMLNamespaceEnabledImageFlavor(final ImageFlavor parentFlavor,
+            final String namespace) {
         super(parentFlavor.getName() + ";namespace=" + namespace, parentFlavor);
         this.namespace = namespace;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNamespace() {
         return this.namespace;
     }

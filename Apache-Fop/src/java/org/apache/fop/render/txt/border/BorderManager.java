@@ -28,7 +28,7 @@ import org.apache.fop.render.txt.TXTState;
 public class BorderManager {
 
     /** Matrix for storing information about one border element. */
-    private AbstractBorderElement[][] borderInfo;
+    private final AbstractBorderElement[][] borderInfo;
 
     /** Width of current processed border. */
     private int width;
@@ -43,31 +43,41 @@ public class BorderManager {
     private int startY;
 
     /** Stores TXTState for transforming border elements. */
-    private TXTState state;
+    private final TXTState state;
 
     /**
      * Constructs BorderManger, using <code>pageWidth</code> and
      * <code>pageHeight</code> for creating <code>borderInfo</code>.
      *
-     * @param pageWidth page width
-     * @param pageHeight page height
-     * @param state TXTState
+     * @param pageWidth
+     *            page width
+     * @param pageHeight
+     *            page height
+     * @param state
+     *            TXTState
      */
-    public BorderManager(int pageWidth, int pageHeight, TXTState state) {
+    public BorderManager(final int pageWidth, final int pageHeight,
+            final TXTState state) {
         this.state = state;
-        borderInfo = new AbstractBorderElement[pageHeight][pageWidth];
+        this.borderInfo = new AbstractBorderElement[pageHeight][pageWidth];
     }
 
     /**
      * Adds border element to <code>borderInfo</code>.
      *
-     * @param x x-coordinate
-     * @param y y-coordinate
-     * @param style border-style
-     * @param type border element type, binary representation of wich gives
-     *         information about availability or absence of corresponding side.
+     * @param x
+     *            x-coordinate
+     * @param y
+     *            y-coordinate
+     * @param style
+     *            border-style
+     * @param type
+     *            border element type, binary representation of wich gives
+     *            information about availability or absence of corresponding
+     *            side.
      */
-    public void addBorderElement(int x, int y, int style, int type) {
+    public void addBorderElement(final int x, final int y, final int style,
+            final int type) {
         AbstractBorderElement be = null;
 
         if (style == Constants.EN_SOLID || style == Constants.EN_DOUBLE) {
@@ -79,26 +89,28 @@ public class BorderManager {
         } else {
             return;
         }
-        be.transformElement(state);
+        be.transformElement(this.state);
 
-        if (borderInfo[y][x] != null) {
-            borderInfo[y][x] = borderInfo[y][x].merge(be);
+        if (this.borderInfo[y][x] != null) {
+            this.borderInfo[y][x] = this.borderInfo[y][x].merge(be);
         } else {
-            borderInfo[y][x] = be;
+            this.borderInfo[y][x] = be;
         }
     }
 
     /**
-     * @param x x-coordinate
-     * @param y y-coordinate
+     * @param x
+     *            x-coordinate
+     * @param y
+     *            y-coordinate
      * @return if border element at point (x,y) is available, returns instance
-     * of Character, created on char, given by corresponding border element,
-     * otherwise returns null.
+     *         of Character, created on char, given by corresponding border
+     *         element, otherwise returns null.
      */
-    public Character getCharacter(int x, int y) {
+    public Character getCharacter(final int x, final int y) {
         Character c = null;
-        if (borderInfo[y][x] != null) {
-            c = new Character(borderInfo[y][x].convert2Char());
+        if (this.borderInfo[y][x] != null) {
+            c = new Character(this.borderInfo[y][x].convert2Char());
         }
         return c;
     }
@@ -107,14 +119,16 @@ public class BorderManager {
      * @return width of current processed border.
      */
     public int getWidth() {
-        return width;
+        return this.width;
     }
 
     /**
      * Sets width of current processed border.
-     * @param width width of border
+     * 
+     * @param width
+     *            width of border
      */
-    public void setWidth(int width) {
+    public void setWidth(final int width) {
         this.width = width;
     }
 
@@ -122,14 +136,16 @@ public class BorderManager {
      * @return height of current processed border.
      */
     public int getHeight() {
-        return height;
+        return this.height;
     }
 
     /**
      * Sets height of current processed border.
-     * @param height height of border
+     * 
+     * @param height
+     *            height of border
      */
-    public void setHeight(int height) {
+    public void setHeight(final int height) {
         this.height = height;
     }
 
@@ -137,14 +153,16 @@ public class BorderManager {
      * @return x-coordinate of upper left point of current processed border.
      */
     public int getStartX() {
-        return startX;
+        return this.startX;
     }
 
     /**
      * Sets x-coordinate of upper left point of current processed border.
-     * @param startX x-coordinate of upper left border's point.
+     * 
+     * @param startX
+     *            x-coordinate of upper left border's point.
      */
-    public void setStartX(int startX) {
+    public void setStartX(final int startX) {
         this.startX = startX;
     }
 
@@ -152,14 +170,16 @@ public class BorderManager {
      * @return y-coordinate of upper left point of current processed border.
      */
     public int getStartY() {
-        return startY;
+        return this.startY;
     }
 
     /**
      * Sets y-coordinate of upper left point of current processed border.
-     * @param startY y-coordinate of upper left border's point.
+     * 
+     * @param startY
+     *            y-coordinate of upper left border's point.
      */
-    public void setStartY(int startY) {
+    public void setStartY(final int startY) {
         this.startY = startY;
     }
 }

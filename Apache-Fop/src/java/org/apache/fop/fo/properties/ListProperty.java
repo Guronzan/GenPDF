@@ -38,17 +38,19 @@ public class ListProperty extends Property {
 
         /**
          * Create a maker for the given property id.
-         * @param propId ID of the property for which Maker should be created
+         * 
+         * @param propId
+         *            ID of the property for which Maker should be created
          */
-        public Maker(int propId) {
+        public Maker(final int propId) {
             super(propId);
         }
 
         /** {@inheritDoc} */
         @Override
-        public Property convertProperty(Property p,
-                                        PropertyList propertyList, FObj fo)
-                        throws PropertyException {
+        public Property convertProperty(final Property p,
+                final PropertyList propertyList, final FObj fo)
+                throws PropertyException {
             if (p instanceof ListProperty) {
                 return p;
             } else {
@@ -65,61 +67,67 @@ public class ListProperty extends Property {
      * Simple constructor used by subclasses to do some special processing.
      */
     protected ListProperty() {
-        //nop
+        // nop
     }
 
     /**
      * Create a new instance, using the given {@link Property} as the first
      * element in the list.
-     * @param prop the first property to be added to the list
+     * 
+     * @param prop
+     *            the first property to be added to the list
      */
-    public ListProperty(Property prop) {
+    public ListProperty(final Property prop) {
         this();
         addProperty(prop);
     }
 
     /**
      * Add a new property to the list
-     * @param prop Property to be added to the list
+     * 
+     * @param prop
+     *            Property to be added to the list
      */
-    public void addProperty(Property prop) {
-        list.add(prop);
+    public void addProperty(final Property prop) {
+        this.list.add(prop);
     }
 
     /**
-     * Return the {@code java.util.List} of {@link Property} instances
-     * contained in this property.
+     * Return the {@code java.util.List} of {@link Property} instances contained
+     * in this property.
+     * 
      * @return the list of properties contained in this instance
      */
     @Override
     public List<Property> getList() {
-        return list;
+        return this.list;
     }
 
     /**
-     * Return the {@code java.util.List} of {@link Property} instances,
-     * cast as a {@code java.lang.Object}.
+     * Return the {@code java.util.List} of {@link Property} instances, cast as
+     * a {@code java.lang.Object}.
+     * 
      * @return this.list cast as an Object
      */
     @Override
     public Object getObject() {
-        return list;
+        return this.list;
     }
 
     @Override
     public int hashCode() {
-        return list.hashCode();
+        return this.list.hashCode();
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
         if (!(obj instanceof ListProperty)) {
             return false;
         }
-        ListProperty other = (ListProperty) obj;
-        return CompareUtil.equal(list, other.list);
+        final ListProperty other = (ListProperty) obj;
+        return CompareUtil.equal(this.list, other.list);
     }
 }

@@ -22,37 +22,44 @@ package org.apache.fop.layoutmgr;
 /** A position. */
 public class Position {
 
-    private LayoutManager layoutManager;
+    private final LayoutManager layoutManager;
     private int index = -1;
 
     /**
      * Construct a position.
-     * @param lm the associated layout manager
+     * 
+     * @param lm
+     *            the associated layout manager
      */
-    public Position(LayoutManager lm) {
-        layoutManager = lm;
+    public Position(final LayoutManager lm) {
+        this.layoutManager = lm;
     }
 
     /**
      * Construct a position.
-     * @param lm the associated layout manager
-     * @param index the index
+     * 
+     * @param lm
+     *            the associated layout manager
+     * @param index
+     *            the index
      */
-   public Position(LayoutManager lm, int index) {
+    public Position(final LayoutManager lm, final int index) {
         this(lm);
         setIndex(index);
     }
+
     /** @return associated layout manager */
     public LayoutManager getLM() {
-        return layoutManager;
+        return this.layoutManager;
     }
 
     /**
-     * @param depth the depth at which the LM in this position is found
+     * @param depth
+     *            the depth at which the LM in this position is found
      * @return associated layout manager
      */
-    public LayoutManager getLM(int depth) {
-        Position subPos = getPosition(depth);
+    public LayoutManager getLM(final int depth) {
+        final Position subPos = getPosition(depth);
         if (subPos == null) {
             return null;
         } else {
@@ -62,6 +69,7 @@ public class Position {
 
     /**
      * Overridden by NonLeafPosition to return the Position of its child LM.
+     * 
      * @return a position or null
      */
     public Position getPosition() {
@@ -70,12 +78,15 @@ public class Position {
 
     /**
      * Overridden by NonLeafPosition to return the Position of its child LM.
-     * @param depth the depth at which the position in this position is found
+     * 
+     * @param depth
+     *            the depth at which the position in this position is found
      * @return a position or null
      */
-    public Position getPosition(int depth) {
+    public Position getPosition(final int depth) {
         Position subPos = this;
-        for (int i = 0; i < depth && subPos != null; ++i, subPos = subPos.getPosition()) {
+        for (int i = 0; i < depth && subPos != null; ++i, subPos = subPos
+                .getPosition()) {
             // no-op
         }
         return subPos;
@@ -89,9 +100,10 @@ public class Position {
     /**
      * Sets the index of this position in the sequence of Position elements.
      *
-     * @param value this position's index
+     * @param value
+     *            this position's index
      */
-    public void setIndex(int value) {
+    public void setIndex(final int value) {
         this.index = value;
     }
 
@@ -107,8 +119,8 @@ public class Position {
     /** @return short name of associated layout manager */
     protected String getShortLMName() {
         if (getLM() != null) {
-            String lm = getLM().toString();
-            int idx = lm.lastIndexOf('.');
+            final String lm = getLM().toString();
+            final int idx = lm.lastIndexOf('.');
             if (idx >= 0 && lm.indexOf('@') > 0) {
                 return lm.substring(idx + 1);
             } else {
@@ -120,12 +132,12 @@ public class Position {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         sb.append("Position:").append(getIndex()).append("(");
         sb.append(getShortLMName());
         sb.append(")");
         return sb.toString();
     }
 }
-

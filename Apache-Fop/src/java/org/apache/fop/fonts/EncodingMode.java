@@ -20,7 +20,8 @@
 package org.apache.fop.fonts;
 
 /**
- * This class enumerates all supported encoding modes for fonts: auto, single-byte and CID.
+ * This class enumerates all supported encoding modes for fonts: auto,
+ * single-byte and CID.
  */
 public enum EncodingMode {
 
@@ -35,12 +36,13 @@ public enum EncodingMode {
 
     private String name;
 
-    private EncodingMode(String name) {
+    private EncodingMode(final String name) {
         this.name = name;
     }
 
     /**
      * Returns the encoding mode name.
+     * 
      * @return the encoding mode name
      */
     public String getName() {
@@ -49,11 +51,13 @@ public enum EncodingMode {
 
     /**
      * Returns the {@link EncodingMode} by name.
-     * @param name the name of the encoding mode to look up
+     * 
+     * @param name
+     *            the name of the encoding mode to look up
      * @return the encoding mode constant
      */
-    public static EncodingMode getValue(String name) {
-        for (EncodingMode em : EncodingMode.values()) {
+    public static EncodingMode getValue(final String name) {
+        for (final EncodingMode em : EncodingMode.values()) {
             if (name.equalsIgnoreCase(em.getName())) {
                 return em;
             }
@@ -62,6 +66,7 @@ public enum EncodingMode {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "EncodingMode: " + getName();
     }

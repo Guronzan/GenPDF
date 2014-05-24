@@ -26,7 +26,8 @@ import java.awt.font.GlyphVector;
 import java.io.IOException;
 
 /**
- * Default TextHandler implementation which paints text using graphics primitives (shapes).
+ * Default TextHandler implementation which paints text using graphics
+ * primitives (shapes).
  */
 public class StrokingTextHandler implements TextHandler {
 
@@ -34,15 +35,17 @@ public class StrokingTextHandler implements TextHandler {
      * Default constructor.
      */
     public StrokingTextHandler() {
-        //nop
+        // nop
     }
 
     /** {@inheritDoc} */
-    public void drawString(Graphics2D g2d, String text, float x, float y) throws IOException {
-        java.awt.Font awtFont = g2d.getFont();
-        FontRenderContext frc = g2d.getFontRenderContext();
-        GlyphVector gv = awtFont.createGlyphVector(frc, text);
-        Shape glyphOutline = gv.getOutline(x, y);
+    @Override
+    public void drawString(final Graphics2D g2d, final String text,
+            final float x, final float y) throws IOException {
+        final java.awt.Font awtFont = g2d.getFont();
+        final FontRenderContext frc = g2d.getFontRenderContext();
+        final GlyphVector gv = awtFont.createGlyphVector(frc, text);
+        final Shape glyphOutline = gv.getOutline(x, y);
         g2d.fill(glyphOutline);
     }
 

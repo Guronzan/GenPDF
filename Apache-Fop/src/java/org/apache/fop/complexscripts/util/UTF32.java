@@ -24,9 +24,13 @@ import org.apache.fop.util.CharUtilities;
 // CSOFF: InnerAssignmentCheck
 
 /**
- * <p>UTF32 related utilities.</p>
+ * <p>
+ * UTF32 related utilities.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 public final class UTF32 {
 
@@ -34,47 +38,51 @@ public final class UTF32 {
     }
 
     /**
-     * Convert Java string (UTF-16) to a Unicode scalar array (UTF-32).
-     * Note that if there are any non-BMP encoded characters present in the
-     * input, then the number of entries in the output array will be less
-     * than the number of elements in the input string. Any
-     * @param s input string
-     * @param substitution value to substitute for ill-formed surrogate
-     * @param errorOnSubstitution throw runtime exception (IllegalArgumentException) in
-     * case this argument is true and a substitution would be attempted
+     * Convert Java string (UTF-16) to a Unicode scalar array (UTF-32). Note
+     * that if there are any non-BMP encoded characters present in the input,
+     * then the number of entries in the output array will be less than the
+     * number of elements in the input string. Any
+     * 
+     * @param s
+     *            input string
+     * @param substitution
+     *            value to substitute for ill-formed surrogate
+     * @param errorOnSubstitution
+     *            throw runtime exception (IllegalArgumentException) in case
+     *            this argument is true and a substitution would be attempted
      * @return output scalar array
-     * @throws IllegalArgumentException if substitution required and errorOnSubstitution
-     *   is not false
+     * @throws IllegalArgumentException
+     *             if substitution required and errorOnSubstitution is not false
      */
-    public static Integer[] toUTF32 ( String s, int substitution, boolean errorOnSubstitution )
-        throws IllegalArgumentException {
+    public static Integer[] toUTF32(final String s, final int substitution,
+            final boolean errorOnSubstitution) throws IllegalArgumentException {
         int n;
-        if ( ( n = s.length() ) == 0 ) {
+        if ((n = s.length()) == 0) {
             return new Integer[0];
         } else {
-            Integer[] sa = new Integer [ n ];
+            final Integer[] sa = new Integer[n];
             int k = 0;
-            for ( int i = 0; i < n; i++ ) {
-                int c = (int) s.charAt(i);
-                if ( ( c >= 0xD800 ) && ( c < 0xE000 ) ) {
-                    int s1 = c;
-                    int s2 = ( ( i + 1 ) < n ) ? (int) s.charAt ( i + 1 ) : 0;
-                    if ( s1 < 0xDC00 ) {
-                        if ( ( s2 >= 0xDC00 ) && ( s2 < 0xE000 ) ) {
-                            c = ( ( s1 - 0xD800 ) << 10 ) + ( s2 - 0xDC00 ) + 65536;
+            for (int i = 0; i < n; i++) {
+                int c = s.charAt(i);
+                if (c >= 0xD800 && c < 0xE000) {
+                    final int s1 = c;
+                    final int s2 = i + 1 < n ? (int) s.charAt(i + 1) : 0;
+                    if (s1 < 0xDC00) {
+                        if (s2 >= 0xDC00 && s2 < 0xE000) {
+                            c = (s1 - 0xD800 << 10) + s2 - 0xDC00 + 65536;
                             i++;
                         } else {
-                            if ( errorOnSubstitution ) {
-                                throw new IllegalArgumentException
-                                    ( "isolated high (leading) surrogate" );
+                            if (errorOnSubstitution) {
+                                throw new IllegalArgumentException(
+                                        "isolated high (leading) surrogate");
                             } else {
                                 c = substitution;
                             }
                         }
                     } else {
-                        if ( errorOnSubstitution ) {
-                            throw new IllegalArgumentException
-                                ( "isolated low (trailing) surrogate" );
+                        if (errorOnSubstitution) {
+                            throw new IllegalArgumentException(
+                                    "isolated low (trailing) surrogate");
                         } else {
                             c = substitution;
                         }
@@ -82,11 +90,11 @@ public final class UTF32 {
                 }
                 sa[k++] = c;
             }
-            if ( k == n ) {
+            if (k == n) {
                 return sa;
             } else {
-                Integer[] na = new Integer [ k ];
-                System.arraycopy ( sa, 0, na, 0, k );
+                final Integer[] na = new Integer[k];
+                System.arraycopy(sa, 0, na, 0, k);
                 return na;
             }
         }
@@ -94,33 +102,38 @@ public final class UTF32 {
 
     /**
      * Convert a Unicode scalar array (UTF-32) a Java string (UTF-16).
-     * @param sa input scalar array
+     * 
+     * @param sa
+     *            input scalar array
      * @return output (UTF-16) string
-     * @throws IllegalArgumentException if an input scalar value is illegal,
-     *   e.g., a surrogate or out of range
+     * @throws IllegalArgumentException
+     *             if an input scalar value is illegal, e.g., a surrogate or out
+     *             of range
      */
-    public static String fromUTF32 ( Integer[] sa ) throws IllegalArgumentException {
-        StringBuffer sb = new StringBuffer();
-        for ( int s : sa ) {
-            if ( s < 65535 ) {
-                if ( ( s < 0xD800 ) || ( s > 0xDFFF ) ) {
-                    sb.append ( (char) s );
+    public static String fromUTF32(final Integer[] sa)
+            throws IllegalArgumentException {
+        final StringBuffer sb = new StringBuffer();
+        for (final int s : sa) {
+            if (s < 65535) {
+                if (s < 0xD800 || s > 0xDFFF) {
+                    sb.append((char) s);
                 } else {
-                    String ncr = CharUtilities.charToNCRef(s);
-                    throw new IllegalArgumentException
-                        ( "illegal scalar value 0x" + ncr.substring(2, ncr.length() - 1)
-                          + "; cannot be UTF-16 surrogate" );
+                    final String ncr = CharUtilities.charToNCRef(s);
+                    throw new IllegalArgumentException(
+                            "illegal scalar value 0x"
+                                    + ncr.substring(2, ncr.length() - 1)
+                                    + "; cannot be UTF-16 surrogate");
                 }
-            } else if ( s < 1114112 ) {
-                int s1 = ( ( ( s - 65536 ) >> 10 ) & 0x3FF ) + 0xD800;
-                int s2 = ( ( ( s - 65536 ) >>  0 ) & 0x3FF ) + 0xDC00;
-                sb.append ( (char) s1 );
-                sb.append ( (char) s2 );
+            } else if (s < 1114112) {
+                final int s1 = (s - 65536 >> 10 & 0x3FF) + 0xD800;
+                final int s2 = (s - 65536 >> 0 & 0x3FF) + 0xDC00;
+                sb.append((char) s1);
+                sb.append((char) s2);
             } else {
-                String ncr = CharUtilities.charToNCRef(s);
-                throw new IllegalArgumentException
-                    ( "illegal scalar value 0x" + ncr.substring(2, ncr.length() - 1)
-                      + "; out of range for UTF-16"  );
+                final String ncr = CharUtilities.charToNCRef(s);
+                throw new IllegalArgumentException("illegal scalar value 0x"
+                        + ncr.substring(2, ncr.length() - 1)
+                        + "; out of range for UTF-16");
             }
         }
         return sb.toString();

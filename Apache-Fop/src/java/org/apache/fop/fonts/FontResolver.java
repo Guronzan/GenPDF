@@ -27,17 +27,21 @@ import javax.xml.transform.Source;
 public interface FontResolver {
 
     /**
-     * Called to resolve an URI to a Source instance. The base URI needed by the URIResolver's
-     * resolve() method is defined to be implicitly available in this case. If the URI cannot
-     * be resolved, null is returned and it is assumed that the FontResolver implementation
-     * already warned the user about the problem.
-     * @param href An href attribute, which may be relative or absolute.
+     * Called to resolve an URI to a Source instance. The base URI needed by the
+     * URIResolver's resolve() method is defined to be implicitly available in
+     * this case. If the URI cannot be resolved, null is returned and it is
+     * assumed that the FontResolver implementation already warned the user
+     * about the problem.
+     * 
+     * @param href
+     *            An href attribute, which may be relative or absolute.
      * @return A Source object, or null if the href could not resolved.
      */
-    Source resolve(String href);
+    Source resolve(final String href);
 
     /**
      * Check whether complex script features are enabled.
+     * 
      * @return true if FOP is to use complex script features
      */
     boolean isComplexScriptFeaturesEnabled();

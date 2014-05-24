@@ -34,35 +34,43 @@ import org.apache.fop.afp.util.BinaryUtils;
 public class ObjectAreaDescriptor extends AbstractDescriptor {
 
     /**
-     * Construct an object area descriptor for the specified object width
-     * and object height.
+     * Construct an object area descriptor for the specified object width and
+     * object height.
      *
-     * @param width the object width.
-     * @param height the object height.
-     * @param widthRes the object width resolution.
-     * @param heightRes the object height resolution.
+     * @param width
+     *            the object width.
+     * @param height
+     *            the object height.
+     * @param widthRes
+     *            the object width resolution.
+     * @param heightRes
+     *            the object height resolution.
      */
-    public ObjectAreaDescriptor(int width, int height, int widthRes, int heightRes) {
+    public ObjectAreaDescriptor(final int width, final int height,
+            final int widthRes, final int heightRes) {
         super(width, height, widthRes, heightRes);
     }
 
     private static final byte OBJECT_AREA_POSITION_ID = 0x01;
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[9];
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[9];
         copySF(data, Type.DESCRIPTOR, Category.OBJECT_AREA);
 
         addTriplet(new DescriptorPositionTriplet(OBJECT_AREA_POSITION_ID));
-        addTriplet(new MeasurementUnitsTriplet(widthRes, heightRes));
-        addTriplet(new ObjectAreaSizeTriplet(width, height));
-        /* not allowed in Presentation Interchange Set 1
-        addTriplet(new PresentationSpaceResetMixingTriplet(
-                PresentationSpaceResetMixingTriplet.NOT_RESET));
-        */
+        addTriplet(new MeasurementUnitsTriplet(this.widthRes, this.heightRes));
+        addTriplet(new ObjectAreaSizeTriplet(this.width, this.height));
+        /*
+         * not allowed in Presentation Interchange Set 1 addTriplet(new
+         * PresentationSpaceResetMixingTriplet(
+         * PresentationSpaceResetMixingTriplet.NOT_RESET));
+         */
 
-        int tripletDataLength = getTripletDataLength();
-        byte[] len = BinaryUtils.convert(data.length + tripletDataLength - 1, 2);
+        final int tripletDataLength = getTripletDataLength();
+        final byte[] len = BinaryUtils.convert(data.length + tripletDataLength
+                - 1, 2);
         data[1] = len[0]; // Length
         data[2] = len[1];
         os.write(data);

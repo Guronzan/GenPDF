@@ -21,29 +21,40 @@ package ps;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlgraphics.ps.dsc.DSCException;
 import org.apache.xmlgraphics.ps.dsc.tools.PageExtractor;
 
 /**
- * Demonstrates how the DSC parser can be used to extract a series of pages from a DSC-compliant
- * PostScript file. For details how this works, please look into the PageExtractor class
- * where the actual functionality is located. This sample class only calls the code there.
+ * Demonstrates how the DSC parser can be used to extract a series of pages from
+ * a DSC-compliant PostScript file. For details how this works, please look into
+ * the PageExtractor class where the actual functionality is located. This
+ * sample class only calls the code there.
  */
+@Slf4j
 public class DSCProcessingExample1 {
 
     /**
      * Extracts a series of pages from a DSC-compliant PostScript file.
-     * @param srcFile the source PostScript file
-     * @param tgtFile the target file to write the extracted pages to
-     * @param from the starting page number
-     * @param to the ending page number
-     * @throws IOException In case of an I/O error
+     *
+     * @param srcFile
+     *            the source PostScript file
+     * @param tgtFile
+     *            the target file to write the extracted pages to
+     * @param from
+     *            the starting page number
+     * @param to
+     *            the ending page number
+     * @throws IOException
+     *             In case of an I/O error
      */
-    public void extractPages(File srcFile, File tgtFile, int from, int to) throws IOException {
+    public void extractPages(final File srcFile, final File tgtFile,
+            final int from, final int to) throws IOException {
         InputStream in = new java.io.FileInputStream(srcFile);
         in = new java.io.BufferedInputStream(in);
         try {
@@ -51,7 +62,7 @@ public class DSCProcessingExample1 {
             out = new java.io.BufferedOutputStream(out);
             try {
                 PageExtractor.extractPages(in, out, from, to);
-            } catch (DSCException e) {
+            } catch (final DSCException e) {
                 throw new RuntimeException(e.getMessage());
             } finally {
                 IOUtils.closeQuietly(out);
@@ -62,17 +73,18 @@ public class DSCProcessingExample1 {
     }
 
     private static void showInfo() {
-        System.out.println(
-                "Call: DSCProcessingExample1 <source-file> <target-file> <from-page> <to-page>");
+        log.info("Call: DSCProcessingExample1 <source-file> <target-file> <from-page> <to-page>");
     }
 
     /**
      * Command-line interface
-     * @param args command-line arguments
+     *
+     * @param args
+     *            command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
-            File srcFile , tgtFile;
+            File srcFile, tgtFile;
             int from, to;
             if (args.length >= 4) {
                 srcFile = new File(args[0]);
@@ -80,19 +92,21 @@ public class DSCProcessingExample1 {
                 from = Integer.parseInt(args[2]);
                 to = Integer.parseInt(args[3]);
             } else {
-                throw new IllegalArgumentException("Invalid number of parameters!");
+                throw new IllegalArgumentException(
+                        "Invalid number of parameters!");
             }
             if (!srcFile.exists()) {
-                throw new IllegalArgumentException("Source file not found: " + srcFile);
+                throw new IllegalArgumentException("Source file not found: "
+                        + srcFile);
             }
-            DSCProcessingExample1 app = new DSCProcessingExample1();
+            final DSCProcessingExample1 app = new DSCProcessingExample1();
             app.extractPages(srcFile, tgtFile, from, to);
-            System.out.println("File written: " + tgtFile.getCanonicalPath());
-        } catch (IllegalArgumentException iae) {
+            log.info("File written: " + tgtFile.getCanonicalPath());
+        } catch (final IllegalArgumentException iae) {
             System.err.println(iae.getMessage());
             showInfo();
             System.exit(1);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             System.exit(-1);
         }

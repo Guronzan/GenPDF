@@ -41,7 +41,7 @@ public class PNGChunk {
         IHDR, // IHDR must be the first chunk
         PLTE, // PLTE contains the palette
         IDAT, // IDAT contains the image, which may be split among multiple IDAT
-              // chunks
+        // chunks
         IEND, // IEND marks the image end
         bKGD, // bKGD gives the default background color
         cHRM, // cHRM gives the chromaticity coordinates
@@ -101,7 +101,7 @@ public class PNGChunk {
         return (this.data[offset] & 0xff) << 24
                 | (this.data[offset + 1] & 0xff) << 16
                 | (this.data[offset + 2] & 0xff) << 8 | this.data[offset + 3]
-                & 0xff;
+                        & 0xff;
     }
 
     public String getString4(final int offset) {
@@ -115,7 +115,7 @@ public class PNGChunk {
 
     /**
      * Reads the next chunk from the input stream.
-     * 
+     *
      * @param distream
      *            the input stream
      * @return the chunk
@@ -137,7 +137,7 @@ public class PNGChunk {
 
     /**
      * Returns the PNG chunk type, a four letter case sensitive ASCII type/name.
-     * 
+     *
      * @param distream
      *            the input stream
      * @return a four letter case sensitive ASCII type/name
@@ -167,7 +167,7 @@ public class PNGChunk {
 
     /**
      * Skips the next chunk from the input stream.
-     * 
+     *
      * @param distream
      *            the input stream
      * @return true if skipping successful, false otherwise

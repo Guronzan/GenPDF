@@ -44,8 +44,8 @@ public final class Registry {
     private static final byte COMPID_TRUETYPE_OPENTYPE_FONT_COLLECTION_RESOURCE_OBJECT = 53;
 
     /** mime type entry mapping */
-    private final java.util.Map<String, ObjectType> mimeObjectTypeMap
-               = Collections.synchronizedMap(new HashMap<String, ObjectType>());
+    private final java.util.Map<String, ObjectType> mimeObjectTypeMap = Collections
+            .synchronizedMap(new HashMap<String, ObjectType>());
 
     /** singleton instance */
     private static Registry instance = null;
@@ -75,135 +75,83 @@ public final class Registry {
      * Initializes the mimetype map
      */
     private void init() {
-        mimeObjectTypeMap.put(
-                MimeConstants.MIME_AFP_IOCA_FS10,
-                new ObjectType(
-                        COMPID_IOCA_FS10,
-                        new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x05},
-                        "IOCA FS10",
-                        true,
-                        MimeConstants.MIME_AFP_IOCA_FS10
-                )
-        );
-        mimeObjectTypeMap.put(
-                MimeConstants.MIME_AFP_IOCA_FS11,
-                new ObjectType(
-                        COMPID_IOCA_FS11,
-                        new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x11},
-                        "IOCA FS11",
-                        true,
-                        MimeConstants.MIME_AFP_IOCA_FS11
-                )
-        );
-//      mimeObjectTypeMap.put(
-//      MimeConstants.MIME_AFP_IOCA_FS40,
-//      new ObjectType(
-//              COMPID_IOCA_FS40,
-//              new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x37},
-//              "IOCA FS40",
-//              true,
-//              MimeConstants.MIME_AFP_IOCA_FS40
-//      )
-//);
-        mimeObjectTypeMap.put(
-                MimeConstants.MIME_AFP_IOCA_FS45,
-                new ObjectType(
-                        COMPID_IOCA_FS45,
-                        new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x12},
-                        "IOCA FS45",
-                        true,
-                        MimeConstants.MIME_AFP_IOCA_FS45
-                )
-        );
-        mimeObjectTypeMap.put(
-                MimeConstants.MIME_EPS,
-                new ObjectType(
-                        COMPID_EPS,
-                        new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x0D},
-                        "Encapsulated Postscript",
-                        true,
-                        MimeConstants.MIME_EPS
-                )
-        );
-        mimeObjectTypeMap.put(
-                MimeConstants.MIME_TIFF,
-                new ObjectType(
-                        COMPID_TIFF,
-                        new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x0E},
-                        "TIFF",
-                        true,
-                        MimeConstants.MIME_TIFF
-                )
-        );
-        mimeObjectTypeMap.put(
-                MimeConstants.MIME_GIF,
-                new ObjectType(
-                        COMPID_GIF,
-                        new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x16},
-                        "GIF",
-                        true,
-                        MimeConstants.MIME_GIF
-                )
-        );
-        mimeObjectTypeMap.put(
-                MimeConstants.MIME_JPEG,
-                new ObjectType(
-                        COMPID_JFIF,
-                        new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x17},
-                        "JFIF",
-                        true,
-                        MimeConstants.MIME_JPEG
-                )
-        );
-        mimeObjectTypeMap.put(MimeConstants.MIME_PDF,
-                new ObjectType(
-                        COMPID_PDF_SINGLE_PAGE,
-                        new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x19},
-                        "PDF Single-page Object",
-                        true,
-                        MimeConstants.MIME_PDF
-                )
-        );
-        mimeObjectTypeMap.put(
-                MimeConstants.MIME_PCL,
-                new ObjectType(
-                        COMPID_PCL_PAGE_OBJECT,
-                        new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x22},
-                        "PCL Page Object",
-                        true,
-                        MimeConstants.MIME_PCL
-                )
-        );
-//        mimeObjectTypeMap.put(
-//                null,
-//                new ObjectType(
-//                        COMPID_TRUETYPE_OPENTYPE_FONT_RESOURCE_OBJECT,
-//                        new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x33},
-//                        "TrueType/OpenType Font Resource Object",
-//                        true,
-//                        null
-//                )
-//        );
-//        mimeObjectTypeMap.put(
-//                null,
-//                new ObjectType(
-//                        COMPID_TRUETYPE_OPENTYPE_FONT_COLLECTION_RESOURCE_OBJECT,
-//                        new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x35},
-//                        "TrueType/OpenType Font Collection Resource Object",
-//                        true,
-//                        null
-//                )
-//        );
+        this.mimeObjectTypeMap.put(MimeConstants.MIME_AFP_IOCA_FS10,
+                new ObjectType(COMPID_IOCA_FS10, new byte[] { 0x06, 0x07, 0x2B,
+                        0x12, 0x00, 0x04, 0x01, 0x01, 0x05 }, "IOCA FS10",
+                        true, MimeConstants.MIME_AFP_IOCA_FS10));
+        this.mimeObjectTypeMap.put(MimeConstants.MIME_AFP_IOCA_FS11,
+                new ObjectType(COMPID_IOCA_FS11, new byte[] { 0x06, 0x07, 0x2B,
+                        0x12, 0x00, 0x04, 0x01, 0x01, 0x11 }, "IOCA FS11",
+                        true, MimeConstants.MIME_AFP_IOCA_FS11));
+        // mimeObjectTypeMap.put(
+        // MimeConstants.MIME_AFP_IOCA_FS40,
+        // new ObjectType(
+        // COMPID_IOCA_FS40,
+        // new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x37},
+        // "IOCA FS40",
+        // true,
+        // MimeConstants.MIME_AFP_IOCA_FS40
+        // )
+        // );
+        this.mimeObjectTypeMap.put(MimeConstants.MIME_AFP_IOCA_FS45,
+                new ObjectType(COMPID_IOCA_FS45, new byte[] { 0x06, 0x07, 0x2B,
+                        0x12, 0x00, 0x04, 0x01, 0x01, 0x12 }, "IOCA FS45",
+                        true, MimeConstants.MIME_AFP_IOCA_FS45));
+        this.mimeObjectTypeMap.put(MimeConstants.MIME_EPS, new ObjectType(
+                COMPID_EPS, new byte[] { 0x06, 0x07, 0x2B, 0x12, 0x00, 0x04,
+                        0x01, 0x01, 0x0D }, "Encapsulated Postscript", true,
+                MimeConstants.MIME_EPS));
+        this.mimeObjectTypeMap.put(MimeConstants.MIME_TIFF, new ObjectType(
+                COMPID_TIFF, new byte[] { 0x06, 0x07, 0x2B, 0x12, 0x00, 0x04,
+                        0x01, 0x01, 0x0E }, "TIFF", true,
+                MimeConstants.MIME_TIFF));
+        this.mimeObjectTypeMap.put(MimeConstants.MIME_GIF,
+                new ObjectType(COMPID_GIF, new byte[] { 0x06, 0x07, 0x2B, 0x12,
+                        0x00, 0x04, 0x01, 0x01, 0x16 }, "GIF", true,
+                        MimeConstants.MIME_GIF));
+        this.mimeObjectTypeMap.put(MimeConstants.MIME_JPEG, new ObjectType(
+                COMPID_JFIF, new byte[] { 0x06, 0x07, 0x2B, 0x12, 0x00, 0x04,
+                        0x01, 0x01, 0x17 }, "JFIF", true,
+                MimeConstants.MIME_JPEG));
+        this.mimeObjectTypeMap.put(MimeConstants.MIME_PDF, new ObjectType(
+                COMPID_PDF_SINGLE_PAGE, new byte[] { 0x06, 0x07, 0x2B, 0x12,
+                        0x00, 0x04, 0x01, 0x01, 0x19 },
+                "PDF Single-page Object", true, MimeConstants.MIME_PDF));
+        this.mimeObjectTypeMap.put(MimeConstants.MIME_PCL, new ObjectType(
+                COMPID_PCL_PAGE_OBJECT, new byte[] { 0x06, 0x07, 0x2B, 0x12,
+                        0x00, 0x04, 0x01, 0x01, 0x22 }, "PCL Page Object",
+                true, MimeConstants.MIME_PCL));
+        // mimeObjectTypeMap.put(
+        // null,
+        // new ObjectType(
+        // COMPID_TRUETYPE_OPENTYPE_FONT_RESOURCE_OBJECT,
+        // new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x33},
+        // "TrueType/OpenType Font Resource Object",
+        // true,
+        // null
+        // )
+        // );
+        // mimeObjectTypeMap.put(
+        // null,
+        // new ObjectType(
+        // COMPID_TRUETYPE_OPENTYPE_FONT_COLLECTION_RESOURCE_OBJECT,
+        // new byte[] {0x06, 0x07, 0x2B, 0x12, 0x00, 0x04, 0x01, 0x01, 0x35},
+        // "TrueType/OpenType Font Collection Resource Object",
+        // true,
+        // null
+        // )
+        // );
     }
 
     /**
      * Returns the MOD:CA object type given a mimetype
      *
-     * @param mimeType the object mimetype
+     * @param mimeType
+     *            the object mimetype
      * @return the MOD:CA object type
      */
-    public ObjectType getObjectType(String mimeType) {
-        return mimeObjectTypeMap.get(mimeType);
+    public ObjectType getObjectType(final String mimeType) {
+        return this.mimeObjectTypeMap.get(mimeType);
     }
 
     /**
@@ -219,14 +167,21 @@ public final class Registry {
         /**
          * Main constructor
          *
-         * @param componentId the component id of this object type
-         * @param oid the object id of this object type
-         * @param name the object type name
-         * @param includable true if this object can be included with an IOB structured field
-         * @param mimeType the mime type associated with this object type
+         * @param componentId
+         *            the component id of this object type
+         * @param oid
+         *            the object id of this object type
+         * @param name
+         *            the object type name
+         * @param includable
+         *            true if this object can be included with an IOB structured
+         *            field
+         * @param mimeType
+         *            the mime type associated with this object type
          */
-        public ObjectType(byte componentId, byte[] oid, String name,
-                boolean includable, String mimeType) {
+        public ObjectType(final byte componentId, final byte[] oid,
+                final String name, final boolean includable,
+                final String mimeType) {
             this.componentId = componentId;
             this.oid = oid;
             this.name = name;
@@ -237,8 +192,9 @@ public final class Registry {
         /**
          * Returns a MOD:CA object type OID from a given a componentId
          *
-         * @return the corresponding object type id for a given component id
-         * or null if the component id is unknown and the object type OID was not found.
+         * @return the corresponding object type id for a given component id or
+         *         null if the component id is unknown and the object type OID
+         *         was not found.
          */
         public byte[] getOID() {
             return this.oid;
@@ -263,9 +219,11 @@ public final class Registry {
         }
 
         /**
-         * Returns true if this component can be included with an IOB structured field
+         * Returns true if this component can be included with an IOB structured
+         * field
          *
-         * @return true if this component can be included with an IOB structured field
+         * @return true if this component can be included with an IOB structured
+         *         field
          */
         public boolean isIncludable() {
             return this.includable;
@@ -281,8 +239,9 @@ public final class Registry {
         }
 
         /** {@inheritDoc} */
+        @Override
         public String toString() {
-            return this.getName();
+            return getName();
         }
     }
 }

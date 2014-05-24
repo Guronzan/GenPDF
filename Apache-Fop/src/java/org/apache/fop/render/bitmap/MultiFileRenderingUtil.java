@@ -26,15 +26,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * This utility class helps renderers who generate one file per page,
- * like the PNG renderer.
+ * This utility class helps renderers who generate one file per page, like the
+ * PNG renderer.
  */
 public class MultiFileRenderingUtil {
 
     /** The file syntax prefix, eg. "page" will output "page1.png" etc */
     private String filePrefix;
 
-    private String fileExtension;
+    private final String fileExtension;
 
     /** The output directory where images are to be written */
     private File outputDir;
@@ -44,55 +44,65 @@ public class MultiFileRenderingUtil {
      * <p>
      * The file name must not have an extension, or must have extension "png",
      * and its last period must not be at the start (empty file prefix).
-     * @param ext the extension to be used
-     * @param outputFile the output file or null if there's no such information
+     * 
+     * @param ext
+     *            the extension to be used
+     * @param outputFile
+     *            the output file or null if there's no such information
      */
-    public MultiFileRenderingUtil(String ext, File outputFile) {
+    public MultiFileRenderingUtil(final String ext, final File outputFile) {
         this.fileExtension = ext;
         // the file provided on the command line
         if (outputFile == null) {
-            //No filename information available. Only the first page will be rendered.
-            outputDir = null;
-            filePrefix = null;
+            // No filename information available. Only the first page will be
+            // rendered.
+            this.outputDir = null;
+            this.filePrefix = null;
         } else {
-            outputDir = outputFile.getParentFile();
+            this.outputDir = outputFile.getParentFile();
 
             // extracting file name syntax
-            String s = outputFile.getName();
+            final String s = outputFile.getName();
             int i = s.lastIndexOf(".");
             if (i > 0) {
                 // Make sure that the file extension was "png"
-                String extension = s.substring(i + 1).toLowerCase();
+                final String extension = s.substring(i + 1).toLowerCase();
                 if (!ext.equals(extension)) {
-                    throw new IllegalArgumentException("Invalid file extension ('"
-                                          + extension + "') specified");
+                    throw new IllegalArgumentException(
+                            "Invalid file extension ('" + extension
+                                    + "') specified");
                 }
             } else if (i == -1) {
                 i = s.length();
             } else { // i == 0
-                throw new IllegalArgumentException("Invalid file name ('"
-                                      + s + "') specified");
+                throw new IllegalArgumentException("Invalid file name ('" + s
+                        + "') specified");
             }
             if (s.charAt(i - 1) == '1') {
                 i--; // getting rid of the "1"
             }
-            filePrefix = s.substring(0, i);
+            this.filePrefix = s.substring(0, i);
         }
     }
 
     /**
      * Creates a new {@link OutputStream} for the given page number.
-     * @param pageNumber the page number (zero-based)
+     * 
+     * @param pageNumber
+     *            the page number (zero-based)
      * @return the output stream for the page
-     * @throws IOException if there's an I/O error while setting up the output stream
+     * @throws IOException
+     *             if there's an I/O error while setting up the output stream
      */
-    public OutputStream createOutputStream(int pageNumber) throws IOException {
-        if (filePrefix == null) {
+    public OutputStream createOutputStream(final int pageNumber)
+            throws IOException {
+        if (this.filePrefix == null) {
             return null;
         } else {
-            File f = new File(outputDir,
-                    filePrefix + (pageNumber + 1) + "." + fileExtension);
-            OutputStream os = new BufferedOutputStream(new FileOutputStream(f));
+            final File f = new File(this.outputDir, this.filePrefix
+                    + (pageNumber + 1) + "." + this.fileExtension);
+            final OutputStream os = new BufferedOutputStream(
+                    new FileOutputStream(f));
             return os;
         }
     }

@@ -22,40 +22,52 @@ package org.apache.fop.util;
 import org.apache.fop.fo.Constants;
 
 /**
- * A utility class for manipulating break classes (the break-before and break-after properties).
+ * A utility class for manipulating break classes (the break-before and
+ * break-after properties).
  */
 public final class BreakUtil {
 
-    private BreakUtil() { }
+    private BreakUtil() {
+    }
 
     // TODO replace that with a proper 1.5 enumeration ASAP
-    private static int getBreakClassPriority(int breakClass) {
+    private static int getBreakClassPriority(final int breakClass) {
         switch (breakClass) {
-        case Constants.EN_AUTO:      return 0;
-        case Constants.EN_COLUMN:    return 1;
-        case Constants.EN_PAGE:      return 2;
-        case Constants.EN_EVEN_PAGE: return 3;
-        case Constants.EN_ODD_PAGE:  return 3;
-        default: throw new IllegalArgumentException(
-                "Illegal value for breakClass: " + breakClass);
+        case Constants.EN_AUTO:
+            return 0;
+        case Constants.EN_COLUMN:
+            return 1;
+        case Constants.EN_PAGE:
+            return 2;
+        case Constants.EN_EVEN_PAGE:
+            return 3;
+        case Constants.EN_ODD_PAGE:
+            return 3;
+        default:
+            throw new IllegalArgumentException("Illegal value for breakClass: "
+                    + breakClass);
         }
     }
 
     /**
-     * Compares the given break classes and return the one that wins. even-page and
-     * odd-page win over page, which wins over column, which wins over auto. If even-page
-     * and odd-page are compared to each other, which one will be returned is undefined.
+     * Compares the given break classes and return the one that wins. even-page
+     * and odd-page win over page, which wins over column, which wins over auto.
+     * If even-page and odd-page are compared to each other, which one will be
+     * returned is undefined.
      *
-     * @param break1 a break class, one of {@link Constants#EN_AUTO},
-     * {@link Constants#EN_COLUMN}, {@link Constants#EN_PAGE},
-     * {@link Constants#EN_EVEN_PAGE}, {@link Constants#EN_ODD_PAGE}
-     * @param break2 another break class
+     * @param break1
+     *            a break class, one of {@link Constants#EN_AUTO},
+     *            {@link Constants#EN_COLUMN}, {@link Constants#EN_PAGE},
+     *            {@link Constants#EN_EVEN_PAGE}, {@link Constants#EN_ODD_PAGE}
+     * @param break2
+     *            another break class
      * @return the break class that wins the comparison
      */
-    public static int compareBreakClasses(int break1, int break2) {
-        // TODO implement some warning mechanism if even-page and odd-page are being compared
-        int p1 = getBreakClassPriority(break1);
-        int p2 = getBreakClassPriority(break2);
+    public static int compareBreakClasses(final int break1, final int break2) {
+        // TODO implement some warning mechanism if even-page and odd-page are
+        // being compared
+        final int p1 = getBreakClassPriority(break1);
+        final int p2 = getBreakClassPriority(break2);
         if (p1 < p2) {
             return break2;
         } else {

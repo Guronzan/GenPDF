@@ -24,6 +24,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.afp.AFPConstants;
 import org.apache.fop.afp.util.BinaryUtils;
 
@@ -32,6 +34,7 @@ import org.apache.fop.afp.util.BinaryUtils;
  * a Begin Overlay structured field. A Map Page Overlay structured field may
  * contain from one to 254 repeating groups.
  */
+@Slf4j
 public class MapPageOverlay extends AbstractAFPObject {
 
     private static final int MAX_SIZE = 253;
@@ -48,7 +51,7 @@ public class MapPageOverlay extends AbstractAFPObject {
     }
 
     private List getOverlays() {
-        if (overLays == null) {
+        if (this.overLays == null) {
             this.overLays = new java.util.ArrayList();
         }
         return this.overLays;
@@ -59,39 +62,43 @@ public class MapPageOverlay extends AbstractAFPObject {
      *
      * @param name
      *            The name of the overlay.
-     * @throws MaximumSizeExceededException if the maximum size is reached
+     * @throws MaximumSizeExceededException
+     *             if the maximum size is reached
      */
-    public void addOverlay(String name) throws MaximumSizeExceededException {
+    public void addOverlay(final String name)
+            throws MaximumSizeExceededException {
         if (getOverlays().size() > MAX_SIZE) {
             throw new MaximumSizeExceededException();
         }
         if (name.length() != 8) {
             throw new IllegalArgumentException("The name of overlay " + name
-                + " must be 8 characters");
+                    + " must be 8 characters");
         }
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("addOverlay():: adding overlay " + name);
+        if (log.isDebugEnabled()) {
+            log.debug("addOverlay():: adding overlay " + name);
         }
         try {
-            byte[] data = name.getBytes(AFPConstants.EBCIDIC_ENCODING);
+            final byte[] data = name.getBytes(AFPConstants.EBCIDIC_ENCODING);
             getOverlays().add(data);
-        } catch (UnsupportedEncodingException usee) {
-            LOG.error("addOverlay():: UnsupportedEncodingException translating the name "
-                + name);
+        } catch (final UnsupportedEncodingException usee) {
+            log.error("addOverlay():: UnsupportedEncodingException translating the name "
+                    + name);
         }
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        int oLayCount = getOverlays().size();
-        int recordlength = oLayCount * 18;
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final int oLayCount = getOverlays().size();
+        final int recordlength = oLayCount * 18;
 
-        byte[] data = new byte[recordlength + 9];
+        final byte[] data = new byte[recordlength + 9];
 
         data[0] = 0x5A;
 
         // Set the total record length
-        byte[] rl1 = BinaryUtils.convert(recordlength + 8, 2); //Ignore the
+        final byte[] rl1 = BinaryUtils.convert(recordlength + 8, 2); // Ignore
+        // the
         // first byte in
         // the length
         data[1] = rl1[0];
@@ -99,8 +106,8 @@ public class MapPageOverlay extends AbstractAFPObject {
 
         // Structured field ID for a MPO
         data[3] = (byte) 0xD3;
-        data[4] = (byte) Type.MAP;
-        data[5] = (byte) Category.PAGE_OVERLAY;
+        data[4] = Type.MAP;
+        data[5] = Category.PAGE_OVERLAY;
 
         data[6] = 0x00; // Reserved
         data[7] = 0x00; // Reserved
@@ -108,32 +115,32 @@ public class MapPageOverlay extends AbstractAFPObject {
 
         int pos = 8;
 
-        //For each overlay
+        // For each overlay
         byte olayref = 0x00;
 
         for (int i = 0; i < oLayCount; i++) {
             olayref = (byte) (olayref + 1);
 
             data[++pos] = 0x00;
-            data[++pos] = 0x12; //the length of repeating group
+            data[++pos] = 0x12; // the length of repeating group
 
-            data[++pos] = 0x0C; //Fully Qualified Name
+            data[++pos] = 0x0C; // Fully Qualified Name
             data[++pos] = 0x02;
             data[++pos] = (byte) 0x84;
             data[++pos] = 0x00;
 
-            //now add the name
-            byte[] name = (byte[]) overLays.get(i);
+            // now add the name
+            final byte[] name = (byte[]) this.overLays.get(i);
 
-            for (int j = 0; j < name.length; j++) {
-                data[++pos] = name[j];
+            for (final byte element : name) {
+                data[++pos] = element;
             }
 
-            data[++pos] = 0x04; //Resource Local Identifier (RLI)
+            data[++pos] = 0x04; // Resource Local Identifier (RLI)
             data[++pos] = 0x24;
             data[++pos] = 0x02;
 
-            //now add the unique id to the RLI
+            // now add the unique id to the RLI
             data[++pos] = olayref;
         }
         os.write(data);

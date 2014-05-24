@@ -39,14 +39,17 @@ public class DSCCommentPages extends AbstractDSCComment {
 
     /**
      * Creates a new instance.
-     * @param pageCount the number of pages
+     * 
+     * @param pageCount
+     *            the number of pages
      */
-    public DSCCommentPages(int pageCount) {
+    public DSCCommentPages(final int pageCount) {
         this.pageCount = pageCount;
     }
 
     /**
      * Returns the page count.
+     * 
      * @return the page count
      */
     public int getPageCount() {
@@ -55,15 +58,18 @@ public class DSCCommentPages extends AbstractDSCComment {
 
     /**
      * Sets the page count.
-     * @param count the new page count
+     * 
+     * @param count
+     *            the new page count
      */
-    public void setPageCount(int count) {
+    public void setPageCount(final int count) {
         this.pageCount = count;
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#getName()
      */
+    @Override
     public String getName() {
         return DSCConstants.PAGES;
     }
@@ -71,6 +77,7 @@ public class DSCCommentPages extends AbstractDSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#hasValues()
      */
+    @Override
     public boolean hasValues() {
         return true;
     }
@@ -78,14 +85,16 @@ public class DSCCommentPages extends AbstractDSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#parseValue(java.lang.String)
      */
-    public void parseValue(String value) {
+    @Override
+    public void parseValue(final String value) {
         this.pageCount = Integer.parseInt(value);
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#generate(org.apache.xmlgraphics.ps.PSGenerator)
      */
-    public void generate(PSGenerator gen) throws IOException {
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
         if (getPageCount() > 0) {
             gen.writeDSCComment(getName(), new Integer(getPageCount()));
         } else {

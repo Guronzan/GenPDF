@@ -27,43 +27,44 @@ public interface PtocaConstants {
     /**
      * "Escape" sequence for normal PTOCA command sequences.
      */
-    byte[] ESCAPE = new byte[] {0x2B, (byte)0xD3};
+    byte[] ESCAPE = new byte[] { 0x2B, (byte) 0xD3 };
 
     /** Bit to set for chained control sequences */
     byte CHAIN_BIT = 1;
 
     /** Set Intercharacter Adjustment */
-    byte SIA = (byte)0xC2;
+    byte SIA = (byte) 0xC2;
     /** Set Variable Space Character Increment */
-    byte SVI = (byte)0xC4;
+    byte SVI = (byte) 0xC4;
     /** Absolute Move Inline */
-    byte AMI = (byte)0xC6;
+    byte AMI = (byte) 0xC6;
     /** Relative Move Inline */
-    byte RMI = (byte)0xC8;
+    byte RMI = (byte) 0xC8;
 
     /** Absolute Move Baseline */
-    byte AMB = (byte)0xD2;
+    byte AMB = (byte) 0xD2;
 
     /** Transparent Data */
-    byte TRN = (byte)0xDA;
+    byte TRN = (byte) 0xDA;
 
     /** Draw I-axis Rule */
-    byte DIR = (byte)0xE4;
+    byte DIR = (byte) 0xE4;
     /** Draw B-axis Rule */
-    byte DBR = (byte)0xE6;
+    byte DBR = (byte) 0xE6;
 
     /** Set Extended Text Color */
-    byte SEC = (byte)0x80;
+    byte SEC = (byte) 0x80;
 
     /** Set Coded Font Local */
-    byte SCFL = (byte)0xF0;
+    byte SCFL = (byte) 0xF0;
     /** Set Text Orientation */
-    byte STO = (byte)0xF6;
+    byte STO = (byte) 0xF6;
 
     /** No Operation */
-    byte NOP = (byte)0xF8;
+    byte NOP = (byte) 0xF8;
 
     /** Maximum size of transparent data chunks */
-    int TRANSPARENT_DATA_MAX_SIZE = 253; // max length = 255 (minus the ControlSequence length)
+    int TRANSPARENT_DATA_MAX_SIZE = 253; // max length = 255 (minus the
+                                         // ControlSequence length)
 
 }

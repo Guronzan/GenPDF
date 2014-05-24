@@ -22,7 +22,6 @@ package org.apache.fop.render.afp;
 import java.io.File;
 
 import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.render.AbstractRenderingTest;
 
 /**
@@ -32,16 +31,21 @@ abstract class AbstractAFPTest extends AbstractRenderingTest {
 
     /**
      * Renders a test file.
-     * @param ua the user agent (with override set!)
-     * @param resourceName the resource name for the FO file
-     * @param suffix a suffix for the output filename
+     * 
+     * @param ua
+     *            the user agent (with override set!)
+     * @param resourceName
+     *            the resource name for the FO file
+     * @param suffix
+     *            a suffix for the output filename
      * @return the output file
-     * @throws Exception if an error occurs
+     * @throws Exception
+     *             if an error occurs
      */
-    protected File renderFile(FOUserAgent ua, String resourceName, String suffix)
-                throws Exception {
-        return renderFile(ua, resourceName, suffix, MimeConstants.MIME_AFP);
+    protected File renderFile(final FOUserAgent ua, final String resourceName,
+            final String suffix) throws Exception {
+        return renderFile(ua, resourceName, suffix,
+                org.apache.xmlgraphics.util.MimeConstants.MIME_AFP);
     }
-
 
 }

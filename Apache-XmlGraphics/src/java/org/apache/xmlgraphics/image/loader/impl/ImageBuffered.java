@@ -26,30 +26,38 @@ import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
 
 /**
- * This class is an implementation of the Image interface exposing a BufferedImage.
+ * This class is an implementation of the Image interface exposing a
+ * BufferedImage.
  */
 public class ImageBuffered extends ImageRendered {
 
     /**
      * Main constructor.
-     * @param info the image info object
-     * @param buffered the BufferedImage instance
-     * @param transparentColor the transparent color or null
+     * 
+     * @param info
+     *            the image info object
+     * @param buffered
+     *            the BufferedImage instance
+     * @param transparentColor
+     *            the transparent color or null
      */
-    public ImageBuffered(ImageInfo info, BufferedImage buffered, Color transparentColor) {
+    public ImageBuffered(final ImageInfo info, final BufferedImage buffered,
+            final Color transparentColor) {
         super(info, buffered, transparentColor);
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getFlavor() {
         return ImageFlavor.BUFFERED_IMAGE;
     }
 
     /**
      * Returns the contained BufferedImage instance.
+     * 
      * @return the BufferedImage instance
      */
     public java.awt.image.BufferedImage getBufferedImage() {
-        return (BufferedImage)getRenderedImage();
+        return (BufferedImage) getRenderedImage();
     }
 }

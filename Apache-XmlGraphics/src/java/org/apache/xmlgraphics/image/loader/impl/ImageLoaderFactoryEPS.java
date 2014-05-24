@@ -28,20 +28,19 @@ import org.apache.xmlgraphics.util.MimeConstants;
  */
 public class ImageLoaderFactoryEPS extends AbstractImageLoaderFactory {
 
-    private static final String[] MIMES = new String[] {
-        MimeConstants.MIME_EPS};
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_EPS };
 
-    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {
-        ImageFlavor.RAW_EPS};
-
+    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] { ImageFlavor.RAW_EPS };
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMIMETypes() {
         return MIMES;
     }
 
     /** {@inheritDoc} */
-    public ImageFlavor[] getSupportedFlavors(String mime) {
+    @Override
+    public ImageFlavor[] getSupportedFlavors(final String mime) {
         if (MimeConstants.MIME_EPS.equals(mime)) {
             return FLAVORS;
         }
@@ -49,11 +48,13 @@ public class ImageLoaderFactoryEPS extends AbstractImageLoaderFactory {
     }
 
     /** {@inheritDoc} */
-    public ImageLoader newImageLoader(ImageFlavor targetFlavor) {
+    @Override
+    public ImageLoader newImageLoader(final ImageFlavor targetFlavor) {
         return new ImageLoaderEPS();
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isAvailable() {
         return true;
     }

@@ -26,10 +26,9 @@ import org.apache.fop.area.Area;
 import org.apache.fop.area.Block;
 
 /**
- * Container area for inline container.
- * This area should be placed in a viewport as a result of the
- * inline container formatting object.
- * This allows an inline area to have blocks as children.
+ * Container area for inline container. This area should be placed in a viewport
+ * as a result of the inline container formatting object. This allows an inline
+ * area to have blocks as children.
  */
 public class Container extends Area {
 
@@ -54,10 +53,11 @@ public class Container extends Area {
     /**
      * Add the block to this area.
      *
-     * @param block the block area to add
+     * @param block
+     *            the block area to add
      */
-    public void addBlock(Block block) {
-        blocks.add(block);
+    public void addBlock(final Block block) {
+        this.blocks.add(block);
     }
 
     /**
@@ -66,7 +66,7 @@ public class Container extends Area {
      * @return the list of block areas
      */
     public List getBlocks() {
-        return blocks;
+        return this.blocks;
     }
 
     /**
@@ -75,7 +75,6 @@ public class Container extends Area {
      * @return the width
      */
     public int getWidth() {
-        return width;
+        return this.width;
     }
 }
-

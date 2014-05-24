@@ -36,15 +36,19 @@ public class RtfListStyleBullet extends RtfListStyle {
 
     /**
      * Gets called before a RtfListItem has to be written.
-     * @param item RtfListItem whose prefix has to be written
-     * {@inheritDoc}
-     * @throws IOException Thrown when an IO-problem occurs
+     *
+     * @param item
+     *            RtfListItem whose prefix has to be written {@inheritDoc}
+     * @throws IOException
+     *             Thrown when an IO-problem occurs
      */
-    public void writeListPrefix(RtfListItem item) throws IOException {
+    @Override
+    public void writeListPrefix(final RtfListItem item) throws IOException {
         // bulleted list
         item.writeControlWord("pnlvlblt");
         item.writeControlWord("ilvl0");
-        item.writeOneAttribute(RtfListTable.LIST_NUMBER, new Integer(item.getNumber()));
+        item.writeOneAttribute(RtfListTable.LIST_NUMBER,
+                new Integer(item.getNumber()));
         item.writeOneAttribute("pnindent",
                 item.getParentList().attrib.getValue(RtfListTable.LIST_INDENT));
         item.writeControlWord("pnf1");
@@ -57,12 +61,17 @@ public class RtfListStyleBullet extends RtfListStyle {
     }
 
     /**
-     * Gets called before a paragraph, which is contained by a RtfListItem has to be written.
-     * @param element RtfElement in whose context is to be written
-     * {@inheritDoc}
-     * @throws IOException Thrown when an IO-problem occurs
+     * Gets called before a paragraph, which is contained by a RtfListItem has
+     * to be written.
+     *
+     * @param element
+     *            RtfElement in whose context is to be written {@inheritDoc}
+     * @throws IOException
+     *             Thrown when an IO-problem occurs
      */
-    public void writeParagraphPrefix(RtfElement element) throws IOException {
+    @Override
+    public void writeParagraphPrefix(final RtfElement element)
+            throws IOException {
         element.writeGroupMark(true);
         element.writeControlWord("pntext");
         element.writeGroupMark(false);
@@ -71,11 +80,13 @@ public class RtfListStyleBullet extends RtfListStyle {
     /**
      * Gets called when the list table has to be written.
      *
-     * @param element RtfElement in whose context is to be written
-     * {@inheritDoc}
-     * @throws IOException Thrown when an IO-problem occurs
+     * @param element
+     *            RtfElement in whose context is to be written {@inheritDoc}
+     * @throws IOException
+     *             Thrown when an IO-problem occurs
      */
-    public void writeLevelGroup(RtfElement element) throws IOException {
+    @Override
+    public void writeLevelGroup(final RtfElement element) throws IOException {
         element.attrib.set(RtfListTable.LIST_NUMBER_TYPE, 23);
         element.writeGroupMark(true);
         element.writeOneAttributeNS(RtfListTable.LIST_TEXT_FORM, "\\'01\\'b7");

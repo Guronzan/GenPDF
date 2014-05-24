@@ -24,25 +24,29 @@ package org.apache.fop.layoutmgr;
  *
  * It stores information common to all sub classes, and the methods to get it:
  * the width, a Position and a boolean marking KnuthElements used for some
- * special feature (for example, the additional elements used to represent
- * a space when text alignment is right, left or center).
+ * special feature (for example, the additional elements used to represent a
+ * space when text alignment is right, left or center).
  */
 public abstract class KnuthElement extends ListElement {
 
     /** The value used as an infinite indicator. */
     public static final int INFINITE = 1000;
 
-    private int width;
-    private boolean auxiliary;
+    private final int width;
+    private final boolean auxiliary;
 
     /**
      * Creates a new <code>KnuthElement</code>.
      *
-     * @param width    the width of this element
-     * @param pos  the Position stored in this element
-     * @param auxiliary is this an auxiliary element?
+     * @param width
+     *            the width of this element
+     * @param pos
+     *            the Position stored in this element
+     * @param auxiliary
+     *            is this an auxiliary element?
      */
-    protected KnuthElement(int width, Position pos, boolean auxiliary) {
+    protected KnuthElement(final int width, final Position pos,
+            final boolean auxiliary) {
         super(pos);
         this.width = width;
         this.auxiliary = auxiliary;
@@ -50,12 +54,12 @@ public abstract class KnuthElement extends ListElement {
 
     /** @return true if this element is an auxiliary one. */
     public boolean isAuxiliary() {
-        return auxiliary;
+        return this.auxiliary;
     }
 
     /** @return the width of this element. */
     public int getWidth() {
-        return width;
+        return this.width;
     }
 
     /** @return the penalty value of this element, if applicable. */
@@ -74,6 +78,7 @@ public abstract class KnuthElement extends ListElement {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isUnresolvedElement() {
         return false;
     }

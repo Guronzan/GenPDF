@@ -22,53 +22,55 @@ package org.apache.fop.fo.pagination.bookmarks;
 // Java
 import java.util.ArrayList;
 
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.FObj;
 import org.apache.fop.fo.ValidationException;
 import org.apache.fop.fo.pagination.Root;
+import org.xml.sax.Locator;
 
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_bookmark-tree">
- * <code>fo:bookmark-tree</code></a> object, first introduced in the
- * XSL 1.1 WD.
+ * <code>fo:bookmark-tree</code></a> object, first introduced in the XSL 1.1 WD.
  */
 public class BookmarkTree extends FObj {
-    private ArrayList bookmarks = new ArrayList();
+    private final ArrayList bookmarks = new ArrayList();
 
     /**
-     * Create a new BookmarkTree object that is a child
-     * of the given {@link FONode}.
+     * Create a new BookmarkTree object that is a child of the given
+     * {@link FONode}.
      *
-     * @param parent the {@link FONode} parent
+     * @param parent
+     *            the {@link FONode} parent
      */
-    public BookmarkTree(FONode parent) {
+    public BookmarkTree(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    protected void addChildNode(FONode obj) {
+    @Override
+    protected void addChildNode(final FONode obj) {
         if (obj instanceof Bookmark) {
-            bookmarks.add(obj);
+            this.bookmarks.add(obj);
         }
     }
 
     /** {@inheritDoc} */
-        protected void endOfNode() throws FOPException {
-        if (bookmarks == null) {
-           missingChildElementError("(fo:bookmark+)");
+    @Override
+    protected void endOfNode() throws FOPException {
+        if (this.bookmarks == null) {
+            missingChildElementError("(fo:bookmark+)");
         }
-        ((Root) parent).setBookmarkTree(this);
+        ((Root) this.parent).setBookmarkTree(this);
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL/FOP: (bookmark+)
+     * {@inheritDoc} <br>
+     * XSL/FOP: (bookmark+)
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-                throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             if (!localName.equals("bookmark")) {
                 invalidChildError(loc, nsURI, localName);
@@ -78,21 +80,26 @@ public class BookmarkTree extends FObj {
 
     /**
      * Get the descendant {@link Bookmark}s.
-     * @return an <code>ArrayList</code> containing the {@link Bookmark} objects.
+     * 
+     * @return an <code>ArrayList</code> containing the {@link Bookmark}
+     *         objects.
      */
     public ArrayList getBookmarks() {
-        return bookmarks;
+        return this.bookmarks;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "bookmark-tree";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_BOOKMARK_TREE}
      */
+    @Override
     public int getNameId() {
         return FO_BOOKMARK_TREE;
     }

@@ -61,12 +61,9 @@ public final class DSCCommentFactory {
                 DSCCommentPageResources.class);
         DSC_FACTORIES.put(DSCConstants.BEGIN_DOCUMENT,
                 DSCCommentBeginDocument.class);
-        DSC_FACTORIES.put(DSCConstants.PAGE,
-                DSCCommentPage.class);
-        DSC_FACTORIES.put(DSCConstants.PAGES,
-                DSCCommentPages.class);
-        DSC_FACTORIES.put(DSCConstants.BBOX,
-                DSCCommentBoundingBox.class);
+        DSC_FACTORIES.put(DSCConstants.PAGE, DSCCommentPage.class);
+        DSC_FACTORIES.put(DSCConstants.PAGES, DSCCommentPages.class);
+        DSC_FACTORIES.put(DSCConstants.BBOX, DSCCommentBoundingBox.class);
         DSC_FACTORIES.put(DSCConstants.HIRES_BBOX,
                 DSCCommentHiResBoundingBox.class);
         DSC_FACTORIES.put(DSCConstants.PAGE_BBOX,
@@ -79,32 +76,33 @@ public final class DSCCommentFactory {
                 DSCCommentDocumentNeededResources.class);
         DSC_FACTORIES.put(DSCConstants.DOCUMENT_SUPPLIED_RESOURCES,
                 DSCCommentDocumentSuppliedResources.class);
-        DSC_FACTORIES.put(DSCConstants.TITLE,
-                DSCCommentTitle.class);
-        DSC_FACTORIES.put(DSCConstants.EOF,
-                DSCCommentEndOfFile.class);
-        //TODO Add additional implementations as needed
+        DSC_FACTORIES.put(DSCConstants.TITLE, DSCCommentTitle.class);
+        DSC_FACTORIES.put(DSCConstants.EOF, DSCCommentEndOfFile.class);
+        // TODO Add additional implementations as needed
     }
 
     /**
      * Creates and returns new instances for DSC comments with a given name.
-     * @param name the name of the DSCComment (without the "%%" prefix)
-     * @return the new instance or null if no particular subclass registered for the given
-     *          DSC comment.
+     * 
+     * @param name
+     *            the name of the DSCComment (without the "%%" prefix)
+     * @return the new instance or null if no particular subclass registered for
+     *         the given DSC comment.
      */
-    public static DSCComment createDSCCommentFor(String name) {
-        Class clazz = (Class)DSC_FACTORIES.get(name);
+    public static DSCComment createDSCCommentFor(final String name) {
+        final Class clazz = (Class) DSC_FACTORIES.get(name);
         if (clazz == null) {
             return null;
         }
         try {
-            return (DSCComment)clazz.newInstance();
-        } catch (InstantiationException e) {
-            throw new RuntimeException("Error instantiating instance for '" + name + "': "
-                    + e.getMessage());
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Illegal Access error while instantiating instance for '"
+            return (DSCComment) clazz.newInstance();
+        } catch (final InstantiationException e) {
+            throw new RuntimeException("Error instantiating instance for '"
                     + name + "': " + e.getMessage());
+        } catch (final IllegalAccessException e) {
+            throw new RuntimeException(
+                    "Illegal Access error while instantiating instance for '"
+                            + name + "': " + e.getMessage());
         }
     }
 

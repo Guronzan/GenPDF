@@ -34,12 +34,13 @@ import org.apache.fop.fo.properties.KeepProperty;
 import org.apache.fop.fo.properties.SpaceProperty;
 
 /**
- * Class modelling the commonalities of several inline-level
- * formatting objects.
+ * Class modelling the commonalities of several inline-level formatting objects.
  */
-public abstract class InlineLevel extends FObjMixed implements CommonAccessibilityHolder {
+public abstract class InlineLevel extends FObjMixed implements
+        CommonAccessibilityHolder {
 
-    // The value of FO traits (refined properties) that apply to inline level FOs.
+    // The value of FO traits (refined properties) that apply to inline level
+    // FOs.
     private CommonAccessibility commonAccessibility;
     private CommonBorderPaddingBackground commonBorderPaddingBackground;
     private CommonMarginInline commonMarginInline;
@@ -48,72 +49,77 @@ public abstract class InlineLevel extends FObjMixed implements CommonAccessibili
     private KeepProperty keepWithNext;
     private KeepProperty keepWithPrevious;
     private SpaceProperty lineHeight;
+
     // End of trait values
 
     /**
      * Base constructor
      *
-     * @param parent {@link FONode} that is the parent of this object
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    protected InlineLevel(FONode parent) {
+    protected InlineLevel(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        commonAccessibility = CommonAccessibility.getInstance(pList);
-        commonBorderPaddingBackground = pList.getBorderPaddingBackgroundProps();
-        commonMarginInline = pList.getMarginInlineProps();
-        commonFont = pList.getFontProps();
-        color = pList.get(PR_COLOR).getColor(getUserAgent());
-        keepWithNext = pList.get(PR_KEEP_WITH_NEXT).getKeep();
-        keepWithPrevious = pList.get(PR_KEEP_WITH_PREVIOUS).getKeep();
-        lineHeight = pList.get(PR_LINE_HEIGHT).getSpace();
+        this.commonAccessibility = CommonAccessibility.getInstance(pList);
+        this.commonBorderPaddingBackground = pList
+                .getBorderPaddingBackgroundProps();
+        this.commonMarginInline = pList.getMarginInlineProps();
+        this.commonFont = pList.getFontProps();
+        this.color = pList.get(PR_COLOR).getColor(getUserAgent());
+        this.keepWithNext = pList.get(PR_KEEP_WITH_NEXT).getKeep();
+        this.keepWithPrevious = pList.get(PR_KEEP_WITH_PREVIOUS).getKeep();
+        this.lineHeight = pList.get(PR_LINE_HEIGHT).getSpace();
     }
 
     /** {@inheritDoc} */
+    @Override
     public CommonAccessibility getCommonAccessibility() {
-        return commonAccessibility;
+        return this.commonAccessibility;
     }
 
     /** @return the {@link CommonMarginInline} */
     public CommonMarginInline getCommonMarginInline() {
-        return commonMarginInline;
+        return this.commonMarginInline;
     }
 
     /** @return the {@link CommonBorderPaddingBackground} */
     public CommonBorderPaddingBackground getCommonBorderPaddingBackground() {
-        return commonBorderPaddingBackground;
+        return this.commonBorderPaddingBackground;
     }
 
     /** @return the {@link CommonFont} */
     public CommonFont getCommonFont() {
-        return commonFont;
+        return this.commonFont;
     }
 
     /** @return the "color" trait */
     public Color getColor() {
-        return color;
+        return this.color;
     }
 
     /** @return the "line-height" trait */
     public SpaceProperty getLineHeight() {
-        return lineHeight;
+        return this.lineHeight;
     }
 
     /** @return the "keep-with-next" trait */
     public KeepProperty getKeepWithNext() {
-        return keepWithNext;
+        return this.keepWithNext;
     }
 
     /** @return the "keep-with-previous" trait */
     public KeepProperty getKeepWithPrevious() {
-        return keepWithPrevious;
+        return this.keepWithPrevious;
     }
 
     @Override
-    public boolean isDelimitedTextRangeBoundary ( int boundary ) {
+    public boolean isDelimitedTextRangeBoundary(final int boundary) {
         return false;
     }
 

@@ -19,16 +19,15 @@
 
 package org.apache.fop.pdf;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 
+import org.apache.fop.pdf.xref.CompressedObjectReference;
 import org.junit.Test;
 
-import org.apache.fop.pdf.xref.CompressedObjectReference;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ObjectStreamManagerTestCase {
 
@@ -41,21 +40,28 @@ public class ObjectStreamManagerTestCase {
         final int expectedCapacity = 100;
         final int numCompressedObjects = expectedCapacity * 2 + 1;
         createCompressObjectReferences(numCompressedObjects);
-        assertEquals(numCompressedObjects, compressedObjectReferences.size());
-        int objectStreamNumber1 = assertSameObjectStream(0, expectedCapacity);
-        int objectStreamNumber2 = assertSameObjectStream(expectedCapacity, expectedCapacity * 2);
-        int objectStreamNumber3 = assertSameObjectStream(expectedCapacity * 2, numCompressedObjects);
-        assertDifferent(objectStreamNumber1, objectStreamNumber2, objectStreamNumber3);
-        assertEquals(objectStreamNumber3, pdfDocument.previous.getObjectNumber());
+        assertEquals(numCompressedObjects,
+                this.compressedObjectReferences.size());
+        final int objectStreamNumber1 = assertSameObjectStream(0,
+                expectedCapacity);
+        final int objectStreamNumber2 = assertSameObjectStream(
+                expectedCapacity, expectedCapacity * 2);
+        final int objectStreamNumber3 = assertSameObjectStream(
+                expectedCapacity * 2, numCompressedObjects);
+        assertDifferent(objectStreamNumber1, objectStreamNumber2,
+                objectStreamNumber3);
+        assertEquals(objectStreamNumber3,
+                this.pdfDocument.previous.getObjectNumber());
     }
 
-    private void createCompressObjectReferences(int numObjects) {
-        pdfDocument = new MockPdfDocument();
-        ObjectStreamManager sut = new ObjectStreamManager(pdfDocument);
+    private void createCompressObjectReferences(final int numObjects) {
+        this.pdfDocument = new MockPdfDocument();
+        final ObjectStreamManager sut = new ObjectStreamManager(
+                this.pdfDocument);
         for (int obNum = 1; obNum <= numObjects; obNum++) {
             sut.add(createCompressedObject(obNum));
         }
-        compressedObjectReferences = sut.getCompressedObjectReferences();
+        this.compressedObjectReferences = sut.getCompressedObjectReferences();
     }
 
     private static class MockPdfDocument extends PDFDocument {
@@ -66,11 +72,13 @@ public class ObjectStreamManagerTestCase {
             super("");
         }
 
-        public void assignObjectNumber(PDFObject obj) {
+        @Override
+        public void assignObjectNumber(final PDFObject obj) {
             super.assignObjectNumber(obj);
             if (obj instanceof ObjectStream) {
-                ObjectStream  objStream = (ObjectStream) obj;
-                ObjectStream previous = (ObjectStream) objStream.get("Extends");
+                final ObjectStream objStream = (ObjectStream) obj;
+                final ObjectStream previous = (ObjectStream) objStream
+                        .get("Extends");
                 if (previous == null) {
                     assertEquals(this.previous, previous);
                 }
@@ -82,30 +90,34 @@ public class ObjectStreamManagerTestCase {
     private CompressedObject createCompressedObject(final int objectNumber) {
         return new CompressedObject() {
 
+            @Override
             public int getObjectNumber() {
                 return objectNumber;
             }
 
-            public int output(OutputStream outputStream) throws IOException {
+            @Override
+            public int output(final OutputStream outputStream)
+                    throws IOException {
                 throw new UnsupportedOperationException();
             }
         };
     }
 
-    private int assertSameObjectStream(int from, int to) {
-        int objectStreamNumber = getObjectStreamNumber(from);
+    private int assertSameObjectStream(final int from, final int to) {
+        final int objectStreamNumber = getObjectStreamNumber(from);
         for (int i = from + 1; i < to; i++) {
             assertEquals(objectStreamNumber, getObjectStreamNumber(i));
         }
         return objectStreamNumber;
     }
 
-    private int getObjectStreamNumber(int index) {
-        return compressedObjectReferences.get(index).getObjectStreamNumber();
+    private int getObjectStreamNumber(final int index) {
+        return this.compressedObjectReferences.get(index)
+                .getObjectStreamNumber();
     }
 
-    private void assertDifferent(int objectStreamNumber1, int objectStreamNumber2,
-            int objectStreamNumber3) {
+    private void assertDifferent(final int objectStreamNumber1,
+            final int objectStreamNumber2, final int objectStreamNumber3) {
         assertTrue(objectStreamNumber1 != objectStreamNumber2);
         assertTrue(objectStreamNumber1 != objectStreamNumber3);
         assertTrue(objectStreamNumber2 != objectStreamNumber3);

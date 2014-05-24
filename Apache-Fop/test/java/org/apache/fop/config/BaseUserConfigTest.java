@@ -23,11 +23,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.render.pdf.BasePDFTest;
 import org.xml.sax.SAXException;
@@ -36,36 +36,35 @@ import org.xml.sax.SAXException;
  * Basic runtime test for FOP's font configuration. It is used to verify that
  * nothing obvious is broken after compiling.
  */
+@Slf4j
 public abstract class BaseUserConfigTest extends BasePDFTest {
 
     protected DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
 
-    /** logging instance */
-    protected Log log = LogFactory.getLog(BaseUserConfigTest.class);
-
-
     /**
      * @see org.apache.fop.render.pdf.BasePDFTest#init()
      */
+    @Override
     protected void init() {
         // do nothing
     }
 
     protected void initConfig() throws Exception {
-        fopFactory.setUserConfig(getUserConfig());
+        this.fopFactory.setUserConfig(getUserConfig());
     }
 
     protected void convertFO() throws Exception {
         final File baseDir = getBaseDir();
         final String fontFOFilePath = getFontFOFilePath();
-        File foFile = new File(baseDir, fontFOFilePath);
+        final File foFile = new File(baseDir, fontFOFilePath);
         final boolean dumpOutput = false;
-        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+        final FOUserAgent foUserAgent = this.fopFactory.newFOUserAgent();
         convertFO(foFile, foUserAgent, dumpOutput);
     }
 
     /**
      * get test FOP config File
+     *
      * @return fo test filepath
      */
     protected String getFontFOFilePath() {
@@ -74,13 +73,16 @@ public abstract class BaseUserConfigTest extends BasePDFTest {
 
     /**
      * get test FOP Configuration
+     *
      * @return fo test filepath
      * @throws IOException
      * @throws SAXException
      * @throws ConfigurationException
      */
-    protected Configuration getUserConfig(String configString) throws ConfigurationException, SAXException, IOException {
-        return cfgBuilder.build(new ByteArrayInputStream(configString.getBytes()));
+    protected Configuration getUserConfig(final String configString)
+            throws ConfigurationException, SAXException, IOException {
+        return this.cfgBuilder.build(new ByteArrayInputStream(configString
+                .getBytes()));
     }
 
     /** get base config directory */
@@ -100,18 +102,22 @@ public abstract class BaseUserConfigTest extends BasePDFTest {
         return getUserConfigFilename();
     }
 
+    @Override
     protected File getUserConfigFile() {
-        return new File(getBaseConfigDir() + File.separator + getUserConfigFilename());
+        return new File(getBaseConfigDir() + File.separator
+                + getUserConfigFilename());
     }
 
     /**
      * get test FOP Configuration
+     *
      * @return fo test filepath
      * @throws IOException
      * @throws SAXException
      * @throws ConfigurationException
      */
-    protected Configuration getUserConfig() throws ConfigurationException, SAXException, IOException {
-        return cfgBuilder.buildFromFile(getUserConfigFile());
+    protected Configuration getUserConfig() throws ConfigurationException,
+    SAXException, IOException {
+        return this.cfgBuilder.buildFromFile(getUserConfigFile());
     }
 }

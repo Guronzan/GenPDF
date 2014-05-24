@@ -30,17 +30,18 @@ import org.apache.fop.fo.expr.PropertyException;
 public class BorderSpacingShorthandParser extends GenericShorthandParser {
 
     /** {@inheritDoc} */
-    protected Property convertValueForProperty(int propId, Property property,
-            PropertyMaker maker, PropertyList propertyList)
-            throws PropertyException {
-        List lst = property.getList();
+    @Override
+    protected Property convertValueForProperty(final int propId,
+            final Property property, final PropertyMaker maker,
+            final PropertyList propertyList) throws PropertyException {
+        final List lst = property.getList();
         if (lst != null) {
             if (lst.size() == 1) {
-                Property len = (Property)lst.get(0);
+                final Property len = (Property) lst.get(0);
                 return new LengthPairProperty(len);
             } else if (lst.size() == 2) {
-                Property ipd = (Property)lst.get(0);
-                Property bpd = (Property)lst.get(1);
+                final Property ipd = (Property) lst.get(0);
+                final Property bpd = (Property) lst.get(1);
                 return new LengthPairProperty(ipd, bpd);
             }
         }

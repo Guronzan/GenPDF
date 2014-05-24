@@ -41,14 +41,18 @@ import org.apache.fop.events.EventListener;
  * {@link FOEventHandler} instance. That instance is created using the helper
  * {@link FOEventHandlerFactory}.
  *
- * <p>An instance of this class may not be used in multiple threads concurrently.<p>
+ * <p>
+ * An instance of this class may not be used in multiple threads concurrently.
+ * <p>
  *
- * <p>An instance of this class may be used multiple times if the given
+ * <p>
+ * An instance of this class may be used multiple times if the given
  * {@link FOEventHandler} implementation can be used multiple times.
  */
 public final class FODocumentParser {
 
-    private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
+    private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory
+            .newInstance();
 
     private static final FopFactory FOP_FACTORY = FopFactory.newInstance();
 
@@ -66,95 +70,113 @@ public final class FODocumentParser {
     public static interface FOEventHandlerFactory {
 
         /**
-         * Creates a new {@code FOEventHandler} instance parameterized with the given FO user agent.
+         * Creates a new {@code FOEventHandler} instance parameterized with the
+         * given FO user agent.
          *
-         * @param foUserAgent an FO user agent
+         * @param foUserAgent
+         *            an FO user agent
          * @return a new {@code FOEventHandler} instance
          */
-        FOEventHandler newFOEventHandler(FOUserAgent foUserAgent);
+        FOEventHandler newFOEventHandler(final FOUserAgent foUserAgent);
     }
 
-    private FODocumentParser(FOEventHandlerFactory foeEventHandlerFactory) {
+    private FODocumentParser(final FOEventHandlerFactory foeEventHandlerFactory) {
         this.foEventHandlerFactory = foeEventHandlerFactory;
     }
 
     /**
-     * Creates and returns a new FO document parser. The given factory will be used to
-     * customize the handler that will receive FO events, using the
+     * Creates and returns a new FO document parser. The given factory will be
+     * used to customize the handler that will receive FO events, using the
      * {@link FOUserAgent#setFOEventHandlerOverride(FOEventHandler)} method.
      *
-     * @param foEventHandlerFactory the factory to be used to create {@code
-     * FOEventHandler} instances
+     * @param foEventHandlerFactory
+     *            the factory to be used to create {@code FOEventHandler}
+     *            instances
      * @return a new parser
      */
-    public static FODocumentParser newInstance(FOEventHandlerFactory foEventHandlerFactory) {
+    public static FODocumentParser newInstance(
+            final FOEventHandlerFactory foEventHandlerFactory) {
         return new FODocumentParser(foEventHandlerFactory);
     }
 
     /**
-     * Sets the event listener to be used if events occurs when parsing the document.
+     * Sets the event listener to be used if events occurs when parsing the
+     * document.
      *
-     * @param eventListener an event listener
+     * @param eventListener
+     *            an event listener
      */
-    public void setEventListener(EventListener eventListener) {
+    public void setEventListener(final EventListener eventListener) {
         this.eventListener = eventListener;
     }
 
     /**
      * Runs FOP on the given document.
      *
-     * @param document XSL-FO document to parse
-     * @throws FOPException if an error occurs when initializing FOP
-     * @throws LoadingException if an error occurs when parsing the document
+     * @param document
+     *            XSL-FO document to parse
+     * @throws FOPException
+     *             if an error occurs when initializing FOP
+     * @throws LoadingException
+     *             if an error occurs when parsing the document
      */
-    public void parse(InputStream document) throws FOPException, LoadingException {
+    public void parse(final InputStream document) throws FOPException,
+            LoadingException {
         parse(document, createFOUserAgent());
     }
 
     /**
      * Runs FOP on the given document with the supplied {@link FOUserAgent}.
      *
-     * @param document XSL-FO document to parse
-     * @param foUserAgent The user agent
-     * @throws FOPException if an error occurs when initializing FOP
-     * @throws LoadingException if an error occurs when parsing the document
+     * @param document
+     *            XSL-FO document to parse
+     * @param foUserAgent
+     *            The user agent
+     * @throws FOPException
+     *             if an error occurs when initializing FOP
+     * @throws LoadingException
+     *             if an error occurs when parsing the document
      */
-    public void parse(InputStream document, FOUserAgent foUserAgent)
+    public void parse(final InputStream document, final FOUserAgent foUserAgent)
             throws FOPException, LoadingException {
-        fop = FOP_FACTORY.newFop(foUserAgent);
+        this.fop = FOP_FACTORY.newFop(foUserAgent);
         createTransformer();
         runTransformer(document);
     }
 
     /**
      * Creates a new {@link FOUserAgent}.
+     * 
      * @return It
      */
     public FOUserAgent createFOUserAgent() {
-        FOUserAgent userAgent = FOP_FACTORY.newFOUserAgent();
-        FOEventHandler foEventHandler = foEventHandlerFactory.newFOEventHandler(userAgent);
+        final FOUserAgent userAgent = FOP_FACTORY.newFOUserAgent();
+        final FOEventHandler foEventHandler = this.foEventHandlerFactory
+                .newFOEventHandler(userAgent);
         userAgent.setFOEventHandlerOverride(foEventHandler);
-        if (eventListener != null) {
-            userAgent.getEventBroadcaster().addEventListener(eventListener);
+        if (this.eventListener != null) {
+            userAgent.getEventBroadcaster()
+                    .addEventListener(this.eventListener);
         }
         return userAgent;
     }
 
     private void createTransformer() {
         try {
-            transformer = TRANSFORMER_FACTORY.newTransformer();
-        } catch (TransformerConfigurationException e) {
+            this.transformer = TRANSFORMER_FACTORY.newTransformer();
+        } catch (final TransformerConfigurationException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void runTransformer(InputStream input) throws LoadingException, FOPException {
-        Source source = new StreamSource(input);
-        Result result = new SAXResult(fop.getDefaultHandler());
+    private void runTransformer(final InputStream input)
+            throws LoadingException, FOPException {
+        final Source source = new StreamSource(input);
+        final Result result = new SAXResult(this.fop.getDefaultHandler());
         try {
-            transformer.transform(source, result);
-        } catch (TransformerException e) {
-            Throwable cause = e.getCause();
+            this.transformer.transform(source, result);
+        } catch (final TransformerException e) {
+            final Throwable cause = e.getCause();
             throw new LoadingException(cause == null ? e : cause);
         }
     }

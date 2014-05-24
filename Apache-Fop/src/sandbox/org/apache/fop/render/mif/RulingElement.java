@@ -28,9 +28,10 @@ public class RulingElement extends RefElement {
     }
 
     /** {@inheritDoc} */
-    public MIFElement lookupElement(Object key) {
+    @Override
+    public MIFElement lookupElement(final Object key) {
         if (key == null) {
-            MIFElement rul = new MIFElement("Ruling");
+            final MIFElement rul = new MIFElement("Ruling");
             MIFElement prop = new MIFElement("RulingTag");
             prop.setValue("`Default'");
             rul.addElement(prop);
@@ -51,4 +52,3 @@ public class RulingElement extends RefElement {
         return null;
     }
 }
-

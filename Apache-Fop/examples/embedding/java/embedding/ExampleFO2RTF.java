@@ -26,74 +26,89 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 //JAXP
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Source;
-import javax.xml.transform.Result;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamSource;
 
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.fop.apps.FOPException;
 // FOP
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
-import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 
 /**
  * This class demonstrates the conversion of an FO file to RTF using FOP.
  * <p>
- * Please note that this is practically the same as the ExampleFO2PDF example. Only
- * the MIME parameter to the newFop() method is different!
+ * Please note that this is practically the same as the ExampleFO2PDF example.
+ * Only the MIME parameter to the newFop() method is different!
  */
+@Slf4j
 public class ExampleFO2RTF {
 
     // configure fopFactory as desired
-    private FopFactory fopFactory = FopFactory.newInstance();
+    private final FopFactory fopFactory = FopFactory.newInstance();
 
     /**
      * Converts an FO file to a RTF file using FOP
-     * @param fo the FO file
-     * @param rtf the target RTF file
-     * @throws IOException In case of an I/O problem
-     * @throws FOPException In case of a FOP problem
+     *
+     * @param fo
+     *            the FO file
+     * @param rtf
+     *            the target RTF file
+     * @throws IOException
+     *             In case of an I/O problem
+     * @throws FOPException
+     *             In case of a FOP problem
      */
-    public void convertFO2RTF(File fo, File rtf) throws IOException, FOPException {
+    public void convertFO2RTF(final File fo, final File rtf)
+            throws IOException, FOPException {
 
-        FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+        final FOUserAgent foUserAgent = this.fopFactory.newFOUserAgent();
         // configure foUserAgent as desired
 
         OutputStream out = null;
 
         try {
-            // Setup output stream.  Note: Using BufferedOutputStream
+            // Setup output stream. Note: Using BufferedOutputStream
             // for performance reasons (helpful with FileOutputStreams).
             out = new FileOutputStream(rtf);
             out = new BufferedOutputStream(out);
 
             // Construct fop with desired output format
-            Fop fop = fopFactory.newFop(MimeConstants.MIME_RTF, foUserAgent, out);
+            final Fop fop = this.fopFactory.newFop(
+                    org.apache.xmlgraphics.util.MimeConstants.MIME_RTF,
+                    foUserAgent, out);
 
             // Setup JAXP using identity transformer
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer(); // identity transformer
+            final TransformerFactory factory = TransformerFactory.newInstance();
+            final Transformer transformer = factory.newTransformer(); // identity
+            // transformer
 
             // Setup input stream
-            Source src = new StreamSource(fo);
+            final Source src = new StreamSource(fo);
 
-            // Resulting SAX events (the generated FO) must be piped through to FOP
-            Result res = new SAXResult(fop.getDefaultHandler());
+            // Resulting SAX events (the generated FO) must be piped through to
+            // FOP
+            final Result res = new SAXResult(fop.getDefaultHandler());
 
             // Start XSLT transformation and FOP processing
             transformer.transform(src, res);
 
-            // Please note: getResults() won't work for RTF and other flow formats (like MIF)
-            // as the layout engine is not involved in the conversion. The page-breaking
-            // is done by the application opening the generated file (like MS Word).
-            //FormattingResults foResults = fop.getResults();
+            // Please note: getResults() won't work for RTF and other flow
+            // formats (like MIF)
+            // as the layout engine is not involved in the conversion. The
+            // page-breaking
+            // is done by the application opening the generated file (like MS
+            // Word).
+            // FormattingResults foResults = fop.getResults();
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace(System.err);
             System.exit(-1);
         } finally {
@@ -101,35 +116,36 @@ public class ExampleFO2RTF {
         }
     }
 
-
     /**
      * Main method.
-     * @param args command-line arguments
+     *
+     * @param args
+     *            command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
-            System.out.println("FOP ExampleFO2RTF\n");
-            System.out.println("Preparing...");
+            log.info("FOP ExampleFO2RTF\n");
+            log.info("Preparing...");
 
-            //Setup directories
-            File baseDir = new File(".");
-            File outDir = new File(baseDir, "out");
+            // Setup directories
+            final File baseDir = new File(".");
+            final File outDir = new File(baseDir, "out");
             outDir.mkdirs();
 
-            //Setup input and output files
-            File fofile = new File(baseDir, "xml/fo/helloworld.fo");
-            File rtffile = new File(outDir, "ResultFO2RTF.rtf");
+            // Setup input and output files
+            final File fofile = new File(baseDir, "xml/fo/helloworld.fo");
+            final File rtffile = new File(outDir, "ResultFO2RTF.rtf");
 
-            System.out.println("Input: XSL-FO (" + fofile + ")");
-            System.out.println("Output: PDF (" + rtffile + ")");
-            System.out.println();
-            System.out.println("Transforming...");
+            log.info("Input: XSL-FO (" + fofile + ")");
+            log.info("Output: PDF (" + rtffile + ")");
+            log.info("");
+            log.info("Transforming...");
 
-            ExampleFO2RTF app = new ExampleFO2RTF();
+            final ExampleFO2RTF app = new ExampleFO2RTF();
             app.convertFO2RTF(fofile, rtffile);
 
-            System.out.println("Success!");
-        } catch (Exception e) {
+            log.info("Success!");
+        } catch (final Exception e) {
             e.printStackTrace(System.err);
             System.exit(-1);
         }

@@ -19,9 +19,8 @@
 
 package org.apache.fop.layoutengine;
 
-import org.w3c.dom.Element;
-
 import org.apache.fop.check.ChecksFactory;
+import org.w3c.dom.Element;
 
 /**
  * A factory class for creating {@link LayoutEngineCheck} instances.
@@ -31,28 +30,33 @@ final class LayoutEngineChecksFactory extends ChecksFactory<LayoutEngineCheck> {
     LayoutEngineChecksFactory() {
         registerCheckFactory("true", new CheckFactory<LayoutEngineCheck>() {
 
-            public LayoutEngineCheck createCheck(Element element) {
+            @Override
+            public LayoutEngineCheck createCheck(final Element element) {
                 return new TrueCheck(element);
             }
 
         });
         registerCheckFactory("eval", new CheckFactory<LayoutEngineCheck>() {
 
-            public LayoutEngineCheck createCheck(Element element) {
+            @Override
+            public LayoutEngineCheck createCheck(final Element element) {
                 return new EvalCheck(element);
             }
 
         });
-        registerCheckFactory("element-list", new CheckFactory<LayoutEngineCheck>() {
+        registerCheckFactory("element-list",
+                new CheckFactory<LayoutEngineCheck>() {
 
-            public LayoutEngineCheck createCheck(Element element) {
-                return new ElementListCheck(element);
-            }
+                    @Override
+                    public LayoutEngineCheck createCheck(final Element element) {
+                        return new ElementListCheck(element);
+                    }
 
-        });
+                });
         registerCheckFactory("result", new CheckFactory<LayoutEngineCheck>() {
 
-            public LayoutEngineCheck createCheck(Element element) {
+            @Override
+            public LayoutEngineCheck createCheck(final Element element) {
                 return new ResultCheck(element);
             }
 

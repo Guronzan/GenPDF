@@ -26,11 +26,16 @@ import java.util.List;
 // CSOFF: NoWhitespaceAfterCheck
 
 /**
- * <p>Base class implementation of glyph class table.</p>
+ * <p>
+ * Base class implementation of glyph class table.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
-public final class GlyphClassTable extends GlyphMappingTable implements GlyphClassMapping {
+public final class GlyphClassTable extends GlyphMappingTable implements
+        GlyphClassMapping {
 
     /** empty mapping table */
     public static final int GLYPH_CLASS_TYPE_EMPTY = GLYPH_MAPPING_TYPE_EMPTY;
@@ -44,63 +49,69 @@ public final class GlyphClassTable extends GlyphMappingTable implements GlyphCla
     /** empty mapping table */
     public static final int GLYPH_CLASS_TYPE_COVERAGE_SET = 3;
 
-    private GlyphClassMapping cm;
+    private final GlyphClassMapping cm;
 
-    private GlyphClassTable ( GlyphClassMapping cm ) {
+    private GlyphClassTable(final GlyphClassMapping cm) {
         assert cm != null;
         assert cm instanceof GlyphMappingTable;
         this.cm = cm;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getType() {
-        return ( (GlyphMappingTable) cm ) .getType();
+        return ((GlyphMappingTable) this.cm).getType();
     }
 
     /** {@inheritDoc} */
+    @Override
     public List getEntries() {
-        return ( (GlyphMappingTable) cm ) .getEntries();
+        return ((GlyphMappingTable) this.cm).getEntries();
     }
 
     /** {@inheritDoc} */
-    public int getClassSize ( int set ) {
-        return cm.getClassSize ( set );
+    @Override
+    public int getClassSize(final int set) {
+        return this.cm.getClassSize(set);
     }
 
     /** {@inheritDoc} */
-    public int getClassIndex ( int gid, int set ) {
-        return cm.getClassIndex ( gid, set );
+    @Override
+    public int getClassIndex(final int gid, final int set) {
+        return this.cm.getClassIndex(gid, set);
     }
 
     /**
      * Create glyph class table.
-     * @param entries list of mapped or ranged class entries, or null or empty list
+     * 
+     * @param entries
+     *            list of mapped or ranged class entries, or null or empty list
      * @return a new covera table instance
      */
-    public static GlyphClassTable createClassTable ( List entries ) {
+    public static GlyphClassTable createClassTable(final List entries) {
         GlyphClassMapping cm;
-        if ( ( entries == null ) || ( entries.size() == 0 ) ) {
-            cm = new EmptyClassTable ( entries );
-        } else if ( isMappedClass ( entries ) ) {
-            cm = new MappedClassTable ( entries );
-        } else if ( isRangeClass ( entries ) ) {
-            cm = new RangeClassTable ( entries );
-        } else if ( isCoverageSetClass ( entries ) ) {
-            cm = new CoverageSetClassTable ( entries );
+        if (entries == null || entries.size() == 0) {
+            cm = new EmptyClassTable(entries);
+        } else if (isMappedClass(entries)) {
+            cm = new MappedClassTable(entries);
+        } else if (isRangeClass(entries)) {
+            cm = new RangeClassTable(entries);
+        } else if (isCoverageSetClass(entries)) {
+            cm = new CoverageSetClassTable(entries);
         } else {
             cm = null;
         }
         assert cm != null : "unknown class type";
-        return new GlyphClassTable ( cm );
+        return new GlyphClassTable(cm);
     }
 
-    private static boolean isMappedClass ( List entries ) {
-        if ( ( entries == null ) || ( entries.size() == 0 ) ) {
+    private static boolean isMappedClass(final List entries) {
+        if (entries == null || entries.size() == 0) {
             return false;
         } else {
-            for ( Iterator it = entries.iterator(); it.hasNext();) {
-                Object o = it.next();
-                if ( ! ( o instanceof Integer ) ) {
+            for (final Iterator it = entries.iterator(); it.hasNext();) {
+                final Object o = it.next();
+                if (!(o instanceof Integer)) {
                     return false;
                 }
             }
@@ -108,13 +119,13 @@ public final class GlyphClassTable extends GlyphMappingTable implements GlyphCla
         }
     }
 
-    private static boolean isRangeClass ( List entries ) {
-        if ( ( entries == null ) || ( entries.size() == 0 ) ) {
+    private static boolean isRangeClass(final List entries) {
+        if (entries == null || entries.size() == 0) {
             return false;
         } else {
-            for ( Iterator it = entries.iterator(); it.hasNext();) {
-                Object o = it.next();
-                if ( ! ( o instanceof MappingRange ) ) {
+            for (final Iterator it = entries.iterator(); it.hasNext();) {
+                final Object o = it.next();
+                if (!(o instanceof MappingRange)) {
                     return false;
                 }
             }
@@ -122,13 +133,13 @@ public final class GlyphClassTable extends GlyphMappingTable implements GlyphCla
         }
     }
 
-    private static boolean isCoverageSetClass ( List entries ) {
-        if ( ( entries == null ) || ( entries.size() == 0 ) ) {
+    private static boolean isCoverageSetClass(final List entries) {
+        if (entries == null || entries.size() == 0) {
             return false;
         } else {
-            for ( Iterator it = entries.iterator(); it.hasNext();) {
-                Object o = it.next();
-                if ( ! ( o instanceof GlyphCoverageTable ) ) {
+            for (final Iterator it = entries.iterator(); it.hasNext();) {
+                final Object o = it.next();
+                if (!(o instanceof GlyphCoverageTable)) {
                     return false;
                 }
             }
@@ -136,87 +147,108 @@ public final class GlyphClassTable extends GlyphMappingTable implements GlyphCla
         }
     }
 
-    private static class EmptyClassTable extends GlyphMappingTable.EmptyMappingTable implements GlyphClassMapping {
-        public EmptyClassTable ( List entries ) {
-            super ( entries );
+    private static class EmptyClassTable extends
+            GlyphMappingTable.EmptyMappingTable implements GlyphClassMapping {
+        public EmptyClassTable(final List entries) {
+            super(entries);
         }
+
         /** {@inheritDoc} */
-        public int getClassSize ( int set ) {
+        @Override
+        public int getClassSize(final int set) {
             return 0;
         }
+
         /** {@inheritDoc} */
-        public int getClassIndex ( int gid, int set ) {
+        @Override
+        public int getClassIndex(final int gid, final int set) {
             return -1;
         }
     }
 
-    private static class MappedClassTable extends GlyphMappingTable.MappedMappingTable implements GlyphClassMapping {
+    private static class MappedClassTable extends
+            GlyphMappingTable.MappedMappingTable implements GlyphClassMapping {
         private int firstGlyph;
         private int[] gca;
         private int gcMax = -1;
-        public MappedClassTable ( List entries ) {
-            populate ( entries );
+
+        public MappedClassTable(final List entries) {
+            populate(entries);
         }
+
         /** {@inheritDoc} */
+        @Override
         public List getEntries() {
-            List entries = new java.util.ArrayList();
-            entries.add ( Integer.valueOf ( firstGlyph ) );
-            if ( gca != null ) {
-                for ( int i = 0, n = gca.length; i < n; i++ ) {
-                    entries.add ( Integer.valueOf ( gca [ i ] ) );
+            final List entries = new java.util.ArrayList();
+            entries.add(Integer.valueOf(this.firstGlyph));
+            if (this.gca != null) {
+                for (int i = 0, n = this.gca.length; i < n; i++) {
+                    entries.add(Integer.valueOf(this.gca[i]));
                 }
             }
             return entries;
         }
+
         /** {@inheritDoc} */
+        @Override
         public int getMappingSize() {
-            return gcMax + 1;
+            return this.gcMax + 1;
         }
+
         /** {@inheritDoc} */
-        public int getMappedIndex ( int gid ) {
-            int i = gid - firstGlyph;
-            if ( ( i >= 0 ) && ( i < gca.length ) ) {
-                return gca [ i ];
+        @Override
+        public int getMappedIndex(final int gid) {
+            final int i = gid - this.firstGlyph;
+            if (i >= 0 && i < this.gca.length) {
+                return this.gca[i];
             } else {
                 return -1;
             }
         }
+
         /** {@inheritDoc} */
-        public int getClassSize ( int set ) {
+        @Override
+        public int getClassSize(final int set) {
             return getMappingSize();
         }
+
         /** {@inheritDoc} */
-        public int getClassIndex ( int gid, int set ) {
-            return getMappedIndex ( gid );
+        @Override
+        public int getClassIndex(final int gid, final int set) {
+            return getMappedIndex(gid);
         }
-        private void populate ( List entries ) {
+
+        private void populate(final List entries) {
             // obtain entries iterator
-            Iterator it = entries.iterator();
+            final Iterator it = entries.iterator();
             // extract first glyph
             int firstGlyph = 0;
-            if ( it.hasNext() ) {
-                Object o = it.next();
-                if ( o instanceof Integer ) {
-                    firstGlyph = ( (Integer) o ) . intValue();
+            if (it.hasNext()) {
+                final Object o = it.next();
+                if (o instanceof Integer) {
+                    firstGlyph = ((Integer) o).intValue();
                 } else {
-                    throw new AdvancedTypographicTableFormatException ( "illegal entry, first entry must be Integer denoting first glyph value, but is: " + o );
+                    throw new AdvancedTypographicTableFormatException(
+                            "illegal entry, first entry must be Integer denoting first glyph value, but is: "
+                                    + o);
                 }
             }
             // extract glyph class array
             int i = 0;
-            int n = entries.size() - 1;
+            final int n = entries.size() - 1;
             int gcMax = -1;
-            int[] gca = new int [ n ];
-            while ( it.hasNext() ) {
-                Object o = it.next();
-                if ( o instanceof Integer ) {
-                    int gc = ( (Integer) o ) . intValue();
-                    gca [ i++ ] = gc;
-                    if ( gc > gcMax ) {
+            final int[] gca = new int[n];
+            while (it.hasNext()) {
+                final Object o = it.next();
+                if (o instanceof Integer) {
+                    final int gc = ((Integer) o).intValue();
+                    gca[i++] = gc;
+                    if (gc > gcMax) {
                         gcMax = gc;
                     }
                 } else {
-                    throw new AdvancedTypographicTableFormatException ( "illegal mapping entry, must be Integer: " + o );
+                    throw new AdvancedTypographicTableFormatException(
+                            "illegal mapping entry, must be Integer: " + o);
                 }
             }
             assert i == n;
@@ -225,53 +257,70 @@ public final class GlyphClassTable extends GlyphMappingTable implements GlyphCla
             this.gca = gca;
             this.gcMax = gcMax;
         }
+
         /** {@inheritDoc} */
+        @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer();
-            sb.append("{ firstGlyph = " + firstGlyph + ", classes = {");
-            for ( int i = 0, n = gca.length; i < n; i++ ) {
-                if ( i > 0 ) {
+            final StringBuffer sb = new StringBuffer();
+            sb.append("{ firstGlyph = " + this.firstGlyph + ", classes = {");
+            for (int i = 0, n = this.gca.length; i < n; i++) {
+                if (i > 0) {
                     sb.append(',');
                 }
-                sb.append ( Integer.toString ( gca [ i ] ) );
+                sb.append(Integer.toString(this.gca[i]));
             }
             sb.append("} }");
             return sb.toString();
         }
     }
 
-    private static class RangeClassTable extends GlyphMappingTable.RangeMappingTable implements GlyphClassMapping {
-        public RangeClassTable ( List entries ) {
-            super ( entries );
+    private static class RangeClassTable extends
+            GlyphMappingTable.RangeMappingTable implements GlyphClassMapping {
+        public RangeClassTable(final List entries) {
+            super(entries);
         }
+
         /** {@inheritDoc} */
-        public int getMappedIndex ( int gid, int s, int m ) {
+        @Override
+        public int getMappedIndex(final int gid, final int s, final int m) {
             return m;
         }
+
         /** {@inheritDoc} */
-        public int getClassSize ( int set ) {
+        @Override
+        public int getClassSize(final int set) {
             return getMappingSize();
         }
+
         /** {@inheritDoc} */
-        public int getClassIndex ( int gid, int set ) {
-            return getMappedIndex ( gid );
+        @Override
+        public int getClassIndex(final int gid, final int set) {
+            return getMappedIndex(gid);
         }
     }
 
-    private static class CoverageSetClassTable extends GlyphMappingTable.EmptyMappingTable implements GlyphClassMapping {
-        public CoverageSetClassTable ( List entries ) {
-            throw new UnsupportedOperationException ( "coverage set class table not yet supported" );
+    private static class CoverageSetClassTable extends
+            GlyphMappingTable.EmptyMappingTable implements GlyphClassMapping {
+        public CoverageSetClassTable(final List entries) {
+            throw new UnsupportedOperationException(
+                    "coverage set class table not yet supported");
         }
+
         /** {@inheritDoc} */
+        @Override
         public int getType() {
             return GLYPH_CLASS_TYPE_COVERAGE_SET;
         }
+
         /** {@inheritDoc} */
-        public int getClassSize ( int set ) {
+        @Override
+        public int getClassSize(final int set) {
             return 0;
         }
+
         /** {@inheritDoc} */
-        public int getClassIndex ( int gid, int set ) {
+        @Override
+        public int getClassIndex(final int gid, final int set) {
             return -1;
         }
     }

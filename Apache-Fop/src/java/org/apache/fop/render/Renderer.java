@@ -83,7 +83,7 @@ public interface Renderer {
 
     /**
      * Returns the associated user agent.
-     * 
+     *
      * @return the user agent
      */
     FOUserAgent getUserAgent();

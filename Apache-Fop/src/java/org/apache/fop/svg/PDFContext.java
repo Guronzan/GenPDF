@@ -22,8 +22,8 @@ package org.apache.fop.svg;
 import org.apache.fop.pdf.PDFPage;
 
 /**
- * Context class which holds state information which should remain in sync over multiple instances
- * of PDFDocumentGraphics2D.
+ * Context class which holds state information which should remain in sync over
+ * multiple instances of PDFDocumentGraphics2D.
  */
 public class PDFContext {
 
@@ -41,7 +41,7 @@ public class PDFContext {
      * After this call, there's no current page.
      */
     public void clearCurrentPage() {
-        currentPage = null;
+        this.currentPage = null;
     }
 
     /** @return the current page or null if there is none */
@@ -51,9 +51,11 @@ public class PDFContext {
 
     /**
      * Sets the current page
-     * @param page the page
+     * 
+     * @param page
+     *            the page
      */
-    public void setCurrentPage(PDFPage page) {
+    public void setCurrentPage(final PDFPage page) {
         this.currentPage = page;
     }
 

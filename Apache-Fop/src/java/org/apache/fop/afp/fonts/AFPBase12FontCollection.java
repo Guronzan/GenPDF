@@ -44,32 +44,36 @@ public class AFPBase12FontCollection implements FontCollection {
     private final AFPEventProducer eventProducer;
 
     /**
-     * @param eventProducer the AFP-specific event producer
+     * @param eventProducer
+     *            the AFP-specific event producer
      */
-    public AFPBase12FontCollection(AFPEventProducer eventProducer) {
+    public AFPBase12FontCollection(final AFPEventProducer eventProducer) {
         this.eventProducer = eventProducer;
     }
 
     /** standard raster font sizes */
-    private static final int[] RASTER_SIZES = {6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 30, 36};
+    private static final int[] RASTER_SIZES = { 6, 7, 8, 9, 10, 11, 12, 14, 16,
+            18, 20, 24, 30, 36 };
 
     /** standard raster font charset references */
-    private static final String[] CHARSET_REF = {
-        "60", "70", "80", "90", "00", "A0", "B0", "D0", "F0", "H0", "J0", "N0", "T0", "Z0"};
+    private static final String[] CHARSET_REF = { "60", "70", "80", "90", "00",
+            "A0", "B0", "D0", "F0", "H0", "J0", "N0", "T0", "Z0" };
 
-    private void addCharacterSet(RasterFont font, String charsetName, Base14Font base14) {
+    private void addCharacterSet(final RasterFont font,
+            final String charsetName, final Base14Font base14) {
         for (int i = 0; i < RASTER_SIZES.length; i++) {
-            int size = RASTER_SIZES[i] * 1000;
-            FopCharacterSet characterSet = new FopCharacterSet(
-                    CharacterSet.DEFAULT_CODEPAGE, CharacterSet.DEFAULT_ENCODING,
-                    charsetName + CHARSET_REF[i], base14, eventProducer);
+            final int size = RASTER_SIZES[i] * 1000;
+            final FopCharacterSet characterSet = new FopCharacterSet(
+                    CharacterSet.DEFAULT_CODEPAGE,
+                    CharacterSet.DEFAULT_ENCODING,
+                    charsetName + CHARSET_REF[i], base14, this.eventProducer);
             font.addCharacterSet(size, characterSet);
         }
     }
 
-    private int addFontProperties(FontInfo fontInfo, AFPFont font,
-            String[] names, String style, int weight, int num) {
-        String internalFontKey = "F" + num;
+    private int addFontProperties(final FontInfo fontInfo, final AFPFont font,
+            final String[] names, final String style, final int weight, int num) {
+        final String internalFontKey = "F" + num;
         fontInfo.addMetrics(internalFontKey, font);
         fontInfo.addFontProperties(internalFontKey, names, style, weight);
         num++;
@@ -77,19 +81,20 @@ public class AFPBase12FontCollection implements FontCollection {
     }
 
     /** {@inheritDoc} */
-    public int setup(int start, FontInfo fontInfo) {
+    @Override
+    public int setup(final int start, final FontInfo fontInfo) {
 
         /**
          * Add the base 12 fonts (Helvetica, Times and Courier)
          *
-         * Note: this default font configuration may not be available
-         * on your AFP environment.
+         * Note: this default font configuration may not be available on your
+         * AFP environment.
          */
         int num = start;
         RasterFont font = null;
 
         /** standard font family reference names for Helvetica font */
-        final String[] helveticaNames = {"Helvetica", "Arial", "sans-serif"};
+        final String[] helveticaNames = { "Helvetica", "Arial", "sans-serif" };
         font = createReferencedRasterFont("Helvetica");
         addCharacterSet(font, "C0H200", new Helvetica());
         num = addFontProperties(fontInfo, font, helveticaNames,
@@ -110,36 +115,35 @@ public class AFPBase12FontCollection implements FontCollection {
         num = addFontProperties(fontInfo, font, helveticaNames,
                 Font.STYLE_ITALIC, Font.WEIGHT_BOLD, num);
 
-
         /** standard font family reference names for Times font */
 
         /** any is treated as serif */
-        final String[] timesNames = {"Times", "TimesRoman", "Times Roman", "Times-Roman",
-                "Times New Roman", "TimesNewRoman", "serif", "any"};
+        final String[] timesNames = { "Times", "TimesRoman", "Times Roman",
+                "Times-Roman", "Times New Roman", "TimesNewRoman", "serif",
+                "any" };
 
         font = createReferencedRasterFont("Times Roman");
         addCharacterSet(font, "C0N200", new TimesRoman());
-        num = addFontProperties(fontInfo, font, timesNames,
-                Font.STYLE_NORMAL, Font.WEIGHT_NORMAL, num);
+        num = addFontProperties(fontInfo, font, timesNames, Font.STYLE_NORMAL,
+                Font.WEIGHT_NORMAL, num);
 
         font = createReferencedRasterFont("Times Roman Italic");
         addCharacterSet(font, "C0N300", new TimesItalic());
-        num = addFontProperties(fontInfo, font, timesNames,
-                Font.STYLE_ITALIC, Font.WEIGHT_NORMAL, num);
+        num = addFontProperties(fontInfo, font, timesNames, Font.STYLE_ITALIC,
+                Font.WEIGHT_NORMAL, num);
 
         font = createReferencedRasterFont("Times Roman Bold");
         addCharacterSet(font, "C0N400", new TimesBold());
-        num = addFontProperties(fontInfo, font, timesNames,
-                Font.STYLE_NORMAL, Font.WEIGHT_BOLD, num);
+        num = addFontProperties(fontInfo, font, timesNames, Font.STYLE_NORMAL,
+                Font.WEIGHT_BOLD, num);
 
         font = createReferencedRasterFont("Times Roman Italic Bold");
         addCharacterSet(font, "C0N500", new TimesBoldItalic());
-        num = addFontProperties(fontInfo, font, timesNames,
-                Font.STYLE_ITALIC, Font.WEIGHT_BOLD, num);
-
+        num = addFontProperties(fontInfo, font, timesNames, Font.STYLE_ITALIC,
+                Font.WEIGHT_BOLD, num);
 
         /** standard font family reference names for Courier font */
-        final String[] courierNames = {"Courier", "monospace"};
+        final String[] courierNames = { "Courier", "monospace" };
 
         font = createReferencedRasterFont("Courier");
         addCharacterSet(font, "C04200", new Courier());
@@ -164,9 +168,10 @@ public class AFPBase12FontCollection implements FontCollection {
         return num;
     }
 
-    private RasterFont createReferencedRasterFont(String fontFamily) {
-        RasterFont font = new RasterFont(fontFamily);
-        font.setEmbeddable(false); //Font is assumed to be available on the target platform
+    private RasterFont createReferencedRasterFont(final String fontFamily) {
+        final RasterFont font = new RasterFont(fontFamily);
+        font.setEmbeddable(false); // Font is assumed to be available on the
+                                   // target platform
         return font;
     }
 

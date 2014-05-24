@@ -31,35 +31,40 @@ public class ListItemLabel extends AbstractListItemPart {
     /**
      * Base constructor
      *
-     * @param parent {@link FONode} that is the parent of this object
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public ListItemLabel(FONode parent) {
+    public ListItemLabel(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
         super.startOfNode();
         getFOEventHandler().startListLabel(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
         super.endOfNode();
         getFOEventHandler().endListLabel(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "list-item-label";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_LIST_ITEM_LABEL}
      */
+    @Override
     public int getNameId() {
         return FO_LIST_ITEM_LABEL;
     }
 }
-

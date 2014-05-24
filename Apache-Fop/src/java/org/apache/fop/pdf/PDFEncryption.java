@@ -26,24 +26,29 @@ public interface PDFEncryption {
 
     /**
      * Adds a PDFFilter to the PDFStream object
-     * @param stream the stream to add an encryption filter to
+     * 
+     * @param stream
+     *            the stream to add an encryption filter to
      */
-    void applyFilter(AbstractPDFStream stream);
+    void applyFilter(final AbstractPDFStream stream);
 
     /**
-     * Encrypt an array of bytes using a reference PDFObject for calculating
-     * the encryption key.
-     * @param data data to encrypt
-     * @param refObj reference PDFObject
+     * Encrypt an array of bytes using a reference PDFObject for calculating the
+     * encryption key.
+     * 
+     * @param data
+     *            data to encrypt
+     * @param refObj
+     *            reference PDFObject
      * @return byte[] the encrypted data
      */
-    byte[] encrypt(byte[] data, PDFObject refObj);
+    byte[] encrypt(final byte[] data, final PDFObject refObj);
 
     /**
      * Returns the /Encrypt entry in the file trailer dictionary.
      *
-     * @return the string "/Encrypt n g R\n" where n and g are the number and generation
-     * of the document's encryption dictionary
+     * @return the string "/Encrypt n g R\n" where n and g are the number and
+     *         generation of the document's encryption dictionary
      */
     String getTrailerEntry();
 }

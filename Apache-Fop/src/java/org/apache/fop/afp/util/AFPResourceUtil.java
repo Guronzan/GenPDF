@@ -25,8 +25,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.afp.AFPConstants;
 import org.apache.fop.afp.modca.AbstractAFPObject.Category;
 import org.apache.fop.afp.modca.ResourceObject;
@@ -52,12 +52,11 @@ import org.apache.fop.afp.parser.UnparsedStructuredField;
  * length of a structured field is 32767 bytes.
  * <p/>
  */
+@Slf4j
 public final class AFPResourceUtil {
 
     private static final byte TYPE_CODE_BEGIN = (byte) (0xA8 & 0xFF);
     private static final byte TYPE_CODE_END = (byte) (0xA9 & 0xFF);
-
-    private static final Log LOG = LogFactory.getLog(AFPResourceUtil.class);
 
     private AFPResourceUtil() {
         // nop
@@ -66,7 +65,7 @@ public final class AFPResourceUtil {
     /**
      * Get the next structured field as identified by the identifier parameter
      * (this must be a valid MO:DCA structured field).
-     * 
+     *
      * @param identifier
      *            the three byte identifier
      * @param inputStream
@@ -108,7 +107,7 @@ public final class AFPResourceUtil {
 
     /**
      * Copy a complete resource file to a given {@link OutputStream}.
-     * 
+     *
      * @param in
      *            external resource input
      * @param out
@@ -134,7 +133,7 @@ public final class AFPResourceUtil {
      * Copy a named resource to a given {@link OutputStream}. The MO:DCA fields
      * read from the {@link InputStream} are scanned for the resource with the
      * given name.
-     * 
+     *
      * @param name
      *            name of structured field
      * @param in
@@ -169,8 +168,8 @@ public final class AFPResourceUtil {
             resourceNames.add(resourceName);
 
             if (resourceName.equals(name)) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Start of requested structured field found:\n"
+                if (log.isDebugEnabled()) {
+                    log.debug("Start of requested structured field found:\n"
                             + field);
                 }
                 fieldBegin = field;

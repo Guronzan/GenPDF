@@ -21,8 +21,8 @@ package org.apache.fop.fonts;
 
 /**
  * A segment in a cmap table of format 4. Unicode code points between
- * {@link #getUnicodeStart()} and {@link #getUnicodeEnd()} map to contiguous glyph indices
- * starting from {@link #getGlyphStartIndex()}.
+ * {@link #getUnicodeStart()} and {@link #getUnicodeEnd()} map to contiguous
+ * glyph indices starting from {@link #getGlyphStartIndex()}.
  */
 public final class CMapSegment {
 
@@ -33,11 +33,15 @@ public final class CMapSegment {
     /**
      * Creates a new segment.
      *
-     * @param unicodeStart Unicode start index
-     * @param unicodeEnd Unicode end index
-     * @param glyphStartIndex glyph start index
+     * @param unicodeStart
+     *            Unicode start index
+     * @param unicodeEnd
+     *            Unicode end index
+     * @param glyphStartIndex
+     *            glyph start index
      */
-    public CMapSegment(int unicodeStart, int unicodeEnd, int glyphStartIndex) {
+    public CMapSegment(final int unicodeStart, final int unicodeEnd,
+            final int glyphStartIndex) {
         this.unicodeStart = unicodeStart;
         this.unicodeEnd = unicodeEnd;
         this.glyphStartIndex = glyphStartIndex;
@@ -46,60 +50,63 @@ public final class CMapSegment {
     @Override
     public int hashCode() {
         int hc = 17;
-        hc = 31 * hc + unicodeStart;
-        hc = 31 * hc + unicodeEnd;
-        hc = 31 * hc + glyphStartIndex;
+        hc = 31 * hc + this.unicodeStart;
+        hc = 31 * hc + this.unicodeEnd;
+        hc = 31 * hc + this.glyphStartIndex;
         return hc;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o instanceof CMapSegment) {
-            CMapSegment ce = (CMapSegment) o;
+            final CMapSegment ce = (CMapSegment) o;
             return ce.unicodeStart == this.unicodeStart
-                && ce.unicodeEnd == this.unicodeEnd
-                && ce.glyphStartIndex == this.glyphStartIndex;
+                    && ce.unicodeEnd == this.unicodeEnd
+                    && ce.glyphStartIndex == this.glyphStartIndex;
         }
         return false;
     }
 
     /**
      * Returns the unicodeStart.
+     * 
      * @return the Unicode start index
      */
     public int getUnicodeStart() {
-        return unicodeStart;
+        return this.unicodeStart;
     }
 
     /**
      * Returns the unicodeEnd.
+     * 
      * @return the Unicode end index
      */
     public int getUnicodeEnd() {
-        return unicodeEnd;
+        return this.unicodeEnd;
     }
 
     /**
      * Returns the glyphStartIndex.
+     * 
      * @return the glyph start index
      */
     public int getGlyphStartIndex() {
-        return glyphStartIndex;
+        return this.glyphStartIndex;
     }
 
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("CMapSegment: ");
-        sb.append ( "{ UC[" );
-        sb.append ( unicodeStart );
-        sb.append ( ',' );
-        sb.append ( unicodeEnd );
-        sb.append ( "]: GC[" );
-        sb.append ( glyphStartIndex );
-        sb.append ( ',' );
-        sb.append ( glyphStartIndex + ( unicodeEnd - unicodeStart ) );
-        sb.append ( "] }" );
+        final StringBuilder sb = new StringBuilder("CMapSegment: ");
+        sb.append("{ UC[");
+        sb.append(this.unicodeStart);
+        sb.append(',');
+        sb.append(this.unicodeEnd);
+        sb.append("]: GC[");
+        sb.append(this.glyphStartIndex);
+        sb.append(',');
+        sb.append(this.glyphStartIndex + this.unicodeEnd - this.unicodeStart);
+        sb.append("] }");
         return sb.toString();
     }
 

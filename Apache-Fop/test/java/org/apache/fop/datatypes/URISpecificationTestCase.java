@@ -19,9 +19,9 @@
 
 package org.apache.fop.datatypes;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for URISpecification.
@@ -29,7 +29,7 @@ import org.junit.Test;
 public class URISpecificationTestCase {
 
     @Test
-    public void testGetURL() throws Exception {
+    public void testGetURL() {
         String actual;
 
         actual = URISpecification.getURL("http://localhost/test");
@@ -46,7 +46,7 @@ public class URISpecificationTestCase {
     }
 
     @Test
-    public void testEscapeURI() throws Exception {
+    public void testEscapeURI() {
         String actual;
 
         actual = URISpecification.escapeURI("http://localhost/test");
@@ -58,7 +58,8 @@ public class URISpecificationTestCase {
         actual = URISpecification.escapeURI("http://localhost/test test");
         assertEquals("http://localhost/test%20test", actual);
 
-        actual = URISpecification.escapeURI("http://localhost/test test.pdf#page=6");
+        actual = URISpecification
+                .escapeURI("http://localhost/test test.pdf#page=6");
         assertEquals("http://localhost/test%20test.pdf#page=6", actual);
     }
 

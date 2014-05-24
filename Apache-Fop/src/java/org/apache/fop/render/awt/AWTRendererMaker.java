@@ -29,20 +29,22 @@ import org.apache.fop.render.Renderer;
  */
 public class AWTRendererMaker extends AbstractRendererMaker {
 
-    private static final String[] MIMES = new String[] {MimeConstants.MIME_FOP_AWT_PREVIEW};
-
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_FOP_AWT_PREVIEW };
 
     /** {@inheritDoc} */
-    public Renderer makeRenderer(FOUserAgent ua) {
+    @Override
+    public Renderer makeRenderer(final FOUserAgent ua) {
         return new AWTRenderer(ua);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

@@ -23,22 +23,28 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * This interface is implemented by classes that can be serialized to a PDF file either by
- * serializing the object or by writing a indirect reference to the actual object.
+ * This interface is implemented by classes that can be serialized to a PDF file
+ * either by serializing the object or by writing a indirect reference to the
+ * actual object.
  */
 public interface PDFWritable {
 
     /**
-     * Writes a "direct object" (inline object) representation to the stream. A text buffer is given
-     * for optimized encoding of text content.
+     * Writes a "direct object" (inline object) representation to the stream. A
+     * text buffer is given for optimized encoding of text content.
      * <p>
      * IMPORTANT: If you need to write out binary output, call
-     * {@link PDFDocument#flushTextBuffer(StringBuilder, OutputStream)} before writing any content
-     * to the {@link OutputStream}!
-     * @param out the OutputStream (for binary content)
-     * @param textBuffer the text buffer for text content
-     * @throws IOException if an I/O error occurs
+     * {@link PDFDocument#flushTextBuffer(StringBuilder, OutputStream)} before
+     * writing any content to the {@link OutputStream}!
+     * 
+     * @param out
+     *            the OutputStream (for binary content)
+     * @param textBuffer
+     *            the text buffer for text content
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    void outputInline(OutputStream out, StringBuilder textBuffer) throws IOException;
+    void outputInline(final OutputStream out, final StringBuilder textBuffer)
+            throws IOException;
 
 }

@@ -19,54 +19,61 @@
 
 package org.apache.fop.render.ps;
 
-
 import java.awt.Color;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.svg.SVGLength;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.UnitProcessor;
 import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
-
-import org.apache.xmlgraphics.java2d.ps.AbstractPSDocumentGraphics2D;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.svg.AbstractFOPTranscoder;
 import org.apache.fop.svg.PDFDocumentGraphics2DConfigurator;
+import org.apache.xmlgraphics.java2d.ps.AbstractPSDocumentGraphics2D;
+import org.w3c.dom.Document;
+import org.w3c.dom.svg.SVGLength;
 
 /**
- * <p>This class enables to transcode an input to a PostScript document.</p>
+ * <p>
+ * This class enables to transcode an input to a PostScript document.
+ * </p>
  *
- * <p>Two transcoding hints (<code>KEY_WIDTH</code> and
- * <code>KEY_HEIGHT</code>) can be used to respectively specify the image
- * width and the image height. If only one of these keys is specified,
- * the transcoder preserves the aspect ratio of the original image.
+ * <p>
+ * Two transcoding hints (<code>KEY_WIDTH</code> and <code>KEY_HEIGHT</code>)
+ * can be used to respectively specify the image width and the image height. If
+ * only one of these keys is specified, the transcoder preserves the aspect
+ * ratio of the original image.
  *
- * <p>The <code>KEY_BACKGROUND_COLOR</code> defines the background color
- * to use for opaque image formats, or the background color that may
- * be used for image formats that support alpha channel.
+ * <p>
+ * The <code>KEY_BACKGROUND_COLOR</code> defines the background color to use for
+ * opaque image formats, or the background color that may be used for image
+ * formats that support alpha channel.
  *
- * <p>The <code>KEY_AOI</code> represents the area of interest to paint
- * in device space.
+ * <p>
+ * The <code>KEY_AOI</code> represents the area of interest to paint in device
+ * space.
  *
- * <p>Three additional transcoding hints that act on the SVG
- * processor can be specified:
+ * <p>
+ * Three additional transcoding hints that act on the SVG processor can be
+ * specified:
  *
- * <p><code>KEY_LANGUAGE</code> to set the default language to use (may be
- * used by a &lt;switch> SVG element for example),
- * <code>KEY_USER_STYLESHEET_URI</code> to fix the URI of a user
- * stylesheet, and <code>KEY_PIXEL_TO_MM</code> to specify the pixel to
- * millimeter conversion factor.
+ * <p>
+ * <code>KEY_LANGUAGE</code> to set the default language to use (may be used by
+ * a &lt;switch> SVG element for example), <code>KEY_USER_STYLESHEET_URI</code>
+ * to fix the URI of a user stylesheet, and <code>KEY_PIXEL_TO_MM</code> to
+ * specify the pixel to millimeter conversion factor.
  *
- * <p>This work was authored by Keiron Liddle (keiron@aftexsw.com).</p>
+ * <p>
+ * This work was authored by Keiron Liddle (keiron@aftexsw.com).
+ * </p>
  */
+@Slf4j
 public abstract class AbstractPSTranscoder extends AbstractFOPTranscoder {
 
     /** the root Graphics2D instance for generating PostScript */
@@ -83,92 +90,114 @@ public abstract class AbstractPSTranscoder extends AbstractFOPTranscoder {
 
     /**
      * Creates the root Graphics2D instance for generating PostScript.
+     *
      * @return the root Graphics2D
      */
     protected abstract AbstractPSDocumentGraphics2D createDocumentGraphics2D();
 
     /** {@inheritDoc} */
+    @Override
     protected boolean getAutoFontsDefault() {
-        //Currently set to false because auto-fonts requires a lot of memory in the PostScript
-        //case: All fonts (even the unsupported TTF fonts) need to be loaded and TrueType loading
-        //is currently very memory-intensive. At default JVM memory settings, this would result
-        //in OutOfMemoryErrors otherwise.
+        // Currently set to false because auto-fonts requires a lot of memory in
+        // the PostScript
+        // case: All fonts (even the unsupported TTF fonts) need to be loaded
+        // and TrueType loading
+        // is currently very memory-intensive. At default JVM memory settings,
+        // this would result
+        // in OutOfMemoryErrors otherwise.
         return false;
     }
 
     /**
      * Transcodes the specified Document as an image in the specified output.
      *
-     * @param document the document to transcode
-     * @param uri the uri of the document or null if any
-     * @param output the ouput where to transcode
-     * @exception TranscoderException if an error occured while transcoding
+     * @param document
+     *            the document to transcode
+     * @param uri
+     *            the uri of the document or null if any
+     * @param output
+     *            the ouput where to transcode
+     * @exception TranscoderException
+     *                if an error occured while transcoding
      */
-    protected void transcode(Document document, String uri,
-                             TranscoderOutput output)
-        throws TranscoderException {
+    @Override
+    protected void transcode(final Document document, final String uri,
+            final TranscoderOutput output) throws TranscoderException {
 
-        graphics = createDocumentGraphics2D();
+        this.graphics = createDocumentGraphics2D();
         if (!isTextStroked()) {
             try {
-                boolean useComplexScriptFeatures = false; //TODO - FIX ME
-                this.fontInfo = PDFDocumentGraphics2DConfigurator.createFontInfo(
-                        getEffectiveConfiguration(), useComplexScriptFeatures);
-                graphics.setCustomTextHandler(new NativeTextHandler(graphics, fontInfo));
-            } catch (FOPException fe) {
+                final boolean useComplexScriptFeatures = false; // TODO - FIX ME
+                this.fontInfo = PDFDocumentGraphics2DConfigurator
+                        .createFontInfo(getEffectiveConfiguration(),
+                                useComplexScriptFeatures);
+                this.graphics.setCustomTextHandler(new NativeTextHandler(
+                        this.graphics, this.fontInfo));
+            } catch (final FOPException fe) {
                 throw new TranscoderException(fe);
             }
         }
 
         super.transcode(document, uri, output);
 
-        getLogger().trace("document size: " + width + " x " + height);
+        log.trace("document size: " + this.width + " x " + this.height);
 
         // prepare the image to be painted
-        UnitProcessor.Context uctx = UnitProcessor.createContext(ctx,
-                    document.getDocumentElement());
-        float widthInPt = UnitProcessor.userSpaceToSVG(width, SVGLength.SVG_LENGTHTYPE_PT,
-                    UnitProcessor.HORIZONTAL_LENGTH, uctx);
-        int w = (int)(widthInPt + 0.5);
-        float heightInPt = UnitProcessor.userSpaceToSVG(height, SVGLength.SVG_LENGTHTYPE_PT,
-                UnitProcessor.HORIZONTAL_LENGTH, uctx);
-        int h = (int)(heightInPt + 0.5);
-        getLogger().trace("document size: " + w + "pt x " + h + "pt");
+        final UnitProcessor.Context uctx = UnitProcessor.createContext(
+                this.ctx, document.getDocumentElement());
+        final float widthInPt = org.apache.batik.parser.UnitProcessor
+                .userSpaceToSVG(
+                        this.width,
+                        SVGLength.SVG_LENGTHTYPE_PT,
+                        org.apache.batik.parser.UnitProcessor.HORIZONTAL_LENGTH,
+                        uctx);
+        final int w = (int) (widthInPt + 0.5);
+        final float heightInPt = org.apache.batik.parser.UnitProcessor
+                .userSpaceToSVG(
+                        this.height,
+                        SVGLength.SVG_LENGTHTYPE_PT,
+                        org.apache.batik.parser.UnitProcessor.HORIZONTAL_LENGTH,
+                        uctx);
+        final int h = (int) (heightInPt + 0.5);
+        log.trace("document size: " + w + "pt x " + h + "pt");
 
         try {
             OutputStream out = output.getOutputStream();
             if (!(out instanceof BufferedOutputStream)) {
                 out = new BufferedOutputStream(out);
             }
-            graphics.setupDocument(out, w, h);
-            graphics.setViewportDimension(width, height);
+            this.graphics.setupDocument(out, w, h);
+            this.graphics.setViewportDimension(this.width, this.height);
 
-            if (hints.containsKey(ImageTranscoder.KEY_BACKGROUND_COLOR)) {
-                graphics.setBackgroundColor
-                    ((Color)hints.get(ImageTranscoder.KEY_BACKGROUND_COLOR));
-        }
-            graphics.setGraphicContext
-                (new org.apache.xmlgraphics.java2d.GraphicContext());
-            graphics.setTransform(curTxf);
+            if (this.hints.containsKey(ImageTranscoder.KEY_BACKGROUND_COLOR)) {
+                this.graphics.setBackgroundColor((Color) this.hints
+                        .get(ImageTranscoder.KEY_BACKGROUND_COLOR));
+            }
+            this.graphics
+            .setGraphicContext(new org.apache.xmlgraphics.java2d.GraphicContext());
+            this.graphics.setTransform(this.curTxf);
 
-            this.root.paint(graphics);
+            this.root.paint(this.graphics);
 
-            graphics.finish();
-        } catch (IOException ex) {
+            this.graphics.finish();
+        } catch (final IOException ex) {
             throw new TranscoderException(ex);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     protected BridgeContext createBridgeContext() {
-        //For compatibility with Batik 1.6
+        // For compatibility with Batik 1.6
         return createBridgeContext("1.x");
     }
 
     /** {@inheritDoc} */
-    public BridgeContext createBridgeContext(String version) {
-        BridgeContext ctx = new PSBridgeContext(userAgent, (isTextStroked() ? null : fontInfo),
-                getImageManager(), getImageSessionContext());
+    @Override
+    public BridgeContext createBridgeContext(final String version) {
+        final BridgeContext ctx = new PSBridgeContext(this.userAgent,
+                isTextStroked() ? null : this.fontInfo, getImageManager(),
+                        getImageSessionContext());
         return ctx;
     }
 

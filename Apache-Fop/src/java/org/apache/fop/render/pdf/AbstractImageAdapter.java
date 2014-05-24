@@ -18,17 +18,14 @@
 /* $Id: AbstractImageAdapter.java 1357883 2012-07-05 20:29:53Z gadams $ */
 
 package org.apache.fop.render.pdf;
+
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_Profile;
 import java.awt.image.IndexColorModel;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.apache.xmlgraphics.image.loader.Image;
-import org.apache.xmlgraphics.java2d.color.profile.ColorProfileUtil;
-
 import org.apache.fop.pdf.PDFArray;
 import org.apache.fop.pdf.PDFColor;
 import org.apache.fop.pdf.PDFConformanceException;
@@ -40,16 +37,16 @@ import org.apache.fop.pdf.PDFICCStream;
 import org.apache.fop.pdf.PDFImage;
 import org.apache.fop.pdf.PDFName;
 import org.apache.fop.pdf.PDFReference;
+import org.apache.xmlgraphics.image.loader.Image;
+import org.apache.xmlgraphics.java2d.color.profile.ColorProfileUtil;
 
 /**
  * Abstract PDFImage implementation for the PDF renderer.
  */
+@Slf4j
 public abstract class AbstractImageAdapter implements PDFImage {
 
-    /** logging instance */
-    private static Log log = LogFactory.getLog(AbstractImageAdapter.class);
-
-    private String key;
+    private final String key;
     /** the image */
     protected Image image;
 
@@ -61,10 +58,13 @@ public abstract class AbstractImageAdapter implements PDFImage {
 
     /**
      * Creates a new PDFImage from an Image instance.
-     * @param image the image
-     * @param key XObject key
+     *
+     * @param image
+     *            the image
+     * @param key
+     *            XObject key
      */
-    public AbstractImageAdapter(Image image, String key) {
+    public AbstractImageAdapter(final Image image, final String key) {
         this.image = image;
         this.key = key;
         if (log.isDebugEnabled()) {
@@ -73,6 +73,7 @@ public abstract class AbstractImageAdapter implements PDFImage {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getKey() {
         // key to look up XObject
         return this.key;
@@ -80,56 +81,63 @@ public abstract class AbstractImageAdapter implements PDFImage {
 
     /**
      * Returns the image's color space.
+     *
      * @return the color space
      */
     protected ColorSpace getImageColorSpace() {
-        return image.getColorSpace();
+        return this.image.getColorSpace();
     }
 
     /** {@inheritDoc} */
-    public void setup(PDFDocument doc) {
+    @Override
+    public void setup(final PDFDocument doc) {
 
-        ICC_Profile prof = getEffectiveICCProfile();
-        PDFDeviceColorSpace pdfCS = toPDFColorSpace(getImageColorSpace());
+        final ICC_Profile prof = getEffectiveICCProfile();
+        final PDFDeviceColorSpace pdfCS = toPDFColorSpace(getImageColorSpace());
         if (prof != null) {
-            pdfICCStream = setupColorProfile(doc, prof, pdfCS);
+            this.pdfICCStream = setupColorProfile(doc, prof, pdfCS);
         }
         if (doc.getProfile().getPDFAMode().isPDFA1LevelB()) {
             if (pdfCS != null
                     && pdfCS.getColorSpace() != PDFDeviceColorSpace.DEVICE_RGB
                     && pdfCS.getColorSpace() != PDFDeviceColorSpace.DEVICE_GRAY
                     && prof == null) {
-                //See PDF/A-1, ISO 19005:1:2005(E), 6.2.3.3
-                //FOP is currently restricted to DeviceRGB if PDF/A-1 is active.
+                // See PDF/A-1, ISO 19005:1:2005(E), 6.2.3.3
+                // FOP is currently restricted to DeviceRGB if PDF/A-1 is
+                // active.
                 throw new PDFConformanceException(
                         "PDF/A-1 does not allow mixing DeviceRGB and DeviceCMYK: "
-                            + image.getInfo());
+                                + this.image.getInfo());
             }
         }
     }
 
     /**
      * Returns the effective ICC profile for the image.
+     *
      * @return an ICC profile or null
      */
     protected ICC_Profile getEffectiveICCProfile() {
-        return image.getICCProfile();
+        return this.image.getICCProfile();
     }
 
-    private static PDFICCStream setupColorProfile(PDFDocument doc,
-                ICC_Profile prof, PDFDeviceColorSpace pdfCS) {
-        boolean defaultsRGB = ColorProfileUtil.isDefaultsRGB(prof);
-        String desc = ColorProfileUtil.getICCProfileDescription(prof);
+    private static PDFICCStream setupColorProfile(final PDFDocument doc,
+            final ICC_Profile prof, final PDFDeviceColorSpace pdfCS) {
+        final boolean defaultsRGB = ColorProfileUtil.isDefaultsRGB(prof);
+        final String desc = ColorProfileUtil.getICCProfileDescription(prof);
         if (log.isDebugEnabled()) {
-            log.debug("Image returns ICC profile: " + desc + ", default sRGB=" + defaultsRGB);
+            log.debug("Image returns ICC profile: " + desc + ", default sRGB="
+                    + defaultsRGB);
         }
-        PDFICCBasedColorSpace cs = doc.getResources().getICCColorSpaceByProfileName(desc);
+        PDFICCBasedColorSpace cs = doc.getResources()
+                .getICCColorSpaceByProfileName(desc);
         PDFICCStream pdfICCStream;
         if (!defaultsRGB) {
             if (cs == null) {
                 pdfICCStream = doc.getFactory().makePDFICCStream();
                 pdfICCStream.setColorSpace(prof, pdfCS);
-                cs = doc.getFactory().makeICCBasedColorSpace(null, null, pdfICCStream);
+                cs = doc.getFactory().makeICCBasedColorSpace(null, null,
+                        pdfICCStream);
             } else {
                 pdfICCStream = cs.getICCStream();
             }
@@ -140,8 +148,9 @@ public abstract class AbstractImageAdapter implements PDFImage {
                             + " but the profile description does not match what was expected: "
                             + desc);
                 }
-                //It's the default sRGB profile which we mapped to DefaultRGB in PDFRenderer
-                cs = (PDFICCBasedColorSpace)doc.getResources().getColorSpace(
+                // It's the default sRGB profile which we mapped to DefaultRGB
+                // in PDFRenderer
+                cs = (PDFICCBasedColorSpace) doc.getResources().getColorSpace(
                         new PDFName("DefaultRGB"));
             }
             if (cs == null) {
@@ -155,26 +164,31 @@ public abstract class AbstractImageAdapter implements PDFImage {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getWidth() {
-        return image.getSize().getWidthPx();
+        return this.image.getSize().getWidthPx();
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getHeight() {
-        return image.getSize().getHeightPx();
+        return this.image.getSize().getHeightPx();
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isTransparent() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public PDFColor getTransparentColor() {
         return null;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMask() {
         return null;
     }
@@ -185,57 +199,71 @@ public abstract class AbstractImageAdapter implements PDFImage {
     }
 
     /** {@inheritDoc} */
+    @Override
     public PDFReference getSoftMaskReference() {
         return null;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isInverted() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isPS() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public PDFICCStream getICCStream() {
-        return pdfICCStream;
+        return this.pdfICCStream;
     }
 
     /** {@inheritDoc} */
-    public void populateXObjectDictionary(PDFDictionary dict) {
-        //nop
+    @Override
+    public void populateXObjectDictionary(final PDFDictionary dict) {
+        // nop
     }
 
     /**
-     * This is to be used by populateXObjectDictionary() when the image is palette based.
-     * @param dict the dictionary to fill in
-     * @param icm the image color model
+     * This is to be used by populateXObjectDictionary() when the image is
+     * palette based.
+     *
+     * @param dict
+     *            the dictionary to fill in
+     * @param icm
+     *            the image color model
      */
-    protected void populateXObjectDictionaryForIndexColorModel(PDFDictionary dict, IndexColorModel icm) {
-        PDFArray indexed = new PDFArray(dict);
+    protected void populateXObjectDictionaryForIndexColorModel(
+            final PDFDictionary dict, final IndexColorModel icm) {
+        final PDFArray indexed = new PDFArray(dict);
         indexed.add(new PDFName("Indexed"));
         if (icm.getColorSpace().getType() != ColorSpace.TYPE_RGB) {
             log.warn("Indexed color space is not using RGB as base color space."
-                    + " The image may not be handled correctly." + " Base color space: "
-                    + icm.getColorSpace() + " Image: " + image.getInfo());
+                    + " The image may not be handled correctly."
+                    + " Base color space: "
+                    + icm.getColorSpace()
+                    + " Image: "
+                    + this.image.getInfo());
         }
         indexed.add(new PDFName(toPDFColorSpace(icm.getColorSpace()).getName()));
-        int c = icm.getMapSize();
-        int hival = c - 1;
+        final int c = icm.getMapSize();
+        final int hival = c - 1;
         if (hival > MAX_HIVAL) {
-            throw new UnsupportedOperationException("hival must not go beyond " + MAX_HIVAL);
+            throw new UnsupportedOperationException("hival must not go beyond "
+                    + MAX_HIVAL);
         }
         indexed.add(Integer.valueOf(hival));
-        int[] palette = new int[c];
+        final int[] palette = new int[c];
         icm.getRGBs(palette);
-        ByteArrayOutputStream baout = new ByteArrayOutputStream();
+        final ByteArrayOutputStream baout = new ByteArrayOutputStream();
         for (int i = 0; i < c; i++) {
             // TODO Probably doesn't work for non RGB based color spaces
             // See log warning above
-            int entry = palette[i];
+            final int entry = palette[i];
             baout.write((entry & 0xFF0000) >> 16);
             baout.write((entry & 0xFF00) >> 8);
             baout.write(entry & 0xFF);
@@ -245,20 +273,21 @@ public abstract class AbstractImageAdapter implements PDFImage {
         dict.put("ColorSpace", indexed);
         dict.put("BitsPerComponent", icm.getPixelSize());
 
-        Integer index = getIndexOfFirstTransparentColorInPalette(icm);
+        final Integer index = getIndexOfFirstTransparentColorInPalette(icm);
         if (index != null) {
-            PDFArray mask = new PDFArray(dict);
+            final PDFArray mask = new PDFArray(dict);
             mask.add(index);
             mask.add(index);
             dict.put("Mask", mask);
         }
     }
 
-    private static Integer getIndexOfFirstTransparentColorInPalette(IndexColorModel icm) {
-        byte[] alphas = new byte[icm.getMapSize()];
-        byte[] reds = new byte[icm.getMapSize()];
-        byte[] greens = new byte[icm.getMapSize()];
-        byte[] blues = new byte[icm.getMapSize()];
+    private static Integer getIndexOfFirstTransparentColorInPalette(
+            final IndexColorModel icm) {
+        final byte[] alphas = new byte[icm.getMapSize()];
+        final byte[] reds = new byte[icm.getMapSize()];
+        final byte[] greens = new byte[icm.getMapSize()];
+        final byte[] blues = new byte[icm.getMapSize()];
         icm.getAlphas(alphas);
         icm.getReds(reds);
         icm.getGreens(greens);
@@ -273,39 +302,41 @@ public abstract class AbstractImageAdapter implements PDFImage {
 
     /**
      * Converts a ColorSpace object to a PDFColorSpace object.
-     * @param cs ColorSpace instance
+     *
+     * @param cs
+     *            ColorSpace instance
      * @return PDFColorSpace new converted object
      */
-    public static PDFDeviceColorSpace toPDFColorSpace(ColorSpace cs) {
+    public static PDFDeviceColorSpace toPDFColorSpace(final ColorSpace cs) {
         if (cs == null) {
             return null;
         }
 
-        PDFDeviceColorSpace pdfCS = new PDFDeviceColorSpace(0);
+        final PDFDeviceColorSpace pdfCS = new PDFDeviceColorSpace(0);
         switch (cs.getType()) {
-            case ColorSpace.TYPE_CMYK:
-                pdfCS.setColorSpace(PDFDeviceColorSpace.DEVICE_CMYK);
+        case ColorSpace.TYPE_CMYK:
+            pdfCS.setColorSpace(PDFDeviceColorSpace.DEVICE_CMYK);
             break;
-            case ColorSpace.TYPE_GRAY:
-                pdfCS.setColorSpace(PDFDeviceColorSpace.DEVICE_GRAY);
-                break;
-            default:
-                pdfCS.setColorSpace(PDFDeviceColorSpace.DEVICE_RGB);
+        case ColorSpace.TYPE_GRAY:
+            pdfCS.setColorSpace(PDFDeviceColorSpace.DEVICE_GRAY);
+            break;
+        default:
+            pdfCS.setColorSpace(PDFDeviceColorSpace.DEVICE_RGB);
         }
         return pdfCS;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean multipleFiltersAllowed() {
-        return multipleFiltersAllowed;
+        return this.multipleFiltersAllowed;
     }
 
     /**
      * Disallows multiple filters.
      */
     public void disallowMultipleFilters() {
-        multipleFiltersAllowed = false;
+        this.multipleFiltersAllowed = false;
     }
 
 }
-

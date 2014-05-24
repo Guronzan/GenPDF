@@ -45,35 +45,43 @@ public class GraphicsCharacterString extends AbstractGraphicsCoord {
     /**
      * Constructor (absolute positioning)
      *
-     * @param str the character string
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param charSet the character set
+     * @param str
+     *            the character string
+     * @param x
+     *            the x coordinate
+     * @param y
+     *            the y coordinate
+     * @param charSet
+     *            the character set
      */
-    public GraphicsCharacterString(String str, int x, int y, CharacterSet charSet) {
+    public GraphicsCharacterString(final String str, final int x, final int y,
+            final CharacterSet charSet) {
         super(x, y);
         this.str = truncate(str, MAX_STR_LEN);
         this.charSet = charSet;
     }
 
     /** {@inheritDoc} */
+    @Override
     byte getOrderCode() {
         if (isRelative()) {
-            return (byte)0x83;
+            return (byte) 0x83;
         } else {
-            return (byte)0xC3;
+            return (byte) 0xC3;
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
-        return super.getDataLength() + str.length();
+        return super.getDataLength() + this.str.length();
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = getData();
-        byte[] strData = getStringAsBytes();
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = getData();
+        final byte[] strData = getStringAsBytes();
         System.arraycopy(strData, 0, data, 6, strData.length);
         os.write(data);
     }
@@ -82,17 +90,19 @@ public class GraphicsCharacterString extends AbstractGraphicsCoord {
      * Returns the text string as an encoded byte array
      *
      * @return the text string as an encoded byte array
-     * @throws UnsupportedEncodingException, CharacterCodingException
+     * @throws UnsupportedEncodingException
+     *             , CharacterCodingException
      */
     private byte[] getStringAsBytes() throws UnsupportedEncodingException,
-            CharacterCodingException {
-        return charSet.encodeChars(str).getBytes();
+    CharacterCodingException {
+        return this.charSet.encodeChars(this.str).getBytes();
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "GraphicsCharacterString{"
-            + (coords != null ? "x=" + coords[0] + ", y=" + coords[1] : "")
-            + "str='" + str + "'" + "}";
+                + (this.coords != null ? "x=" + this.coords[0] + ", y="
+                        + this.coords[1] : "") + "str='" + this.str + "'" + "}";
     }
 }

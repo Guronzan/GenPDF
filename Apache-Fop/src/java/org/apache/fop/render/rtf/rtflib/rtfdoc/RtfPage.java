@@ -30,17 +30,20 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * <p>Specifies rtf control words.  Is the container for page attributes.
- *  Overrides okToWriteRtf.</p>
+ * <p>
+ * Specifies rtf control words. Is the container for page attributes. Overrides
+ * okToWriteRtf.
+ * </p>
  *
- * <p>This work was authored by Christopher Scott (scottc@westinghouse.com).</p>
+ * <p>
+ * This work was authored by Christopher Scott (scottc@westinghouse.com).
+ * </p>
  */
 
-public class RtfPage
-extends RtfContainer {
+public class RtfPage extends RtfContainer {
     private final RtfAttributes attrib;
 
-    /**RtfPage attributes*/
+    /** RtfPage attributes */
     /** constant for page width */
     public static final String PAGE_WIDTH = "paperw";
     /** constant for page height */
@@ -66,32 +69,39 @@ extends RtfContainer {
     public static final String ITAP = "itap";
 
     /** String array of RtfPage attributes */
-    public static final String[] PAGE_ATTR = new String[]{
-        PAGE_WIDTH, PAGE_HEIGHT, LANDSCAPE, MARGIN_TOP, MARGIN_BOTTOM,
-        MARGIN_LEFT, MARGIN_RIGHT, HEADERY, FOOTERY, ITAP
-    };
+    public static final String[] PAGE_ATTR = new String[] { PAGE_WIDTH,
+        PAGE_HEIGHT, LANDSCAPE, MARGIN_TOP, MARGIN_BOTTOM, MARGIN_LEFT,
+        MARGIN_RIGHT, HEADERY, FOOTERY, ITAP };
 
-    /**    RtfPage creates new page attributes with the parent container, the writer
-           and the attributes*/
-    RtfPage(RtfPageArea parent, Writer w, RtfAttributes attrs) throws IOException {
-        super((RtfContainer)parent, w);
-        attrib = attrs;
+    /**
+     * RtfPage creates new page attributes with the parent container, the writer
+     * and the attributes
+     */
+    RtfPage(final RtfPageArea parent, final Writer w, final RtfAttributes attrs)
+            throws IOException {
+        super(parent, w);
+        this.attrib = attrs;
     }
 
     /**
      * RtfPage writes the attributes the attributes contained in the string
      * PAGE_ATTR, if not null
-     * @throws IOException for I/O problems
+     *
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeRtfContent() throws IOException {
-        writeAttributes(attrib, PAGE_ATTR);
+        writeAttributes(this.attrib, PAGE_ATTR);
 
-        if (attrib != null) {
-            Object widthRaw = attrib.getValue(PAGE_WIDTH);
-            Object heightRaw = attrib.getValue(PAGE_HEIGHT);
+        if (this.attrib != null) {
+            final Object widthRaw = this.attrib.getValue(PAGE_WIDTH);
+            final Object heightRaw = this.attrib.getValue(PAGE_HEIGHT);
 
-            if ((widthRaw instanceof Integer) && (heightRaw instanceof Integer)
-                    && ((Integer) widthRaw).intValue() > ((Integer) heightRaw).intValue()) {
+            if (widthRaw instanceof Integer
+                    && heightRaw instanceof Integer
+                    && ((Integer) widthRaw).intValue() > ((Integer) heightRaw)
+                    .intValue()) {
                 writeControlWord(LANDSCAPE);
             }
         }
@@ -99,18 +109,21 @@ extends RtfContainer {
 
     /**
      * RtfPage - attributes accessor
+     *
      * @return attributes
      */
     public RtfAttributes getAttributes() {
-        return attrib;
+        return this.attrib;
     }
 
     /**
      * RtfPage - is overwritten here because page attributes have no content
      * only attributes. RtfContainer is defined not to write when empty.
      * Therefore must make this true to print.
+     *
      * @return true
      */
+    @Override
     protected boolean okToWriteRtf() {
         return true;
     }

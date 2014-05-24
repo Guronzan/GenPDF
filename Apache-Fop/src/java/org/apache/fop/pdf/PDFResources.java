@@ -26,19 +26,17 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.xmlgraphics.java2d.color.profile.ColorProfileUtil;
-
 import org.apache.fop.fonts.FontDescriptor;
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.fonts.Typeface;
 import org.apache.fop.fonts.base14.Symbol;
 import org.apache.fop.fonts.base14.ZapfDingbats;
+import org.apache.xmlgraphics.java2d.color.profile.ColorProfileUtil;
 
 /**
  * Class representing a /Resources object.
  *
- * /Resources object contain a list of references to the fonts for the
- * document
+ * /Resources object contain a list of references to the fonts for the document
  */
 public class PDFResources extends PDFDictionary {
 
@@ -76,9 +74,10 @@ public class PDFResources extends PDFDictionary {
     /**
      * create a /Resources object.
      *
-     * @param objnum the object's number
+     * @param objnum
+     *            the object's number
      */
-    public PDFResources(int objnum) {
+    public PDFResources(final int objnum) {
         /* generic creation of object */
         super();
         setObjectNumber(objnum);
@@ -87,36 +86,42 @@ public class PDFResources extends PDFDictionary {
     /**
      * add font object to resources list.
      *
-     * @param font the PDFFont to add
+     * @param font
+     *            the PDFFont to add
      */
-    public void addFont(PDFFont font) {
+    public void addFont(final PDFFont font) {
         this.fonts.put(font.getName(), font);
     }
 
     /**
      * Add the fonts in the font info to this PDF document's Font Resources.
      *
-     * @param doc PDF document to add fonts to
-     * @param fontInfo font info object to get font information from
+     * @param doc
+     *            PDF document to add fonts to
+     * @param fontInfo
+     *            font info object to get font information from
      */
-   public void addFonts(PDFDocument doc, FontInfo fontInfo) {
-        Map<String, Typeface> usedFonts = fontInfo.getUsedFonts();
-        for (String f : usedFonts.keySet()) {
-            Typeface font = usedFonts.get(f);
+    public void addFonts(final PDFDocument doc, final FontInfo fontInfo) {
+        final Map<String, Typeface> usedFonts = fontInfo.getUsedFonts();
+        for (final String f : usedFonts.keySet()) {
+            final Typeface font = usedFonts.get(f);
 
-            //Check if the font actually had any mapping operations. If not, it is an indication
-            //that it has never actually been used and therefore doesn't have to be embedded.
+            // Check if the font actually had any mapping operations. If not, it
+            // is an indication
+            // that it has never actually been used and therefore doesn't have
+            // to be embedded.
             if (font.hadMappingOperations()) {
                 FontDescriptor desc = null;
                 if (font instanceof FontDescriptor) {
-                    desc = (FontDescriptor)font;
+                    desc = (FontDescriptor) font;
                 }
                 String encoding = font.getEncodingName();
                 if (font instanceof Symbol || font instanceof ZapfDingbats) {
-                    encoding = null; //Symbolic fonts shouldn't specify an encoding value in PDF
+                    encoding = null; // Symbolic fonts shouldn't specify an
+                                     // encoding value in PDF
                 }
-                addFont(doc.getFactory().makeFont(
-                    f, font.getEmbedFontName(), encoding, font, desc));
+                addFont(doc.getFactory().makeFont(f, font.getEmbedFontName(),
+                        encoding, font, desc));
             }
         }
     }
@@ -124,106 +129,116 @@ public class PDFResources extends PDFDictionary {
     /**
      * Add a PDFGState to the resources.
      *
-     * @param gs the PDFGState to add
+     * @param gs
+     *            the PDFGState to add
      */
-    public void addGState(PDFGState gs) {
+    public void addGState(final PDFGState gs) {
         this.gstates.add(gs);
     }
 
     /**
      * Add a Shading to the resources.
      *
-     * @param theShading the shading to add
+     * @param theShading
+     *            the shading to add
      */
-    public void addShading(PDFShading theShading) {
+    public void addShading(final PDFShading theShading) {
         this.shadings.add(theShading);
     }
 
     /**
      * Add the pattern to the resources.
      *
-     * @param thePattern the pattern to add
+     * @param thePattern
+     *            the pattern to add
      */
-    public void addPattern(PDFPattern thePattern) {
+    public void addPattern(final PDFPattern thePattern) {
         this.patterns.add(thePattern);
     }
 
     /**
      * Add an XObject to the resources.
      *
-     * @param xObject the XObject to add
+     * @param xObject
+     *            the XObject to add
      */
-    public void addXObject(PDFXObject xObject) {
+    public void addXObject(final PDFXObject xObject) {
         this.xObjects.add(xObject);
     }
 
     /**
      * Add a ColorSpace dictionary to the resources.
-     * @param colorSpace the color space
+     * 
+     * @param colorSpace
+     *            the color space
      */
-    public void addColorSpace(PDFColorSpace colorSpace) {
+    public void addColorSpace(final PDFColorSpace colorSpace) {
         this.colorSpaces.put(new PDFName(colorSpace.getName()), colorSpace);
         if (colorSpace instanceof PDFICCBasedColorSpace) {
-            PDFICCBasedColorSpace icc = (PDFICCBasedColorSpace)colorSpace;
-            String desc = ColorProfileUtil.getICCProfileDescription(
-                    icc.getICCStream().getICCProfile());
+            final PDFICCBasedColorSpace icc = (PDFICCBasedColorSpace) colorSpace;
+            final String desc = ColorProfileUtil.getICCProfileDescription(icc
+                    .getICCStream().getICCProfile());
             this.iccColorSpaces.put(desc, icc);
         }
     }
 
     /**
      * Returns a ICCBased color space by profile name.
-     * @param desc the name of the color space
+     * 
+     * @param desc
+     *            the name of the color space
      * @return the requested color space or null if it wasn't found
      */
-    public PDFICCBasedColorSpace getICCColorSpaceByProfileName(String desc) {
-        PDFICCBasedColorSpace cs = this.iccColorSpaces.get(desc);
+    public PDFICCBasedColorSpace getICCColorSpaceByProfileName(final String desc) {
+        final PDFICCBasedColorSpace cs = this.iccColorSpaces.get(desc);
         return cs;
     }
 
     /**
      * Returns a color space by name.
-     * @param name the name of the color space
+     * 
+     * @param name
+     *            the name of the color space
      * @return the requested color space or null if it wasn't found
      */
-    public PDFColorSpace getColorSpace(PDFName name) {
-        PDFColorSpace cs = this.colorSpaces.get(name);
+    public PDFColorSpace getColorSpace(final PDFName name) {
+        final PDFColorSpace cs = this.colorSpaces.get(name);
         return cs;
     }
 
     @Override
-    public int output(OutputStream stream) throws IOException {
+    public int output(final OutputStream stream) throws IOException {
         populateDictionary();
         return super.output(stream);
     }
 
     private void populateDictionary() {
         if (!this.fonts.isEmpty()) {
-            PDFDictionary dict = new PDFDictionary(this);
+            final PDFDictionary dict = new PDFDictionary(this);
             /* construct PDF dictionary of font object references */
-            for (Map.Entry<String, PDFFont> entry : fonts.entrySet()) {
+            for (final Map.Entry<String, PDFFont> entry : this.fonts.entrySet()) {
                 dict.put(entry.getKey(), entry.getValue());
             }
             put("Font", dict);
         }
 
         if (!this.shadings.isEmpty()) {
-            PDFDictionary dict = new PDFDictionary(this);
-            for (PDFShading shading : shadings) {
+            final PDFDictionary dict = new PDFDictionary(this);
+            for (final PDFShading shading : this.shadings) {
                 dict.put(shading.getName(), shading);
             }
             put("Shading", dict);
         }
 
         if (!this.patterns.isEmpty()) {
-            PDFDictionary dict = new PDFDictionary(this);
-            for (PDFPattern pattern : patterns) {
+            final PDFDictionary dict = new PDFDictionary(this);
+            for (final PDFPattern pattern : this.patterns) {
                 dict.put(pattern.getName(), pattern);
             }
             put("Pattern", dict);
         }
 
-        PDFArray procset = new PDFArray(this);
+        final PDFArray procset = new PDFArray(this);
         procset.add(new PDFName("PDF"));
         procset.add(new PDFName("ImageB"));
         procset.add(new PDFName("ImageC"));
@@ -231,24 +246,24 @@ public class PDFResources extends PDFDictionary {
         put("ProcSet", procset);
 
         if (this.xObjects != null && !this.xObjects.isEmpty()) {
-            PDFDictionary dict = new PDFDictionary(this);
-            for (PDFXObject xObject : xObjects) {
+            final PDFDictionary dict = new PDFDictionary(this);
+            for (final PDFXObject xObject : this.xObjects) {
                 dict.put(xObject.getName().toString(), xObject);
             }
             put("XObject", dict);
         }
 
         if (!this.gstates.isEmpty()) {
-            PDFDictionary dict = new PDFDictionary(this);
-            for (PDFGState gstate : gstates) {
+            final PDFDictionary dict = new PDFDictionary(this);
+            for (final PDFGState gstate : this.gstates) {
                 dict.put(gstate.getName(), gstate);
             }
             put("ExtGState", dict);
         }
 
         if (!this.colorSpaces.isEmpty()) {
-            PDFDictionary dict = new PDFDictionary(this);
-            for (PDFColorSpace colorSpace : colorSpaces.values()) {
+            final PDFDictionary dict = new PDFDictionary(this);
+            for (final PDFColorSpace colorSpace : this.colorSpaces.values()) {
                 dict.put(colorSpace.getName(), colorSpace);
             }
             put("ColorSpace", dict);

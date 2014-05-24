@@ -23,9 +23,14 @@ package org.apache.fop.afp.fonts;
  * An enumeration of AFP characterset types.
  */
 public enum CharacterSetType {
-    /** Double byte character sets; these do NOT have the shift-in;shift-out operators */
+    /**
+     * Double byte character sets; these do NOT have the shift-in;shift-out
+     * operators
+     */
     DOUBLE_BYTE,
-    /** Double byte character sets; these can have the shift-in;shift-out operators */
-    DOUBLE_BYTE_LINE_DATA,
-    SINGLE_BYTE;
+    /**
+     * Double byte character sets; these can have the shift-in;shift-out
+     * operators
+     */
+    DOUBLE_BYTE_LINE_DATA, SINGLE_BYTE;
 }

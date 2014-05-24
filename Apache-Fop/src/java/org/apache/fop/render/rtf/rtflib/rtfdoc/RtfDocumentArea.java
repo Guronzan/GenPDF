@@ -30,30 +30,35 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * <p>The RTF document area, container for RtfSection objects.</p>
+ * <p>
+ * The RTF document area, container for RtfSection objects.
+ * </p>
  *
- * <p>This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch).</p>
+ * <p>
+ * This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch).
+ * </p>
  */
 
-public class RtfDocumentArea
-extends RtfContainer {
+public class RtfDocumentArea extends RtfContainer {
     private RtfSection currentSection;
 
     /** Create an RTF element as a child of given container */
-    RtfDocumentArea(RtfFile f, Writer w) throws IOException {
+    RtfDocumentArea(final RtfFile f, final Writer w) throws IOException {
         super(f, w);
     }
 
     /**
      * Close current RtfSection if any and create a new one
-     * @throws IOException for I/O problems
+     * 
+     * @throws IOException
+     *             for I/O problems
      * @return the new RtfSection
      */
     public RtfSection newSection() throws IOException {
-        if (currentSection != null) {
-            currentSection.close();
+        if (this.currentSection != null) {
+            this.currentSection.close();
         }
-        currentSection = new RtfSection(this, writer);
-        return currentSection;
+        this.currentSection = new RtfSection(this, this.writer);
+        return this.currentSection;
     }
 }

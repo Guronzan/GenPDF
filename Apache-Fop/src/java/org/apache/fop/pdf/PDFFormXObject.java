@@ -36,14 +36,18 @@ public class PDFFormXObject extends PDFXObject {
     private PDFStream contents;
 
     /**
-     * create a FormXObject with the given number and name and load the
-     * image in the object
+     * create a FormXObject with the given number and name and load the image in
+     * the object
      *
-     * @param xnumber the pdf object X number
-     * @param contents the form's contents
-     * @param resources the resource PDF reference
+     * @param xnumber
+     *            the pdf object X number
+     * @param contents
+     *            the form's contents
+     * @param resources
+     *            the resource PDF reference
      */
-    public PDFFormXObject(int xnumber, PDFStream contents, PDFReference resources) {
+    public PDFFormXObject(final int xnumber, final PDFStream contents,
+            final PDFReference resources) {
         super(contents.getDictionary());
         put("Name", new PDFName("Form" + xnumber));
         this.contents = contents;
@@ -59,10 +63,12 @@ public class PDFFormXObject extends PDFXObject {
 
     /**
      * Sets the bounding box of the Form XObject.
-     * @param bbox the bounding box
+     * 
+     * @param bbox
+     *            the bounding box
      */
-    public void setBBox(Rectangle2D bbox) {
-        PDFArray array = (PDFArray)get("BBox");
+    public void setBBox(final Rectangle2D bbox) {
+        PDFArray array = (PDFArray) get("BBox");
         if (array == null) {
             array = new PDFArray(this);
             array.add(bbox.getX());
@@ -80,16 +86,17 @@ public class PDFFormXObject extends PDFXObject {
 
     /**
      * Returns the bounding box.
+     * 
      * @return the BBox value
      */
     public Rectangle2D getBBox() {
-        PDFArray array = (PDFArray)get("BBox");
+        final PDFArray array = (PDFArray) get("BBox");
         if (array != null) {
-            Rectangle2D rect = new Rectangle2D.Double();
-            double x = ((Number)array.get(0)).doubleValue();
-            double y = ((Number)array.get(1)).doubleValue();
-            double w = ((Number)array.get(2)).doubleValue();
-            double h = ((Number)array.get(3)).doubleValue();
+            final Rectangle2D rect = new Rectangle2D.Double();
+            final double x = ((Number) array.get(0)).doubleValue();
+            final double y = ((Number) array.get(1)).doubleValue();
+            final double w = ((Number) array.get(2)).doubleValue();
+            final double h = ((Number) array.get(3)).doubleValue();
             rect.setFrame(x, y, w, h);
             return rect;
         } else {
@@ -99,11 +106,13 @@ public class PDFFormXObject extends PDFXObject {
 
     /**
      * Sets the Matrix value
-     * @param at the AffineTransform defining the transformation matrix
+     * 
+     * @param at
+     *            the AffineTransform defining the transformation matrix
      */
-    public void setMatrix(AffineTransform at) {
-        PDFArray array = (PDFArray)get("Matrix");
-        double[] m = new double[6];
+    public void setMatrix(final AffineTransform at) {
+        PDFArray array = (PDFArray) get("Matrix");
+        final double[] m = new double[6];
         at.getMatrix(m);
         if (array == null) {
             array = new PDFArray(this);
@@ -126,18 +135,19 @@ public class PDFFormXObject extends PDFXObject {
 
     /**
      * Returns the Matrix value.
+     * 
      * @return the Matrix
      */
     public AffineTransform getMatrix() {
-        PDFArray array = (PDFArray)get("Matrix");
+        final PDFArray array = (PDFArray) get("Matrix");
         if (array != null) {
-            AffineTransform at = new AffineTransform();
-            double m00 = ((Number)array.get(0)).doubleValue();
-            double m10 = ((Number)array.get(1)).doubleValue();
-            double m01 = ((Number)array.get(2)).doubleValue();
-            double m11 = ((Number)array.get(3)).doubleValue();
-            double m02 = ((Number)array.get(4)).doubleValue();
-            double m12 = ((Number)array.get(5)).doubleValue();
+            final AffineTransform at = new AffineTransform();
+            final double m00 = ((Number) array.get(0)).doubleValue();
+            final double m10 = ((Number) array.get(1)).doubleValue();
+            final double m01 = ((Number) array.get(2)).doubleValue();
+            final double m11 = ((Number) array.get(3)).doubleValue();
+            final double m02 = ((Number) array.get(4)).doubleValue();
+            final double m12 = ((Number) array.get(5)).doubleValue();
             at.setTransform(m00, m10, m01, m11, m02, m12);
             return at;
         } else {
@@ -147,34 +157,40 @@ public class PDFFormXObject extends PDFXObject {
 
     /**
      * Used to set the contents of the PDF stream.
-     * @param data the contents as a byte array
-     * @throws IOException in case of an I/O problem
+     * 
+     * @param data
+     *            the contents as a byte array
+     * @throws IOException
+     *             in case of an I/O problem
      */
-    public void setData(byte[] data) throws IOException {
+    public void setData(final byte[] data) throws IOException {
         this.contents.setData(data);
     }
 
     /** {@inheritDoc} */
-    protected void outputRawStreamData(OutputStream out) throws IOException {
-        contents.outputRawStreamData(out);
+    @Override
+    protected void outputRawStreamData(final OutputStream out)
+            throws IOException {
+        this.contents.outputRawStreamData(out);
     }
 
     /** {@inheritDoc} */
-    public int output(OutputStream stream) throws IOException {
+    @Override
+    public int output(final OutputStream stream) throws IOException {
         final int len = super.output(stream);
 
-        //Now that the data has been written, it can be discarded.
+        // Now that the data has been written, it can be discarded.
         this.contents = null;
         return len;
     }
 
     /** {@inheritDoc} */
-    protected void populateStreamDict(Object lengthEntry) {
+    @Override
+    protected void populateStreamDict(final Object lengthEntry) {
         if (get("Matrix") == null) {
-            put("Matrix", new PDFArray(this, new int[] {1, 0, 0, 1, 0, 0}));
+            put("Matrix", new PDFArray(this, new int[] { 1, 0, 0, 1, 0, 0 }));
         }
         super.populateStreamDict(lengthEntry);
     }
 
 }
-

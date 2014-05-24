@@ -39,62 +39,66 @@ import org.apache.xmlgraphics.image.loader.impl.ImageGraphics2D;
 import org.apache.xmlgraphics.java2d.Graphics2DImagePainter;
 
 /**
- * Very simple image viewer application that demonstrates the use of the image loader framework.
+ * Very simple image viewer application that demonstrates the use of the image
+ * loader framework.
  */
 public class ImageViewer {
 
-    private ImageManager imageManager;
+    private final ImageManager imageManager;
 
     public ImageViewer() {
-        //The ImageManager is set up for the whole application
+        // The ImageManager is set up for the whole application
         this.imageManager = new ImageManager(new DefaultImageContext());
     }
 
-    public void display(File f) throws IOException {
-        //The ImageSessionContext might for each processing run
-        ImageSessionContext sessionContext = new DefaultImageSessionContext(
+    public void display(final File f) throws IOException {
+        // The ImageSessionContext might for each processing run
+        final ImageSessionContext sessionContext = new DefaultImageSessionContext(
                 this.imageManager.getImageContext(), null);
 
-        //Construct URI from filename
-        String uri = f.toURI().toASCIIString();
+        // Construct URI from filename
+        final String uri = f.toURI().toASCIIString();
 
         ImageGraphics2D g2dImage = null;
         try {
-            //Preload image
-            ImageInfo info = this.imageManager.getImageInfo(uri, sessionContext);
+            // Preload image
+            final ImageInfo info = this.imageManager.getImageInfo(uri,
+                    sessionContext);
 
-            //Load image and request Graphics2D image
-            g2dImage = (ImageGraphics2D)this.imageManager.getImage(
-                    info, ImageFlavor.GRAPHICS2D, sessionContext);
+            // Load image and request Graphics2D image
+            g2dImage = (ImageGraphics2D) this.imageManager.getImage(info,
+                    ImageFlavor.GRAPHICS2D, sessionContext);
 
-        } catch (ImageException e) {
+        } catch (final ImageException e) {
             e.printStackTrace();
 
-            //Create "error image" if the image cannot be displayed
+            // Create "error image" if the image cannot be displayed
             g2dImage = createErrorImage();
         }
 
-        //Display frame with image
-        ViewerFrame frame = new ViewerFrame(g2dImage);
+        // Display frame with image
+        final ViewerFrame frame = new ViewerFrame(g2dImage);
         frame.setVisible(true);
     }
 
     private ImageGraphics2D createErrorImage() {
-        Graphics2DImagePainter painter = new Graphics2DImagePainter() {
+        final Graphics2DImagePainter painter = new Graphics2DImagePainter() {
 
+            @Override
             public Dimension getImageSize() {
                 return new Dimension(10, 10);
             }
 
-            public void paint(Graphics2D g2d, Rectangle2D area) {
+            @Override
+            public void paint(final Graphics2D g2d, final Rectangle2D area) {
                 g2d.translate(area.getX(), area.getY());
-                double w = area.getWidth();
-                double h = area.getHeight();
+                final double w = area.getWidth();
+                final double h = area.getHeight();
 
-                //Fit in paint area
-                Dimension imageSize = getImageSize();
-                double sx = w / imageSize.getWidth();
-                double sy = h / imageSize.getHeight();
+                // Fit in paint area
+                final Dimension imageSize = getImageSize();
+                final double sx = w / imageSize.getWidth();
+                final double sy = h / imageSize.getHeight();
                 if (sx != 1.0 || sy != 1.0) {
                     g2d.scale(sx, sy);
                 }
@@ -107,30 +111,34 @@ public class ImageViewer {
             }
 
         };
-        Dimension dim = painter.getImageSize();
+        final Dimension dim = painter.getImageSize();
 
-        ImageSize size = new ImageSize();
+        final ImageSize size = new ImageSize();
         size.setSizeInMillipoints(dim.width, dim.height);
-        size.setResolution(imageManager.getImageContext().getSourceResolution());
+        size.setResolution(this.imageManager.getImageContext()
+                .getSourceResolution());
         size.calcPixelsFromSize();
 
-        ImageInfo info = new ImageInfo(null, null);
+        final ImageInfo info = new ImageInfo(null, null);
         info.setSize(size);
         return new ImageGraphics2D(info, painter);
     }
 
     /**
      * The application's main method.
-     * @param args the command-line arguments
+     * 
+     * @param args
+     *            the command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
-            ImageViewer app = new ImageViewer();
+            final ImageViewer app = new ImageViewer();
             if (args.length < 1) {
-                throw new IllegalArgumentException("No filename given as application argument");
+                throw new IllegalArgumentException(
+                        "No filename given as application argument");
             }
             app.display(new File(args[0]));
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             t.printStackTrace();
             System.exit(-1);
         }

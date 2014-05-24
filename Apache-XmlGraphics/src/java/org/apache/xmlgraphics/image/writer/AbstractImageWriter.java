@@ -25,26 +25,30 @@ import java.io.OutputStream;
 /**
  * Abstract base class for ImageWriter implementations.
  *
- * @version $Id: AbstractImageWriter.java 750418 2009-03-05 11:03:54Z vhennebert $
+ * @version $Id: AbstractImageWriter.java 750418 2009-03-05 11:03:54Z vhennebert
+ *          $
  */
 public abstract class AbstractImageWriter implements ImageWriter {
 
     /**
-     * @see org.apache.xmlgraphics.image.writer.ImageWriter#createMultiImageWriter(
-     *                  java.io.OutputStream)
+     * @see org.apache.xmlgraphics.image.writer.ImageWriter#createMultiImageWriter(java.io.OutputStream)
      */
-    public MultiImageWriter createMultiImageWriter(OutputStream out)
+    @Override
+    public MultiImageWriter createMultiImageWriter(final OutputStream out)
             throws IOException {
-        throw new UnsupportedOperationException("This ImageWriter does not support writing"
-                + " multiple images to a single image file.");
+        throw new UnsupportedOperationException(
+                "This ImageWriter does not support writing"
+                        + " multiple images to a single image file.");
     }
 
     /** @see org.apache.xmlgraphics.image.writer.ImageWriter#isFunctional() */
+    @Override
     public boolean isFunctional() {
         return true;
     }
 
     /** @see org.apache.xmlgraphics.image.writer.ImageWriter#supportsMultiImageWriter() */
+    @Override
     public boolean supportsMultiImageWriter() {
         return false;
     }

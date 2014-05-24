@@ -28,30 +28,34 @@ public class SubImageNotFoundException extends ImageException {
 
     /**
      * Constructs an <code>ImageException</code> with the specified detail
-     * message. The error message string <code>s</code> can later be
-     * retrieved by the <code>{@link java.lang.Throwable#getMessage}</code>
-     * method of class <code>java.lang.Throwable</code>.
+     * message. The error message string <code>s</code> can later be retrieved
+     * by the <code>{@link java.lang.Throwable#getMessage}</code> method of
+     * class <code>java.lang.Throwable</code>.
      *
-     * @param   s   the detail message.
+     * @param s
+     *            the detail message.
      */
-    public SubImageNotFoundException(String s) {
+    public SubImageNotFoundException(final String s) {
         super(s);
     }
 
     /**
-     * Constructs a new <code>ImageException</code> with the specified detail message and
-     * cause.  <p>Note that the detail message associated with
-     * <code>cause</code> is <i>not</i> automatically incorporated in
-     * this exception's detail message.
+     * Constructs a new <code>ImageException</code> with the specified detail
+     * message and cause.
+     * <p>
+     * Note that the detail message associated with <code>cause</code> is
+     * <i>not</i> automatically incorporated in this exception's detail message.
      *
-     * @param  message the detail message (which is saved for later retrieval
-     *         by the {@link #getMessage()} method).
-     * @param  cause the cause (which is saved for later retrieval by the
-     *         {@link #getCause()} method).  (A <tt>null</tt> value is
-     *         permitted, and indicates that the cause is nonexistent or
-     *         unknown.)
+     * @param message
+     *            the detail message (which is saved for later retrieval by the
+     *            {@link #getMessage()} method).
+     * @param cause
+     *            the cause (which is saved for later retrieval by the
+     *            {@link #getCause()} method). (A <tt>null</tt> value is
+     *            permitted, and indicates that the cause is nonexistent or
+     *            unknown.)
      */
-    public SubImageNotFoundException(String message, Throwable cause) {
+    public SubImageNotFoundException(final String message, final Throwable cause) {
         super(message, cause);
     }
 

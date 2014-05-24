@@ -22,12 +22,15 @@ package org.apache.fop.memory;
 import java.util.Iterator;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 class Stats {
 
     private static final int INTERVAL = 2000;
 
-    private long startTime = System.currentTimeMillis();
-    private long lastProgressDump = startTime;
+    private final long startTime = System.currentTimeMillis();
+    private long lastProgressDump = this.startTime;
     private int pagesProduced;
 
     private int totalPagesProduced;
@@ -35,57 +38,60 @@ class Stats {
     private int step;
     private int stepCount;
 
-    private List samples = new java.util.LinkedList();
+    private final List samples = new java.util.LinkedList();
 
     public void checkStats() {
-        long now = System.currentTimeMillis();
-        if (now > lastProgressDump + INTERVAL) {
+        final long now = System.currentTimeMillis();
+        if (now > this.lastProgressDump + INTERVAL) {
             dumpStats();
             reset();
         }
     }
 
-    public void notifyPagesProduced(int count) {
-        pagesProduced += count;
-        totalPagesProduced += count;
+    public void notifyPagesProduced(final int count) {
+        this.pagesProduced += count;
+        this.totalPagesProduced += count;
     }
 
     public void reset() {
-        pagesProduced = 0;
-        lastProgressDump = System.currentTimeMillis();
+        this.pagesProduced = 0;
+        this.lastProgressDump = System.currentTimeMillis();
     }
 
     public void dumpStats() {
-        long duration = System.currentTimeMillis() - lastProgressDump;
+        final long duration = System.currentTimeMillis()
+                - this.lastProgressDump;
 
-        if (stepCount != 0) {
-            int progress = 100 * step / stepCount;
-            System.out.println("Progress: " + progress + "%, " + (stepCount - step) + " left");
+        if (this.stepCount != 0) {
+            final int progress = 100 * this.step / this.stepCount;
+            log.info("Progress: " + progress + "%, "
+                    + (this.stepCount - this.step) + " left");
         }
 
-        long ppm = 60000 * pagesProduced / duration;
-        System.out.println("Speed: " + ppm + "ppm");
-        samples.add(new Sample((int)ppm));
+        final long ppm = 60000 * this.pagesProduced / duration;
+        log.info("Speed: " + ppm + "ppm");
+        this.samples.add(new Sample((int) ppm));
     }
 
     public void dumpFinalStats() {
-        long duration = System.currentTimeMillis() - startTime;
-        System.out.println("Final statistics");
-        System.out.println("Pages produced: " + totalPagesProduced);
-        long ppm = 60000 * totalPagesProduced / duration;
-        System.out.println("Average speed: " + ppm + "ppm");
+        final long duration = System.currentTimeMillis() - this.startTime;
+        log.info("Final statistics");
+        log.info("Pages produced: " + this.totalPagesProduced);
+        final long ppm = 60000 * this.totalPagesProduced / duration;
+        log.info("Average speed: " + ppm + "ppm");
     }
 
     public String getGoogleChartURL() {
-        StringBuffer sb = new StringBuffer("http://chart.apis.google.com/chart?");
-        //http://chart.apis.google.com/chart?cht=ls&chd=t:60,40&chs=250x100&chl=Hello|World
+        final StringBuffer sb = new StringBuffer(
+                "http://chart.apis.google.com/chart?");
+        // http://chart.apis.google.com/chart?cht=ls&chd=t:60,40&chs=250x100&chl=Hello|World
         sb.append("cht=ls");
         sb.append("&chd=t:");
         boolean first = true;
         int maxY = 0;
-        Iterator iter = samples.iterator();
+        final Iterator iter = this.samples.iterator();
         while (iter.hasNext()) {
-            Sample sample = (Sample)iter.next();
+            final Sample sample = (Sample) iter.next();
             if (first) {
                 first = false;
             } else {
@@ -94,10 +100,10 @@ class Stats {
             sb.append(sample.ppm);
             maxY = Math.max(maxY, sample.ppm);
         }
-        int ceilY = ((maxY / 1000) + 1) * 1000;
-        sb.append("&chs=1000x300"); //image size
-        sb.append("&chds=0,").append(ceilY); //data scale
-        sb.append("&chg=0,20"); //scale steps
+        final int ceilY = (maxY / 1000 + 1) * 1000;
+        sb.append("&chs=1000x300"); // image size
+        sb.append("&chds=0,").append(ceilY); // data scale
+        sb.append("&chg=0,20"); // scale steps
         sb.append("&chxt=y");
         sb.append("&chxl=0:|0|" + ceilY);
         return sb.toString();
@@ -105,14 +111,14 @@ class Stats {
 
     private static class Sample {
 
-        private int ppm;
+        private final int ppm;
 
-        public Sample(int ppm) {
+        public Sample(final int ppm) {
             this.ppm = ppm;
         }
     }
 
-    public void progress(int step, int stepCount) {
+    public void progress(final int step, final int stepCount) {
         this.step = step;
         this.stepCount = stepCount;
 

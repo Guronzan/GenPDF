@@ -18,12 +18,10 @@
 /* $Id: ImageRawCCITTFaxAdapter.java 679326 2008-07-24 09:35:34Z vhennebert $ */
 
 package org.apache.fop.render.pdf;
+
 import java.awt.color.ColorSpace;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import org.apache.xmlgraphics.image.codec.tiff.TIFFImage;
-import org.apache.xmlgraphics.image.loader.impl.ImageRawCCITTFax;
 
 import org.apache.fop.pdf.CCFFilter;
 import org.apache.fop.pdf.PDFDeviceColorSpace;
@@ -31,9 +29,12 @@ import org.apache.fop.pdf.PDFDictionary;
 import org.apache.fop.pdf.PDFDocument;
 import org.apache.fop.pdf.PDFFilter;
 import org.apache.fop.pdf.PDFFilterList;
+import org.apache.xmlgraphics.image.codec.tiff.TIFFImage;
+import org.apache.xmlgraphics.image.loader.impl.ImageRawCCITTFax;
 
 /**
- * PDFImage implementation for the PDF renderer which handles raw CCITT fax images.
+ * PDFImage implementation for the PDF renderer which handles raw CCITT fax
+ * images.
  */
 public class ImageRawCCITTFaxAdapter extends AbstractImageAdapter {
 
@@ -41,70 +42,81 @@ public class ImageRawCCITTFaxAdapter extends AbstractImageAdapter {
 
     /**
      * Creates a new PDFImage from an Image instance.
-     * @param image the CCITT encoded image
-     * @param key XObject key
+     * 
+     * @param image
+     *            the CCITT encoded image
+     * @param key
+     *            XObject key
      */
-    public ImageRawCCITTFaxAdapter(ImageRawCCITTFax image, String key) {
+    public ImageRawCCITTFaxAdapter(final ImageRawCCITTFax image,
+            final String key) {
         super(image, key);
     }
 
     /**
      * Returns the {@link ImageRawCCITTFax} instance for this adapter.
+     * 
      * @return the image instance
      */
     public ImageRawCCITTFax getImage() {
-        return ((ImageRawCCITTFax)this.image);
+        return (ImageRawCCITTFax) this.image;
     }
 
     /** {@inheritDoc} */
-    public void setup(PDFDocument doc) {
-        pdfFilter = new CCFFilter();
-        pdfFilter.setApplied(true);
-        PDFDictionary dict = new PDFDictionary();
+    @Override
+    public void setup(final PDFDocument doc) {
+        this.pdfFilter = new CCFFilter();
+        this.pdfFilter.setApplied(true);
+        final PDFDictionary dict = new PDFDictionary();
         dict.put("Columns", this.image.getSize().getWidthPx());
-        int compression = getImage().getCompression();
+        final int compression = getImage().getCompression();
         switch (compression) {
-        case TIFFImage.COMP_FAX_G3_1D :
+        case TIFFImage.COMP_FAX_G3_1D:
             dict.put("K", 0);
             break;
-        case TIFFImage.COMP_FAX_G3_2D :
+        case TIFFImage.COMP_FAX_G3_2D:
             dict.put("K", 1);
             break;
-        case TIFFImage.COMP_FAX_G4_2D :
+        case TIFFImage.COMP_FAX_G4_2D:
             dict.put("K", -1);
             break;
         default:
-            throw new IllegalStateException("Invalid compression scheme: " + compression);
+            throw new IllegalStateException("Invalid compression scheme: "
+                    + compression);
         }
-        ((CCFFilter)pdfFilter).setDecodeParms(dict);
+        ((CCFFilter) this.pdfFilter).setDecodeParms(dict);
 
         super.setup(doc);
     }
 
     /** {@inheritDoc} */
+    @Override
     public PDFDeviceColorSpace getColorSpace() {
         return toPDFColorSpace(ColorSpace.getInstance(ColorSpace.CS_GRAY));
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getBitsPerComponent() {
         return 1;
     }
 
     /** {@inheritDoc} */
+    @Override
     public PDFFilter getPDFFilter() {
-        return pdfFilter;
+        return this.pdfFilter;
     }
 
     /** {@inheritDoc} */
-    public void outputContents(OutputStream out) throws IOException {
+    @Override
+    public void outputContents(final OutputStream out) throws IOException {
         getImage().writeTo(out);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getFilterHint() {
         return PDFFilterList.TIFF_FILTER;
     }
 
 }
-

@@ -21,7 +21,8 @@ package org.apache.fop.afp.modca;
 
 import java.io.IOException;
 
-public abstract class AbstractStructuredObjectTest<S extends  AbstractStructuredObject> extends AbstractAFPObjectTest<S> {
+public abstract class AbstractStructuredObjectTest<S extends AbstractStructuredObject>
+        extends AbstractAFPObjectTest<S> {
 
     /**
      * Test writeStart() - test that the contract is maintained with
@@ -33,7 +34,8 @@ public abstract class AbstractStructuredObjectTest<S extends  AbstractStructured
     }
 
     /**
-     * Test writeEnd() - test that the contract is maintained with {@link AbstractStructuredObject}.
+     * Test writeEnd() - test that the contract is maintained with
+     * {@link AbstractStructuredObject}.
      *
      * @throws IOException
      */

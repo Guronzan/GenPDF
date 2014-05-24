@@ -19,48 +19,52 @@
 
 package org.apache.fop.area.inline;
 
-import org.w3c.dom.Document;
-
 import org.apache.fop.area.Area;
+import org.w3c.dom.Document;
 
 // cacheable object
 /**
- * Foreign object inline area.
- * This inline area represents an instream-foreign object.
- * This holds an xml document and the associated namespace.
+ * Foreign object inline area. This inline area represents an instream-foreign
+ * object. This holds an xml document and the associated namespace.
  */
 public class ForeignObject extends Area {
 
     private static final long serialVersionUID = -214947698798577885L;
 
     private Document doc;
-    private String namespace;
+    private final String namespace;
 
     /**
      * Create a new foreign object with the given dom and namespace.
      *
-     * @param d the xml document
-     * @param ns the namespace of the document
+     * @param d
+     *            the xml document
+     * @param ns
+     *            the namespace of the document
      */
-    public ForeignObject(Document d, String ns) {
-        doc = d;
-        namespace = ns;
+    public ForeignObject(final Document d, final String ns) {
+        this.doc = d;
+        this.namespace = ns;
     }
 
     /**
-     * Create a new empty foreign object for which the DOM Document will be set later.
+     * Create a new empty foreign object for which the DOM Document will be set
+     * later.
      *
-     * @param ns the namespace of the document
+     * @param ns
+     *            the namespace of the document
      */
-    public ForeignObject(String ns) {
-        namespace = ns;
+    public ForeignObject(final String ns) {
+        this.namespace = ns;
     }
 
     /**
      * Sets the DOM document for this foreign object.
-     * @param document the DOM document
+     * 
+     * @param document
+     *            the DOM document
      */
-    public void setDocument(Document document) {
+    public void setDocument(final Document document) {
         this.doc = document;
     }
 
@@ -70,7 +74,7 @@ public class ForeignObject extends Area {
      * @return the xml document
      */
     public Document getDocument() {
-        return doc;
+        return this.doc;
     }
 
     /**
@@ -79,7 +83,6 @@ public class ForeignObject extends Area {
      * @return the namespace of this document
      */
     public String getNameSpace() {
-        return namespace;
+        return this.namespace;
     }
 }
-

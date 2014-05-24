@@ -37,56 +37,77 @@ public interface SVGEventProducer extends EventProducer {
 
         /**
          * Returns an event producer.
-         * @param broadcaster the event broadcaster to use
+         * 
+         * @param broadcaster
+         *            the event broadcaster to use
          * @return the event producer
          */
-        public static SVGEventProducer get(EventBroadcaster broadcaster) {
-            return (SVGEventProducer)broadcaster.getEventProducerFor(
-                    SVGEventProducer.class);
+        public static SVGEventProducer get(final EventBroadcaster broadcaster) {
+            return (SVGEventProducer) broadcaster
+                    .getEventProducerFor(SVGEventProducer.class);
         }
     }
 
     /**
      * Error during SVG processing. Either message or e must be set.
-     * @param source the event source
-     * @param message the error message (or null)
-     * @param e the exception (or null)
+     * 
+     * @param source
+     *            the event source
+     * @param message
+     *            the error message (or null)
+     * @param e
+     *            the exception (or null)
      * @event.severity ERROR
      */
-    void error(Object source, String message, Exception e);
+    void error(final Object source, final String message, final Exception e);
 
     /**
      * Alert during SVG processing.
-     * @param source the event source
-     * @param message the error message
+     * 
+     * @param source
+     *            the event source
+     * @param message
+     *            the error message
      * @event.severity WARN
      */
-    void alert(Object source, String message);
+    void alert(final Object source, final String message);
 
     /**
      * Info during SVG processing.
-     * @param source the event source
-     * @param message the error message
+     * 
+     * @param source
+     *            the event source
+     * @param message
+     *            the error message
      * @event.severity INFO
      */
-    void info(Object source, String message);
+    void info(final Object source, final String message);
 
     /**
      * SVG graphic could not be built due to an exception.
-     * @param source the event source
-     * @param e the original exception
-     * @param uri the URI of the SVG graphic
+     * 
+     * @param source
+     *            the event source
+     * @param e
+     *            the original exception
+     * @param uri
+     *            the URI of the SVG graphic
      * @event.severity ERROR
      */
-    void svgNotBuilt(Object source, Exception e, String uri);
+    void svgNotBuilt(final Object source, final Exception e, final String uri);
 
     /**
      * SVG graphic could not be rendered due to an exception.
-     * @param source the event source
-     * @param e the original exception
-     * @param uri the URI of the SVG graphic
+     * 
+     * @param source
+     *            the event source
+     * @param e
+     *            the original exception
+     * @param uri
+     *            the URI of the SVG graphic
      * @event.severity ERROR
      */
-    void svgRenderingError(Object source, Exception e, String uri);
+    void svgRenderingError(final Object source, final Exception e,
+            final String uri);
 
 }

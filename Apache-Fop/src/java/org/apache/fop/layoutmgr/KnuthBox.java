@@ -21,8 +21,8 @@ package org.apache.fop.layoutmgr;
 
 /**
  * An instance of this class represents an unbreakable piece of content with
- * fixed width: for example an image, a syllable (but only if letter spacing
- * is constant), ...
+ * fixed width: for example an image, a syllable (but only if letter spacing is
+ * constant), ...
  *
  * A KnuthBox is never a feasible breaking point.
  *
@@ -37,22 +37,27 @@ public class KnuthBox extends KnuthElement {
     /**
      * Creates a new <code>KnuthBox</code>.
      *
-     * @param width    the width of this box
-     * @param pos  the Position stored in this box
-     * @param auxiliary is this box auxiliary?
+     * @param width
+     *            the width of this box
+     * @param pos
+     *            the Position stored in this box
+     * @param auxiliary
+     *            is this box auxiliary?
      */
-    public KnuthBox(int width, Position pos, boolean auxiliary) {
+    public KnuthBox(final int width, final Position pos, final boolean auxiliary) {
         super(width, pos, auxiliary);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isBox() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer(64);
+        final StringBuffer buffer = new StringBuffer(64);
         if (isAuxiliary()) {
             buffer.append("aux. ");
         }

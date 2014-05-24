@@ -23,8 +23,8 @@ import org.apache.batik.transcoder.Transcoder;
 import org.apache.fop.svg.PDFTranscoder;
 
 /**
- * Basic runtime test for the PDF transcoder. It is used to verify that
- * nothing obvious is broken after compiling.
+ * Basic runtime test for the PDF transcoder. It is used to verify that nothing
+ * obvious is broken after compiling.
  */
 public class BasicPDFTranscoderTestCase extends AbstractBasicTranscoderTest {
 

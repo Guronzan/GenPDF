@@ -30,47 +30,54 @@ import org.apache.fop.traits.WritingMode;
 
 /**
  * Abstract base class for <a href="http://www.w3.org/TR/xsl/#fo_region-start">
- * <code>fo:region-start</code></a> and <a href="http://www.w3.org/TR/xsl/#fo_region-end">
- * <code>fo:region-end</code></a>.
+ * <code>fo:region-start</code></a> and <a
+ * href="http://www.w3.org/TR/xsl/#fo_region-end"> <code>fo:region-end</code>
+ * </a>.
  */
 public abstract class RegionSE extends SideRegion {
     // The value of properties relevant for fo:region-[start|end].
     // End of property values
 
     /**
-     * Create a RegionSE instance that is a child of the
-     * given parent {@link FONode}.
-     * @param parent    the {@link FONode} that is to be the parent
+     * Create a RegionSE instance that is a child of the given parent
+     * {@link FONode}.
+     * 
+     * @param parent
+     *            the {@link FONode} that is to be the parent
      */
-    protected RegionSE(FONode parent) {
+    protected RegionSE(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
     }
 
     /**
-     * Adjust the viewport reference rectangle for a region as a function
-     * of precedence.
-     * If  before and after have precedence = true, the start and end
-     * regions only go to the limits of their extents, otherwise
-     * they extend in the BPD to the page reference rectangle
-     * diminish by extend of start and end if present.
-     * @param vpRefRect viewport reference rectangle
-     * @param wm writing mode
-     * @param siblingContext the context to use to resolve extent on siblings
+     * Adjust the viewport reference rectangle for a region as a function of
+     * precedence. If before and after have precedence = true, the start and end
+     * regions only go to the limits of their extents, otherwise they extend in
+     * the BPD to the page reference rectangle diminish by extend of start and
+     * end if present.
+     * 
+     * @param vpRefRect
+     *            viewport reference rectangle
+     * @param wm
+     *            writing mode
+     * @param siblingContext
+     *            the context to use to resolve extent on siblings
      */
-    protected void adjustIPD
-        ( Rectangle vpRefRect, WritingMode wm, PercentBaseContext siblingContext ) {
+    protected void adjustIPD(final Rectangle vpRefRect, final WritingMode wm,
+            final PercentBaseContext siblingContext) {
         int offset = 0;
-        RegionBefore before = (RegionBefore) getSiblingRegion(FO_REGION_BEFORE);
+        final RegionBefore before = (RegionBefore) getSiblingRegion(FO_REGION_BEFORE);
         if (before != null && before.getPrecedence() == EN_TRUE) {
             offset = before.getExtent().getValue(siblingContext);
             vpRefRect.translate(0, offset);
         }
-        RegionAfter after = (RegionAfter) getSiblingRegion(FO_REGION_AFTER);
+        final RegionAfter after = (RegionAfter) getSiblingRegion(FO_REGION_AFTER);
         if (after != null && after.getPrecedence() == EN_TRUE) {
             offset += after.getExtent().getValue(siblingContext);
         }
@@ -84,4 +91,3 @@ public abstract class RegionSE extends SideRegion {
         }
     }
 }
-

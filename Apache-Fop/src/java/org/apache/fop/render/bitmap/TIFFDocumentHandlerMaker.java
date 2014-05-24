@@ -30,21 +30,24 @@ import org.apache.fop.render.intermediate.IFDocumentHandler;
  */
 public class TIFFDocumentHandlerMaker extends AbstractIFDocumentHandlerMaker {
 
-    private static final String[] MIMES = new String[] {MimeConstants.MIME_TIFF};
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_TIFF };
 
     /** {@inheritDoc} */
-    public IFDocumentHandler makeIFDocumentHandler(FOUserAgent ua) {
-        TIFFDocumentHandler handler = new TIFFDocumentHandler();
+    @Override
+    public IFDocumentHandler makeIFDocumentHandler(final FOUserAgent ua) {
+        final TIFFDocumentHandler handler = new TIFFDocumentHandler();
         handler.setContext(new IFContext(ua));
         return handler;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

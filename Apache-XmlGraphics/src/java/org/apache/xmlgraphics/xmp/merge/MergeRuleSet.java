@@ -25,35 +25,43 @@ import org.apache.xmlgraphics.util.QName;
 import org.apache.xmlgraphics.xmp.XMPProperty;
 
 /**
- * Represents a set of rules used to merge to XMP properties. By default, all properties are
- * merged by replacing any existing values with the value from the source XMP.
+ * Represents a set of rules used to merge to XMP properties. By default, all
+ * properties are merged by replacing any existing values with the value from
+ * the source XMP.
  */
 public class MergeRuleSet {
 
-    private Map rules = new java.util.HashMap();
-    private PropertyMerger defaultMerger = new ReplacePropertyMerger();
+    private final Map rules = new java.util.HashMap();
+    private final PropertyMerger defaultMerger = new ReplacePropertyMerger();
 
     /** Main constructor. */
     public MergeRuleSet() {
     }
 
     /**
-     * Returns the PropertyMerger that shall be used when merging the given property.
-     * @param prop the property to be merged
+     * Returns the PropertyMerger that shall be used when merging the given
+     * property.
+     * 
+     * @param prop
+     *            the property to be merged
      * @return the PropertyMerger to be used for merging the property
      */
-    public PropertyMerger getPropertyMergerFor(XMPProperty prop) {
-        PropertyMerger merger = (PropertyMerger)rules.get(prop.getName());
-        return (merger != null ? merger : defaultMerger);
+    public PropertyMerger getPropertyMergerFor(final XMPProperty prop) {
+        final PropertyMerger merger = (PropertyMerger) this.rules.get(prop
+                .getName());
+        return merger != null ? merger : this.defaultMerger;
     }
 
     /**
      * Adds a merge rule to this set.
-     * @param propName the name of the property
-     * @param merger the property merger to be used for this property
+     * 
+     * @param propName
+     *            the name of the property
+     * @param merger
+     *            the property merger to be used for this property
      */
-    public void addRule(QName propName, PropertyMerger merger) {
-        rules.put(propName, merger);
+    public void addRule(final QName propName, final PropertyMerger merger) {
+        this.rules.put(propName, merger);
     }
 
 }

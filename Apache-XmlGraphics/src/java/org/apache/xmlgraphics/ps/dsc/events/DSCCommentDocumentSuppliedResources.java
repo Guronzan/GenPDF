@@ -26,7 +26,8 @@ import org.apache.xmlgraphics.ps.DSCConstants;
 /**
  * Represents a %%DocumentSuppliedResources DSC comment.
  */
-public class DSCCommentDocumentSuppliedResources extends AbstractResourcesDSCComment {
+public class DSCCommentDocumentSuppliedResources extends
+        AbstractResourcesDSCComment {
 
     /**
      * Creates a new instance.
@@ -37,15 +38,18 @@ public class DSCCommentDocumentSuppliedResources extends AbstractResourcesDSCCom
 
     /**
      * Creates a new instance.
-     * @param resources a Collection of PSResource instances
+     * 
+     * @param resources
+     *            a Collection of PSResource instances
      */
-    public DSCCommentDocumentSuppliedResources(Collection resources) {
+    public DSCCommentDocumentSuppliedResources(final Collection resources) {
         super(resources);
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#getName()
      */
+    @Override
     public String getName() {
         return DSCConstants.DOCUMENT_SUPPLIED_RESOURCES;
     }

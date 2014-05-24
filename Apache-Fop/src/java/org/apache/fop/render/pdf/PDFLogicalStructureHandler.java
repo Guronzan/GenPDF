@@ -28,7 +28,6 @@ import org.apache.fop.pdf.PDFPage;
 import org.apache.fop.pdf.PDFParentTree;
 import org.apache.fop.pdf.PDFStructElem;
 
-
 /**
  * Handles the creation of the logical structure in the PDF document.
  */
@@ -38,7 +37,8 @@ class PDFLogicalStructureHandler {
 
     private static final PDFName OBJR = new PDFName("OBJR");
 
-    private static final MarkedContentInfo ARTIFACT = new MarkedContentInfo(null, -1, null);
+    private static final MarkedContentInfo ARTIFACT = new MarkedContentInfo(
+            null, -1, null);
 
     private final PDFDocument pdfDoc;
 
@@ -67,16 +67,18 @@ class PDFLogicalStructureHandler {
          * operator. This is the structure type of the corresponding structure
          * element.
          */
-        final String tag;                                       // CSOK: VisibilityModifier
+        final String tag; // CSOK: VisibilityModifier
 
         /**
-         * The value for the MCID entry of the marked-content sequence's property list.
+         * The value for the MCID entry of the marked-content sequence's
+         * property list.
          */
-        final int mcid;                                         // CSOK: VisibilityModifier
+        final int mcid; // CSOK: VisibilityModifier
 
         private final PDFStructElem parent;
 
-        private MarkedContentInfo(String tag, int mcid, PDFStructElem parent) {
+        private MarkedContentInfo(final String tag, final int mcid,
+                final PDFStructElem parent) {
             this.tag = tag;
             this.mcid = mcid;
             this.parent = parent;
@@ -84,31 +86,34 @@ class PDFLogicalStructureHandler {
     }
 
     /**
-     * Creates a new instance for handling the logical structure of the given document.
+     * Creates a new instance for handling the logical structure of the given
+     * document.
      *
-     * @param pdfDoc a document
+     * @param pdfDoc
+     *            a document
      */
-    PDFLogicalStructureHandler(PDFDocument pdfDoc) {
+    PDFLogicalStructureHandler(final PDFDocument pdfDoc) {
         this.pdfDoc = pdfDoc;
     }
 
     PDFParentTree getParentTree() {
-        return parentTree;
+        return this.parentTree;
     }
 
     private int getNextParentTreeKey() {
-        return parentTreeKey++;
+        return this.parentTreeKey++;
     }
 
     /**
      * Receive notification of the beginning of a new page.
      *
-     * @param page the page that will be rendered in PDF
+     * @param page
+     *            the page that will be rendered in PDF
      */
-    void startPage(PDFPage page) {
-        currentPage = page;
-        currentPage.setStructParents(getNextParentTreeKey());
-        pageParentTreeArray = new PDFArray();
+    void startPage(final PDFPage page) {
+        this.currentPage = page;
+        this.currentPage.setStructParents(getNextParentTreeKey());
+        this.pageParentTreeArray = new PDFArray();
     }
 
     /**
@@ -123,37 +128,39 @@ class PDFLogicalStructureHandler {
         // before the array is complete, which would result in only part of it
         // being output to the PDF.
         // This should really be handled by PDFNumsArray
-        pdfDoc.registerObject(pageParentTreeArray);
-        parentTree.getNums().put(currentPage.getStructParents(), pageParentTreeArray);
+        this.pdfDoc.registerObject(this.pageParentTreeArray);
+        this.parentTree.getNums().put(this.currentPage.getStructParents(),
+                this.pageParentTreeArray);
     }
 
-    private MarkedContentInfo addToParentTree(PDFStructElem structureTreeElement) {
-        PDFStructElem parent = (structureTreeElement instanceof PDFStructElem.Placeholder)
-                ? structureTreeElement.getParentStructElem()
-                : structureTreeElement;
-        pageParentTreeArray.add(parent);
-        String type = parent.getStructureType().toString();
-        int mcid = pageParentTreeArray.length() - 1;
-        return new MarkedContentInfo(type, mcid, structureTreeElement);
+    private MarkedContentInfo addToParentTree(
+            final PDFStructElem structureTreeElement) {
+        final PDFStructElem parent = structureTreeElement instanceof PDFStructElem.Placeholder ? structureTreeElement
+                .getParentStructElem() : structureTreeElement;
+                this.pageParentTreeArray.add(parent);
+                final String type = parent.getStructureType().toString();
+                final int mcid = this.pageParentTreeArray.length() - 1;
+                return new MarkedContentInfo(type, mcid, structureTreeElement);
     }
 
     /**
      * Adds a content item corresponding to text into the structure tree, if
      * there is a structure element associated to it.
      *
-     * @param structElem the parent structure element of the piece of text
+     * @param structElem
+     *            the parent structure element of the piece of text
      * @return the necessary information for bracketing the content as a
-     * marked-content sequence. If there is no element in the structure tree
-     * associated to that content, returns an instance whose
-     * {@link MarkedContentInfo#tag} value is <code>null</code>. The content
-     * must then be treated as an artifact.
+     *         marked-content sequence. If there is no element in the structure
+     *         tree associated to that content, returns an instance whose
+     *         {@link MarkedContentInfo#tag} value is <code>null</code>. The
+     *         content must then be treated as an artifact.
      */
-    MarkedContentInfo addTextContentItem(PDFStructElem structElem) {
+    MarkedContentInfo addTextContentItem(final PDFStructElem structElem) {
         if (structElem == null) {
             return ARTIFACT;
         } else {
-            MarkedContentInfo mci = addToParentTree(structElem);
-            PDFDictionary contentItem = new PDFDictionary();
+            final MarkedContentInfo mci = addToParentTree(structElem);
+            final PDFDictionary contentItem = new PDFDictionary();
             contentItem.put("Type", MCR);
             contentItem.put("Pg", this.currentPage);
             contentItem.put("MCID", mci.mcid);
@@ -166,18 +173,19 @@ class PDFLogicalStructureHandler {
      * Adds a content item corresponding to an image into the structure tree, if
      * there is a structure element associated to it.
      *
-     * @param structElem the parent structure element of the image
+     * @param structElem
+     *            the parent structure element of the image
      * @return the necessary information for bracketing the content as a
-     * marked-content sequence. If there is no element in the structure tree
-     * associated to that image, returns an instance whose
-     * {@link MarkedContentInfo#tag} value is <code>null</code>. The image must
-     * then be treated as an artifact.
+     *         marked-content sequence. If there is no element in the structure
+     *         tree associated to that image, returns an instance whose
+     *         {@link MarkedContentInfo#tag} value is <code>null</code>. The
+     *         image must then be treated as an artifact.
      */
-    MarkedContentInfo addImageContentItem(PDFStructElem structElem) {
+    MarkedContentInfo addImageContentItem(final PDFStructElem structElem) {
         if (structElem == null) {
             return ARTIFACT;
         } else {
-            MarkedContentInfo mci = addToParentTree(structElem);
+            final MarkedContentInfo mci = addToParentTree(structElem);
             mci.parent.setMCIDKid(mci.mcid);
             mci.parent.setPage(this.currentPage);
             return mci;
@@ -188,17 +196,20 @@ class PDFLogicalStructureHandler {
      * Adds a content item corresponding to the given link into the structure
      * tree.
      *
-     * @param link a link
-     * @param structureTreeElement its parent structure element
+     * @param link
+     *            a link
+     * @param structureTreeElement
+     *            its parent structure element
      */
-    void addLinkContentItem(PDFLink link, PDFStructElem structureTreeElement) {
-        int structParent = getNextParentTreeKey();
+    void addLinkContentItem(final PDFLink link,
+            final PDFStructElem structureTreeElement) {
+        final int structParent = getNextParentTreeKey();
         link.setStructParent(structParent);
-        PDFDictionary contentItem = new PDFDictionary();
+        final PDFDictionary contentItem = new PDFDictionary();
         contentItem.put("Type", OBJR);
         contentItem.put("Pg", this.currentPage);
         contentItem.put("Obj", link);
-        parentTree.getNums().put(structParent, structureTreeElement);
+        this.parentTree.getNums().put(structParent, structureTreeElement);
         structureTreeElement.addKid(contentItem);
     }
 

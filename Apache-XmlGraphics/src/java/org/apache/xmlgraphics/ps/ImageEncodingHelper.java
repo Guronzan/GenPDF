@@ -40,29 +40,35 @@ import org.apache.xmlgraphics.image.GraphicsUtil;
 public class ImageEncodingHelper {
 
     private static final ColorModel DEFAULT_RGB_COLOR_MODEL = new ComponentColorModel(
-            ColorSpace.getInstance(ColorSpace.CS_sRGB),
-            false, false, ColorModel.OPAQUE, DataBuffer.TYPE_BYTE);
+            ColorSpace.getInstance(ColorSpace.CS_sRGB), false, false,
+            ColorModel.OPAQUE, DataBuffer.TYPE_BYTE);
 
     private final RenderedImage image;
     private ColorModel encodedColorModel;
     private boolean firstTileDump;
-    private boolean enableCMYK;
+    private final boolean enableCMYK;
     private boolean isBGR;
 
     /**
      * Main constructor
-     * @param image the image
+     * 
+     * @param image
+     *            the image
      */
-    public ImageEncodingHelper(RenderedImage image) {
+    public ImageEncodingHelper(final RenderedImage image) {
         this(image, false);
     }
 
     /**
      * Main constructor
-     * @param image the image
-     * @param enableCMYK true to enable CMYK, false to disable
+     * 
+     * @param image
+     *            the image
+     * @param enableCMYK
+     *            true to enable CMYK, false to disable
      */
-    public ImageEncodingHelper(RenderedImage image, boolean enableCMYK) {
+    public ImageEncodingHelper(final RenderedImage image,
+            final boolean enableCMYK) {
         this.image = image;
         this.enableCMYK = enableCMYK;
         determineEncodedColorModel();
@@ -70,6 +76,7 @@ public class ImageEncodingHelper {
 
     /**
      * Returns the associated image.
+     * 
      * @return the image
      */
     public RenderedImage getImage() {
@@ -78,6 +85,7 @@ public class ImageEncodingHelper {
 
     /**
      * Returns the native {@link ColorModel} used by the image.
+     * 
      * @return the native color model
      */
     public ColorModel getNativeColorModel() {
@@ -85,9 +93,11 @@ public class ImageEncodingHelper {
     }
 
     /**
-     * Returns the effective {@link ColorModel} used to encode the image. If this is different
-     * from the value returned by {@link #getNativeColorModel()} this means that the image
-     * is converted in order to encode it because no native encoding is currently possible.
+     * Returns the effective {@link ColorModel} used to encode the image. If
+     * this is different from the value returned by
+     * {@link #getNativeColorModel()} this means that the image is converted in
+     * order to encode it because no native encoding is currently possible.
+     * 
      * @return the effective color model
      */
     public ColorModel getEncodedColorModel() {
@@ -96,36 +106,42 @@ public class ImageEncodingHelper {
 
     /**
      * Indicates whether the image has an alpha channel.
+     * 
      * @return true if the image has an alpha channel
      */
     public boolean hasAlpha() {
-        return image.getColorModel().hasAlpha();
+        return this.image.getColorModel().hasAlpha();
     }
 
     /**
      * Indicates whether the image is converted during encodation.
+     * 
      * @return true if the image cannot be encoded in its native format
      */
     public boolean isConverted() {
         return getNativeColorModel() != getEncodedColorModel();
     }
 
-    private void writeRGBTo(OutputStream out) throws IOException {
-        encodeRenderedImageAsRGB(image, out);
+    private void writeRGBTo(final OutputStream out) throws IOException {
+        encodeRenderedImageAsRGB(this.image, out);
     }
 
     /**
      * Writes a RenderedImage to an OutputStream by converting it to RGB.
-     * @param image the image
-     * @param out the OutputStream to write the pixels to
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param image
+     *            the image
+     * @param out
+     *            the OutputStream to write the pixels to
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public static void encodeRenderedImageAsRGB(RenderedImage image, OutputStream out)
-                throws IOException {
-        Raster raster = image.getData();
+    public static void encodeRenderedImageAsRGB(final RenderedImage image,
+            final OutputStream out) throws IOException {
+        final Raster raster = image.getData();
         Object data;
-        int nbands = raster.getNumBands();
-        int dataType = raster.getDataBuffer().getDataType();
+        final int nbands = raster.getNumBands();
+        final int dataType = raster.getDataBuffer().getDataType();
         switch (dataType) {
         case DataBuffer.TYPE_BYTE:
             data = new byte[nbands];
@@ -144,20 +160,21 @@ public class ImageEncodingHelper {
             break;
         default:
             throw new IllegalArgumentException("Unknown data buffer type: "
-                                               + dataType);
+                    + dataType);
         }
 
-        ColorModel colorModel = image.getColorModel();
-        int w = image.getWidth();
-        int h = image.getHeight();
-        byte[] buf = new byte[w * 3];
+        final ColorModel colorModel = image.getColorModel();
+        final int w = image.getWidth();
+        final int h = image.getHeight();
+        final byte[] buf = new byte[w * 3];
         for (int y = 0; y < h; y++) {
             int idx = -1;
             for (int x = 0; x < w; x++) {
-                int rgb = colorModel.getRGB(raster.getDataElements(x, y, data));
-                buf[++idx] = (byte)(rgb >> 16);
-                buf[++idx] = (byte)(rgb >> 8);
-                buf[++idx] = (byte)(rgb);
+                final int rgb = colorModel.getRGB(raster.getDataElements(x, y,
+                        data));
+                buf[++idx] = (byte) (rgb >> 16);
+                buf[++idx] = (byte) (rgb >> 8);
+                buf[++idx] = (byte) rgb;
             }
             out.write(buf);
         }
@@ -175,22 +192,25 @@ public class ImageEncodingHelper {
      *            the height of the image in pixels
      * @param bitsPerPixel
      *            the number of bits to use per pixel
-     * @param out the OutputStream to write the pixels to
+     * @param out
+     *            the OutputStream to write the pixels to
      *
-     * @throws IOException if an I/O error occurs
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public static void encodeRGBAsGrayScale(
-            byte[] raw, int width, int height, int bitsPerPixel, OutputStream out)
-    throws IOException {
-        int pixelsPerByte = 8 / bitsPerPixel;
-        int bytewidth = (width / pixelsPerByte);
-        if ((width % pixelsPerByte) != 0) {
+    public static void encodeRGBAsGrayScale(final byte[] raw, final int width,
+            final int height, final int bitsPerPixel, final OutputStream out)
+            throws IOException {
+        final int pixelsPerByte = 8 / bitsPerPixel;
+        int bytewidth = width / pixelsPerByte;
+        if (width % pixelsPerByte != 0) {
             bytewidth++;
         }
 
-        //TODO Rewrite to encode directly from a RenderedImage to avoid buffering the whole RGB
-        //image in memory
-        byte[] linedata = new byte[bytewidth];
+        // TODO Rewrite to encode directly from a RenderedImage to avoid
+        // buffering the whole RGB
+        // image in memory
+        final byte[] linedata = new byte[bytewidth];
         byte ib;
         for (int y = 0; y < height; y++) {
             ib = 0;
@@ -199,17 +219,16 @@ public class ImageEncodingHelper {
 
                 // see http://www.jguru.com/faq/view.jsp?EID=221919
                 double greyVal = 0.212671d * (raw[i] & 0xff) + 0.715160d
-                        * (raw[i + 1] & 0xff) + 0.072169d
-                        * (raw[i + 2] & 0xff);
+                        * (raw[i + 1] & 0xff) + 0.072169d * (raw[i + 2] & 0xff);
                 switch (bitsPerPixel) {
                 case 1:
                     if (greyVal < 128) {
-                        ib |= (byte) (1 << (7 - (x % 8)));
+                        ib |= (byte) (1 << 7 - x % 8);
                     }
                     break;
                 case 4:
                     greyVal /= 16;
-                    ib |= (byte) ((byte) greyVal << ((1 - (x % 2)) * 4));
+                    ib |= (byte) ((byte) greyVal << (1 - x % 2) * 4);
                     break;
                 case 8:
                     ib = (byte) greyVal;
@@ -219,9 +238,8 @@ public class ImageEncodingHelper {
                             "Unsupported bits per pixel: " + bitsPerPixel);
                 }
 
-                if ((x % pixelsPerByte) == (pixelsPerByte - 1)
-                        || ((x + 1) == width)) {
-                    linedata[(x / pixelsPerByte)] = ib;
+                if (x % pixelsPerByte == pixelsPerByte - 1 || x + 1 == width) {
+                    linedata[x / pixelsPerByte] = ib;
                     ib = 0;
                 }
             }
@@ -229,15 +247,15 @@ public class ImageEncodingHelper {
         }
     }
 
-    private boolean optimizedWriteTo(OutputStream out)
-            throws IOException {
+    private boolean optimizedWriteTo(final OutputStream out) throws IOException {
         if (this.firstTileDump) {
-            Raster raster = image.getTile(0, 0);
-            DataBuffer buffer = raster.getDataBuffer();
+            final Raster raster = this.image.getTile(0, 0);
+            final DataBuffer buffer = raster.getDataBuffer();
             if (buffer instanceof DataBufferByte) {
-                byte[] bytes = ((DataBufferByte) buffer).getData();
-                // see determineEncodingColorModel() to see why we permute B and R here
-                if (isBGR) {
+                final byte[] bytes = ((DataBufferByte) buffer).getData();
+                // see determineEncodingColorModel() to see why we permute B and
+                // R here
+                if (this.isBGR) {
                     for (int i = 0; i < bytes.length; i += 3) {
                         out.write(bytes[i + 2]);
                         out.write(bytes[i + 1]);
@@ -254,12 +272,13 @@ public class ImageEncodingHelper {
 
     /**
      * Indicates whether the image consists of multiple tiles.
+     * 
      * @return true if there are multiple tiles
      */
     protected boolean isMultiTile() {
-        int tilesX = image.getNumXTiles();
-        int tilesY = image.getNumYTiles();
-        return (tilesX != 1 || tilesY != 1);
+        final int tilesX = this.image.getNumXTiles();
+        final int tilesY = this.image.getNumYTiles();
+        return tilesX != 1 || tilesY != 1;
     }
 
     /**
@@ -269,10 +288,10 @@ public class ImageEncodingHelper {
         this.firstTileDump = false;
         this.encodedColorModel = DEFAULT_RGB_COLOR_MODEL;
 
-        ColorModel cm = image.getColorModel();
-        ColorSpace cs = cm.getColorSpace();
+        final ColorModel cm = this.image.getColorModel();
+        final ColorSpace cs = cm.getColorSpace();
 
-        int numComponents = cm.getNumComponents();
+        final int numComponents = cm.getNumComponents();
 
         if (!isMultiTile()) {
             if (numComponents == 1 && cs.getType() == ColorSpace.TYPE_GRAY) {
@@ -286,40 +305,48 @@ public class ImageEncodingHelper {
                     this.encodedColorModel = cm;
                 }
             } else if (cm instanceof ComponentColorModel
-                    && (numComponents == 3 || (enableCMYK && numComponents == 4))
-                    && !cm.hasAlpha()) {
-                Raster raster = image.getTile(0, 0);
-                DataBuffer buffer = raster.getDataBuffer();
-                SampleModel sampleModel = raster.getSampleModel();
+                    && (numComponents == 3 || this.enableCMYK
+                            && numComponents == 4) && !cm.hasAlpha()) {
+                final Raster raster = this.image.getTile(0, 0);
+                final DataBuffer buffer = raster.getDataBuffer();
+                final SampleModel sampleModel = raster.getSampleModel();
                 if (sampleModel instanceof PixelInterleavedSampleModel) {
                     PixelInterleavedSampleModel piSampleModel;
-                    piSampleModel = (PixelInterleavedSampleModel)sampleModel;
-                    int[] offsets = piSampleModel.getBandOffsets();
+                    piSampleModel = (PixelInterleavedSampleModel) sampleModel;
+                    final int[] offsets = piSampleModel.getBandOffsets();
                     for (int i = 0; i < offsets.length; i++) {
-                        if (offsets[i] != i && offsets[i] != offsets.length - 1 - i) {
-                            //Don't encode directly as samples are not next to each other
-                            //i.e. offsets are not 012 (RGB) or 0123 (CMYK)
-                            // let also pass 210 BGR and 3210 (KYMC); 3210 will be skipped below
-                            // if 210 (BGR) the B and R bytes will be permuted later in optimizeWriteTo()
+                        if (offsets[i] != i
+                                && offsets[i] != offsets.length - 1 - i) {
+                            // Don't encode directly as samples are not next to
+                            // each other
+                            // i.e. offsets are not 012 (RGB) or 0123 (CMYK)
+                            // let also pass 210 BGR and 3210 (KYMC); 3210 will
+                            // be skipped below
+                            // if 210 (BGR) the B and R bytes will be permuted
+                            // later in optimizeWriteTo()
                             return;
                         }
                     }
-                    // check if we are in a BGR case; this is added here as a workaround for bug fix
-                    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6549882 that causes some PNG
-                    // images to be loaded as BGR with the consequence that performance was being impacted
+                    // check if we are in a BGR case; this is added here as a
+                    // workaround for bug fix
+                    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6549882
+                    // that causes some PNG
+                    // images to be loaded as BGR with the consequence that
+                    // performance was being impacted
                     this.isBGR = false;
-                    if (offsets.length == 3 && offsets[0] == 2 && offsets[1] == 1 && offsets[2] == 0) {
+                    if (offsets.length == 3 && offsets[0] == 2
+                            && offsets[1] == 1 && offsets[2] == 0) {
                         this.isBGR = true;
                     }
                     // make sure we did not get here due to a KMYC image
-                    if (offsets.length == 4 && offsets[0] == 3 && offsets[1] == 2 && offsets[2] == 1
+                    if (offsets.length == 4 && offsets[0] == 3
+                            && offsets[1] == 2 && offsets[2] == 1
                             && offsets[3] == 0) {
                         return;
                     }
                 }
                 if (cm.getTransferType() == DataBuffer.TYPE_BYTE
-                        && buffer.getOffset() == 0
-                        && buffer.getNumBanks() == 1) {
+                        && buffer.getOffset() == 0 && buffer.getNumBanks() == 1) {
                     this.firstTileDump = true;
                     this.encodedColorModel = cm;
                 }
@@ -330,10 +357,13 @@ public class ImageEncodingHelper {
 
     /**
      * Encodes the image and writes everything to the given OutputStream.
-     * @param out the OutputStream
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param out
+     *            the OutputStream
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public void encode(OutputStream out) throws IOException {
+    public void encode(final OutputStream out) throws IOException {
         if (!isConverted()) {
             if (optimizedWriteTo(out)) {
                 return;
@@ -343,43 +373,56 @@ public class ImageEncodingHelper {
     }
 
     /**
-     * Encodes the image's alpha channel. If it doesn't have an alpha channel, an
-     * {@link IllegalStateException} is thrown.
-     * @param out the OutputStream
-     * @throws IOException if an I/O error occurs
+     * Encodes the image's alpha channel. If it doesn't have an alpha channel,
+     * an {@link IllegalStateException} is thrown.
+     * 
+     * @param out
+     *            the OutputStream
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public void encodeAlpha(OutputStream out) throws IOException {
+    public void encodeAlpha(final OutputStream out) throws IOException {
         if (!hasAlpha()) {
-            throw new IllegalStateException("Image doesn't have an alpha channel");
+            throw new IllegalStateException(
+                    "Image doesn't have an alpha channel");
         }
-        Raster alpha = GraphicsUtil.getAlphaRaster(image);
-        DataBuffer buffer = alpha.getDataBuffer();
+        final Raster alpha = GraphicsUtil.getAlphaRaster(this.image);
+        final DataBuffer buffer = alpha.getDataBuffer();
         if (buffer instanceof DataBufferByte) {
-            out.write(((DataBufferByte)buffer).getData());
+            out.write(((DataBufferByte) buffer).getData());
         } else {
             throw new UnsupportedOperationException(
-                    "Alpha raster not supported: " + buffer.getClass().getName());
+                    "Alpha raster not supported: "
+                            + buffer.getClass().getName());
         }
     }
 
     /**
-     * Writes all pixels (color components only) of a RenderedImage to an OutputStream.
-     * @param image the image to be encoded
-     * @param out the OutputStream to write to
-     * @throws IOException if an I/O error occurs
+     * Writes all pixels (color components only) of a RenderedImage to an
+     * OutputStream.
+     * 
+     * @param image
+     *            the image to be encoded
+     * @param out
+     *            the OutputStream to write to
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public static void encodePackedColorComponents(RenderedImage image, OutputStream out)
-                throws IOException {
-        ImageEncodingHelper helper = new ImageEncodingHelper(image, true);
+    public static void encodePackedColorComponents(final RenderedImage image,
+            final OutputStream out) throws IOException {
+        final ImageEncodingHelper helper = new ImageEncodingHelper(image, true);
         helper.encode(out);
     }
 
     /**
      * Create an ImageEncoder for the given RenderImage instance.
-     * @param img the image
+     * 
+     * @param img
+     *            the image
      * @return the requested ImageEncoder
      */
-    public static ImageEncoder createRenderedImageEncoder(RenderedImage img) {
+    public static ImageEncoder createRenderedImageEncoder(
+            final RenderedImage img) {
         return new RenderedImageEncoder(img);
     }
 
@@ -390,16 +433,18 @@ public class ImageEncodingHelper {
 
         private final RenderedImage img;
 
-        public RenderedImageEncoder(RenderedImage img) {
+        public RenderedImageEncoder(final RenderedImage img) {
             this.img = img;
         }
 
-        public void writeTo(OutputStream out) throws IOException {
-            ImageEncodingHelper.encodePackedColorComponents(img, out);
+        @Override
+        public void writeTo(final OutputStream out) throws IOException {
+            ImageEncodingHelper.encodePackedColorComponents(this.img, out);
         }
 
+        @Override
         public String getImplicitFilter() {
-            return null; //No implicit filters with RenderedImage instances
+            return null; // No implicit filters with RenderedImage instances
         }
 
     }

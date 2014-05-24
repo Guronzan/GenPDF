@@ -19,18 +19,18 @@
 
 package org.apache.fop.fo.pagination;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import org.apache.fop.fo.Constants;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.expr.NumericProperty;
 import org.apache.fop.fo.properties.Property;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit Test for RepeatablePageMasterAlternatives
@@ -40,33 +40,35 @@ public class RepeatablePageMasterAlternativesTestCase implements Constants {
 
     /**
      *
-     * @throws Exception exception
+     * @throws Exception
+     *             exception
      */
     @Test
     public void testIsInfinite1() throws Exception {
-        //  Create fixture
-        Property maximumRepeats = mock(Property.class);
-        ConditionalPageMasterReference cpmr = createCPMR("empty");
+        // Create fixture
+        final Property maximumRepeats = mock(Property.class);
+        final ConditionalPageMasterReference cpmr = createCPMR("empty");
 
         when(maximumRepeats.getEnum()).thenReturn(EN_NO_LIMIT);
 
-        RepeatablePageMasterAlternatives objectUnderTest
-        = createRepeatablePageMasterAlternatives(cpmr, maximumRepeats);
+        final RepeatablePageMasterAlternatives objectUnderTest = createRepeatablePageMasterAlternatives(
+                cpmr, maximumRepeats);
 
         assertTrue("is infinite", objectUnderTest.isInfinite());
     }
 
     /**
      *
-     * @throws Exception exception
+     * @throws Exception
+     *             exception
      */
     @Test
     public void testIsInfinite2() throws Exception {
-        //  Create fixture
-        Property maximumRepeats = mock(Property.class);
-        ConditionalPageMasterReference cpmr = createCPMR("empty");
+        // Create fixture
+        final Property maximumRepeats = mock(Property.class);
+        final ConditionalPageMasterReference cpmr = createCPMR("empty");
 
-        NumericProperty numericProperty = mock(NumericProperty.class);
+        final NumericProperty numericProperty = mock(NumericProperty.class);
 
         final int maxRepeatNum = 0;
         assertTrue(maxRepeatNum != EN_NO_LIMIT);
@@ -74,72 +76,74 @@ public class RepeatablePageMasterAlternativesTestCase implements Constants {
         when(maximumRepeats.getEnum()).thenReturn(maxRepeatNum);
         when(maximumRepeats.getNumeric()).thenReturn(numericProperty);
 
-        RepeatablePageMasterAlternatives objectUnderTest
-        = createRepeatablePageMasterAlternatives(createCPMR("empty"),
-                maximumRepeats);
+        final RepeatablePageMasterAlternatives objectUnderTest = createRepeatablePageMasterAlternatives(
+                createCPMR("empty"), maximumRepeats);
 
         assertTrue("is infinite", !objectUnderTest.isInfinite());
     }
 
     /**
-     * Test that an infinite sequence of empty page masters has
-     * willTerminiate() returning false
-     * @throws Exception exception
+     * Test that an infinite sequence of empty page masters has willTerminiate()
+     * returning false
+     * 
+     * @throws Exception
+     *             exception
      */
     @Test
     public void testCanProcess1() throws Exception {
-        //  Create fixture
-        Property maximumRepeats = mock(Property.class);
-        ConditionalPageMasterReference cpmr = createCPMR("empty");
+        // Create fixture
+        final Property maximumRepeats = mock(Property.class);
+        final ConditionalPageMasterReference cpmr = createCPMR("empty");
 
         when(maximumRepeats.getEnum()).thenReturn(EN_NO_LIMIT);
-        when(cpmr.isValid(anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean()))
-        .thenReturn(true);
+        when(
+                cpmr.isValid(anyBoolean(), anyBoolean(), anyBoolean(),
+                        anyBoolean())).thenReturn(true);
 
-        RepeatablePageMasterAlternatives objectUnderTest
-        = createRepeatablePageMasterAlternatives(cpmr, maximumRepeats);
+        final RepeatablePageMasterAlternatives objectUnderTest = createRepeatablePageMasterAlternatives(
+                cpmr, maximumRepeats);
 
-        //Fixture assertion
+        // Fixture assertion
         assertTrue("Should be infinite", objectUnderTest.isInfinite());
 
-        //Test assertion
+        // Test assertion
         assertTrue("Infinite sequences that do not process the main flow will "
-                + " not terminate",
-                !objectUnderTest.canProcess("main-flow"));
+                + " not terminate", !objectUnderTest.canProcess("main-flow"));
     }
+
     /**
-     * Test that a finite sequence of simple page masters has
-     * willTerminate() returning true
+     * Test that a finite sequence of simple page masters has willTerminate()
+     * returning true
      *
-     * @throws Exception exception
+     * @throws Exception
+     *             exception
      */
     @Test
     public void testCanProcess2() throws Exception {
-        //  Create fixture
-        Property maximumRepeats = mock(Property.class);
-        NumericProperty numericProperty = mock(NumericProperty.class);
+        // Create fixture
+        final Property maximumRepeats = mock(Property.class);
+        final NumericProperty numericProperty = mock(NumericProperty.class);
 
         final int maxRepeatNum = 0;
 
         when(maximumRepeats.getEnum()).thenReturn(maxRepeatNum);
         when(maximumRepeats.getNumeric()).thenReturn(numericProperty);
 
-        RepeatablePageMasterAlternatives objectUnderTest
-        = createRepeatablePageMasterAlternatives(createCPMR("empty"),
-                maximumRepeats);
+        final RepeatablePageMasterAlternatives objectUnderTest = createRepeatablePageMasterAlternatives(
+                createCPMR("empty"), maximumRepeats);
 
-        //Fixture assertion
+        // Fixture assertion
         assertTrue("Should be finite sequence", !objectUnderTest.isInfinite());
 
-        //Test assertion
+        // Test assertion
         assertTrue("Finite sequences will terminate",
                 objectUnderTest.canProcess("main-flow"));
     }
 
-    private ConditionalPageMasterReference createCPMR(String regionName) {
-        ConditionalPageMasterReference cpmr = mock(ConditionalPageMasterReference.class);
-        SimplePageMaster master = mock(SimplePageMaster.class);
-        Region region = mock(Region.class);
+    private ConditionalPageMasterReference createCPMR(final String regionName) {
+        final ConditionalPageMasterReference cpmr = mock(ConditionalPageMasterReference.class);
+        final SimplePageMaster master = mock(SimplePageMaster.class);
+        final Region region = mock(Region.class);
         when(master.getRegion(anyInt())).thenReturn(region);
         when(region.getRegionName()).thenReturn(regionName);
         when(cpmr.getMaster()).thenReturn(master);
@@ -148,16 +152,18 @@ public class RepeatablePageMasterAlternativesTestCase implements Constants {
     }
 
     private RepeatablePageMasterAlternatives createRepeatablePageMasterAlternatives(
-            ConditionalPageMasterReference cpmr, Property maximumRepeats) throws Exception {
+            final ConditionalPageMasterReference cpmr,
+            final Property maximumRepeats) throws Exception {
 
-        PropertyList pList = mock(PropertyList.class);
+        final PropertyList pList = mock(PropertyList.class);
 
         when(pList.get(anyInt())).thenReturn(maximumRepeats);
 
-        PageSequenceMaster parent = mock(PageSequenceMaster.class);
+        final PageSequenceMaster parent = mock(PageSequenceMaster.class);
         when(parent.getName()).thenReturn("fo:page-sequence-master");
 
-        RepeatablePageMasterAlternatives sut = new RepeatablePageMasterAlternatives(parent);
+        final RepeatablePageMasterAlternatives sut = new RepeatablePageMasterAlternatives(
+                parent);
 
         sut.startOfNode();
         sut.bind(pList);
@@ -166,4 +172,3 @@ public class RepeatablePageMasterAlternativesTestCase implements Constants {
     }
 
 }
-

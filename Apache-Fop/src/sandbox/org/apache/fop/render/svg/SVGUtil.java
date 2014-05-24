@@ -33,42 +33,52 @@ public final class SVGUtil {
 
     /**
      * Formats a length in millipoints as a point value.
-     * @param mpt the length in millipoints
+     * 
+     * @param mpt
+     *            the length in millipoints
      * @return the formatted value in points
      */
-    public static String formatMptToPt(int mpt) {
+    public static String formatMptToPt(final int mpt) {
         return Float.toString(mpt / 1000f);
     }
 
     /**
      * Formats an array of lengths in millipoints as point values.
-     * @param lengths the lengths in millipoints
+     * 
+     * @param lengths
+     *            the lengths in millipoints
      * @return the formatted array in points
      */
-    public static String formatMptArrayToPt(int[] lengths) {
+    public static String formatMptArrayToPt(final int[] lengths) {
         return IFUtil.toString(lengths);
     }
 
     /**
      * Formats a transformation matrix in millipoints with values as points.
-     * @param transform the transformation matrix in millipoints
+     * 
+     * @param transform
+     *            the transformation matrix in millipoints
      * @return the formatted matrix in points
      */
-    public static String formatAffineTransformMptToPt(AffineTransform transform) {
-        AffineTransform scaled = new AffineTransform(transform);
-        scaled.setToTranslation(
-                transform.getTranslateX() / 1000,
+    public static String formatAffineTransformMptToPt(
+            final AffineTransform transform) {
+        final AffineTransform scaled = new AffineTransform(transform);
+        scaled.setToTranslation(transform.getTranslateX() / 1000,
                 transform.getTranslateY() / 1000);
         return IFUtil.toString(scaled);
     }
 
     /**
-     * Formats an array of transformation matrices in millipoints with values as points.
-     * @param transforms the transformation matrices in millipoints
+     * Formats an array of transformation matrices in millipoints with values as
+     * points.
+     * 
+     * @param transforms
+     *            the transformation matrices in millipoints
      * @return the formatted matrices in points
      */
-    public static String formatAffineTransformsMptToPt(AffineTransform[] transforms) {
-        StringBuffer sb = new StringBuffer();
+    public static String formatAffineTransformsMptToPt(
+            final AffineTransform[] transforms) {
+        final StringBuffer sb = new StringBuffer();
         for (int i = 0, c = transforms.length; i < c; i++) {
             if (i > 0) {
                 sb.append(' ');

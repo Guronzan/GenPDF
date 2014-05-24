@@ -30,11 +30,11 @@ import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
 
 import org.apache.xmlgraphics.image.writer.ImageWriterParams;
 
-
 /**
  * ImageWriter that encodes JPEG images using Image I/O.
  *
- * @version $Id: ImageIOJPEGImageWriter.java 750418 2009-03-05 11:03:54Z vhennebert $
+ * @version $Id: ImageIOJPEGImageWriter.java 750418 2009-03-05 11:03:54Z
+ *          vhennebert $
  */
 public class ImageIOJPEGImageWriter extends ImageIOImageWriter {
 
@@ -48,15 +48,19 @@ public class ImageIOJPEGImageWriter extends ImageIOImageWriter {
     }
 
     /**
-     * @see ImageIOImageWriter#updateMetadata(javax.imageio.metadata.IIOMetadata, ImageWriterParams)
+     * @see ImageIOImageWriter#updateMetadata(javax.imageio.metadata.IIOMetadata,
+     *      ImageWriterParams)
      */
-    protected IIOMetadata updateMetadata(IIOMetadata meta, ImageWriterParams params) {
-        //ImageIODebugUtil.dumpMetadata(meta);
+    @Override
+    protected IIOMetadata updateMetadata(IIOMetadata meta,
+            final ImageWriterParams params) {
+        // ImageIODebugUtil.dumpMetadata(meta);
         if (JPEG_NATIVE_FORMAT.equals(meta.getNativeMetadataFormatName())) {
             meta = addAdobeTransform(meta);
 
-            IIOMetadataNode root = (IIOMetadataNode)meta.getAsTree(JPEG_NATIVE_FORMAT);
-            //IIOMetadataNode root = new IIOMetadataNode(jpegmeta);
+            final IIOMetadataNode root = (IIOMetadataNode) meta
+                    .getAsTree(JPEG_NATIVE_FORMAT);
+            // IIOMetadataNode root = new IIOMetadataNode(jpegmeta);
 
             IIOMetadataNode jv = getChildNode(root, "JPEGvariety");
             if (jv == null) {
@@ -70,94 +74,103 @@ public class ImageIOJPEGImageWriter extends ImageIOImageWriter {
                     child = new IIOMetadataNode("app0JFIF");
                     jv.appendChild(child);
                 }
-                //JPEG gets special treatment because there seems to be a bug in
-                //the JPEG codec in ImageIO converting the pixel size incorrectly
-                //(or not at all) when using standard metadata format.
+                // JPEG gets special treatment because there seems to be a bug
+                // in
+                // the JPEG codec in ImageIO converting the pixel size
+                // incorrectly
+                // (or not at all) when using standard metadata format.
                 child.setAttribute("majorVersion", null);
                 child.setAttribute("minorVersion", null);
-                child.setAttribute("resUnits", "1"); //dots per inch
-                child.setAttribute("Xdensity", params.getResolution().toString());
-                child.setAttribute("Ydensity", params.getResolution().toString());
+                child.setAttribute("resUnits", "1"); // dots per inch
+                child.setAttribute("Xdensity", params.getResolution()
+                        .toString());
+                child.setAttribute("Ydensity", params.getResolution()
+                        .toString());
                 child.setAttribute("thumbWidth", null);
                 child.setAttribute("thumbHeight", null);
 
             }
 
             /*
-            IIOMetadataNode ms = getChildNode(root, "markerSequence");
-            if (ms == null) {
-                ms = new IIOMetadataNode("markerSequence");
-                root.appendChild(ms);
-            }*/
+             * IIOMetadataNode ms = getChildNode(root, "markerSequence"); if (ms
+             * == null) { ms = new IIOMetadataNode("markerSequence");
+             * root.appendChild(ms); }
+             */
 
             try {
                 meta.setFromTree(JPEG_NATIVE_FORMAT, root);
-                //meta.mergeTree(JPEG_NATIVE_FORMAT, root);
-            } catch (IIOInvalidTreeException e) {
+                // meta.mergeTree(JPEG_NATIVE_FORMAT, root);
+            } catch (final IIOInvalidTreeException e) {
                 throw new RuntimeException("Cannot update image metadata: "
-                            + e.getMessage(), e);
+                        + e.getMessage(), e);
             }
 
-            //ImageIODebugUtil.dumpMetadata(meta);
+            // ImageIODebugUtil.dumpMetadata(meta);
 
-            //meta = super.updateMetadata(meta, params);
-            //ImageIODebugUtil.dumpMetadata(meta);
+            // meta = super.updateMetadata(meta, params);
+            // ImageIODebugUtil.dumpMetadata(meta);
         }
 
         return meta;
     }
 
-    private static IIOMetadata addAdobeTransform(IIOMetadata meta) {
+    private static IIOMetadata addAdobeTransform(final IIOMetadata meta) {
         // add the adobe transformation (transform 1 -> to YCbCr)
-        IIOMetadataNode root = (IIOMetadataNode)meta.getAsTree(JPEG_NATIVE_FORMAT);
+        final IIOMetadataNode root = (IIOMetadataNode) meta
+                .getAsTree(JPEG_NATIVE_FORMAT);
 
-        IIOMetadataNode markerSequence = getChildNode(root, "markerSequence");
+        final IIOMetadataNode markerSequence = getChildNode(root,
+                "markerSequence");
         if (markerSequence == null) {
             throw new RuntimeException("Invalid metadata!");
         }
 
-        IIOMetadataNode adobeTransform = getChildNode(markerSequence, "app14Adobe");
+        IIOMetadataNode adobeTransform = getChildNode(markerSequence,
+                "app14Adobe");
         if (adobeTransform == null) {
             adobeTransform = new IIOMetadataNode("app14Adobe");
-            adobeTransform.setAttribute("transform" , "1"); // convert RGB to YCbCr
+            adobeTransform.setAttribute("transform", "1"); // convert RGB to
+                                                           // YCbCr
             adobeTransform.setAttribute("version", "101");
             adobeTransform.setAttribute("flags0", "0");
             adobeTransform.setAttribute("flags1", "0");
 
             markerSequence.appendChild(adobeTransform);
         } else {
-            adobeTransform.setAttribute("transform" , "1");
+            adobeTransform.setAttribute("transform", "1");
         }
 
         try {
             meta.setFromTree(JPEG_NATIVE_FORMAT, root);
-        } catch (IIOInvalidTreeException e) {
+        } catch (final IIOInvalidTreeException e) {
             throw new RuntimeException("Cannot update image metadata: "
-                        + e.getMessage(), e);
+                    + e.getMessage(), e);
         }
         return meta;
     }
 
     /**
-     * @see ImageIOImageWriter#getDefaultWriteParam(javax.imageio.ImageWriter, java.awt.image.RenderedImage, ImageWriterParams)
+     * @see ImageIOImageWriter#getDefaultWriteParam(javax.imageio.ImageWriter,
+     *      java.awt.image.RenderedImage, ImageWriterParams)
      */
-    protected ImageWriteParam getDefaultWriteParam(
-            ImageWriter iiowriter, RenderedImage image,
-            ImageWriterParams params) {
-        JPEGImageWriteParam param = new JPEGImageWriteParam(iiowriter.getLocale());
-        //ImageTypeSpecifier type = ImageTypeSpecifier.createFromRenderedImage(image);
+    @Override
+    protected ImageWriteParam getDefaultWriteParam(final ImageWriter iiowriter,
+            final RenderedImage image, final ImageWriterParams params) {
+        final JPEGImageWriteParam param = new JPEGImageWriteParam(
+                iiowriter.getLocale());
+        // ImageTypeSpecifier type =
+        // ImageTypeSpecifier.createFromRenderedImage(image);
         /*
-        ImageTypeSpecifier type = new ImageTypeSpecifier(
-                image.getColorModel(), image.getSampleModel());
-                */
-        /* didn't work as expected...
-        ImageTypeSpecifier type = ImageTypeSpecifier.createFromBufferedImageType(
-                BufferedImage.TYPE_INT_RGB);
-        param.setDestinationType(type);
-        param.setSourceBands(new int[] {0, 1, 2});
-        */
+         * ImageTypeSpecifier type = new ImageTypeSpecifier(
+         * image.getColorModel(), image.getSampleModel());
+         */
+        /*
+         * didn't work as expected... ImageTypeSpecifier type =
+         * ImageTypeSpecifier.createFromBufferedImageType(
+         * BufferedImage.TYPE_INT_RGB); param.setDestinationType(type);
+         * param.setSourceBands(new int[] {0, 1, 2});
+         */
         return param;
     }
-
 
 }

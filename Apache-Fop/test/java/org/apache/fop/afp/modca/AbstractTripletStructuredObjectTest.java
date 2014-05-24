@@ -42,7 +42,7 @@ import static org.junit.Assert.assertTrue;
  * Test {@link AbstractTripletStructuredObject}
  */
 public class AbstractTripletStructuredObjectTest extends
-        AbstractStructuredObjectTest<AbstractTripletStructuredObject> {
+AbstractStructuredObjectTest<AbstractTripletStructuredObject> {
 
     private static final List<AbstractTriplet> TRIPLETS;
 

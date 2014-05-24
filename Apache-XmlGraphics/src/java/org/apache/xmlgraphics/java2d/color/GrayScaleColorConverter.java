@@ -46,14 +46,13 @@ public final class GrayScaleColorConverter implements ColorConverter {
     }
 
     /**
-     * The color is converted to CMYK with just the K component.
-     * {@inheritDoc}
+     * The color is converted to CMYK with just the K component. {@inheritDoc}
      */
-    public Color convert(Color color) {
+    @Override
+    public Color convert(final Color color) {
 
-        float kValue = (RED_WEIGHT * color.getRed()
-                + GREEN_WEIGTH * color.getGreen()
-                + BLUE_WEIGHT * color.getBlue()) / 255.0f / 255.0f;
+        final float kValue = (RED_WEIGHT * color.getRed() + GREEN_WEIGTH
+                * color.getGreen() + BLUE_WEIGHT * color.getBlue()) / 255.0f / 255.0f;
 
         return ColorUtil.toCMYKGrayColor(kValue);
     }

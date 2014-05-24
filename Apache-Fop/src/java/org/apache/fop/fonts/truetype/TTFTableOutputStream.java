@@ -29,9 +29,13 @@ public interface TTFTableOutputStream {
     /**
      * Streams a table from the given byte array.
      *
-     * @param ttfData the source of the table to stream from
-     * @param offset the position in the byte array where the table starts
-     * @param size the size of the table in bytes
+     * @param ttfData
+     *            the source of the table to stream from
+     * @param offset
+     *            the position in the byte array where the table starts
+     * @param size
+     *            the size of the table in bytes
      */
-    void streamTable(byte[] ttfData, int offset, int size) throws IOException;
+    void streamTable(final byte[] ttfData, final int offset, final int size)
+            throws IOException;
 }

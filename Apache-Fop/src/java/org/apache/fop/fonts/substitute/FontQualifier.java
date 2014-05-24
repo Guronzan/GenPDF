@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.fonts.Font;
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.fonts.FontTriplet;
@@ -34,10 +34,8 @@ import org.apache.fop.fonts.FontUtil;
 /**
  * Encapsulates a font substitution qualifier
  */
+@Slf4j
 public class FontQualifier {
-
-    /** logger instance */
-    private static Log log = LogFactory.getLog(FontQualifier.class);
 
     /** font family attribute value */
     private AttributeValue fontFamilyAttributeValue = null;

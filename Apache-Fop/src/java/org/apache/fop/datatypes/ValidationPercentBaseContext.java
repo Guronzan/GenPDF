@@ -22,12 +22,14 @@ package org.apache.fop.datatypes;
 import org.apache.fop.fo.FObj;
 
 /**
- * This base context is used during validation when the actual base values are still unknown
- * but should still already be checked. The actual value returned is not so important in this
- * case. But it's important that zero and non-zero values can be distinguished.
+ * This base context is used during validation when the actual base values are
+ * still unknown but should still already be checked. The actual value returned
+ * is not so important in this case. But it's important that zero and non-zero
+ * values can be distinguished.
  * <p>
- * Example: A table with collapsing border model has no padding. The Table FO should be able
- * to check if non-zero values (even percentages) have been specified.
+ * Example: A table with collapsing border model has no padding. The Table FO
+ * should be able to check if non-zero values (even percentages) have been
+ * specified.
  */
 public final class ValidationPercentBaseContext implements PercentBaseContext {
 
@@ -38,12 +40,13 @@ public final class ValidationPercentBaseContext implements PercentBaseContext {
     }
 
     /**
-     * Returns the value for the given lengthBase.
-     * {@inheritDoc}
+     * Returns the value for the given lengthBase. {@inheritDoc}
      */
-    public int getBaseLength(int lengthBase, FObj fobj) {
-        //Simply return a dummy value which produces a non-zero value when a non-zero percentage
-        //was specified.
+    @Override
+    public int getBaseLength(final int lengthBase, final FObj fobj) {
+        // Simply return a dummy value which produces a non-zero value when a
+        // non-zero percentage
+        // was specified.
         return 100000;
     }
 

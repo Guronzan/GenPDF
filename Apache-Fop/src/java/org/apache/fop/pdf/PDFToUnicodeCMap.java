@@ -23,8 +23,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * Class representing ToUnicode CMaps.
- * Here are some documentation resources:
+ * Class representing ToUnicode CMaps. Here are some documentation resources:
  * <ul>
  * <li>PDF Reference, Second Edition, Section 5.6.4, for general information
  * about CMaps in PDF Files.</li>
@@ -38,55 +37,64 @@ import java.io.Writer;
 public class PDFToUnicodeCMap extends PDFCMap {
 
     /**
-     * The array of Unicode characters ordered by character code
-     * (maps from character code to Unicode code point).
+     * The array of Unicode characters ordered by character code (maps from
+     * character code to Unicode code point).
      */
     protected char[] unicodeCharMap;
 
-    private boolean singleByte;
+    private final boolean singleByte;
 
     /**
      * Constructor.
      *
-     * @param unicodeCharMap An array of Unicode characters ordered by character code
-     *                          (maps from character code to Unicode code point)
-     * @param name One of the registered names found in Table 5.14 in PDF
-     * Reference, Second Edition.
-     * @param sysInfo The attributes of the character collection of the CIDFont.
-     * @param singleByte true for single-byte, false for double-byte
+     * @param unicodeCharMap
+     *            An array of Unicode characters ordered by character code (maps
+     *            from character code to Unicode code point)
+     * @param name
+     *            One of the registered names found in Table 5.14 in PDF
+     *            Reference, Second Edition.
+     * @param sysInfo
+     *            The attributes of the character collection of the CIDFont.
+     * @param singleByte
+     *            true for single-byte, false for double-byte
      */
-    public PDFToUnicodeCMap(char[] unicodeCharMap, String name, PDFCIDSystemInfo sysInfo,
-            boolean singleByte) {
+    public PDFToUnicodeCMap(final char[] unicodeCharMap, final String name,
+            final PDFCIDSystemInfo sysInfo, final boolean singleByte) {
         super(name, sysInfo);
         if (singleByte && unicodeCharMap.length > 256) {
-            throw new IllegalArgumentException("unicodeCharMap may not contain more than"
-                    + " 256 characters for single-byte encodings");
+            throw new IllegalArgumentException(
+                    "unicodeCharMap may not contain more than"
+                            + " 256 characters for single-byte encodings");
         }
         this.unicodeCharMap = unicodeCharMap;
         this.singleByte = singleByte;
     }
 
     /** {@inheritDoc} */
-    protected CMapBuilder createCMapBuilder(Writer writer) {
+    @Override
+    protected CMapBuilder createCMapBuilder(final Writer writer) {
         return new ToUnicodeCMapBuilder(writer);
     }
 
     class ToUnicodeCMapBuilder extends CMapBuilder {
 
-        public ToUnicodeCMapBuilder(Writer writer) {
+        public ToUnicodeCMapBuilder(final Writer writer) {
             super(writer, null);
         }
 
         /**
          * Writes the CMap to a Writer.
-         * @throws IOException if an I/O error occurs
+         * 
+         * @throws IOException
+         *             if an I/O error occurs
          */
+        @Override
         public void writeCMap() throws IOException {
             writeCIDInit();
             writeCIDSystemInfo("Adobe", "UCS", 0);
             writeName("Adobe-Identity-UCS");
             writeType("2");
-            writeCodeSpaceRange(singleByte);
+            writeCodeSpaceRange(PDFToUnicodeCMap.this.singleByte);
             writeBFEntries();
             writeWrapUp();
         }
@@ -94,20 +102,24 @@ public class PDFToUnicodeCMap extends PDFCMap {
         /**
          * Writes the character mappings for this font.
          */
+        @Override
         protected void writeBFEntries() throws IOException {
-            if (unicodeCharMap != null) {
-                writeBFCharEntries(unicodeCharMap);
-                writeBFRangeEntries(unicodeCharMap);
+            if (PDFToUnicodeCMap.this.unicodeCharMap != null) {
+                writeBFCharEntries(PDFToUnicodeCMap.this.unicodeCharMap);
+                writeBFRangeEntries(PDFToUnicodeCMap.this.unicodeCharMap);
             }
         }
 
         /**
-         * Writes the entries for single characters of a base font (only characters which cannot be
-         * expressed as part of a character range).
-         * @param charArray all the characters to map
+         * Writes the entries for single characters of a base font (only
+         * characters which cannot be expressed as part of a character range).
+         * 
+         * @param charArray
+         *            all the characters to map
          * @throws IOException
          */
-        protected void writeBFCharEntries(char[] charArray) throws IOException {
+        protected void writeBFCharEntries(final char[] charArray)
+                throws IOException {
             int totalEntries = 0;
             for (int i = 0; i < charArray.length; i++) {
                 if (!partOfRange(charArray, i)) {
@@ -121,33 +133,39 @@ public class PDFToUnicodeCMap extends PDFCMap {
             int charIndex = 0;
             do {
                 /* Limited to 100 entries in each section */
-                int entriesThisSection = Math.min(remainingEntries, 100);
-                writer.write(entriesThisSection + " beginbfchar\n");
+                final int entriesThisSection = Math.min(remainingEntries, 100);
+                this.writer.write(entriesThisSection + " beginbfchar\n");
                 for (int i = 0; i < entriesThisSection; i++) {
                     /* Go to the next char not in a range */
                     while (partOfRange(charArray, charIndex)) {
                         charIndex++;
                     }
-                    writer.write("<" + padCharIndex(charIndex) + "> ");
-                    writer.write("<" + padHexString(Integer.toHexString(charArray[charIndex]), 4)
-                            + ">\n");
+                    this.writer.write("<" + padCharIndex(charIndex) + "> ");
+                    this.writer.write("<"
+                            + padHexString(
+                                    Integer.toHexString(charArray[charIndex]),
+                                    4) + ">\n");
                     charIndex++;
                 }
                 remainingEntries -= entriesThisSection;
-                writer.write("endbfchar\n");
+                this.writer.write("endbfchar\n");
             } while (remainingEntries > 0);
         }
 
-        private String padCharIndex(int charIndex) {
-            return padHexString(Integer.toHexString(charIndex), (singleByte ? 2 : 4));
+        private String padCharIndex(final int charIndex) {
+            return padHexString(Integer.toHexString(charIndex),
+                    PDFToUnicodeCMap.this.singleByte ? 2 : 4);
         }
 
         /**
          * Writes the entries for character ranges for a base font.
-         * @param charArray all the characters to map
+         * 
+         * @param charArray
+         *            all the characters to map
          * @throws IOException
          */
-        protected void writeBFRangeEntries(char[] charArray) throws IOException {
+        protected void writeBFRangeEntries(final char[] charArray)
+                throws IOException {
             int totalEntries = 0;
             for (int i = 0; i < charArray.length; i++) {
                 if (startOfRange(charArray, i)) {
@@ -161,49 +179,58 @@ public class PDFToUnicodeCMap extends PDFCMap {
             int charIndex = 0;
             do {
                 /* Limited to 100 entries in each section */
-                int entriesThisSection = Math.min(remainingEntries, 100);
-                writer.write(entriesThisSection + " beginbfrange\n");
+                final int entriesThisSection = Math.min(remainingEntries, 100);
+                this.writer.write(entriesThisSection + " beginbfrange\n");
                 for (int i = 0; i < entriesThisSection; i++) {
                     /* Go to the next start of a range */
                     while (!startOfRange(charArray, charIndex)) {
                         charIndex++;
                     }
-                    writer.write("<" + padCharIndex(charIndex) + "> ");
-                    writer.write("<"
+                    this.writer.write("<" + padCharIndex(charIndex) + "> ");
+                    this.writer.write("<"
                             + padCharIndex(endOfRange(charArray, charIndex))
                             + "> ");
-                    writer.write("<" + padHexString(Integer.toHexString(charArray[charIndex]), 4)
-                            + ">\n");
+                    this.writer.write("<"
+                            + padHexString(
+                                    Integer.toHexString(charArray[charIndex]),
+                                    4) + ">\n");
                     charIndex++;
                 }
                 remainingEntries -= entriesThisSection;
-                writer.write("endbfrange\n");
+                this.writer.write("endbfrange\n");
             } while (remainingEntries > 0);
         }
 
         /**
          * Find the end of the current range.
-         * @param charArray The array which is being tested.
-         * @param startOfRange The index to the array element that is the start of
-         * the range.
+         * 
+         * @param charArray
+         *            The array which is being tested.
+         * @param startOfRange
+         *            The index to the array element that is the start of the
+         *            range.
          * @return The index to the element that is the end of the range.
          */
-        private int endOfRange(char[] charArray, int startOfRange) {
+        private int endOfRange(final char[] charArray, final int startOfRange) {
             int i = startOfRange;
-            while (i < charArray.length - 1 && sameRangeEntryAsNext(charArray, i)) {
+            while (i < charArray.length - 1
+                    && sameRangeEntryAsNext(charArray, i)) {
                 i++;
             }
             return i;
         }
 
         /**
-         * Determine whether this array element should be part of a bfchar entry or
-         * a bfrange entry.
-         * @param charArray The array to be tested.
-         * @param arrayIndex The index to the array element to be tested.
+         * Determine whether this array element should be part of a bfchar entry
+         * or a bfrange entry.
+         * 
+         * @param charArray
+         *            The array to be tested.
+         * @param arrayIndex
+         *            The index to the array element to be tested.
          * @return True if this array element should be included in a range.
          */
-        private boolean partOfRange(char[] charArray, int arrayIndex) {
+        private boolean partOfRange(final char[] charArray, final int arrayIndex) {
             if (charArray.length < 2) {
                 return false;
             }
@@ -224,14 +251,19 @@ public class PDFToUnicodeCMap extends PDFCMap {
 
         /**
          * Determine whether two bytes can be written in the same bfrange entry.
-         * @param charArray The array to be tested.
-         * @param firstItem The first of the two items in the array to be tested.
-         * The second item is firstItem + 1.
+         * 
+         * @param charArray
+         *            The array to be tested.
+         * @param firstItem
+         *            The first of the two items in the array to be tested. The
+         *            second item is firstItem + 1.
          * @return True if both 1) the next item in the array is sequential with
-         * this one, and 2) the first byte of the character in the first position
-         * is equal to the first byte of the character in the second position.
+         *         this one, and 2) the first byte of the character in the first
+         *         position is equal to the first byte of the character in the
+         *         second position.
          */
-        private boolean sameRangeEntryAsNext(char[] charArray, int firstItem) {
+        private boolean sameRangeEntryAsNext(final char[] charArray,
+                final int firstItem) {
             if (charArray[firstItem] + 1 != charArray[firstItem + 1]) {
                 return false;
             }
@@ -244,11 +276,15 @@ public class PDFToUnicodeCMap extends PDFCMap {
         /**
          * Determine whether this array element should be the start of a bfrange
          * entry.
-         * @param charArray The array to be tested.
-         * @param arrayIndex The index to the array element to be tested.
+         * 
+         * @param charArray
+         *            The array to be tested.
+         * @param arrayIndex
+         *            The index to the array element to be tested.
          * @return True if this array element is the beginning of a range.
          */
-        private boolean startOfRange(char[] charArray, int arrayIndex) {
+        private boolean startOfRange(final char[] charArray,
+                final int arrayIndex) {
             // Can't be the start of a range if not part of a range.
             if (!partOfRange(charArray, arrayIndex)) {
                 return false;
@@ -273,18 +309,21 @@ public class PDFToUnicodeCMap extends PDFCMap {
         }
 
         /**
-         * Prepends the input string with a sufficient number of "0" characters to
-         * get the returned string to be numChars length.
-         * @param input The input string.
-         * @param numChars The minimum characters in the output string.
+         * Prepends the input string with a sufficient number of "0" characters
+         * to get the returned string to be numChars length.
+         * 
+         * @param input
+         *            The input string.
+         * @param numChars
+         *            The minimum characters in the output string.
          * @return The padded string.
          */
-        private String padHexString(String input, int numChars) {
-            int length = input.length();
+        private String padHexString(final String input, final int numChars) {
+            final int length = input.length();
             if (length >= numChars) {
                 return input;
             }
-            StringBuffer returnString = new StringBuffer();
+            final StringBuffer returnString = new StringBuffer();
             for (int i = 1; i <= numChars - length; i++) {
                 returnString.append("0");
             }

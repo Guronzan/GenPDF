@@ -32,41 +32,48 @@ import org.apache.xmlgraphics.image.loader.ImageSize;
  */
 public abstract class AbstractImage implements Image {
 
-    private ImageInfo info;
+    private final ImageInfo info;
 
     /**
      * Main constructor
-     * @param info the image info object associated with this image
+     * 
+     * @param info
+     *            the image info object associated with this image
      */
-    public AbstractImage(ImageInfo info) {
+    public AbstractImage(final ImageInfo info) {
         this.info = info;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageInfo getInfo() {
         return this.info;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageSize getSize() {
         return getInfo().getSize();
     }
 
     /** {@inheritDoc} */
+    @Override
     public ColorSpace getColorSpace() {
         return null;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ICC_Profile getICCProfile() {
         if (getColorSpace() instanceof ICC_ColorSpace) {
-            return ((ICC_ColorSpace)getColorSpace()).getProfile();
+            return ((ICC_ColorSpace) getColorSpace()).getProfile();
         } else {
             return null;
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return getClass().getName() + ": " + getInfo();
     }

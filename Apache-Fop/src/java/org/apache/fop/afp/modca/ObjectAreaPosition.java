@@ -26,14 +26,14 @@ import org.apache.fop.afp.util.BinaryUtils;
 
 /**
  * The Object Area Position structured field specifies the origin and
- * orientation of the object area, and the origin and orientation of the
- * object content within the object area.
+ * orientation of the object area, and the origin and orientation of the object
+ * content within the object area.
  */
 public class ObjectAreaPosition extends AbstractAFPObject {
 
     /**
-     * Object areas will be positioned with respect to a point that is define by the
-     * Include Page Segment (IPS) structured field.
+     * Object areas will be positioned with respect to a point that is define by
+     * the Include Page Segment (IPS) structured field.
      */
     public static final byte REFCSYS_PAGE_SEGMENT_RELATIVE = 0x00;
     /** Object areas will be positioned with respect to the standard origin */
@@ -44,28 +44,36 @@ public class ObjectAreaPosition extends AbstractAFPObject {
     private final int rotation;
     private int xOffset;
     private int yOffset;
-    private byte refCSys = 0x01; //Page or overlay coordinate system
+    private byte refCSys = 0x01; // Page or overlay coordinate system
 
     /**
      * Construct an object area position for the specified object y, y position.
      *
-     * @param x The x coordinate.
-     * @param y The y coordinate.
-     * @param rotation The coordinate system rotation (must be 0, 90, 180, 270).
+     * @param x
+     *            The x coordinate.
+     * @param y
+     *            The y coordinate.
+     * @param rotation
+     *            The coordinate system rotation (must be 0, 90, 180, 270).
      */
-    public ObjectAreaPosition(int x, int y, int rotation) {
+    public ObjectAreaPosition(final int x, final int y, final int rotation) {
         this(x, y, rotation, REFCSYS_PAGE_RELATIVE);
     }
 
     /**
      * Construct an object area position for the specified object y, y position.
      *
-     * @param x The x coordinate.
-     * @param y The y coordinate.
-     * @param rotation The coordinate system rotation (must be 0, 90, 180, 270).
-     * @param refCSys the reference coordinate system (normally 0x01)
+     * @param x
+     *            The x coordinate.
+     * @param y
+     *            The y coordinate.
+     * @param rotation
+     *            The coordinate system rotation (must be 0, 90, 180, 270).
+     * @param refCSys
+     *            the reference coordinate system (normally 0x01)
      */
-    public ObjectAreaPosition(int x, int y, int rotation, byte refCSys) {
+    public ObjectAreaPosition(final int x, final int y, final int rotation,
+            final byte refCSys) {
         this.x = x;
         this.y = y;
         this.rotation = rotation;
@@ -74,46 +82,49 @@ public class ObjectAreaPosition extends AbstractAFPObject {
 
     /**
      * Sets the reference coordinate system.
-     * @param refCSys the reference coordinate system (normally 0x01)
+     * 
+     * @param refCSys
+     *            the reference coordinate system (normally 0x01)
      */
-    public void setReferenceCoordinateSystem(byte refCSys) {
+    public void setReferenceCoordinateSystem(final byte refCSys) {
         this.refCSys = refCSys;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[33];
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[33];
         copySF(data, Type.POSITION, Category.OBJECT_AREA);
 
-        byte[] len = BinaryUtils.convert(32, 2);
+        final byte[] len = BinaryUtils.convert(32, 2);
         data[1] = len[0]; // Length
         data[2] = len[1];
 
         data[9] = 0x01; // OAPosID = 1
         data[10] = 0x17; // RGLength = 23
 
-        byte[] xcoord = BinaryUtils.convert(x, 3);
+        final byte[] xcoord = BinaryUtils.convert(this.x, 3);
         data[11] = xcoord[0]; // XoaOSet
         data[12] = xcoord[1];
         data[13] = xcoord[2];
 
-        byte[] ycoord = BinaryUtils.convert(y, 3);
+        final byte[] ycoord = BinaryUtils.convert(this.y, 3);
         data[14] = ycoord[0]; // YoaOSet
         data[15] = ycoord[1];
         data[16] = ycoord[2];
 
-        byte xorient = (byte)(rotation / 2);
+        final byte xorient = (byte) (this.rotation / 2);
         data[17] = xorient; // XoaOrent
 
-        byte yorient = (byte)(rotation / 2 + 45);
+        final byte yorient = (byte) (this.rotation / 2 + 45);
         data[19] = yorient; // YoaOrent
 
-        byte[] xoffset = BinaryUtils.convert(xOffset, 3);
+        final byte[] xoffset = BinaryUtils.convert(this.xOffset, 3);
         data[22] = xoffset[0]; // XocaOSet
         data[23] = xoffset[1];
         data[24] = xoffset[2];
 
-        byte[] yoffset = BinaryUtils.convert(yOffset, 3);
+        final byte[] yoffset = BinaryUtils.convert(this.yOffset, 3);
         data[25] = yoffset[0]; // YocaOSet
         data[26] = yoffset[1];
         data[27] = yoffset[2];
@@ -130,13 +141,10 @@ public class ObjectAreaPosition extends AbstractAFPObject {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "ObjectAreaPosition{"
-            + "x=" + x
-            + ", y=" + y
-            + ", rotation=" + rotation
-            + ", rotation=" + rotation
-            + ", xOffset=" + xOffset
-            + ", yOffset=" + yOffset;
+        return "ObjectAreaPosition{" + "x=" + this.x + ", y=" + this.y
+                + ", rotation=" + this.rotation + ", rotation=" + this.rotation
+                + ", xOffset=" + this.xOffset + ", yOffset=" + this.yOffset;
     }
 }

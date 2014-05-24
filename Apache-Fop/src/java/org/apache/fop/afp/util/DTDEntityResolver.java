@@ -99,7 +99,7 @@ public class DTDEntityResolver implements EntityResolver {
 
     /**
      * Returns the URL of a resource on the classpath
-     * 
+     *
      * @param resourcePath
      *            the path to the resource relative to the root of the
      *            classpath.

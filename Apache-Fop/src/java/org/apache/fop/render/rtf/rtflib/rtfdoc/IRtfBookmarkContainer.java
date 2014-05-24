@@ -29,18 +29,24 @@ package org.apache.fop.render.rtf.rtflib.rtfdoc;
 import java.io.IOException;
 
 /**
- * <p>RTF Bookmark container interface.</p>
+ * <p>
+ * RTF Bookmark container interface.
+ * </p>
  *
- * <p>This work was authored by Andreas Putz (a.putz@skynamics.com).</p>
+ * <p>
+ * This work was authored by Andreas Putz (a.putz@skynamics.com).
+ * </p>
  */
 public interface IRtfBookmarkContainer {
 
     /**
      * Create a new RTF bookmark.
-     * @param bookmark Name of the bookmark
+     * 
+     * @param bookmark
+     *            Name of the bookmark
      * @return RTF bookmark
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    RtfBookmark newBookmark (String bookmark) throws IOException;
+    RtfBookmark newBookmark(final String bookmark) throws IOException;
 }
-

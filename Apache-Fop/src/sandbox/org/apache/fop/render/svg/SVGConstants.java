@@ -19,10 +19,9 @@
 
 package org.apache.fop.render.svg;
 
-import org.apache.xmlgraphics.util.QName;
-
 import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.util.XMLConstants;
+import org.apache.xmlgraphics.util.QName;
 
 /**
  * Constants for the intermediate format.

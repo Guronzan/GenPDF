@@ -37,13 +37,16 @@ public class DSCCommentPageHiResBoundingBox extends DSCCommentHiResBoundingBox {
 
     /**
      * Creates a new instance.
-     * @param bbox the bounding box
+     * 
+     * @param bbox
+     *            the bounding box
      */
-    public DSCCommentPageHiResBoundingBox(Rectangle2D bbox) {
+    public DSCCommentPageHiResBoundingBox(final Rectangle2D bbox) {
         super(bbox);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return DSCConstants.PAGE_HIRES_BBOX;
     }

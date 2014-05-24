@@ -27,38 +27,42 @@ import java.util.NoSuchElementException;
 public class OneCharIterator extends CharIterator {
 
     private boolean bFirst = true;
-    private char charCode;
+    private final char charCode;
 
     /**
      * Constructor
-     * @param c the character that this iterator should iterate.
+     * 
+     * @param c
+     *            the character that this iterator should iterate.
      */
-    public OneCharIterator(char c) {
+    public OneCharIterator(final char c) {
         this.charCode = c;
     }
 
     /**
      * @return true if there is another element in the collection over which to
-     * iterate (since this iterator only handles one character, this will return
-     * false if it is past that character).
+     *         iterate (since this iterator only handles one character, this
+     *         will return false if it is past that character).
      */
+    @Override
     public boolean hasNext() {
-        return bFirst;
+        return this.bFirst;
     }
 
     /**
      * @return the next character, if there is one (since there is only one
-     * character over which to iterate, it must be the first character).
-     * @throws NoSuchElementException if past the first character
+     *         character over which to iterate, it must be the first character).
+     * @throws NoSuchElementException
+     *             if past the first character
      */
+    @Override
     public char nextChar() throws NoSuchElementException {
-        if (bFirst) {
-            bFirst = false;
-            return charCode;
+        if (this.bFirst) {
+            this.bFirst = false;
+            return this.charCode;
         } else {
             throw new NoSuchElementException();
         }
     }
 
 }
-

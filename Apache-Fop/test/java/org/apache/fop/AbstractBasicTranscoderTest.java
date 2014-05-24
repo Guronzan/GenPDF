@@ -19,8 +19,6 @@
 
 package org.apache.fop;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.InputStream;
 
@@ -30,14 +28,17 @@ import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Test;
 
+import static org.junit.Assert.assertTrue;
+
 /**
- * Basic runtime test for FOP's transcoders. It is used to verify that
- * nothing obvious is broken after compiling.
+ * Basic runtime test for FOP's transcoders. It is used to verify that nothing
+ * obvious is broken after compiling.
  */
 public abstract class AbstractBasicTranscoderTest extends AbstractFOPTest {
 
     /**
      * Creates the transcoder to test.
+     * 
      * @return the newly instantiated transcoder
      */
     protected abstract Transcoder createTranscoder();
@@ -45,25 +46,28 @@ public abstract class AbstractBasicTranscoderTest extends AbstractFOPTest {
     /**
      * Runs the PDF transcoder as if it were called by Batik's rasterizer.
      * Without special configuration stuff.
-     * @throws Exception if a problem occurs
+     * 
+     * @throws Exception
+     *             if a problem occurs
      */
     @Test
     public void testGenericPDFTranscoder() throws Exception {
-        //Create transcoder
-        Transcoder transcoder = createTranscoder();
+        // Create transcoder
+        final Transcoder transcoder = createTranscoder();
 
-        //Setup input
-        File svgFile = new File(getBaseDir(), "test/resources/fop/svg/text.svg");
-        InputStream in = new java.io.FileInputStream(svgFile);
+        // Setup input
+        final File svgFile = new File(getBaseDir(),
+                "test/resources/fop/svg/text.svg");
+        final InputStream in = new java.io.FileInputStream(svgFile);
         try {
-            TranscoderInput input = new TranscoderInput(in);
+            final TranscoderInput input = new TranscoderInput(in);
 
-            //Setup output
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            // Setup output
+            final ByteArrayOutputStream out = new ByteArrayOutputStream();
             try {
-                TranscoderOutput output = new TranscoderOutput(out);
+                final TranscoderOutput output = new TranscoderOutput(out);
 
-                //Do the transformation
+                // Do the transformation
                 transcoder.transcode(input, output);
             } finally {
                 out.close();

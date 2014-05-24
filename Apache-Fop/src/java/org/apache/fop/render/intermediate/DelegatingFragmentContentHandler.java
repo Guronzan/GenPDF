@@ -19,6 +19,7 @@
 
 package org.apache.fop.render.intermediate;
 
+import org.apache.fop.util.DelegatingContentHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
@@ -26,43 +27,45 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 
-import org.apache.fop.util.DelegatingContentHandler;
-
 /**
  * This class is a {@link DelegatingContentHandler} subclass which swallows the
- * {@link #startDocument()} and {@link #endDocument()} methods. This is useful for handling
- * XML fragments.
+ * {@link #startDocument()} and {@link #endDocument()} methods. This is useful
+ * for handling XML fragments.
  */
 public class DelegatingFragmentContentHandler extends DelegatingContentHandler {
 
     /**
      * Main constructor
-     * @param delegate the content handler to delegate the SAX events to
+     * 
+     * @param delegate
+     *            the content handler to delegate the SAX events to
      */
-    public DelegatingFragmentContentHandler(ContentHandler delegate) {
+    public DelegatingFragmentContentHandler(final ContentHandler delegate) {
         setDelegateContentHandler(delegate);
         if (delegate instanceof LexicalHandler) {
-            setDelegateLexicalHandler((LexicalHandler)delegate);
+            setDelegateLexicalHandler((LexicalHandler) delegate);
         }
         if (delegate instanceof DTDHandler) {
-            setDelegateDTDHandler((DTDHandler)delegate);
+            setDelegateDTDHandler((DTDHandler) delegate);
         }
         if (delegate instanceof EntityResolver) {
-            setDelegateEntityResolver((EntityResolver)delegate);
+            setDelegateEntityResolver((EntityResolver) delegate);
         }
         if (delegate instanceof ErrorHandler) {
-            setDelegateErrorHandler((ErrorHandler)delegate);
+            setDelegateErrorHandler((ErrorHandler) delegate);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startDocument() throws SAXException {
-        //nop/ignore
+        // nop/ignore
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endDocument() throws SAXException {
-        //nop/ignore
+        // nop/ignore
     }
 
 }

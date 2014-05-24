@@ -110,35 +110,35 @@ public interface Triplet extends Streamable, StructuredData {
     /** FONT_FIDELITY triplet identifier */
     byte FONT_FIDELITY = 0x78;
     /** ATTRIBUTE_QUALIFIER triplet identifier */
-    byte ATTRIBUTE_QUALIFIER = (byte)0x80;
+    byte ATTRIBUTE_QUALIFIER = (byte) 0x80;
     /** PAGE_POSITION_INFORMATION triplet identifier */
-    byte PAGE_POSITION_INFORMATION = (byte)0x81;
+    byte PAGE_POSITION_INFORMATION = (byte) 0x81;
     /** PARAMETER_VALUE triplet identifier */
-    byte PARAMETER_VALUE = (byte)0x82;
+    byte PARAMETER_VALUE = (byte) 0x82;
     /** PRESENTATION_CONTROL triplet identifier */
-    byte PRESENTATION_CONTROL = (byte)0x83;
+    byte PRESENTATION_CONTROL = (byte) 0x83;
     /** FONT_RESOLUTION_AND_METRIC_TECHNOLOGY triplet identifier */
-    byte FONT_RESOLUTION_AND_METRIC_TECHNOLOGY = (byte)0x84;
+    byte FONT_RESOLUTION_AND_METRIC_TECHNOLOGY = (byte) 0x84;
     /** FINISHING_OPERATION triplet identifier */
-    byte FINISHING_OPERATION = (byte)0x85;
+    byte FINISHING_OPERATION = (byte) 0x85;
     /** TEXT_FIDELITY triplet identifier */
-    byte TEXT_FIDELITY = (byte)0x86;
+    byte TEXT_FIDELITY = (byte) 0x86;
     /** MEDIA_FIDELITY triplet identifier */
-    byte MEDIA_FIDELITY = (byte)0x87;
+    byte MEDIA_FIDELITY = (byte) 0x87;
     /** FINISHING_FIDELITY triplet identifier */
-    byte FINISHING_FIDELITY = (byte)0x88;
+    byte FINISHING_FIDELITY = (byte) 0x88;
     /** DATA_OBJECT_FONT_DESCRIPTOR triplet identifier */
-    byte DATA_OBJECT_FONT_DESCRIPTOR = (byte)0x8B;
+    byte DATA_OBJECT_FONT_DESCRIPTOR = (byte) 0x8B;
     /** LOCALE_SELECTOR triplet identifier */
-    byte LOCALE_SELECTOR = (byte)0x8C;
+    byte LOCALE_SELECTOR = (byte) 0x8C;
     /** UP3I_FINISHING_OPERATION triplet identifier */
-    byte UP3I_FINISHING_OPERATION = (byte)0x8E;
+    byte UP3I_FINISHING_OPERATION = (byte) 0x8E;
     /** COLOR_MANAGEMENT_RESOURCE_DESCRIPTOR triplet identifier */
-    byte COLOR_MANAGEMENT_RESOURCE_DESCRIPTOR = (byte)0x91;
+    byte COLOR_MANAGEMENT_RESOURCE_DESCRIPTOR = (byte) 0x91;
     /** RENDERING_INTENT triplet identifier */
-    byte RENDERING_INTENT = (byte)0x95;
+    byte RENDERING_INTENT = (byte) 0x95;
     /** CMR_TAG_FIDELITY triplet identifier */
-    byte CMR_TAG_FIDELITY = (byte)0x96;
+    byte CMR_TAG_FIDELITY = (byte) 0x96;
     /** DEVICE_APPEARANCE triplet identifier */
-    byte DEVICE_APPEARANCE = (byte)0x97;
+    byte DEVICE_APPEARANCE = (byte) 0x97;
 }

@@ -30,28 +30,35 @@ import org.apache.fop.render.AbstractRenderingContext;
  */
 public class Java2DRenderingContext extends AbstractRenderingContext {
 
-    private FontInfo fontInfo;
-    private Graphics2D g2d;
+    private final FontInfo fontInfo;
+    private final Graphics2D g2d;
 
     /**
      * Main constructor.
-     * @param userAgent the user agent
-     * @param g2d the target Graphics2D instance
-     * @param fontInfo the font list
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param g2d
+     *            the target Graphics2D instance
+     * @param fontInfo
+     *            the font list
      */
-    public Java2DRenderingContext(FOUserAgent userAgent, Graphics2D g2d, FontInfo fontInfo) {
+    public Java2DRenderingContext(final FOUserAgent userAgent,
+            final Graphics2D g2d, final FontInfo fontInfo) {
         super(userAgent);
         this.g2d = g2d;
         this.fontInfo = fontInfo;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
-        return null; //not applicable
+        return null; // not applicable
     }
 
     /**
      * Returns the target Graphics2D object.
+     * 
      * @return the Graphics2D object
      */
     public Graphics2D getGraphics2D() {

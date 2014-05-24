@@ -26,13 +26,13 @@ package org.apache.fop.render.rtf.rtflib.rtfdoc;
 public class RtfSpaceSplitter {
 
     /** Common attributes for all text. */
-    private RtfAttributes commonAttributes;
+    private final RtfAttributes commonAttributes;
 
     /** Space-before attributes of a block. */
-    private int spaceBefore;
+    private final int spaceBefore;
 
     /** Space-after attributes of a block. */
-    private int spaceAfter;
+    private final int spaceAfter;
 
     /** Indicate that we can update candidate for space-before. */
     private boolean updatingSpaceBefore;
@@ -46,54 +46,58 @@ public class RtfSpaceSplitter {
     /**
      * Create RtfSpaceSplitter with given RtfAttributes.
      *
-     * @param attrs  RtfAttributes for splitting
-     * @param previousSpace  integer, representing accumulated spacing
+     * @param attrs
+     *            RtfAttributes for splitting
+     * @param previousSpace
+     *            integer, representing accumulated spacing
      */
-    public RtfSpaceSplitter(RtfAttributes attrs, int previousSpace) {
-        commonAttributes = attrs;
-        updatingSpaceBefore = true;
-        spaceBeforeCandidate = null;
-        spaceAfterCandidate = null;
+    public RtfSpaceSplitter(final RtfAttributes attrs, final int previousSpace) {
+        this.commonAttributes = attrs;
+        this.updatingSpaceBefore = true;
+        this.spaceBeforeCandidate = null;
+        this.spaceAfterCandidate = null;
 
-        spaceBefore = split(RtfText.SPACE_BEFORE) + previousSpace;
-        spaceAfter = split(RtfText.SPACE_AFTER);
+        this.spaceBefore = split(RtfText.SPACE_BEFORE) + previousSpace;
+        this.spaceAfter = split(RtfText.SPACE_AFTER);
     }
 
     /**
      * Remove attributes with name <code>key</code> from
      * <code>commonAttributes</code> and return it as int.
      *
-     * @param key  attributes name to extract
+     * @param key
+     *            attributes name to extract
      * @return integer, representing value of extracted attributes
      */
-    public int split(String key) {
-        Integer i = (Integer) commonAttributes.getValue(key);
+    public int split(final String key) {
+        Integer i = (Integer) this.commonAttributes.getValue(key);
         if (i == null) {
             i = new Integer(0);
         }
 
-        commonAttributes.unset(key);
+        this.commonAttributes.unset(key);
         return i.intValue();
     }
 
     /** @return attributes, applicable to whole block. */
     public RtfAttributes getCommonAttributes() {
-        return commonAttributes;
+        return this.commonAttributes;
     }
 
     /** @return space-before value. */
     public int getSpaceBefore() {
-        return spaceBefore;
+        return this.spaceBefore;
     }
 
     /**
      * Sets a candidate for space-before property.
      *
-     * @param candidate  instance of <code>RtfAttributes</code>, considered as
-     *        a candidate for space-before adding
+     * @param candidate
+     *            instance of <code>RtfAttributes</code>, considered as a
+     *            candidate for space-before adding
      */
-    public void setSpaceBeforeCandidate(RtfAttributes candidate) {
-        if (updatingSpaceBefore) {
+    public void setSpaceBeforeCandidate(final RtfAttributes candidate) {
+        if (this.updatingSpaceBefore) {
             this.spaceBeforeCandidate = candidate;
         }
     }
@@ -101,51 +105,52 @@ public class RtfSpaceSplitter {
     /**
      * Sets a candidate for space-after property.
      *
-     * @param candidate  instance of <code>RtfAttributes</code>, considered as
-     *        a candidate for space-after adding
+     * @param candidate
+     *            instance of <code>RtfAttributes</code>, considered as a
+     *            candidate for space-after adding
      */
-    public void setSpaceAfterCandidate(RtfAttributes candidate) {
+    public void setSpaceAfterCandidate(final RtfAttributes candidate) {
         this.spaceAfterCandidate = candidate;
     }
 
     /** @return true, if candidate for space-before is set. */
     public boolean isBeforeCadidateSet() {
-        return spaceBeforeCandidate != null;
+        return this.spaceBeforeCandidate != null;
     }
 
     /** @return true, if candidate for space-after is set. */
     public boolean isAfterCadidateSet() {
-        return spaceAfterCandidate != null;
+        return this.spaceAfterCandidate != null;
     }
 
     /**
      * Stops updating candidates for space-before attribute.
      */
     public void stopUpdatingSpaceBefore() {
-        updatingSpaceBefore = false;
+        this.updatingSpaceBefore = false;
     }
 
     /**
      * Adds corresponding attributes to their candidates.
      *
      * @return integer, representing value of space-before/space-after
-     *   attributes, that can't be added anywhere (i.e. these attributes
-     *   hasn't their candidates)
+     *         attributes, that can't be added anywhere (i.e. these attributes
+     *         hasn't their candidates)
      */
     public int flush() {
         int accumulatingSpace = 0;
         if (!isBeforeCadidateSet()) {
-            accumulatingSpace += spaceBefore;
+            accumulatingSpace += this.spaceBefore;
         } else {
-            spaceBeforeCandidate.addIntegerValue(spaceBefore,
+            this.spaceBeforeCandidate.addIntegerValue(this.spaceBefore,
                     RtfText.SPACE_BEFORE);
         }
 
         if (!isAfterCadidateSet()) {
-            accumulatingSpace += spaceAfter;
+            accumulatingSpace += this.spaceAfter;
         } else {
-            spaceAfterCandidate.addIntegerValue(spaceAfter,
-                            RtfText.SPACE_AFTER);
+            this.spaceAfterCandidate.addIntegerValue(this.spaceAfter,
+                    RtfText.SPACE_AFTER);
         }
 
         return accumulatingSpace;

@@ -25,16 +25,16 @@ import java.util.List;
 import org.apache.fop.fo.pagination.Region;
 
 /**
- * This is a region reference area for a page regions.
- * This area is the direct child of a region-viewport-area. It is cloneable
- * so the page master can make copies from the original page and regions.
+ * This is a region reference area for a page regions. This area is the direct
+ * child of a region-viewport-area. It is cloneable so the page master can make
+ * copies from the original page and regions.
  */
 public class RegionReference extends Area {
 
     private static final long serialVersionUID = -298980963268244238L;
 
-    private int regionClass;
-    private String regionName;
+    private final int regionClass;
+    private final String regionName;
     private CTM ctm;
 
     // the list of block areas from the static flow
@@ -46,43 +46,50 @@ public class RegionReference extends Area {
     /**
      * Create a new region reference area.
      *
-     * @param regionFO the region.
-     * @param parent the viewport for this region.
+     * @param regionFO
+     *            the region.
+     * @param parent
+     *            the viewport for this region.
      */
-    public RegionReference(Region regionFO, RegionViewport parent) {
+    public RegionReference(final Region regionFO, final RegionViewport parent) {
         this(regionFO.getNameId(), regionFO.getRegionName(), parent);
     }
 
     /**
      * Create a new region reference area.
      *
-     * @param regionClass the region class (as returned by Region.getNameId())
-     * @param regionName the name of the region (as returned by Region.getRegionName())
-     * @param parent the viewport for this region.
+     * @param regionClass
+     *            the region class (as returned by Region.getNameId())
+     * @param regionName
+     *            the name of the region (as returned by Region.getRegionName())
+     * @param parent
+     *            the viewport for this region.
      */
-    public RegionReference(int regionClass, String regionName, RegionViewport parent) {
+    public RegionReference(final int regionClass, final String regionName,
+            final RegionViewport parent) {
         this.regionClass = regionClass;
         this.regionName = regionName;
         addTrait(Trait.IS_REFERENCE_AREA, Boolean.TRUE);
-        regionViewport = parent;
+        this.regionViewport = parent;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void addChildArea(Area child) {
-        blocks.add(child);
+    public void addChildArea(final Area child) {
+        this.blocks.add(child);
     }
 
     /**
      * Set the Coordinate Transformation Matrix which transforms content
-     * coordinates in this region reference area which are specified in
-     * terms of "start" and "before" into coordinates in a system which
-     * is positioned in "absolute" directions (with origin at lower left of
-     * the region reference area.
+     * coordinates in this region reference area which are specified in terms of
+     * "start" and "before" into coordinates in a system which is positioned in
+     * "absolute" directions (with origin at lower left of the region reference
+     * area.
      *
-     * @param ctm the current transform to position this region
+     * @param ctm
+     *            the current transform to position this region
      */
-    public void setCTM(CTM ctm) {
+    public void setCTM(final CTM ctm) {
         this.ctm = ctm;
     }
 
@@ -90,7 +97,7 @@ public class RegionReference extends Area {
      * @return Returns the parent RegionViewport.
      */
     public RegionViewport getRegionViewport() {
-        return regionViewport;
+        return this.regionViewport;
     }
 
     /**
@@ -108,7 +115,7 @@ public class RegionReference extends Area {
      * @return the list of blocks in this region
      */
     public List<Area> getBlocks() {
-        return blocks;
+        return this.blocks;
     }
 
     /**
@@ -128,26 +135,28 @@ public class RegionReference extends Area {
     /**
      * Add a block area to this region reference area.
      *
-     * @param block the block area to add
+     * @param block
+     *            the block area to add
      */
-    public void addBlock(Block block) {
+    public void addBlock(final Block block) {
         addChildArea(block);
     }
 
     /** {@inheritDoc} */
+    @Override
     public Object clone() throws CloneNotSupportedException {
-        RegionReference rr = (RegionReference) super.clone();
-        rr.blocks = (ArrayList) blocks.clone();
+        final RegionReference rr = (RegionReference) super.clone();
+        rr.blocks = (ArrayList) this.blocks.clone();
         return rr;
     }
 
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer(super.toString());
-        sb.append(" {regionName=").append(regionName);
-        sb.append(", regionClass=").append(regionClass);
-        sb.append(", ctm=").append(ctm);
+        final StringBuffer sb = new StringBuffer(super.toString());
+        sb.append(" {regionName=").append(this.regionName);
+        sb.append(", regionClass=").append(this.regionClass);
+        sb.append(", ctm=").append(this.ctm);
         sb.append("}");
         return sb.toString();
     }

@@ -19,33 +19,38 @@
 
 package org.apache.fop.render.pdf;
 
-import org.apache.xmlgraphics.util.MimeConstants;
-
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.pdf.PDFPage;
 import org.apache.fop.render.AbstractRenderingContext;
 import org.apache.fop.render.pdf.PDFLogicalStructureHandler.MarkedContentInfo;
+import org.apache.xmlgraphics.util.MimeConstants;
 
 /**
  * Rendering context for PDF production.
  */
 public class PDFRenderingContext extends AbstractRenderingContext {
 
-    private PDFContentGenerator generator;
-    private FontInfo fontInfo;
-    private PDFPage page;
+    private final PDFContentGenerator generator;
+    private final FontInfo fontInfo;
+    private final PDFPage page;
     private MarkedContentInfo mci;
 
     /**
      * Main constructor.
-     * @param userAgent the user agent
-     * @param generator the PDF content generator
-     * @param page the current PDF page
-     * @param fontInfo the font list
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param generator
+     *            the PDF content generator
+     * @param page
+     *            the current PDF page
+     * @param fontInfo
+     *            the font list
      */
-    public PDFRenderingContext(FOUserAgent userAgent,
-            PDFContentGenerator generator, PDFPage page, FontInfo fontInfo) {
+    public PDFRenderingContext(final FOUserAgent userAgent,
+            final PDFContentGenerator generator, final PDFPage page,
+            final FontInfo fontInfo) {
         super(userAgent);
         this.generator = generator;
         this.page = page;
@@ -53,12 +58,14 @@ public class PDFRenderingContext extends AbstractRenderingContext {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return MimeConstants.MIME_PDF;
     }
 
     /**
      * Returns the PDF content generator.
+     * 
      * @return the PDF content generator
      */
     public PDFContentGenerator getGenerator() {
@@ -67,6 +74,7 @@ public class PDFRenderingContext extends AbstractRenderingContext {
 
     /**
      * Returns the current PDF page.
+     * 
      * @return the PDF page
      */
     public PDFPage getPage() {
@@ -75,17 +83,18 @@ public class PDFRenderingContext extends AbstractRenderingContext {
 
     /**
      * Returns the font list.
+     * 
      * @return the font list
      */
     public FontInfo getFontInfo() {
         return this.fontInfo;
     }
 
-    void setMarkedContentInfo(MarkedContentInfo mci) {
+    void setMarkedContentInfo(final MarkedContentInfo mci) {
         this.mci = mci;
     }
 
     MarkedContentInfo getMarkedContentInfo() {
-        return mci;
+        return this.mci;
     }
 }

@@ -25,24 +25,25 @@ import java.awt.image.Raster;
 // CSOFF: InnerAssignment
 
 /**
- * A simple class that provides RenderedImage functionality
- * given a Raster and a ColorModel.
+ * A simple class that provides RenderedImage functionality given a Raster and a
+ * ColorModel.
  *
- * @version $Id: SingleTileRenderedImage.java 1345683 2012-06-03 14:50:33Z gadams $
+ * @version $Id: SingleTileRenderedImage.java 1345683 2012-06-03 14:50:33Z
+ *          gadams $
  */
 public class SingleTileRenderedImage extends SimpleRenderedImage {
 
     Raster ras;
 
     /**
-     * Constructs a SingleTileRenderedImage based on a Raster
-     * and a ColorModel.
+     * Constructs a SingleTileRenderedImage based on a Raster and a ColorModel.
      *
-     * @param ras A Raster that will define tile (0, 0) of the image.
-     * @param colorModel A ColorModel that will serve as the image's
-     *                   ColorModel.
+     * @param ras
+     *            A Raster that will define tile (0, 0) of the image.
+     * @param colorModel
+     *            A ColorModel that will serve as the image's ColorModel.
      */
-    public SingleTileRenderedImage(Raster ras, ColorModel colorModel) {
+    public SingleTileRenderedImage(final Raster ras, final ColorModel colorModel) {
         this.ras = ras;
 
         this.tileGridXOffset = this.minX = ras.getMinX();
@@ -56,10 +57,12 @@ public class SingleTileRenderedImage extends SimpleRenderedImage {
     /**
      * Returns the image's Raster as tile (0, 0).
      */
-    public Raster getTile(int tileX, int tileY) {
+    @Override
+    public Raster getTile(final int tileX, final int tileY) {
         if (tileX != 0 || tileY != 0) {
-            throw new IllegalArgumentException(PropertyUtil.getString("SingleTileRenderedImage0"));
+            throw new IllegalArgumentException(
+                    PropertyUtil.getString("SingleTileRenderedImage0"));
         }
-        return ras;
+        return this.ras;
     }
 }

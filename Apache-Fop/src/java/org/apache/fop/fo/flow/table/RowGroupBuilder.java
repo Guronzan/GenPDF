@@ -22,10 +22,10 @@ package org.apache.fop.fo.flow.table;
 import org.apache.fop.fo.ValidationException;
 
 /**
- * A class that creates groups of rows belonging to a same set of spans. The first row of
- * such a group has only cells which don't span over several rows, or whose spanning
- * starts on this row. Similarly, the last row has only non-row spanning cells or spans
- * which end on this row.
+ * A class that creates groups of rows belonging to a same set of spans. The
+ * first row of such a group has only cells which don't span over several rows,
+ * or whose spanning starts on this row. Similarly, the last row has only
+ * non-row spanning cells or spans which end on this row.
  */
 abstract class RowGroupBuilder {
 
@@ -34,66 +34,76 @@ abstract class RowGroupBuilder {
     /**
      * Creates and initialises a new builder for the given table.
      *
-     * @param t a table
+     * @param t
+     *            a table
      */
-    protected RowGroupBuilder(Table t) {
-        table = t;
+    protected RowGroupBuilder(final Table t) {
+        this.table = t;
     }
 
-
     /**
-     * Adds a table-cell to the current row-group, creating {@link GridUnit}s accordingly.
+     * Adds a table-cell to the current row-group, creating {@link GridUnit}s
+     * accordingly.
      *
-     * @param cell the cell to add
+     * @param cell
+     *            the cell to add
      */
-    abstract void addTableCell(TableCell cell);
+    abstract void addTableCell(final TableCell cell);
 
     /**
      * Receives notification of the start of an fo:table-row element.
      *
-     * @param tableRow the row being started
+     * @param tableRow
+     *            the row being started
      */
-    abstract void startTableRow(TableRow tableRow);
+    abstract void startTableRow(final TableRow tableRow);
 
     /**
-     * Receives notification of the end of the current row. If the current row finishes
-     * the row group, the {@link TablePart#addRowGroup(List)} method of the parent table
-     * part will be called.
+     * Receives notification of the end of the current row. If the current row
+     * finishes the row group, the {@link TablePart#addRowGroup(List)} method of
+     * the parent table part will be called.
      */
     abstract void endTableRow();
 
     /**
-     * Receives notification of the end of the current row, when the source contains no
-     * fo:table-row element. If the current row finishes the row group, the
-     * {@link TablePart#addRowGroup(List)} method of the given table part will be called.
+     * Receives notification of the end of the current row, when the source
+     * contains no fo:table-row element. If the current row finishes the row
+     * group, the {@link TablePart#addRowGroup(List)} method of the given table
+     * part will be called.
      *
-     * <p>If the source does contain explicit fo:table-row elements, then the
-     * {@link #endTableRow()} method will be called instead.</p>
+     * <p>
+     * If the source does contain explicit fo:table-row elements, then the
+     * {@link #endTableRow()} method will be called instead.
+     * </p>
      *
-     * @param part the part containing the current row
+     * @param part
+     *            the part containing the current row
      */
-    abstract void endRow(TablePart part);
+    abstract void endRow(final TablePart part);
 
     /**
      * Receives notification of the start of a table-header/footer/body.
      *
-     * @param part the part being started
+     * @param part
+     *            the part being started
      */
-    abstract void startTablePart(TablePart part);
+    abstract void startTablePart(final TablePart part);
 
     /**
-     * Receives notification of the end of a table-header/footer/body. The current
-     * row-group is checked for emptiness. This row group builder is reset for handling
-     * further possible table parts.
+     * Receives notification of the end of a table-header/footer/body. The
+     * current row-group is checked for emptiness. This row group builder is
+     * reset for handling further possible table parts.
      *
-     * @throws ValidationException if a row-spanning cell overflows the given table part
+     * @throws ValidationException
+     *             if a row-spanning cell overflows the given table part
      */
     abstract void endTablePart() throws ValidationException;
 
     /**
      * Receives notification of the end of the table.
      *
-     * @throws ValidationException if a row-spanning cell overflows one of the table's parts
+     * @throws ValidationException
+     *             if a row-spanning cell overflows one of the table's parts
      */
     abstract void endTable() throws ValidationException;
 }

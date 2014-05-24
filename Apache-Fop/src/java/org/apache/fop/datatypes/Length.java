@@ -25,15 +25,21 @@ package org.apache.fop.datatypes;
 public interface Length extends Numeric {
     /**
      * Returns the length in 1/1000ths of a point (millipoints)
+     * 
      * @return the length in millipoints
      */
+    @Override
     int getValue();
 
     /**
      * Returns the length in 1/1000ths of a point (millipoints)
-     * @param context The context for the length calculation (for percentage based lengths)
+     * 
+     * @param context
+     *            The context for the length calculation (for percentage based
+     *            lengths)
      * @return the length in millipoints
      */
-    int getValue(PercentBaseContext context);
+    @Override
+    int getValue(final PercentBaseContext context);
 
 }

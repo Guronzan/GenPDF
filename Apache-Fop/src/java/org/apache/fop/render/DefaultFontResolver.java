@@ -25,28 +25,34 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.fonts.FontResolver;
 
 /**
- * Default FontResolver implementation which uses the FOUserAgent to resolve font URIs.
+ * Default FontResolver implementation which uses the FOUserAgent to resolve
+ * font URIs.
  */
 public class DefaultFontResolver implements FontResolver {
 
-    private FOUserAgent userAgent;
+    private final FOUserAgent userAgent;
 
     /**
      * Main constructor.
-     * @param userAgent the user agent
+     * 
+     * @param userAgent
+     *            the user agent
      */
-    public DefaultFontResolver(FOUserAgent userAgent) {
+    public DefaultFontResolver(final FOUserAgent userAgent) {
         this.userAgent = userAgent;
     }
 
     /** {@inheritDoc} */
-    public Source resolve(String href) {
-        return userAgent.resolveURI(href, userAgent.getFactory().getFontManager().getFontBaseURL());
+    @Override
+    public Source resolve(final String href) {
+        return this.userAgent.resolveURI(href, this.userAgent.getFactory()
+                .getFontManager().getFontBaseURL());
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isComplexScriptFeaturesEnabled() {
-        return userAgent.isComplexScriptFeaturesEnabled();
+        return this.userAgent.isComplexScriptFeaturesEnabled();
     }
 
 }

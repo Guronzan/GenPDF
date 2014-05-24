@@ -25,8 +25,8 @@ import java.util.List;
 import org.apache.fop.area.Area;
 
 /**
- * Inline parent area.
- * This is an inline area that can have other inlines as children.
+ * Inline parent area. This is an inline area that can have other inlines as
+ * children.
  */
 public class InlineParent extends InlineArea {
 
@@ -37,46 +37,50 @@ public class InlineParent extends InlineArea {
      */
     protected List<InlineArea> inlines = new java.util.ArrayList<InlineArea>();
 
-    /** Controls whether the IPD is automatically adjusted based on the area's children. */
+    /**
+     * Controls whether the IPD is automatically adjusted based on the area's
+     * children.
+     */
     protected transient boolean autoSize;
 
     /** The offset of the <q>beforest</q> child area of this area. */
     protected int minChildOffset;
 
     /**
-     * The offset of the <q>afterest</q> child area of this area. Offset from the
-     * before-edge of this area's content-rectangle and the after-edge of the child area's
-     * allocation-rectangle.
+     * The offset of the <q>afterest</q> child area of this area. Offset from
+     * the before-edge of this area's content-rectangle and the after-edge of
+     * the child area's allocation-rectangle.
      */
     private int maxAfterEdge;
 
     @Override
-    public void addChildArea(Area c) {
+    public void addChildArea(final Area c) {
         assert c instanceof InlineArea;
-        if (inlines.size() == 0) {
-            autoSize = (getIPD() == 0);
+        if (this.inlines.size() == 0) {
+            this.autoSize = getIPD() == 0;
         }
-        InlineArea childArea = (InlineArea) c;
-        inlines.add(childArea);
+        final InlineArea childArea = (InlineArea) c;
+        this.inlines.add(childArea);
         // set the parent area for the child area
         childArea.setParentArea(this);
-        if (autoSize) {
+        if (this.autoSize) {
             increaseIPD(childArea.getAllocIPD());
         }
-        updateLevel ( childArea.getBidiLevel() );
-        int childOffset = childArea.getVirtualOffset();
-        minChildOffset = Math.min(minChildOffset, childOffset);
-        maxAfterEdge = Math.max(maxAfterEdge, childOffset + childArea.getVirtualBPD());
+        updateLevel(childArea.getBidiLevel());
+        final int childOffset = childArea.getVirtualOffset();
+        this.minChildOffset = Math.min(this.minChildOffset, childOffset);
+        this.maxAfterEdge = Math.max(this.maxAfterEdge,
+                childOffset + childArea.getVirtualBPD());
     }
 
     @Override
     int getVirtualOffset() {
-        return getBlockProgressionOffset() + minChildOffset;
+        return getBlockProgressionOffset() + this.minChildOffset;
     }
 
     @Override
     int getVirtualBPD() {
-        return maxAfterEdge - minChildOffset;
+        return this.maxAfterEdge - this.minChildOffset;
     }
 
     /**
@@ -85,27 +89,32 @@ public class InlineParent extends InlineArea {
      * @return the list of child areas
      */
     public List<InlineArea> getChildAreas() {
-        return inlines;
+        return this.inlines;
     }
 
     /**
      * recursively apply the variation factor to all descendant areas
-     * @param variationFactor the variation factor that must be applied to adjustments
-     * @param lineStretch     the total stretch of the line
-     * @param lineShrink      the total shrink of the line
+     * 
+     * @param variationFactor
+     *            the variation factor that must be applied to adjustments
+     * @param lineStretch
+     *            the total stretch of the line
+     * @param lineShrink
+     *            the total shrink of the line
      * @return true if there is an UnresolvedArea descendant
      */
     @Override
-    public boolean applyVariationFactor(double variationFactor,
-                                        int lineStretch, int lineShrink) {
+    public boolean applyVariationFactor(final double variationFactor,
+            final int lineStretch, final int lineShrink) {
         boolean hasUnresolvedAreas = false;
         int cumulativeIPD = 0;
         // recursively apply variation factor to descendant areas
-        for (int i = 0, len = inlines.size(); i < len; i++) {
-            InlineArea inline = inlines.get(i);
-            hasUnresolvedAreas |= inline.applyVariationFactor(
-                    variationFactor, lineStretch, lineShrink);
-            cumulativeIPD += inline.getIPD();  //Update this area's IPD based on changes to children
+        for (int i = 0, len = this.inlines.size(); i < len; i++) {
+            final InlineArea inline = this.inlines.get(i);
+            hasUnresolvedAreas |= inline.applyVariationFactor(variationFactor,
+                    lineStretch, lineShrink);
+            cumulativeIPD += inline.getIPD(); // Update this area's IPD based on
+                                              // changes to children
         }
         setIPD(cumulativeIPD);
 
@@ -113,36 +122,36 @@ public class InlineParent extends InlineArea {
     }
 
     @Override
-    public List collectInlineRuns ( List runs ) {
-        for ( Iterator<InlineArea> it = getChildAreas().iterator(); it.hasNext();) {
-            InlineArea ia = it.next();
-            runs = ia.collectInlineRuns ( runs );
+    public List collectInlineRuns(List runs) {
+        for (final Iterator<InlineArea> it = getChildAreas().iterator(); it
+                .hasNext();) {
+            final InlineArea ia = it.next();
+            runs = ia.collectInlineRuns(runs);
         }
         return runs;
     }
 
     /**
-     * Reset bidirectionality level of all children to default (-1),
-     * signalling that they will inherit the level of their parent text area.
+     * Reset bidirectionality level of all children to default (-1), signalling
+     * that they will inherit the level of their parent text area.
      */
     public void resetChildrenLevel() {
-        for ( Iterator it = inlines.iterator(); it.hasNext();) {
-            ( (InlineArea) it.next() ) .resetBidiLevel();
+        for (final Iterator it = this.inlines.iterator(); it.hasNext();) {
+            ((InlineArea) it.next()).resetBidiLevel();
         }
     }
 
-    private void updateLevel ( int newLevel ) {
-        if ( newLevel >= 0 ) {
-            int curLevel = getBidiLevel();
-            if ( curLevel >= 0 ) {
-                if ( newLevel < curLevel ) {
-                    setBidiLevel ( newLevel );
+    private void updateLevel(final int newLevel) {
+        if (newLevel >= 0) {
+            final int curLevel = getBidiLevel();
+            if (curLevel >= 0) {
+                if (newLevel < curLevel) {
+                    setBidiLevel(newLevel);
                 }
             } else {
-                setBidiLevel ( newLevel );
+                setBidiLevel(newLevel);
             }
         }
     }
-
 
 }

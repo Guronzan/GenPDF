@@ -32,9 +32,11 @@ public class PostScriptComment extends AbstractEvent {
 
     /**
      * Creates a new instance.
-     * @param comment the comment
+     * 
+     * @param comment
+     *            the comment
      */
-    public PostScriptComment(String comment) {
+    public PostScriptComment(final String comment) {
         if (comment != null && comment.startsWith("%")) {
             this.comment = this.comment.substring(1);
         } else {
@@ -44,6 +46,7 @@ public class PostScriptComment extends AbstractEvent {
 
     /**
      * Returns the comment text.
+     * 
      * @return the comment (without the "%" prefix)
      */
     public String getComment() {
@@ -53,13 +56,15 @@ public class PostScriptComment extends AbstractEvent {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#generate(org.apache.xmlgraphics.ps.PSGenerator)
      */
-    public void generate(PSGenerator gen) throws IOException {
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
         gen.commentln("%" + getComment());
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#getEventType()
      */
+    @Override
     public int getEventType() {
         return COMMENT;
     }
@@ -67,6 +72,7 @@ public class PostScriptComment extends AbstractEvent {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.AbstractEvent#isComment()
      */
+    @Override
     public boolean isComment() {
         return true;
     }

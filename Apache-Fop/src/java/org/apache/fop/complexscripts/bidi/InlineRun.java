@@ -41,69 +41,88 @@ import org.apache.fop.util.CharUtilities;
 // CSOFF: SimplifyBooleanReturnCheck
 
 /**
- * The <code>InlineRun</code> class is a utility class, the instances of which are used
- * to capture a sequence of reordering levels associated with an inline area.
+ * The <code>InlineRun</code> class is a utility class, the instances of which
+ * are used to capture a sequence of reordering levels associated with an inline
+ * area.
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 public class InlineRun {
-    private InlineArea inline;
-    private int[] levels;
+    private final InlineArea inline;
+    private final int[] levels;
     private int minLevel;
     private int maxLevel;
     private int reversals;
+
     /**
      * Primary constructor.
-     * @param inline which generated this inline run
-     * @param levels levels array
+     * 
+     * @param inline
+     *            which generated this inline run
+     * @param levels
+     *            levels array
      */
-    public InlineRun ( InlineArea inline, int[] levels ) {
+    public InlineRun(final InlineArea inline, final int[] levels) {
         assert inline != null;
         assert levels != null;
         this.inline = inline;
         this.levels = levels;
-        setMinMax ( levels );
+        setMinMax(levels);
     }
+
     /**
      * Alternate constructor.
-     * @param inline which generated this inline run
-     * @param level for each index
-     * @param count of indices
+     * 
+     * @param inline
+     *            which generated this inline run
+     * @param level
+     *            for each index
+     * @param count
+     *            of indices
      */
-    public InlineRun ( InlineArea inline, int level, int count ) {
-        this ( inline, makeLevels ( level, count ) );
+    public InlineRun(final InlineArea inline, final int level, final int count) {
+        this(inline, makeLevels(level, count));
     }
+
     /**
      * Obtain inline area that generated this inline run.
+     * 
      * @return inline area that generated this inline run.
      */
     public InlineArea getInline() {
-        return inline;
+        return this.inline;
     }
+
     /**
      * Obtain minimum bidi level for this run.
+     * 
      * @return minimum bidi level
      */
     public int getMinLevel() {
-        return minLevel;
+        return this.minLevel;
     }
+
     /**
      * Obtain maximum bidi level for this run.
+     * 
      * @return maximum bidi level
      */
     public int getMaxLevel() {
-        return maxLevel;
+        return this.maxLevel;
     }
-    private void setMinMax ( int[] levels ) {
+
+    private void setMinMax(final int[] levels) {
         int mn = Integer.MAX_VALUE;
         int mx = Integer.MIN_VALUE;
-        if ( ( levels != null ) && ( levels.length > 0 ) ) {
-            for ( int i = 0, n = levels.length; i < n; i++ ) {
-                int l = levels [ i ];
-                if ( l < mn ) {
+        if (levels != null && levels.length > 0) {
+            for (int i = 0, n = levels.length; i < n; i++) {
+                final int l = levels[i];
+                if (l < mn) {
                     mn = l;
                 }
-                if ( l > mx ) {
+                if (l > mx) {
                     mx = l;
                 }
             }
@@ -113,103 +132,116 @@ public class InlineRun {
         this.minLevel = mn;
         this.maxLevel = mx;
     }
+
     /**
      * Determine if this run has homogenous (same valued) bidi levels.
+     * 
      * @return true if homogenous
      */
     public boolean isHomogenous() {
-        return minLevel == maxLevel;
+        return this.minLevel == this.maxLevel;
     }
+
     /**
      * Split this inline run into homogenous runs.
+     * 
      * @return list of new runs
      */
     public List split() {
-        List runs = new Vector();
-        for ( int i = 0, n = levels.length; i < n; ) {
-            int l = levels [ i ];
-            int s = i;
+        final List runs = new Vector();
+        for (int i = 0, n = this.levels.length; i < n;) {
+            final int l = this.levels[i];
+            final int s = i;
             int e = s;
-            while ( e < n ) {
-                if ( levels [ e ] != l ) {
+            while (e < n) {
+                if (this.levels[e] != l) {
                     break;
                 } else {
                     e++;
                 }
             }
-            if ( s < e ) {
-                runs.add ( new InlineRun ( inline, l, e - s ) );
+            if (s < e) {
+                runs.add(new InlineRun(this.inline, l, e - s));
             }
             i = e;
         }
         assert runs.size() < 2 : "heterogeneous inlines not yet supported!!";
         return runs;
     }
+
     /**
      * Update a min/max array to correspond with this run's min/max values.
-     * @param mm reference to min/max array
+     * 
+     * @param mm
+     *            reference to min/max array
      */
-    public void updateMinMax ( int[] mm ) {
-        if ( minLevel < mm[0] ) {
-            mm[0] = minLevel;
+    public void updateMinMax(final int[] mm) {
+        if (this.minLevel < mm[0]) {
+            mm[0] = this.minLevel;
         }
-        if ( maxLevel > mm[1] ) {
-            mm[1] = maxLevel;
+        if (this.maxLevel > mm[1]) {
+            mm[1] = this.maxLevel;
         }
     }
+
     /**
      * Determine if run needs mirroring.
+     * 
      * @return true if run is homogenous and odd (i.e., right to left)
      */
     public boolean maybeNeedsMirroring() {
-        return ( minLevel == maxLevel ) && ( ( minLevel & 1 ) != 0 );
+        return this.minLevel == this.maxLevel && (this.minLevel & 1) != 0;
     }
+
     /**
      * Reverse run (by incrementing reversal count, not actually reversing).
      */
     public void reverse() {
-        reversals++;
+        this.reversals++;
     }
+
     /**
-     * Reverse inline area if it is a word area and it requires
-     * reversal.
-     * @param mirror if true then also mirror characters
+     * Reverse inline area if it is a word area and it requires reversal.
+     * 
+     * @param mirror
+     *            if true then also mirror characters
      */
-    public void maybeReverseWord ( boolean mirror ) {
-        if ( inline instanceof WordArea ) {
-            WordArea w = (WordArea) inline;
+    public void maybeReverseWord(final boolean mirror) {
+        if (this.inline instanceof WordArea) {
+            final WordArea w = (WordArea) this.inline;
             // if not already reversed, then reverse now
-            if ( ! w.isReversed() ) {
-                if ( ( reversals & 1 ) != 0 ) {
-                    w.reverse ( mirror );
-                } else if ( mirror && maybeNeedsMirroring() ) {
+            if (!w.isReversed()) {
+                if ((this.reversals & 1) != 0) {
+                    w.reverse(mirror);
+                } else if (mirror && maybeNeedsMirroring()) {
                     w.mirror();
                 }
             }
         }
     }
+
     @Override
-    public boolean equals ( Object o ) {
-        if ( o instanceof InlineRun ) {
-            InlineRun ir = (InlineRun) o;
-            if ( ir.inline != inline ) {
+    public boolean equals(final Object o) {
+        if (o instanceof InlineRun) {
+            final InlineRun ir = (InlineRun) o;
+            if (ir.inline != this.inline) {
                 return false;
-            } else if ( ir.minLevel != minLevel ) {
+            } else if (ir.minLevel != this.minLevel) {
                 return false;
-            } else if ( ir.maxLevel != maxLevel ) {
+            } else if (ir.maxLevel != this.maxLevel) {
                 return false;
-            } else if ( ( ir.levels != null ) && ( levels != null ) ) {
-                if ( ir.levels.length != levels.length ) {
+            } else if (ir.levels != null && this.levels != null) {
+                if (ir.levels.length != this.levels.length) {
                     return false;
                 } else {
-                    for ( int i = 0, n = levels.length; i < n; i++ ) {
-                        if ( ir.levels[i] != levels[i] ) {
+                    for (int i = 0, n = this.levels.length; i < n; i++) {
+                        if (ir.levels[i] != this.levels[i]) {
                             return false;
                         }
                     }
                     return true;
                 }
-            } else if ( ( ir.levels == null ) && ( levels == null ) ) {
+            } else if (ir.levels == null && this.levels == null) {
                 return true;
             } else {
                 return false;
@@ -218,91 +250,94 @@ public class InlineRun {
             return false;
         }
     }
+
     @Override
     public int hashCode() {
-        int l = ( inline != null ) ? inline.hashCode() : 0;
-        l = ( l ^ minLevel ) + ( l << 19 );
-        l = ( l ^ maxLevel )   + ( l << 11 );
+        int l = this.inline != null ? this.inline.hashCode() : 0;
+        l = (l ^ this.minLevel) + (l << 19);
+        l = (l ^ this.maxLevel) + (l << 11);
         return l;
     }
+
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer( "RR: { type = \'" );
+        final StringBuffer sb = new StringBuffer("RR: { type = \'");
         char c;
         String content = null;
-        if ( inline instanceof WordArea ) {
+        if (this.inline instanceof WordArea) {
             c = 'W';
-            content = ( (WordArea) inline ) .getWord();
-        } else if ( inline instanceof SpaceArea ) {
+            content = ((WordArea) this.inline).getWord();
+        } else if (this.inline instanceof SpaceArea) {
             c = 'S';
-            content = ( (SpaceArea) inline ) .getSpace();
-        } else if ( inline instanceof Anchor ) {
+            content = ((SpaceArea) this.inline).getSpace();
+        } else if (this.inline instanceof Anchor) {
             c = 'A';
-        } else if ( inline instanceof Leader ) {
+        } else if (this.inline instanceof Leader) {
             c = 'L';
-        } else if ( inline instanceof Space ) {
+        } else if (this.inline instanceof Space) {
             c = 'S';
-        } else if ( inline instanceof UnresolvedPageNumber ) {
+        } else if (this.inline instanceof UnresolvedPageNumber) {
             c = '#';
-            content = ( (UnresolvedPageNumber) inline ) .getText();
-        } else if ( inline instanceof InlineBlockParent ) {
+            content = ((UnresolvedPageNumber) this.inline).getText();
+        } else if (this.inline instanceof InlineBlockParent) {
             c = 'B';
-        } else if ( inline instanceof InlineViewport ) {
+        } else if (this.inline instanceof InlineViewport) {
             c = 'V';
-        } else if ( inline instanceof InlineParent ) {
+        } else if (this.inline instanceof InlineParent) {
             c = 'I';
         } else {
             c = '?';
         }
-        sb.append ( c );
-        sb.append ( "\', levels = \'" );
-        sb.append ( generateLevels ( levels ) );
-        sb.append ( "\', min = " );
-        sb.append ( minLevel );
-        sb.append ( ", max = " );
-        sb.append ( maxLevel );
-        sb.append ( ", reversals = " );
-        sb.append ( reversals );
-        sb.append ( ", content = <" );
-        sb.append ( CharUtilities.toNCRefs ( content ) );
-        sb.append ( "> }" );
+        sb.append(c);
+        sb.append("\', levels = \'");
+        sb.append(generateLevels(this.levels));
+        sb.append("\', min = ");
+        sb.append(this.minLevel);
+        sb.append(", max = ");
+        sb.append(this.maxLevel);
+        sb.append(", reversals = ");
+        sb.append(this.reversals);
+        sb.append(", content = <");
+        sb.append(CharUtilities.toNCRefs(content));
+        sb.append("> }");
         return sb.toString();
     }
-    private String generateLevels ( int[] levels ) {
-        StringBuffer lb = new StringBuffer();
+
+    private String generateLevels(final int[] levels) {
+        final StringBuffer lb = new StringBuffer();
         int maxLevel = -1;
-        int numLevels = levels.length;
-        for ( int i = 0; i < numLevels; i++ ) {
-            int l = levels [ i ];
-            if ( l > maxLevel ) {
+        final int numLevels = levels.length;
+        for (int i = 0; i < numLevels; i++) {
+            final int l = levels[i];
+            if (l > maxLevel) {
                 maxLevel = l;
             }
         }
-        if ( maxLevel < 0 ) {
+        if (maxLevel < 0) {
             // leave level buffer empty
-        } else if ( maxLevel < 10 ) {
+        } else if (maxLevel < 10) {
             // use string of decimal digits
-            for ( int i = 0; i < numLevels; i++ ) {
-                lb.append ( (char) ( '0' + levels [ i ] ) );
+            for (int i = 0; i < numLevels; i++) {
+                lb.append((char) ('0' + levels[i]));
             }
         } else {
             // use comma separated list
             boolean first = true;
-            for ( int i = 0; i < numLevels; i++ ) {
-                if ( first ) {
+            for (int i = 0; i < numLevels; i++) {
+                if (first) {
                     first = false;
                 } else {
                     lb.append(',');
                 }
-                lb.append ( levels [ i ] );
+                lb.append(levels[i]);
             }
         }
         return lb.toString();
     }
-    private static int[] makeLevels ( int level, int count ) {
-        int[] levels = new int [ count ];
-        Arrays.fill ( levels, level );
+
+    private static int[] makeLevels(final int level, final int count) {
+        final int[] levels = new int[count];
+        Arrays.fill(levels, level);
         return levels;
     }
 }
-

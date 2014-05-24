@@ -28,10 +28,9 @@ import org.apache.fop.area.Area;
 import org.apache.fop.area.Viewport;
 
 /**
- * Inline viewport area.
- * This is an inline-level viewport area for inline container,
- * external graphic and instream foreign object. This viewport
- * holds the area and positions it.
+ * Inline viewport area. This is an inline-level viewport area for inline
+ * container, external graphic and instream foreign object. This viewport holds
+ * the area and positions it.
  */
 public class InlineViewport extends InlineArea implements Viewport {
 
@@ -47,19 +46,22 @@ public class InlineViewport extends InlineArea implements Viewport {
     /**
      * Create a new viewport area with the content area.
      *
-     * @param child the child content area of this viewport
+     * @param child
+     *            the child content area of this viewport
      */
-    public InlineViewport(Area child) {
+    public InlineViewport(final Area child) {
         this(child, -1);
     }
 
     /**
      * Create a new viewport area with the content area.
      *
-     * @param child the child content area of this viewport
-     * @param bidiLevel the bidirectional embedding level (or -1 if not defined)
+     * @param child
+     *            the child content area of this viewport
+     * @param bidiLevel
+     *            the bidirectional embedding level (or -1 if not defined)
      */
-    public InlineViewport(Area child, int bidiLevel) {
+    public InlineViewport(final Area child, final int bidiLevel) {
         super(0, bidiLevel);
         this.content = child;
     }
@@ -67,20 +69,23 @@ public class InlineViewport extends InlineArea implements Viewport {
     /**
      * Set the clip of this viewport.
      *
-     * @param c true if this viewport should clip
+     * @param c
+     *            true if this viewport should clip
      */
-    public void setClip(boolean c) {
+    public void setClip(final boolean c) {
         this.clip = c;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasClip() {
         return this.clip;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Rectangle getClipRectangle() {
-        if (clip) {
+        if (this.clip) {
             return new Rectangle(getIPD(), getBPD());
         } else {
             return null;
@@ -90,9 +95,10 @@ public class InlineViewport extends InlineArea implements Viewport {
     /**
      * Set the position and size of the content of this viewport.
      *
-     * @param cp the position and size to place the content
+     * @param cp
+     *            the position and size to place the content
      */
-    public void setContentPosition(Rectangle2D cp) {
+    public void setContentPosition(final Rectangle2D cp) {
         this.contentPosition = cp;
     }
 
@@ -107,9 +113,11 @@ public class InlineViewport extends InlineArea implements Viewport {
 
     /**
      * Sets the content area.
-     * @param content the content area
+     *
+     * @param content
+     *            the content area
      */
-    public void setContent(Area content) {
+    public void setContent(final Area content) {
         this.content = content;
     }
 
@@ -122,27 +130,25 @@ public class InlineViewport extends InlineArea implements Viewport {
         return this.content;
     }
 
-    private void writeObject(java.io.ObjectOutputStream out)
-    throws IOException {
-        out.writeBoolean(contentPosition != null);
-        if (contentPosition != null) {
-            out.writeFloat((float) contentPosition.getX());
-            out.writeFloat((float) contentPosition.getY());
-            out.writeFloat((float) contentPosition.getWidth());
-            out.writeFloat((float) contentPosition.getHeight());
+    private void writeObject(final java.io.ObjectOutputStream out)
+            throws IOException {
+        out.writeBoolean(this.contentPosition != null);
+        if (this.contentPosition != null) {
+            out.writeFloat((float) this.contentPosition.getX());
+            out.writeFloat((float) this.contentPosition.getY());
+            out.writeFloat((float) this.contentPosition.getWidth());
+            out.writeFloat((float) this.contentPosition.getHeight());
         }
-        out.writeBoolean(clip);
-        out.writeObject((TreeMap)traits);
-        out.writeObject(content);
+        out.writeBoolean(this.clip);
+        out.writeObject(this.traits);
+        out.writeObject(this.content);
     }
 
-    private void readObject(java.io.ObjectInputStream in)
-    throws IOException, ClassNotFoundException {
+    private void readObject(final java.io.ObjectInputStream in)
+            throws IOException, ClassNotFoundException {
         if (in.readBoolean()) {
-            contentPosition = new Rectangle2D.Float(in.readFloat(),
-                                                    in.readFloat(),
-                                                    in.readFloat(),
-                                                    in.readFloat());
+            this.contentPosition = new Rectangle2D.Float(in.readFloat(),
+                    in.readFloat(), in.readFloat(), in.readFloat());
         }
         this.clip = in.readBoolean();
         this.traits = (TreeMap) in.readObject();

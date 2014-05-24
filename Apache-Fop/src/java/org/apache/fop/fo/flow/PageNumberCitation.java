@@ -23,44 +23,50 @@ import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 
 /**
- * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_page-number-citation">
- * <code>fo:page-number-citation</code></a> object.
- * This inline fo is replaced with the text for a page number.
- * The page number used is the page that contains the start of the
- * block referenced with the ref-id attribute.
+ * Class modelling the <a
+ * href="http://www.w3.org/TR/xsl/#fo_page-number-citation">
+ * <code>fo:page-number-citation</code></a> object. This inline fo is replaced
+ * with the text for a page number. The page number used is the page that
+ * contains the start of the block referenced with the ref-id attribute.
  */
 public class PageNumberCitation extends AbstractPageNumberCitation {
 
     /**
      * Main constructor
      *
-     * @param parent {@link FONode} that is the parent of this object
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public PageNumberCitation(FONode parent) {
+    public PageNumberCitation(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
         super.startOfNode();
         getFOEventHandler().startPageNumberCitation(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
         super.endOfNode();
         getFOEventHandler().endPageNumberCitation(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "page-number-citation";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_PAGE_NUMBER_CITATION}
      */
+    @Override
     public int getNameId() {
         return FO_PAGE_NUMBER_CITATION;
     }

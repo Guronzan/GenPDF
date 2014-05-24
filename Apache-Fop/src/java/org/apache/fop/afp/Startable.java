@@ -27,9 +27,10 @@ public interface Startable {
     /**
      * Sets whether or not this object has started or not
      *
-     * @param started true if this object has started
+     * @param started
+     *            true if this object has started
      */
-    void setStarted(boolean started);
+    void setStarted(final boolean started);
 
     /**
      * Returns true if this object has started

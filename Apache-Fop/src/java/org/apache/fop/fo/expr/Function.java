@@ -28,32 +28,41 @@ import org.apache.fop.fo.properties.Property;
 public interface Function {
 
     /**
-     * @return the number of required (non-optional) arguments that must be specified
-     * in the argument list
+     * @return the number of required (non-optional) arguments that must be
+     *         specified in the argument list
      */
     int getRequiredArgsCount();
 
     /**
-     * @return the number of non-required (optional) arguments that may be specified
-     * in the argument list, which, if specified, must follow the required arguments
+     * @return the number of non-required (optional) arguments that may be
+     *         specified in the argument list, which, if specified, must follow
+     *         the required arguments
      */
     int getOptionalArgsCount();
 
     /**
-     * @param index of optional argument
-     * @param pi property information instance that applies to property being evaluated
-     * @return the default property value for the optional argument at INDEX, where
-     * INDEX is with respect to optional arguments; i.e., the first optional argument
-     * position is index 0; if no default for a given index, then null is returned
-     * @throws PropertyException if index is greater than or equal to optional args count
+     * @param index
+     *            of optional argument
+     * @param pi
+     *            property information instance that applies to property being
+     *            evaluated
+     * @return the default property value for the optional argument at INDEX,
+     *         where INDEX is with respect to optional arguments; i.e., the
+     *         first optional argument position is index 0; if no default for a
+     *         given index, then null is returned
+     * @throws PropertyException
+     *             if index is greater than or equal to optional args count
      */
-    Property getOptionalArgDefault(int index, PropertyInfo pi) throws PropertyException;
+    Property getOptionalArgDefault(final int index, final PropertyInfo pi)
+            throws PropertyException;
 
     /**
-     * Determine if function allows variable arguments. If it does, then they must appear
-     * after required and optional arguments, and all optional arguments must be specified.
-     * @return true if function permits additional variable number of arguments after
-     * required and (completely specified) optional arguments
+     * Determine if function allows variable arguments. If it does, then they
+     * must appear after required and optional arguments, and all optional
+     * arguments must be specified.
+     * 
+     * @return true if function permits additional variable number of arguments
+     *         after required and (completely specified) optional arguments
      */
     boolean hasVariableArgs();
 
@@ -64,11 +73,17 @@ public interface Function {
 
     /**
      * Evaluate the function
-     * @param args an array of Properties that should be evaluated
-     * @param pi property information instance that applies to property being evaluated
+     * 
+     * @param args
+     *            an array of Properties that should be evaluated
+     * @param pi
+     *            property information instance that applies to property being
+     *            evaluated
      * @return the Property satisfying the function
-     * @throws PropertyException for problems when evaluating the function
+     * @throws PropertyException
+     *             for problems when evaluating the function
      */
-    Property eval(Property[] args, PropertyInfo pi) throws PropertyException;
+    Property eval(final Property[] args, final PropertyInfo pi)
+            throws PropertyException;
 
 }

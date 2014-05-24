@@ -22,31 +22,37 @@ package org.apache.fop.layoutmgr;
 /** A non-leaf position. */
 public class NonLeafPosition extends Position {
 
-    private Position subPos;
+    private final Position subPos;
 
     /**
      * Construct a leaf position.
-     * @param lm the associated layout manager
-     * @param sub the position
+     * 
+     * @param lm
+     *            the associated layout manager
+     * @param sub
+     *            the position
      */
-    public NonLeafPosition(LayoutManager lm, Position sub) {
+    public NonLeafPosition(final LayoutManager lm, final Position sub) {
         super(lm);
-        subPos = sub;
+        this.subPos = sub;
     }
 
     /** @return the sub position */
+    @Override
     public Position getPosition() {
-        return subPos;
+        return this.subPos;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean generatesAreas() {
-        return (subPos != null ? subPos.generatesAreas() : false);
+        return this.subPos != null ? this.subPos.generatesAreas() : false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         sb.append("NonLeafPos:").append(getIndex()).append("(");
         sb.append(getShortLMName());
         sb.append(", ");
@@ -59,4 +65,3 @@ public class NonLeafPosition extends Position {
         return sb.toString();
     }
 }
-

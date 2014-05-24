@@ -30,19 +30,22 @@ import org.apache.xmlgraphics.ps.dsc.DSCCommentFactory;
  */
 public class DSCAtend extends AbstractDSCComment {
 
-    private String name;
+    private final String name;
 
     /**
      * Creates a new instance
-     * @param name the name of the DSC comment (without the "%%" prefix)
+     * 
+     * @param name
+     *            the name of the DSC comment (without the "%%" prefix)
      */
-    public DSCAtend(String name) {
+    public DSCAtend(final String name) {
         this.name = name;
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#getName()
      */
+    @Override
     public String getName() {
         return this.name;
     }
@@ -50,6 +53,7 @@ public class DSCAtend extends AbstractDSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#hasValues()
      */
+    @Override
     public boolean hasValues() {
         return false;
     }
@@ -57,6 +61,7 @@ public class DSCAtend extends AbstractDSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.AbstractDSCComment#isAtend()
      */
+    @Override
     public boolean isAtend() {
         return true;
     }
@@ -64,21 +69,23 @@ public class DSCAtend extends AbstractDSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#parseValue(java.lang.String)
      */
-    public void parseValue(String value) {
-        //nop
+    @Override
+    public void parseValue(final String value) {
+        // nop
     }
 
     /**
-     * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#generate(
-     *              org.apache.xmlgraphics.ps.PSGenerator)
+     * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#generate(org.apache.xmlgraphics.ps.PSGenerator)
      */
-    public void generate(PSGenerator gen) throws IOException {
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
         gen.writeDSCComment(getName(), DSCConstants.ATEND);
     }
 
     /**
-     * Creates a new instance of a DSC comment with the same name as this instance but does not
-     * have an "Atend" value.
+     * Creates a new instance of a DSC comment with the same name as this
+     * instance but does not have an "Atend" value.
+     * 
      * @return the new DSC comment
      */
     public DSCComment createDSCCommentFromAtend() {

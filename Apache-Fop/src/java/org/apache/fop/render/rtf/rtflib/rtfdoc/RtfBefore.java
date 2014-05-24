@@ -31,23 +31,25 @@ import java.io.Writer;
 
 /** The opposite of RtfAfter */
 public class RtfBefore extends RtfAfterBeforeBase {
-    /**RtfBefore attributes*/
+    /** RtfBefore attributes */
     public static final String HEADER = "header";
 
     /** String array of attribute names */
-    public static final String[] HEADER_ATTR = new String[]{
-        HEADER
-    };
+    public static final String[] HEADER_ATTR = new String[] { HEADER };
 
-    RtfBefore(RtfSection parent, Writer w, RtfAttributes attrs) throws IOException {
+    RtfBefore(final RtfSection parent, final Writer w, final RtfAttributes attrs)
+            throws IOException {
         super(parent, w, attrs);
     }
 
     /**
      * Write the attributes for this element
-     * @throws IOException for I/O problems
+     * 
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     protected void writeMyAttributes() throws IOException {
-        writeAttributes(attrib, HEADER_ATTR);
+        writeAttributes(this.attrib, HEADER_ATTR);
     }
 }

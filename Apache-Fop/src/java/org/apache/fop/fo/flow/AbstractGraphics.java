@@ -39,13 +39,15 @@ import org.apache.fop.fo.properties.StructureTreeElementHolder;
 import org.apache.fop.util.CharUtilities;
 
 /**
- * Common base class for the <a href="http://www.w3.org/TR/xsl/#fo_instream-foreign-object">
- * <code>fo:instream-foreign-object</code></a>
- * and <a href="http://www.w3.org/TR/xsl/#fo_external-graphic">
+ * Common base class for the <a
+ * href="http://www.w3.org/TR/xsl/#fo_instream-foreign-object">
+ * <code>fo:instream-foreign-object</code></a> and <a
+ * href="http://www.w3.org/TR/xsl/#fo_external-graphic">
  * <code>fo:external-graphic</code></a> flow formatting objects.
  */
-public abstract class AbstractGraphics extends FObj
-        implements GraphicsProperties, StructureTreeElementHolder, CommonAccessibilityHolder {
+public abstract class AbstractGraphics extends FObj implements
+        GraphicsProperties, StructureTreeElementHolder,
+        CommonAccessibilityHolder {
 
     // The value of properties relevant for fo:instream-foreign-object
     // and external-graphics.
@@ -72,176 +74,197 @@ public abstract class AbstractGraphics extends FObj
     private Length width;
     private String altText;
     private StructureTreeElement structureTreeElement;
+
     // Unused but valid items, commented out for performance:
-    //     private CommonAccessibility commonAccessibility;
-    //     private CommonAural commonAural;
-    //     private CommonMarginInline commonMarginInline;
-    //     private CommonRelativePosition commonRelativePosition;
-    //     private String contentType;
-    //     private int scalingMethod;
+    // private CommonAccessibility commonAccessibility;
+    // private CommonAural commonAural;
+    // private CommonMarginInline commonMarginInline;
+    // private CommonRelativePosition commonRelativePosition;
+    // private String contentType;
+    // private int scalingMethod;
     // End of property values
 
     /**
      * constructs an instream-foreign-object object (called by Maker).
      *
-     * @param parent the parent formatting object
+     * @param parent
+     *            the parent formatting object
      */
-    public AbstractGraphics(FONode parent) {
+    public AbstractGraphics(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
-        commonAccessibility = CommonAccessibility.getInstance(pList);
-        commonBorderPaddingBackground = pList.getBorderPaddingBackgroundProps();
-        alignmentAdjust = pList.get(PR_ALIGNMENT_ADJUST).getLength();
-        alignmentBaseline = pList.get(PR_ALIGNMENT_BASELINE).getEnum();
-        baselineShift = pList.get(PR_BASELINE_SHIFT).getLength();
-        blockProgressionDimension = pList.get(PR_BLOCK_PROGRESSION_DIMENSION).getLengthRange();
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
+        this.commonAccessibility = CommonAccessibility.getInstance(pList);
+        this.commonBorderPaddingBackground = pList
+                .getBorderPaddingBackgroundProps();
+        this.alignmentAdjust = pList.get(PR_ALIGNMENT_ADJUST).getLength();
+        this.alignmentBaseline = pList.get(PR_ALIGNMENT_BASELINE).getEnum();
+        this.baselineShift = pList.get(PR_BASELINE_SHIFT).getLength();
+        this.blockProgressionDimension = pList.get(
+                PR_BLOCK_PROGRESSION_DIMENSION).getLengthRange();
         // clip = pList.get(PR_CLIP);
-        contentHeight = pList.get(PR_CONTENT_HEIGHT).getLength();
-        contentWidth = pList.get(PR_CONTENT_WIDTH).getLength();
-        displayAlign = pList.get(PR_DISPLAY_ALIGN).getEnum();
-        dominantBaseline = pList.get(PR_DOMINANT_BASELINE).getEnum();
-        height = pList.get(PR_HEIGHT).getLength();
-        id = pList.get(PR_ID).getString();
-        inlineProgressionDimension = pList.get(PR_INLINE_PROGRESSION_DIMENSION).getLengthRange();
-        keepWithNext = pList.get(PR_KEEP_WITH_NEXT).getKeep();
-        keepWithPrevious = pList.get(PR_KEEP_WITH_PREVIOUS).getKeep();
-        lineHeight = pList.get(PR_LINE_HEIGHT).getSpace();
-        overflow = pList.get(PR_OVERFLOW).getEnum();
-        scaling = pList.get(PR_SCALING).getEnum();
-        textAlign = pList.get(PR_TEXT_ALIGN).getEnum();
-        width = pList.get(PR_WIDTH).getLength();
+        this.contentHeight = pList.get(PR_CONTENT_HEIGHT).getLength();
+        this.contentWidth = pList.get(PR_CONTENT_WIDTH).getLength();
+        this.displayAlign = pList.get(PR_DISPLAY_ALIGN).getEnum();
+        this.dominantBaseline = pList.get(PR_DOMINANT_BASELINE).getEnum();
+        this.height = pList.get(PR_HEIGHT).getLength();
+        this.id = pList.get(PR_ID).getString();
+        this.inlineProgressionDimension = pList.get(
+                PR_INLINE_PROGRESSION_DIMENSION).getLengthRange();
+        this.keepWithNext = pList.get(PR_KEEP_WITH_NEXT).getKeep();
+        this.keepWithPrevious = pList.get(PR_KEEP_WITH_PREVIOUS).getKeep();
+        this.lineHeight = pList.get(PR_LINE_HEIGHT).getSpace();
+        this.overflow = pList.get(PR_OVERFLOW).getEnum();
+        this.scaling = pList.get(PR_SCALING).getEnum();
+        this.textAlign = pList.get(PR_TEXT_ALIGN).getEnum();
+        this.width = pList.get(PR_WIDTH).getLength();
         if (getUserAgent().isAccessibilityEnabled()) {
-            altText = pList.get(PR_X_ALT_TEXT).getString();
-            if (altText.equals("")) {
-                getFOValidationEventProducer().altTextMissing(this, getLocalName(), getLocator());
+            this.altText = pList.get(PR_X_ALT_TEXT).getString();
+            if (this.altText.equals("")) {
+                getFOValidationEventProducer().altTextMissing(this,
+                        getLocalName(), getLocator());
             }
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public CommonAccessibility getCommonAccessibility() {
-        return commonAccessibility;
+        return this.commonAccessibility;
     }
 
     /**
      * @return the "id" property.
      */
+    @Override
     public String getId() {
-        return id;
+        return this.id;
     }
 
     /** @return the {@link CommonBorderPaddingBackground} */
     public CommonBorderPaddingBackground getCommonBorderPaddingBackground() {
-        return commonBorderPaddingBackground;
+        return this.commonBorderPaddingBackground;
     }
 
     /** @return the "line-height" property */
     public SpaceProperty getLineHeight() {
-        return lineHeight;
+        return this.lineHeight;
     }
 
     /** @return the "inline-progression-dimension" property */
+    @Override
     public LengthRangeProperty getInlineProgressionDimension() {
-        return inlineProgressionDimension;
+        return this.inlineProgressionDimension;
     }
 
     /** @return the "block-progression-dimension" property */
+    @Override
     public LengthRangeProperty getBlockProgressionDimension() {
-        return blockProgressionDimension;
+        return this.blockProgressionDimension;
     }
 
     /** @return the "height" property */
+    @Override
     public Length getHeight() {
-        return height;
+        return this.height;
     }
 
     /** @return the "width" property */
+    @Override
     public Length getWidth() {
-        return width;
+        return this.width;
     }
 
     /** @return the "content-height" property */
+    @Override
     public Length getContentHeight() {
-        return contentHeight;
+        return this.contentHeight;
     }
 
     /** @return the "content-width" property */
+    @Override
     public Length getContentWidth() {
-        return contentWidth;
+        return this.contentWidth;
     }
 
     /** @return the "scaling" property */
+    @Override
     public int getScaling() {
-        return scaling;
+        return this.scaling;
     }
 
     /** @return the "overflow" property */
+    @Override
     public int getOverflow() {
-        return overflow;
+        return this.overflow;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDisplayAlign() {
-        return displayAlign;
+        return this.displayAlign;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getTextAlign() {
-        return textAlign;
+        return this.textAlign;
     }
 
     /** @return the "alignment-adjust" property */
     public Length getAlignmentAdjust() {
-        if (alignmentAdjust.getEnum() == EN_AUTO) {
-            final Length intrinsicAlignmentAdjust = this.getIntrinsicAlignmentAdjust();
+        if (this.alignmentAdjust.getEnum() == EN_AUTO) {
+            final Length intrinsicAlignmentAdjust = getIntrinsicAlignmentAdjust();
             if (intrinsicAlignmentAdjust != null) {
                 return intrinsicAlignmentAdjust;
             }
         }
-        return alignmentAdjust;
+        return this.alignmentAdjust;
     }
 
     /** @return the "alignment-baseline" property */
     public int getAlignmentBaseline() {
-        return alignmentBaseline;
+        return this.alignmentBaseline;
     }
 
     /** @return the "baseline-shift" property */
     public Length getBaselineShift() {
-        return baselineShift;
+        return this.baselineShift;
     }
 
     /** @return the "dominant-baseline" property */
     public int getDominantBaseline() {
-        return dominantBaseline;
+        return this.dominantBaseline;
     }
 
     /** @return the "keep-with-next" property */
     public KeepProperty getKeepWithNext() {
-        return keepWithNext;
+        return this.keepWithNext;
     }
 
     /** @return the "keep-with-previous" property */
     public KeepProperty getKeepWithPrevious() {
-        return keepWithPrevious;
+        return this.keepWithPrevious;
     }
 
     @Override
-    public void setStructureTreeElement(StructureTreeElement structureTreeElement) {
+    public void setStructureTreeElement(
+            final StructureTreeElement structureTreeElement) {
         this.structureTreeElement = structureTreeElement;
     }
 
     /** {@inheritDoc} */
+    @Override
     public StructureTreeElement getStructureTreeElement() {
-        return structureTreeElement;
+        return this.structureTreeElement;
     }
 
-    /** @return  the alternative text property. */
+    /** @return the alternative text property. */
     public String getAltText() {
-        return altText;
+        return this.altText;
     }
 
     /** @return the graphic's intrinsic width in millipoints */
@@ -254,14 +277,16 @@ public abstract class AbstractGraphics extends FObj
     public abstract Length getIntrinsicAlignmentAdjust();
 
     @Override
-    public boolean isDelimitedTextRangeBoundary ( int boundary ) {
+    public boolean isDelimitedTextRangeBoundary(final int boundary) {
         return false;
     }
 
     @Override
-    protected Stack collectDelimitedTextRanges ( Stack ranges, DelimitedTextRange currentRange ) {
-        if ( currentRange != null ) {
-            currentRange.append ( CharUtilities.OBJECT_REPLACEMENT_CHARACTER, this );
+    protected Stack collectDelimitedTextRanges(final Stack ranges,
+            final DelimitedTextRange currentRange) {
+        if (currentRange != null) {
+            currentRange.append(CharUtilities.OBJECT_REPLACEMENT_CHARACTER,
+                    this);
         }
         return ranges;
     }

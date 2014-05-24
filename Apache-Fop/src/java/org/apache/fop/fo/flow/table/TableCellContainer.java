@@ -29,10 +29,11 @@ import org.apache.fop.fo.properties.CommonAccessibility;
 import org.apache.fop.fo.properties.CommonAccessibilityHolder;
 
 /**
- * A common class for fo:table-body and fo:table-row which both can contain fo:table-cell.
+ * A common class for fo:table-body and fo:table-row which both can contain
+ * fo:table-cell.
  */
-public abstract class TableCellContainer extends TableFObj
-        implements ColumnNumberManagerHolder, CommonAccessibilityHolder {
+public abstract class TableCellContainer extends TableFObj implements
+ColumnNumberManagerHolder, CommonAccessibilityHolder {
 
     private CommonAccessibility commonAccessibility;
 
@@ -44,72 +45,82 @@ public abstract class TableCellContainer extends TableFObj
 
     /**
      * Construct table cell container.
-     * @param parent the parent node of the cell container
+     *
+     * @param parent
+     *            the parent node of the cell container
      */
-    public TableCellContainer(FONode parent) {
+    public TableCellContainer(final FONode parent) {
         super(parent);
     }
 
     @Override
-    public void bind(PropertyList pList) throws FOPException {
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        commonAccessibility = CommonAccessibility.getInstance(pList);
+        this.commonAccessibility = CommonAccessibility.getInstance(pList);
     }
 
     /**
      * Add cell to current row.
-     * @param cell a table cell to add
-     * @param firstRow true is first row
-     * @throws FOPException if exception occurs
+     *
+     * @param cell
+     *            a table cell to add
+     * @param firstRow
+     *            true is first row
+     * @throws FOPException
+     *             if exception occurs
      */
-    protected void addTableCellChild(TableCell cell, boolean firstRow) throws FOPException {
-        int colNumber = cell.getColumnNumber();
-        int colSpan = cell.getNumberColumnsSpanned();
-        int rowSpan = cell.getNumberRowsSpanned();
+    protected void addTableCellChild(final TableCell cell,
+            final boolean firstRow) throws FOPException {
+        final int colNumber = cell.getColumnNumber();
+        final int colSpan = cell.getNumberColumnsSpanned();
+        final int rowSpan = cell.getNumberRowsSpanned();
 
-        Table t = getTable();
+        final Table t = getTable();
         if (t.hasExplicitColumns()) {
             if (colNumber + colSpan - 1 > t.getNumberOfColumns()) {
-                TableEventProducer eventProducer = TableEventProducer.Provider.get(
-                        getUserAgent().getEventBroadcaster());
+                final TableEventProducer eventProducer = TableEventProducer.Provider
+                        .get(getUserAgent().getEventBroadcaster());
                 eventProducer.tooManyCells(this, getLocator());
             }
         } else {
             t.ensureColumnNumber(colNumber + colSpan - 1);
             // re-cap the size of pendingSpans
-            while (pendingSpans.size() < colNumber + colSpan - 1) {
-                pendingSpans.add(null);
+            while (this.pendingSpans.size() < colNumber + colSpan - 1) {
+                this.pendingSpans.add(null);
             }
         }
         if (firstRow) {
             handleCellWidth(cell, colNumber, colSpan);
         }
 
-        /* if the current cell spans more than one row,
-         * update pending span list for the next row
+        /*
+         * if the current cell spans more than one row, update pending span list
+         * for the next row
          */
         if (rowSpan > 1) {
             for (int i = 0; i < colSpan; i++) {
-                pendingSpans.set(colNumber - 1 + i, new PendingSpan(rowSpan));
+                this.pendingSpans.set(colNumber - 1 + i, new PendingSpan(
+                        rowSpan));
             }
         }
 
-        columnNumberManager.signalUsedColumnNumbers(colNumber, colNumber + colSpan - 1);
+        this.columnNumberManager.signalUsedColumnNumbers(colNumber, colNumber
+                + colSpan - 1);
 
         t.getRowGroupBuilder().addTableCell(cell);
     }
 
-    private void handleCellWidth(TableCell cell, int colNumber, int colSpan) throws FOPException {
-        Table t = getTable();
+    private void handleCellWidth(final TableCell cell, final int colNumber,
+            final int colSpan) {
+        final Table t = getTable();
         Length colWidth = null;
 
-        if (cell.getWidth().getEnum() != EN_AUTO
-                && colSpan == 1) {
+        if (cell.getWidth().getEnum() != EN_AUTO && colSpan == 1) {
             colWidth = cell.getWidth();
         }
 
         for (int i = colNumber; i < colNumber + colSpan; ++i) {
-            TableColumn col = t.getColumn(i - 1);
+            final TableColumn col = t.getColumn(i - 1);
             if (colWidth != null) {
                 col.setColumnWidth(colWidth);
             }
@@ -119,18 +130,21 @@ public abstract class TableCellContainer extends TableFObj
     /**
      * Returns the enclosing table-header/footer/body of this container.
      *
-     * @return <code>this</code> for TablePart, or the parent element for TableRow
+     * @return <code>this</code> for TablePart, or the parent element for
+     *         TableRow
      */
     abstract TablePart getTablePart();
 
     /** {@inheritDoc} */
+    @Override
     public ColumnNumberManager getColumnNumberManager() {
-        return columnNumberManager;
+        return this.columnNumberManager;
     }
 
     /** {@inheritDoc} */
+    @Override
     public CommonAccessibility getCommonAccessibility() {
-        return commonAccessibility;
+        return this.commonAccessibility;
     }
 
 }

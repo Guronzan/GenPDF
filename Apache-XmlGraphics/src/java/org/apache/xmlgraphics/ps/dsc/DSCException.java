@@ -28,9 +28,11 @@ public class DSCException extends Exception {
 
     /**
      * Creates a new DSCException.
-     * @param msg the exception message
+     * 
+     * @param msg
+     *            the exception message
      */
-    public DSCException(String msg) {
+    public DSCException(final String msg) {
         super(msg);
     }
 

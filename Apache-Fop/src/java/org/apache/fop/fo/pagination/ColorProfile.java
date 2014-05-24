@@ -19,13 +19,12 @@
 
 package org.apache.fop.fo.pagination;
 
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.FObj;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.ValidationException;
+import org.xml.sax.Locator;
 
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_color-profile">
@@ -38,30 +37,34 @@ public class ColorProfile extends FObj {
     private String src;
     private String colorProfileName;
     private int renderingIntent;
+
     // End of property values
 
     /**
      * Base constructor
      *
-     * @param parent {@link FONode} that is the parent of this object
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public ColorProfile(FONode parent) {
+    public ColorProfile(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
-        src = pList.get(PR_SRC).getString();
-        colorProfileName = pList.get(PR_COLOR_PROFILE_NAME).getString();
-        renderingIntent = pList.get(PR_RENDERING_INTENT).getEnum();
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
+        this.src = pList.get(PR_SRC).getString();
+        this.colorProfileName = pList.get(PR_COLOR_PROFILE_NAME).getString();
+        this.renderingIntent = pList.get(PR_RENDERING_INTENT).getEnum();
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL 1.0/FOP: EMPTY (no child nodes permitted)
+     * {@inheritDoc} <br>
+     * XSL 1.0/FOP: EMPTY (no child nodes permitted)
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-                throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             invalidChildError(loc, nsURI, localName);
         }
@@ -71,18 +74,21 @@ public class ColorProfile extends FObj {
      * @return the "color-profile-name" property.
      */
     public String getColorProfileName() {
-        return colorProfileName;
+        return this.colorProfileName;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "color-profile";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_COLOR_PROFILE}
      */
+    @Override
     public int getNameId() {
         return FO_COLOR_PROFILE;
     }
@@ -99,12 +105,9 @@ public class ColorProfile extends FObj {
     /**
      * Get rendering-intent attribute
      *
-     * Returned value is one of
-     *   Constants.EN_AUTO
-     *   Constants.EN_PERCEPTUAL
-     *   Constants.EN_RELATIVE_COLOMETRIC
-     *   Constants.EN_SATURATION
-     *   Constants.EN_ABSOLUTE_COLORMETRIC
+     * Returned value is one of Constants.EN_AUTO Constants.EN_PERCEPTUAL
+     * Constants.EN_RELATIVE_COLOMETRIC Constants.EN_SATURATION
+     * Constants.EN_ABSOLUTE_COLORMETRIC
      *
      * @return Rendering intent attribute
      */

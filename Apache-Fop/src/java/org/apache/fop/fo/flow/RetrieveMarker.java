@@ -19,95 +19,98 @@
 
 package org.apache.fop.fo.flow;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.PropertyList;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_retrieve-marker">
- * <code>fo:retrieve-marker</code></a> formatting object.
- * This will create a layout manager that will retrieve
- * a marker based on the information.
+ * <code>fo:retrieve-marker</code></a> formatting object. This will create a
+ * layout manager that will retrieve a marker based on the information.
  */
 public class RetrieveMarker extends AbstractRetrieveMarker {
 
     // The value of properties relevant for fo:retrieve-marker.
     private int retrievePosition;
     private int retrieveBoundary;
+
     // End of property values
 
     /**
-     * Create a new RetrieveMarker instance that is a
-     * child of the given {@link FONode}.
+     * Create a new RetrieveMarker instance that is a child of the given
+     * {@link FONode}.
      *
-     * @param parent the parent {@link FONode}
+     * @param parent
+     *            the parent {@link FONode}
      */
-    public RetrieveMarker(FONode parent) {
+    public RetrieveMarker(final FONode parent) {
         super(parent);
     }
 
     /**
-     * {@inheritDoc}
-     * <i>NOTE: An <code>fo:retrieve-marker</code> is only permitted as a descendant
-     * of an <code>fo:static-content</code>.</i>
+     * {@inheritDoc} <i>NOTE: An <code>fo:retrieve-marker</code> is only
+     * permitted as a descendant of an <code>fo:static-content</code>.</i>
      */
-    public void processNode(String elementName,
-                            Locator locator,
-                            Attributes attlist,
-                            PropertyList pList)
-            throws FOPException {
+    @Override
+    public void processNode(final String elementName, final Locator locator,
+            final Attributes attlist, final PropertyList pList)
+                    throws FOPException {
         if (findAncestor(FO_STATIC_CONTENT) < 0) {
-            invalidChildError(locator, getParent().getName(), FO_URI, getLocalName(),
-                "rule.retrieveMarkerDescendantOfStaticContent");
+            invalidChildError(locator, getParent().getName(), FO_URI,
+                    getLocalName(),
+                    "rule.retrieveMarkerDescendantOfStaticContent");
         } else {
             super.processNode(elementName, locator, attlist, pList);
         }
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
         this.retrievePosition = pList.get(PR_RETRIEVE_POSITION).getEnum();
         this.retrieveBoundary = pList.get(PR_RETRIEVE_BOUNDARY).getEnum();
     }
 
     /**
-     * Return the value for the <code>retrieve-position</code>
-     * property
-     * @return  the value for retrieve-position-within-table; one of
-     *              {@link org.apache.fop.fo.Constants#EN_FSWP},
-     *              {@link org.apache.fop.fo.Constants#EN_FIC},
-     *              {@link org.apache.fop.fo.Constants#EN_LSWP},
-     *              {@link org.apache.fop.fo.Constants#EN_LEWP}.
+     * Return the value for the <code>retrieve-position</code> property
+     * 
+     * @return the value for retrieve-position-within-table; one of
+     *         {@link org.apache.fop.fo.Constants#EN_FSWP},
+     *         {@link org.apache.fop.fo.Constants#EN_FIC},
+     *         {@link org.apache.fop.fo.Constants#EN_LSWP},
+     *         {@link org.apache.fop.fo.Constants#EN_LEWP}.
      */
     public int getRetrievePosition() {
         return this.retrievePosition;
     }
 
     /**
-     * Return the value for the <code>retrieve-boundary</code>
-     * property
-     * @return  the value for retrieve-boundary-within-table; one of
-     *              {@link org.apache.fop.fo.Constants#EN_PAGE},
-     *              {@link org.apache.fop.fo.Constants#EN_PAGE_SEQUENCE},
-     *              {@link org.apache.fop.fo.Constants#EN_DOCUMENT}.
+     * Return the value for the <code>retrieve-boundary</code> property
+     * 
+     * @return the value for retrieve-boundary-within-table; one of
+     *         {@link org.apache.fop.fo.Constants#EN_PAGE},
+     *         {@link org.apache.fop.fo.Constants#EN_PAGE_SEQUENCE},
+     *         {@link org.apache.fop.fo.Constants#EN_DOCUMENT}.
      */
     public int getRetrieveBoundary() {
         return this.retrieveBoundary;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "retrieve-marker";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_RETRIEVE_MARKER}
      */
+    @Override
     public int getNameId() {
         return FO_RETRIEVE_MARKER;
     }

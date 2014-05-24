@@ -21,32 +21,36 @@ package org.apache.fop.render.pcl;
 
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * This class hold code for selecting a set of hard-coded fonts available in practically all
- * PCL implementations. We hope this can be improved in the future.
+ * This class hold code for selecting a set of hard-coded fonts available in
+ * practically all PCL implementations. We hope this can be improved in the
+ * future.
  */
+@Slf4j
 final class HardcodedFonts {
 
     private HardcodedFonts() {
     }
 
-    /** logging instance */
-    private static final Log LOG = LogFactory.getLog(HardcodedFonts.class);
-
     /**
      * Sets the current font (NOTE: Hard-coded font mappings ATM!)
-     * @param name the font name (internal F* names for now)
-     * @param size the font size (in millipoints)
-     * @param text the text to be rendered (used to determine if there are non-printable chars)
+     *
+     * @param name
+     *            the font name (internal F* names for now)
+     * @param size
+     *            the font size (in millipoints)
+     * @param text
+     *            the text to be rendered (used to determine if there are
+     *            non-printable chars)
      * @return true if the font can be mapped to PCL
-     * @throws IOException if an I/O problem occurs
+     * @throws IOException
+     *             if an I/O problem occurs
      */
-    public static boolean setFont(PCLGenerator gen, String name, int size, String text)
-                throws IOException {
-        byte[] encoded = text.getBytes("ISO-8859-1");
+    public static boolean setFont(final PCLGenerator gen, final String name,
+            final int size, final String text) throws IOException {
+        final byte[] encoded = text.getBytes("ISO-8859-1");
         for (int i = 0, c = encoded.length; i < c; i++) {
             if (encoded[i] == 0x3F && text.charAt(i) != '?') {
                 return false;
@@ -55,106 +59,113 @@ final class HardcodedFonts {
         return selectFont(gen, name, size);
     }
 
-    private static boolean selectFont(PCLGenerator gen, String name, int size) throws IOException {
+    private static boolean selectFont(final PCLGenerator gen,
+            final String name, final int size) throws IOException {
         int fontcode = 0;
         if (name.length() > 1 && name.charAt(0) == 'F') {
             try {
                 fontcode = Integer.parseInt(name.substring(1));
-            } catch (Exception e) {
-                LOG.error(e);
+            } catch (final Exception e) {
+                log.error(e.getMessage(), e);
             }
         }
-        //Note "(ON" selects ISO 8859-1 symbol set as used by PCLGenerator
-        String formattedSize = gen.formatDouble2(size / 1000.0);
+        // Note "(ON" selects ISO 8859-1 symbol set as used by PCLGenerator
+        final String formattedSize = gen.formatDouble2(size / 1000.0);
         switch (fontcode) {
-        case 1:     // F1 = Helvetica
+        case 1: // F1 = Helvetica
             // gen.writeCommand("(8U");
             // gen.writeCommand("(s1p" + formattedSize + "v0s0b24580T");
-            // Arial is more common among PCL5 printers than Helvetica - so use Arial
+            // Arial is more common among PCL5 printers than Helvetica - so use
+            // Arial
 
             gen.writeCommand("(0N");
             gen.writeCommand("(s1p" + formattedSize + "v0s0b16602T");
             break;
-        case 2:     // F2 = Helvetica Oblique
+        case 2: // F2 = Helvetica Oblique
 
             gen.writeCommand("(0N");
             gen.writeCommand("(s1p" + formattedSize + "v1s0b16602T");
             break;
-        case 3:     // F3 = Helvetica Bold
+        case 3: // F3 = Helvetica Bold
 
             gen.writeCommand("(0N");
             gen.writeCommand("(s1p" + formattedSize + "v0s3b16602T");
             break;
-        case 4:     // F4 = Helvetica Bold Oblique
+        case 4: // F4 = Helvetica Bold Oblique
 
             gen.writeCommand("(0N");
             gen.writeCommand("(s1p" + formattedSize + "v1s3b16602T");
             break;
-        case 5:     // F5 = Times Roman
+        case 5: // F5 = Times Roman
             // gen.writeCommand("(8U");
             // gen.writeCommand("(s1p" + formattedSize + "v0s0b25093T");
-            // Times New is more common among PCL5 printers than Times - so use Times New
+            // Times New is more common among PCL5 printers than Times - so use
+            // Times New
 
             gen.writeCommand("(0N");
             gen.writeCommand("(s1p" + formattedSize + "v0s0b16901T");
             break;
-        case 6:     // F6 = Times Italic
+        case 6: // F6 = Times Italic
 
             gen.writeCommand("(0N");
             gen.writeCommand("(s1p" + formattedSize + "v1s0b16901T");
             break;
-        case 7:     // F7 = Times Bold
+        case 7: // F7 = Times Bold
 
             gen.writeCommand("(0N");
             gen.writeCommand("(s1p" + formattedSize + "v0s3b16901T");
             break;
-        case 8:     // F8 = Times Bold Italic
+        case 8: // F8 = Times Bold Italic
 
             gen.writeCommand("(0N");
             gen.writeCommand("(s1p" + formattedSize + "v1s3b16901T");
             break;
-        case 9:     // F9 = Courier
+        case 9: // F9 = Courier
 
             gen.writeCommand("(0N");
-            gen.writeCommand("(s0p" + gen.formatDouble2(120.01f / (size / 1000.00f))
+            gen.writeCommand("(s0p"
+                    + gen.formatDouble2(120.01f / (size / 1000.00f))
                     + "h0s0b4099T");
             break;
-        case 10:    // F10 = Courier Oblique
+        case 10: // F10 = Courier Oblique
 
             gen.writeCommand("(0N");
-            gen.writeCommand("(s0p" + gen.formatDouble2(120.01f / (size / 1000.00f))
+            gen.writeCommand("(s0p"
+                    + gen.formatDouble2(120.01f / (size / 1000.00f))
                     + "h1s0b4099T");
             break;
-        case 11:    // F11 = Courier Bold
+        case 11: // F11 = Courier Bold
 
             gen.writeCommand("(0N");
-            gen.writeCommand("(s0p" + gen.formatDouble2(120.01f / (size / 1000.00f))
+            gen.writeCommand("(s0p"
+                    + gen.formatDouble2(120.01f / (size / 1000.00f))
                     + "h0s3b4099T");
             break;
-        case 12:    // F12 = Courier Bold Oblique
+        case 12: // F12 = Courier Bold Oblique
 
             gen.writeCommand("(0N");
-            gen.writeCommand("(s0p" + gen.formatDouble2(120.01f / (size / 1000.00f))
+            gen.writeCommand("(s0p"
+                    + gen.formatDouble2(120.01f / (size / 1000.00f))
                     + "h1s3b4099T");
             break;
-        case 13:    // F13 = Symbol
+        case 13: // F13 = Symbol
 
             return false;
-            //gen.writeCommand("(19M");
-            //gen.writeCommand("(s1p" + formattedSize + "v0s0b16686T");
+            // gen.writeCommand("(19M");
+            // gen.writeCommand("(s1p" + formattedSize + "v0s0b16686T");
             // ECMA Latin 1 Symbol Set in Times Roman???
             // gen.writeCommand("(9U");
             // gen.writeCommand("(s1p" + formattedSize + "v0s0b25093T");
-            //break;
-        case 14:    // F14 = Zapf Dingbats
+            // break;
+        case 14: // F14 = Zapf Dingbats
 
             return false;
-            //gen.writeCommand("(14L");
-            //gen.writeCommand("(s1p" + formattedSize + "v0s0b45101T");
-            //break;
+            // gen.writeCommand("(14L");
+            // gen.writeCommand("(s1p" + formattedSize + "v0s0b45101T");
+            // break;
         default:
-            //gen.writeCommand("(0N");
-            //gen.writeCommand("(s" + formattedSize + "V");
+            // gen.writeCommand("(0N");
+            // gen.writeCommand("(s" + formattedSize + "V");
             return false;
         }
         return true;

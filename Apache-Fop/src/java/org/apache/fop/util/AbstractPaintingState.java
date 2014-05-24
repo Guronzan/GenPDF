@@ -39,7 +39,11 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
     private AbstractData data = null;
 
     /** the state stack */
-    private StateStack/*<AbstractData>*/ stateStack = new StateStack/*<AbstractData>*/();
+    private StateStack/* <AbstractData> */stateStack = new StateStack/*
+                                                                      * <
+                                                                      * AbstractData
+                                                                      * >
+                                                                      */();
 
     /**
      * Instantiates a new state data object
@@ -61,22 +65,24 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
      * @return the currently valid state
      */
     public AbstractData getData() {
-        if (data == null) {
-            data = instantiateData();
+        if (this.data == null) {
+            this.data = instantiateData();
         }
-        return data;
+        return this.data;
     }
 
     /**
-     * Set the current color.
-     * Check if the new color is a change and then set the current color.
+     * Set the current color. Check if the new color is a change and then set
+     * the current color.
      *
-     * @param col the color to set
+     * @param col
+     *            the color to set
      * @return true if the color has changed
      */
-    public boolean setColor(Color col) {
-        Color other = getData().color;
-        if (!org.apache.xmlgraphics.java2d.color.ColorUtil.isSameColor(col, other)) {
+    public boolean setColor(final Color col) {
+        final Color other = getData().color;
+        if (!org.apache.xmlgraphics.java2d.color.ColorUtil.isSameColor(col,
+                other)) {
             getData().color = col;
             return true;
         }
@@ -108,15 +114,17 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
     }
 
     /**
-     * Set the current background color.
-     * Check if the new background color is a change and then set the current background color.
+     * Set the current background color. Check if the new background color is a
+     * change and then set the current background color.
      *
-     * @param col the background color to set
+     * @param col
+     *            the background color to set
      * @return true if the color has changed
      */
-    public boolean setBackColor(Color col) {
-        Color other = getData().backColor;
-        if (!org.apache.xmlgraphics.java2d.color.ColorUtil.isSameColor(col, other)) {
+    public boolean setBackColor(final Color col) {
+        final Color other = getData().backColor;
+        if (!org.apache.xmlgraphics.java2d.color.ColorUtil.isSameColor(col,
+                other)) {
             getData().backColor = col;
             return true;
         }
@@ -126,10 +134,11 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
     /**
      * Set the current font name
      *
-     * @param internalFontName the internal font name
+     * @param internalFontName
+     *            the internal font name
      * @return true if the font name has changed
      */
-    public boolean setFontName(String internalFontName) {
+    public boolean setFontName(final String internalFontName) {
         if (!internalFontName.equals(getData().fontName)) {
             getData().fontName = internalFontName;
             return true;
@@ -156,13 +165,14 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
     }
 
     /**
-     * Set the current font size.
-     * Check if the font size is a change and then set the current font size.
+     * Set the current font size. Check if the font size is a change and then
+     * set the current font size.
      *
-     * @param size the font size to set
+     * @param size
+     *            the font size to set
      * @return true if the font size has changed
      */
-    public boolean setFontSize(int size) {
+    public boolean setFontSize(final int size) {
         if (size != getData().fontSize) {
             getData().fontSize = size;
             return true;
@@ -173,10 +183,11 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
     /**
      * Set the current line width.
      *
-     * @param width the line width in points
+     * @param width
+     *            the line width in points
      * @return true if the line width has changed
      */
-    public boolean setLineWidth(float width) {
+    public boolean setLineWidth(final float width) {
         if (getData().lineWidth != width) {
             getData().lineWidth = width;
             return true;
@@ -196,10 +207,11 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
     /**
      * Sets the dash array (line type) for the current basic stroke
      *
-     * @param dash the line dash array
+     * @param dash
+     *            the line dash array
      * @return true if the dash array has changed
      */
-    public boolean setDashArray(float[] dash) {
+    public boolean setDashArray(final float[] dash) {
         if (!Arrays.equals(dash, getData().dashArray)) {
             getData().dashArray = dash;
             return true;
@@ -208,58 +220,58 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
     }
 
     /**
-     * Get the current transform.
-     * This gets the combination of all transforms in the
-     * current state.
+     * Get the current transform. This gets the combination of all transforms in
+     * the current state.
      *
      * @return the calculate combined transform for the current state
      */
     public AffineTransform getTransform() {
-       AffineTransform at = new AffineTransform();
-       for (Iterator iter = stateStack.iterator(); iter.hasNext();) {
-           AbstractData data = (AbstractData)iter.next();
-           AffineTransform stackTrans = data.getTransform();
-           at.concatenate(stackTrans);
-       }
-       AffineTransform currentTrans = getData().getTransform();
-       at.concatenate(currentTrans);
-       return at;
+        final AffineTransform at = new AffineTransform();
+        for (final Iterator iter = this.stateStack.iterator(); iter.hasNext();) {
+            final AbstractData data = (AbstractData) iter.next();
+            final AffineTransform stackTrans = data.getTransform();
+            at.concatenate(stackTrans);
+        }
+        final AffineTransform currentTrans = getData().getTransform();
+        at.concatenate(currentTrans);
+        return at;
     }
 
     /**
-     * Check the current transform.
-     * The transform for the current state is the combination of all
-     * transforms in the current state. The parameter is compared
-     * against this current transform.
+     * Check the current transform. The transform for the current state is the
+     * combination of all transforms in the current state. The parameter is
+     * compared against this current transform.
      *
-     * @param tf the transform the check against
+     * @param tf
+     *            the transform the check against
      * @return true if the new transform is different then the current transform
      */
-    public boolean checkTransform(AffineTransform tf) {
+    public boolean checkTransform(final AffineTransform tf) {
         return !tf.equals(getData().getTransform());
     }
 
     /**
-     * Get a copy of the base transform for the page. Used to translate
-     * IPP/BPP values into X,Y positions when positioning is "fixed".
+     * Get a copy of the base transform for the page. Used to translate IPP/BPP
+     * values into X,Y positions when positioning is "fixed".
      *
      * @return the base transform, or null if the state stack is empty
      */
     public AffineTransform getBaseTransform() {
-       if (stateStack.isEmpty()) {
-           return null;
-       } else {
-           AbstractData baseData = (AbstractData)stateStack.get(0);
-           return (AffineTransform) baseData.getTransform().clone();
-       }
+        if (this.stateStack.isEmpty()) {
+            return null;
+        } else {
+            final AbstractData baseData = (AbstractData) this.stateStack.get(0);
+            return (AffineTransform) baseData.getTransform().clone();
+        }
     }
 
     /**
      * Concatenates the given AffineTransform to the current one.
      *
-     * @param at the transform to concatenate to the current level transform
+     * @param at
+     *            the transform to concatenate to the current level transform
      */
-    public void concatenate(AffineTransform at) {
+    public void concatenate(final AffineTransform at) {
         getData().concatenate(at);
     }
 
@@ -277,27 +289,25 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
         getData().clearTransform();
     }
 
-
     /**
-     * Save the current painting state.
-     * This pushes the current painting state onto the stack.
-     * This call should be used when the Q operator is used
-     * so that the state is known when popped.
+     * Save the current painting state. This pushes the current painting state
+     * onto the stack. This call should be used when the Q operator is used so
+     * that the state is known when popped.
      */
     public void save() {
-        AbstractData copy = (AbstractData)getData().clone();
-        stateStack.push(copy);
+        final AbstractData copy = (AbstractData) getData().clone();
+        this.stateStack.push(copy);
     }
 
     /**
-     * Restore the current painting state.
-     * This pops the painting state from the stack and sets current values to popped state.
+     * Restore the current painting state. This pops the painting state from the
+     * stack and sets current values to popped state.
      *
      * @return the restored state, null if the stack is empty
      */
     public AbstractData restore() {
-        if (!stateStack.isEmpty()) {
-            setData((AbstractData)stateStack.pop());
+        if (!this.stateStack.isEmpty()) {
+            setData((AbstractData) this.stateStack.pop());
             return this.data;
         } else {
             return null;
@@ -305,28 +315,33 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
     }
 
     /**
-     * Save all painting state data.
-     * This pushes all painting state data in the given list to the stack
+     * Save all painting state data. This pushes all painting state data in the
+     * given list to the stack
      *
-     * @param dataList a state data list
+     * @param dataList
+     *            a state data list
      */
-    public void saveAll(List/*<AbstractData>*/ dataList) {
-        Iterator it = dataList.iterator();
+    public void saveAll(final List/* <AbstractData> */dataList) {
+        final Iterator it = dataList.iterator();
         while (it.hasNext()) {
             // save current data on stack
             save();
-            setData((AbstractData)it.next());
+            setData((AbstractData) it.next());
         }
     }
 
     /**
-     * Restore all painting state data.
-     * This pops all painting state data from the stack
+     * Restore all painting state data. This pops all painting state data from
+     * the stack
      *
      * @return a list of state data popped from the stack
      */
-    public List/*<AbstractData>*/ restoreAll() {
-        List/*<AbstractData>*/ dataList = new java.util.ArrayList/*<AbstractData>*/();
+    public List/* <AbstractData> */restoreAll() {
+        final List/* <AbstractData> */dataList = new java.util.ArrayList/*
+                                                                         * <
+                                                                         * AbstractData
+                                                                         * >
+                                                                         */();
         AbstractData data;
         while (true) {
             data = getData();
@@ -342,9 +357,10 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
     /**
      * Sets the current state data
      *
-     * @param data the state data
+     * @param data
+     *            the state data
      */
-    protected void setData(AbstractData data) {
+    protected void setData(final AbstractData data) {
         this.data = data;
     }
 
@@ -352,7 +368,7 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
      * Clears the state stack
      */
     public void clear() {
-        stateStack.clear();
+        this.stateStack.clear();
         setData(null);
     }
 
@@ -361,26 +377,24 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
      *
      * @return the state stack
      */
-    protected Stack/*<AbstractData>*/ getStateStack() {
+    protected Stack/* <AbstractData> */getStateStack() {
         return this.stateStack;
     }
 
     /** {@inheritDoc} */
     @Override
     public Object clone() {
-        AbstractPaintingState state = instantiate();
+        final AbstractPaintingState state = instantiate();
         state.stateStack = new StateStack(this.stateStack);
-        state.data = (AbstractData)this.data.clone();
+        state.data = (AbstractData) this.data.clone();
         return state;
     }
 
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return ", stateStack=" + stateStack
-        + ", currentData=" + data;
+        return ", stateStack=" + this.stateStack + ", currentData=" + this.data;
     }
-
 
     /**
      * A stack implementation which holds state objects
@@ -399,17 +413,17 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
         /**
          * Copy constructor
          *
-         * @param c initial contents of stack
+         * @param c
+         *            initial contents of stack
          */
-        public StateStack(Collection c) {
-            elementCount = c.size();
+        public StateStack(final Collection c) {
+            this.elementCount = c.size();
             // 10% for growth
-            elementData = new Object[
-                          (int)Math.min((elementCount * 110L) / 100, Integer.MAX_VALUE)];
-            c.toArray(elementData);
+            this.elementData = new Object[(int) Math.min(
+                    this.elementCount * 110L / 100, Integer.MAX_VALUE)];
+            c.toArray(this.elementData);
         }
     }
-
 
     /**
      * A base painting state data holding object
@@ -448,13 +462,14 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
 
         /**
          * Concatenate the given AffineTransform with the current thus creating
-         * a new viewport. Note that all concatenation operations are logged
-         * so they can be replayed if necessary (ex. for block-containers with
+         * a new viewport. Note that all concatenation operations are logged so
+         * they can be replayed if necessary (ex. for block-containers with
          * "fixed" positioning.
          *
-         * @param at Transformation to perform
+         * @param at
+         *            Transformation to perform
          */
-        public void concatenate(AffineTransform at) {
+        public void concatenate(final AffineTransform at) {
             getTransform().concatenate(at);
         }
 
@@ -464,17 +479,19 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
          * @return the current transform
          */
         public AffineTransform getTransform() {
-            if (transform == null) {
-                transform = new AffineTransform();
+            if (this.transform == null) {
+                this.transform = new AffineTransform();
             }
-            return transform;
+            return this.transform;
         }
 
         /**
          * Sets the current AffineTransform.
-         * @param baseTransform the transform
+         * 
+         * @param baseTransform
+         *            the transform
          */
-        public void setTransform(AffineTransform baseTransform) {
+        public void setTransform(final AffineTransform baseTransform) {
             this.transform = baseTransform;
         }
 
@@ -482,7 +499,7 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
          * Resets the current AffineTransform.
          */
         public void clearTransform() {
-            transform = new AffineTransform();
+            this.transform = new AffineTransform();
         }
 
         /**
@@ -491,11 +508,11 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
          * @return the derived rotation from the current transform
          */
         public int getDerivedRotation() {
-            AffineTransform at = getTransform();
-            double sx = at.getScaleX();
-            double sy = at.getScaleY();
-            double shx = at.getShearX();
-            double shy = at.getShearY();
+            final AffineTransform at = getTransform();
+            final double sx = at.getScaleX();
+            final double sy = at.getScaleY();
+            final double shx = at.getShearX();
+            final double shy = at.getShearY();
             int rotation = 0;
             if (sx == 0 && sy == 0 && shx > 0 && shy < 0) {
                 rotation = 270;
@@ -512,7 +529,7 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
         /** {@inheritDoc} */
         @Override
         public Object clone() {
-            AbstractData data = instantiate();
+            final AbstractData data = instantiate();
             data.color = this.color;
             data.backColor = this.backColor;
             data.fontName = this.fontName;
@@ -529,13 +546,11 @@ public abstract class AbstractPaintingState implements Cloneable, Serializable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            return "color=" + color
-                + ", backColor=" + backColor
-                + ", fontName=" + fontName
-                + ", fontSize=" + fontSize
-                + ", lineWidth=" + lineWidth
-                + ", dashArray=" + dashArray
-                + ", transform=" + transform;
+            return "color=" + this.color + ", backColor=" + this.backColor
+                    + ", fontName=" + this.fontName + ", fontSize="
+                    + this.fontSize + ", lineWidth=" + this.lineWidth
+                    + ", dashArray=" + this.dashArray + ", transform="
+                    + this.transform;
         }
     }
 }

@@ -29,108 +29,116 @@ import org.apache.fop.fo.FObj;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.properties.PropertyMaker;
 
-
 /**
  * This class holds context information needed during property expression
- * evaluation.
- * It holds the Maker object for the property, the PropertyList being
- * built, and the FObj parent of the FObj for which the property is being set.
+ * evaluation. It holds the Maker object for the property, the PropertyList
+ * being built, and the FObj parent of the FObj for which the property is being
+ * set.
  */
 public class PropertyInfo {
-    private PropertyMaker maker;
-    private PropertyList plist;
-    private FObj fo;
-    private Stack stkFunction;    // Stack of functions being evaluated
+    private final PropertyMaker maker;
+    private final PropertyList plist;
+    private final FObj fo;
+    private Stack stkFunction; // Stack of functions being evaluated
 
     /**
      * Constructor
-     * @param maker Property.Maker object
-     * @param plist PropertyList object
+     * 
+     * @param maker
+     *            Property.Maker object
+     * @param plist
+     *            PropertyList object
      */
-    public PropertyInfo(PropertyMaker maker, PropertyList plist) {
+    public PropertyInfo(final PropertyMaker maker, final PropertyList plist) {
         this.maker = maker;
         this.plist = plist;
         this.fo = plist.getParentFObj();
     }
 
     /**
-     * Return the PercentBase object used to calculate the absolute value from
-     * a percent specification.
-     * Propagates to the Maker.
+     * Return the PercentBase object used to calculate the absolute value from a
+     * percent specification. Propagates to the Maker.
+     * 
      * @return The PercentBase object or null if percentLengthOK()=false.
-     * @throws PropertyException if a property exception occurs
+     * @throws PropertyException
+     *             if a property exception occurs
      */
     public PercentBase getPercentBase() throws PropertyException {
-        PercentBase pcbase = getFunctionPercentBase();
-        return (pcbase != null) ? pcbase : maker.getPercentBase(plist);
+        final PercentBase pcbase = getFunctionPercentBase();
+        return pcbase != null ? pcbase : this.maker.getPercentBase(this.plist);
     }
 
     /**
      * @return the current font-size value as base units (milli-points).
-     * @throws PropertyException if a property exception occurs
+     * @throws PropertyException
+     *             if a property exception occurs
      */
     public Length currentFontSize() throws PropertyException {
-        return plist.get(Constants.PR_FONT_SIZE).getLength();
+        return this.plist.get(Constants.PR_FONT_SIZE).getLength();
     }
 
     /**
      * accessor for FObj
+     * 
      * @return FObj
      */
     public FObj getFO() {
-        return fo;
+        return this.fo;
     }
 
     /**
      * accessor for PropertyList
+     * 
      * @return PropertyList object
      */
     public PropertyList getPropertyList() {
-        return plist;
+        return this.plist;
     }
 
     /**
      * accessor for PropertyMaker
+     * 
      * @return PropertyMaker object
      */
     public PropertyMaker getPropertyMaker() {
-        return maker;
+        return this.maker;
     }
 
     /**
      * push a function onto the function stack
-     * @param func function to push onto stack
+     * 
+     * @param func
+     *            function to push onto stack
      */
-    public void pushFunction(Function func) {
-        if (stkFunction == null) {
-            stkFunction = new Stack();
+    public void pushFunction(final Function func) {
+        if (this.stkFunction == null) {
+            this.stkFunction = new Stack();
         }
-        stkFunction.push(func);
+        this.stkFunction.push(func);
     }
 
     /**
      * pop a function off of the function stack
      */
     public void popFunction() {
-        if (stkFunction != null) {
-            stkFunction.pop();
+        if (this.stkFunction != null) {
+            this.stkFunction.pop();
         }
     }
 
     /**
      * Convenience shortcut to get a reference to the FOUserAgent
      *
-     * @return  the FOUserAgent
+     * @return the FOUserAgent
      */
     protected FOUserAgent getUserAgent() {
-        return (plist.getFObj() != null)
-            ? plist.getFObj().getUserAgent()
-                    : null;
+        return this.plist.getFObj() != null ? this.plist.getFObj()
+                .getUserAgent() : null;
     }
 
     private PercentBase getFunctionPercentBase() {
-        if (stkFunction != null) {
-            Function f = (Function)stkFunction.peek();
+        if (this.stkFunction != null) {
+            final Function f = (Function) this.stkFunction.peek();
             if (f != null) {
                 return f.getPercentBase();
             }

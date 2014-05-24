@@ -17,7 +17,6 @@
 
 /* $Id$ */
 
-
 package embedding;
 
 import java.awt.Font;
@@ -26,39 +25,38 @@ import java.io.OutputStream;
 
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
-
-import org.apache.xmlgraphics.java2d.GraphicContext;
-import org.apache.xmlgraphics.java2d.ps.EPSDocumentGraphics2D;
-
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.render.ps.NativeTextHandler;
 import org.apache.fop.svg.PDFDocumentGraphics2DConfigurator;
+import org.apache.xmlgraphics.java2d.GraphicContext;
+import org.apache.xmlgraphics.java2d.ps.EPSDocumentGraphics2D;
 
 public class ExampleEPS {
 
-  /**
-   * @param args
-   */
-  public static void main(String[] args) {
-    try {
-      String configFile = "examples/fop-eps.xconf";
-      DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
-      Configuration c = cfgBuilder.buildFromFile(configFile);
+    /**
+     * @param args
+     */
+    public static void main(final String[] args) {
+        try {
+            final String configFile = "examples/fop-eps.xconf";
+            final DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
+            final Configuration c = cfgBuilder.buildFromFile(configFile);
 
-      FontInfo fontInfo = PDFDocumentGraphics2DConfigurator.createFontInfo(c, false);
+            final FontInfo fontInfo = PDFDocumentGraphics2DConfigurator
+                    .createFontInfo(c, false);
 
-      OutputStream out = new FileOutputStream("example_eps.eps");
-      EPSDocumentGraphics2D g2d = new EPSDocumentGraphics2D(false);
-      g2d.setGraphicContext(new GraphicContext());
-      g2d.setCustomTextHandler(new NativeTextHandler(g2d, fontInfo));
-      g2d.setupDocument(out, 200, 100);
-      g2d.setFont(new Font("Arial", Font.PLAIN, 12));
-      g2d.drawString("Hi there Arial", 50, 50);
-      g2d.finish();
-      out.close();
-    } catch (Exception e) {
-      e.printStackTrace();
+            final OutputStream out = new FileOutputStream("example_eps.eps");
+            final EPSDocumentGraphics2D g2d = new EPSDocumentGraphics2D(false);
+            g2d.setGraphicContext(new GraphicContext());
+            g2d.setCustomTextHandler(new NativeTextHandler(g2d, fontInfo));
+            g2d.setupDocument(out, 200, 100);
+            g2d.setFont(new Font("Arial", Font.PLAIN, 12));
+            g2d.drawString("Hi there Arial", 50, 50);
+            g2d.finish();
+            out.close();
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
     }
-  }
 
 }

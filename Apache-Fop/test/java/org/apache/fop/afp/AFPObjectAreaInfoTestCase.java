@@ -19,10 +19,10 @@
 
 package org.apache.fop.afp;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for {@link AFPObjectAreaInfo}.
@@ -36,7 +36,7 @@ public class AFPObjectAreaInfoTestCase {
      */
     @Before
     public void setUp() {
-        sut = new AFPObjectAreaInfo(1, 2, 3, 4, 5, 6);
+        this.sut = new AFPObjectAreaInfo(1, 2, 3, 4, 5, 6);
     }
 
     /**
@@ -44,13 +44,13 @@ public class AFPObjectAreaInfoTestCase {
      */
     @Test
     public void testGetters() {
-        assertEquals(1, sut.getX());
-        assertEquals(2, sut.getY());
-        assertEquals(3, sut.getWidth());
-        assertEquals(4, sut.getHeight());
-        assertEquals(5, sut.getWidthRes());
-        assertEquals(5, sut.getHeightRes());
-        assertEquals(6, sut.getRotation());
+        assertEquals(1, this.sut.getX());
+        assertEquals(2, this.sut.getY());
+        assertEquals(3, this.sut.getWidth());
+        assertEquals(4, this.sut.getHeight());
+        assertEquals(5, this.sut.getWidthRes());
+        assertEquals(5, this.sut.getHeightRes());
+        assertEquals(6, this.sut.getRotation());
     }
 
     /**
@@ -58,19 +58,19 @@ public class AFPObjectAreaInfoTestCase {
      */
     @Test
     public void testSetters() {
-        assertEquals(5, sut.getWidthRes());
-        assertEquals(5, sut.getHeightRes());
+        assertEquals(5, this.sut.getWidthRes());
+        assertEquals(5, this.sut.getHeightRes());
 
-        sut.setResolution(20);
-        assertEquals(20, sut.getWidthRes());
-        assertEquals(20, sut.getHeightRes());
+        this.sut.setResolution(20);
+        assertEquals(20, this.sut.getWidthRes());
+        assertEquals(20, this.sut.getHeightRes());
 
-        sut.setHeightRes(10);
-        assertEquals(20, sut.getWidthRes());
-        assertEquals(10, sut.getHeightRes());
+        this.sut.setHeightRes(10);
+        assertEquals(20, this.sut.getWidthRes());
+        assertEquals(10, this.sut.getHeightRes());
 
-        sut.setWidthRes(9);
-        assertEquals(9, sut.getWidthRes());
-        assertEquals(10, sut.getHeightRes());
+        this.sut.setWidthRes(9);
+        assertEquals(9, this.sut.getWidthRes());
+        assertEquals(10, this.sut.getHeightRes());
     }
 }

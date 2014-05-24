@@ -20,15 +20,17 @@
 package org.apache.xmlgraphics.image.loader.cache;
 
 /**
- * Returns time stamps for the image cache for entry expiration functionality. This functionality
- * is in its own class so it's easy to write a mock class for testing.
+ * Returns time stamps for the image cache for entry expiration functionality.
+ * This functionality is in its own class so it's easy to write a mock class for
+ * testing.
  */
 class TimeStampProvider {
 
     /**
      * Returns the current time stamp.
-     * @return the current time stamp (the value returned follows the semantics of
-     *                   {@link System#currentTimeMillis()})
+     * 
+     * @return the current time stamp (the value returned follows the semantics
+     *         of {@link System#currentTimeMillis()})
      */
     public long getTimeStamp() {
         return System.currentTimeMillis();

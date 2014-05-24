@@ -36,13 +36,16 @@ public class DSCCommentIncludeResource extends AbstractResourceDSCComment {
 
     /**
      * Creates a new instance for a given PSResource instance
-     * @param resource the resource
+     * 
+     * @param resource
+     *            the resource
      */
-    public DSCCommentIncludeResource(PSResource resource) {
+    public DSCCommentIncludeResource(final PSResource resource) {
         super(resource);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return DSCConstants.INCLUDE_RESOURCE;
     }

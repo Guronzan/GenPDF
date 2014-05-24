@@ -24,8 +24,8 @@ import org.apache.fop.fo.properties.KeepProperty;
 import org.apache.fop.fo.properties.Property;
 
 /**
- * Object representing a keep constraint, corresponding
- * to the XSL-FO <a href="http://www.w3.org/TR/xsl/#d0e26492">keep properties</a>.
+ * Object representing a keep constraint, corresponding to the XSL-FO <a
+ * href="http://www.w3.org/TR/xsl/#d0e26492">keep properties</a>.
  */
 public final class Keep {
 
@@ -36,21 +36,23 @@ public final class Keep {
     private static final int STRENGTH_ALWAYS = Integer.MAX_VALUE;
 
     /** keep auto */
-    public static final Keep KEEP_AUTO = new Keep(STRENGTH_AUTO, Constants.EN_AUTO);
+    public static final Keep KEEP_AUTO = new Keep(STRENGTH_AUTO,
+            Constants.EN_AUTO);
 
     /** keep always */
-    public static final Keep KEEP_ALWAYS = new Keep(STRENGTH_ALWAYS, Constants.EN_LINE);
+    public static final Keep KEEP_ALWAYS = new Keep(STRENGTH_ALWAYS,
+            Constants.EN_LINE);
 
     private int strength;
 
     private int context;
 
-    private Keep(int strength, int context) {
+    private Keep(final int strength, final int context) {
         this.strength = strength;
         this.context = context;
     }
 
-    private static int getKeepStrength(Property keep) {
+    private static int getKeepStrength(final Property keep) {
         if (keep.isAuto()) {
             return STRENGTH_AUTO;
         } else if (keep.getEnum() == Constants.EN_ALWAYS) {
@@ -63,18 +65,19 @@ public final class Keep {
     /**
      * Obtain a Keep instance corresponding to the given {@link KeepProperty}
      *
-     * @param keepProperty  the {@link KeepProperty}
-     * @return  a new instance corresponding to the given property
+     * @param keepProperty
+     *            the {@link KeepProperty}
+     * @return a new instance corresponding to the given property
      */
-    public static Keep getKeep(KeepProperty keepProperty) {
-        Keep keep = new Keep(STRENGTH_AUTO, Constants.EN_AUTO);
-        keep.update(keepProperty.getWithinPage(),   Constants.EN_PAGE);
+    public static Keep getKeep(final KeepProperty keepProperty) {
+        final Keep keep = new Keep(STRENGTH_AUTO, Constants.EN_AUTO);
+        keep.update(keepProperty.getWithinPage(), Constants.EN_PAGE);
         keep.update(keepProperty.getWithinColumn(), Constants.EN_COLUMN);
-        keep.update(keepProperty.getWithinLine(),   Constants.EN_LINE);
+        keep.update(keepProperty.getWithinLine(), Constants.EN_LINE);
         return keep;
     }
 
-    private void update(Property keep, int context) {
+    private void update(final Property keep, final int context) {
         if (!keep.isAuto()) {
             this.strength = getKeepStrength(keep);
             this.context = context;
@@ -83,74 +86,80 @@ public final class Keep {
 
     /** @return {@code true} if the keep property was specified as "auto" */
     public boolean isAuto() {
-        return strength == STRENGTH_AUTO;
+        return this.strength == STRENGTH_AUTO;
     }
 
     /**
      * Returns the context of this keep.
      *
      * @return one of {@link Constants#EN_LINE}, {@link Constants#EN_COLUMN} or
-     * {@link Constants#EN_PAGE}
+     *         {@link Constants#EN_PAGE}
      */
     public int getContext() {
-        return context;
+        return this.context;
     }
 
     /** @return the penalty value corresponding to the strength of this Keep */
     public int getPenalty() {
-        if (strength == STRENGTH_AUTO) {
+        if (this.strength == STRENGTH_AUTO) {
             return 0;
-        } else if (strength == STRENGTH_ALWAYS) {
+        } else if (this.strength == STRENGTH_ALWAYS) {
             return KnuthElement.INFINITE;
         } else {
             return KnuthElement.INFINITE - 1;
         }
     }
 
-    private static int getKeepContextPriority(int context) {
+    private static int getKeepContextPriority(final int context) {
         switch (context) {
-        case Constants.EN_LINE:   return 0;
-        case Constants.EN_COLUMN: return 1;
-        case Constants.EN_PAGE:   return 2;
-        case Constants.EN_AUTO:   return 3;
-        default: throw new IllegalArgumentException();
+        case Constants.EN_LINE:
+            return 0;
+        case Constants.EN_COLUMN:
+            return 1;
+        case Constants.EN_PAGE:
+            return 2;
+        case Constants.EN_AUTO:
+            return 3;
+        default:
+            throw new IllegalArgumentException();
         }
     }
 
     /**
-     * Compare this Keep instance to another one, and return the
-     * stronger one if the context is the same
+     * Compare this Keep instance to another one, and return the stronger one if
+     * the context is the same
      *
-     * @param other     the instance to compare to
-     * @return  the winning Keep instance
+     * @param other
+     *            the instance to compare to
+     * @return the winning Keep instance
      */
-    public Keep compare(Keep other) {
+    public Keep compare(final Keep other) {
 
         /* check strength "always" first, regardless of priority */
-        if (this.strength == STRENGTH_ALWAYS
-                && this.strength > other.strength) {
+        if (this.strength == STRENGTH_ALWAYS && this.strength > other.strength) {
             return this;
         } else if (other.strength == STRENGTH_ALWAYS
                 && other.strength > this.strength) {
             return other;
         }
 
-        int pThis = getKeepContextPriority(this.context);
-        int pOther = getKeepContextPriority(other.context);
+        final int pThis = getKeepContextPriority(this.context);
+        final int pOther = getKeepContextPriority(other.context);
 
         /* equal priority: strongest wins */
         if (pThis == pOther) {
-            return (strength >= other.strength) ? this : other;
+            return this.strength >= other.strength ? this : other;
         }
 
         /* different priority: lowest priority wins */
-        return (pThis < pOther) ? this : other;
+        return pThis < pOther ? this : other;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return (strength == STRENGTH_AUTO) ? "auto"
-                : (strength == STRENGTH_ALWAYS) ? "always"
-                        : Integer.toString(strength);
+        return this.strength == STRENGTH_AUTO ? "auto"
+                : this.strength == STRENGTH_ALWAYS ? "always" : Integer
+                        .toString(this.strength);
     }
 }

@@ -19,14 +19,14 @@
 
 package org.apache.fop.pdf.xref;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertArrayEquals;
 
 public class UncompressedObjectReferenceTestCase extends ObjectReferenceTest {
 
@@ -38,7 +38,7 @@ public class UncompressedObjectReferenceTestCase extends ObjectReferenceTest {
         run1ByteOffsetTest(0xff);
     }
 
-    private void run1ByteOffsetTest(int offset) throws IOException {
+    private void run1ByteOffsetTest(final int offset) throws IOException {
         runIntegerOffsetTest(Arrays.asList(0, 0, 0, offset));
     }
 
@@ -72,18 +72,21 @@ public class UncompressedObjectReferenceTestCase extends ObjectReferenceTest {
         runTest(Arrays.asList(0xf9, 0xe8, 0xd7, 0xc6, 0xb5, 0xa4, 0x93, 0x82));
     }
 
-    private void runIntegerOffsetTest(List<Integer> expectedOffsetBytes) throws IOException {
-        List<Integer> expectedLongOffset = new ArrayList<Integer>(8);
+    private void runIntegerOffsetTest(final List<Integer> expectedOffsetBytes)
+            throws IOException {
+        final List<Integer> expectedLongOffset = new ArrayList<Integer>(8);
         expectedLongOffset.addAll(Arrays.asList(0, 0, 0, 0));
         expectedLongOffset.addAll(expectedOffsetBytes);
         runTest(expectedLongOffset);
     }
 
-    private void runTest(List<Integer> expectedOffsetBytes) throws IOException {
-        long offset = computeNumberFromBytes(expectedOffsetBytes);
-        sut = new UncompressedObjectReference(offset);
-        byte[] expected = createExpectedOutput((byte) 1, expectedOffsetBytes, (byte) 0);
-        byte[] actual = getActualOutput();
+    private void runTest(final List<Integer> expectedOffsetBytes)
+            throws IOException {
+        final long offset = computeNumberFromBytes(expectedOffsetBytes);
+        this.sut = new UncompressedObjectReference(offset);
+        final byte[] expected = createExpectedOutput((byte) 1,
+                expectedOffsetBytes, (byte) 0);
+        final byte[] actual = getActualOutput();
         assertArrayEquals(expected, actual);
     }
 

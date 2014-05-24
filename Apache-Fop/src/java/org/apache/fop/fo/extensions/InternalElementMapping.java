@@ -22,9 +22,8 @@ package org.apache.fop.fo.extensions;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.apache.xmlgraphics.util.QName;
-
 import org.apache.fop.fo.ElementMapping;
+import org.apache.xmlgraphics.util.QName;
 
 /**
  * Element mapping for FOP's internal extension to XSL-FO.
@@ -46,7 +45,7 @@ public class InternalElementMapping extends ElementMapping {
     private static final Set<String> PROPERTY_ATTRIBUTES = new java.util.HashSet<String>();
 
     static {
-        //These are FOP's extension properties for accessibility
+        // These are FOP's extension properties for accessibility
         PROPERTY_ATTRIBUTES.add(STRUCT_ID);
         PROPERTY_ATTRIBUTES.add(STRUCT_REF);
     }
@@ -55,25 +54,28 @@ public class InternalElementMapping extends ElementMapping {
      * Constructor.
      */
     public InternalElementMapping() {
-        namespaceURI = URI;
+        this.namespaceURI = URI;
     }
 
     /**
      * Initialize the data structures.
      */
+    @Override
     protected void initialize() {
-        if (foObjs == null) {
-            foObjs = new HashMap<String, Maker>();
+        if (this.foObjs == null) {
+            this.foObjs = new HashMap<String, Maker>();
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getStandardPrefix() {
         return STANDARD_PREFIX;
     }
 
     /** {@inheritDoc} */
-    public boolean isAttributeProperty(QName attributeName) {
+    @Override
+    public boolean isAttributeProperty(final QName attributeName) {
         if (!URI.equals(attributeName.getNamespaceURI())) {
             throw new IllegalArgumentException("The namespace URIs don't match");
         }

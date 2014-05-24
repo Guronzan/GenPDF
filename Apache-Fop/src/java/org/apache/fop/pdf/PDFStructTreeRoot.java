@@ -27,9 +27,10 @@ public class PDFStructTreeRoot extends PDFDictionary {
     /**
      * Creates a new /StructTreeRoot dictionary.
      *
-     * @param parentTree the value of the ParenTree entry
+     * @param parentTree
+     *            the value of the ParenTree entry
      */
-    PDFStructTreeRoot(PDFParentTree parentTree) {
+    PDFStructTreeRoot(final PDFParentTree parentTree) {
         put("Type", new PDFName("StructTreeRoot"));
         put("K", new PDFArray());
         put("ParentTree", parentTree);
@@ -41,15 +42,16 @@ public class PDFStructTreeRoot extends PDFDictionary {
      * @return the value of the K entry
      */
     public PDFArray getKids() {
-        return (PDFArray)get("K");
+        return (PDFArray) get("K");
     }
 
     /**
      * Adds the given object to the array of kids.
      *
-     * @param kid an object to be added to the K entry
+     * @param kid
+     *            an object to be added to the K entry
      */
-    public void addKid(PDFObject kid) {
+    public void addKid(final PDFObject kid) {
         getKids().add(kid);
     }
 }

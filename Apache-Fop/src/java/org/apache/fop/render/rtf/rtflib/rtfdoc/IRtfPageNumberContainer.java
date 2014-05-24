@@ -36,7 +36,8 @@ public interface IRtfPageNumberContainer {
     /**
      *
      * @return new RtfPageNumber
-     * @throws IOException for I/O problems.
+     * @throws IOException
+     *             for I/O problems.
      */
     RtfPageNumber newPageNumber() throws IOException;
 }

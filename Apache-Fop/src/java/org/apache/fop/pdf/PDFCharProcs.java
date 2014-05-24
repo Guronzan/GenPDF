@@ -25,8 +25,9 @@ import java.util.Map;
 /**
  * class representing a /CharProcs dictionary for Type3 fonts.
  *
- * <p><b>CAUTION: this is not yet fully implemented!!!!!!!</b>
- * I miss an exemple of <i>how</i> to output this dictionary.
+ * <p>
+ * <b>CAUTION: this is not yet fully implemented!!!!!!!</b> I miss an exemple of
+ * <i>how</i> to output this dictionary.
  * </p>
  *
  * Type3 fonts are specified on page 206 and onwards of the PDF 1.3 spec.
@@ -42,23 +43,27 @@ public class PDFCharProcs extends PDFObject {
      * Create a new PDF char proc store.
      */
     public PDFCharProcs() {
-        keys = new HashMap();
+        this.keys = new HashMap();
     }
 
     /**
      * add a character definition in the dictionary
      *
-     * @param name the character name
-     * @param stream the stream that draws the character
+     * @param name
+     *            the character name
+     * @param stream
+     *            the stream that draws the character
      */
-    public void addCharacter(String name, PDFStream stream) {
-        keys.put(name, stream);
+    public void addCharacter(final String name, final PDFStream stream) {
+        this.keys.put(name, stream);
     }
 
     /**
      * not done yet
+     * 
      * @return the pdf byte array
      */
+    @Override
     public byte[] toPDF() {
         // TODO: implement this org.apache.fop.pdf.PDFObject abstract method
         return new byte[0];

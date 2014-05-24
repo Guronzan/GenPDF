@@ -22,9 +22,8 @@ package org.apache.fop.pdf;
 import java.awt.geom.Point2D;
 
 /**
- * class representing a /GoTo object.
- * This can either have a Goto to a page reference and location
- * or to a specified PDF reference string.
+ * class representing a /GoTo object. This can either have a Goto to a page
+ * reference and location or to a specified PDF reference string.
  */
 public class PDFGoTo extends PDFAction {
 
@@ -39,9 +38,10 @@ public class PDFGoTo extends PDFAction {
     /**
      * create a /GoTo object.
      *
-     * @param pageReference the pageReference represented by this object
+     * @param pageReference
+     *            the pageReference represented by this object
      */
-    public PDFGoTo(String pageReference) {
+    public PDFGoTo(final String pageReference) {
         super();
         setPageReference(pageReference);
     }
@@ -49,10 +49,12 @@ public class PDFGoTo extends PDFAction {
     /**
      * create a /GoTo object.
      *
-     * @param pageReference the PDF reference to the target page
-     * @param position the target area's on-page coordinates in points
+     * @param pageReference
+     *            the PDF reference to the target page
+     * @param position
+     *            the target area's on-page coordinates in points
      */
-    public PDFGoTo(String pageReference, Point2D position) {
+    public PDFGoTo(final String pageReference, final Point2D position) {
         /* generic creation of object */
         this(pageReference);
         setPosition(position);
@@ -61,18 +63,20 @@ public class PDFGoTo extends PDFAction {
     /**
      * Sets page reference after object has been created
      *
-     * @param pageReference the new page reference to use
+     * @param pageReference
+     *            the new page reference to use
      */
-    public void setPageReference(String pageReference) {
+    public void setPageReference(final String pageReference) {
         this.pageReference = pageReference;
     }
 
     /**
      * Sets the target (X,Y) position
      *
-     * @param position the target's on-page coordinates in points
+     * @param position
+     *            the target's on-page coordinates in points
      */
-    public void setPosition(Point2D position) {
+    public void setPosition(final Point2D position) {
         this.xPosition = (float) position.getX();
         this.yPosition = (float) position.getY();
     }
@@ -80,28 +84,31 @@ public class PDFGoTo extends PDFAction {
     /**
      * Sets the x Position to jump to
      *
-     * @param xPosition x position
+     * @param xPosition
+     *            x position
      */
-    public void setXPosition(float xPosition) {
+    public void setXPosition(final float xPosition) {
         this.xPosition = xPosition;
     }
 
     /**
      * Sets the Y position to jump to
      *
-     * @param yPosition y position
+     * @param yPosition
+     *            y position
      */
-    public void setYPosition(float yPosition) {
+    public void setYPosition(final float yPosition) {
         this.yPosition = yPosition;
     }
 
     /**
      * Set the destination string for this Goto.
      *
-     * @param dest the PDF destination string
+     * @param dest
+     *            the PDF destination string
      */
-    public void setDestination(String dest) {
-        destination = dest;
+    public void setDestination(final String dest) {
+        this.destination = dest;
     }
 
     /**
@@ -109,6 +116,7 @@ public class PDFGoTo extends PDFAction {
      *
      * @return the PDF reference for the action
      */
+    @Override
     public String getAction() {
         return referencePDF();
     }
@@ -116,29 +124,25 @@ public class PDFGoTo extends PDFAction {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toPDFString() {
         String dest;
-        if (destination == null) {
-            dest = "/D [" + this.pageReference + " /XYZ " + xPosition
-                          + " " + yPosition + " null]\n";
+        if (this.destination == null) {
+            dest = "/D [" + this.pageReference + " /XYZ " + this.xPosition
+                    + " " + this.yPosition + " null]\n";
         } else {
-            dest = "/D [" + this.pageReference + " " + destination + "]\n";
+            dest = "/D [" + this.pageReference + " " + this.destination + "]\n";
         }
         return "<< /Type /Action\n/S /GoTo\n" + dest + ">>";
     }
 
     /*
-     * example
-     * 29 0 obj
-     * <<
-     * /S /GoTo
-     * /D [23 0 R /FitH 600]
-     * >>
-     * endobj
+     * example 29 0 obj << /S /GoTo /D [23 0 R /FitH 600] >> endobj
      */
 
     /** {@inheritDoc} */
-    protected boolean contentEquals(PDFObject obj) {
+    @Override
+    protected boolean contentEquals(final PDFObject obj) {
         if (this == obj) {
             return true;
         }
@@ -147,25 +151,24 @@ public class PDFGoTo extends PDFAction {
             return false;
         }
 
-        PDFGoTo gt = (PDFGoTo)obj;
+        final PDFGoTo gt = (PDFGoTo) obj;
 
         if (gt.pageReference == null) {
-            if (pageReference != null) {
+            if (this.pageReference != null) {
                 return false;
             }
         } else {
-            if (!gt.pageReference.equals(pageReference)) {
+            if (!gt.pageReference.equals(this.pageReference)) {
                 return false;
             }
         }
 
-        if (destination == null) {
-            if (!(gt.destination == null && gt.xPosition == xPosition
-                && gt.yPosition == yPosition)) {
+        if (this.destination == null) {
+            if (!(gt.destination == null && gt.xPosition == this.xPosition && gt.yPosition == this.yPosition)) {
                 return false;
             }
         } else {
-            if (!destination.equals(gt.destination)) {
+            if (!this.destination.equals(gt.destination)) {
                 return false;
             }
         }
@@ -173,4 +176,3 @@ public class PDFGoTo extends PDFAction {
         return true;
     }
 }
-

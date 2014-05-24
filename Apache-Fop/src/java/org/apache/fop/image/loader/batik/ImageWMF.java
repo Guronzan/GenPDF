@@ -20,13 +20,13 @@
 package org.apache.fop.image.loader.batik;
 
 import org.apache.batik.transcoder.wmf.tosvg.WMFRecordStore;
-
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
 import org.apache.xmlgraphics.image.loader.impl.AbstractImage;
 
 /**
- * This class is an implementation of the Image interface exposing a RenderedImage.
+ * This class is an implementation of the Image interface exposing a
+ * RenderedImage.
  */
 public class ImageWMF extends AbstractImage {
 
@@ -34,32 +34,39 @@ public class ImageWMF extends AbstractImage {
     public static final String MIME_WMF = "image/x-wmf";
 
     /** ImageFlavor for Batik's WMFRecordStore */
-    public static final ImageFlavor WMF_IMAGE = new ImageFlavor("WMFRecordStore");
+    public static final ImageFlavor WMF_IMAGE = new ImageFlavor(
+            "WMFRecordStore");
 
-    private WMFRecordStore store;
+    private final WMFRecordStore store;
 
     /**
      * Main constructor.
-     * @param info the image info object
-     * @param store the WMF record store containing the loaded WMF file
+     * 
+     * @param info
+     *            the image info object
+     * @param store
+     *            the WMF record store containing the loaded WMF file
      */
-    public ImageWMF(ImageInfo info, WMFRecordStore store) {
+    public ImageWMF(final ImageInfo info, final WMFRecordStore store) {
         super(info);
         this.store = store;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getFlavor() {
         return WMF_IMAGE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isCacheable() {
         return true;
     }
 
     /**
      * Returns the contained WMF record store.
+     * 
      * @return the WMFRecordStore
      */
     public WMFRecordStore getRecordStore() {

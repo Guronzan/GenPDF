@@ -19,12 +19,7 @@
 
 package org.apache.fop.render.svg;
 
-import org.xml.sax.SAXException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.apache.xmlgraphics.xmp.Metadata;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.render.intermediate.AbstractXMLWritingIFDocumentHandler;
@@ -32,15 +27,15 @@ import org.apache.fop.render.intermediate.IFDocumentHandlerConfigurator;
 import org.apache.fop.render.intermediate.IFException;
 import org.apache.fop.render.intermediate.IFState;
 import org.apache.fop.render.java2d.Java2DUtil;
+import org.apache.xmlgraphics.xmp.Metadata;
+import org.xml.sax.SAXException;
 
 /**
  * Abstract base class for SVG Painter implementations.
  */
-public abstract class AbstractSVGDocumentHandler extends AbstractXMLWritingIFDocumentHandler
-            implements SVGConstants {
-
-    /** logging instance */
-    private static Log log = LogFactory.getLog(AbstractSVGDocumentHandler.class);
+@Slf4j
+public abstract class AbstractSVGDocumentHandler extends
+AbstractXMLWritingIFDocumentHandler implements SVGConstants {
 
     /** Font configuration */
     protected FontInfo fontInfo;
@@ -51,62 +46,73 @@ public abstract class AbstractSVGDocumentHandler extends AbstractXMLWritingIFDoc
     private static final int MODE_NORMAL = 0;
     private static final int MODE_TEXT = 1;
 
-    private int mode = MODE_NORMAL;
+    private final int mode = MODE_NORMAL;
 
     /** {@inheritDoc} */
+    @Override
     protected String getMainNamespace() {
         return NAMESPACE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public FontInfo getFontInfo() {
         return this.fontInfo;
     }
 
     /** {@inheritDoc} */
-    public void setFontInfo(FontInfo fontInfo) {
+    @Override
+    public void setFontInfo(final FontInfo fontInfo) {
         this.fontInfo = fontInfo;
     }
 
     /** {@inheritDoc} */
-    public void setDefaultFontInfo(FontInfo fontInfo) {
-        FontInfo fi = Java2DUtil.buildDefaultJava2DBasedFontInfo(fontInfo, getUserAgent());
+    @Override
+    public void setDefaultFontInfo(final FontInfo fontInfo) {
+        final FontInfo fi = Java2DUtil.buildDefaultJava2DBasedFontInfo(
+                fontInfo, getUserAgent());
         setFontInfo(fi);
     }
 
     /** {@inheritDoc} */
+    @Override
     public IFDocumentHandlerConfigurator getConfigurator() {
-        return null; //No configurator, yet.
+        return null; // No configurator, yet.
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startDocumentHeader() throws IFException {
         try {
-            handler.startElement("defs");
-        } catch (SAXException e) {
+            this.handler.startElement("defs");
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startDocumentHeader()", e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endDocumentHeader() throws IFException {
         try {
-            handler.endElement("defs");
-        } catch (SAXException e) {
+            this.handler.endElement("defs");
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startDocumentHeader()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void handleExtensionObject(Object extension) throws IFException {
+    @Override
+    public void handleExtensionObject(final Object extension)
+            throws IFException {
         if (extension instanceof Metadata) {
-            Metadata meta = (Metadata)extension;
+            final Metadata meta = (Metadata) extension;
             try {
-                handler.startElement("metadata");
+                this.handler.startElement("metadata");
                 meta.toSAX(this.handler);
-                handler.endElement("metadata");
-            } catch (SAXException e) {
-                throw new IFException("SAX error while handling extension object", e);
+                this.handler.endElement("metadata");
+            } catch (final SAXException e) {
+                throw new IFException(
+                        "SAX error while handling extension object", e);
             }
         } else {
             log.debug("Don't know how to handle extension object. Ignoring: "

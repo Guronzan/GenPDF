@@ -28,129 +28,145 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.apache.xmlgraphics.image.loader.Image;
-import org.apache.xmlgraphics.image.loader.ImageFlavor;
-import org.apache.xmlgraphics.image.loader.impl.ImageRawStream;
-import org.apache.xmlgraphics.image.loader.impl.ImageXMLDOM;
-import org.apache.xmlgraphics.util.QName;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.image.loader.batik.BatikImageFlavors;
 import org.apache.fop.render.ImageHandler;
 import org.apache.fop.render.RenderingContext;
 import org.apache.fop.render.intermediate.DelegatingFragmentContentHandler;
+import org.apache.xmlgraphics.image.loader.Image;
+import org.apache.xmlgraphics.image.loader.ImageFlavor;
+import org.apache.xmlgraphics.image.loader.impl.ImageRawStream;
+import org.apache.xmlgraphics.image.loader.impl.ImageXMLDOM;
+import org.apache.xmlgraphics.util.QName;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Image handler implementation that embeds SVG images in the target SVG file.
  */
+@Slf4j
 public class EmbeddedSVGImageHandler implements ImageHandler, SVGConstants {
-
-    /** logging instance */
-    private static Log log = LogFactory.getLog(EmbeddedSVGImageHandler.class);
 
     /** Constant for the "CDATA" attribute type. */
     private static final String CDATA = "CDATA";
 
     /** {@inheritDoc} */
+    @Override
     public int getPriority() {
         return 500;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class getSupportedImageClass() {
         return ImageRawStream.class;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor[] getSupportedImageFlavors() {
-        return new ImageFlavor[] {
-            BatikImageFlavors.SVG_DOM
-        };
+        return new ImageFlavor[] { BatikImageFlavors.SVG_DOM };
     }
 
-    private void addAttribute(AttributesImpl atts, QName attribute, String value) {
+    private void addAttribute(final AttributesImpl atts, final QName attribute,
+            final String value) {
         atts.addAttribute(attribute.getNamespaceURI(),
                 attribute.getLocalName(), attribute.getQName(), CDATA, value);
     }
 
     /** {@inheritDoc} */
-    public void handleImage(RenderingContext context, Image image, final Rectangle pos)
-            throws IOException {
-        SVGRenderingContext svgContext = (SVGRenderingContext)context;
-        ImageXMLDOM svg = (ImageXMLDOM)image;
-        ContentHandler handler = svgContext.getContentHandler();
-        AttributesImpl atts = new AttributesImpl();
+    @Override
+    public void handleImage(final RenderingContext context, final Image image,
+            final Rectangle pos) throws IOException {
+        final SVGRenderingContext svgContext = (SVGRenderingContext) context;
+        final ImageXMLDOM svg = (ImageXMLDOM) image;
+        final ContentHandler handler = svgContext.getContentHandler();
+        final AttributesImpl atts = new AttributesImpl();
         atts.addAttribute("", "x", "x", CDATA, SVGUtil.formatMptToPt(pos.x));
         atts.addAttribute("", "y", "y", CDATA, SVGUtil.formatMptToPt(pos.y));
-        atts.addAttribute("", "width", "width", CDATA, SVGUtil.formatMptToPt(pos.width));
-        atts.addAttribute("", "height", "height", CDATA, SVGUtil.formatMptToPt(pos.height));
+        atts.addAttribute("", "width", "width", CDATA,
+                SVGUtil.formatMptToPt(pos.width));
+        atts.addAttribute("", "height", "height", CDATA,
+                SVGUtil.formatMptToPt(pos.height));
         try {
 
-            Document doc = (Document)svg.getDocument();
-            Element svgEl = (Element)doc.getDocumentElement();
+            final Document doc = svg.getDocument();
+            final Element svgEl = doc.getDocumentElement();
             if (svgEl.getAttribute("viewBox").length() == 0) {
                 log.warn("SVG doesn't have a viewBox. The result might not be scaled correctly!");
             }
 
-            TransformerFactory tFactory = TransformerFactory.newInstance();
-            Transformer transformer = tFactory.newTransformer();
-            DOMSource src = new DOMSource(svg.getDocument());
-            SAXResult res = new SAXResult(new DelegatingFragmentContentHandler(handler) {
+            final TransformerFactory tFactory = TransformerFactory
+                    .newInstance();
+            final Transformer transformer = tFactory.newTransformer();
+            final DOMSource src = new DOMSource(svg.getDocument());
+            final SAXResult res = new SAXResult(
+                    new DelegatingFragmentContentHandler(handler) {
 
-                private boolean topLevelSVGFound = false;
+                        private boolean topLevelSVGFound = false;
 
-                private void setAttribute(AttributesImpl atts, String localName, String value) {
-                    int index;
-                    index = atts.getIndex("", localName);
-                    if (index < 0) {
-                        atts.addAttribute("", localName, localName, CDATA, value);
-                    } else {
-                        atts.setAttribute(index, "", localName, localName, CDATA, value);
-                    }
-                }
+                        private void setAttribute(final AttributesImpl atts,
+                                final String localName, final String value) {
+                            int index;
+                            index = atts.getIndex("", localName);
+                            if (index < 0) {
+                                atts.addAttribute("", localName, localName,
+                                        CDATA, value);
+                            } else {
+                                atts.setAttribute(index, "", localName,
+                                        localName, CDATA, value);
+                            }
+                        }
 
-                public void startElement(String uri, String localName, String name, Attributes atts)
-                        throws SAXException {
-                    if (!topLevelSVGFound
-                            && SVG_ELEMENT.getNamespaceURI().equals(uri)
-                            && SVG_ELEMENT.getLocalName().equals(localName)) {
-                        topLevelSVGFound = true;
-                        AttributesImpl modAtts = new AttributesImpl(atts);
-                        setAttribute(modAtts, "x", SVGUtil.formatMptToPt(pos.x));
-                        setAttribute(modAtts, "y", SVGUtil.formatMptToPt(pos.y));
-                        setAttribute(modAtts, "width", SVGUtil.formatMptToPt(pos.width));
-                        setAttribute(modAtts, "height", SVGUtil.formatMptToPt(pos.height));
-                        super.startElement(uri, localName, name, modAtts);
-                    } else {
-                        super.startElement(uri, localName, name, atts);
-                    }
-                }
+                        @Override
+                        public void startElement(final String uri,
+                                final String localName, final String name,
+                                final Attributes atts) throws SAXException {
+                            if (!this.topLevelSVGFound
+                                    && SVG_ELEMENT.getNamespaceURI()
+                                    .equals(uri)
+                                    && SVG_ELEMENT.getLocalName().equals(
+                                            localName)) {
+                                this.topLevelSVGFound = true;
+                                final AttributesImpl modAtts = new AttributesImpl(
+                                        atts);
+                                setAttribute(modAtts, "x",
+                                        SVGUtil.formatMptToPt(pos.x));
+                                setAttribute(modAtts, "y",
+                                        SVGUtil.formatMptToPt(pos.y));
+                                setAttribute(modAtts, "width",
+                                        SVGUtil.formatMptToPt(pos.width));
+                                setAttribute(modAtts, "height",
+                                        SVGUtil.formatMptToPt(pos.height));
+                                super.startElement(uri, localName, name,
+                                        modAtts);
+                            } else {
+                                super.startElement(uri, localName, name, atts);
+                            }
+                        }
 
-            });
+                    });
             transformer.transform(src, res);
-        } catch (TransformerException te) {
+        } catch (final TransformerException te) {
             throw new IOException(te.getMessage());
         }
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible(RenderingContext targetContext, Image image) {
+    @Override
+    public boolean isCompatible(final RenderingContext targetContext,
+            final Image image) {
         if (targetContext instanceof SVGRenderingContext) {
             if (image == null) {
                 return true;
             }
             if (image instanceof ImageXMLDOM) {
-                ImageXMLDOM svg = (ImageXMLDOM)image;
+                final ImageXMLDOM svg = (ImageXMLDOM) image;
                 return NAMESPACE.equals(svg.getRootNamespace());
             }
         }

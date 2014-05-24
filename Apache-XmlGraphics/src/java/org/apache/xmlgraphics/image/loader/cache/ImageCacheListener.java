@@ -22,39 +22,49 @@ package org.apache.xmlgraphics.image.loader.cache;
 import java.util.EventListener;
 
 /**
- * This interface can be implemented by classes which want to know what's going on inside the
- * image cache.
+ * This interface can be implemented by classes which want to know what's going
+ * on inside the image cache.
  */
 public interface ImageCacheListener extends EventListener {
 
     /**
      * An URi previously identified as invalid was requested again
-     * @param uri the invalid URI
+     * 
+     * @param uri
+     *            the invalid URI
      */
-    void invalidHit(String uri);
+    void invalidHit(final String uri);
 
     /**
      * An ImageInfo was found in the cache
-     * @param uri the image's URI
+     * 
+     * @param uri
+     *            the image's URI
      */
-    void cacheHitImageInfo(String uri);
+    void cacheHitImageInfo(final String uri);
 
     /**
      * An ImageInfo was not in the cache
-     * @param uri the image's URI
+     * 
+     * @param uri
+     *            the image's URI
      */
-    void cacheMissImageInfo(String uri);
+    void cacheMissImageInfo(final String uri);
 
     /**
      * An Image was found in the cache
-     * @param key the image key
+     * 
+     * @param key
+     *            the image key
      */
-    void cacheHitImage(ImageKey key);
+    void cacheHitImage(final ImageKey key);
 
     /**
      * An Image was not in the cache
-     * @param key the image key
+     * 
+     * @param key
+     *            the image key
      */
-    void cacheMissImage(ImageKey key);
+    void cacheMissImage(final ImageKey key);
 
 }

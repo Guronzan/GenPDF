@@ -32,40 +32,58 @@ public interface ImageWriter {
 
     /**
      * Encodes an image and writes it to an OutputStream.
-     * @param image the image to be encoded
-     * @param out the OutputStream to write to
-     * @throws IOException In case of an /IO problem
+     * 
+     * @param image
+     *            the image to be encoded
+     * @param out
+     *            the OutputStream to write to
+     * @throws IOException
+     *             In case of an /IO problem
      */
-    void writeImage(RenderedImage image, OutputStream out)
+    void writeImage(final RenderedImage image, final OutputStream out)
             throws IOException;
 
     /**
      * Encodes an image and writes it to an OutputStream.
-     * @param image the image to be encoded
-     * @param out the OutputStream to write to
-     * @param params a parameters object to customize the encoding.
-     * @throws IOException In case of an /IO problem
+     * 
+     * @param image
+     *            the image to be encoded
+     * @param out
+     *            the OutputStream to write to
+     * @param params
+     *            a parameters object to customize the encoding.
+     * @throws IOException
+     *             In case of an /IO problem
      */
-    void writeImage(RenderedImage image, OutputStream out,
-            ImageWriterParams params)
-            throws IOException;
+    void writeImage(final RenderedImage image, final OutputStream out,
+            final ImageWriterParams params) throws IOException;
 
     /** @return the target MIME type supported by this ImageWriter */
     String getMIMEType();
 
-    /** @return true if the ImageWriter is expected to work properly in the current environment */
+    /**
+     * @return true if the ImageWriter is expected to work properly in the
+     *         current environment
+     */
     boolean isFunctional();
 
-    /** @return true if the implemented format supports multiple pages in a single file */
+    /**
+     * @return true if the implemented format supports multiple pages in a single
+     *         file
+     */
     boolean supportsMultiImageWriter();
 
     /**
-     * Creates a MultiImageWriter instance that lets you put multiple pages into a single file
-     * if the format supports it.
-     * @param out the OutputStream to write the image to
+     * Creates a MultiImageWriter instance that lets you put multiple pages into
+     * a single file if the format supports it.
+     * 
+     * @param out
+     *            the OutputStream to write the image to
      * @return the requested MultiImageWriter instance
-     * @throws IOException In case of an /IO problem
+     * @throws IOException
+     *             In case of an /IO problem
      */
-    MultiImageWriter createMultiImageWriter(OutputStream out) throws IOException;
+    MultiImageWriter createMultiImageWriter(final OutputStream out)
+            throws IOException;
 
 }

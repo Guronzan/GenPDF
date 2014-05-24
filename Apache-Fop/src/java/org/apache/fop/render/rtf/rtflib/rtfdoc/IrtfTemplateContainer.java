@@ -35,12 +35,16 @@ public interface IrtfTemplateContainer {
 
     /**
      * Creates a new Template.
-     * @param str description of Template
-     * @param attr attributes of Template
+     * 
+     * @param str
+     *            description of Template
+     * @param attr
+     *            attributes of Template
      * @return new Template object
-     * @exception IOException on error
+     * @exception IOException
+     *                on error
      */
-    RtfTemplate newTemplate (String str, RtfAttributes attr) throws IOException;
-
+    RtfTemplate newTemplate(final String str, final RtfAttributes attr)
+            throws IOException;
 
 }

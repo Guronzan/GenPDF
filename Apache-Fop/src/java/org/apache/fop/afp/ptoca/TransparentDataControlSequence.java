@@ -32,13 +32,15 @@ import org.apache.fop.afp.ptoca.TransparentDataControlSequence.TransparentData;
 import static org.apache.fop.afp.ptoca.PtocaConstants.TRANSPARENT_DATA_MAX_SIZE;
 
 /**
- * This object represents a series of PTOCA TransparentData (TRN) control sequences. This implements
- * {@link Iterable} to enable iteration through the TRNs.
+ * This object represents a series of PTOCA TransparentData (TRN) control
+ * sequences. This implements {@link Iterable} to enable iteration through the
+ * TRNs.
  */
 final class TransparentDataControlSequence implements Iterable<TransparentData> {
 
     private static final int MAX_SBCS_TRN_SIZE = TRANSPARENT_DATA_MAX_SIZE;
-    // The maximum size of a TRN must be an EVEN number so that we're splitting TRNs on character
+    // The maximum size of a TRN must be an EVEN number so that we're splitting
+    // TRNs on character
     // boundaries rather than in the middle of a double-byte character
     private static final int MAX_DBCS_TRN_SIZE = MAX_SBCS_TRN_SIZE - 1;
 
@@ -47,35 +49,38 @@ final class TransparentDataControlSequence implements Iterable<TransparentData> 
         private final int length;
         private final EncodedChars encodedChars;
 
-        private TransparentData(int offset, int length, EncodedChars encChars) {
+        private TransparentData(final int offset, final int length,
+                final EncodedChars encChars) {
             this.offset = offset;
             this.length = length;
             this.encodedChars = encChars;
         }
 
-        void writeTo(OutputStream outStream) throws IOException {
-            encodedChars.writeTo(outStream, offset, length);
+        void writeTo(final OutputStream outStream) throws IOException {
+            this.encodedChars.writeTo(outStream, this.offset, this.length);
         }
     }
 
     private final List<TransparentData> trns;
 
     /**
-     * Converts an encoded String wrapped in an {@link EncodedChars} into a series of
-     * {@link TransparentData} control sequences.
+     * Converts an encoded String wrapped in an {@link EncodedChars} into a
+     * series of {@link TransparentData} control sequences.
      *
-     * @param encChars the encoded characters to convert to TRNs
+     * @param encChars
+     *            the encoded characters to convert to TRNs
      */
-    public TransparentDataControlSequence(EncodedChars encChars) {
-        int maxTrnLength = encChars.isDBCS() ? MAX_DBCS_TRN_SIZE : MAX_SBCS_TRN_SIZE;
-        int numTransData = encChars.getLength() / maxTrnLength;
+    public TransparentDataControlSequence(final EncodedChars encChars) {
+        final int maxTrnLength = encChars.isDBCS() ? MAX_DBCS_TRN_SIZE
+                : MAX_SBCS_TRN_SIZE;
+        final int numTransData = encChars.getLength() / maxTrnLength;
         int currIndex = 0;
-        List<TransparentData> trns = new ArrayList<TransparentData>();
+        final List<TransparentData> trns = new ArrayList<TransparentData>();
         for (int transDataCnt = 0; transDataCnt < numTransData; transDataCnt++) {
             trns.add(new TransparentData(currIndex, maxTrnLength, encChars));
             currIndex += maxTrnLength;
         }
-        int left = encChars.getLength() - currIndex;
+        final int left = encChars.getLength() - currIndex;
         trns.add(new TransparentData(currIndex, left, encChars));
         this.trns = Collections.unmodifiableList(trns);
     }
@@ -83,7 +88,8 @@ final class TransparentDataControlSequence implements Iterable<TransparentData> 
     /**
      * The {@link Iterator} for retrieving the series of TRN control sequences.
      */
+    @Override
     public Iterator<TransparentData> iterator() {
-        return trns.iterator();
+        return this.trns.iterator();
     }
 }

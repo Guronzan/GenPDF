@@ -32,15 +32,17 @@ class UncompressedObjectReference implements ObjectReference {
     /**
      * Creates a new reference.
      *
-     * @param offset offset of the object from the beginning of the PDF file
+     * @param offset
+     *            offset of the object from the beginning of the PDF file
      */
-    UncompressedObjectReference(long offset) {
+    UncompressedObjectReference(final long offset) {
         this.offset = offset;
     }
 
-    public void output(DataOutputStream out) throws IOException {
+    @Override
+    public void output(final DataOutputStream out) throws IOException {
         out.write(1);
-        out.writeLong(offset);
+        out.writeLong(this.offset);
         out.write(0);
         out.write(0);
     }

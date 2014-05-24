@@ -28,8 +28,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.xmlgraphics.java2d.color.ICCColorSpaceWithIntent;
 import org.apache.xmlgraphics.java2d.color.RenderingIntent;
@@ -38,52 +37,59 @@ import org.apache.xmlgraphics.java2d.color.profile.ColorProfileUtil;
 /**
  * Map with cached ICC based ColorSpace objects.
  */
+@Slf4j
 public class ColorSpaceCache {
-    /** logger instance */
-    private static Log log = LogFactory.getLog(ColorSpaceCache.class);
 
-    private URIResolver resolver;
-    private Map<String, ColorSpace> colorSpaceMap
-            = Collections.synchronizedMap(new java.util.HashMap<String, ColorSpace>());
+    private final URIResolver resolver;
+    private final Map<String, ColorSpace> colorSpaceMap = Collections
+            .synchronizedMap(new java.util.HashMap<String, ColorSpace>());
 
     /**
      * Default constructor
-     * @param resolver uri resolver
+     *
+     * @param resolver
+     *            uri resolver
      */
-    public ColorSpaceCache(URIResolver resolver) {
+    public ColorSpaceCache(final URIResolver resolver) {
         this.resolver = resolver;
     }
 
     /**
      * Create (if needed) and return an ICC ColorSpace instance.
      *
-     * The ICC profile source is taken from the src attribute of the color-profile FO element.
-     * If the ICC ColorSpace is not yet in the cache a new one is created and stored in the cache.
+     * The ICC profile source is taken from the src attribute of the
+     * color-profile FO element. If the ICC ColorSpace is not yet in the cache a
+     * new one is created and stored in the cache.
      *
-     * The FOP URI resolver is used to try and locate the ICC file.
-     * If that fails null is returned.
+     * The FOP URI resolver is used to try and locate the ICC file. If that
+     * fails null is returned.
      *
-     * @param profileName the profile name
-     * @param base a base URI to resolve relative URIs
-     * @param iccProfileSrc ICC Profile source to return a ColorSpace for
-     * @param renderingIntent overriding rendering intent
+     * @param profileName
+     *            the profile name
+     * @param base
+     *            a base URI to resolve relative URIs
+     * @param iccProfileSrc
+     *            ICC Profile source to return a ColorSpace for
+     * @param renderingIntent
+     *            overriding rendering intent
      * @return ICC ColorSpace object or null if ColorSpace could not be created
      */
-    public ColorSpace get(String profileName, String base, String iccProfileSrc,
-            RenderingIntent renderingIntent) {
-        String key = profileName + ":" + base + iccProfileSrc;
+    public ColorSpace get(final String profileName, final String base,
+            final String iccProfileSrc, final RenderingIntent renderingIntent) {
+        final String key = profileName + ":" + base + iccProfileSrc;
         ColorSpace colorSpace = null;
-        if (!colorSpaceMap.containsKey(key)) {
+        if (!this.colorSpaceMap.containsKey(key)) {
             try {
                 ICC_Profile iccProfile = null;
                 // First attempt to use the FOP URI resolver to locate the ICC
                 // profile
-                Source src = resolver.resolve(iccProfileSrc, base);
+                final Source src = this.resolver.resolve(iccProfileSrc, base);
                 if (src != null && src instanceof StreamSource) {
                     // FOP URI resolver found ICC profile - create ICC profile
                     // from the Source
-                    iccProfile = ColorProfileUtil.getICC_Profile(((StreamSource) src)
-                            .getInputStream());
+                    iccProfile = ColorProfileUtil
+                            .getICC_Profile(((StreamSource) src)
+                                    .getInputStream());
                 } else {
                     // TODO - Would it make sense to fall back on VM ICC
                     // resolution
@@ -94,24 +100,24 @@ public class ColorSpaceCache {
                     // iccProfile = ICC_Profile.getInstance(iccProfileSrc);
                 }
                 if (iccProfile != null) {
-                    colorSpace = new ICCColorSpaceWithIntent(iccProfile, renderingIntent,
-                            profileName, iccProfileSrc);
+                    colorSpace = new ICCColorSpaceWithIntent(iccProfile,
+                            renderingIntent, profileName, iccProfileSrc);
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 // Ignore exception - will be logged a bit further down
                 // (colorSpace == null case)
             }
 
             if (colorSpace != null) {
                 // Put in cache (not when VM resolved it as we can't control
-                colorSpaceMap.put(key, colorSpace);
+                this.colorSpaceMap.put(key, colorSpace);
             } else {
                 // TODO To avoid an excessive amount of warnings perhaps
                 // register a null ColorMap in the colorSpaceMap
                 log.warn("Color profile '" + iccProfileSrc + "' not found.");
             }
         } else {
-            colorSpace = colorSpaceMap.get(key);
+            colorSpace = this.colorSpaceMap.get(key);
         }
         return colorSpace;
     }

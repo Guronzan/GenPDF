@@ -42,24 +42,31 @@ public class DSCCommentPage extends AbstractDSCComment {
 
     /**
      * Creates a new instance.
-     * @param pageName the name of the page
-     * @param pagePosition the position of the page within the file (1-based)
+     * 
+     * @param pageName
+     *            the name of the page
+     * @param pagePosition
+     *            the position of the page within the file (1-based)
      */
-    public DSCCommentPage(String pageName, int pagePosition) {
+    public DSCCommentPage(final String pageName, final int pagePosition) {
         setPageName(pageName);
         setPagePosition(pagePosition);
     }
 
     /**
-     * Creates a new instance. The page name will be set to the same value as the page position.
-     * @param pagePosition the position of the page within the file (1-based)
+     * Creates a new instance. The page name will be set to the same value as
+     * the page position.
+     * 
+     * @param pagePosition
+     *            the position of the page within the file (1-based)
      */
-    public DSCCommentPage(int pagePosition) {
+    public DSCCommentPage(final int pagePosition) {
         this(Integer.toString(pagePosition), pagePosition);
     }
 
     /**
      * Returns the name of the page.
+     * 
      * @return the page name
      */
     public String getPageName() {
@@ -68,14 +75,17 @@ public class DSCCommentPage extends AbstractDSCComment {
 
     /**
      * Sets the page name.
-     * @param name the page name
+     * 
+     * @param name
+     *            the page name
      */
-    public void setPageName(String name) {
+    public void setPageName(final String name) {
         this.pageName = name;
     }
 
     /**
      * Returns the page position.
+     * 
      * @return the page position (1-based)
      */
     public int getPagePosition() {
@@ -84,9 +94,11 @@ public class DSCCommentPage extends AbstractDSCComment {
 
     /**
      * Sets the page position.
-     * @param position the page position (1-based)
+     * 
+     * @param position
+     *            the page position (1-based)
      */
-    public void setPagePosition(int position) {
+    public void setPagePosition(final int position) {
         if (position <= 0) {
             throw new IllegalArgumentException("position must be 1 or above");
         }
@@ -96,6 +108,7 @@ public class DSCCommentPage extends AbstractDSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#getName()
      */
+    @Override
     public String getName() {
         return DSCConstants.PAGE;
     }
@@ -103,6 +116,7 @@ public class DSCCommentPage extends AbstractDSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#hasValues()
      */
+    @Override
     public boolean hasValues() {
         return true;
     }
@@ -110,20 +124,21 @@ public class DSCCommentPage extends AbstractDSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#parseValue(java.lang.String)
      */
-    public void parseValue(String value) {
-        List params = splitParams(value);
-        Iterator iter = params.iterator();
-        this.pageName = (String)iter.next();
-        this.pagePosition = Integer.parseInt((String)iter.next());
+    @Override
+    public void parseValue(final String value) {
+        final List params = splitParams(value);
+        final Iterator iter = params.iterator();
+        this.pageName = (String) iter.next();
+        this.pagePosition = Integer.parseInt((String) iter.next());
     }
 
     /**
-     * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#generate(
-     *          org.apache.xmlgraphics.ps.PSGenerator)
+     * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#generate(org.apache.xmlgraphics.ps.PSGenerator)
      */
-    public void generate(PSGenerator gen) throws IOException {
-        gen.writeDSCComment(getName(),
-                new Object[] {getPageName(), new Integer(getPagePosition())});
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
+        gen.writeDSCComment(getName(), new Object[] { getPageName(),
+                new Integer(getPagePosition()) });
     }
 
 }

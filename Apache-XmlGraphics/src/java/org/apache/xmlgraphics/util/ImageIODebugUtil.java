@@ -29,6 +29,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.w3c.dom.Node;
 
 /**
@@ -36,33 +38,35 @@ import org.w3c.dom.Node;
  *
  * @version $Id: ImageIODebugUtil.java 1345683 2012-06-03 14:50:33Z gadams $
  */
+@Slf4j
 public final class ImageIODebugUtil {
 
     private ImageIODebugUtil() {
     }
 
-    public static void dumpMetadata(IIOMetadata meta, boolean nativeFormat) {
+    public static void dumpMetadata(final IIOMetadata meta,
+            final boolean nativeFormat) {
         String format;
         if (nativeFormat) {
             format = meta.getNativeMetadataFormatName();
         } else {
             format = IIOMetadataFormatImpl.standardMetadataFormatName;
         }
-        Node node = meta.getAsTree(format);
+        final Node node = meta.getAsTree(format);
         dumpNode(node);
     }
 
-    public static void dumpNode(Node node) {
+    public static void dumpNode(final Node node) {
         try {
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer t = tf.newTransformer();
+            final TransformerFactory tf = TransformerFactory.newInstance();
+            final Transformer t = tf.newTransformer();
             t.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            Source src = new DOMSource(node);
-            Result res = new StreamResult(System.out);
+            final Source src = new DOMSource(node);
+            final Result res = new StreamResult(System.out);
             t.transform(src, res);
-            System.out.println();
-        } catch (Exception e) {
-            e.printStackTrace();
+            log.info("");
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
         }
     }
 

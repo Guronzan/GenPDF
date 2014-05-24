@@ -34,7 +34,8 @@ import org.apache.fop.pdf.PDFName;
 import org.apache.fop.pdf.PDFStream;
 
 /**
- * A cross-reference stream, as described in Section 3.4.7 of the PDF 1.5 Reference.
+ * A cross-reference stream, as described in Section 3.4.7 of the PDF 1.5
+ * Reference.
  */
 public class CrossReferenceStream extends CrossReferenceObject {
 
@@ -46,62 +47,69 @@ public class CrossReferenceStream extends CrossReferenceObject {
 
     private final List<ObjectReference> objectReferences;
 
-    public CrossReferenceStream(PDFDocument document,
-            int objectNumber,
-            TrailerDictionary trailerDictionary,
-            long startxref,
-            List<Long> uncompressedObjectReferences,
-            List<CompressedObjectReference> compressedObjectReferences) {
+    public CrossReferenceStream(final PDFDocument document,
+            final int objectNumber, final TrailerDictionary trailerDictionary,
+            final long startxref,
+            final List<Long> uncompressedObjectReferences,
+            final List<CompressedObjectReference> compressedObjectReferences) {
         super(trailerDictionary, startxref);
         this.document = document;
         this.objectNumber = objectNumber;
-        this.objectReferences = new ArrayList<ObjectReference>(uncompressedObjectReferences.size());
-        for (Long offset : uncompressedObjectReferences) {
-            objectReferences.add(offset == null ? null : new UncompressedObjectReference(offset));
+        this.objectReferences = new ArrayList<ObjectReference>(
+                uncompressedObjectReferences.size());
+        for (final Long offset : uncompressedObjectReferences) {
+            this.objectReferences.add(offset == null ? null
+                    : new UncompressedObjectReference(offset));
         }
-        for (CompressedObjectReference ref : compressedObjectReferences) {
+        for (final CompressedObjectReference ref : compressedObjectReferences) {
             this.objectReferences.set(ref.getObjectNumber() - 1, ref);
         }
     }
 
     /** {@inheritDoc} */
-    public void output(OutputStream stream) throws IOException {
+    @Override
+    public void output(final OutputStream stream) throws IOException {
         populateDictionary();
-        PDFStream helperStream = new PDFStream(trailerDictionary.getDictionary(), false) {
+        final PDFStream helperStream = new PDFStream(
+                this.trailerDictionary.getDictionary(), false) {
 
             @Override
             protected void setupFilterList() {
-                PDFFilterList filterList = getFilterList();
+                final PDFFilterList filterList = getFilterList();
                 assert !filterList.isInitialized();
-                filterList.addDefaultFilters(document.getFilterMap(), getDefaultFilterName());
+                filterList.addDefaultFilters(
+                        CrossReferenceStream.this.document.getFilterMap(),
+                        getDefaultFilterName());
             }
 
         };
-        helperStream.setObjectNumber(objectNumber);
-        helperStream.setDocument(document);
-        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-        DataOutputStream data = new DataOutputStream(byteArray);
+        helperStream.setObjectNumber(this.objectNumber);
+        helperStream.setDocument(this.document);
+        final ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+        final DataOutputStream data = new DataOutputStream(byteArray);
         addFreeEntryForObject0(data);
-        for (ObjectReference objectReference : objectReferences) {
+        for (final ObjectReference objectReference : this.objectReferences) {
             assert objectReference != null;
             objectReference.output(data);
         }
-        new UncompressedObjectReference(startxref).output(data);
+        new UncompressedObjectReference(this.startxref).output(data);
         data.close();
         helperStream.setData(byteArray.toByteArray());
         PDFDocument.outputIndirectObject(helperStream, stream);
     }
 
     private void populateDictionary() throws IOException {
-        int objectCount = objectReferences.size() + 1;
-        PDFDictionary dictionary = trailerDictionary.getDictionary();
+        final int objectCount = this.objectReferences.size() + 1;
+        final PDFDictionary dictionary = this.trailerDictionary.getDictionary();
         dictionary.put("/Type", XREF);
         dictionary.put("/Size", objectCount + 1);
         dictionary.put("/W", new PDFArray(1, 8, 2));
     }
 
-    private void addFreeEntryForObject0(DataOutputStream data) throws IOException {
-        data.write(new byte[] {0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 0xff, (byte) 0xff});
+    private void addFreeEntryForObject0(final DataOutputStream data)
+            throws IOException {
+        data.write(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte) 0xff,
+                (byte) 0xff });
     }
 
 }

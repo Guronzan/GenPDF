@@ -23,10 +23,10 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 /**
- * Handy class for wrapping runtime Exceptions with a root cause.
- * This technique is no longer necessary in Java 1.4, which provides
- * built-in support for exception nesting. Thus exceptions in applications
- * written to use Java 1.4 need not extend this class.
+ * Handy class for wrapping runtime Exceptions with a root cause. This technique
+ * is no longer necessary in Java 1.4, which provides built-in support for
+ * exception nesting. Thus exceptions in applications written to use Java 1.4
+ * need not extend this class.
  *
  */
 public abstract class NestedRuntimeException extends RuntimeException {
@@ -35,75 +35,91 @@ public abstract class NestedRuntimeException extends RuntimeException {
     private Throwable underlyingException;
 
     /**
-     * Construct a <code>NestedRuntimeException</code> with the specified detail message.
-     * @param msg The detail message.
+     * Construct a <code>NestedRuntimeException</code> with the specified detail
+     * message.
+     * 
+     * @param msg
+     *            The detail message.
      */
-    public NestedRuntimeException(String msg) {
+    public NestedRuntimeException(final String msg) {
         super(msg);
     }
 
     /**
-     * Construct a <code>NestedRuntimeException</code> with the specified
-     * detail message and nested exception.
-     * @param msg The detail message.
-     * @param t The nested exception.
+     * Construct a <code>NestedRuntimeException</code> with the specified detail
+     * message and nested exception.
+     * 
+     * @param msg
+     *            The detail message.
+     * @param t
+     *            The nested exception.
      */
-    public NestedRuntimeException(String msg, Throwable t) {
+    public NestedRuntimeException(final String msg, final Throwable t) {
         super(msg);
-        underlyingException = t;
+        this.underlyingException = t;
 
     }
 
     /**
      * Gets the original triggering exception
+     * 
      * @return The original exception as a throwable.
      */
     public Throwable getUnderlyingException() {
 
-        return underlyingException;
+        return this.underlyingException;
 
     }
 
     /**
      * Return the detail message, including the message from the nested
      * exception if there is one.
+     * 
      * @return The detail message.
      */
+    @Override
     public String getMessage() {
 
-        if (underlyingException == null) {
+        if (this.underlyingException == null) {
             return super.getMessage();
         } else {
-            return super.getMessage()
-            + "; nested exception is "
-                + underlyingException.getClass().getName();
+            return super.getMessage() + "; nested exception is "
+                    + this.underlyingException.getClass().getName();
         }
 
     }
 
     /**
-     * Print the composite message and the embedded stack trace to the specified stream.
-     * @param ps the print stream
+     * Print the composite message and the embedded stack trace to the specified
+     * stream.
+     * 
+     * @param ps
+     *            the print stream
      */
-    public void printStackTrace(PrintStream ps) {
-        if (underlyingException == null) {
+    @Override
+    public void printStackTrace(final PrintStream ps) {
+        if (this.underlyingException == null) {
             super.printStackTrace(ps);
         } else {
             ps.println(this);
-            underlyingException.printStackTrace(ps);
+            this.underlyingException.printStackTrace(ps);
         }
     }
 
     /**
-     * Print the composite message and the embedded stack trace to the specified writer.
-     * @param pw the print writer
+     * Print the composite message and the embedded stack trace to the specified
+     * writer.
+     * 
+     * @param pw
+     *            the print writer
      */
-    public void printStackTrace(PrintWriter pw) {
-        if (underlyingException == null) {
+    @Override
+    public void printStackTrace(final PrintWriter pw) {
+        if (this.underlyingException == null) {
             super.printStackTrace(pw);
         } else {
             pw.println(this);
-            underlyingException.printStackTrace(pw);
+            this.underlyingException.printStackTrace(pw);
         }
     }
 

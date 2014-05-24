@@ -30,24 +30,28 @@ import org.apache.fop.render.RendererConfigurator;
  */
 public class TXTRendererMaker extends AbstractRendererMaker {
 
-    private static final String[] MIMES = new String[] {MimeConstants.MIME_PLAIN_TEXT};
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_PLAIN_TEXT };
 
-    /**{@inheritDoc} */
-    public Renderer makeRenderer(FOUserAgent userAgent) {
+    /** {@inheritDoc} */
+    @Override
+    public Renderer makeRenderer(final FOUserAgent userAgent) {
         return new TXTRenderer(userAgent);
     }
 
-    /**{@inheritDoc} */
-    public RendererConfigurator getConfigurator(FOUserAgent userAgent) {
+    /** {@inheritDoc} */
+    @Override
+    public RendererConfigurator getConfigurator(final FOUserAgent userAgent) {
         return new TXTRendererConfigurator(userAgent);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

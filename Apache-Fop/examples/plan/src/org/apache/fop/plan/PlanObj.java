@@ -24,28 +24,30 @@ import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.XMLObj;
 
 /**
- * Since SVG objects are not layed out then this class checks
- * that this element is not being layed out inside some incorrect
- * element.
+ * Since SVG objects are not layed out then this class checks that this element
+ * is not being layed out inside some incorrect element.
  */
 public class PlanObj extends XMLObj {
 
     /**
      * Creates a new Plan object.
-     * @param parent the parent formatting object
+     * 
+     * @param parent
+     *            the parent formatting object
      */
-    public PlanObj(FONode parent) {
+    public PlanObj(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNamespaceURI() {
         return PlanElementMapping.NAMESPACE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNormalNamespacePrefix() {
         return "plan";
     }
 }
-

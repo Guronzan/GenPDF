@@ -28,18 +28,23 @@ public interface EdgeDirectory {
 
     /**
      * Returns the penalty between two vertices.
-     * @param start the start vertex
-     * @param end the end vertex
-     * @return the penalty between two vertices, or 0 if no single edge between the two vertices
-     *                  exists.
+     * 
+     * @param start
+     *            the start vertex
+     * @param end
+     *            the end vertex
+     * @return the penalty between two vertices, or 0 if no single edge between
+     *         the two vertices exists.
      */
-    int getPenalty(Vertex start, Vertex end);
+    int getPenalty(final Vertex start, final Vertex end);
 
     /**
      * Returns an iterator over all valid destinations for a given vertex.
-     * @param origin the origin from which to search for destinations
+     * 
+     * @param origin
+     *            the origin from which to search for destinations
      * @return the iterator over all valid destinations for a given vertex
      */
-    Iterator getDestinations(Vertex origin);
+    Iterator getDestinations(final Vertex origin);
 
 }

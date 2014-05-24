@@ -22,21 +22,29 @@ package org.apache.fop.complexscripts.fonts;
 // CSOFF: LineLengthCheck
 
 /**
- * <p>The <code>GlyphSubstitution</code> interface is implemented by a glyph substitution subtable
- * that supports the determination of glyph substitution information based on script and
- * language of the corresponding character content.</p>
+ * <p>
+ * The <code>GlyphSubstitution</code> interface is implemented by a glyph
+ * substitution subtable that supports the determination of glyph substitution
+ * information based on script and language of the corresponding character
+ * content.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 public interface GlyphSubstitution {
 
     /**
-     * Perform glyph substitution at the current index, mutating the substitution state object as required.
-     * Only the context associated with the current index is processed.
-     * @param ss glyph substitution state object
-     * @return true if the glyph subtable was applied, meaning that the current context matches the
-     * associated input context glyph coverage table
+     * Perform glyph substitution at the current index, mutating the
+     * substitution state object as required. Only the context associated with
+     * the current index is processed.
+     * 
+     * @param ss
+     *            glyph substitution state object
+     * @return true if the glyph subtable was applied, meaning that the current
+     *         context matches the associated input context glyph coverage table
      */
-    boolean substitute ( GlyphSubstitutionState ss );
+    boolean substitute(final GlyphSubstitutionState ss);
 
 }

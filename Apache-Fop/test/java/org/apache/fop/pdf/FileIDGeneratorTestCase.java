@@ -19,10 +19,6 @@
 
 package org.apache.fop.pdf;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,6 +29,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 /**
  * Tests the {@link FileIDGenerator} class.
  */
@@ -42,57 +42,60 @@ public class FileIDGeneratorTestCase {
     /** The generator under test. */
     protected FileIDGenerator fileIDGenerator;
 
-    private TestGetter initializer;
+    private final TestGetter initializer;
 
     @Parameters
     public static Collection<TestGetter[]> getParameters() {
-        ArrayList<TestGetter[]> params = new ArrayList<TestGetter[]>();
+        final ArrayList<TestGetter[]> params = new ArrayList<TestGetter[]>();
         params.add(new TestGetter[] { new RandomFileIDGeneratorTest() });
         params.add(new TestGetter[] { new DigestFileIDGeneratorTest() });
         return params;
     }
 
-    public FileIDGeneratorTestCase(TestGetter initializer) {
+    public FileIDGeneratorTestCase(final TestGetter initializer) {
         this.initializer = initializer;
     }
 
     @Before
     public void setUp() throws Exception {
-        fileIDGenerator = initializer.getSut();
+        this.fileIDGenerator = this.initializer.getSut();
     }
 
     /** Tests that the getOriginalFileID method generates valid output. */
     @Test
     public void testOriginal() {
-        byte[] fileID = fileIDGenerator.getOriginalFileID();
+        final byte[] fileID = this.fileIDGenerator.getOriginalFileID();
         fileIDMustBeValid(fileID);
     }
 
     /** Tests that the getUpdatedFileID method generates valid output. */
     @Test
     public void testUpdated() {
-        byte[] fileID = fileIDGenerator.getUpdatedFileID();
+        final byte[] fileID = this.fileIDGenerator.getUpdatedFileID();
         fileIDMustBeValid(fileID);
     }
 
-    private void fileIDMustBeValid(byte[] fileID) {
+    private void fileIDMustBeValid(final byte[] fileID) {
         assertNotNull(fileID);
         assertEquals(16, fileID.length);
     }
 
-    /** Tests that multiple calls to getOriginalFileID method always return the same value. */
+    /**
+     * Tests that multiple calls to getOriginalFileID method always return the
+     * same value.
+     */
     @Test
     public void testOriginalMultipleCalls() {
-        byte[] fileID1 = fileIDGenerator.getUpdatedFileID();
-        byte[] fileID2 = fileIDGenerator.getUpdatedFileID();
+        final byte[] fileID1 = this.fileIDGenerator.getUpdatedFileID();
+        final byte[] fileID2 = this.fileIDGenerator.getUpdatedFileID();
         assertTrue(Arrays.equals(fileID1, fileID2));
     }
 
     /** Tests that getUpdatedFileID returns the same value as getOriginalFileID. */
     @Test
     public void testUpdateEqualsOriginal() {
-        byte[] originalFileID = fileIDGenerator.getOriginalFileID();
-        byte[] updatedFileID = fileIDGenerator.getUpdatedFileID();
+        final byte[] originalFileID = this.fileIDGenerator.getOriginalFileID();
+        final byte[] updatedFileID = this.fileIDGenerator.getUpdatedFileID();
         assertTrue(Arrays.equals(originalFileID, updatedFileID));
     }
 
@@ -105,6 +108,7 @@ public class FileIDGeneratorTestCase {
      */
     private static class RandomFileIDGeneratorTest implements TestGetter {
 
+        @Override
         public FileIDGenerator getSut() throws Exception {
             return FileIDGenerator.getRandomFileIDGenerator();
         }
@@ -116,9 +120,10 @@ public class FileIDGeneratorTestCase {
      */
     private static class DigestFileIDGeneratorTest implements TestGetter {
 
+        @Override
         public FileIDGenerator getSut() throws Exception {
-            return FileIDGenerator.getDigestFileIDGenerator(
-                    new PDFDocument("Apache FOP"));
+            return FileIDGenerator.getDigestFileIDGenerator(new PDFDocument(
+                    "Apache FOP"));
         }
 
     }

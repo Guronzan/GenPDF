@@ -29,17 +29,18 @@ public class PDFGraphics2DTestCase {
 
     @Test
     public void testApplyStrokeNullDash() {
-        PDFGraphics2D g2d = new PDFGraphics2D(false);
-        BasicStroke stroke = new BasicStroke();
+        final PDFGraphics2D g2d = new PDFGraphics2D(false);
+        final BasicStroke stroke = new BasicStroke();
         g2d.applyStroke(stroke);
         assertTrue(g2d.getString().contains("[] 0 d\n"));
     }
 
     @Test
     public void testApplyStrokeNonNullDash() {
-        PDFGraphics2D g2d = new PDFGraphics2D(false);
-        float[] dashArray = {3.0f, 5.0f};
-        BasicStroke stroke = new BasicStroke(1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f,
+        final PDFGraphics2D g2d = new PDFGraphics2D(false);
+        final float[] dashArray = { 3.0f, 5.0f };
+        final BasicStroke stroke = new BasicStroke(1.0f,
+                BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f,
                 dashArray, 0.0f);
         g2d.applyStroke(stroke);
         assertTrue(g2d.getString().contains("[3 5] 0 d\n"));

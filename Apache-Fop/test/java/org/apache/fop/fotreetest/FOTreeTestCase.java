@@ -26,14 +26,7 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLFilterImpl;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.DebugHelper;
 import org.apache.fop.apps.FOUserAgent;
@@ -44,11 +37,20 @@ import org.apache.fop.fotreetest.ext.TestElementMapping;
 import org.apache.fop.layoutengine.LayoutEngineTestUtils;
 import org.apache.fop.layoutengine.TestFilesConfiguration;
 import org.apache.fop.util.ConsoleEventListenerForTests;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLFilterImpl;
 
 /**
  * Test driver class for FO tree tests.
  */
 @RunWith(Parameterized.class)
+@Slf4j
 public class FOTreeTestCase {
 
     @BeforeClass
@@ -58,110 +60,121 @@ public class FOTreeTestCase {
 
     /**
      * Gets the parameters to run the FO tree test cases.
+     *
      * @return a collection of file arrays containing the test files
      */
     @Parameters
     public static Collection<File[]> getParameters() {
-        TestFilesConfiguration.Builder builder = new TestFilesConfiguration.Builder();
+        final TestFilesConfiguration.Builder builder = new TestFilesConfiguration.Builder();
         builder.testDir("test/fotree")
-               .singleProperty("fop.fotree.single")
-               .startsWithProperty("fop.fotree.starts-with")
-               .suffix(".fo")
-               .testSet("testcases")
-               .disabledProperty("fop.layoutengine.disabled", "test/fotree/disabled-testcases.xml")
-               .privateTestsProperty("fop.fotree.private");
+        .singleProperty("fop.fotree.single")
+        .startsWithProperty("fop.fotree.starts-with")
+        .suffix(".fo")
+        .testSet("testcases")
+        .disabledProperty("fop.layoutengine.disabled",
+                "test/fotree/disabled-testcases.xml")
+                .privateTestsProperty("fop.fotree.private");
 
-        TestFilesConfiguration testConfig = builder.build();
+        final TestFilesConfiguration testConfig = builder.build();
         return LayoutEngineTestUtils.getTestFiles(testConfig);
     }
 
-    private FopFactory fopFactory = FopFactory.newInstance();
+    private final FopFactory fopFactory = FopFactory.newInstance();
 
     private final File testFile;
 
     /**
      * Main constructor
      *
-     * @param testFile the FO file to test
+     * @param testFile
+     *            the FO file to test
      */
-    public FOTreeTestCase(File testFile) {
-        fopFactory.addElementMapping(new TestElementMapping());
+    public FOTreeTestCase(final File testFile) {
+        this.fopFactory.addElementMapping(new TestElementMapping());
         this.testFile = testFile;
     }
 
     /**
      * Runs a test.
-     * @throws Exception if a test or FOP itself fails
+     *
+     * @throws Exception
+     *             if a test or FOP itself fails
      */
     @Test
     public void runTest() throws Exception {
         try {
-            ResultCollector collector = ResultCollector.getInstance();
+            final ResultCollector collector = ResultCollector.getInstance();
             collector.reset();
 
-            SAXParserFactory spf = SAXParserFactory.newInstance();
+            final SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setNamespaceAware(true);
             spf.setValidating(false);
-            SAXParser parser = spf.newSAXParser();
+            final SAXParser parser = spf.newSAXParser();
             XMLReader reader = parser.getXMLReader();
 
             // Resetting values modified by processing instructions
-            fopFactory.setBreakIndentInheritanceOnReferenceAreaBoundary(
-                    FopFactoryConfigurator.DEFAULT_BREAK_INDENT_INHERITANCE);
-            fopFactory.setSourceResolution(FopFactoryConfigurator.DEFAULT_SOURCE_RESOLUTION);
+            this.fopFactory
+            .setBreakIndentInheritanceOnReferenceAreaBoundary(FopFactoryConfigurator.DEFAULT_BREAK_INDENT_INHERITANCE);
+            this.fopFactory
+            .setSourceResolution(FopFactoryConfigurator.DEFAULT_SOURCE_RESOLUTION);
 
-            FOUserAgent ua = fopFactory.newFOUserAgent();
-            ua.setBaseURL(testFile.getParentFile().toURI().toURL().toString());
+            final FOUserAgent ua = this.fopFactory.newFOUserAgent();
+            ua.setBaseURL(this.testFile.getParentFile().toURI().toURL()
+                    .toString());
             ua.setFOEventHandlerOverride(new DummyFOEventHandler(ua));
             ua.getEventBroadcaster().addEventListener(
-                    new ConsoleEventListenerForTests(testFile.getName()));
+                    new ConsoleEventListenerForTests(this.testFile.getName()));
 
-            // Used to set values in the user agent through processing instructions
+            // Used to set values in the user agent through processing
+            // instructions
             reader = new PIListener(reader, ua);
 
-            Fop fop = fopFactory.newFop(ua);
+            final Fop fop = this.fopFactory.newFop(ua);
 
             reader.setContentHandler(fop.getDefaultHandler());
             reader.setDTDHandler(fop.getDefaultHandler());
             reader.setErrorHandler(fop.getDefaultHandler());
             reader.setEntityResolver(fop.getDefaultHandler());
             try {
-                reader.parse(testFile.toURI().toURL().toExternalForm());
-            } catch (Exception e) {
+                reader.parse(this.testFile.toURI().toURL().toExternalForm());
+            } catch (final Exception e) {
                 collector.notifyError(e.getLocalizedMessage());
                 throw e;
             }
 
-            List<String> results = collector.getResults();
+            final List<String> results = collector.getResults();
             if (results.size() > 0) {
                 for (int i = 0; i < results.size(); i++) {
-                    System.out.println((String) results.get(i));
+                    log.info(results.get(i));
                 }
-                throw new IllegalStateException((String) results.get(0));
+                throw new IllegalStateException(results.get(0));
             }
-        } catch (Exception e) {
-            org.apache.commons.logging.LogFactory.getLog(this.getClass()).info(
-                    "Error on " + testFile.getName());
+        } catch (final Exception e) {
+            log.info("Error on " + this.testFile.getName());
             throw e;
         }
     }
 
     private static class PIListener extends XMLFilterImpl {
 
-        private FOUserAgent userAgent;
+        private final FOUserAgent userAgent;
 
-        public PIListener(XMLReader parent, FOUserAgent userAgent) {
+        public PIListener(final XMLReader parent, final FOUserAgent userAgent) {
             super(parent);
             this.userAgent = userAgent;
         }
 
         /** @see org.xml.sax.helpers.XMLFilterImpl */
-        public void processingInstruction(String target, String data) throws SAXException {
+        @Override
+        public void processingInstruction(final String target, final String data)
+                throws SAXException {
             if ("fop-useragent-break-indent-inheritance".equals(target)) {
-                userAgent.getFactory().setBreakIndentInheritanceOnReferenceAreaBoundary(
+                this.userAgent.getFactory()
+                .setBreakIndentInheritanceOnReferenceAreaBoundary(
                         Boolean.valueOf(data).booleanValue());
             } else if ("fop-source-resolution".equals(target)) {
-                userAgent.getFactory().setSourceResolution(Float.parseFloat(data));
+                this.userAgent.getFactory().setSourceResolution(
+                        Float.parseFloat(data));
             }
             super.processingInstruction(target, data);
         }

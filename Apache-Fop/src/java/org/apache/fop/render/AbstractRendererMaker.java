@@ -22,20 +22,23 @@ package org.apache.fop.render;
 import org.apache.fop.apps.FOUserAgent;
 
 /**
- * Base class for factory classes which instantiate Renderers and provide information
- * about them.
+ * Base class for factory classes which instantiate Renderers and provide
+ * information about them.
  */
 public abstract class AbstractRendererMaker {
 
     /**
      * Instantiates a new renderer.
-     * @param userAgent the user agent
+     * 
+     * @param userAgent
+     *            the user agent
      * @return the newly instantiated renderer
      */
-    public abstract Renderer makeRenderer(FOUserAgent userAgent);
+    public abstract Renderer makeRenderer(final FOUserAgent userAgent);
 
     /**
-     * @return Indicates whether this renderer requires an OutputStream to work with.
+     * @return Indicates whether this renderer requires an OutputStream to work
+     *         with.
      */
     public abstract boolean needsOutputStream();
 
@@ -45,22 +48,26 @@ public abstract class AbstractRendererMaker {
     public abstract String[] getSupportedMimeTypes();
 
     /**
-     * Returns a renderer config object that can be used to
-     * configure the renderer.
-     * @param userAgent user agent
+     * Returns a renderer config object that can be used to configure the
+     * renderer.
+     * 
+     * @param userAgent
+     *            user agent
      * @return a config object that can be used to configure the renderer
      */
-    public RendererConfigurator getConfigurator(FOUserAgent userAgent) {
+    public RendererConfigurator getConfigurator(final FOUserAgent userAgent) {
         return null;
     }
 
     /**
      * Indicates whether a specific MIME type is supported by this renderer.
-     * @param mimeType the MIME type (ex. "application/pdf")
+     * 
+     * @param mimeType
+     *            the MIME type (ex. "application/pdf")
      * @return true if the MIME type is supported
      */
-    public boolean isMimeTypeSupported(String mimeType) {
-        String[] mimes = getSupportedMimeTypes();
+    public boolean isMimeTypeSupported(final String mimeType) {
+        final String[] mimes = getSupportedMimeTypes();
         for (int i = 0; i < mimes.length; i++) {
             if (mimes[i].equals(mimeType)) {
                 return true;

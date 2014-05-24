@@ -25,12 +25,11 @@ import java.util.List;
 import org.apache.fop.layoutmgr.inline.InlineLevelLayoutManager;
 import org.apache.fop.layoutmgr.inline.KnuthInlineBox;
 
-
 /**
- * Represents a list of inline Knuth elements.
- * If closed, it represents all elements of a Knuth paragraph.
+ * Represents a list of inline Knuth elements. If closed, it represents all
+ * elements of a Knuth paragraph.
  */
-public class InlineKnuthSequence extends KnuthSequence  {
+public class InlineKnuthSequence extends KnuthSequence {
 
     private static final long serialVersionUID = 1354774188859946549L;
 
@@ -45,37 +44,46 @@ public class InlineKnuthSequence extends KnuthSequence  {
 
     /**
      * Creates a new list from an existing list.
-     * @param list The list from which to create the new list.
+     *
+     * @param list
+     *            The list from which to create the new list.
      */
-    public InlineKnuthSequence(List list) {
+    public InlineKnuthSequence(final List list) {
         super(list);
     }
 
     /**
      * Is this an inline or a block sequence?
+     *
      * @return false
      */
+    @Override
     public boolean isInlineSequence() {
         return true;
     }
 
     /** {@inheritDoc} */
-    public boolean canAppendSequence(KnuthSequence sequence) {
-        return sequence.isInlineSequence() && !isClosed;
+    @Override
+    public boolean canAppendSequence(final KnuthSequence sequence) {
+        return sequence.isInlineSequence() && !this.isClosed;
     }
 
     /** {@inheritDoc} */
-    public boolean appendSequence(KnuthSequence sequence) {
+    @Override
+    public boolean appendSequence(final KnuthSequence sequence) {
         if (!canAppendSequence(sequence)) {
             return false;
         }
-        // does the first element of the first paragraph add to an existing word?
+        // does the first element of the first paragraph add to an existing
+        // word?
         ListElement lastOldElement;
         ListElement firstNewElement;
         lastOldElement = getLast();
         firstNewElement = sequence.getElement(0);
-        if (firstNewElement.isBox() && !((KnuthElement) firstNewElement).isAuxiliary()
-                && lastOldElement.isBox() && ((KnuthElement) lastOldElement).getWidth() != 0) {
+        if (firstNewElement.isBox()
+                && !((KnuthElement) firstNewElement).isAuxiliary()
+                && lastOldElement.isBox()
+                && ((KnuthElement) lastOldElement).getWidth() != 0) {
             addALetterSpace();
         }
         addAll(sequence);
@@ -83,17 +91,18 @@ public class InlineKnuthSequence extends KnuthSequence  {
     }
 
     /** {@inheritDoc} */
-    public boolean appendSequence(KnuthSequence sequence, boolean keepTogether,
-                                  BreakElement breakElement) {
+    @Override
+    public boolean appendSequence(final KnuthSequence sequence,
+            final boolean keepTogether, final BreakElement breakElement) {
         return appendSequence(sequence);
     }
 
-
     /** {@inheritDoc} */
+    @Override
     public KnuthSequence endSequence() {
-        if (!isClosed) {
+        if (!this.isClosed) {
             add(new KnuthPenalty(0, -KnuthElement.INFINITE, false, null, false));
-            isClosed = true;
+            this.isClosed = true;
         }
         return this;
     }
@@ -102,19 +111,16 @@ public class InlineKnuthSequence extends KnuthSequence  {
      * Add letter space.
      */
     public void addALetterSpace() {
-        KnuthBox prevBox = (KnuthBox) getLast();
+        final KnuthBox prevBox = (KnuthBox) getLast();
         if (prevBox.isAuxiliary()
-            && (size() < 4
-                || !getElement(size() - 2).isGlue()
-                || !getElement(size() - 3).isPenalty()
-                || !getElement(size() - 4).isBox()
-               )
-           ) {
+                && (size() < 4 || !getElement(size() - 2).isGlue()
+                        || !getElement(size() - 3).isPenalty() || !getElement(
+                                size() - 4).isBox())) {
             // Not the sequence we are expecting
             return;
         }
         removeLast();
-        LinkedList oldList = new LinkedList();
+        final LinkedList oldList = new LinkedList();
         // if there are two consecutive KnuthBoxes the
         // first one does not represent a whole word,
         // so it must be given one more letter space
@@ -125,27 +131,28 @@ public class InlineKnuthSequence extends KnuthSequence  {
         } else {
             // prevBox is the last element
             // in the sub-sequence
-            //   <box> <aux penalty> <aux glue> <aux box>
+            // <box> <aux penalty> <aux glue> <aux box>
             // the letter space is added to <aux glue>,
             // while the other elements are not changed
             oldList.add(prevBox);
-            oldList.addFirst((KnuthGlue) removeLast());
-            oldList.addFirst((KnuthPenalty) removeLast());
-            oldList.addFirst((KnuthBox) removeLast());
+            oldList.addFirst(removeLast());
+            oldList.addFirst(removeLast());
+            oldList.addFirst(removeLast());
         }
         // adding a letter space could involve, according to the text
         // represented by oldList, replacing a glue element or adding
         // new elements
-        addAll(((InlineLevelLayoutManager)
-                     prevBox.getLayoutManager())
-                    .addALetterSpaceTo(oldList));
+        addAll(((InlineLevelLayoutManager) prevBox.getLayoutManager())
+                .addALetterSpaceTo(oldList));
         // prevBox may not be a KnuthInlineBox;
         // this may happen if it is a padding box; see bug 39571.
-        if ( prevBox instanceof KnuthInlineBox && ((KnuthInlineBox) prevBox).isAnchor()) {
+        if (prevBox instanceof KnuthInlineBox
+                && ((KnuthInlineBox) prevBox).isAnchor()) {
             // prevBox represents a footnote citation: copy footnote info
             // from prevBox to the new box
-            KnuthInlineBox newBox = (KnuthInlineBox) getLast();
-            newBox.setFootnoteBodyLM(((KnuthInlineBox) prevBox).getFootnoteBodyLM());
+            final KnuthInlineBox newBox = (KnuthInlineBox) getLast();
+            newBox.setFootnoteBodyLM(((KnuthInlineBox) prevBox)
+                    .getFootnoteBodyLM());
         }
     }
 

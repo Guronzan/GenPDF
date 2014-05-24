@@ -23,7 +23,6 @@ package org.apache.fop.fo.flow.table;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 
-
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_table-footer">
  * <code>fo:table-footer</code></a> object.
@@ -31,36 +30,41 @@ import org.apache.fop.fo.FONode;
 public class TableFooter extends TablePart {
 
     /**
-     * Create a TableFooter instance with the given {@link FONode}
-     * as parent.
+     * Create a TableFooter instance with the given {@link FONode} as parent.
      *
-     * @param parent {@link FONode} that is the parent of this object
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public TableFooter(FONode parent) {
+    public TableFooter(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
         super.startOfNode();
         getFOEventHandler().startFooter(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
         super.endOfNode();
         getFOEventHandler().endFooter(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "table-footer";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_TABLE_FOOTER}
      */
+    @Override
     public int getNameId() {
         return FO_TABLE_FOOTER;
     }

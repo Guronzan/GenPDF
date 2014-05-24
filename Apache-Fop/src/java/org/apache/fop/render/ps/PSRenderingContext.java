@@ -19,42 +19,51 @@
 
 package org.apache.fop.render.ps;
 
-import org.apache.xmlgraphics.ps.PSGenerator;
-import org.apache.xmlgraphics.util.MimeConstants;
-
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.render.AbstractRenderingContext;
+import org.apache.xmlgraphics.ps.PSGenerator;
+import org.apache.xmlgraphics.util.MimeConstants;
 
 /**
  * Rendering context for PostScript production.
  */
 public class PSRenderingContext extends AbstractRenderingContext {
 
-    private PSGenerator gen;
-    private FontInfo fontInfo;
-    private boolean createForms;
+    private final PSGenerator gen;
+    private final FontInfo fontInfo;
+    private final boolean createForms;
 
     /**
      * Main constructor.
-     * @param userAgent the user agent
-     * @param gen the PostScript generator
-     * @param fontInfo the font list
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param gen
+     *            the PostScript generator
+     * @param fontInfo
+     *            the font list
      */
-    public PSRenderingContext(FOUserAgent userAgent,
-            PSGenerator gen, FontInfo fontInfo) {
+    public PSRenderingContext(final FOUserAgent userAgent,
+            final PSGenerator gen, final FontInfo fontInfo) {
         this(userAgent, gen, fontInfo, false);
     }
 
     /**
      * Special constructor.
-     * @param userAgent the user agent
-     * @param gen the PostScript generator
-     * @param fontInfo the font list
-     * @param createForms true if form generation mode should be enabled
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param gen
+     *            the PostScript generator
+     * @param fontInfo
+     *            the font list
+     * @param createForms
+     *            true if form generation mode should be enabled
      */
-    public PSRenderingContext(FOUserAgent userAgent,
-            PSGenerator gen, FontInfo fontInfo, boolean createForms) {
+    public PSRenderingContext(final FOUserAgent userAgent,
+            final PSGenerator gen, final FontInfo fontInfo,
+            final boolean createForms) {
         super(userAgent);
         this.gen = gen;
         this.fontInfo = fontInfo;
@@ -62,12 +71,14 @@ public class PSRenderingContext extends AbstractRenderingContext {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return MimeConstants.MIME_POSTSCRIPT;
     }
 
     /**
      * Returns the PostScript generator.
+     * 
      * @return the PostScript generator
      */
     public PSGenerator getGenerator() {
@@ -76,6 +87,7 @@ public class PSRenderingContext extends AbstractRenderingContext {
 
     /**
      * Returns the font list.
+     * 
      * @return the font list
      */
     public FontInfo getFontInfo() {
@@ -83,8 +95,9 @@ public class PSRenderingContext extends AbstractRenderingContext {
     }
 
     /**
-     * Indicates whether PS forms should be created for the images instead of inline images.
-     * Note that not all image handlers will support this!
+     * Indicates whether PS forms should be created for the images instead of
+     * inline images. Note that not all image handlers will support this!
+     * 
      * @return true if PS forms shall be created
      */
     public boolean isCreateForms() {
@@ -93,10 +106,12 @@ public class PSRenderingContext extends AbstractRenderingContext {
 
     /**
      * Create a copy of this rendering context and activate form mode.
+     * 
      * @return the form-enabled rendering context
      */
     public PSRenderingContext toFormContext() {
-        return new PSRenderingContext(getUserAgent(), getGenerator(), getFontInfo(), true);
+        return new PSRenderingContext(getUserAgent(), getGenerator(),
+                getFontInfo(), true);
     }
 
 }

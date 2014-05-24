@@ -22,21 +22,21 @@ package org.apache.fop.afp.fonts;
 import java.util.Arrays;
 
 /**
- * The IBM Font Object Content Architecture (FOCA) supports presentation
- * of character shapes by defining their characteristics, which include
+ * The IBM Font Object Content Architecture (FOCA) supports presentation of
+ * character shapes by defining their characteristics, which include
  * Font-Description information for identifying the characters, Font-Metric
- * information for positioning the characters, and Character-Shape
- * information for presenting the character images.
+ * information for positioning the characters, and Character-Shape information
+ * for presenting the character images.
  *
- * Presenting a graphic character on a presentation surface requires
- * that you communicate this information clearly to rotate and position
- * characters correctly on the physical or logical page.
+ * Presenting a graphic character on a presentation surface requires that you
+ * communicate this information clearly to rotate and position characters
+ * correctly on the physical or logical page.
  *
- * This class provides font metric information for a particular font
- * as by the orientation.
+ * This class provides font metric information for a particular font as by the
+ * orientation.
  *
- * This information is obtained directly from the AFP font files which must
- * be installed in the classpath under in the location specified by the path
+ * This information is obtained directly from the AFP font files which must be
+ * installed in the classpath under in the location specified by the path
  * attribute in the afp-font.xml file.
  * <p/>
  */
@@ -58,7 +58,8 @@ public class CharacterSetOrientation {
     private int capHeight;
 
     /**
-     * The character widths in the character set (indexed using Unicode codepoints)
+     * The character widths in the character set (indexed using Unicode
+     * codepoints)
      */
     private int[] charsWidths = null;
 
@@ -77,7 +78,6 @@ public class CharacterSetOrientation {
      */
     private char lastChar;
 
-
     /**
      * The character set orientation
      */
@@ -88,195 +88,225 @@ public class CharacterSetOrientation {
     /** em space increment */
     private int emSpaceIncrement = -1;
 
-
     /**
-     * Constructor for the CharacterSetOrientation, the orientation is
-     * expressed as the degrees rotation (i.e 0, 90, 180, 270)
-     * @param orientation the character set orientation
+     * Constructor for the CharacterSetOrientation, the orientation is expressed
+     * as the degrees rotation (i.e 0, 90, 180, 270)
+     * 
+     * @param orientation
+     *            the character set orientation
      */
-    public CharacterSetOrientation(int orientation) {
+    public CharacterSetOrientation(final int orientation) {
         this.orientation = orientation;
-        charsWidths = new int[256];
-        Arrays.fill(charsWidths, -1);
+        this.charsWidths = new int[256];
+        Arrays.fill(this.charsWidths, -1);
     }
 
     /**
-     * Ascender height is the distance from the character baseline to the
-     * top of the character box. A negative ascender height signifies that
-     * all of the graphic character is below the character baseline. For
-     * a character rotation other than 0, ascender height loses its
-     * meaning when the character is lying on its side or is upside down
-     * with respect to normal viewing orientation. For the general case,
-     * Ascender Height is the character's most positive y-axis value.
-     * For bounded character boxes, for a given character having an
-     * ascender, ascender height and baseline offset are equal.
+     * Ascender height is the distance from the character baseline to the top of
+     * the character box. A negative ascender height signifies that all of the
+     * graphic character is below the character baseline. For a character
+     * rotation other than 0, ascender height loses its meaning when the
+     * character is lying on its side or is upside down with respect to normal
+     * viewing orientation. For the general case, Ascender Height is the
+     * character's most positive y-axis value. For bounded character boxes, for
+     * a given character having an ascender, ascender height and baseline offset
+     * are equal.
+     * 
      * @return the ascender value in millipoints
      */
     public int getAscender() {
-        return ascender;
+        return this.ascender;
     }
 
     /**
-     * Cap height is the average height of the uppercase characters in
-     * a font. This value is specified by the designer of a font and is
-     * usually the height of the uppercase M.
+     * Cap height is the average height of the uppercase characters in a font.
+     * This value is specified by the designer of a font and is usually the
+     * height of the uppercase M.
+     * 
      * @return the cap height value in millipoints
      */
     public int getCapHeight() {
-        return capHeight;
+        return this.capHeight;
     }
 
     /**
-     * Descender depth is the distance from the character baseline to
-     * the bottom of a character box. A negative descender depth signifies
-     * that all of the graphic character is above the character baseline.
+     * Descender depth is the distance from the character baseline to the bottom
+     * of a character box. A negative descender depth signifies that all of the
+     * graphic character is above the character baseline.
+     * 
      * @return the descender value in millipoints
      */
     public int getDescender() {
-        return descender;
+        return this.descender;
     }
 
     /**
      * The first character in the character set
+     * 
      * @return the first character (Unicode codepoint)
      */
     public char getFirstChar() {
-        return firstChar;
+        return this.firstChar;
     }
 
     /**
      * The last character in the character set
+     * 
      * @return the last character (Unicode codepoint)
      */
     public char getLastChar() {
-        return lastChar;
+        return this.lastChar;
     }
 
     /**
      * The orientation for these metrics in the character set
+     * 
      * @return the orientation
      */
     public int getOrientation() {
-        return orientation;
+        return this.orientation;
     }
 
     /**
-     * Get the width (in 1/1000ths of a point size) of all characters
-     * in this character set.
+     * Get the width (in 1/1000ths of a point size) of all characters in this
+     * character set.
+     * 
      * @return the widths of all characters
      */
     public int[] getWidths() {
-        int[] arr = new int[(getLastChar() - getFirstChar()) + 1];
-        System.arraycopy(charsWidths, getFirstChar(), arr, 0, (getLastChar() - getFirstChar()) + 1);
+        final int[] arr = new int[getLastChar() - getFirstChar() + 1];
+        System.arraycopy(this.charsWidths, getFirstChar(), arr, 0,
+                getLastChar() - getFirstChar() + 1);
         return arr;
     }
 
     /**
-     * XHeight refers to the height of the lower case letters above
-     * the baseline.
+     * XHeight refers to the height of the lower case letters above the
+     * baseline.
+     * 
      * @return heightX the typical height of characters
      */
     public int getXHeight() {
-        return xHeight;
+        return this.xHeight;
     }
 
     /**
-     * Get the width (in 1/1000ths of a point size) of the character
-     * identified by the parameter passed.
-     * @param character the Unicode character to evaluate
+     * Get the width (in 1/1000ths of a point size) of the character identified
+     * by the parameter passed.
+     * 
+     * @param character
+     *            the Unicode character to evaluate
      * @return the widths of the character
      */
-    public int getWidth(char character) {
-        if (character >= charsWidths.length) {
+    public int getWidth(final char character) {
+        if (character >= this.charsWidths.length) {
             throw new IllegalArgumentException("Invalid character: "
                     + character + " (" + Integer.toString(character)
-                    + "), maximum is " + (charsWidths.length - 1));
+                    + "), maximum is " + (this.charsWidths.length - 1));
         }
-        return charsWidths[character];
+        return this.charsWidths[character];
     }
 
     /**
-     * Ascender height is the distance from the character baseline to the
-     * top of the character box. A negative ascender height signifies that
-     * all of the graphic character is below the character baseline. For
-     * a character rotation other than 0, ascender height loses its
-     * meaning when the character is lying on its side or is upside down
-     * with respect to normal viewing orientation. For the general case,
-     * Ascender Height is the character's most positive y-axis value.
-     * For bounded character boxes, for a given character having an
-     * ascender, ascender height and baseline offset are equal.
-     * @param ascender the ascender to set
+     * Ascender height is the distance from the character baseline to the top of
+     * the character box. A negative ascender height signifies that all of the
+     * graphic character is below the character baseline. For a character
+     * rotation other than 0, ascender height loses its meaning when the
+     * character is lying on its side or is upside down with respect to normal
+     * viewing orientation. For the general case, Ascender Height is the
+     * character's most positive y-axis value. For bounded character boxes, for
+     * a given character having an ascender, ascender height and baseline offset
+     * are equal.
+     * 
+     * @param ascender
+     *            the ascender to set
      */
-    public void setAscender(int ascender) {
+    public void setAscender(final int ascender) {
         this.ascender = ascender;
     }
 
     /**
-     * Cap height is the average height of the uppercase characters in
-     * a font. This value is specified by the designer of a font and is
-     * usually the height of the uppercase M.
-     * @param capHeight the cap height to set
+     * Cap height is the average height of the uppercase characters in a font.
+     * This value is specified by the designer of a font and is usually the
+     * height of the uppercase M.
+     * 
+     * @param capHeight
+     *            the cap height to set
      */
-    public void setCapHeight(int capHeight) {
+    public void setCapHeight(final int capHeight) {
         this.capHeight = capHeight;
     }
 
     /**
-     * Descender depth is the distance from the character baseline to
-     * the bottom of a character box. A negative descender depth signifies
-     * that all of the graphic character is above the character baseline.
-     * @param descender the descender value in millipoints
+     * Descender depth is the distance from the character baseline to the bottom
+     * of a character box. A negative descender depth signifies that all of the
+     * graphic character is above the character baseline.
+     * 
+     * @param descender
+     *            the descender value in millipoints
      */
-    public void setDescender(int descender) {
+    public void setDescender(final int descender) {
         this.descender = descender;
     }
 
     /**
      * The first character in the character set
-     * @param firstChar the first character
+     * 
+     * @param firstChar
+     *            the first character
      */
-    public void setFirstChar(char firstChar) {
+    public void setFirstChar(final char firstChar) {
         this.firstChar = firstChar;
     }
 
     /**
      * The last character in the character set
-     * @param lastChar the last character
+     * 
+     * @param lastChar
+     *            the last character
      */
-    public void setLastChar(char lastChar) {
+    public void setLastChar(final char lastChar) {
         this.lastChar = lastChar;
     }
 
     /**
-     * Set the width (in 1/1000ths of a point size) of the character
-     * identified by the parameter passed.
-     * @param character the Unicode character for which the width is being set
-     * @param width the widths of the character
+     * Set the width (in 1/1000ths of a point size) of the character identified
+     * by the parameter passed.
+     * 
+     * @param character
+     *            the Unicode character for which the width is being set
+     * @param width
+     *            the widths of the character
      */
-    public void setWidth(char character, int width) {
-        if (character >= charsWidths.length) {
+    public void setWidth(final char character, final int width) {
+        if (character >= this.charsWidths.length) {
             // Increase the size of the array if necessary
-            //  TODO Can we remove firstChar? surely firstChar==0 at this stage?
-            int[] arr = new int[(character - firstChar) + 1];
-            System.arraycopy(charsWidths, 0, arr, 0, charsWidths.length);
-            Arrays.fill(arr, charsWidths.length, character - firstChar, -1);
-            charsWidths = arr;
+            // TODO Can we remove firstChar? surely firstChar==0 at this stage?
+            final int[] arr = new int[character - this.firstChar + 1];
+            System.arraycopy(this.charsWidths, 0, arr, 0,
+                    this.charsWidths.length);
+            Arrays.fill(arr, this.charsWidths.length, character
+                    - this.firstChar, -1);
+            this.charsWidths = arr;
         }
-        charsWidths[character] = width;
+        this.charsWidths[character] = width;
 
     }
 
     /**
-     * XHeight refers to the height of the lower case letters above
-     * the baseline.
-     * @param xHeight the typical height of characters
+     * XHeight refers to the height of the lower case letters above the
+     * baseline.
+     * 
+     * @param xHeight
+     *            the typical height of characters
      */
-    public void setXHeight(int xHeight) {
+    public void setXHeight(final int xHeight) {
         this.xHeight = xHeight;
     }
 
     /**
      * Returns the space increment.
+     * 
      * @return the space increment
      */
     public int getSpaceIncrement() {
@@ -285,14 +315,17 @@ public class CharacterSetOrientation {
 
     /**
      * Sets the space increment.
-     * @param value the space increment
+     * 
+     * @param value
+     *            the space increment
      */
-    public void setSpaceIncrement(int value) {
+    public void setSpaceIncrement(final int value) {
         this.spaceIncrement = value;
     }
 
     /**
      * Returns the em space increment.
+     * 
      * @return the em space increment
      */
     public int getEmSpaceIncrement() {
@@ -301,9 +334,11 @@ public class CharacterSetOrientation {
 
     /**
      * Sets the em space increment.
-     * @param value the em space increment
+     * 
+     * @param value
+     *            the em space increment
      */
-    public void setEmSpaceIncrement(int value) {
+    public void setEmSpaceIncrement(final int value) {
         this.emSpaceIncrement = value;
     }
 

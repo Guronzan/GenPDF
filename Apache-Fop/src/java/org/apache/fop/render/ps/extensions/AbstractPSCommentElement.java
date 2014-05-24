@@ -26,26 +26,31 @@ import org.apache.fop.fo.FONode;
 /**
  * Base postscript commment element class
  */
-public abstract class AbstractPSCommentElement extends AbstractPSExtensionElement {
+public abstract class AbstractPSCommentElement extends
+        AbstractPSExtensionElement {
 
     /**
      * Default constructor
      *
-     * @param parent parent of this node
+     * @param parent
+     *            parent of this node
      * @see org.apache.fop.fo.FONode#FONode(FONode)
      */
-    public AbstractPSCommentElement(FONode parent) {
+    public AbstractPSCommentElement(final FONode parent) {
         super(parent);
     }
 
     /**
-     * @throws FOPException if there's a problem during processing
+     * @throws FOPException
+     *             if there's a problem during processing
      * @see org.apache.fop.fo.FONode#startOfNode()
      */
+    @Override
     protected void startOfNode() throws FOPException {
-        if (parent.getNameId() != Constants.FO_DECLARATIONS
-                && parent.getNameId() != Constants.FO_SIMPLE_PAGE_MASTER) {
-            invalidChildError(getLocator(), parent.getName(), getNamespaceURI(), getName(),
+        if (this.parent.getNameId() != Constants.FO_DECLARATIONS
+                && this.parent.getNameId() != Constants.FO_SIMPLE_PAGE_MASTER) {
+            invalidChildError(getLocator(), this.parent.getName(),
+                    getNamespaceURI(), getName(),
                     "rule.childOfSPMorDeclarations");
         }
     }

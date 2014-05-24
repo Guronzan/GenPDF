@@ -26,23 +26,28 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.fo.FOEventHandler;
 
 /**
- * Base class for factory classes which instantiate FOEventHandlers and provide information
- * about them.
+ * Base class for factory classes which instantiate FOEventHandlers and provide
+ * information about them.
  */
 public abstract class AbstractFOEventHandlerMaker {
 
     /**
      * Instantiates a new FOEventHandler.
-     * @param ua the user agent
-     * @param out OutputStream for the FOEventHandler to use
+     * 
+     * @param ua
+     *            the user agent
+     * @param out
+     *            OutputStream for the FOEventHandler to use
      * @return the newly instantiated FOEventHandler
-     * @throws FOPException if a problem occurs while creating the event handler
+     * @throws FOPException
+     *             if a problem occurs while creating the event handler
      */
-    public abstract FOEventHandler makeFOEventHandler(FOUserAgent ua, OutputStream out)
-            throws FOPException;
+    public abstract FOEventHandler makeFOEventHandler(final FOUserAgent ua,
+            final OutputStream out) throws FOPException;
 
     /**
-     * @return Indicates whether this renderer requires an OutputStream to work with.
+     * @return Indicates whether this renderer requires an OutputStream to work
+     *         with.
      */
     public abstract boolean needsOutputStream();
 
@@ -53,11 +58,13 @@ public abstract class AbstractFOEventHandlerMaker {
 
     /**
      * Indicates whether a specific MIME type is supported by this renderer.
-     * @param mimeType the MIME type (ex. "application/rtf")
+     * 
+     * @param mimeType
+     *            the MIME type (ex. "application/rtf")
      * @return true if the MIME type is supported
      */
-    public boolean isMimeTypeSupported(String mimeType) {
-        String[] mimes = getSupportedMimeTypes();
+    public boolean isMimeTypeSupported(final String mimeType) {
+        final String[] mimes = getSupportedMimeTypes();
         for (int i = 0; i < mimes.length; i++) {
             if (mimes[i].equals(mimeType)) {
                 return true;

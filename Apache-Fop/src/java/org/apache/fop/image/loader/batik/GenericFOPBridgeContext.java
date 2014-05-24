@@ -25,13 +25,11 @@ import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.dom.svg.SVGOMDocument;
-
-import org.apache.xmlgraphics.image.loader.ImageManager;
-import org.apache.xmlgraphics.image.loader.ImageSessionContext;
-
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.svg.AbstractFOPBridgeContext;
 import org.apache.fop.svg.SVGUserAgent;
+import org.apache.xmlgraphics.image.loader.ImageManager;
+import org.apache.xmlgraphics.image.loader.ImageSessionContext;
 
 /**
  * BridgeContext which registers the custom bridges for Java2D output.
@@ -40,72 +38,94 @@ class GenericFOPBridgeContext extends AbstractFOPBridgeContext {
 
     /**
      * Constructs a new bridge context.
-     * @param userAgent the user agent
-     * @param documentLoader the Document Loader to use for referenced documents.
-     * @param fontInfo the font list for the text painter, may be null
-     *                 in which case text is painted as shapes
-     * @param imageManager an image manager
-     * @param imageSessionContext an image session context
-     * @param linkTransform AffineTransform to properly place links,
-     *                      may be null
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param documentLoader
+     *            the Document Loader to use for referenced documents.
+     * @param fontInfo
+     *            the font list for the text painter, may be null in which case
+     *            text is painted as shapes
+     * @param imageManager
+     *            an image manager
+     * @param imageSessionContext
+     *            an image session context
+     * @param linkTransform
+     *            AffineTransform to properly place links, may be null
      */
-    public GenericFOPBridgeContext(UserAgent userAgent, DocumentLoader documentLoader,
-            FontInfo fontInfo, ImageManager imageManager,
-            ImageSessionContext imageSessionContext,
-            AffineTransform linkTransform) {
-        super(userAgent, documentLoader, fontInfo,
-                imageManager, imageSessionContext, linkTransform);
+    public GenericFOPBridgeContext(final UserAgent userAgent,
+            final DocumentLoader documentLoader, final FontInfo fontInfo,
+            final ImageManager imageManager,
+            final ImageSessionContext imageSessionContext,
+            final AffineTransform linkTransform) {
+        super(userAgent, documentLoader, fontInfo, imageManager,
+                imageSessionContext, linkTransform);
     }
 
     /**
      * Constructs a new bridge context.
-     * @param userAgent the user agent
-     * @param fontInfo the font list for the text painter, may be null
-     *                 in which case text is painted as shapes
-     * @param imageManager an image manager
-     * @param imageSessionContext an image session context
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param fontInfo
+     *            the font list for the text painter, may be null in which case
+     *            text is painted as shapes
+     * @param imageManager
+     *            an image manager
+     * @param imageSessionContext
+     *            an image session context
      */
-    public GenericFOPBridgeContext(UserAgent userAgent, FontInfo fontInfo,
-            ImageManager imageManager, ImageSessionContext imageSessionContext) {
+    public GenericFOPBridgeContext(final UserAgent userAgent,
+            final FontInfo fontInfo, final ImageManager imageManager,
+            final ImageSessionContext imageSessionContext) {
         super(userAgent, fontInfo, imageManager, imageSessionContext);
     }
 
     /**
      * Constructs a new bridge context.
-     * @param userAgent the user agent
-     * @param fontInfo the font list for the text painter, may be null
-     *                 in which case text is painted as shapes
-     * @param imageManager an image manager
-     * @param imageSessionContext an image session context
-     * @param linkTransform AffineTransform to properly place links,
-     *                      may be null
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param fontInfo
+     *            the font list for the text painter, may be null in which case
+     *            text is painted as shapes
+     * @param imageManager
+     *            an image manager
+     * @param imageSessionContext
+     *            an image session context
+     * @param linkTransform
+     *            AffineTransform to properly place links, may be null
      */
-    public GenericFOPBridgeContext(SVGUserAgent userAgent, FontInfo fontInfo,
-            ImageManager imageManager, ImageSessionContext imageSessionContext,
-            AffineTransform linkTransform) {
-        super(userAgent, fontInfo, imageManager, imageSessionContext, linkTransform);
+    public GenericFOPBridgeContext(final SVGUserAgent userAgent,
+            final FontInfo fontInfo, final ImageManager imageManager,
+            final ImageSessionContext imageSessionContext,
+            final AffineTransform linkTransform) {
+        super(userAgent, fontInfo, imageManager, imageSessionContext,
+                linkTransform);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void registerSVGBridges() {
         super.registerSVGBridges();
 
-        //This makes Batik load images via FOP and the XGC image loading framework
+        // This makes Batik load images via FOP and the XGC image loading
+        // framework
         putBridge(new GenericFOPImageElementBridge());
     }
 
     /** {@inheritDoc} */
-    public BridgeContext createBridgeContext(SVGOMDocument doc) {
+    @Override
+    public BridgeContext createBridgeContext(final SVGOMDocument doc) {
         return createBridgeContext();
     }
 
     /** {@inheritDoc} */
+    @Override
     public BridgeContext createBridgeContext() {
         return new GenericFOPBridgeContext(getUserAgent(), getDocumentLoader(),
-                fontInfo,
-                getImageManager(),
-                getImageSessionContext(),
-                linkTransform);
+                this.fontInfo, getImageManager(), getImageSessionContext(),
+                this.linkTransform);
     }
 
 }

@@ -37,14 +37,6 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.custommonkey.xmlunit.Diff;
-import org.junit.Test;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
-import static org.junit.Assert.assertTrue;
-
 import org.apache.fop.accessibility.StructureTree2SAXEventAdapter;
 import org.apache.fop.accessibility.StructureTreeEventHandler;
 import org.apache.fop.apps.FOPException;
@@ -54,6 +46,13 @@ import org.apache.fop.fo.FODocumentParser.FOEventHandlerFactory;
 import org.apache.fop.fo.FOEventHandler;
 import org.apache.fop.fo.LoadingException;
 import org.apache.fop.fotreetest.DummyFOEventHandler;
+import org.custommonkey.xmlunit.Diff;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
+
+import static org.junit.Assert.assertTrue;
 
 public class FO2StructureTreeConverterTestCase {
 
@@ -68,7 +67,8 @@ public class FO2StructureTreeConverterTestCase {
 
     @Test
     public void testCompleteDocument() throws Exception {
-        foLoader = new FOLoader() {
+        this.foLoader = new FOLoader() {
+            @Override
             public InputStream getFoInputStream() {
                 return getResource("/org/apache/fop/fo/complete_document.fo");
             }
@@ -78,7 +78,8 @@ public class FO2StructureTreeConverterTestCase {
 
     @Test
     public void testTableFooters() throws Exception {
-        foLoader = new FOLoader() {
+        this.foLoader = new FOLoader() {
+            @Override
             public InputStream getFoInputStream() {
                 return getResource("table-footers.fo");
             }
@@ -88,13 +89,17 @@ public class FO2StructureTreeConverterTestCase {
 
     @Test
     public void testCompleteContentWrappedInTableFooter() throws Exception {
-        Source xslt = new StreamSource(getResource("wrapCompleteDocumentInTableFooter.xsl"));
-        Transformer transformer = createTransformer(xslt);
-        InputStream originalFO = getResource("/org/apache/fop/fo/complete_document.fo");
-        ByteArrayOutputStream transformedFoOutput = new ByteArrayOutputStream();
-        transformer.transform(new StreamSource(originalFO), new StreamResult(transformedFoOutput));
-        final byte[] transformedFoOutputBytes = transformedFoOutput.toByteArray();
-        foLoader = new FOLoader() {
+        final Source xslt = new StreamSource(
+                getResource("wrapCompleteDocumentInTableFooter.xsl"));
+        final Transformer transformer = createTransformer(xslt);
+        final InputStream originalFO = getResource("/org/apache/fop/fo/complete_document.fo");
+        final ByteArrayOutputStream transformedFoOutput = new ByteArrayOutputStream();
+        transformer.transform(new StreamSource(originalFO), new StreamResult(
+                transformedFoOutput));
+        final byte[] transformedFoOutputBytes = transformedFoOutput
+                .toByteArray();
+        this.foLoader = new FOLoader() {
+            @Override
             public InputStream getFoInputStream() {
                 return new ByteArrayInputStream(transformedFoOutputBytes);
             }
@@ -104,8 +109,9 @@ public class FO2StructureTreeConverterTestCase {
 
     @Test
     public void testArtifact() throws Exception {
-        foLoader = new FOLoader() {
+        this.foLoader = new FOLoader() {
 
+            @Override
             public InputStream getFoInputStream() {
                 return getResource("artifact.fo");
             }
@@ -113,39 +119,43 @@ public class FO2StructureTreeConverterTestCase {
         testConverter();
     }
 
-    private Transformer createTransformer(Source xslt) throws TransformerFactoryConfigurationError,
-            TransformerConfigurationException {
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    private Transformer createTransformer(final Source xslt)
+            throws TransformerFactoryConfigurationError,
+    TransformerConfigurationException {
+        final TransformerFactory transformerFactory = TransformerFactory
+                .newInstance();
         return transformerFactory.newTransformer(xslt);
     }
 
-    private static InputStream getResource(String name) {
-        return FO2StructureTreeConverterTestCase.class.getResourceAsStream(name);
+    private static InputStream getResource(final String name) {
+        return FO2StructureTreeConverterTestCase.class
+                .getResourceAsStream(name);
     }
 
     private void testConverter() throws Exception {
-        DOMResult expectedStructureTree = loadExpectedStructureTree();
-        DOMResult actualStructureTree = buildActualStructureTree();
+        final DOMResult expectedStructureTree = loadExpectedStructureTree();
+        final DOMResult actualStructureTree = buildActualStructureTree();
         final Diff diff = createDiff(expectedStructureTree, actualStructureTree);
         assertTrue(diff.toString(), diff.identical());
     }
 
     private DOMResult loadExpectedStructureTree() {
-        DOMResult expectedStructureTree = new DOMResult();
-        InputStream xslt = getResource("fo2StructureTree.xsl");
-        runXSLT(xslt, foLoader.getFoInputStream(), expectedStructureTree);
+        final DOMResult expectedStructureTree = new DOMResult();
+        final InputStream xslt = getResource("fo2StructureTree.xsl");
+        runXSLT(xslt, this.foLoader.getFoInputStream(), expectedStructureTree);
         return expectedStructureTree;
     }
 
-    private static void runXSLT(InputStream xslt, InputStream doc, Result result) {
-        Source fo = new StreamSource(doc);
+    private static void runXSLT(final InputStream xslt, final InputStream doc,
+            final Result result) {
+        final Source fo = new StreamSource(doc);
         try {
-            Transformer transformer = TransformerFactory.newInstance()
+            final Transformer transformer = TransformerFactory.newInstance()
                     .newTransformer(new StreamSource(xslt));
             transformer.transform(fo, result);
-        } catch (TransformerConfigurationException e) {
+        } catch (final TransformerConfigurationException e) {
             throw new RuntimeException(e);
-        } catch (TransformerException e) {
+        } catch (final TransformerException e) {
             throw new RuntimeException(e);
         } finally {
             closeStream(xslt);
@@ -153,64 +163,74 @@ public class FO2StructureTreeConverterTestCase {
         }
     }
 
-    private static void closeStream(InputStream stream) {
+    private static void closeStream(final InputStream stream) {
         try {
             stream.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private DOMResult buildActualStructureTree() throws Exception {
-        DOMResult actualStructureTree = new DOMResult();
-        createStructureTreeFromDocument(foLoader.getFoInputStream(), actualStructureTree);
+        final DOMResult actualStructureTree = new DOMResult();
+        createStructureTreeFromDocument(this.foLoader.getFoInputStream(),
+                actualStructureTree);
         return actualStructureTree;
     }
 
-    private static void createStructureTreeFromDocument(InputStream foInputStream,
-            Result result) throws Exception {
-        TransformerHandler tHandler = createTransformerHandler(result);
+    private static void createStructureTreeFromDocument(
+            final InputStream foInputStream, final Result result)
+            throws Exception {
+        final TransformerHandler tHandler = createTransformerHandler(result);
         startStructureTreeSequence(tHandler);
-        StructureTreeEventHandler structureTreeEventHandler
-                = StructureTree2SAXEventAdapter.newInstance(tHandler);
-        FODocumentParser documentParser = createDocumentParser(structureTreeEventHandler);
-        FOUserAgent userAgent = createFOUserAgent(documentParser);
+        final StructureTreeEventHandler structureTreeEventHandler = StructureTree2SAXEventAdapter
+                .newInstance(tHandler);
+        final FODocumentParser documentParser = createDocumentParser(structureTreeEventHandler);
+        final FOUserAgent userAgent = createFOUserAgent(documentParser);
         parseDocument(foInputStream, documentParser, userAgent);
         endStructureTreeSequence(tHandler);
     }
 
-    private static TransformerHandler createTransformerHandler(Result domResult)
-            throws TransformerConfigurationException, TransformerFactoryConfigurationError {
-        SAXTransformerFactory factory = (SAXTransformerFactory) SAXTransformerFactory.newInstance();
-        TransformerHandler transformerHandler = factory.newTransformerHandler();
+    private static TransformerHandler createTransformerHandler(
+            final Result domResult) throws TransformerConfigurationException,
+            TransformerFactoryConfigurationError {
+        final SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactory
+                .newInstance();
+        final TransformerHandler transformerHandler = factory
+                .newTransformerHandler();
         transformerHandler.setResult(domResult);
         return transformerHandler;
     }
 
-    private static void startStructureTreeSequence(TransformerHandler tHandler) throws SAXException {
+    private static void startStructureTreeSequence(
+            final TransformerHandler tHandler) throws SAXException {
         tHandler.startDocument();
-        tHandler.startElement("", STRUCTURE_TREE_SEQUENCE_NAME, STRUCTURE_TREE_SEQUENCE_NAME,
-                new AttributesImpl());
+        tHandler.startElement("", STRUCTURE_TREE_SEQUENCE_NAME,
+                STRUCTURE_TREE_SEQUENCE_NAME, new AttributesImpl());
     }
 
     private static FODocumentParser createDocumentParser(
             final StructureTreeEventHandler structureTreeEventHandler) {
         return FODocumentParser.newInstance(new FOEventHandlerFactory() {
-            public FOEventHandler newFOEventHandler(FOUserAgent foUserAgent) {
+            @Override
+            public FOEventHandler newFOEventHandler(
+                    final FOUserAgent foUserAgent) {
                 return new FO2StructureTreeConverter(structureTreeEventHandler,
                         new DummyFOEventHandler(foUserAgent));
             }
         });
     }
 
-    private static FOUserAgent createFOUserAgent(FODocumentParser documentParser) {
-        FOUserAgent userAgent = documentParser.createFOUserAgent();
+    private static FOUserAgent createFOUserAgent(
+            final FODocumentParser documentParser) {
+        final FOUserAgent userAgent = documentParser.createFOUserAgent();
         userAgent.setAccessibility(true);
         return userAgent;
     }
 
-    private static void parseDocument(InputStream foInputStream, FODocumentParser documentParser,
-            FOUserAgent userAgent) throws FOPException, LoadingException {
+    private static void parseDocument(final InputStream foInputStream,
+            final FODocumentParser documentParser, final FOUserAgent userAgent)
+            throws FOPException, LoadingException {
         try {
             documentParser.parse(foInputStream, userAgent);
         } finally {
@@ -218,17 +238,20 @@ public class FO2StructureTreeConverterTestCase {
         }
     }
 
-    private static void endStructureTreeSequence(TransformerHandler tHandler) throws SAXException {
-        tHandler.endElement("", STRUCTURE_TREE_SEQUENCE_NAME, STRUCTURE_TREE_SEQUENCE_NAME);
+    private static void endStructureTreeSequence(
+            final TransformerHandler tHandler) throws SAXException {
+        tHandler.endElement("", STRUCTURE_TREE_SEQUENCE_NAME,
+                STRUCTURE_TREE_SEQUENCE_NAME);
         tHandler.endDocument();
     }
 
-    private static Diff createDiff(DOMResult expected, DOMResult actual) {
-        Diff diff = new Diff(getDocument(expected), getDocument(actual));
+    private static Diff createDiff(final DOMResult expected,
+            final DOMResult actual) {
+        final Diff diff = new Diff(getDocument(expected), getDocument(actual));
         return diff;
     }
 
-    private static Document getDocument(DOMResult result) {
+    private static Document getDocument(final DOMResult result) {
         return (Document) result.getNode();
     }
 }

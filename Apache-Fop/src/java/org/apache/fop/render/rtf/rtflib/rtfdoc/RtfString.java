@@ -30,43 +30,54 @@ import java.io.IOException;
 import java.io.Writer;
 
 /**
- * <p>Plain text in a RTF file, without any formatings.</p>
+ * <p>
+ * Plain text in a RTF file, without any formatings.
+ * </p>
  *
- * <p>This work was authored by Peter Herweg (pherweg@web.de).</p>
+ * <p>
+ * This work was authored by Peter Herweg (pherweg@web.de).
+ * </p>
  */
 
 public class RtfString extends RtfElement {
     private String text = "";
 
-    RtfString(RtfContainer parent, Writer w, String s)
-    throws IOException {
+    RtfString(final RtfContainer parent, final Writer w, final String s)
+            throws IOException {
         super(parent, w);
 
-        text = s;
+        this.text = s;
     }
 
     /**
-    * @return true if this element would generate no "useful" RTF content
-    */
+     * @return true if this element would generate no "useful" RTF content
+     */
+    @Override
     public boolean isEmpty() {
-        return text.trim().equals("");
+        return this.text.trim().equals("");
     }
 
     /**
-    * write RTF code of all our children
-    * @throws IOException for I/O problems
-    */
+     * write RTF code of all our children
+     * 
+     * @throws IOException
+     *             for I/O problems
+     */
+    @Override
     protected void writeRtfContent() throws IOException {
-        RtfStringConverter.getInstance().writeRtfString(writer, text);
+        RtfStringConverter.getInstance().writeRtfString(this.writer, this.text);
     }
 
     /** @return the text */
     public String getText() {
-        return text;
+        return this.text;
     }
 
-    /** @param s some text */
-    public void setText(String s) {
-        text = s;
+    /**
+     * @param s
+     *            some text
+     */
+    public void setText(final String s) {
+        this.text = s;
     }
 }

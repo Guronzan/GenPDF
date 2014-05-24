@@ -37,17 +37,15 @@ import java.util.Map;
 import org.apache.fop.util.License;
 
 /**
- * Create the default classes file classes.xml,
- * for use in building hyphenation patterns
- * from pattern files which do not contain their own classes.
- * The class contains three methods to do that.
- * The method fromJava gets its infirmation from Java's compiled-in Unicode Character Database,
- * the method fromUCD gets its information from the UCD files,
- * the method fromTeX gets its information from the file unicode-letters-XeTeX.tex,
- * which is the basis of XeTeX's unicode support.
- * In the build file only the method from UCD is used;
- * the other two methods are there for demonstration.
- * The methods fromJava and fromTeX are commented out because they are not Java 1.4 compliant.
+ * Create the default classes file classes.xml, for use in building hyphenation
+ * patterns from pattern files which do not contain their own classes. The class
+ * contains three methods to do that. The method fromJava gets its infirmation
+ * from Java's compiled-in Unicode Character Database, the method fromUCD gets
+ * its information from the UCD files, the method fromTeX gets its information
+ * from the file unicode-letters-XeTeX.tex, which is the basis of XeTeX's
+ * unicode support. In the build file only the method from UCD is used; the
+ * other two methods are there for demonstration. The methods fromJava and
+ * fromTeX are commented out because they are not Java 1.4 compliant.
  */
 public final class UnicodeClasses {
 
@@ -57,15 +55,19 @@ public final class UnicodeClasses {
     /**
      * Disallow constructor for this utility class
      */
-    private UnicodeClasses() { }
+    private UnicodeClasses() {
+    }
 
     /**
-     * Write a comment that this is a generated file,
-     * and instructions on how to generate it
-     * @param w the writer which writes the comment
-     * @throws IOException if the write operation fails
+     * Write a comment that this is a generated file, and instructions on how to
+     * generate it
+     * 
+     * @param w
+     *            the writer which writes the comment
+     * @throws IOException
+     *             if the write operation fails
      */
-    public static void writeGenerated(Writer w) throws IOException {
+    public static void writeGenerated(final Writer w) throws IOException {
         w.write("<!-- !!! THIS IS A GENERATED FILE !!!             -->\n");
         w.write("<!-- If updates are needed, then:                 -->\n");
         w.write("<!-- * run 'ant codegen-hyphenation-classes',     -->\n");
@@ -76,18 +78,24 @@ public final class UnicodeClasses {
 
     /**
      * Generate classes.xml from Java's compiled-in Unicode Character Database
-     * @param hexcode whether to prefix each class with the hexcode (only for debugging purposes)
-     * @param outfilePath output file
-     * @throws IOException if an I/O exception occurs
+     * 
+     * @param hexcode
+     *            whether to prefix each class with the hexcode (only for
+     *            debugging purposes)
+     * @param outfilePath
+     *            output file
+     * @throws IOException
+     *             if an I/O exception occurs
      */
-    public static void fromJava(boolean hexcode, String outfilePath) throws IOException {
-        File f = new File(outfilePath);
+    public static void fromJava(final boolean hexcode, final String outfilePath)
+            throws IOException {
+        final File f = new File(outfilePath);
         if (f.exists()) {
             f.delete();
         }
         f.createNewFile();
-        FileOutputStream fw = new FileOutputStream(f);
-        OutputStreamWriter ow = new OutputStreamWriter(fw, "utf-8");
+        final FileOutputStream fw = new FileOutputStream(f);
+        final OutputStreamWriter ow = new OutputStreamWriter(fw, "utf-8");
         int maxChar;
         maxChar = Character.MAX_VALUE;
 
@@ -106,17 +114,17 @@ public final class UnicodeClasses {
                 continue;
             }
 
-            // we are only interested in LC, UC and TC letters which are their own LC,
+            // we are only interested in LC, UC and TC letters which are their
+            // own LC,
             // and in 'other letters'
-            if (!(((Character.isLowerCase(code) || Character.isUpperCase(code)
-                    || Character.isTitleCase(code))
-                    && code == Character.toLowerCase(code))
-                    || Character.getType(code) == Character.OTHER_LETTER)) {
+            if (!((Character.isLowerCase(code) || Character.isUpperCase(code) || Character
+                    .isTitleCase(code)) && code == Character.toLowerCase(code) || Character
+                        .getType(code) == Character.OTHER_LETTER)) {
                 continue;
             }
 
             // skip a number of blocks
-            Character.UnicodeBlock ubi = Character.UnicodeBlock.of(code);
+            final Character.UnicodeBlock ubi = Character.UnicodeBlock.of(code);
             if (ubi.equals(Character.UnicodeBlock.SUPERSCRIPTS_AND_SUBSCRIPTS)
                     || ubi.equals(Character.UnicodeBlock.LETTERLIKE_SYMBOLS)
                     || ubi.equals(Character.UnicodeBlock.ALPHABETIC_PRESENTATION_FORMS)
@@ -127,9 +135,9 @@ public final class UnicodeClasses {
                 continue;
             }
 
-            int uppercode = Character.toUpperCase(code);
-            int titlecode = Character.toTitleCase(code);
-            StringBuilder s = new StringBuilder();
+            final int uppercode = Character.toUpperCase(code);
+            final int titlecode = Character.toTitleCase(code);
+            final StringBuilder s = new StringBuilder();
             if (hexcode) {
                 s.append("0x" + Integer.toHexString(code) + " ");
             }
@@ -147,7 +155,6 @@ public final class UnicodeClasses {
         ow.close();
     }
 
-
     /** The 1st column in the UCD file. */
     public static final int UNICODE = 0;
     /** The 3rd column in the UCD file. */
@@ -163,60 +170,69 @@ public final class UnicodeClasses {
 
     /**
      * Generate classes.xml from Unicode Character Database files
-     * @param hexcode whether to prefix each class with the hexcode (only for debugging purposes)
-     * @param unidataPath path to the directory with UCD files
-     * @param outfilePath output file
-     * @throws IOException if the input files are not found
-     * @throws URISyntaxException if {@code unidataPath} cannot be converted to a URI
+     * 
+     * @param hexcode
+     *            whether to prefix each class with the hexcode (only for
+     *            debugging purposes)
+     * @param unidataPath
+     *            path to the directory with UCD files
+     * @param outfilePath
+     *            output file
+     * @throws IOException
+     *             if the input files are not found
+     * @throws URISyntaxException
+     *             if {@code unidataPath} cannot be converted to a URI
      */
-    public static void fromUCD(boolean hexcode, String unidataPath, String outfilePath)
-    throws IOException, URISyntaxException {
+    public static void fromUCD(final boolean hexcode, final String unidataPath,
+            final String outfilePath) throws IOException, URISyntaxException {
         URI unidata;
         if (unidataPath.endsWith("/")) {
             unidata = new URI(unidataPath);
         } else {
             unidata = new URI(unidataPath + "/");
         }
-        String scheme = unidata.getScheme();
+        final String scheme = unidata.getScheme();
         if (scheme == null || !(scheme.equals("file") || scheme.equals("http"))) {
-            throw new FileNotFoundException
-            ("URI with file or http scheme required for UNIDATA input directory");
+            throw new FileNotFoundException(
+                    "URI with file or http scheme required for UNIDATA input directory");
         }
 
-        File f = new File(outfilePath);
+        final File f = new File(outfilePath);
         if (f.exists()) {
             f.delete();
         }
         f.createNewFile();
-        FileOutputStream fw = new FileOutputStream(f);
-        OutputStreamWriter ow = new OutputStreamWriter(fw, "utf-8");
+        final FileOutputStream fw = new FileOutputStream(f);
+        final OutputStreamWriter ow = new OutputStreamWriter(fw, "utf-8");
 
         URI inuri = unidata.resolve("Blocks.txt");
         InputStream inis = null;
         if (scheme.equals("file")) {
-            File in = new File(inuri);
+            final File in = new File(inuri);
             inis = new FileInputStream(in);
         } else if (scheme.equals("http")) {
             inis = inuri.toURL().openStream();
         }
         InputStreamReader insr = new InputStreamReader(inis, "utf-8");
         BufferedReader inbr = new BufferedReader(insr);
-        Map blocks = new HashMap();
-        for (String line = inbr.readLine(); line != null; line = inbr.readLine()) {
+        final Map blocks = new HashMap();
+        for (String line = inbr.readLine(); line != null; line = inbr
+                .readLine()) {
             if (line.startsWith("#") || line.matches("^\\s*$")) {
                 continue;
             }
-            String[] parts = line.split(";");
-            String block = parts[1].trim();
-            String[] indices = parts[0].split("\\.\\.");
-            int[] ind = {Integer.parseInt(indices[0], 16), Integer.parseInt(indices[1], 16)};
+            final String[] parts = line.split(";");
+            final String block = parts[1].trim();
+            final String[] indices = parts[0].split("\\.\\.");
+            final int[] ind = { Integer.parseInt(indices[0], 16),
+                    Integer.parseInt(indices[1], 16) };
             blocks.put(block, ind);
         }
         inbr.close();
 
         inuri = unidata.resolve("UnicodeData.txt");
         if (scheme.equals("file")) {
-            File in = new File(inuri);
+            final File in = new File(inuri);
             inis = new FileInputStream(in);
         } else if (scheme.equals("http")) {
             inis = inuri.toURL().openStream();
@@ -232,27 +248,28 @@ public final class UnicodeClasses {
         writeGenerated(ow);
         ow.write("\n");
         ow.write("<classes>\n");
-        for (String line = inbr.readLine(); line != null; line = inbr.readLine()) {
-            String[] fields = line.split(";", NUM_FIELDS);
-            int code = Integer.parseInt(fields[UNICODE], 16);
+        for (String line = inbr.readLine(); line != null; line = inbr
+                .readLine()) {
+            final String[] fields = line.split(";", NUM_FIELDS);
+            final int code = Integer.parseInt(fields[UNICODE], 16);
             if (code > maxChar) {
                 break;
             }
-            if (((fields[GENERAL_CATEGORY].equals("Ll") || fields[GENERAL_CATEGORY].equals("Lu")
-                            || fields[GENERAL_CATEGORY].equals("Lt"))
-                        && ("".equals(fields[SIMPLE_LOWERCASE_MAPPING])
-                                || fields[UNICODE].equals(fields[SIMPLE_LOWERCASE_MAPPING])))
-                    || fields[GENERAL_CATEGORY].equals("Lo")) {
-                String[] blockNames = {"Superscripts and Subscripts",
-                                       "Letterlike Symbols",
-                                       "Alphabetic Presentation Forms",
-                                       "Halfwidth and Fullwidth Forms",
-                                       "CJK Unified Ideographs",
-                                       "CJK Unified Ideographs Extension A",
-                                       "Hangul Syllables"};
+            if ((fields[GENERAL_CATEGORY].equals("Ll")
+                    || fields[GENERAL_CATEGORY].equals("Lu") || fields[GENERAL_CATEGORY]
+                        .equals("Lt"))
+                    && ("".equals(fields[SIMPLE_LOWERCASE_MAPPING]) || fields[UNICODE]
+                            .equals(fields[SIMPLE_LOWERCASE_MAPPING]))
+                            || fields[GENERAL_CATEGORY].equals("Lo")) {
+                final String[] blockNames = { "Superscripts and Subscripts",
+                        "Letterlike Symbols", "Alphabetic Presentation Forms",
+                        "Halfwidth and Fullwidth Forms",
+                        "CJK Unified Ideographs",
+                        "CJK Unified Ideographs Extension A",
+                        "Hangul Syllables" };
                 int j;
                 for (j = 0; j < blockNames.length; ++j) {
-                    int[] ind = (int[]) blocks.get(blockNames[j]);
+                    final int[] ind = (int[]) blocks.get(blockNames[j]);
                     if (code >= ind[0] && code <= ind[1]) {
                         break;
                     }
@@ -264,20 +281,25 @@ public final class UnicodeClasses {
                 int uppercode = -1;
                 int titlecode = -1;
                 if (!"".equals(fields[SIMPLE_UPPERCASE_MAPPING])) {
-                    uppercode = Integer.parseInt(fields[SIMPLE_UPPERCASE_MAPPING], 16);
+                    uppercode = Integer.parseInt(
+                            fields[SIMPLE_UPPERCASE_MAPPING], 16);
                 }
                 if (!"".equals(fields[SIMPLE_TITLECASE_MAPPING])) {
-                    titlecode = Integer.parseInt(fields[SIMPLE_TITLECASE_MAPPING], 16);
+                    titlecode = Integer.parseInt(
+                            fields[SIMPLE_TITLECASE_MAPPING], 16);
                 }
-                StringBuilder s = new StringBuilder();
+                final StringBuilder s = new StringBuilder();
                 if (hexcode) {
-                    s.append("0x" + fields[UNICODE].replaceFirst("^0+", "").toLowerCase() + " ");
+                    s.append("0x"
+                            + fields[UNICODE].replaceFirst("^0+", "")
+                                    .toLowerCase() + " ");
                 }
                 s.append(Character.toChars(code));
                 if (uppercode != -1 && uppercode != code) {
                     s.append(Character.toChars(uppercode));
                 }
-                if (titlecode != -1 && titlecode != code && titlecode != uppercode) {
+                if (titlecode != -1 && titlecode != code
+                        && titlecode != uppercode) {
                     s.append(Character.toChars(titlecode));
                 }
                 ow.write(s.toString() + "\n");
@@ -291,26 +313,32 @@ public final class UnicodeClasses {
 
     /**
      * Generate classes.xml from XeTeX's Unicode letters file
-     * @param hexcode whether to prefix each class with the hexcode (only for debugging purposes)
-     * @param lettersPath path to XeTeX's Unicode letters file unicode-letters-XeTeX.tex
-     * @param outfilePath output file
-     * @throws IOException in case of an I/O exception
+     * 
+     * @param hexcode
+     *            whether to prefix each class with the hexcode (only for
+     *            debugging purposes)
+     * @param lettersPath
+     *            path to XeTeX's Unicode letters file unicode-letters-XeTeX.tex
+     * @param outfilePath
+     *            output file
+     * @throws IOException
+     *             in case of an I/O exception
      */
-    public static void fromTeX(boolean hexcode, String lettersPath, String outfilePath)
-      throws IOException {
-        File in = new File(lettersPath);
+    public static void fromTeX(final boolean hexcode, final String lettersPath,
+            final String outfilePath) throws IOException {
+        final File in = new File(lettersPath);
 
-        File f = new File(outfilePath);
+        final File f = new File(outfilePath);
         if (f.exists()) {
             f.delete();
         }
         f.createNewFile();
-        FileOutputStream fw = new FileOutputStream(f);
-        OutputStreamWriter ow = new OutputStreamWriter(fw, "utf-8");
+        final FileOutputStream fw = new FileOutputStream(f);
+        final OutputStreamWriter ow = new OutputStreamWriter(fw, "utf-8");
 
-        FileInputStream inis = new FileInputStream(in);
-        InputStreamReader insr = new InputStreamReader(inis, "utf-8");
-        BufferedReader inbr = new BufferedReader(insr);
+        final FileInputStream inis = new FileInputStream(in);
+        final InputStreamReader insr = new InputStreamReader(inis, "utf-8");
+        final BufferedReader inbr = new BufferedReader(insr);
 
         ow.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
         License.writeXMLLicenseId(ow);
@@ -318,8 +346,9 @@ public final class UnicodeClasses {
         writeGenerated(ow);
         ow.write("\n");
         ow.write("<classes>\n");
-        for (String line = inbr.readLine(); line != null; line = inbr.readLine()) {
-            String[] codes = line.split("\\s+");
+        for (String line = inbr.readLine(); line != null; line = inbr
+                .readLine()) {
+            final String[] codes = line.split("\\s+");
             if (!(codes[0].equals("\\L") || codes[0].equals("\\l"))) {
                 continue;
             }
@@ -334,10 +363,13 @@ public final class UnicodeClasses {
                 ow.write("\"" + line + "\" should have three codes");
                 continue;
             }
-            if (codes[0].equals("\\l") || (codes[0].equals("\\L") && codes[1].equals(codes[3]))) {
-                StringBuilder s = new StringBuilder();
+            if (codes[0].equals("\\l") || codes[0].equals("\\L")
+                    && codes[1].equals(codes[3])) {
+                final StringBuilder s = new StringBuilder();
                 if (hexcode) {
-                    s.append("0x" + codes[1].replaceFirst("^0+", "").toLowerCase() + " ");
+                    s.append("0x"
+                            + codes[1].replaceFirst("^0+", "").toLowerCase()
+                            + " ");
                 }
                 s.append(Character.toChars(Integer.parseInt(codes[1], 16)));
                 if (codes[0].equals("\\L")) {
@@ -352,22 +384,26 @@ public final class UnicodeClasses {
         inbr.close();
     }
 
-
     /**
-     * @param args [--hexcode] [--java|--ucd|--tex] outfile [infile]
-     * @throws IOException if the input file cannot be found
-     * @throws URISyntaxException if the input URI is incorrect
+     * @param args
+     *            [--hexcode] [--java|--ucd|--tex] outfile [infile]
+     * @throws IOException
+     *             if the input file cannot be found
+     * @throws URISyntaxException
+     *             if the input URI is incorrect
      */
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(final String[] args) throws IOException,
+            URISyntaxException {
         String type = "ucd";
-        String prefix = "--";
+        final String prefix = "--";
         String infile = null;
         String outfile = null;
         boolean hexcode = false;
         int i;
         for (i = 0; i < args.length && args[i].startsWith(prefix); ++i) {
-            String option = args[i].substring(prefix.length());
-            if (option.equals("java") || option.equals("ucd") || option.equals("tex")) {
+            final String option = args[i].substring(prefix.length());
+            if (option.equals("java") || option.equals("ucd")
+                    || option.equals("tex")) {
                 type = option;
             } else if (option.equals("hexcode")) {
                 hexcode = true;
@@ -387,13 +423,13 @@ public final class UnicodeClasses {
         }
 
         if (type.equals("java") && infile != null) {
-                System.err.println("Type java does not allow an infile");
-                System.exit(1);
+            System.err.println("Type java does not allow an infile");
+            System.exit(1);
         } else if (type.equals("ucd") && infile == null) {
-                infile = UNICODE_DIR;
+            infile = UNICODE_DIR;
         } else if (type.equals("tex") && infile == null) {
-                System.err.println("Type tex requires an input file");
-                System.exit(1);
+            System.err.println("Type tex requires an input file");
+            System.exit(1);
         }
         if (type.equals("java")) {
             fromJava(hexcode, outfile);

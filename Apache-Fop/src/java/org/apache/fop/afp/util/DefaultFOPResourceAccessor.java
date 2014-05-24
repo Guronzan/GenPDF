@@ -47,7 +47,7 @@ public class DefaultFOPResourceAccessor extends SimpleResourceAccessor {
      * resources. So, if fonts need to be accessed, you can set the
      * {@link org.apache.fop.fonts.FontManager}'s base URI instead of the one on
      * the {@link org.apache.fop.apps.FopFactory}.
-     * 
+     *
      * @param userAgent
      *            the FO user agent
      * @param categoryBaseURI
@@ -71,7 +71,7 @@ public class DefaultFOPResourceAccessor extends SimpleResourceAccessor {
 
         // Step 2: resolve against the user agent --> stream
         final String base = this.categoryBaseURI != null ? this.categoryBaseURI
-                        : this.userAgent.getBaseURL();
+                : this.userAgent.getBaseURL();
         final Source src = this.userAgent.resolveURI(resolved.toASCIIString(),
                 base);
 

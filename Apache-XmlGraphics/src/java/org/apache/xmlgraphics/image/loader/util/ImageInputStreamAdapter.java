@@ -25,9 +25,9 @@ import java.io.InputStream;
 import javax.imageio.stream.ImageInputStream;
 
 /**
- * Decorates an ImageInputStream with an InputStream interface. The methods <code>mark()</code>
- * and <code>reset()</code> are fully supported. The method <code>available()</code> will
- * always return 0.
+ * Decorates an ImageInputStream with an InputStream interface. The methods
+ * <code>mark()</code> and <code>reset()</code> are fully supported. The method
+ * <code>available()</code> will always return 0.
  */
 public class ImageInputStreamAdapter extends InputStream {
 
@@ -37,62 +37,76 @@ public class ImageInputStreamAdapter extends InputStream {
 
     /**
      * Creates a new ImageInputStreamAdapter.
-     * @param iin the underlying ImageInputStream
+     * 
+     * @param iin
+     *            the underlying ImageInputStream
      */
-    public ImageInputStreamAdapter(ImageInputStream iin) {
+    public ImageInputStreamAdapter(final ImageInputStream iin) {
         assert iin != null : "InputStream is null";
         this.iin = iin;
     }
 
     /** {@inheritDoc} */
-    public int read(byte[] b, int off, int len) throws IOException {
-        return iin.read(b, off, len);
+    @Override
+    public int read(final byte[] b, final int off, final int len)
+            throws IOException {
+        return this.iin.read(b, off, len);
     }
 
     /** {@inheritDoc} */
-    public int read(byte[] b) throws IOException {
-        return iin.read(b);
+    @Override
+    public int read(final byte[] b) throws IOException {
+        return this.iin.read(b);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int read() throws IOException {
-        return iin.read();
+        return this.iin.read();
     }
 
     /** {@inheritDoc} */
-    public long skip(long n) throws IOException {
-        return iin.skipBytes(n);
+    @Override
+    public long skip(final long n) throws IOException {
+        return this.iin.skipBytes(n);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void close() throws IOException {
-        iin.close();
-        iin = null;
+        this.iin.close();
+        this.iin = null;
     }
 
     /** {@inheritDoc} */
-    public synchronized void mark(int readlimit) {
-        //Parameter readlimit is ignored
+    @Override
+    public synchronized void mark(final int readlimit) {
+        // Parameter readlimit is ignored
         try {
-            //Cannot use mark()/reset() since they are nestable, and InputStream's are not
-            this.lastMarkPosition = iin.getStreamPosition();
-        } catch (IOException ioe) {
+            // Cannot use mark()/reset() since they are nestable, and
+            // InputStream's are not
+            this.lastMarkPosition = this.iin.getStreamPosition();
+        } catch (final IOException ioe) {
             throw new RuntimeException(
-                    "Unexpected IOException in ImageInputStream.getStreamPosition()", ioe);
+                    "Unexpected IOException in ImageInputStream.getStreamPosition()",
+                    ioe);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean markSupported() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public synchronized void reset() throws IOException {
-        iin.seek(this.lastMarkPosition);
+        this.iin.seek(this.lastMarkPosition);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int available() throws IOException {
         return 0;
     }

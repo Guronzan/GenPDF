@@ -43,7 +43,9 @@ public final class PDFNull implements PDFWritable {
     }
 
     /** {@inheritDoc} */
-    public void outputInline(OutputStream out, StringBuilder textBuffer) throws IOException {
+    @Override
+    public void outputInline(final OutputStream out,
+            final StringBuilder textBuffer) throws IOException {
         textBuffer.append(toString());
     }
 

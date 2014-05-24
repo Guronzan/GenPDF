@@ -20,10 +20,14 @@
 package org.apache.fop.complexscripts.fonts;
 
 /**
- * <p>Exception thrown when attempting to decode a truetype font file and a format
- * constraint is violated.</p>
+ * <p>
+ * Exception thrown when attempting to decode a truetype font file and a format
+ * constraint is violated.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 public class AdvancedTypographicTableFormatException extends RuntimeException {
     /**
@@ -32,19 +36,27 @@ public class AdvancedTypographicTableFormatException extends RuntimeException {
     public AdvancedTypographicTableFormatException() {
         super();
     }
+
     /**
      * Instantiate ATT format exception.
-     * @param message a message string
+     * 
+     * @param message
+     *            a message string
      */
-    public AdvancedTypographicTableFormatException(String message) {
+    public AdvancedTypographicTableFormatException(final String message) {
         super(message);
     }
+
     /**
      * Instantiate ATT format exception.
-     * @param message a message string
-     * @param cause a <code>Throwable</code> that caused this exception
+     * 
+     * @param message
+     *            a message string
+     * @param cause
+     *            a <code>Throwable</code> that caused this exception
      */
-    public AdvancedTypographicTableFormatException(String message, Throwable cause) {
+    public AdvancedTypographicTableFormatException(final String message,
+            final Throwable cause) {
         super(message, cause);
     }
 }

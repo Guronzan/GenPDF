@@ -28,22 +28,24 @@ abstract class ObjectReferenceTest {
 
     protected ObjectReference sut;
 
-    protected long computeNumberFromBytes(List<Integer> expectedOffsetBytes) {
+    protected long computeNumberFromBytes(
+            final List<Integer> expectedOffsetBytes) {
         assert expectedOffsetBytes.size() <= 8;
         long offset = 0;
-        for (int b : expectedOffsetBytes) {
+        for (final int b : expectedOffsetBytes) {
             offset = offset << 8 | b;
         }
         return offset;
     }
 
-    protected byte[] createExpectedOutput(byte field1, List<Integer> field2, int field3) {
+    protected byte[] createExpectedOutput(final byte field1,
+            final List<Integer> field2, final int field3) {
         assert field2.size() == 8;
         assert (field3 & 0xffff) == field3;
-        byte[] expected = new byte[11];
+        final byte[] expected = new byte[11];
         int index = 0;
         expected[index++] = field1;
-        for (Integer b : field2) {
+        for (final Integer b : field2) {
             expected[index++] = b.byteValue();
         }
         expected[index++] = (byte) ((field3 & 0xff00) >> 8);
@@ -52,9 +54,9 @@ abstract class ObjectReferenceTest {
     }
 
     protected byte[] getActualOutput() throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        DataOutputStream dataOutputStream = new DataOutputStream(out);
-        sut.output(dataOutputStream);
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final DataOutputStream dataOutputStream = new DataOutputStream(out);
+        this.sut.output(dataOutputStream);
         dataOutputStream.close();
         return out.toByteArray();
     }

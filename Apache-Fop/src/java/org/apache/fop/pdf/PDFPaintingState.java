@@ -26,26 +26,23 @@ import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.util.Iterator;
 
-import org.apache.xmlgraphics.java2d.color.ColorUtil;
-
 import org.apache.fop.util.AbstractPaintingState;
+import org.apache.xmlgraphics.java2d.color.ColorUtil;
 
 /**
  * This keeps information about the current painting state when writing to pdf.
- * It allows for creating new graphics states with the q operator.
- * This class is only used to store the information about the state
- * the caller needs to handle the actual pdf operators.
+ * It allows for creating new graphics states with the q operator. This class is
+ * only used to store the information about the state the caller needs to handle
+ * the actual pdf operators.
  *
- * When setting the state for pdf there are three possible ways of
- * handling the situation.
- * The values can be set to override previous or default values.
- * A new state can be added and then the values set.
- * The current state can be popped and values will return to a
- * previous state then the necessary values can be overridden.
- * The current transform behaves differently to other values as the
- * matrix is combined with the current resolved value.
- * It is impossible to optimise the result without analysing the all
- * the possible combinations after completing.
+ * When setting the state for pdf there are three possible ways of handling the
+ * situation. The values can be set to override previous or default values. A
+ * new state can be added and then the values set. The current state can be
+ * popped and values will return to a previous state then the necessary values
+ * can be overridden. The current transform behaves differently to other values
+ * as the matrix is combined with the current resolved value. It is impossible
+ * to optimise the result without analysing the all the possible combinations
+ * after completing.
  */
 public class PDFPaintingState extends org.apache.fop.util.AbstractPaintingState {
 
@@ -58,22 +55,23 @@ public class PDFPaintingState extends org.apache.fop.util.AbstractPaintingState 
     }
 
     /**
-     * Set the current paint.
-     * This checks if the paint will change and then sets the current paint.
+     * Set the current paint. This checks if the paint will change and then sets
+     * the current paint.
      *
-     * @param p the new paint
+     * @param p
+     *            the new paint
      * @return true if the new paint changes the current paint
      */
-    public boolean setPaint(Paint p) {
-        PDFData data = getPDFData();
-        Paint currentPaint = data.paint;
+    public boolean setPaint(final Paint p) {
+        final PDFData data = getPDFData();
+        final Paint currentPaint = data.paint;
         if (currentPaint == null) {
             if (p != null) {
                 data.paint = p;
                 return true;
             }
         } else if (p instanceof Color && currentPaint instanceof Color) {
-            if (!ColorUtil.isSameColor((Color)p, (Color)currentPaint)) {
+            if (!ColorUtil.isSameColor((Color) p, (Color) currentPaint)) {
                 data.paint = p;
                 return true;
             }
@@ -85,19 +83,18 @@ public class PDFPaintingState extends org.apache.fop.util.AbstractPaintingState 
     }
 
     /**
-     * Check if the clip will change the current state.
-     * A clip is assumed to be used in a situation where it will add
-     * to any clip in the current or parent states.
-     * A clip cannot be cleared, this can only be achieved by going to
-     * a parent level with the correct clip.
-     * If the clip is different then it may start a new state so that
-     * it can return to the previous clip.
+     * Check if the clip will change the current state. A clip is assumed to be
+     * used in a situation where it will add to any clip in the current or
+     * parent states. A clip cannot be cleared, this can only be achieved by
+     * going to a parent level with the correct clip. If the clip is different
+     * then it may start a new state so that it can return to the previous clip.
      *
-     * @param cl the clip shape to check
+     * @param cl
+     *            the clip shape to check
      * @return true if the clip will change the current clip.
      */
-    public boolean checkClip(Shape cl) {
-        Shape clip = getPDFData().clip;
+    public boolean checkClip(final Shape cl) {
+        final Shape clip = getPDFData().clip;
         if (clip == null) {
             if (cl != null) {
                 return true;
@@ -105,22 +102,22 @@ public class PDFPaintingState extends org.apache.fop.util.AbstractPaintingState 
         } else if (!new Area(clip).equals(new Area(cl))) {
             return true;
         }
-        //TODO check for clips that are larger than the current
+        // TODO check for clips that are larger than the current
         return false;
     }
 
     /**
-     * Set the current clip.
-     * This either sets a new clip or sets the clip to the intersect of
-     * the old clip and the new clip.
+     * Set the current clip. This either sets a new clip or sets the clip to the
+     * intersect of the old clip and the new clip.
      *
-     * @param cl the new clip in the current state
+     * @param cl
+     *            the new clip in the current state
      */
-    public void setClip(Shape cl) {
-        PDFData data = getPDFData();
-        Shape clip = data.clip;
+    public void setClip(final Shape cl) {
+        final PDFData data = getPDFData();
+        final Shape clip = data.clip;
         if (clip != null) {
-            Area newClip = new Area(clip);
+            final Area newClip = new Area(clip);
             newClip.intersect(new Area(cl));
             data.clip = new GeneralPath(newClip);
         } else {
@@ -130,11 +127,13 @@ public class PDFPaintingState extends org.apache.fop.util.AbstractPaintingState 
 
     /**
      * Sets the character spacing (Tc).
-     * @param value the new value
+     * 
+     * @param value
+     *            the new value
      * @return true if the value was changed with respect to the previous value
      */
-    public boolean setCharacterSpacing(float value) {
-        PDFData data = getPDFData();
+    public boolean setCharacterSpacing(final float value) {
+        final PDFData data = getPDFData();
         if (value != data.characterSpacing) {
             data.characterSpacing = value;
             return true;
@@ -144,6 +143,7 @@ public class PDFPaintingState extends org.apache.fop.util.AbstractPaintingState 
 
     /**
      * Returns the current character spacing (Tc) value.
+     * 
      * @return the Tc value
      */
     public float getCharacterSpacing() {
@@ -160,22 +160,20 @@ public class PDFPaintingState extends org.apache.fop.util.AbstractPaintingState 
     }
 
     /**
-     * Get the graphics state.
-     * This gets the combination of all graphic states for
-     * the current context.
-     * This is the graphic state set with the gs operator not
-     * the other graphic state changes.
+     * Get the graphics state. This gets the combination of all graphic states
+     * for the current context. This is the graphic state set with the gs
+     * operator not the other graphic state changes.
      *
      * @return the calculated ExtGState in the current context
      */
     public PDFGState getGState() {
-        PDFGState defaultState = PDFGState.DEFAULT;
+        final PDFGState defaultState = PDFGState.DEFAULT;
 
         PDFGState state;
-        PDFGState newState = new PDFGState();
+        final PDFGState newState = new PDFGState();
         newState.addValues(defaultState);
-        for (Iterator it = getStateStack().iterator(); it.hasNext();) {
-            PDFData data = (PDFData)it.next();
+        for (final Iterator it = getStateStack().iterator(); it.hasNext();) {
+            final PDFData data = (PDFData) it.next();
             state = data.gstate;
             if (state != null) {
                 newState.addValues(state);
@@ -200,48 +198,48 @@ public class PDFPaintingState extends org.apache.fop.util.AbstractPaintingState 
     }
 
     /**
-     * Push the current state onto the stack.
-     * This call should be used when the q operator is used
-     * so that the state is known when popped.
+     * Push the current state onto the stack. This call should be used when the
+     * q operator is used so that the state is known when popped.
      */
     @Override
     public void save() {
-        AbstractData data = getData();
-        AbstractData copy = (AbstractData)data.clone();
+        final AbstractData data = getData();
+        final AbstractData copy = (AbstractData) data.clone();
         data.clearTransform();
         getStateStack().add(copy);
     }
 
     private PDFData getPDFData() {
-        return (PDFData)getData();
+        return (PDFData) getData();
     }
 
-    private class PDFData extends org.apache.fop.util.AbstractPaintingState.AbstractData {
+    private class PDFData extends
+            org.apache.fop.util.AbstractPaintingState.AbstractData {
 
         private static final long serialVersionUID = 3527950647293177764L;
 
         private Paint paint = null;
         private Paint backPaint = null;
-        //private int lineCap = 0; //Disabled the ones that are not used, yet
-        //private int lineJoin = 0;
-        //private float miterLimit = 0;
-        //private int dashOffset = 0;
+        // private int lineCap = 0; //Disabled the ones that are not used, yet
+        // private int lineJoin = 0;
+        // private float miterLimit = 0;
+        // private int dashOffset = 0;
         private Shape clip = null;
         private PDFGState gstate = null;
 
-        //text state
+        // text state
         private float characterSpacing = 0f;
 
         /** {@inheritDoc} */
         @Override
         public Object clone() {
-            PDFData obj = (PDFData)super.clone();
+            final PDFData obj = (PDFData) super.clone();
             obj.paint = this.paint;
             obj.backPaint = this.paint;
-            //obj.lineCap = this.lineCap;
-            //obj.lineJoin = this.lineJoin;
-            //obj.miterLimit = this.miterLimit;
-            //obj.dashOffset = this.dashOffset;
+            // obj.lineCap = this.lineCap;
+            // obj.lineJoin = this.lineJoin;
+            // obj.miterLimit = this.miterLimit;
+            // obj.dashOffset = this.dashOffset;
             obj.clip = this.clip;
             obj.gstate = this.gstate;
             obj.characterSpacing = this.characterSpacing;
@@ -251,14 +249,12 @@ public class PDFPaintingState extends org.apache.fop.util.AbstractPaintingState 
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            return super.toString()
-                + ", paint=" + paint
-                + ", backPaint=" + backPaint
-                //+ ", lineCap=" + lineCap
-                //+ ", miterLimit=" + miterLimit
-                //+ ", dashOffset=" + dashOffset
-                + ", clip=" + clip
-                + ", gstate=" + gstate;
+            return super.toString() + ", paint=" + this.paint + ", backPaint="
+                    + this.backPaint
+                    // + ", lineCap=" + lineCap
+                    // + ", miterLimit=" + miterLimit
+                    // + ", dashOffset=" + dashOffset
+                    + ", clip=" + this.clip + ", gstate=" + this.gstate;
         }
 
         /** {@inheritDoc} */
@@ -269,4 +265,3 @@ public class PDFPaintingState extends org.apache.fop.util.AbstractPaintingState 
     }
 
 }
-

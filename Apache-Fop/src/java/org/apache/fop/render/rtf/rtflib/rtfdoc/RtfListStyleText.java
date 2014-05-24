@@ -33,48 +33,56 @@ import java.io.IOException;
  * Class to handle text list style.
  */
 public class RtfListStyleText extends RtfListStyle {
-    private String text;
+    private final String text;
 
     /**
      * Constructs a RtfListStyleText object.
-     * @param s Text to be displayed
+     *
+     * @param s
+     *            Text to be displayed
      */
-    public RtfListStyleText(String s) {
-        text = s;
+    public RtfListStyleText(final String s) {
+        this.text = s;
     }
 
     /**
      * Gets called before a RtfListItem has to be written.
-     * @param item RtfListItem whose prefix has to be written
-     * {@inheritDoc}
-     * @throws IOException Thrown when an IO-problem occurs
+     *
+     * @param item
+     *            RtfListItem whose prefix has to be written {@inheritDoc}
+     * @throws IOException
+     *             Thrown when an IO-problem occurs
      */
-    public void writeListPrefix(RtfListItem item)
-    throws IOException {
+    @Override
+    public void writeListPrefix(final RtfListItem item) throws IOException {
         // bulleted list
         item.writeControlWord("pnlvlblt");
         item.writeControlWord("ilvl0");
-        item.writeOneAttribute(RtfListTable.LIST_NUMBER, new Integer(item.getNumber()));
+        item.writeOneAttribute(RtfListTable.LIST_NUMBER,
+                new Integer(item.getNumber()));
         item.writeOneAttribute("pnindent",
                 item.getParentList().attrib.getValue(RtfListTable.LIST_INDENT));
         item.writeControlWord("pnf1");
         item.writeGroupMark(true);
-        //item.writeControlWord("pndec");
+        // item.writeControlWord("pndec");
         item.writeOneAttribute(RtfListTable.LIST_FONT_TYPE, "2");
         item.writeControlWord("pntxtb");
-        RtfStringConverter.getInstance().writeRtfString(item.writer, text);
+        RtfStringConverter.getInstance().writeRtfString(item.writer, this.text);
         item.writeGroupMark(false);
     }
 
     /**
-     * Gets called before a paragraph, which is contained by a RtfListItem has to be written.
+     * Gets called before a paragraph, which is contained by a RtfListItem has
+     * to be written.
      *
-     * @param element RtfElement in whose context is to be written
-     * {@inheritDoc}
-     * @throws IOException Thrown when an IO-problem occurs
+     * @param element
+     *            RtfElement in whose context is to be written {@inheritDoc}
+     * @throws IOException
+     *             Thrown when an IO-problem occurs
      */
-    public void writeParagraphPrefix(RtfElement element)
-    throws IOException {
+    @Override
+    public void writeParagraphPrefix(final RtfElement element)
+            throws IOException {
         element.writeGroupMark(true);
         element.writeControlWord("pntext");
         element.writeGroupMark(false);
@@ -83,27 +91,27 @@ public class RtfListStyleText extends RtfListStyle {
     /**
      * Gets called when the list table has to be written.
      *
-     * @param element RtfElement in whose context is to be written
-     * {@inheritDoc}
-     * @throws IOException Thrown when an IO-problem occurs
+     * @param element
+     *            RtfElement in whose context is to be written {@inheritDoc}
+     * @throws IOException
+     *             Thrown when an IO-problem occurs
      */
-    public void writeLevelGroup(RtfElement element)
-    throws IOException {
+    @Override
+    public void writeLevelGroup(final RtfElement element) throws IOException {
         element.attrib.set(RtfListTable.LIST_NUMBER_TYPE, 23);
         element.writeGroupMark(true);
 
         String sCount;
-        if (text.length() < 10) {
-            sCount = "0" + String.valueOf(text.length());
+        if (this.text.length() < 10) {
+            sCount = "0" + String.valueOf(this.text.length());
         } else {
-            sCount = String.valueOf(Integer.toHexString(text.length()));
+            sCount = String.valueOf(Integer.toHexString(this.text.length()));
             if (sCount.length() == 1) {
                 sCount = "0" + sCount;
             }
         }
-        element.writeOneAttributeNS(
-                RtfListTable.LIST_TEXT_FORM, "\\'" + sCount
-                    + RtfStringConverter.getInstance().escape(text));
+        element.writeOneAttributeNS(RtfListTable.LIST_TEXT_FORM, "\\'" + sCount
+                + RtfStringConverter.getInstance().escape(this.text));
         element.writeGroupMark(false);
 
         element.writeGroupMark(true);

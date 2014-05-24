@@ -22,9 +22,6 @@ package org.apache.fop.fo.flow;
 import java.awt.Color;
 import java.util.Stack;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
 import org.apache.fop.accessibility.StructureTreeElement;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.complexscripts.bidi.DelimitedTextRange;
@@ -42,15 +39,18 @@ import org.apache.fop.fo.properties.CommonTextDecoration;
 import org.apache.fop.fo.properties.SpaceProperty;
 import org.apache.fop.fo.properties.StructureTreeElementHolder;
 import org.apache.fop.util.CharUtilities;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 /**
- * Common base class for the <a href="http://www.w3.org/TR/xsl/#fo_page-number-citation">
- * <code>fo:page-number-citation</code></a> and
- * <a href="http://www.w3.org/TR/xsl/#fo_page-number-citation-last">
+ * Common base class for the <a
+ * href="http://www.w3.org/TR/xsl/#fo_page-number-citation">
+ * <code>fo:page-number-citation</code></a> and <a
+ * href="http://www.w3.org/TR/xsl/#fo_page-number-citation-last">
  * <code>fo:page-number-citation-last</code></a> objects.
  */
-public abstract class AbstractPageNumberCitation extends FObj
-        implements StructureTreeElementHolder, CommonAccessibilityHolder {
+public abstract class AbstractPageNumberCitation extends FObj implements
+        StructureTreeElementHolder, CommonAccessibilityHolder {
 
     // The value of properties relevant for fo:page-number-citation(-last).
     private CommonAccessibility commonAccessibility;
@@ -68,18 +68,18 @@ public abstract class AbstractPageNumberCitation extends FObj
     private CommonTextDecoration textDecoration;
     // private ToBeImplementedProperty textShadow;
     // Unused but valid items, commented out for performance:
-    //     private CommonAural commonAural;
-    //     private CommonMarginInline commonMarginInline;
-    //     private CommonRelativePosition commonRelativePosition;
-    //     private KeepProperty keepWithNext;
-    //     private KeepProperty keepWithPrevious;
-    //     private int scoreSpaces;
-    //     private Length textAltitude;
-    //     private Length textDepth;
-    //     private int textTransform;
-    //     private int visibility;
-    //     private SpaceProperty wordSpacing;
-    //     private int wrapOption;
+    // private CommonAural commonAural;
+    // private CommonMarginInline commonMarginInline;
+    // private CommonRelativePosition commonRelativePosition;
+    // private KeepProperty keepWithNext;
+    // private KeepProperty keepWithPrevious;
+    // private int scoreSpaces;
+    // private Length textAltitude;
+    // private Length textDepth;
+    // private int textTransform;
+    // private int visibility;
+    // private SpaceProperty wordSpacing;
+    // private int wrapOption;
     // End of property values
 
     // Properties which are not explicitely listed but are still applicable
@@ -88,127 +88,137 @@ public abstract class AbstractPageNumberCitation extends FObj
     /**
      * Base constructor
      *
-     * @param parent {@link FONode} that is the parent of this object
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public AbstractPageNumberCitation(FONode parent) {
+    public AbstractPageNumberCitation(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        commonAccessibility = CommonAccessibility.getInstance(pList);
-        commonBorderPaddingBackground = pList.getBorderPaddingBackgroundProps();
-        commonFont = pList.getFontProps();
-        alignmentAdjust = pList.get(PR_ALIGNMENT_ADJUST).getLength();
-        alignmentBaseline = pList.get(PR_ALIGNMENT_BASELINE).getEnum();
-        baselineShift = pList.get(PR_BASELINE_SHIFT).getLength();
-        dominantBaseline = pList.get(PR_DOMINANT_BASELINE).getEnum();
+        this.commonAccessibility = CommonAccessibility.getInstance(pList);
+        this.commonBorderPaddingBackground = pList
+                .getBorderPaddingBackgroundProps();
+        this.commonFont = pList.getFontProps();
+        this.alignmentAdjust = pList.get(PR_ALIGNMENT_ADJUST).getLength();
+        this.alignmentBaseline = pList.get(PR_ALIGNMENT_BASELINE).getEnum();
+        this.baselineShift = pList.get(PR_BASELINE_SHIFT).getLength();
+        this.dominantBaseline = pList.get(PR_DOMINANT_BASELINE).getEnum();
         // letterSpacing = pList.get(PR_LETTER_SPACING);
-        lineHeight = pList.get(PR_LINE_HEIGHT).getSpace();
-        refId = pList.get(PR_REF_ID).getString();
-        textDecoration = pList.getTextDecorationProps();
+        this.lineHeight = pList.get(PR_LINE_HEIGHT).getSpace();
+        this.refId = pList.get(PR_REF_ID).getString();
+        this.textDecoration = pList.getTextDecorationProps();
         // textShadow = pList.get(PR_TEXT_SHADOW);
 
         // implicit properties
-        color = pList.get(Constants.PR_COLOR).getColor(getUserAgent());
+        this.color = pList.get(Constants.PR_COLOR).getColor(getUserAgent());
     }
 
     /** {@inheritDoc} */
-    public void processNode
-        (String elementName, Locator locator, Attributes attlist, PropertyList pList)
-        throws FOPException {
+    @Override
+    public void processNode(final String elementName, final Locator locator,
+            final Attributes attlist, final PropertyList pList)
+            throws FOPException {
         super.processNode(elementName, locator, attlist, pList);
-        if (!inMarker() && (refId == null || "".equals(refId))) {
+        if (!inMarker() && (this.refId == null || "".equals(this.refId))) {
             missingPropertyError("ref-id");
         }
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL Content Model: empty
+     * {@inheritDoc} <br>
+     * XSL Content Model: empty
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-                throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             invalidChildError(loc, nsURI, localName);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public CommonAccessibility getCommonAccessibility() {
-        return commonAccessibility;
+        return this.commonAccessibility;
     }
 
     /** @return the {@link CommonFont} */
     public CommonFont getCommonFont() {
-        return commonFont;
+        return this.commonFont;
     }
 
     /** @return the "color" property. */
     public Color getColor() {
-        return color;
+        return this.color;
     }
 
     /** @return the "text-decoration" property. */
     public CommonTextDecoration getTextDecoration() {
-        return textDecoration;
+        return this.textDecoration;
     }
 
     @Override
-    public void setStructureTreeElement(StructureTreeElement structureTreeElement) {
+    public void setStructureTreeElement(
+            final StructureTreeElement structureTreeElement) {
         this.structureTreeElement = structureTreeElement;
     }
 
     /** {@inheritDoc} */
+    @Override
     public StructureTreeElement getStructureTreeElement() {
-        return structureTreeElement;
+        return this.structureTreeElement;
     }
 
     /** @return the "alignment-adjust" property */
     public Length getAlignmentAdjust() {
-        return alignmentAdjust;
+        return this.alignmentAdjust;
     }
 
     /** @return the "alignment-baseline" property */
     public int getAlignmentBaseline() {
-        return alignmentBaseline;
+        return this.alignmentBaseline;
     }
 
     /** @return the "baseline-shift" property */
     public Length getBaselineShift() {
-        return baselineShift;
+        return this.baselineShift;
     }
 
     /** @return the "dominant-baseline" property */
     public int getDominantBaseline() {
-        return dominantBaseline;
+        return this.dominantBaseline;
     }
 
     /** @return the {@link CommonBorderPaddingBackground} */
     public CommonBorderPaddingBackground getCommonBorderPaddingBackground() {
-        return commonBorderPaddingBackground;
+        return this.commonBorderPaddingBackground;
     }
 
     /** @return the "line-height" property */
     public SpaceProperty getLineHeight() {
-        return lineHeight;
+        return this.lineHeight;
     }
 
     /** @return the "ref-id" property. */
     public String getRefId() {
-        return refId;
+        return this.refId;
     }
 
     @Override
-    public boolean isDelimitedTextRangeBoundary ( int boundary ) {
+    public boolean isDelimitedTextRangeBoundary(final int boundary) {
         return false;
     }
 
     @Override
-    protected Stack collectDelimitedTextRanges ( Stack ranges, DelimitedTextRange currentRange ) {
-        if ( currentRange != null ) {
-            currentRange.append ( CharUtilities.OBJECT_REPLACEMENT_CHARACTER, this );
+    protected Stack collectDelimitedTextRanges(final Stack ranges,
+            final DelimitedTextRange currentRange) {
+        if (currentRange != null) {
+            currentRange.append(CharUtilities.OBJECT_REPLACEMENT_CHARACTER,
+                    this);
         }
         return ranges;
     }

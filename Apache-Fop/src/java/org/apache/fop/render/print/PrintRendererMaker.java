@@ -31,24 +31,28 @@ import org.apache.fop.render.RendererConfigurator;
  */
 public class PrintRendererMaker extends AbstractRendererMaker {
 
-    private static final String[] MIMES = new String[] {MimeConstants.MIME_FOP_PRINT};
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_FOP_PRINT };
 
-    /**{@inheritDoc} */
-    public Renderer makeRenderer(FOUserAgent userAgent) {
+    /** {@inheritDoc} */
+    @Override
+    public Renderer makeRenderer(final FOUserAgent userAgent) {
         return new PrintRenderer(userAgent);
     }
 
     /** {@inheritDoc} */
-    public RendererConfigurator getConfigurator(FOUserAgent userAgent) {
+    @Override
+    public RendererConfigurator getConfigurator(final FOUserAgent userAgent) {
         return new PrintRendererConfigurator(userAgent);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

@@ -46,31 +46,36 @@ public class ImageLoaderEPS extends AbstractImageLoader {
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getTargetFlavor() {
         return ImageFlavor.RAW_EPS;
     }
 
     /** {@inheritDoc} */
-    public Image loadImage(ImageInfo info, Map hints, ImageSessionContext session)
-                throws ImageException, IOException {
+    @Override
+    public Image loadImage(final ImageInfo info, final Map hints,
+            final ImageSessionContext session) throws ImageException,
+            IOException {
         if (!MimeConstants.MIME_EPS.equals(info.getMimeType())) {
             throw new IllegalArgumentException(
-                    "ImageInfo must be from a image with MIME type: " + MimeConstants.MIME_EPS);
+                    "ImageInfo must be from a image with MIME type: "
+                            + MimeConstants.MIME_EPS);
         }
-        Source src = session.needSource(info.getOriginalURI());
+        final Source src = session.needSource(info.getOriginalURI());
         InputStream in = ImageUtil.needInputStream(src);
-        ImageUtil.removeStreams(src); //so others cannot close them, we take them over
+        ImageUtil.removeStreams(src); // so others cannot close them, we take
+                                      // them over
 
         PreloaderEPS.EPSBinaryFileHeader binaryHeader;
-        binaryHeader = (PreloaderEPS.EPSBinaryFileHeader)info.getCustomObjects().get(
-                PreloaderEPS.EPS_BINARY_HEADER);
+        binaryHeader = (PreloaderEPS.EPSBinaryFileHeader) info
+                .getCustomObjects().get(PreloaderEPS.EPS_BINARY_HEADER);
         if (binaryHeader != null) {
-            //Binary EPS: just extract the EPS part
+            // Binary EPS: just extract the EPS part
             in.skip(binaryHeader.getPSStart());
             in = new SubInputStream(in, binaryHeader.getPSLength(), true);
         }
 
-        ImageRawEPS epsImage = new ImageRawEPS(info, in);
+        final ImageRawEPS epsImage = new ImageRawEPS(info, in);
         return epsImage;
     }
 

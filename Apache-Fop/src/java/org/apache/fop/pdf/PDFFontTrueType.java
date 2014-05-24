@@ -24,21 +24,23 @@ import org.apache.fop.fonts.FontType;
 /**
  * Class representing a TrueType font.
  * <p>
- * In fact everything already done in the superclass.
- * Must only define the not default constructor.
+ * In fact everything already done in the superclass. Must only define the not
+ * default constructor.
  */
 public class PDFFontTrueType extends PDFFontNonBase14 {
 
     /**
      * create the /Font object
      *
-     * @param fontname the internal name for the font
-     * @param basefont the base font name
-     * @param encoding the character encoding schema used by the font
+     * @param fontname
+     *            the internal name for the font
+     * @param basefont
+     *            the base font name
+     * @param encoding
+     *            the character encoding schema used by the font
      */
-    public PDFFontTrueType(String fontname,
-                           String basefont,
-                           Object encoding) {
+    public PDFFontTrueType(final String fontname, final String basefont,
+            final Object encoding) {
         super(fontname, FontType.TRUETYPE, basefont, encoding);
     }
 

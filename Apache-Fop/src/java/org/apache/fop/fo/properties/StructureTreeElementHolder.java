@@ -29,7 +29,8 @@ import org.apache.fop.accessibility.StructureTreeElement;
 public interface StructureTreeElementHolder {
 
     /**
-     * Returns the element in the document's structure tree that corresponds to this instance.
+     * Returns the element in the document's structure tree that corresponds to
+     * this instance.
      *
      * @return a structure tree element
      */

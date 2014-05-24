@@ -18,13 +18,11 @@ package org.apache.fop.render.ps;
 
 import java.io.IOException;
 
+import org.apache.fop.render.intermediate.IFState;
+import org.apache.xmlgraphics.ps.PSGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.verification.VerificationMode;
-
-import org.apache.xmlgraphics.ps.PSGenerator;
-
-import org.apache.fop.render.intermediate.IFState;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -40,11 +38,11 @@ public class PSPainterTestCase {
 
     @Before
     public void setup() {
-        docHandler = new PSDocumentHandler();
-        gen = mock(PSGenerator.class);
-        docHandler.gen = gen;
-        state = IFState.create();
-        psPainter = new PSPainter(docHandler, state);
+        this.docHandler = new PSDocumentHandler();
+        this.gen = mock(PSGenerator.class);
+        this.docHandler.gen = this.gen;
+        this.state = IFState.create();
+        this.psPainter = new PSPainter(this.docHandler, this.state);
     }
 
     @Test
@@ -57,13 +55,14 @@ public class PSPainterTestCase {
         testFontSize(0, never());
     }
 
-    private void testFontSize(int fontSize, VerificationMode test) throws IOException {
-        state.setFontSize(fontSize);
+    private void testFontSize(final int fontSize, final VerificationMode test)
+            throws IOException {
+        this.state.setFontSize(fontSize);
         try {
-            psPainter.drawText(10, 10, 2, 2, null, "Test");
-        } catch (Exception ex) {
-            //Expected
+            this.psPainter.drawText(10, 10, 2, 2, null, "Test");
+        } catch (final Exception ex) {
+            // Expected
         }
-        verify(gen, test).useColor(state.getTextColor());
+        verify(this.gen, test).useColor(this.state.getTextColor());
     }
 }

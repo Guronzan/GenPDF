@@ -28,23 +28,29 @@ import java.io.Writer;
  */
 public class WriterOutputStream extends OutputStream {
 
-    private Writer writer;
-    private String encoding;
+    private final Writer writer;
+    private final String encoding;
 
     /**
      * Creates a new WriterOutputStream.
-     * @param writer the Writer to write to
+     * 
+     * @param writer
+     *            the Writer to write to
      */
-    public WriterOutputStream(Writer writer) {
+    public WriterOutputStream(final Writer writer) {
         this(writer, null);
     }
 
     /**
      * Creates a new WriterOutputStream.
-     * @param writer the Writer to write to
-     * @param encoding the encoding to use, or null if the default encoding should be used
+     * 
+     * @param writer
+     *            the Writer to write to
+     * @param encoding
+     *            the encoding to use, or null if the default encoding should be
+     *            used
      */
-    public WriterOutputStream(Writer writer, String encoding) {
+    public WriterOutputStream(final Writer writer, final String encoding) {
         this.writer = writer;
         this.encoding = encoding;
     }
@@ -52,40 +58,46 @@ public class WriterOutputStream extends OutputStream {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void close() throws IOException {
-        writer.close();
+        this.writer.close();
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public void flush() throws IOException {
-        writer.flush();
+        this.writer.flush();
     }
 
     /**
      * {@inheritDoc}
      */
-    public void write(byte[] buf, int offset, int length) throws IOException {
-        if (encoding != null) {
-            writer.write(new String(buf, offset, length, encoding));
+    @Override
+    public void write(final byte[] buf, final int offset, final int length)
+            throws IOException {
+        if (this.encoding != null) {
+            this.writer.write(new String(buf, offset, length, this.encoding));
         } else {
-            writer.write(new String(buf, offset, length));
+            this.writer.write(new String(buf, offset, length));
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public void write(byte[] buf) throws IOException {
+    @Override
+    public void write(final byte[] buf) throws IOException {
         write(buf, 0, buf.length);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void write(int b) throws IOException {
-        write(new byte[] {(byte)b});
+    @Override
+    public void write(final int b) throws IOException {
+        write(new byte[] { (byte) b });
     }
 
 }

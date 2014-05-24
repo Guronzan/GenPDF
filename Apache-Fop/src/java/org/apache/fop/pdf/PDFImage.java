@@ -23,28 +23,28 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Interface for a PDF image.
- * This is used for inserting an image into PDF.
+ * Interface for a PDF image. This is used for inserting an image into PDF.
  */
 public interface PDFImage {
 
     /**
-     * Key to look up XObject.
-     * This should be a unique key to refer to the image.
+     * Key to look up XObject. This should be a unique key to refer to the
+     * image.
      *
      * @return the key for this image
      */
     String getKey();
 
     /**
-     * Setup the PDF image for the current document.
-     * Some image formats may need to access the document (for example to
-     * add an ICC profile to the document).
+     * Setup the PDF image for the current document. Some image formats may need
+     * to access the document (for example to add an ICC profile to the
+     * document).
      *
-     * @param doc the PDF parent document
-     * (todo) Remove this and delegate to the XObject
+     * @param doc
+     *            the PDF parent document (todo) Remove this and delegate to the
+     *            XObject
      */
-    void setup(PDFDocument doc);
+    void setup(final PDFDocument doc);
 
     /**
      * Get the image width in pixels.
@@ -61,8 +61,8 @@ public interface PDFImage {
     int getHeight();
 
     /**
-     * Get the color space for this image.
-     * Possible results are: DeviceGray, DeviceRGB, or DeviceCMYK
+     * Get the color space for this image. Possible results are: DeviceGray,
+     * DeviceRGB, or DeviceCMYK
      *
      * @return the color space
      */
@@ -105,7 +105,9 @@ public interface PDFImage {
 
     /**
      * Get the PDF reference for a soft mask.
-     * @return the PDF reference for a soft mask image (or null if there's no soft mask)
+     * 
+     * @return the PDF reference for a soft mask image (or null if there's no
+     *         soft mask)
      */
     PDFReference getSoftMaskReference();
 
@@ -124,18 +126,23 @@ public interface PDFImage {
     /**
      * Writes the raw, unencoded contents of the image to a given output stream.
      *
-     * @param out OutputStream to write to
-     * @throws IOException if there creating stream
+     * @param out
+     *            OutputStream to write to
+     * @throws IOException
+     *             if there creating stream
      */
-    void outputContents(OutputStream out) throws IOException;
+    void outputContents(final OutputStream out) throws IOException;
 
     /**
-     * Populates the XObject's dictionary with additional values. The values are added to the
-     * dictionary after all the values obtained from other methods from this interface have
-     * been put into the dictionary. That allows to override certain values.
-     * @param dict the dictionary to fill
+     * Populates the XObject's dictionary with additional values. The values are
+     * added to the dictionary after all the values obtained from other methods
+     * from this interface have been put into the dictionary. That allows to
+     * override certain values.
+     * 
+     * @param dict
+     *            the dictionary to fill
      */
-    void populateXObjectDictionary(PDFDictionary dict);
+    void populateXObjectDictionary(final PDFDictionary dict);
 
     /**
      * Get the ICC stream for this image.
@@ -147,17 +154,18 @@ public interface PDFImage {
     /**
      * Returns a hint in form of a String (Possible values from PDFFilterList)
      * indicating which filter setup should be used to encode the object.
+     * 
      * @return the filter setup hint
      */
     String getFilterHint();
 
     /**
-     * Indicates whether multiple image filters are allowed; this is implemented because Adobe
-     * Reader does not like multiple FlateDecode filters applied to an image even though that
-     * allowed by the PDF spec; this is probable due to security concerns since many PDF malware
-     * exploits, like zip bombs, make use of a chain of FlateDecode filters.
+     * Indicates whether multiple image filters are allowed; this is implemented
+     * because Adobe Reader does not like multiple FlateDecode filters applied
+     * to an image even though that allowed by the PDF spec; this is probable
+     * due to security concerns since many PDF malware exploits, like zip bombs,
+     * make use of a chain of FlateDecode filters.
      */
     boolean multipleFiltersAllowed();
 
 }
-

@@ -25,30 +25,34 @@ import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 
 /**
- * This ImageConverter converts BufferedImages to RenderedImages (well, it's basically just a
- * class cast).
+ * This ImageConverter converts BufferedImages to RenderedImages (well, it's
+ * basically just a class cast).
  */
 public class ImageConverterBuffered2Rendered extends AbstractImageConverter {
 
     /** {@inheritDoc} */
-    public Image convert(Image src, Map hints) {
+    @Override
+    public Image convert(final Image src, final Map hints) {
         checkSourceFlavor(src);
-        ImageBuffered buffered = (ImageBuffered)src;
-        return new ImageRendered(buffered.getInfo(), buffered
-                .getRenderedImage(), buffered.getTransparentColor());
+        final ImageBuffered buffered = (ImageBuffered) src;
+        return new ImageRendered(buffered.getInfo(),
+                buffered.getRenderedImage(), buffered.getTransparentColor());
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getSourceFlavor() {
         return ImageFlavor.BUFFERED_IMAGE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getTargetFlavor() {
         return ImageFlavor.RENDERED_IMAGE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getConversionPenalty() {
         return NO_CONVERSION_PENALTY;
     }

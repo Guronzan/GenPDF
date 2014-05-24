@@ -28,13 +28,19 @@ import java.io.File;
 public interface BitmapProducer {
 
     /**
-     * Produces a BufferedImage from the source file by invoking the FO processor and
-     * converting the generated output file to a bitmap image if necessary.
-     * @param src the source FO or XML file
-     * @param index the index of the producer inside the test set
-     * @param context context information for the conversion
+     * Produces a BufferedImage from the source file by invoking the FO
+     * processor and converting the generated output file to a bitmap image if
+     * necessary.
+     * 
+     * @param src
+     *            the source FO or XML file
+     * @param index
+     *            the index of the producer inside the test set
+     * @param context
+     *            context information for the conversion
      * @return the generated BufferedImage
      */
-    BufferedImage produce(File src, int index, ProducerContext context);
+    BufferedImage produce(final File src, final int index,
+            final ProducerContext context);
 
 }

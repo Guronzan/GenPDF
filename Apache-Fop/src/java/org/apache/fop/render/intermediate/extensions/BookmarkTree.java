@@ -23,29 +23,33 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This class is the root of the bookmark tree for use in the intermediate format.
+ * This class is the root of the bookmark tree for use in the intermediate
+ * format.
  */
 public class BookmarkTree {
 
-    private List bookmarks = new java.util.ArrayList();
+    private final List bookmarks = new java.util.ArrayList();
 
     /**
      * Constructs a new bookmark tree.
      */
     public BookmarkTree() {
-        //nop
+        // nop
     }
 
     /**
      * Adds a new top-level bookmark.
-     * @param bookmark the bookmark
+     * 
+     * @param bookmark
+     *            the bookmark
      */
-    public void addBookmark(Bookmark bookmark) {
+    public void addBookmark(final Bookmark bookmark) {
         this.bookmarks.add(bookmark);
     }
 
     /**
      * Returns a list of top-level bookmarks.
+     * 
      * @return the top-level bookmarks
      */
     public List getBookmarks() {

@@ -38,18 +38,18 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xmlgraphics.util.QName;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import org.apache.xmlgraphics.util.QName;
-
 /**
- * This class is a ResourceBundle that loads its contents from XML files instead of properties
- * files (like PropertiesResourceBundle).
+ * This class is a ResourceBundle that loads its contents from XML files instead
+ * of properties files (like PropertiesResourceBundle).
  * <p>
- * The XML format for this resource bundle implementation is the following
- * (the same as Apache Cocoon's XMLResourceBundle):
+ * The XML format for this resource bundle implementation is the following (the
+ * same as Apache Cocoon's XMLResourceBundle):
+ * 
  * <pre>
  * &lt;catalogue xml:lang="en"&gt;
  *   &lt;message key="key1"&gt;Message &lt;br/&gt; Value 1&lt;/message&gt;
@@ -60,57 +60,75 @@ import org.apache.xmlgraphics.util.QName;
  */
 public class XMLResourceBundle extends ResourceBundle {
 
-    //Note: Some code here has been copied and adapted from Apache Harmony!
+    // Note: Some code here has been copied and adapted from Apache Harmony!
 
-    private Properties resources = new Properties();
+    private final Properties resources = new Properties();
 
     private Locale locale;
 
-    private static SAXTransformerFactory tFactory
-        = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
+    private static SAXTransformerFactory tFactory = (SAXTransformerFactory) SAXTransformerFactory
+            .newInstance();
 
     /**
      * Creates a resource bundle from an InputStream.
-     * @param in the stream to read from
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param in
+     *            the stream to read from
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public XMLResourceBundle(InputStream in) throws IOException {
+    public XMLResourceBundle(final InputStream in) throws IOException {
         try {
-            Transformer transformer = tFactory.newTransformer();
-            StreamSource src = new StreamSource(in);
-            SAXResult res = new SAXResult(new CatalogueHandler());
+            final Transformer transformer = tFactory.newTransformer();
+            final StreamSource src = new StreamSource(in);
+            final SAXResult res = new SAXResult(new CatalogueHandler());
             transformer.transform(src, res);
-        } catch (TransformerException e) {
-            throw new IOException("Error while parsing XML resource bundle: " + e.getMessage());
+        } catch (final TransformerException e) {
+            throw new IOException("Error while parsing XML resource bundle: "
+                    + e.getMessage());
         }
     }
 
     /**
-     * Gets a resource bundle using the specified base name, default locale, and class loader.
-     * @param baseName the base name of the resource bundle, a fully qualified class name
-     * @param loader the class loader from which to load the resource bundle
+     * Gets a resource bundle using the specified base name, default locale, and
+     * class loader.
+     * 
+     * @param baseName
+     *            the base name of the resource bundle, a fully qualified class
+     *            name
+     * @param loader
+     *            the class loader from which to load the resource bundle
      * @return a resource bundle for the given base name and the default locale
-     * @throws MissingResourceException if no resource bundle for the specified base name can be
-     *                                          found
+     * @throws MissingResourceException
+     *             if no resource bundle for the specified base name can be
+     *             found
      * @see java.util.ResourceBundle#getBundle(String)
      */
-    public static ResourceBundle getXMLBundle(String baseName, ClassLoader loader)
-                throws MissingResourceException {
+    public static ResourceBundle getXMLBundle(final String baseName,
+            final ClassLoader loader) throws MissingResourceException {
         return getXMLBundle(baseName, Locale.getDefault(), loader);
     }
 
     /**
-     * Gets a resource bundle using the specified base name, locale, and class loader.
-     * @param baseName the base name of the resource bundle, a fully qualified class name
-     * @param locale the locale for which a resource bundle is desired
-     * @param loader the class loader from which to load the resource bundle
+     * Gets a resource bundle using the specified base name, locale, and class
+     * loader.
+     * 
+     * @param baseName
+     *            the base name of the resource bundle, a fully qualified class
+     *            name
+     * @param locale
+     *            the locale for which a resource bundle is desired
+     * @param loader
+     *            the class loader from which to load the resource bundle
      * @return a resource bundle for the given base name and locale
-     * @throws MissingResourceException if no resource bundle for the specified base name can be
-     *                                          found
+     * @throws MissingResourceException
+     *             if no resource bundle for the specified base name can be
+     *             found
      * @see java.util.ResourceBundle#getBundle(String, Locale, ClassLoader)
      */
-    public static ResourceBundle getXMLBundle(String baseName, Locale locale, ClassLoader loader)
-                throws MissingResourceException {
+    public static ResourceBundle getXMLBundle(final String baseName,
+            final Locale locale, final ClassLoader loader)
+            throws MissingResourceException {
         if (loader == null) {
             throw new NullPointerException("loader must not be null");
         }
@@ -125,20 +143,23 @@ public class XMLResourceBundle extends ResourceBundle {
                 return bundle;
             }
         }
-        bundle = handleGetXMLBundle(baseName, "_" + Locale.getDefault(), true, loader);
+        bundle = handleGetXMLBundle(baseName, "_" + Locale.getDefault(), true,
+                loader);
         if (bundle != null) {
             return bundle;
         }
-        throw new MissingResourceException(
-                baseName + " (" + locale + ")", baseName + '_' + locale, null);
+        throw new MissingResourceException(baseName + " (" + locale + ")",
+                baseName + '_' + locale, null);
     }
 
     static class MissingBundle extends ResourceBundle {
+        @Override
         public Enumeration getKeys() {
             return null;
         }
 
-        public Object handleGetObject(String name) {
+        @Override
+        public Object handleGetObject(final String name) {
             return null;
         }
     }
@@ -147,22 +168,26 @@ public class XMLResourceBundle extends ResourceBundle {
     private static final ResourceBundle MISSINGBASE = new MissingBundle();
 
     private static Map cache = new java.util.WeakHashMap();
-    //<Object, Hashtable<String, ResourceBundle>>
 
-    private static ResourceBundle handleGetXMLBundle(String base, String locale,
-            boolean loadBase, final ClassLoader loader) {
+    // <Object, Hashtable<String, ResourceBundle>>
+
+    private static ResourceBundle handleGetXMLBundle(final String base,
+            final String locale, final boolean loadBase,
+            final ClassLoader loader) {
         XMLResourceBundle bundle = null;
-        String bundleName = base + locale;
-        Object cacheKey = loader != null ? (Object) loader : (Object) "null";
-        Hashtable loaderCache; //<String, ResourceBundle>
+        final String bundleName = base + locale;
+        final Object cacheKey = loader != null ? (Object) loader
+                : (Object) "null";
+        Hashtable loaderCache; // <String, ResourceBundle>
         synchronized (cache) {
-            loaderCache = (Hashtable)cache.get(cacheKey);
+            loaderCache = (Hashtable) cache.get(cacheKey);
             if (loaderCache == null) {
                 loaderCache = new Hashtable();
                 cache.put(cacheKey, loaderCache);
             }
         }
-        ResourceBundle result = (ResourceBundle)loaderCache.get(bundleName);
+        final ResourceBundle result = (ResourceBundle) loaderCache
+                .get(bundleName);
         if (result != null) {
             if (result == MISSINGBASE) {
                 return null;
@@ -171,7 +196,7 @@ public class XMLResourceBundle extends ResourceBundle {
                 if (!loadBase) {
                     return null;
                 }
-                String extension = strip(locale);
+                final String extension = strip(locale);
                 if (extension == null) {
                     return null;
                 }
@@ -181,12 +206,13 @@ public class XMLResourceBundle extends ResourceBundle {
         }
 
         final String fileName = bundleName.replace('.', '/') + ".xml";
-        InputStream stream = (InputStream)AccessController
+        final InputStream stream = (InputStream) AccessController
                 .doPrivileged(new PrivilegedAction() {
+                    @Override
                     public Object run() {
-                        return loader == null
-                            ? ClassLoader.getSystemResourceAsStream(fileName)
-                            : loader.getResourceAsStream(fileName);
+                        return loader == null ? ClassLoader
+                                .getSystemResourceAsStream(fileName) : loader
+                                .getResourceAsStream(fileName);
                     }
                 });
         if (stream != null) {
@@ -197,16 +223,16 @@ public class XMLResourceBundle extends ResourceBundle {
                     stream.close();
                 }
                 bundle.setLocale(locale);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new MissingResourceException(e.getMessage(), base, null);
             }
         }
 
-        String extension = strip(locale);
+        final String extension = strip(locale);
         if (bundle != null) {
             if (extension != null) {
-                ResourceBundle parent = handleGetXMLBundle(base, extension, true,
-                        loader);
+                final ResourceBundle parent = handleGetXMLBundle(base,
+                        extension, true, loader);
                 if (parent != null) {
                     bundle.setParent(parent);
                 }
@@ -216,7 +242,8 @@ public class XMLResourceBundle extends ResourceBundle {
         }
 
         if (extension != null) {
-            ResourceBundle fallback = handleGetXMLBundle(base, extension, loadBase, loader);
+            final ResourceBundle fallback = handleGetXMLBundle(base, extension,
+                    loadBase, loader);
             if (fallback != null) {
                 loaderCache.put(bundleName, fallback);
                 return fallback;
@@ -226,7 +253,7 @@ public class XMLResourceBundle extends ResourceBundle {
         return null;
     }
 
-    private void setLocale(String name) {
+    private void setLocale(final String name) {
         String language = "";
         String country = "";
         String variant = "";
@@ -237,7 +264,7 @@ public class XMLResourceBundle extends ResourceBundle {
             }
             language = name.substring(1, nextIndex);
             if (nextIndex + 1 < name.length()) {
-                int index = nextIndex;
+                final int index = nextIndex;
                 nextIndex = name.indexOf('_', nextIndex + 1);
                 if (nextIndex == -1) {
                     nextIndex = name.length();
@@ -251,8 +278,8 @@ public class XMLResourceBundle extends ResourceBundle {
         this.locale = new Locale(language, country, variant);
     }
 
-    private static String strip(String name) {
-        int index = name.lastIndexOf('_');
+    private static String strip(final String name) {
+        final int index = name.lastIndexOf('_');
         if (index != -1) {
             return name.substring(0, index);
         }
@@ -260,70 +287,77 @@ public class XMLResourceBundle extends ResourceBundle {
     }
 
     private Enumeration getLocalKeys() {
-        return (Enumeration)resources.propertyNames();
+        return this.resources.propertyNames();
     }
 
     /** {@inheritDoc} */
+    @Override
     public Locale getLocale() {
         return this.locale;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Enumeration getKeys() {
-        if (parent == null) {
+        if (this.parent == null) {
             return getLocalKeys();
         }
         return new Enumeration() {
-            private Enumeration local = getLocalKeys();
-            private Enumeration pEnum = parent.getKeys();
+            private final Enumeration local = getLocalKeys();
+            private final Enumeration pEnum = XMLResourceBundle.this.parent
+                    .getKeys();
 
             private Object nextElement;
 
             private boolean findNext() {
-                if (nextElement != null) {
+                if (this.nextElement != null) {
                     return true;
                 }
-                while (pEnum.hasMoreElements()) {
-                    Object next = pEnum.nextElement();
-                    if (!resources.containsKey(next)) {
-                        nextElement = next;
+                while (this.pEnum.hasMoreElements()) {
+                    final Object next = this.pEnum.nextElement();
+                    if (!XMLResourceBundle.this.resources.containsKey(next)) {
+                        this.nextElement = next;
                         return true;
                     }
                 }
                 return false;
             }
 
+            @Override
             public boolean hasMoreElements() {
-                if (local.hasMoreElements()) {
+                if (this.local.hasMoreElements()) {
                     return true;
                 }
                 return findNext();
             }
 
+            @Override
             public Object nextElement() {
-                if (local.hasMoreElements()) {
-                    return local.nextElement();
+                if (this.local.hasMoreElements()) {
+                    return this.local.nextElement();
                 }
                 if (findNext()) {
-                    Object result = nextElement;
-                    nextElement = null;
+                    final Object result = this.nextElement;
+                    this.nextElement = null;
                     return result;
                 }
                 // Cause an exception
-                return pEnum.nextElement();
+                return this.pEnum.nextElement();
             }
         };
     }
 
     /** {@inheritDoc} */
-    protected Object handleGetObject(String key) {
+    @Override
+    protected Object handleGetObject(final String key) {
         if (key == null) {
             throw new NullPointerException("key must not be null");
         }
-        return resources.get(key);
+        return this.resources.get(key);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "XMLResourceBundle: " + getLocale();
     }
@@ -333,66 +367,75 @@ public class XMLResourceBundle extends ResourceBundle {
         private static final String CATALOGUE = "catalogue";
         private static final String MESSAGE = "message";
 
-        private StringBuffer valueBuffer = new StringBuffer();
-        private Stack elementStack = new Stack();
+        private final StringBuffer valueBuffer = new StringBuffer();
+        private final Stack elementStack = new Stack();
         private String currentKey = null;
 
-        private boolean isOwnNamespace(String uri) {
-            return ("".equals(uri));
+        private boolean isOwnNamespace(final String uri) {
+            return "".equals(uri);
         }
 
         private QName getParentElementName() {
-            return (QName)elementStack.peek();
+            return (QName) this.elementStack.peek();
         }
 
         /** {@inheritDoc} */
-        public void startElement(String uri, String localName, String qName,
-                Attributes atts) throws SAXException {
+        @Override
+        public void startElement(final String uri, final String localName,
+                final String qName, final Attributes atts) throws SAXException {
             super.startElement(uri, localName, qName, atts);
-            QName elementName = new QName(uri, qName);
+            final QName elementName = new QName(uri, qName);
             if (isOwnNamespace(uri)) {
                 if (CATALOGUE.equals(localName)) {
-                    //nop
+                    // nop
                 } else if (MESSAGE.equals(localName)) {
-                    if (!CATALOGUE.equals(getParentElementName().getLocalName())) {
-                        throw new SAXException(MESSAGE + " must be a child of " + CATALOGUE);
+                    if (!CATALOGUE
+                            .equals(getParentElementName().getLocalName())) {
+                        throw new SAXException(MESSAGE + " must be a child of "
+                                + CATALOGUE);
                     }
                     this.currentKey = atts.getValue("key");
                 } else {
-                    throw new SAXException("Invalid element name: " + elementName);
+                    throw new SAXException("Invalid element name: "
+                            + elementName);
                 }
             } else {
-                //ignore
+                // ignore
             }
             this.valueBuffer.setLength(0);
-            elementStack.push(elementName);
+            this.elementStack.push(elementName);
         }
 
         /** {@inheritDoc} */
-        public void endElement(String uri, String localName, String qName) throws SAXException {
+        @Override
+        public void endElement(final String uri, final String localName,
+                final String qName) throws SAXException {
             super.endElement(uri, localName, qName);
-            elementStack.pop();
+            this.elementStack.pop();
             if (isOwnNamespace(uri)) {
                 if (CATALOGUE.equals(localName)) {
-                    //nop
+                    // nop
                 } else if (MESSAGE.equals(localName)) {
                     if (this.currentKey == null) {
                         throw new SAXException(
                                 "current key is null (attribute 'key' might be mistyped)");
                     }
-                    resources.put(this.currentKey, this.valueBuffer.toString());
+                    XMLResourceBundle.this.resources.put(this.currentKey,
+                            this.valueBuffer.toString());
                     this.currentKey = null;
                 }
             } else {
-                //ignore
+                // ignore
             }
             this.valueBuffer.setLength(0);
         }
 
         /** {@inheritDoc} */
-        public void characters(char[] ch, int start, int length) throws SAXException {
+        @Override
+        public void characters(final char[] ch, final int start,
+                final int length) throws SAXException {
             super.characters(ch, start, length);
-            valueBuffer.append(ch, start, length);
+            this.valueBuffer.append(ch, start, length);
         }
 
     }

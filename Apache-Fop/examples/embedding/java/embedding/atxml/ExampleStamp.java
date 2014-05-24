@@ -30,67 +30,82 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.xml.sax.SAXException;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.area.AreaTreeModel;
 import org.apache.fop.area.AreaTreeParser;
 import org.apache.fop.area.RenderPagesModel;
 import org.apache.fop.fonts.FontInfo;
+import org.xml.sax.SAXException;
 
 import embedding.ExampleObj2XML;
 import embedding.model.ProjectTeam;
 
 /**
- * Example for the area tree XML format that demonstrates the stamping of a document with some
- * kind of watermark. The resulting document is then rendered to a PDF file.
+ * Example for the area tree XML format that demonstrates the stamping of a
+ * document with some kind of watermark. The resulting document is then rendered
+ * to a PDF file.
  */
+@Slf4j
 public class ExampleStamp {
 
     // configure fopFactory as desired
-    private FopFactory fopFactory = FopFactory.newInstance();
+    private final FopFactory fopFactory = FopFactory.newInstance();
 
     /**
      * Stamps an area tree XML file and renders it to a PDF file.
-     * @param atfile the area tree XML file
-     * @param stampSheet the stylesheet that does the stamping
-     * @param pdffile the target PDF file
-     * @throws IOException In case of an I/O problem
-     * @throws TransformerException In case of a XSL transformation problem
-     * @throws SAXException In case of an XML-related problem
+     *
+     * @param atfile
+     *            the area tree XML file
+     * @param stampSheet
+     *            the stylesheet that does the stamping
+     * @param pdffile
+     *            the target PDF file
+     * @throws IOException
+     *             In case of an I/O problem
+     * @throws TransformerException
+     *             In case of a XSL transformation problem
+     * @throws SAXException
+     *             In case of an XML-related problem
      */
-    public void stampToPDF(File atfile, File stampSheet, File pdffile)
-            throws IOException, TransformerException, SAXException {
+    public void stampToPDF(final File atfile, final File stampSheet,
+            final File pdffile) throws IOException, TransformerException,
+            SAXException {
         // Setup output
         OutputStream out = new java.io.FileOutputStream(pdffile);
         out = new java.io.BufferedOutputStream(out);
         try {
-            //Setup fonts and user agent
-            FontInfo fontInfo = new FontInfo();
-            FOUserAgent userAgent = fopFactory.newFOUserAgent();
+            // Setup fonts and user agent
+            final FontInfo fontInfo = new FontInfo();
+            final FOUserAgent userAgent = this.fopFactory.newFOUserAgent();
 
-            //Construct the AreaTreeModel that will received the individual pages
-            AreaTreeModel treeModel = new RenderPagesModel(userAgent,
-                    MimeConstants.MIME_PDF, fontInfo, out);
+            // Construct the AreaTreeModel that will received the individual
+            // pages
+            final AreaTreeModel treeModel = new RenderPagesModel(userAgent,
+                    org.apache.xmlgraphics.util.MimeConstants.MIME_PDF,
+                    fontInfo, out);
 
-            //Iterate over all area tree files
-            AreaTreeParser parser = new AreaTreeParser();
-            Source src = new StreamSource(atfile);
-            Source xslt = new StreamSource(stampSheet);
+            // Iterate over all area tree files
+            final AreaTreeParser parser = new AreaTreeParser();
+            final Source src = new StreamSource(atfile);
+            final Source xslt = new StreamSource(stampSheet);
 
-            //Setup Transformer for XSLT processing
-            TransformerFactory tFactory = TransformerFactory.newInstance();
-            Transformer transformer = tFactory.newTransformer(xslt);
+            // Setup Transformer for XSLT processing
+            final TransformerFactory tFactory = TransformerFactory
+                    .newInstance();
+            final Transformer transformer = tFactory.newTransformer(xslt);
 
-            //Send XSLT result to AreaTreeParser
-            SAXResult res = new SAXResult(parser.getContentHandler(treeModel, userAgent));
+            // Send XSLT result to AreaTreeParser
+            final SAXResult res = new SAXResult(parser.getContentHandler(
+                    treeModel, userAgent));
 
-            //Start XSLT transformation and area tree parsing
+            // Start XSLT transformation and area tree parsing
             transformer.transform(src, res);
 
-            //Signal the end of the processing. The renderer can finalize the target document.
+            // Signal the end of the processing. The renderer can finalize the
+            // target document.
             treeModel.endDocument();
         } finally {
             out.close();
@@ -99,42 +114,44 @@ public class ExampleStamp {
 
     /**
      * Main method.
-     * @param args command-line arguments
+     *
+     * @param args
+     *            command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
-            System.out.println("FOP ExampleConcat\n");
+            log.info("FOP ExampleConcat\n");
 
-            //Setup directories
-            File baseDir = new File(".");
-            File outDir = new File(baseDir, "out");
+            // Setup directories
+            final File baseDir = new File(".");
+            final File outDir = new File(baseDir, "out");
             outDir.mkdirs();
 
-            //Setup output file
-            File xsltfile = new File(baseDir, "xml/xslt/projectteam2fo.xsl");
-            File atfile = new File(outDir, "team.at.xml");
-            File stampxsltfile = new File(baseDir, "xml/xslt/atstamp.xsl");
-            File pdffile = new File(outDir, "ResultStamped.pdf");
-            System.out.println("Area Tree XML file : " + atfile.getCanonicalPath());
-            System.out.println("Stamp XSLT: " + stampxsltfile.getCanonicalPath());
-            System.out.println("PDF Output File: " + pdffile.getCanonicalPath());
-            System.out.println();
+            // Setup output file
+            final File xsltfile = new File(baseDir,
+                    "xml/xslt/projectteam2fo.xsl");
+            final File atfile = new File(outDir, "team.at.xml");
+            final File stampxsltfile = new File(baseDir, "xml/xslt/atstamp.xsl");
+            final File pdffile = new File(outDir, "ResultStamped.pdf");
+            log.info("Area Tree XML file : " + atfile.getCanonicalPath());
+            log.info("Stamp XSLT: " + stampxsltfile.getCanonicalPath());
+            log.info("PDF Output File: " + pdffile.getCanonicalPath());
+            log.info("");
 
-            ProjectTeam team1 = ExampleObj2XML.createSampleProjectTeam();
+            final ProjectTeam team1 = ExampleObj2XML.createSampleProjectTeam();
 
-            //Create area tree XML file
-            ExampleConcat concatapp = new ExampleConcat();
-            concatapp.convertToAreaTreeXML(
-                    team1.getSourceForProjectTeam(),
+            // Create area tree XML file
+            final ExampleConcat concatapp = new ExampleConcat();
+            concatapp.convertToAreaTreeXML(team1.getSourceForProjectTeam(),
                     new StreamSource(xsltfile), atfile);
 
-            //Stamp document and produce a PDF from the area tree XML format
-            ExampleStamp app = new ExampleStamp();
+            // Stamp document and produce a PDF from the area tree XML format
+            final ExampleStamp app = new ExampleStamp();
             app.stampToPDF(atfile, stampxsltfile, pdffile);
 
-            System.out.println("Success!");
+            log.info("Success!");
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace(System.err);
             System.exit(-1);
         }

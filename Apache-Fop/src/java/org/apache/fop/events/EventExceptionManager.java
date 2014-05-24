@@ -47,7 +47,7 @@ public final class EventExceptionManager {
     /**
      * Converts an event into an exception and throws that. If the exception
      * class is null, a {@link RuntimeException} will be thrown.
-     * 
+     *
      * @param event
      *            the event to be converted
      * @param exceptionClass
@@ -95,7 +95,7 @@ public final class EventExceptionManager {
 
         /**
          * Creates an exception from an event.
-         * 
+         *
          * @param event
          *            the event
          * @return the newly created exception
@@ -104,7 +104,7 @@ public final class EventExceptionManager {
 
         /**
          * Returns the {@link Exception} class created by this factory.
-         * 
+         *
          * @return the exception class
          */
         Class<? extends Exception> getExceptionClass();

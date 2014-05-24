@@ -24,13 +24,12 @@ import java.io.OutputStream;
 
 import org.apache.fop.afp.Factory;
 
-
 /**
- * An abstract class which encapsulates the common features of
- * Document and PageGroup resource containers
+ * An abstract class which encapsulates the common features of Document and
+ * PageGroup resource containers
  */
-public abstract class AbstractResourceEnvironmentGroupContainer
-    extends AbstractResourceGroupContainer {
+public abstract class AbstractResourceEnvironmentGroupContainer extends
+        AbstractResourceGroupContainer {
 
     /**
      * The resource environment group used to store complex resources
@@ -40,29 +39,33 @@ public abstract class AbstractResourceEnvironmentGroupContainer
     /**
      * Main constructor
      *
-     * @param factory the object factory
-     * @param name the name of this resource container
+     * @param factory
+     *            the object factory
+     * @param name
+     *            the name of this resource container
      */
-    public AbstractResourceEnvironmentGroupContainer(
-            Factory factory, String name) {
+    public AbstractResourceEnvironmentGroupContainer(final Factory factory,
+            final String name) {
         super(factory, name);
     }
 
     /**
      * Adds a page to the resource container.
      *
-     * @param page - the Page object
+     * @param page
+     *            - the Page object
      */
-    public void addPage(PageObject page) {
+    public void addPage(final PageObject page) {
         addObject(page);
     }
 
     /**
      * Adds a PageGroup to the resource container.
      *
-     * @param pageGroup the PageGroup object
+     * @param pageGroup
+     *            the PageGroup object
      */
-    public void addPageGroup(PageGroup pageGroup) {
+    public void addPageGroup(final PageGroup pageGroup) {
         addObject(pageGroup);
     }
 
@@ -72,16 +75,18 @@ public abstract class AbstractResourceEnvironmentGroupContainer
      * @param name
      *            the name of the media map
      */
-    public void createInvokeMediumMap(String name) {
-        InvokeMediumMap invokeMediumMap = factory.createInvokeMediumMap(name);
+    public void createInvokeMediumMap(final String name) {
+        final InvokeMediumMap invokeMediumMap = this.factory
+                .createInvokeMediumMap(name);
         addObject(invokeMediumMap);
     }
 
     /** {@inheritDoc} */
-    protected void writeContent(OutputStream os) throws IOException {
+    @Override
+    protected void writeContent(final OutputStream os) throws IOException {
         super.writeContent(os);
-        if (resourceEnvironmentGroup != null) {
-            resourceEnvironmentGroup.writeToStream(os);
+        if (this.resourceEnvironmentGroup != null) {
+            this.resourceEnvironmentGroup.writeToStream(os);
         }
     }
 
@@ -91,8 +96,9 @@ public abstract class AbstractResourceEnvironmentGroupContainer
      * @return the resource environment group
      */
     protected ResourceEnvironmentGroup getResourceEnvironmentGroup() {
-        if (resourceEnvironmentGroup == null) {
-            this.resourceEnvironmentGroup = factory.createResourceEnvironmentGroup();
+        if (this.resourceEnvironmentGroup == null) {
+            this.resourceEnvironmentGroup = this.factory
+                    .createResourceEnvironmentGroup();
         }
         return this.resourceEnvironmentGroup;
     }

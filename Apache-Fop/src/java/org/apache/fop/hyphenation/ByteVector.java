@@ -22,10 +22,14 @@ package org.apache.fop.hyphenation;
 import java.io.Serializable;
 
 /**
- * <p>This class implements a simple byte vector with access to the
- * underlying array.</p>
+ * <p>
+ * This class implements a simple byte vector with access to the underlying
+ * array.
+ * </p>
  *
- * <p>This work was authored by Carlos Villegas (cav@uniscope.co.jp).</p>
+ * <p>
+ * This work was authored by Carlos Villegas (cav@uniscope.co.jp).
+ * </p>
  */
 public class ByteVector implements Serializable {
 
@@ -56,103 +60,118 @@ public class ByteVector implements Serializable {
 
     /**
      * Construct byte vector instance.
-     * @param capacity initial block size
+     * 
+     * @param capacity
+     *            initial block size
      */
-    public ByteVector(int capacity) {
+    public ByteVector(final int capacity) {
         if (capacity > 0) {
-            blockSize = capacity;
+            this.blockSize = capacity;
         } else {
-            blockSize = DEFAULT_BLOCK_SIZE;
+            this.blockSize = DEFAULT_BLOCK_SIZE;
         }
-        array = new byte[blockSize];
-        n = 0;
+        this.array = new byte[this.blockSize];
+        this.n = 0;
     }
 
     /**
      * Construct byte vector instance.
-     * @param a byte array to use
-     * TODO should n should be initialized to a.length to be consistent with
-     * CharVector behavior? [GA]
+     * 
+     * @param a
+     *            byte array to use TODO should n should be initialized to
+     *            a.length to be consistent with CharVector behavior? [GA]
      */
-    public ByteVector(byte[] a) {
-        blockSize = DEFAULT_BLOCK_SIZE;
-        array = a;
-        n = 0;
+    public ByteVector(final byte[] a) {
+        this.blockSize = DEFAULT_BLOCK_SIZE;
+        this.array = a;
+        this.n = 0;
     }
 
     /**
      * Construct byte vector instance.
-     * @param a byte array to use
-     * @param capacity initial block size
-     * TODO should n should be initialized to a.length to be consistent with
-     * CharVector behavior? [GA]
+     * 
+     * @param a
+     *            byte array to use
+     * @param capacity
+     *            initial block size TODO should n should be initialized to
+     *            a.length to be consistent with CharVector behavior? [GA]
      */
-    public ByteVector(byte[] a, int capacity) {
+    public ByteVector(final byte[] a, final int capacity) {
         if (capacity > 0) {
-            blockSize = capacity;
+            this.blockSize = capacity;
         } else {
-            blockSize = DEFAULT_BLOCK_SIZE;
+            this.blockSize = DEFAULT_BLOCK_SIZE;
         }
-        array = a;
-        n = 0;
+        this.array = a;
+        this.n = 0;
     }
 
     /**
      * Obtain byte vector array.
+     * 
      * @return byte array
      */
     public byte[] getArray() {
-        return array;
+        return this.array;
     }
 
     /**
      * Obtain number of items in array.
+     * 
      * @return number of items
      */
     public int length() {
-        return n;
+        return this.n;
     }
 
     /**
      * Obtain capacity of array.
+     * 
      * @return current capacity of array
      */
     public int capacity() {
-        return array.length;
+        return this.array.length;
     }
 
     /**
      * Pet byte at index.
-     * @param index the index
-     * @param val a byte
+     * 
+     * @param index
+     *            the index
+     * @param val
+     *            a byte
      */
-    public void put(int index, byte val) {
-        array[index] = val;
+    public void put(final int index, final byte val) {
+        this.array[index] = val;
     }
 
     /**
      * Get byte at index.
-     * @param index the index
+     * 
+     * @param index
+     *            the index
      * @return a byte
      */
-    public byte get(int index) {
-        return array[index];
+    public byte get(final int index) {
+        return this.array[index];
     }
 
     /**
      * This is to implement memory allocation in the array. Like malloc().
-     * @param size to allocate
+     * 
+     * @param size
+     *            to allocate
      * @return previous length
      */
-    public int alloc(int size) {
-        int index = n;
-        int len = array.length;
-        if (n + size >= len) {
-            byte[] aux = new byte[len + blockSize];
-            System.arraycopy(array, 0, aux, 0, len);
-            array = aux;
+    public int alloc(final int size) {
+        final int index = this.n;
+        final int len = this.array.length;
+        if (this.n + size >= len) {
+            final byte[] aux = new byte[len + this.blockSize];
+            System.arraycopy(this.array, 0, aux, 0, len);
+            this.array = aux;
         }
-        n += size;
+        this.n += size;
         return index;
     }
 
@@ -160,10 +179,10 @@ public class ByteVector implements Serializable {
      * Trim byte vector to current length.
      */
     public void trimToSize() {
-        if (n < array.length) {
-            byte[] aux = new byte[n];
-            System.arraycopy(array, 0, aux, 0, n);
-            array = aux;
+        if (this.n < this.array.length) {
+            final byte[] aux = new byte[this.n];
+            System.arraycopy(this.array, 0, aux, 0, this.n);
+            this.array = aux;
         }
     }
 

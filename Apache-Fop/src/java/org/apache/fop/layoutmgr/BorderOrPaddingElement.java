@@ -26,26 +26,38 @@ import org.apache.fop.traits.MinOptMax;
 /**
  * This class represents an unresolved border or padding element.
  */
-public abstract class BorderOrPaddingElement extends UnresolvedListElementWithLength {
+public abstract class BorderOrPaddingElement extends
+        UnresolvedListElementWithLength {
 
     /**
      * Main constructor
-     * @param position the Position instance needed by the addAreas stage of the LMs.
-     * @param side the side to which this space element applies.
-     * @param condLength the length-conditional property for a border or padding specification
-     * @param isFirst true if this is a padding- or border-before of the first area generated.
-     * @param isLast true if this is a padding- or border-after of the last area generated.
-     * @param context the property evaluation context
+     * 
+     * @param position
+     *            the Position instance needed by the addAreas stage of the LMs.
+     * @param side
+     *            the side to which this space element applies.
+     * @param condLength
+     *            the length-conditional property for a border or padding
+     *            specification
+     * @param isFirst
+     *            true if this is a padding- or border-before of the first area
+     *            generated.
+     * @param isLast
+     *            true if this is a padding- or border-after of the last area
+     *            generated.
+     * @param context
+     *            the property evaluation context
      */
-    public BorderOrPaddingElement(Position position, CondLengthProperty condLength,
-            RelSide side,
-            boolean isFirst, boolean isLast, PercentBaseContext context) {
-        super(position,
-                MinOptMax.getInstance(condLength.getLength().getValue(context)), side,
-                        condLength.isDiscard(), isFirst, isLast);
+    public BorderOrPaddingElement(final Position position,
+            final CondLengthProperty condLength, final RelSide side,
+            final boolean isFirst, final boolean isLast,
+            final PercentBaseContext context) {
+        super(position, MinOptMax.getInstance(condLength.getLength().getValue(
+                context)), side, condLength.isDiscard(), isFirst, isLast);
     }
 
     /** {@inheritDoc} */
-    public abstract void notifyLayoutManager(MinOptMax effectiveLength);
+    @Override
+    public abstract void notifyLayoutManager(final MinOptMax effectiveLength);
 
 }

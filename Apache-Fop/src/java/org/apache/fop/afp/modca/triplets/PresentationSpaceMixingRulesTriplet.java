@@ -40,18 +40,17 @@ public class PresentationSpaceMixingRulesTriplet extends AbstractTriplet {
     /** foreground on foreground mixing rule */
     public static final byte RULE_FORE_ON_FORE = 0x73;
 
-
     /** overpaint */
-    public static final byte OVERPAINT = (byte)0x01;
+    public static final byte OVERPAINT = (byte) 0x01;
 
     /** underpaint */
-    public static final byte UNDERPAINT = (byte)0x02;
+    public static final byte UNDERPAINT = (byte) 0x02;
 
     /** blend */
-    public static final byte BLEND = (byte)0x03;
+    public static final byte BLEND = (byte) 0x03;
 
     /** MO:DCA default mixing */
-    public static final byte DEFAULT = (byte)0xFF;
+    public static final byte DEFAULT = (byte) 0xFF;
 
     /** the mixing rules */
     private final byte[] rules;
@@ -59,22 +58,25 @@ public class PresentationSpaceMixingRulesTriplet extends AbstractTriplet {
     /**
      * Main constructor
      *
-     * @param rules the mixing rules
+     * @param rules
+     *            the mixing rules
      */
-    public PresentationSpaceMixingRulesTriplet(byte[] rules) {
+    public PresentationSpaceMixingRulesTriplet(final byte[] rules) {
         super(PRESENTATION_SPACE_MIXING_RULE);
         this.rules = rules;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
-        return 2 + rules.length;
+        return 2 + this.rules.length;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = getData();
-        System.arraycopy(rules, 0, data, 2, rules.length);
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = getData();
+        System.arraycopy(this.rules, 0, data, 2, this.rules.length);
         os.write(data);
     }
 }

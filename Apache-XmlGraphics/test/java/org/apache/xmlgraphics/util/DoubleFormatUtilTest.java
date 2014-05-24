@@ -26,10 +26,12 @@ import java.util.Locale;
 import java.util.Random;
 
 import junit.framework.TestCase;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Test class of DoubleFormatUtil
  */
+@Slf4j
 public class DoubleFormatUtilTest extends TestCase {
 
     /**
@@ -38,8 +40,8 @@ public class DoubleFormatUtilTest extends TestCase {
      * Note: Some of these tests will fail if formatFast is used.
      */
     public void testSimple() {
-        int decimals = 4;
-        int precision = 8;
+        final int decimals = 4;
+        final int precision = 8;
 
         double value = 0.0;
         String expected = "0";
@@ -152,8 +154,8 @@ public class DoubleFormatUtilTest extends TestCase {
     }
 
     public void testLimits() {
-        int decimals = 19;
-        int precision = 19;
+        final int decimals = 19;
+        final int precision = 19;
 
         double value = Double.NaN;
         String expected = "NaN";
@@ -185,7 +187,8 @@ public class DoubleFormatUtilTest extends TestCase {
         actual = format(value, decimals, precision);
         assertEquals(value, decimals, precision, expected, actual);
 
-        value = 0.0010000000000000002; // == Math.nextAfter(1e-3, Double.POSITIVE_INFINITY);
+        value = 0.0010000000000000002; // == Math.nextAfter(1e-3,
+        // Double.POSITIVE_INFINITY);
         expected = "0.0010000000000000002";
         actual = format(value, decimals, precision);
         assertEquals(value, decimals, precision, expected, actual);
@@ -193,7 +196,8 @@ public class DoubleFormatUtilTest extends TestCase {
         actual = format(value, 18, 18);
         assertEquals(value, 18, 18, expected, actual);
 
-        value = 0.0009999999999999998; // == Math.nextAfter(1e-3, Double.NEGATIVE_INFINITY);
+        value = 0.0009999999999999998; // == Math.nextAfter(1e-3,
+        // Double.NEGATIVE_INFINITY);
         expected = "0.0009999999999999998";
         actual = format(value, decimals, precision);
         assertEquals(value, decimals, precision, expected, actual);
@@ -216,7 +220,8 @@ public class DoubleFormatUtilTest extends TestCase {
         actual = format(value, decimals, precision);
         assertEquals(value, decimals, precision, expected, actual);
 
-        value = 1.0000000000000002E7; // == Math.nextAfter(1e7, Double.POSITIVE_INFINITY);
+        value = 1.0000000000000002E7; // == Math.nextAfter(1e7,
+        // Double.POSITIVE_INFINITY);
         expected = "10000000.000000002";
         actual = format(value, decimals, precision);
         assertEquals(value, decimals, precision, expected, actual);
@@ -224,7 +229,8 @@ public class DoubleFormatUtilTest extends TestCase {
         actual = format(value, 8, 8);
         assertEquals(value, 8, 8, expected, actual);
 
-        value = 9999999.999999998; // == Math.nextAfter(1e7, Double.NEGATIVE_INFINITY);
+        value = 9999999.999999998; // == Math.nextAfter(1e7,
+        // Double.NEGATIVE_INFINITY);
         expected = "9999999.999999998";
         actual = format(value, decimals, precision);
         assertEquals(value, decimals, precision, expected, actual);
@@ -244,79 +250,90 @@ public class DoubleFormatUtilTest extends TestCase {
     /**
      * AssertEquals with a more detailed message
      */
-    private static void assertEquals(double value, int decimals, int precision, String expected, String actual) {
-        assertEquals("value: " + value + ", decimals: " + decimals + ", precision: " + precision, expected, actual);
+    private static void assertEquals(final double value, final int decimals,
+            final int precision, final String expected, final String actual) {
+        assertEquals("value: " + value + ", decimals: " + decimals
+                + ", precision: " + precision, expected, actual);
     }
 
     /**
      * The buffer used to format
      */
-    private StringBuffer buf = new StringBuffer();
+    private final StringBuffer buf = new StringBuffer();
 
     /**
      * Formats using FormatUtil#formatDouble method
      */
-    private String format(double value, int decimals, int precision) {
-        buf.setLength(0);
-        DoubleFormatUtil.formatDouble(value, decimals, precision, buf);
-        return buf.toString();
+    private String format(final double value, final int decimals,
+            final int precision) {
+        this.buf.setLength(0);
+        DoubleFormatUtil.formatDouble(value, decimals, precision, this.buf);
+        return this.buf.toString();
     }
 
     /**
      * Formats using FormatUtil#formatDoublePrecise method
      */
-    private String formatPrecise(double value, int decimals, int precision) {
-        buf.setLength(0);
-        DoubleFormatUtil.formatDoublePrecise(value, decimals, precision, buf);
-        return buf.toString();
+    private String formatPrecise(final double value, final int decimals,
+            final int precision) {
+        this.buf.setLength(0);
+        DoubleFormatUtil.formatDoublePrecise(value, decimals, precision,
+                this.buf);
+        return this.buf.toString();
     }
 
     /**
      * Formats using FormatUtil#formatDoubleFast method
      */
-    private String formatFast(double value, int decimals, int precision) {
-        buf.setLength(0);
-        DoubleFormatUtil.formatDoubleFast(value, decimals, precision, buf);
-        return buf.toString();
+    private String formatFast(final double value, final int decimals,
+            final int precision) {
+        this.buf.setLength(0);
+        DoubleFormatUtil.formatDoubleFast(value, decimals, precision, this.buf);
+        return this.buf.toString();
     }
 
     /**
-     * Formats using a BigDecimal. This is the reference (always returns the correct format)
-     * whereas DecimalFormat may have some formating errors regarding the last digit.
+     * Formats using a BigDecimal. This is the reference (always returns the
+     * correct format) whereas DecimalFormat may have some formating errors
+     * regarding the last digit.
      */
-    private String refFormat(double value, int decimals, int precision) {
+    private String refFormat(final double value, final int decimals,
+            final int precision) {
         if (Double.isNaN(value) || Double.isInfinite(value)) {
             return Double.toString(value);
         }
-        buf.setLength(0);
+        this.buf.setLength(0);
         BigDecimal bg = new BigDecimal(Double.toString(value));
-        int scale = Math.abs(value) < 1.0 ? precision : decimals;
+        final int scale = Math.abs(value) < 1.0 ? precision : decimals;
         bg = bg.setScale(scale, BigDecimal.ROUND_HALF_UP);
-        //buf.append(bg.toString()); // Java 1.4
-        buf.append(bg.toPlainString()); // Java 1.5 and more !
-        if (buf.indexOf(".") >= 0) {
-            for (int i = buf.length() - 1; i > 1 && buf.charAt(i) == '0'; i--) {
-                buf.setLength(i);
+        // buf.append(bg.toString()); // Java 1.4
+        this.buf.append(bg.toPlainString()); // Java 1.5 and more !
+        if (this.buf.indexOf(".") >= 0) {
+            for (int i = this.buf.length() - 1; i > 1
+                    && this.buf.charAt(i) == '0'; i--) {
+                this.buf.setLength(i);
             }
-            if (buf.charAt(buf.length() - 1) == '.') {
-                buf.setLength(buf.length() - 1);
+            if (this.buf.charAt(this.buf.length() - 1) == '.') {
+                this.buf.setLength(this.buf.length() - 1);
             }
         }
-        return buf.toString();
+        return this.buf.toString();
     }
 
     /**
      * The decimal format used within formatDf method
      */
-    private DecimalFormat df = new DecimalFormat("0", new DecimalFormatSymbols(Locale.US));
+    private final DecimalFormat df = new DecimalFormat("0",
+            new DecimalFormatSymbols(Locale.US));
 
     /**
      * Formats using DecimalFormat#format method
      */
-    private String formatDf(double value, int decimals, int precision) {
-        int scale = Math.abs(value) < 1.0 ? precision : decimals;
-        df.setMaximumFractionDigits(scale);
-        return df.format(value);
+    private String formatDf(final double value, final int decimals,
+            final int precision) {
+        final int scale = Math.abs(value) < 1.0 ? precision : decimals;
+        this.df.setMaximumFractionDigits(scale);
+        return this.df.format(value);
     }
 
     /**
@@ -328,18 +345,18 @@ public class DoubleFormatUtilTest extends TestCase {
      * Tests the formatPrecise method against the reference, with random values
      */
     public void testPrecise() {
-        long seed = System.currentTimeMillis();
-        Random r = new Random();
+        final long seed = System.currentTimeMillis();
+        final Random r = new Random();
         r.setSeed(seed);
 
         double value, highValue, lowValue;
-        int nbTest = 10000;
-        int maxDecimals = 12;
-        
+        final int nbTest = 10000;
+        final int maxDecimals = 12;
+
         String actual, expected;
         for (int i = nbTest; i > 0; i--) {
-            int decimals = r.nextInt(maxDecimals);
-            int precision = decimals + 3;
+            final int decimals = r.nextInt(maxDecimals);
+            final int precision = decimals + 3;
             value = 1 + r.nextDouble(); // Use decimals and not precision
             expected = refFormat(value, decimals, precision);
             actual = formatPrecise(value, decimals, precision);
@@ -361,18 +378,18 @@ public class DoubleFormatUtilTest extends TestCase {
      * Tests the format method against the reference, with random values
      */
     public void testFormat() {
-        long seed = System.currentTimeMillis();
-        Random r = new Random();
+        final long seed = System.currentTimeMillis();
+        final Random r = new Random();
         r.setSeed(seed);
 
         double value, highValue, lowValue;
-        int nbTest = 10000;
-        int maxDecimals = 12;
+        final int nbTest = 10000;
+        final int maxDecimals = 12;
 
         String actual, expected;
         for (int i = nbTest; i > 0; i--) {
-            int decimals = r.nextInt(maxDecimals);
-            int precision = decimals + 3;
+            final int decimals = r.nextInt(maxDecimals);
+            final int precision = decimals + 3;
             value = 1 + r.nextDouble(); // Use decimals and not precision
             expected = refFormat(value, decimals, precision);
             actual = format(value, decimals, precision);
@@ -395,18 +412,18 @@ public class DoubleFormatUtilTest extends TestCase {
      * Disabled since the formatFast method is not accurate.
      */
     public void fast() {
-        long seed = System.currentTimeMillis();
-        Random r = new Random();
+        final long seed = System.currentTimeMillis();
+        final Random r = new Random();
         r.setSeed(seed);
 
         double value, highValue, lowValue;
-        int nbTest = 10000;
-        int maxDecimals = 12;
-        
+        final int nbTest = 10000;
+        final int maxDecimals = 12;
+
         String actual, expected;
         for (int i = nbTest; i > 0; i--) {
-            int decimals = r.nextInt(maxDecimals);
-            int precision = decimals + 3;
+            final int decimals = r.nextInt(maxDecimals);
+            final int precision = decimals + 3;
             value = 1 + r.nextDouble(); // Use decimals and not precision
             expected = refFormat(value, decimals, precision);
             actual = formatFast(value, decimals, precision);
@@ -425,26 +442,27 @@ public class DoubleFormatUtilTest extends TestCase {
     }
 
     /**
-     * Performance comparison of the differents formatXXX methods,
-     * to see which one is the fastest in the same conditions.
+     * Performance comparison of the differents formatXXX methods, to see which
+     * one is the fastest in the same conditions.
      */
     public void performanceCompare() {
-        // Rename this method in testPerformanceCompare to run it within JUnit tests
+        // Rename this method in testPerformanceCompare to run it within JUnit
+        // tests
         // This method is quite long (depends of the value of nbTest).
-        long seed = System.currentTimeMillis();
-        Random r = new Random();
+        final long seed = System.currentTimeMillis();
+        final Random r = new Random();
         r.setSeed(seed);
 
         double value, highValue, lowValue;
         long start = System.currentTimeMillis();
-        int nbTest = 1000000;
-        int maxDecimals = 16;
+        final int nbTest = 1000000;
+        final int maxDecimals = 16;
 
         r.setSeed(seed);
         start = System.currentTimeMillis();
         for (int i = nbTest; i > 0; i--) {
-            int decimals = r.nextInt(maxDecimals);
-            int precision = decimals + 3;
+            final int decimals = r.nextInt(maxDecimals);
+            final int precision = decimals + 3;
             value = 1 + r.nextDouble(); // Use decimals and not precision
             format(value, decimals, precision);
 
@@ -454,14 +472,15 @@ public class DoubleFormatUtilTest extends TestCase {
             lowValue = (value - 1) / 1000;
             format(lowValue, decimals, precision);
         }
-        long formatDuration = System.currentTimeMillis() - start;
-        System.out.println("Format duration: " + formatDuration + "ms to format " + (3 * nbTest) + " doubles");
+        final long formatDuration = System.currentTimeMillis() - start;
+        log.info("Format duration: " + formatDuration + "ms to format " + 3
+                * nbTest + " doubles");
 
         r.setSeed(seed);
         start = System.currentTimeMillis();
         for (int i = nbTest; i > 0; i--) {
-            int decimals = r.nextInt(maxDecimals);
-            int precision = decimals + 3;
+            final int decimals = r.nextInt(maxDecimals);
+            final int precision = decimals + 3;
             value = 1 + r.nextDouble(); // Use decimals and not precision
             formatPrecise(value, decimals, precision);
 
@@ -471,14 +490,15 @@ public class DoubleFormatUtilTest extends TestCase {
             lowValue = (value - 1) / 1000;
             formatPrecise(lowValue, decimals, precision);
         }
-        long preciseFormatDuration = System.currentTimeMillis() - start;
-        System.out.println("Format Precise duration: " + preciseFormatDuration + "ms to format " + (3 * nbTest) + " doubles");
+        final long preciseFormatDuration = System.currentTimeMillis() - start;
+        log.info("Format Precise duration: " + preciseFormatDuration
+                + "ms to format " + 3 * nbTest + " doubles");
 
         r.setSeed(seed);
         start = System.currentTimeMillis();
         for (int i = nbTest; i > 0; i--) {
-            int decimals = r.nextInt(maxDecimals);
-            int precision = decimals + 3;
+            final int decimals = r.nextInt(maxDecimals);
+            final int precision = decimals + 3;
             value = 1 + r.nextDouble(); // Use decimals and not precision
             formatFast(value, decimals, precision);
 
@@ -488,14 +508,15 @@ public class DoubleFormatUtilTest extends TestCase {
             lowValue = (value - 1) / 1000;
             formatFast(lowValue, decimals, precision);
         }
-        long fastFormatDuration = System.currentTimeMillis() - start;
-        System.out.println("Fast Format duration: " + fastFormatDuration + "ms to format " + (3 * nbTest) + " doubles");
+        final long fastFormatDuration = System.currentTimeMillis() - start;
+        log.info("Fast Format duration: " + fastFormatDuration
+                + "ms to format " + 3 * nbTest + " doubles");
 
         r.setSeed(seed);
         start = System.currentTimeMillis();
         for (int i = nbTest; i > 0; i--) {
-            int decimals = r.nextInt(maxDecimals);
-            int precision = decimals + 3;
+            final int decimals = r.nextInt(maxDecimals);
+            final int precision = decimals + 3;
             value = 1 + r.nextDouble(); // Use decimals and not precision
             refFormat(value, decimals, precision);
 
@@ -505,14 +526,15 @@ public class DoubleFormatUtilTest extends TestCase {
             lowValue = (value - 1) / 1000;
             refFormat(lowValue, decimals, precision);
         }
-        long bgDuration = System.currentTimeMillis() - start;
-        System.out.println("BigDecimal format duration: " + bgDuration + "ms to format " + (3 * nbTest) + " doubles");
+        final long bgDuration = System.currentTimeMillis() - start;
+        log.info("BigDecimal format duration: " + bgDuration + "ms to format "
+                + 3 * nbTest + " doubles");
 
         r.setSeed(seed);
         start = System.currentTimeMillis();
         for (int i = nbTest; i > 0; i--) {
-            int decimals = r.nextInt(maxDecimals);
-            int precision = decimals + 3;
+            final int decimals = r.nextInt(maxDecimals);
+            final int precision = decimals + 3;
             value = 1 + r.nextDouble(); // Use decimals and not precision
             formatDf(value, decimals, precision);
 
@@ -522,13 +544,14 @@ public class DoubleFormatUtilTest extends TestCase {
             lowValue = (value - 1) / 1000;
             formatDf(lowValue, decimals, precision);
         }
-        long dfDuration = System.currentTimeMillis() - start;
-        System.out.println("DecimalFormat duration: " + dfDuration + "ms to format " + (3 * nbTest) + " doubles");
+        final long dfDuration = System.currentTimeMillis() - start;
+        log.info("DecimalFormat duration: " + dfDuration + "ms to format " + 3
+                * nbTest + " doubles");
 
         r.setSeed(seed);
         start = System.currentTimeMillis();
         for (int i = nbTest; i > 0; i--) {
-            int decimals = r.nextInt(maxDecimals);
+            final int decimals = r.nextInt(maxDecimals);
             int precision = decimals + 3;
             precision++; // Avoid warning unused local variable
             value = 1 + r.nextDouble(); // Use decimals and not precision
@@ -540,20 +563,22 @@ public class DoubleFormatUtilTest extends TestCase {
             lowValue = (value - 1) / 1000;
             Double.toString(lowValue);
         }
-        long toStringDuration = System.currentTimeMillis() - start;
-        System.out.println("toString duration: " + toStringDuration + "ms to format " + (3 * nbTest) + " doubles");
+        final long toStringDuration = System.currentTimeMillis() - start;
+        log.info("toString duration: " + toStringDuration + "ms to format " + 3
+                * nbTest + " doubles");
     }
 
     public void testAllDoubleRanges() {
-        double[] values = {0, 1, 5, 4.9999, 5.0001, 9.9999, 1234567890, 0 /* The last one is random */};
-        Random r = new Random();
+        final double[] values = { 0, 1, 5, 4.9999, 5.0001, 9.9999, 1234567890,
+                0 /* The last one is random */};
+        final Random r = new Random();
         double value;
         String expected, actual;
         int minScale, maxScale;
         for (int i = -330; i <= 315; i++) {
             values[values.length - 1] = r.nextDouble();
-            double pow = Math.pow(10.0, i);
-            for (double d : values) {
+            final double pow = Math.pow(10.0, i);
+            for (final double d : values) {
                 value = d * pow;
                 minScale = 1;
                 maxScale = 350;
@@ -574,7 +599,7 @@ public class DoubleFormatUtilTest extends TestCase {
                     assertEquals(value, scale, scale, expected, actual);
                 }
             }
-            
+
         }
     }
 }

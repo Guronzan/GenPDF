@@ -58,7 +58,7 @@ public final class Document extends AbstractResourceEnvironmentGroupContainer {
      * @param name
      *            the name of the document
      */
-    public Document(Factory factory, String name) {
+    public Document(final Factory factory, final String name) {
         super(factory, name);
     }
 
@@ -66,29 +66,33 @@ public final class Document extends AbstractResourceEnvironmentGroupContainer {
      * Method to mark the end of the page group.
      */
     public void endDocument() {
-        complete = true;
+        this.complete = true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isComplete() {
-        return complete;
+        return this.complete;
     }
 
     /** {@inheritDoc} */
-    protected void writeStart(OutputStream os) throws IOException {
-        byte[] data = new byte[17];
+    @Override
+    protected void writeStart(final OutputStream os) throws IOException {
+        final byte[] data = new byte[17];
         copySF(data, Type.BEGIN, Category.DOCUMENT);
         os.write(data);
     }
 
     /** {@inheritDoc} */
-    protected void writeEnd(OutputStream os) throws IOException {
-        byte[] data = new byte[17];
+    @Override
+    protected void writeEnd(final OutputStream os) throws IOException {
+        final byte[] data = new byte[17];
         copySF(data, Type.END, Category.DOCUMENT);
         os.write(data);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return this.name;
     }

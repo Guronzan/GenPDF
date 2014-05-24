@@ -27,19 +27,24 @@ public class RendererRuntimeException extends NestedRuntimeException {
 
     /**
      * Constructs a RendererRuntimeException with the specified message.
-     * @param msg the exception mesaage
+     * 
+     * @param msg
+     *            the exception mesaage
      */
-    public RendererRuntimeException(String msg) {
+    public RendererRuntimeException(final String msg) {
         super(msg);
     }
 
     /**
-     * Constructs a RendererRuntimeException with the specified message
-     * wrapping the underlying exception.
-     * @param msg the exception mesaage
-     * @param t the underlying exception
+     * Constructs a RendererRuntimeException with the specified message wrapping
+     * the underlying exception.
+     * 
+     * @param msg
+     *            the exception mesaage
+     * @param t
+     *            the underlying exception
      */
-    public RendererRuntimeException(String msg, Throwable t) {
+    public RendererRuntimeException(final String msg, final Throwable t) {
         super(msg, t);
     }
 

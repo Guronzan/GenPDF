@@ -36,11 +36,13 @@ public class GenericShorthandParser implements ShorthandParser {
     }
 
     /**
-     * @param list  the ListProperty
-     * @param index the index into the List of properties
+     * @param list
+     *            the ListProperty
+     * @param index
+     *            the index into the List of properties
      * @return the property from the List of properties at the index parameter
      */
-    protected Property getElement(Property list, int index) {
+    protected Property getElement(final Property list, final int index) {
         if (list.getList().size() > index) {
             return (Property) list.getList().get(index);
         } else {
@@ -51,14 +53,13 @@ public class GenericShorthandParser implements ShorthandParser {
     /**
      * {@inheritDoc}
      */
-    public Property getValueForProperty(int propId,
-                                        Property property,
-                                        PropertyMaker maker,
-                                        PropertyList propertyList)
-                    throws PropertyException {
+    @Override
+    public Property getValueForProperty(final int propId,
+            final Property property, final PropertyMaker maker,
+            final PropertyList propertyList) throws PropertyException {
         // Check for keyword "inherit"
         if (property.getList().size() == 1) {
-            String sval = getElement(property, 0).getString();
+            final String sval = getElement(property, 0).getString();
             if (sval != null && sval.equals("inherit")) {
                 return propertyList.getFromParent(propId);
             }
@@ -66,31 +67,32 @@ public class GenericShorthandParser implements ShorthandParser {
         return convertValueForProperty(propId, property, maker, propertyList);
     }
 
-
     /**
      * Converts a property name into a Property
-     * @param propId the property ID in the Constants interface
-     * @param maker the Property.Maker to be used in the conversion
-     * @param property ...
-     * @param propertyList the PropertyList from which the Property should be
-     * extracted
+     * 
+     * @param propId
+     *            the property ID in the Constants interface
+     * @param maker
+     *            the Property.Maker to be used in the conversion
+     * @param property
+     *            ...
+     * @param propertyList
+     *            the PropertyList from which the Property should be extracted
      * @return the Property matching the parameters, or null if not found
-     * @throws PropertyException (when?)
+     * @throws PropertyException
+     *             (when?)
      */
-    protected Property convertValueForProperty(int propId,
-                                               Property property,
-                                               PropertyMaker maker,
-                                               PropertyList propertyList)
-                    throws PropertyException {
+    protected Property convertValueForProperty(final int propId,
+            final Property property, final PropertyMaker maker,
+            final PropertyList propertyList) throws PropertyException {
         Property prop = null;
         // Try each of the stored values in turn
-        Iterator iprop = property.getList().iterator();
+        final Iterator iprop = property.getList().iterator();
         while (iprop.hasNext() && prop == null) {
-            Property p = (Property)iprop.next();
+            final Property p = (Property) iprop.next();
             prop = maker.convertShorthandProperty(propertyList, p, null);
         }
         return prop;
     }
 
 }
-

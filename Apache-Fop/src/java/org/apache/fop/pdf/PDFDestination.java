@@ -32,32 +32,36 @@ public class PDFDestination extends PDFObject {
     /**
      * ID Reference for this destination
      */
-    private String idRef;
+    private final String idRef;
 
     /**
      * PDFReference (object reference) for this destination
      */
-     private Object goToReference;
+    private Object goToReference;
 
     /**
      * Create a named destination
-     * @param idRef ID Reference for this destination (the name of the destination)
-     * @param goToRef Object reference to the GoTo Action
+     * 
+     * @param idRef
+     *            ID Reference for this destination (the name of the
+     *            destination)
+     * @param goToRef
+     *            Object reference to the GoTo Action
      */
-    public PDFDestination(String idRef, Object goToRef) {
+    public PDFDestination(final String idRef, final Object goToRef) {
         super();
         this.goToReference = goToRef;
         this.idRef = idRef;
     }
 
     @Override
-    public int output(OutputStream stream) throws IOException {
-        CountingOutputStream cout = new CountingOutputStream(stream);
-        StringBuilder textBuffer = new StringBuilder(64);
+    public int output(final OutputStream stream) throws IOException {
+        final CountingOutputStream cout = new CountingOutputStream(stream);
+        final StringBuilder textBuffer = new StringBuilder(64);
 
         formatObject(getIDRef(), cout, textBuffer);
         textBuffer.append(' ');
-        formatObject(goToReference, cout, textBuffer);
+        formatObject(this.goToReference, cout, textBuffer);
 
         PDFDocument.flushTextBuffer(textBuffer, cout);
         return cout.getCount();
@@ -66,20 +70,22 @@ public class PDFDestination extends PDFObject {
     /**
      * Sets the GoToReference in the associated DestinationData object.
      *
-     * @param goToReference the reference to set in the associated DestinationData object.
+     * @param goToReference
+     *            the reference to set in the associated DestinationData object.
      * @deprecated use setGoToReference(Object) instead
      */
     @Deprecated
-    public void setGoToReference(String goToReference) {
+    public void setGoToReference(final String goToReference) {
         this.goToReference = goToReference;
     }
 
     /**
      * Sets the GoToReference in the associated DestinationData object.
      *
-     * @param goToReference the reference to set in the associated DestinationData object.
+     * @param goToReference
+     *            the reference to set in the associated DestinationData object.
      */
-    public void setGoToReference(Object goToReference) {
+    public void setGoToReference(final Object goToReference) {
         this.goToReference = goToReference;
     }
 
@@ -104,11 +110,12 @@ public class PDFDestination extends PDFObject {
     /**
      * Check if this equals another object.
      *
-     * @param obj the object to compare
+     * @param obj
+     *            the object to compare
      * @return true if this equals other object
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -117,8 +124,8 @@ public class PDFDestination extends PDFObject {
             return false;
         }
 
-        PDFDestination dest = (PDFDestination)obj;
-        if (dest.getIDRef().equals(this.getIDRef())) {
+        final PDFDestination dest = (PDFDestination) obj;
+        if (dest.getIDRef().equals(getIDRef())) {
             return true;
         }
 
@@ -132,4 +139,3 @@ public class PDFDestination extends PDFObject {
     }
 
 }
-

@@ -39,57 +39,65 @@ public class ImageDataDescriptor extends AbstractDescriptor {
     private byte functionSet = FUNCTION_SET_FS11; // FCNSET = IOCA FS 11
 
     /**
-     * Constructor for a ImageDataDescriptor for the specified
-     * resolution, width and height.
+     * Constructor for a ImageDataDescriptor for the specified resolution, width
+     * and height.
      *
-     * @param width The width of the image.
-     * @param height The height of the height.
-     * @param widthRes The horizontal resolution of the image.
-     * @param heightRes The vertical resolution of the image.
+     * @param width
+     *            The width of the image.
+     * @param height
+     *            The height of the height.
+     * @param widthRes
+     *            The horizontal resolution of the image.
+     * @param heightRes
+     *            The vertical resolution of the image.
      */
-    public ImageDataDescriptor(int width, int height, int widthRes, int heightRes) {
+    public ImageDataDescriptor(final int width, final int height,
+            final int widthRes, final int heightRes) {
         super(width, height, widthRes, heightRes);
     }
 
     /**
      * Sets the IOCA function set to be used.
-     * @param functionSet the function set (0x0A for FS 10, 0x0B for FS 11, etc.)
+     * 
+     * @param functionSet
+     *            the function set (0x0A for FS 10, 0x0B for FS 11, etc.)
      */
-    public void setFunctionSet(byte functionSet) {
+    public void setFunctionSet(final byte functionSet) {
         this.functionSet = functionSet;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[22];
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[22];
         copySF(data, Type.DESCRIPTOR, Category.IMAGE);
 
         // SF length
-        byte[] len = BinaryUtils.convert(data.length - 1, 2);
+        final byte[] len = BinaryUtils.convert(data.length - 1, 2);
         data[1] = len[0];
         data[2] = len[1];
 
-        byte[] x = BinaryUtils.convert(widthRes, 2);
+        final byte[] x = BinaryUtils.convert(this.widthRes, 2);
         data[10] = x[0];
         data[11] = x[1];
 
-        byte[] y = BinaryUtils.convert(heightRes, 2);
+        final byte[] y = BinaryUtils.convert(this.heightRes, 2);
         data[12] = y[0];
         data[13] = y[1];
 
-        byte[] w = BinaryUtils.convert(width, 2);
+        final byte[] w = BinaryUtils.convert(this.width, 2);
         data[14] = w[0];
         data[15] = w[1];
 
-        byte[] h = BinaryUtils.convert(height, 2);
+        final byte[] h = BinaryUtils.convert(this.height, 2);
         data[16] = h[0];
         data[17] = h[1];
 
-        //IOCA Function Set Field
-        data[18] = (byte)0xF7; // ID = Set IOCA Function Set
+        // IOCA Function Set Field
+        data[18] = (byte) 0xF7; // ID = Set IOCA Function Set
         data[19] = 0x02; // Length
         data[20] = 0x01; // Category = Function set identifier
-        data[21] = functionSet;
+        data[21] = this.functionSet;
 
         os.write(data);
     }

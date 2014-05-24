@@ -31,6 +31,7 @@ public class NullFilter extends PDFFilter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return "";
     }
@@ -38,6 +39,7 @@ public class NullFilter extends PDFFilter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public PDFObject getDecodeParms() {
         return null;
     }
@@ -45,10 +47,10 @@ public class NullFilter extends PDFFilter {
     /**
      * {@inheritDoc}
      */
-    public OutputStream applyFilter(OutputStream out) throws IOException {
+    @Override
+    public OutputStream applyFilter(final OutputStream out) throws IOException {
         return out;
-        //No active filtering, NullFilter does nothing
+        // No active filtering, NullFilter does nothing
     }
 
 }
-

@@ -52,7 +52,7 @@ public class CommonTextDecoration {
 
     /**
      * Creates a CommonTextDecoration object from a property list.
-     * 
+     *
      * @param pList
      *            the property list to build the object for
      * @return a CommonTextDecoration object or null if the obj would only have

@@ -31,69 +31,84 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.xml.sax.SAXException;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 import org.apache.fop.render.intermediate.IFDocumentHandler;
 import org.apache.fop.render.intermediate.IFException;
 import org.apache.fop.render.intermediate.IFParser;
 import org.apache.fop.render.intermediate.IFUtil;
+import org.xml.sax.SAXException;
 
 import embedding.ExampleObj2XML;
 import embedding.model.ProjectTeam;
 
 /**
- * Example for the intermediate format that demonstrates the stamping of a document with some
- * kind of watermark. The resulting document is then rendered to a PDF file.
+ * Example for the intermediate format that demonstrates the stamping of a
+ * document with some kind of watermark. The resulting document is then rendered
+ * to a PDF file.
  */
+@Slf4j
 public class ExampleStamp {
 
     // configure fopFactory as desired
-    private FopFactory fopFactory = FopFactory.newInstance();
+    private final FopFactory fopFactory = FopFactory.newInstance();
 
     /**
      * Stamps an intermediate file and renders it to a PDF file.
-     * @param iffile the intermediate file (area tree XML)
-     * @param stampSheet the stylesheet that does the stamping
-     * @param pdffile the target PDF file
-     * @throws IOException In case of an I/O problem
-     * @throws TransformerException In case of a XSL transformation problem
-     * @throws SAXException In case of an XML-related problem
-     * @throws IFException if there was an IF-related error while creating the output file
+     *
+     * @param iffile
+     *            the intermediate file (area tree XML)
+     * @param stampSheet
+     *            the stylesheet that does the stamping
+     * @param pdffile
+     *            the target PDF file
+     * @throws IOException
+     *             In case of an I/O problem
+     * @throws TransformerException
+     *             In case of a XSL transformation problem
+     * @throws SAXException
+     *             In case of an XML-related problem
+     * @throws IFException
+     *             if there was an IF-related error while creating the output
+     *             file
      */
-    public void stampToPDF(File iffile, File stampSheet, File pdffile)
-            throws IOException, TransformerException, SAXException, IFException {
+    public void stampToPDF(final File iffile, final File stampSheet,
+            final File pdffile) throws IOException, TransformerException,
+            SAXException, IFException {
         // Setup output
         OutputStream out = new java.io.FileOutputStream(pdffile);
         out = new java.io.BufferedOutputStream(out);
         try {
-            //user agent
-            FOUserAgent userAgent = fopFactory.newFOUserAgent();
+            // user agent
+            final FOUserAgent userAgent = this.fopFactory.newFOUserAgent();
 
-            //Setup target handler
-            String mime = MimeConstants.MIME_PDF;
-            IFDocumentHandler targetHandler = fopFactory.getRendererFactory().createDocumentHandler(
-                    userAgent, mime);
+            // Setup target handler
+            final String mime = org.apache.xmlgraphics.util.MimeConstants.MIME_PDF;
+            final IFDocumentHandler targetHandler = this.fopFactory
+                    .getRendererFactory()
+                    .createDocumentHandler(userAgent, mime);
 
-            //Setup fonts
+            // Setup fonts
             IFUtil.setupFonts(targetHandler);
             targetHandler.setResult(new StreamResult(pdffile));
 
-            IFParser parser = new IFParser();
+            final IFParser parser = new IFParser();
 
-            Source src = new StreamSource(iffile);
-            Source xslt = new StreamSource(stampSheet);
+            final Source src = new StreamSource(iffile);
+            final Source xslt = new StreamSource(stampSheet);
 
-            //Setup Transformer for XSLT processing
-            TransformerFactory tFactory = TransformerFactory.newInstance();
-            Transformer transformer = tFactory.newTransformer(xslt);
+            // Setup Transformer for XSLT processing
+            final TransformerFactory tFactory = TransformerFactory
+                    .newInstance();
+            final Transformer transformer = tFactory.newTransformer(xslt);
 
-            //Send XSLT result to AreaTreeParser
-            SAXResult res = new SAXResult(parser.getContentHandler(targetHandler, userAgent));
+            // Send XSLT result to AreaTreeParser
+            final SAXResult res = new SAXResult(parser.getContentHandler(
+                    targetHandler, userAgent));
 
-            //Start XSLT transformation and area tree parsing
+            // Start XSLT transformation and area tree parsing
             transformer.transform(src, res);
         } finally {
             out.close();
@@ -102,42 +117,44 @@ public class ExampleStamp {
 
     /**
      * Main method.
-     * @param args command-line arguments
+     *
+     * @param args
+     *            command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
-            System.out.println("FOP ExampleConcat (for the Intermediate Format)\n");
+            log.info("FOP ExampleConcat (for the Intermediate Format)\n");
 
-            //Setup directories
-            File baseDir = new File(".");
-            File outDir = new File(baseDir, "out");
+            // Setup directories
+            final File baseDir = new File(".");
+            final File outDir = new File(baseDir, "out");
             outDir.mkdirs();
 
-            //Setup output file
-            File xsltfile = new File(baseDir, "xml/xslt/projectteam2fo.xsl");
-            File iffile = new File(outDir, "team.if.xml");
-            File stampxsltfile = new File(baseDir, "xml/xslt/ifstamp.xsl");
-            File pdffile = new File(outDir, "ResultIFStamped.pdf");
-            System.out.println("Intermediate file : " + iffile.getCanonicalPath());
-            System.out.println("Stamp XSLT: " + stampxsltfile.getCanonicalPath());
-            System.out.println("PDF Output File: " + pdffile.getCanonicalPath());
-            System.out.println();
+            // Setup output file
+            final File xsltfile = new File(baseDir,
+                    "xml/xslt/projectteam2fo.xsl");
+            final File iffile = new File(outDir, "team.if.xml");
+            final File stampxsltfile = new File(baseDir, "xml/xslt/ifstamp.xsl");
+            final File pdffile = new File(outDir, "ResultIFStamped.pdf");
+            log.info("Intermediate file : " + iffile.getCanonicalPath());
+            log.info("Stamp XSLT: " + stampxsltfile.getCanonicalPath());
+            log.info("PDF Output File: " + pdffile.getCanonicalPath());
+            log.info("");
 
-            ProjectTeam team1 = ExampleObj2XML.createSampleProjectTeam();
+            final ProjectTeam team1 = ExampleObj2XML.createSampleProjectTeam();
 
-            //Create intermediate file
-            ExampleConcat concatapp = new ExampleConcat();
-            concatapp.convertToIntermediate(
-                    team1.getSourceForProjectTeam(),
+            // Create intermediate file
+            final ExampleConcat concatapp = new ExampleConcat();
+            concatapp.convertToIntermediate(team1.getSourceForProjectTeam(),
                     new StreamSource(xsltfile), iffile);
 
-            //Stamp document and produce a PDF from the intermediate format
-            ExampleStamp app = new ExampleStamp();
+            // Stamp document and produce a PDF from the intermediate format
+            final ExampleStamp app = new ExampleStamp();
             app.stampToPDF(iffile, stampxsltfile, pdffile);
 
-            System.out.println("Success!");
+            log.info("Success!");
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace(System.err);
             System.exit(-1);
         }

@@ -19,6 +19,8 @@
 
 package org.apache.fop.fo.expr;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.datatypes.Length;
 import org.apache.fop.datatypes.Numeric;
 import org.apache.fop.datatypes.PercentBaseContext;
@@ -26,13 +28,12 @@ import org.apache.fop.fo.properties.Property;
 import org.apache.fop.fo.properties.TableColLength;
 import org.apache.fop.util.CompareUtil;
 
-
 /**
- * This class represent a node in a property expression tree.
- * It is created when an operation involve relative expression and is used
- * to delay evaluation of the operation until the time where getNumericValue()
- * or getValue() is called.
+ * This class represent a node in a property expression tree. It is created when
+ * an operation involve relative expression and is used to delay evaluation of
+ * the operation until the time where getNumericValue() or getValue() is called.
  */
+@Slf4j
 public class RelativeNumericProperty extends Property implements Length {
     /** ADDITION */
     public static final int ADDITION = 1;
@@ -59,11 +60,11 @@ public class RelativeNumericProperty extends Property implements Length {
     /**
      * The operation identifier.
      */
-    private int operation;
+    private final int operation;
     /**
      * The first (or only) operand.
      */
-    private Numeric op1;
+    private final Numeric op1;
     /**
      * The second operand.
      */
@@ -75,33 +76,41 @@ public class RelativeNumericProperty extends Property implements Length {
 
     /**
      * Constructor for a two argument operation.
-     * @param operation the operation opcode: ADDITION, SUBTRACTION, ...
-     * @param op1 the first operand.
-     * @param op2 the second operand
+     *
+     * @param operation
+     *            the operation opcode: ADDITION, SUBTRACTION, ...
+     * @param op1
+     *            the first operand.
+     * @param op2
+     *            the second operand
      */
-    public RelativeNumericProperty(int operation, Numeric op1, Numeric op2) {
+    public RelativeNumericProperty(final int operation, final Numeric op1,
+            final Numeric op2) {
         this.operation = operation;
         this.op1 = op1;
         this.op2 = op2;
         // Calculate the dimension. We can do now.
         switch (operation) {
         case MULTIPLY:
-            dimension = op1.getDimension() + op2.getDimension();
+            this.dimension = op1.getDimension() + op2.getDimension();
             break;
         case DIVIDE:
-            dimension = op1.getDimension() - op2.getDimension();
+            this.dimension = op1.getDimension() - op2.getDimension();
             break;
         default:
-            dimension = op1.getDimension();
+            this.dimension = op1.getDimension();
         }
     }
 
     /**
      * Constructor for a one argument operation.
-     * @param operation the operation opcode: NEGATE, ABS
-     * @param op the operand.
+     *
+     * @param operation
+     *            the operation opcode: NEGATE, ABS
+     * @param op
+     *            the operand.
      */
-    public RelativeNumericProperty(int operation, Numeric op) {
+    public RelativeNumericProperty(final int operation, final Numeric op) {
         this.operation = operation;
         this.op1 = op;
         this.dimension = op.getDimension();
@@ -109,39 +118,45 @@ public class RelativeNumericProperty extends Property implements Length {
 
     /**
      * Return a resolved (calculated) Numeric with the value of the expression.
-     * @param context Evaluation context
-     * @return the resolved {@link Numeric} corresponding to the value of the expression
-     * @throws PropertyException when an exception occur during evaluation.
+     *
+     * @param context
+     *            Evaluation context
+     * @return the resolved {@link Numeric} corresponding to the value of the
+     *         expression
+     * @throws PropertyException
+     *             when an exception occur during evaluation.
      */
-    private Numeric getResolved(PercentBaseContext context) throws PropertyException {
-        switch (operation) {
+    private Numeric getResolved(final PercentBaseContext context)
+            throws PropertyException {
+        switch (this.operation) {
         case ADDITION:
-            return NumericOp.addition2(op1, op2, context);
+            return NumericOp.addition2(this.op1, this.op2, context);
         case SUBTRACTION:
-            return NumericOp.subtraction2(op1, op2, context);
+            return NumericOp.subtraction2(this.op1, this.op2, context);
         case MULTIPLY:
-            return NumericOp.multiply2(op1, op2, context);
+            return NumericOp.multiply2(this.op1, this.op2, context);
         case DIVIDE:
-            return NumericOp.divide2(op1, op2, context);
+            return NumericOp.divide2(this.op1, this.op2, context);
         case MODULO:
-            return NumericOp.modulo2(op1, op2, context);
+            return NumericOp.modulo2(this.op1, this.op2, context);
         case NEGATE:
-            return NumericOp.negate2(op1, context);
+            return NumericOp.negate2(this.op1, context);
         case ABS:
-            return NumericOp.abs2(op1, context);
+            return NumericOp.abs2(this.op1, context);
         case MAX:
-            return NumericOp.max2(op1, op2, context);
+            return NumericOp.max2(this.op1, this.op2, context);
         case MIN:
-            return NumericOp.min2(op1, op2, context);
+            return NumericOp.min2(this.op1, this.op2, context);
         default:
-            throw new PropertyException("Unknown expr operation " + operation);
+            throw new PropertyException("Unknown expr operation "
+                    + this.operation);
         }
     }
 
     /**
-     * Return the resolved (calculated) value of the expression.
-     * {@inheritDoc}
+     * Return the resolved (calculated) value of the expression. {@inheritDoc}
      */
+    @Override
     public double getNumericValue() throws PropertyException {
         return getResolved(null).getNumericValue(null);
     }
@@ -149,37 +164,44 @@ public class RelativeNumericProperty extends Property implements Length {
     /**
      * {@inheritDoc}
      */
-    public double getNumericValue(PercentBaseContext context) throws PropertyException {
+    @Override
+    public double getNumericValue(final PercentBaseContext context)
+            throws PropertyException {
         return getResolved(context).getNumericValue(context);
     }
 
     /**
      * Return the dimension of the expression
+     *
      * @return numeric value as dimension
      */
+    @Override
     public int getDimension() {
-        return dimension;
+        return this.dimension;
     }
 
     /**
      * Return false since an expression is only created when there is relative
      * numerics involved.
+     *
      * @return true if expression is absolute
      */
+    @Override
     public boolean isAbsolute() {
         return false;
     }
 
     /**
      * Cast this numeric as a Length.
+     *
      * @return numeric value as length
      */
     @Override
     public Length getLength() {
-        if (dimension == 1) {
+        if (this.dimension == 1) {
             return this;
         }
-        log.error("Can't create length with dimension " + dimension);
+        log.error("Can't create length with dimension " + this.dimension);
         return null;
     }
 
@@ -192,11 +214,12 @@ public class RelativeNumericProperty extends Property implements Length {
     /**
      * {@inheritDoc}
      */
+    @Override
     public int getValue() {
         try {
             return (int) getNumericValue();
-        } catch (PropertyException exc) {
-            log.error(exc);
+        } catch (final PropertyException exc) {
+            log.error(exc.getMessage(), exc);
         }
         return 0;
     }
@@ -204,11 +227,12 @@ public class RelativeNumericProperty extends Property implements Length {
     /**
      * {@inheritDoc}
      */
-    public int getValue(PercentBaseContext context) {
+    @Override
+    public int getValue(final PercentBaseContext context) {
         try {
             return (int) getNumericValue(context);
-        } catch (PropertyException exc) {
-            log.error(exc);
+        } catch (final PropertyException exc) {
+            log.error(exc.getMessage(), exc);
         }
         return 0;
     }
@@ -228,18 +252,18 @@ public class RelativeNumericProperty extends Property implements Length {
     public double getTableUnits() {
         double tu1 = 0.0;
         double tu2 = 0.0;
-        if (op1 instanceof RelativeNumericProperty) {
-            tu1 = ((RelativeNumericProperty) op1).getTableUnits();
-        } else if (op1 instanceof TableColLength) {
-            tu1 = ((TableColLength) op1).getTableUnits();
+        if (this.op1 instanceof RelativeNumericProperty) {
+            tu1 = ((RelativeNumericProperty) this.op1).getTableUnits();
+        } else if (this.op1 instanceof TableColLength) {
+            tu1 = ((TableColLength) this.op1).getTableUnits();
         }
-        if (op2 instanceof RelativeNumericProperty) {
-            tu2 = ((RelativeNumericProperty) op2).getTableUnits();
-        } else if (op2 instanceof TableColLength) {
-            tu2 = ((TableColLength) op2).getTableUnits();
+        if (this.op2 instanceof RelativeNumericProperty) {
+            tu2 = ((RelativeNumericProperty) this.op2).getTableUnits();
+        } else if (this.op2 instanceof TableColLength) {
+            tu2 = ((TableColLength) this.op2).getTableUnits();
         }
         if (tu1 != 0.0 && tu2 != 0.0) {
-            switch (operation) {
+            switch (this.operation) {
             case ADDITION:
                 return tu1 + tu2;
             case SUBTRACTION:
@@ -258,7 +282,7 @@ public class RelativeNumericProperty extends Property implements Length {
                 assert false;
             }
         } else if (tu1 != 0.0) {
-            switch (operation) {
+            switch (this.operation) {
             case NEGATE:
                 return -tu1;
             case ABS:
@@ -274,24 +298,29 @@ public class RelativeNumericProperty extends Property implements Length {
 
     /**
      * Return a string represention of the expression. Only used for debugging.
+     *
      * @return the string representation.
      */
     @Override
     public String toString() {
-        switch (operation) {
-        case ADDITION: case SUBTRACTION:
-        case DIVIDE: case MULTIPLY: case MODULO:
-            return "(" + op1 + " " + operations.charAt(operation) + op2 + ")";
+        switch (this.operation) {
+        case ADDITION:
+        case SUBTRACTION:
+        case DIVIDE:
+        case MULTIPLY:
+        case MODULO:
+            return "(" + this.op1 + " " + operations.charAt(this.operation)
+                    + this.op2 + ")";
         case NEGATE:
-            return "-" + op1;
+            return "-" + this.op1;
         case MAX:
-            return "max(" + op1 + ", " + op2 + ")";
+            return "max(" + this.op1 + ", " + this.op2 + ")";
         case MIN:
-           return "min(" + op1 + ", " + op2 + ")";
+            return "min(" + this.op1 + ", " + this.op2 + ")";
         case ABS:
-           return "abs(" + op1 + ")";
+            return "abs(" + this.op1 + ")";
         default:
-            return "unknown operation " + operation;
+            return "unknown operation " + this.operation;
         }
     }
 
@@ -299,25 +328,25 @@ public class RelativeNumericProperty extends Property implements Length {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + dimension;
-        result = prime * result + CompareUtil.getHashCode(op1);
-        result = prime * result + CompareUtil.getHashCode(op2);
-        result = prime * result + operation;
+        result = prime * result + this.dimension;
+        result = prime * result + CompareUtil.getHashCode(this.op1);
+        result = prime * result + CompareUtil.getHashCode(this.op2);
+        result = prime * result + this.operation;
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
         if (!(obj instanceof RelativeNumericProperty)) {
             return false;
         }
-        RelativeNumericProperty other = (RelativeNumericProperty) obj;
-        return dimension == other.dimension
-                && CompareUtil.equal(op1, other.op1)
-                && CompareUtil.equal(op2, other.op2)
-                && operation == other.operation;
+        final RelativeNumericProperty other = (RelativeNumericProperty) obj;
+        return this.dimension == other.dimension
+                && CompareUtil.equal(this.op1, other.op1)
+                && CompareUtil.equal(this.op2, other.op2)
+                && this.operation == other.operation;
     }
 }

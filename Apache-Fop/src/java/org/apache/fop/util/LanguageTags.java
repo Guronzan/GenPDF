@@ -24,8 +24,8 @@ import java.util.Locale;
 /**
  * Provides utility methods for manipulating language tags compliant with the
  * RFC 3066 specification available at http://www.ietf.org/rfc/rfc3066.txt. A
- * typical language tag is a 2-letter language code sometimes followed by a country
- * code. For example: en, en-US.
+ * typical language tag is a 2-letter language code sometimes followed by a
+ * country code. For example: en, en-US.
  */
 public final class LanguageTags {
 
@@ -35,13 +35,14 @@ public final class LanguageTags {
     /**
      * Converts the given locale to an RFC 3066 compliant language tag.
      *
-     * @param locale a locale
+     * @param locale
+     *            a locale
      * @return the corresponding language tag
      */
-    public static String toLanguageTag(Locale locale) {
-        StringBuffer sb = new StringBuffer(5);
+    public static String toLanguageTag(final Locale locale) {
+        final StringBuffer sb = new StringBuffer(5);
         sb.append(locale.getLanguage());
-        String country = locale.getCountry();
+        final String country = locale.getCountry();
         if (country.length() > 0) {
             sb.append('-');
             sb.append(country);
@@ -52,11 +53,12 @@ public final class LanguageTags {
     /**
      * Converts an RFC 3066 compliant language tag to a locale.
      *
-     * @param languageTag language tag to convert
+     * @param languageTag
+     *            language tag to convert
      * @return the corresponding locale
      */
-    public static Locale toLocale(String languageTag) {
-        String[] parts = languageTag.split("-");
+    public static Locale toLocale(final String languageTag) {
+        final String[] parts = languageTag.split("-");
         if (parts.length == 1) {
             return new Locale(parts[0]);
         } else {

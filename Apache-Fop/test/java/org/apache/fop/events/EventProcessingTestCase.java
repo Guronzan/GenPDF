@@ -63,8 +63,8 @@ public class EventProcessingTestCase {
 
     public void doTest(final InputStream inStream, final String fopConf,
             final String expectedEventID, final String mimeType)
-            throws FOPException, TransformerException, IOException,
-            SAXException {
+                    throws FOPException, TransformerException, IOException,
+                    SAXException {
         final EventChecker eventChecker = new EventChecker(expectedEventID);
         if (fopConf != null) {
             this.fopFactory.setUserConfig(fopConf);
@@ -89,56 +89,56 @@ public class EventProcessingTestCase {
 
     @Test
     public void testArea() throws TransformerException, IOException,
-            SAXException {
+    SAXException {
         doTest("area.fo", AreaEventProducer.class.getName()
                 + ".unresolvedIDReferenceOnPage");
     }
 
     @Test
     public void testResource() throws FOPException, TransformerException,
-            IOException, SAXException {
+    IOException, SAXException {
         doTest("resource.fo", ResourceEventProducer.class.getName()
                 + ".imageNotFound");
     }
 
     @Test
     public void testValidation() throws FOPException, TransformerException,
-            IOException, SAXException {
+    IOException, SAXException {
         doTest("validation.fo", FOValidationEventProducer.class.getName()
                 + ".invalidPropertyValue");
     }
 
     @Test
     public void testTable() throws FOPException, TransformerException,
-            IOException, SAXException {
+    IOException, SAXException {
         doTest("table.fo", TableEventProducer.class.getName()
                 + ".noTablePaddingWithCollapsingBorderModel");
     }
 
     @Test
     public void testBlockLevel() throws FOPException, TransformerException,
-            IOException, SAXException {
+    IOException, SAXException {
         doTest("block-level.fo", BlockLevelEventProducer.class.getName()
                 + ".overconstrainedAdjustEndIndent");
     }
 
     @Test
     public void testInlineLevel() throws FOPException, TransformerException,
-            IOException, SAXException {
+    IOException, SAXException {
         doTest("inline-level.fo", InlineLevelEventProducer.class.getName()
                 + ".lineOverflows");
     }
 
     @Test
     public void testViewportIPDOverflow() throws FOPException,
-            TransformerException, IOException, SAXException {
+    TransformerException, IOException, SAXException {
         doTest("viewport-overflow.fo", BlockLevelEventProducer.class.getName()
                 + ".viewportIPDOverflow");
     }
 
     @Test
     public void testViewportBPDOverflow() throws FOPException,
-            TransformerException, IOException, SAXException {
+    TransformerException, IOException, SAXException {
         doTest("viewport-overflow.fo", BlockLevelEventProducer.class.getName()
                 + ".viewportBPDOverflow");
     }

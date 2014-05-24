@@ -23,8 +23,8 @@ import org.apache.fop.datatypes.Length;
 import org.apache.fop.fo.properties.LengthRangeProperty;
 
 /**
- * This interface provides access to properties necessary to calculate the size and positioning
- * of images and graphics inside a viewport.
+ * This interface provides access to properties necessary to calculate the size
+ * and positioning of images and graphics inside a viewport.
  */
 public interface GraphicsProperties {
 

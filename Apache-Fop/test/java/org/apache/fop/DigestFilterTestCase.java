@@ -19,8 +19,6 @@
 
 package org.apache.fop;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.NoSuchAlgorithmException;
@@ -35,6 +33,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * Test case for digesting SAX filter.
  *
@@ -45,11 +45,11 @@ public class DigestFilterTestCase {
 
     @Before
     public void setUp() {
-        parserFactory = SAXParserFactory.newInstance();
-        parserFactory.setNamespaceAware(true);
+        this.parserFactory = SAXParserFactory.newInstance();
+        this.parserFactory.setNamespaceAware(true);
     }
 
-    private boolean compareDigest(byte[] a, byte[] b) {
+    private boolean compareDigest(final byte[] a, final byte[] b) {
         if (a.length != b.length) {
             return false;
         }
@@ -61,98 +61,71 @@ public class DigestFilterTestCase {
         return true;
     }
 
-    private String digestToString(byte[] digest) {
-        StringBuffer buffer = new StringBuffer(2 * digest.length);
+    private String digestToString(final byte[] digest) {
+        final StringBuffer buffer = new StringBuffer(2 * digest.length);
         for (int i = 0; i < digest.length; i++) {
-            int val = digest[i];
-            int hi = (val >> 4) & 0xF;
-            int lo = val & 0xF;
-            if (hi < 10) {
-                buffer.append((char) (hi + 0x30));
-            } else {
-                buffer.append((char) (hi + 0x61 - 10));
-            }
-            if (lo < 10) {
-                buffer.append((char) (lo + 0x30));
-            } else {
-                buffer.append((char) (lo + 0x61 - 10));
-            }
+            final int val = digest[i];
+            final int hi = val >> 4 & 0xF;
+        final int lo = val & 0xF;
+        if (hi < 10) {
+            buffer.append((char) (hi + 0x30));
+        } else {
+            buffer.append((char) (hi + 0x61 - 10));
+        }
+        if (lo < 10) {
+            buffer.append((char) (lo + 0x30));
+        } else {
+            buffer.append((char) (lo + 0x61 - 10));
+        }
         }
         return buffer.toString();
     }
 
-    private byte[] runTest(String input)
-        throws
-            NoSuchAlgorithmException,
-            ParserConfigurationException,
-            SAXException,
-            IOException {
-        XMLReader parser = parserFactory.newSAXParser().getXMLReader();
-        DigestFilter digestFilter = new DigestFilter("MD5");
+    private byte[] runTest(final String input) throws NoSuchAlgorithmException,
+            ParserConfigurationException, SAXException, IOException {
+        final XMLReader parser = this.parserFactory.newSAXParser()
+                .getXMLReader();
+        final DigestFilter digestFilter = new DigestFilter("MD5");
         digestFilter.setParent(parser);
         digestFilter.setFeature("http://xml.org/sax/features/namespaces", true);
         parser.setContentHandler(digestFilter);
-        InputSource inputSource = new InputSource(new StringReader(input));
+        final InputSource inputSource = new InputSource(new StringReader(input));
         parser.parse(inputSource);
         return digestFilter.getDigestValue();
     }
 
     @Test
-    public final void testLineFeed()
-        throws
-            NoSuchAlgorithmException,
-            ParserConfigurationException,
-            SAXException,
-            IOException {
-        byte[] lfDigest = runTest("<a>\n</a>");
-        byte[] crlfDigest = runTest("<a>\r\n</a>");
-        assertTrue(
-            "LF: "
-                + digestToString(lfDigest)
-                + " CRLF: "
-                + digestToString(crlfDigest),
-            compareDigest(lfDigest, crlfDigest));
+    public final void testLineFeed() throws NoSuchAlgorithmException,
+            ParserConfigurationException, SAXException, IOException {
+        final byte[] lfDigest = runTest("<a>\n</a>");
+        final byte[] crlfDigest = runTest("<a>\r\n</a>");
+        assertTrue("LF: " + digestToString(lfDigest) + " CRLF: "
+                        + digestToString(crlfDigest),
+                compareDigest(lfDigest, crlfDigest));
     }
 
     @Test
-    public final void testAttributeOrder()
-        throws
-            NoSuchAlgorithmException,
-            ParserConfigurationException,
-            SAXException,
-            IOException {
-        byte[] sortDigest = runTest("<a a1='1' a2='2' a3='3'/>");
-        byte[] permutationDigest = runTest("<a a2='2' a3='3' a1='1'/>");
-        assertTrue(
-            "Sort: "
-                + digestToString(sortDigest)
-                + " permuted: "
-                + digestToString(permutationDigest),
-            compareDigest(sortDigest, permutationDigest));
-        byte[] reverseDigest = runTest("<a a3='3' a2='2' a1='1'/>");
-        assertTrue(
-            "Sort: "
-                + digestToString(sortDigest)
-                + " permuted: "
-                + digestToString(reverseDigest),
-            compareDigest(sortDigest, reverseDigest));
+    public final void testAttributeOrder() throws NoSuchAlgorithmException,
+            ParserConfigurationException, SAXException, IOException {
+        final byte[] sortDigest = runTest("<a a1='1' a2='2' a3='3'/>");
+        final byte[] permutationDigest = runTest("<a a2='2' a3='3' a1='1'/>");
+        assertTrue("Sort: " + digestToString(sortDigest) + " permuted: "
+                        + digestToString(permutationDigest),
+                compareDigest(sortDigest, permutationDigest));
+        final byte[] reverseDigest = runTest("<a a3='3' a2='2' a1='1'/>");
+        assertTrue("Sort: " + digestToString(sortDigest) + " permuted: "
+                        + digestToString(reverseDigest),
+                compareDigest(sortDigest, reverseDigest));
     }
 
     @Test
-    public final void testNamespacePrefix()
-        throws
-            NoSuchAlgorithmException,
-            ParserConfigurationException,
-            SAXException,
-            IOException {
-        byte[] prefix1Digest = runTest("<a:a xmlns:a='foo'/>");
-        byte[] prefix2Digest = runTest("<b:a xmlns:b='foo'/>");
-        assertTrue(
-            "prefix1: "
-                + digestToString(prefix1Digest)
-                + " prefix2: "
-                + digestToString(prefix2Digest),
-            compareDigest(prefix1Digest, prefix2Digest));
+    public final void testNamespacePrefix() throws NoSuchAlgorithmException,
+            ParserConfigurationException, SAXException, IOException {
+        final byte[] prefix1Digest = runTest("<a:a xmlns:a='foo'/>");
+        final byte[] prefix2Digest = runTest("<b:a xmlns:b='foo'/>");
+        assertTrue("prefix1: " + digestToString(prefix1Digest) + " prefix2: "
+                        + digestToString(prefix2Digest),
+                compareDigest(prefix1Digest, prefix2Digest));
     }
 
 }

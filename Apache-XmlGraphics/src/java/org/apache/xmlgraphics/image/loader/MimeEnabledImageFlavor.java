@@ -20,23 +20,29 @@
 package org.apache.xmlgraphics.image.loader;
 
 /**
- * Special image flavor subclass which enables the restriction to a particular MIME type.
+ * Special image flavor subclass which enables the restriction to a particular
+ * MIME type.
  */
 public class MimeEnabledImageFlavor extends RefinedImageFlavor {
 
-    private String mime;
+    private final String mime;
 
     /**
      * Constructs a new image flavor.
-     * @param parentFlavor the parent image flavor
-     * @param mime a MIME type refining the parent image flavor
+     * 
+     * @param parentFlavor
+     *            the parent image flavor
+     * @param mime
+     *            a MIME type refining the parent image flavor
      */
-    public MimeEnabledImageFlavor(ImageFlavor parentFlavor, String mime) {
+    public MimeEnabledImageFlavor(final ImageFlavor parentFlavor,
+            final String mime) {
         super(mime + ";" + parentFlavor.getName(), parentFlavor);
         this.mime = mime;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return this.mime;
     }

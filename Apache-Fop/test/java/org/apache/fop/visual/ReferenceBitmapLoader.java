@@ -22,45 +22,57 @@ package org.apache.fop.visual;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.avalon.framework.configuration.Configurable;
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 
 /**
- * BitmapProducer implementation that simply loads preproduced reference bitmaps from a
- * certain directory.
+ * BitmapProducer implementation that simply loads preproduced reference bitmaps
+ * from a certain directory.
  * <p>
  * Here's what the configuration element looks like for the class:
  * <p>
+ *
  * <pre>
  * <producer classname="org.apache.fop.visual.ReferenceBitmapLoader">
  *   <directory>C:/Temp/ref-bitmaps</directory>
  * </producer>
  * </pre>
  */
-public class ReferenceBitmapLoader extends AbstractBitmapProducer implements Configurable {
+@Slf4j
+public class ReferenceBitmapLoader extends AbstractBitmapProducer implements
+Configurable {
 
     private File bitmapDirectory;
 
     /** @see org.apache.avalon.framework.configuration.Configurable */
-    public void configure(Configuration cfg) throws ConfigurationException {
-        this.bitmapDirectory = new File(cfg.getChild("directory").getValue(null));
-        if (!bitmapDirectory.exists()) {
-            throw new ConfigurationException("Directory could not be found: " + bitmapDirectory);
+    @Override
+    public void configure(final Configuration cfg)
+            throws ConfigurationException {
+        this.bitmapDirectory = new File(cfg.getChild("directory")
+                .getValue(null));
+        if (!this.bitmapDirectory.exists()) {
+            throw new ConfigurationException("Directory could not be found: "
+                    + this.bitmapDirectory);
         }
     }
 
     /** @see org.apache.fop.visual.BitmapProducer */
-    public BufferedImage produce(File src, int index, ProducerContext context) {
+    @Override
+    public BufferedImage produce(final File src, final int index,
+            final ProducerContext context) {
         try {
-            File bitmap = new File(bitmapDirectory, src.getName() + ".png");
+            final File bitmap = new File(this.bitmapDirectory, src.getName()
+                    + ".png");
             if (bitmap.exists()) {
                 return BitmapComparator.getImage(bitmap);
             } else {
                 return null;
             }
-        } catch (Exception e) {
-            log.error(e);
+        } catch (final Exception e) {
+            log.error(e.getMessage(), e);
             return null;
         }
     }

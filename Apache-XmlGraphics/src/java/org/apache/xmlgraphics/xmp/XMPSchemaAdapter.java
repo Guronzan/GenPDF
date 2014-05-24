@@ -26,20 +26,24 @@ import org.apache.xmlgraphics.util.DateFormatUtil;
 import org.apache.xmlgraphics.util.QName;
 
 /**
- * Base class for schema-specific adapters that provide user-friendly access to XMP values.
+ * Base class for schema-specific adapters that provide user-friendly access to
+ * XMP values.
  */
 public class XMPSchemaAdapter {
 
     /** the Metadata object this schema instance operates on */
     protected Metadata meta;
-    private XMPSchema schema;
+    private final XMPSchema schema;
 
     /**
      * Main constructor.
-     * @param meta the Metadata object to wrao
-     * @param schema the XMP schema for which this adapter was written
+     * 
+     * @param meta
+     *            the Metadata object to wrao
+     * @param schema
+     *            the XMP schema for which this adapter was written
      */
-    public XMPSchemaAdapter(Metadata meta, XMPSchema schema) {
+    public XMPSchemaAdapter(final Metadata meta, final XMPSchema schema) {
         if (meta == null) {
             throw new NullPointerException("Parameter meta must not be null");
         }
@@ -57,20 +61,28 @@ public class XMPSchemaAdapter {
 
     /**
      * Returns the QName for a given property
-     * @param propName the property name
+     * 
+     * @param propName
+     *            the property name
      * @return the resulting QName
      */
-    protected QName getQName(String propName) {
-        return new QName(getSchema().getNamespace(), getSchema().getPreferredPrefix(), propName);
+    protected QName getQName(final String propName) {
+        return new QName(getSchema().getNamespace(), getSchema()
+                .getPreferredPrefix(), propName);
     }
 
     /**
      * Adds a String value to an array.
-     * @param propName the property name
-     * @param value the String value
-     * @param arrayType the type of array to operate on
+     * 
+     * @param propName
+     *            the property name
+     * @param value
+     *            the String value
+     * @param arrayType
+     *            the type of array to operate on
      */
-    private void addStringToArray(String propName, String value, XMPArrayType arrayType) {
+    private void addStringToArray(final String propName, final String value,
+            final XMPArrayType arrayType) {
         if (value == null || value.length() == 0) {
             throw new IllegalArgumentException("Value must not be empty");
         }
@@ -79,19 +91,24 @@ public class XMPSchemaAdapter {
 
     /**
      * Adds a Object value to an array.
-     * @param propName the property name
-     * @param value the Object value
-     * @param arrayType the type of array to operate on
+     * 
+     * @param propName
+     *            the property name
+     * @param value
+     *            the Object value
+     * @param arrayType
+     *            the type of array to operate on
      */
-    protected void addObjectToArray(String propName, Object value, XMPArrayType arrayType) {
+    protected void addObjectToArray(final String propName, final Object value,
+            final XMPArrayType arrayType) {
         if (value == null) {
             throw new IllegalArgumentException("Value must not be null");
         }
-        QName name = getQName(propName);
-        XMPProperty prop = meta.getProperty(name);
+        final QName name = getQName(propName);
+        XMPProperty prop = this.meta.getProperty(name);
         if (prop == null) {
             prop = new XMPProperty(name, value);
-            meta.setProperty(prop);
+            this.meta.setProperty(prop);
         } else {
             prop.convertSimpleValueToArray(arrayType);
             prop.getArrayValue().add(value);
@@ -100,28 +117,32 @@ public class XMPSchemaAdapter {
 
     /**
      * Removes a value from an array.
-     * @param propName the name of the property
-     * @param value the value to be removed
+     * 
+     * @param propName
+     *            the name of the property
+     * @param value
+     *            the value to be removed
      * @return true if the value was removed, false if it was not found
      */
-    protected boolean removeStringFromArray(String propName, String value) {
+    protected boolean removeStringFromArray(final String propName,
+            final String value) {
         if (value == null) {
             return false;
         }
-        QName name = getQName(propName);
-        XMPProperty prop = meta.getProperty(name);
+        final QName name = getQName(propName);
+        final XMPProperty prop = this.meta.getProperty(name);
         if (prop != null) {
             if (prop.isArray()) {
-                XMPArray arr = prop.getArrayValue();
-                boolean removed = arr.remove(value);
+                final XMPArray arr = prop.getArrayValue();
+                final boolean removed = arr.remove(value);
                 if (arr.isEmpty()) {
-                    meta.removeProperty(name);
+                    this.meta.removeProperty(name);
                 }
                 return removed;
             } else {
-                Object currentValue = prop.getValue();
+                final Object currentValue = prop.getValue();
                 if (value.equals(currentValue)) {
-                    meta.removeProperty(name);
+                    this.meta.removeProperty(name);
                     return true;
                 }
             }
@@ -131,68 +152,87 @@ public class XMPSchemaAdapter {
 
     /**
      * Adds a String value to an ordered array.
-     * @param propName the property name
-     * @param value the String value
+     * 
+     * @param propName
+     *            the property name
+     * @param value
+     *            the String value
      */
-    protected void addStringToSeq(String propName, String value) {
+    protected void addStringToSeq(final String propName, final String value) {
         addStringToArray(propName, value, XMPArrayType.SEQ);
     }
 
     /**
      * Adds a String value to an unordered array.
-     * @param propName the property name
-     * @param value the String value
+     * 
+     * @param propName
+     *            the property name
+     * @param value
+     *            the String value
      */
-    protected void addStringToBag(String propName, String value) {
+    protected void addStringToBag(final String propName, final String value) {
         addStringToArray(propName, value, XMPArrayType.BAG);
     }
 
     /**
      * Formats a Date using ISO 8601 format in the default time zone.
-     * @param dt the date
+     * 
+     * @param dt
+     *            the date
      * @return the formatted date
      */
-    public static String formatISO8601Date(Date dt) {
+    public static String formatISO8601Date(final Date dt) {
         return formatISO8601Date(dt, TimeZone.getDefault());
     }
 
     /**
      * Formats a Date using ISO 8601 format in the given time zone.
-     * @param dt the date
-     * @param tz the time zone
+     * 
+     * @param dt
+     *            the date
+     * @param tz
+     *            the time zone
      * @return the formatted date
      */
-    public static String formatISO8601Date(Date dt, TimeZone tz) {
+    public static String formatISO8601Date(final Date dt, final TimeZone tz) {
         return DateFormatUtil.formatISO8601(dt, tz);
     }
 
     /**
      * Adds a date value to an ordered array.
-     * @param propName the property name
-     * @param value the date value
+     * 
+     * @param propName
+     *            the property name
+     * @param value
+     *            the date value
      */
-    protected void addDateToSeq(String propName, Date value) {
-        String dt = formatISO8601Date(value);
+    protected void addDateToSeq(final String propName, final Date value) {
+        final String dt = formatISO8601Date(value);
         addStringToSeq(propName, dt);
     }
 
     /**
      * Set a date value.
-     * @param propName the property name
-     * @param value the date value
+     * 
+     * @param propName
+     *            the property name
+     * @param value
+     *            the date value
      */
-    protected void setDateValue(String propName, Date value) {
-        String dt = formatISO8601Date(value);
+    protected void setDateValue(final String propName, final Date value) {
+        final String dt = formatISO8601Date(value);
         setValue(propName, dt);
     }
 
     /**
      * Returns a date value.
-     * @param propName the property name
+     * 
+     * @param propName
+     *            the property name
      * @return the date value or null if the value is not set
      */
-    protected Date getDateValue(String propName) {
-        String dt = getValue(propName);
+    protected Date getDateValue(final String propName) {
+        final String dt = getValue(propName);
         if (dt == null) {
             return null;
         } else {
@@ -202,22 +242,27 @@ public class XMPSchemaAdapter {
 
     /**
      * Sets a language-dependent value.
-     * @param propName the property name
-     * @param lang the language ("x-default" or null for the default language)
-     * @param value the value
+     * 
+     * @param propName
+     *            the property name
+     * @param lang
+     *            the language ("x-default" or null for the default language)
+     * @param value
+     *            the value
      */
-    protected void setLangAlt(String propName, String lang, String value) {
+    protected void setLangAlt(final String propName, String lang,
+            final String value) {
         if (lang == null) {
             lang = XMPConstants.DEFAULT_LANGUAGE;
         }
-        QName name = getQName(propName);
-        XMPProperty prop = meta.getProperty(name);
+        final QName name = getQName(propName);
+        XMPProperty prop = this.meta.getProperty(name);
         XMPArray array;
         if (prop == null) {
             if (value != null && value.length() > 0) {
                 prop = new XMPProperty(name, value);
                 prop.setXMLLang(lang);
-                meta.setProperty(prop);
+                this.meta.setProperty(prop);
             }
         } else {
             prop.convertSimpleValueToArray(XMPArrayType.ALT);
@@ -227,7 +272,7 @@ public class XMPSchemaAdapter {
                 array.add(value, lang);
             } else {
                 if (array.isEmpty()) {
-                    meta.removeProperty(name);
+                    this.meta.removeProperty(name);
                 }
             }
         }
@@ -235,34 +280,39 @@ public class XMPSchemaAdapter {
 
     /**
      * Sets a simple value.
-     * @param propName the property name
-     * @param value the value
+     * 
+     * @param propName
+     *            the property name
+     * @param value
+     *            the value
      */
-    protected void setValue(String propName, String value) {
-        QName name = getQName(propName);
-        XMPProperty prop = meta.getProperty(name);
+    protected void setValue(final String propName, final String value) {
+        final QName name = getQName(propName);
+        XMPProperty prop = this.meta.getProperty(name);
         if (value != null && value.length() > 0) {
             if (prop != null) {
                 prop.setValue(value);
             } else {
                 prop = new XMPProperty(name, value);
-                meta.setProperty(prop);
+                this.meta.setProperty(prop);
             }
         } else {
             if (prop != null) {
-                meta.removeProperty(name);
+                this.meta.removeProperty(name);
             }
         }
     }
 
     /**
      * Returns a simple value.
-     * @param propName the property name
+     * 
+     * @param propName
+     *            the property name
      * @return the requested value or null if it isn't set
      */
-    protected String getValue(String propName) {
-        QName name = getQName(propName);
-        XMPProperty prop = meta.getProperty(name);
+    protected String getValue(final String propName) {
+        final QName name = getQName(propName);
+        final XMPProperty prop = this.meta.getProperty(name);
         if (prop == null) {
             return null;
         } else {
@@ -272,26 +322,29 @@ public class XMPSchemaAdapter {
 
     /**
      * Removes a language-dependent value from an alternative array.
-     * @param lang the language ("x-default" for the default language)
-     * @param propName the property name
+     * 
+     * @param lang
+     *            the language ("x-default" for the default language)
+     * @param propName
+     *            the property name
      * @return the removed value
      */
-    protected String removeLangAlt(String lang, String propName) {
-        QName name = getQName(propName);
-        XMPProperty prop = meta.getProperty(name);
+    protected String removeLangAlt(final String lang, final String propName) {
+        final QName name = getQName(propName);
+        final XMPProperty prop = this.meta.getProperty(name);
         XMPArray array;
         if (prop != null && lang != null) {
             array = prop.getArrayValue();
             if (array != null) {
-                String removed = array.removeLangValue(lang);
+                final String removed = array.removeLangValue(lang);
                 if (array.isEmpty()) {
-                    meta.removeProperty(name);
+                    this.meta.removeProperty(name);
                 }
                 return removed;
             } else {
-                String removed = prop.getValue().toString();
+                final String removed = prop.getValue().toString();
                 if (lang.equals(prop.getXMLLang())) {
-                    meta.removeProperty(name);
+                    this.meta.removeProperty(name);
                 }
                 return removed;
             }
@@ -300,14 +353,17 @@ public class XMPSchemaAdapter {
     }
 
     /**
-     * Returns a language-dependent value. If the value in the requested language is not available
-     * the value for the default language is returned.
-     * @param lang the language ("x-default" for the default language)
-     * @param propName the property name
+     * Returns a language-dependent value. If the value in the requested
+     * language is not available the value for the default language is returned.
+     * 
+     * @param lang
+     *            the language ("x-default" for the default language)
+     * @param propName
+     *            the property name
      * @return the requested value
      */
-    protected String getLangAlt(String lang, String propName) {
-        XMPProperty prop = meta.getProperty(getQName(propName));
+    protected String getLangAlt(final String lang, final String propName) {
+        final XMPProperty prop = this.meta.getProperty(getQName(propName));
         XMPArray array;
         if (prop == null) {
             return null;
@@ -323,31 +379,36 @@ public class XMPSchemaAdapter {
 
     /**
      * Finds a structure that matches a given qualifier.
-     * @param propName the property name
-     * @param qualifier the qualifier
-     * @param qualifierValue the qualifier value
-     * @return the structure if a match was found (or null if no match was found)
+     * 
+     * @param propName
+     *            the property name
+     * @param qualifier
+     *            the qualifier
+     * @param qualifierValue
+     *            the qualifier value
+     * @return the structure if a match was found (or null if no match was
+     *         found)
      */
-    protected PropertyAccess findQualifiedStructure(String propName,
-            QName qualifier, String qualifierValue) {
-        XMPProperty prop = meta.getProperty(getQName(propName));
+    protected PropertyAccess findQualifiedStructure(final String propName,
+            final QName qualifier, final String qualifierValue) {
+        final XMPProperty prop = this.meta.getProperty(getQName(propName));
         XMPArray array;
         if (prop != null) {
             array = prop.getArrayValue();
             if (array != null) {
                 for (int i = 0, c = array.getSize(); i < c; i++) {
-                    Object value = array.getValue(i);
+                    final Object value = array.getValue(i);
                     if (value instanceof PropertyAccess) {
-                        PropertyAccess pa = (PropertyAccess)value;
-                        XMPProperty q = pa.getProperty(qualifier);
+                        final PropertyAccess pa = (PropertyAccess) value;
+                        final XMPProperty q = pa.getProperty(qualifier);
                         if (q != null && q.getValue().equals(qualifierValue)) {
                             return pa;
                         }
                     }
                 }
             } else if (prop.getStructureValue() != null) {
-                PropertyAccess pa = prop.getStructureValue();
-                XMPProperty q = pa.getProperty(qualifier);
+                final PropertyAccess pa = prop.getStructureValue();
+                final XMPProperty q = pa.getProperty(qualifier);
                 if (q != null && q.getValue().equals(qualifierValue)) {
                     return pa;
                 }
@@ -358,16 +419,21 @@ public class XMPSchemaAdapter {
 
     /**
      * Finds a value that matches a given qualifier.
-     * @param propName the property name
-     * @param qualifier the qualifier
-     * @param qualifierValue the qualifier value
+     * 
+     * @param propName
+     *            the property name
+     * @param qualifier
+     *            the qualifier
+     * @param qualifierValue
+     *            the qualifier value
      * @return the value if a match was found (or null if no match was found)
      */
-    protected Object findQualifiedValue(String propName,
-            QName qualifier, String qualifierValue) {
-        PropertyAccess pa = findQualifiedStructure(propName, qualifier, qualifierValue);
+    protected Object findQualifiedValue(final String propName,
+            final QName qualifier, final String qualifierValue) {
+        final PropertyAccess pa = findQualifiedStructure(propName, qualifier,
+                qualifierValue);
         if (pa != null) {
-            XMPProperty rdfValue = pa.getValueProperty();
+            final XMPProperty rdfValue = pa.getValueProperty();
             if (rdfValue != null) {
                 return rdfValue.getValue();
             }
@@ -377,38 +443,43 @@ public class XMPSchemaAdapter {
 
     /**
      * Returns an object array representation of the property's values.
-     * @param propName the property name
+     * 
+     * @param propName
+     *            the property name
      * @return the object array or null if the property isn't set
      */
-    protected Object[] getObjectArray(String propName) {
-        XMPProperty prop = meta.getProperty(getQName(propName));
+    protected Object[] getObjectArray(final String propName) {
+        final XMPProperty prop = this.meta.getProperty(getQName(propName));
         if (prop == null) {
             return null;
         }
-        XMPArray array = prop.getArrayValue();
+        final XMPArray array = prop.getArrayValue();
         if (array != null) {
             return array.toObjectArray();
         } else {
-            return new Object[] {prop.getValue()};
+            return new Object[] { prop.getValue() };
         }
     }
 
     /**
-     * Returns a String array representation of the property's values. Complex values are converted
-     * to Strings using the toString() method.
-     * @param propName the property name
+     * Returns a String array representation of the property's values. Complex
+     * values are converted to Strings using the toString() method.
+     * 
+     * @param propName
+     *            the property name
      * @return the String array or null if the property isn't set
      */
-    protected String[] getStringArray(String propName) {
-        Object[] arr = getObjectArray(propName);
+    protected String[] getStringArray(final String propName) {
+        final Object[] arr = getObjectArray(propName);
         if (arr == null) {
             return null;
         }
-        String[] res = new String[arr.length];
+        final String[] res = new String[arr.length];
         for (int i = 0, c = res.length; i < c; i++) {
-            Object o = arr[i];
+            final Object o = arr[i];
             if (o instanceof PropertyAccess) {
-                XMPProperty prop = ((PropertyAccess)o).getValueProperty();
+                final XMPProperty prop = ((PropertyAccess) o)
+                        .getValueProperty();
                 res[i] = prop.getValue().toString();
             } else {
                 res[i] = o.toString();
@@ -419,17 +490,19 @@ public class XMPSchemaAdapter {
 
     /**
      * Returns a Date array representation of the property's values.
-     * @param propName the property name
+     * 
+     * @param propName
+     *            the property name
      * @return the Date array or null if the property isn't set
      */
-    protected Date[] getDateArray(String propName) {
-        Object[] arr = getObjectArray(propName);
+    protected Date[] getDateArray(final String propName) {
+        final Object[] arr = getObjectArray(propName);
         if (arr == null) {
             return null;
         }
-        Date[] res = new Date[arr.length];
+        final Date[] res = new Date[arr.length];
         for (int i = 0, c = res.length; i < c; i++) {
-            Object obj = arr[i];
+            final Object obj = arr[i];
             if (obj instanceof Date) {
                 res[i] = (Date) ((Date) obj).clone();
             } else {
@@ -438,6 +511,5 @@ public class XMPSchemaAdapter {
         }
         return res;
     }
-
 
 }

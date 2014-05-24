@@ -22,12 +22,12 @@ package org.apache.xmlgraphics.util.i18n;
 import java.util.Locale;
 
 /**
- * This class represents a group of ExtendedLocalizable objects which
- * have a shared default locale.
+ * This class represents a group of ExtendedLocalizable objects which have a
+ * shared default locale.
  *
  * @version $Id: LocaleGroup.java 1345683 2012-06-03 14:50:33Z gadams $
  *
- * Originally authored by Stephane Hillion.
+ *          Originally authored by Stephane Hillion.
  */
 public class LocaleGroup {
     /**
@@ -41,17 +41,17 @@ public class LocaleGroup {
     protected Locale locale;
 
     /**
-     * Sets the default locale for all the instances of ExtendedLocalizable
-     * in this group.
+     * Sets the default locale for all the instances of ExtendedLocalizable in
+     * this group.
      */
-    public void setLocale(Locale l) {
-        locale = l;
+    public void setLocale(final Locale l) {
+        this.locale = l;
     }
 
     /**
      * Gets the current default locale in this group, or null.
      */
     public Locale getLocale() {
-        return locale;
+        return this.locale;
     }
 }

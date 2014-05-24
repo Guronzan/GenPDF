@@ -33,46 +33,60 @@ public interface PDFEventProducer extends EventProducer {
         /**
          * Utility classes should not have a public or default constructor.
          */
-        private Provider() { }
+        private Provider() {
+        }
 
         /**
          * Returns an event producer.
-         * @param broadcaster the event broadcaster to use
+         * 
+         * @param broadcaster
+         *            the event broadcaster to use
          * @return the event producer
          */
-        public static PDFEventProducer get(EventBroadcaster broadcaster) {
-            return (PDFEventProducer)broadcaster.getEventProducerFor(
-                    PDFEventProducer.class);
+        public static PDFEventProducer get(final EventBroadcaster broadcaster) {
+            return (PDFEventProducer) broadcaster
+                    .getEventProducerFor(PDFEventProducer.class);
         }
     }
 
     /**
      * Some link targets haven't been fully resolved.
-     * @param source the event source
-     * @param count the number of unresolved links
+     * 
+     * @param source
+     *            the event source
+     * @param count
+     *            the number of unresolved links
      * @event.severity WARN
      */
-    void nonFullyResolvedLinkTargets(Object source, int count);
-
+    void nonFullyResolvedLinkTargets(final Object source, final int count);
 
     /**
      * Custom structure type is not standard as per the PDF reference.
      *
-     * @param source the event source
-     * @param fo the local name of the formatting object having the custom type
-     * @param type custom structure type
-     * @param fallback default structure type used as a fallback
+     * @param source
+     *            the event source
+     * @param fo
+     *            the local name of the formatting object having the custom type
+     * @param type
+     *            custom structure type
+     * @param fallback
+     *            default structure type used as a fallback
      * @event.severity WARN
      */
-    void nonStandardStructureType(Object source, String fo, String type, String fallback);
+    void nonStandardStructureType(final Object source, final String fo,
+            final String type, final String fallback);
 
     /**
      * The encryption length must be a multiple of 8 between 40 and 128.
      *
-     * @param source the event source
-     * @param originalValue requested encryption length
-     * @param correctedValue corrected encryption length
+     * @param source
+     *            the event source
+     * @param originalValue
+     *            requested encryption length
+     * @param correctedValue
+     *            corrected encryption length
      * @event.severity WARN
      */
-    void incorrectEncryptionLength(Object source, int originalValue, int correctedValue);
+    void incorrectEncryptionLength(final Object source,
+            final int originalValue, final int correctedValue);
 }

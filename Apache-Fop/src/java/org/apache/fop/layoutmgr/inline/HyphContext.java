@@ -20,30 +20,31 @@
 package org.apache.fop.layoutmgr.inline;
 
 /**
- * This class is used to pass information to the getNextBreakPoss()
- * method concerning hyphenation. A reference to an instance of the
- * class is contained in the LayoutContext object passed to each
- * LayoutManager. It contains information concerning the hyphenation
- * points in a word and the how many of those have previously been
- * processed by a Layout Manager to generate size information.
+ * This class is used to pass information to the getNextBreakPoss() method
+ * concerning hyphenation. A reference to an instance of the class is contained
+ * in the LayoutContext object passed to each LayoutManager. It contains
+ * information concerning the hyphenation points in a word and the how many of
+ * those have previously been processed by a Layout Manager to generate size
+ * information.
  */
 public class HyphContext {
-    private int[] hyphPoints;
+    private final int[] hyphPoints;
     private int currentOffset = 0;
     private int currentIndex = 0;
 
     /**
-     * @param hyphPoints number of hyphenation points
+     * @param hyphPoints
+     *            number of hyphenation points
      */
-    public HyphContext(int[] hyphPoints) {
+    public HyphContext(final int[] hyphPoints) {
         this.hyphPoints = hyphPoints;
     }
 
     /** @return next hyphenation point */
     public int getNextHyphPoint() {
-        for (; currentIndex < hyphPoints.length; currentIndex++) {
-            if (hyphPoints[currentIndex] > currentOffset) {
-                return (hyphPoints[currentIndex] - currentOffset);
+        for (; this.currentIndex < this.hyphPoints.length; this.currentIndex++) {
+            if (this.hyphPoints[this.currentIndex] > this.currentOffset) {
+                return this.hyphPoints[this.currentIndex] - this.currentOffset;
             }
         }
         return -1; // AT END!
@@ -51,16 +52,19 @@ public class HyphContext {
 
     /** @return true if more hyphenation points */
     public boolean hasMoreHyphPoints() {
-        for (; currentIndex < hyphPoints.length; currentIndex++) {
-            if (hyphPoints[currentIndex] > currentOffset) {
+        for (; this.currentIndex < this.hyphPoints.length; this.currentIndex++) {
+            if (this.hyphPoints[this.currentIndex] > this.currentOffset) {
                 return true;
             }
         }
         return false;
     }
 
-    /** @param iCharsProcessed amount to extend offset */
-    public void updateOffset(int iCharsProcessed) {
-        currentOffset += iCharsProcessed;
+    /**
+     * @param iCharsProcessed
+     *            amount to extend offset
+     */
+    public void updateOffset(final int iCharsProcessed) {
+        this.currentOffset += iCharsProcessed;
     }
 }

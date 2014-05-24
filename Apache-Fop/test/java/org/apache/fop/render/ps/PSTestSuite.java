@@ -27,9 +27,6 @@ import org.junit.runners.Suite.SuiteClasses;
  * Test suite for FOP's PostScript output.
  */
 @RunWith(Suite.class)
-@SuiteClasses({
-    ImageHandlingTestCase.class,
-    ResourceOptimizationTestCase.class
-})
+@SuiteClasses({ ImageHandlingTestCase.class, ResourceOptimizationTestCase.class })
 public class PSTestSuite {
 }

@@ -27,9 +27,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * Test suite for basic functionality of FOP's transcoders.
  */
 @RunWith(Suite.class)
-@SuiteClasses({
-    BasicPDFTranscoderTestCase.class,
-    BasicPSTranscoderTestCase.class
-})
+@SuiteClasses({ BasicPDFTranscoderTestCase.class,
+        BasicPSTranscoderTestCase.class })
 public class BasicTranscoderTestSuite {
 }

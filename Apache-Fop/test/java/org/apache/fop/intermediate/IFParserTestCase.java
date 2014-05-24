@@ -28,11 +28,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamResult;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.w3c.dom.Document;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.fonts.FontInfo;
@@ -41,57 +37,73 @@ import org.apache.fop.render.intermediate.IFContext;
 import org.apache.fop.render.intermediate.IFDocumentHandler;
 import org.apache.fop.render.intermediate.IFParser;
 import org.apache.fop.render.intermediate.IFSerializer;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.w3c.dom.Document;
 
 /**
  * Tests the intermediate format parser.
  */
 @RunWith(Parameterized.class)
+@Slf4j
 public class IFParserTestCase extends AbstractIFTest {
 
-    /** Set this to true to get the correspondence between test number and test file. */
+    /**
+     * Set this to true to get the correspondence between test number and test
+     * file.
+     */
     private static final boolean DEBUG = false;
 
     /**
      * Gets the parameters for this test
      *
      * @return a collection of file arrays containing the test files
-     * @throws IOException if an error occurs when trying to read the test files
+     * @throws IOException
+     *             if an error occurs when trying to read the test files
      */
     @Parameters
     public static Collection<File[]> getParameters() throws IOException {
-        Collection<File[]> testFiles = LayoutEngineTestUtils.getLayoutTestFiles();
+        final Collection<File[]> testFiles = LayoutEngineTestUtils
+                .getLayoutTestFiles();
         if (DEBUG) {
             printFiles(testFiles);
         }
         return testFiles;
     }
 
-    private static void printFiles(Collection<File[]> files) {
+    private static void printFiles(final Collection<File[]> files) {
         int index = 0;
-        for (File[] file : files) {
+        for (final File[] file : files) {
             assert file.length == 1;
-            System.out.println(String.format("%3d %s", index++, file[0]));
+            log.info(String.format("%3d %s", index++, file[0]));
         }
     }
 
     /**
      * Constructor for the test suite that is used for each test file.
-     * @param testFile the test file to run
-     * @throws IOException if an I/O error occurs while loading the test case
+     *
+     * @param testFile
+     *            the test file to run
+     * @throws IOException
+     *             if an I/O error occurs while loading the test case
      */
-    public IFParserTestCase(File testFile) throws IOException {
+    public IFParserTestCase(final File testFile) throws IOException {
         super(testFile);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void parseAndRender(Source src, OutputStream out) throws Exception {
-        IFParser parser = new IFParser();
+    protected void parseAndRender(final Source src, final OutputStream out)
+            throws Exception {
+        final IFParser parser = new IFParser();
 
-        FOUserAgent userAgent = createUserAgent();
+        final FOUserAgent userAgent = createUserAgent();
 
-        IFDocumentHandler documentHandler = userAgent.getRendererFactory().createDocumentHandler(
-                userAgent, getTargetMIME());
+        final IFDocumentHandler documentHandler = userAgent
+                .getRendererFactory().createDocumentHandler(userAgent,
+                        getTargetMIME());
         documentHandler.setResult(new StreamResult(out));
         documentHandler.setDefaultFontInfo(new FontInfo());
         parser.parse(src, documentHandler, userAgent);
@@ -99,19 +111,20 @@ public class IFParserTestCase extends AbstractIFTest {
 
     /** {@inheritDoc} */
     @Override
-    protected Document parseAndRenderToIntermediateFormat(Source src) throws Exception {
-        IFParser parser = new IFParser();
+    protected Document parseAndRenderToIntermediateFormat(final Source src)
+            throws Exception {
+        final IFParser parser = new IFParser();
 
-        FOUserAgent userAgent = createUserAgent();
+        final FOUserAgent userAgent = createUserAgent();
 
-        IFSerializer serializer = new IFSerializer();
+        final IFSerializer serializer = new IFSerializer();
         serializer.setContext(new IFContext(userAgent));
-        DOMResult domResult = new DOMResult();
+        final DOMResult domResult = new DOMResult();
         serializer.setResult(domResult);
 
         parser.parse(src, serializer, userAgent);
 
-        return (Document)domResult.getNode();
+        return (Document) domResult.getNode();
     }
 
     @Override
@@ -120,9 +133,8 @@ public class IFParserTestCase extends AbstractIFTest {
         try {
             testParserToIntermediateFormat();
             testParserToPDF();
-        } catch (Exception e) {
-            org.apache.commons.logging.LogFactory.getLog(this.getClass()).error(
-                    "Error on " + testFile.getName());
+        } catch (final Exception e) {
+            log.error("Error on " + this.testFile.getName());
             throw e;
         }
     }

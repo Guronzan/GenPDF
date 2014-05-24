@@ -19,7 +19,6 @@
 
 package org.apache.fop.afp;
 
-
 /**
  * A list of parameters associated with an image
  */
@@ -46,18 +45,20 @@ public class AFPImageObjectInfo extends AFPDataObjectInfo {
     /**
      * Sets the number of bits per pixel
      *
-     * @param bitsPerPixel the number of bits per pixel
+     * @param bitsPerPixel
+     *            the number of bits per pixel
      */
-    public void setBitsPerPixel(int bitsPerPixel) {
+    public void setBitsPerPixel(final int bitsPerPixel) {
         this.bitsPerPixel = bitsPerPixel;
     }
 
     /**
      * Sets if this image is color
      *
-     * @param color true if this is a color image
+     * @param color
+     *            true if this is a color image
      */
-    public void setColor(boolean color) {
+    public void setColor(final boolean color) {
         this.color = color;
     }
 
@@ -67,7 +68,7 @@ public class AFPImageObjectInfo extends AFPDataObjectInfo {
      * @return the number of bits used per pixel
      */
     public int getBitsPerPixel() {
-        return bitsPerPixel;
+        return this.bitsPerPixel;
     }
 
     /**
@@ -76,7 +77,7 @@ public class AFPImageObjectInfo extends AFPDataObjectInfo {
      * @return true if this is a color image
      */
     public boolean isColor() {
-        return color;
+        return this.color;
     }
 
     /**
@@ -85,7 +86,7 @@ public class AFPImageObjectInfo extends AFPDataObjectInfo {
      * @return true if this image uses compression
      */
     public boolean hasCompression() {
-        return compression != -1;
+        return this.compression != -1;
     }
 
     /**
@@ -94,42 +95,44 @@ public class AFPImageObjectInfo extends AFPDataObjectInfo {
      * @return the compression type
      */
     public int getCompression() {
-        return compression;
+        return this.compression;
     }
 
     /**
      * Sets the compression used with this image
      *
-     * @param compression the type of compression used with this image
+     * @param compression
+     *            the type of compression used with this image
      */
-    public void setCompression(int compression) {
+    public void setCompression(final int compression) {
         this.compression = compression;
     }
 
     /**
      * Set either additive or subtractive mode (used for ASFLAG).
-     * @param subtractive true for subtractive mode, false for additive mode
+     * 
+     * @param subtractive
+     *            true for subtractive mode, false for additive mode
      */
-    public void setSubtractive(boolean subtractive) {
+    public void setSubtractive(final boolean subtractive) {
         this.subtractive = subtractive;
     }
 
     /**
      * Indicates whether additive or subtractive mode is set.
+     * 
      * @return true for subtractive mode, false for additive mode
      */
     public boolean isSubtractive() {
-        return subtractive;
+        return this.subtractive;
     }
 
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "AFPImageObjectInfo{" + super.toString()
-            + ", compression=" + compression
-            + ", color=" + color
-            + ", bitsPerPixel=" + bitsPerPixel
-            + ", " + (isSubtractive() ? "subtractive" : "additive")
-            + "}";
+        return "AFPImageObjectInfo{" + super.toString() + ", compression="
+                + this.compression + ", color=" + this.color
+                + ", bitsPerPixel=" + this.bitsPerPixel + ", "
+                + (isSubtractive() ? "subtractive" : "additive") + "}";
     }
 }

@@ -24,21 +24,21 @@ import java.io.OutputStream;
 import java.util.List;
 
 /**
- * A page segment is a MO:DCA-P resource object.  It may be stored in an
- * external resource library or it may be carried in a resource group.
- * Page segments contain any combination of IOCA image objects and
- * GOCA graphics objects.
+ * A page segment is a MO:DCA-P resource object. It may be stored in an external
+ * resource library or it may be carried in a resource group. Page segments
+ * contain any combination of IOCA image objects and GOCA graphics objects.
  */
 public class PageSegment extends AbstractNamedAFPObject {
 
-    private List/*<AbstractAFPObject>*/ objects = null;
+    private List/* <AbstractAFPObject> */objects = null;
 
     /**
      * Main constructor
      *
-     * @param name the name of this object
+     * @param name
+     *            the name of this object
      */
-    public PageSegment(String name) {
+    public PageSegment(final String name) {
         super(name);
     }
 
@@ -47,43 +47,48 @@ public class PageSegment extends AbstractNamedAFPObject {
      *
      * @return a list of objects contained within this page segment
      */
-    public List/*<AbstractAFPObject>*/ getObjects() {
-        if (objects == null) {
-            objects = new java.util.ArrayList();
+    public List/* <AbstractAFPObject> */getObjects() {
+        if (this.objects == null) {
+            this.objects = new java.util.ArrayList();
         }
-        return objects;
+        return this.objects;
     }
 
     /**
      * Adds a resource object (image/graphic) to this page segment
      *
-     * @param object the resource objec to add to this page segment
+     * @param object
+     *            the resource objec to add to this page segment
      */
-    public void addObject(AbstractAFPObject object) {
+    public void addObject(final AbstractAFPObject object) {
         getObjects().add(object);
     }
 
     /** {@inheritDoc} */
-    protected void writeStart(OutputStream os) throws IOException {
-        byte[] data = new byte[17];
+    @Override
+    protected void writeStart(final OutputStream os) throws IOException {
+        final byte[] data = new byte[17];
         copySF(data, Type.BEGIN, Category.PAGE_SEGMENT);
         os.write(data);
     }
 
     /** {@inheritDoc} */
-    protected void writeContent(OutputStream os) throws IOException {
+    @Override
+    protected void writeContent(final OutputStream os) throws IOException {
         super.writeContent(os);
-        writeObjects(objects, os);
+        writeObjects(this.objects, os);
     }
 
     /** {@inheritDoc} */
-    protected void writeEnd(OutputStream os) throws IOException {
-        byte[] data = new byte[17];
+    @Override
+    protected void writeEnd(final OutputStream os) throws IOException {
+        final byte[] data = new byte[17];
         copySF(data, Type.END, Category.PAGE_SEGMENT);
         os.write(data);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return this.name;
     }

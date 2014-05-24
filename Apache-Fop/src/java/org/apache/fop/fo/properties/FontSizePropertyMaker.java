@@ -18,6 +18,7 @@
 /* $Id: FontSizePropertyMaker.java 992386 2010-09-03 17:26:28Z vhennebert $ */
 
 package org.apache.fop.fo.properties;
+
 import org.apache.fop.fo.Constants;
 import org.apache.fop.fo.FObj;
 import org.apache.fop.fo.PropertyList;
@@ -27,8 +28,8 @@ import org.apache.fop.fo.expr.PropertyException;
  * This subclass of LengthProperty.Maker handles the special treatment of
  * relative font sizes described in 7.8.4.
  */
-public class FontSizePropertyMaker
-    extends LengthProperty.Maker implements Constants {
+public class FontSizePropertyMaker extends LengthProperty.Maker implements
+        Constants {
 
     /** The default normal font size in mpt */
     private static final int FONT_SIZE_NORMAL = 12000;
@@ -37,60 +38,64 @@ public class FontSizePropertyMaker
 
     /**
      * Create a length property which can handle relative font sizes
-     * @param propId the font size property id.
+     * 
+     * @param propId
+     *            the font size property id.
      */
-    public FontSizePropertyMaker(int propId) {
+    public FontSizePropertyMaker(final int propId) {
         super(propId);
     }
 
-
     /**
-     * {@inheritDoc}
-     * Contrary to basic lengths, percentages for font-size can be resolved
-     * here already: if the property evaluates to a {@link PercentLength},
-     * it is immediately replaced by the resolved {@link FixedLength}.
+     * {@inheritDoc} Contrary to basic lengths, percentages for font-size can be
+     * resolved here already: if the property evaluates to a
+     * {@link PercentLength}, it is immediately replaced by the resolved
+     * {@link FixedLength}.
      */
-    public Property make(PropertyList propertyList, String value, FObj fo)
-            throws PropertyException {
+    @Override
+    public Property make(final PropertyList propertyList, final String value,
+            final FObj fo) throws PropertyException {
         Property p = super.make(propertyList, value, fo);
         if (p instanceof PercentLength) {
-            Property pp = propertyList.getFromParent(this.propId);
-            p = FixedLength.getInstance(
-                    pp.getLength().getValue() * ((PercentLength)p).getPercentage() / 100);
+            final Property pp = propertyList.getFromParent(this.propId);
+            p = FixedLength.getInstance(pp.getLength().getValue()
+                    * ((PercentLength) p).getPercentage() / 100);
         }
         return p;
     }
 
-
     /**
-     * {@inheritDoc}
-     * Implements the parts of 7.8.4 relevant to relative font sizes
+     * {@inheritDoc} Implements the parts of 7.8.4 relevant to relative font
+     * sizes
      */
-    public Property convertProperty(Property p,
-                                    PropertyList propertyList,
-                                    FObj fo) throws PropertyException {
+    @Override
+    public Property convertProperty(final Property p,
+            final PropertyList propertyList, final FObj fo)
+            throws PropertyException {
         if (p.getEnum() == EN_LARGER || p.getEnum() == EN_SMALLER) {
             // get the corresponding property from parent
-            Property pp = propertyList.getFromParent(this.propId);
-            int baseFontSize = computeClosestAbsoluteFontSize(pp.getLength().getValue());
+            final Property pp = propertyList.getFromParent(this.propId);
+            final int baseFontSize = computeClosestAbsoluteFontSize(pp
+                    .getLength().getValue());
             if (p.getEnum() == EN_LARGER) {
-                return FixedLength.getInstance(
-                        Math.round(baseFontSize * FONT_SIZE_GROWTH_FACTOR));
+                return FixedLength.getInstance(Math.round(baseFontSize
+                        * FONT_SIZE_GROWTH_FACTOR));
             } else {
-                return FixedLength.getInstance(
-                        Math.round(baseFontSize / FONT_SIZE_GROWTH_FACTOR));
+                return FixedLength.getInstance(Math.round(baseFontSize
+                        / FONT_SIZE_GROWTH_FACTOR));
             }
         }
         return super.convertProperty(p, propertyList, fo);
     }
 
     /**
-     * Calculates the nearest absolute font size to the given
-     * font size.
-     * @param baseFontSize the font size in mpt of the parent fo
+     * Calculates the nearest absolute font size to the given font size.
+     * 
+     * @param baseFontSize
+     *            the font size in mpt of the parent fo
      * @return the closest absolute font size
      */
-    private int computeClosestAbsoluteFontSize(int baseFontSize) {
+    private int computeClosestAbsoluteFontSize(final int baseFontSize) {
         double scale = FONT_SIZE_GROWTH_FACTOR;
         int lastStepFontSize = FONT_SIZE_NORMAL;
         if (baseFontSize < FONT_SIZE_NORMAL) {
@@ -98,18 +103,19 @@ public class FontSizePropertyMaker
             scale = 1 / FONT_SIZE_GROWTH_FACTOR;
         }
         // Calculate the inital next step font size
-        int nextStepFontSize = (int)Math.round(lastStepFontSize * scale);
-        while (scale < 1 && nextStepFontSize > baseFontSize
-                || scale > 1 && nextStepFontSize < baseFontSize) {
-            // baseFontSize is still bigger (if we grow) or smaller (if we shrink)
+        int nextStepFontSize = (int) Math.round(lastStepFontSize * scale);
+        while (scale < 1 && nextStepFontSize > baseFontSize || scale > 1
+                && nextStepFontSize < baseFontSize) {
+            // baseFontSize is still bigger (if we grow) or smaller (if we
+            // shrink)
             // than the last caculated step
             lastStepFontSize = nextStepFontSize;
-            nextStepFontSize = (int)Math.round(lastStepFontSize * scale);
+            nextStepFontSize = (int) Math.round(lastStepFontSize * scale);
         }
         // baseFontSize is between last and next step font size
         // Return the step value closer to the baseFontSize
-        if (Math.abs(lastStepFontSize - baseFontSize)
-                <= Math.abs(baseFontSize - nextStepFontSize)) {
+        if (Math.abs(lastStepFontSize - baseFontSize) <= Math.abs(baseFontSize
+                - nextStepFontSize)) {
             return lastStepFontSize;
         }
         return nextStepFontSize;

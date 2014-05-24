@@ -26,24 +26,27 @@ import org.apache.fop.afp.modca.triplets.MappingOptionTriplet;
 import org.apache.fop.afp.util.BinaryUtils;
 
 /**
- * The Map Image Object (MIO) structured field specifies how an image data object is
- * mapped into its object area.
+ * The Map Image Object (MIO) structured field specifies how an image data
+ * object is mapped into its object area.
  */
 public class MapImageObject extends AbstractTripletStructuredObject {
 
     /**
      * Constructor for the Map Image Object.
-     * @param mappingOption the mapping option (see {@link MappingOptionTriplet}.*)
+     * 
+     * @param mappingOption
+     *            the mapping option (see {@link MappingOptionTriplet}.*)
      */
-    public MapImageObject(byte mappingOption) {
+    public MapImageObject(final byte mappingOption) {
         addTriplet(new MappingOptionTriplet(mappingOption));
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[11];
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[11];
         copySF(data, Type.MAP, Category.IMAGE);
-        int tripletLen = getTripletDataLength();
+        final int tripletLen = getTripletDataLength();
 
         byte[] len = BinaryUtils.convert(10 + tripletLen, 2);
         data[1] = len[0];

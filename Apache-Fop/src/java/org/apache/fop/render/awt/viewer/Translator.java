@@ -23,13 +23,13 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * AWT Viewer's localization class, backed up by <code>java.util.ResourceBundle</code>.
- * Originally contributed by:
+ * AWT Viewer's localization class, backed up by
+ * <code>java.util.ResourceBundle</code>. Originally contributed by:
  * Stanislav.Gorkhover@jCatalog.com
  */
 public class Translator {
 
-    private ResourceBundle bundle;
+    private final ResourceBundle bundle;
     private static String bundleBaseName = "org/apache/fop/render/awt/viewer/resources/Viewer";
 
     /**
@@ -41,19 +41,22 @@ public class Translator {
 
     /**
      * Constructor for a given <code>Locale</code>.
-     * @param locale Locale to use
+     * 
+     * @param locale
+     *            Locale to use
      */
-    public Translator(Locale locale) {
-        bundle = ResourceBundle.getBundle(bundleBaseName, locale);
+    public Translator(final Locale locale) {
+        this.bundle = ResourceBundle.getBundle(bundleBaseName, locale);
     }
 
     /**
      * Returns localized <code>String</code> for a given key.
-     * @param key the key
+     * 
+     * @param key
+     *            the key
      * @return the localized String
      */
-    public String getString(String key) {
-        return bundle.getString(key);
+    public String getString(final String key) {
+        return this.bundle.getString(key);
     }
 }
-

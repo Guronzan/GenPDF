@@ -32,37 +32,44 @@ import org.apache.xmlgraphics.image.loader.ImageSessionContext;
 import org.apache.xmlgraphics.image.loader.util.ImageUtil;
 
 /**
- * ImageLoader for formats consumed "raw" (undecoded). Provides a raw/undecoded stream.
+ * ImageLoader for formats consumed "raw" (undecoded). Provides a raw/undecoded
+ * stream.
  */
 public class ImageLoaderRaw extends AbstractImageLoader {
 
-    private String mime;
-    private ImageFlavor targetFlavor;
+    private final String mime;
+    private final ImageFlavor targetFlavor;
 
     /**
      * Main constructor.
-     * @param targetFlavor the target flavor
+     * 
+     * @param targetFlavor
+     *            the target flavor
      */
-    public ImageLoaderRaw(ImageFlavor targetFlavor) {
+    public ImageLoaderRaw(final ImageFlavor targetFlavor) {
         this.targetFlavor = targetFlavor;
         this.mime = ImageLoaderFactoryRaw.getMimeForRawFlavor(targetFlavor);
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getTargetFlavor() {
         return this.targetFlavor;
     }
 
     /** {@inheritDoc} */
-    public Image loadImage(ImageInfo info, Map hints, ImageSessionContext session)
-                throws ImageException, IOException {
+    @Override
+    public Image loadImage(final ImageInfo info, final Map hints,
+            final ImageSessionContext session) throws ImageException,
+            IOException {
         if (!this.mime.equals(info.getMimeType())) {
             throw new IllegalArgumentException(
-                    "ImageInfo must be from a image with MIME type: " + this.mime);
+                    "ImageInfo must be from a image with MIME type: "
+                            + this.mime);
         }
-        Source src = session.needSource(info.getOriginalURI());
-        ImageRawStream rawImage = new ImageRawStream(info, getTargetFlavor(),
-                ImageUtil.needInputStream(src));
+        final Source src = session.needSource(info.getOriginalURI());
+        final ImageRawStream rawImage = new ImageRawStream(info,
+                getTargetFlavor(), ImageUtil.needInputStream(src));
         return rawImage;
     }
 

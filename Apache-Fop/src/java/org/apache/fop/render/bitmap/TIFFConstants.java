@@ -42,8 +42,8 @@ public interface TIFFConstants {
     /** ZLib compression */
     String COMPRESSION_ZLIB = "ZLib";
     /** CCITT Group 4 (T.6) compression */
-    String COMPRESSION_CCITT_T6 = "CCITT T.6"; //CCITT Group 4
+    String COMPRESSION_CCITT_T6 = "CCITT T.6"; // CCITT Group 4
     /** CCITT Group 3 (T.4) compression */
-    String COMPRESSION_CCITT_T4 = "CCITT T.4"; //CCITT Group 3
+    String COMPRESSION_CCITT_T4 = "CCITT T.4"; // CCITT Group 3
 
 }

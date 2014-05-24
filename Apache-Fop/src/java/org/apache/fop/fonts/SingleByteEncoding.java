@@ -24,33 +24,41 @@ package org.apache.fop.fonts;
  */
 public interface SingleByteEncoding {
 
-    /** Code point that is used if no code point for a specific character has been found. */
+    /**
+     * Code point that is used if no code point for a specific character has
+     * been found.
+     */
     char NOT_FOUND_CODE_POINT = '\0';
 
     /**
      * Returns the encoding's name.
+     * 
      * @return the name of the encoding
      */
     String getName();
 
     /**
      * Maps a Unicode character to a code point in the encoding.
-     * @param c the Unicode character to map
+     * 
+     * @param c
+     *            the Unicode character to map
      * @return the code point in the encoding or 0 (=.notdef) if not found
      */
-    char mapChar(char c);
+    char mapChar(final char c);
 
     /**
      * Returns the array of character names for this encoding.
-     * @return the array of character names
-     *                  (unmapped code points are represented by a ".notdef" value)
+     * 
+     * @return the array of character names (unmapped code points are
+     *         represented by a ".notdef" value)
      */
     String[] getCharNameMap();
 
     /**
-     * Returns a character array with Unicode scalar values which can be used to map encoding
-     * code points to Unicode values. Note that this does not return all possible Unicode values
-     * that the encoding maps.
+     * Returns a character array with Unicode scalar values which can be used to
+     * map encoding code points to Unicode values. Note that this does not
+     * return all possible Unicode values that the encoding maps.
+     * 
      * @return a character array with Unicode scalar values
      */
     char[] getUnicodeCharMap();

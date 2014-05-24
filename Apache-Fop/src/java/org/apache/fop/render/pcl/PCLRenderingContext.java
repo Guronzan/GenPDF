@@ -21,42 +21,47 @@ package org.apache.fop.render.pcl;
 
 import java.awt.geom.Point2D;
 
+import org.apache.fop.apps.FOUserAgent;
+import org.apache.fop.render.AbstractRenderingContext;
 import org.apache.xmlgraphics.java2d.GraphicContext;
 import org.apache.xmlgraphics.util.MimeConstants;
 
-import org.apache.fop.apps.FOUserAgent;
-import org.apache.fop.render.AbstractRenderingContext;
-
 /**
- * Rendering context for PCL production. The class is abstract and must be subclassed to
- * provide the missing functionality.
+ * Rendering context for PCL production. The class is abstract and must be
+ * subclassed to provide the missing functionality.
  */
 public abstract class PCLRenderingContext extends AbstractRenderingContext {
 
-    private PCLGenerator generator;
-    private PCLRenderingUtil pclUtil;
+    private final PCLGenerator generator;
+    private final PCLRenderingUtil pclUtil;
     private boolean sourceTransparency = false;
 
     /**
      * Main constructor.
-     * @param userAgent the user agent
-     * @param generator the PCL generator
-     * @param pclUtil rendering utility
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param generator
+     *            the PCL generator
+     * @param pclUtil
+     *            rendering utility
      */
-    public PCLRenderingContext(FOUserAgent userAgent,
-            PCLGenerator generator, PCLRenderingUtil pclUtil) {
+    public PCLRenderingContext(final FOUserAgent userAgent,
+            final PCLGenerator generator, final PCLRenderingUtil pclUtil) {
         super(userAgent);
         this.generator = generator;
         this.pclUtil = pclUtil;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
-        return MimeConstants.MIME_PCL; //not applicable
+        return MimeConstants.MIME_PCL; // not applicable
     }
 
     /**
      * Returns the PCL generator.
+     * 
      * @return the PCL generator
      */
     public PCLGenerator getPCLGenerator() {
@@ -65,6 +70,7 @@ public abstract class PCLRenderingContext extends AbstractRenderingContext {
 
     /**
      * Returns the PCL rendering utility.
+     * 
      * @return the PCL rendering utility.
      */
     public PCLRenderingUtil getPCLUtil() {
@@ -72,7 +78,9 @@ public abstract class PCLRenderingContext extends AbstractRenderingContext {
     }
 
     /**
-     * Indicates whether source transparency should be enabled when painting bitmaps.
+     * Indicates whether source transparency should be enabled when painting
+     * bitmaps.
+     * 
      * @return true when source transparency is enabled
      */
     public boolean isSourceTransparencyEnabled() {
@@ -81,22 +89,28 @@ public abstract class PCLRenderingContext extends AbstractRenderingContext {
 
     /**
      * Enables or disables source transparency when painting bitmaps.
-     * @param value true to enable source transparency, false to disable
+     * 
+     * @param value
+     *            true to enable source transparency, false to disable
      */
-    public void setSourceTransparencyEnabled(boolean value) {
+    public void setSourceTransparencyEnabled(final boolean value) {
         this.sourceTransparency = value;
     }
 
     /**
      * Transforms a point into the PCL coordinate system.
-     * @param x the X coordinate
-     * @param y the Y coordinate
+     * 
+     * @param x
+     *            the X coordinate
+     * @param y
+     *            the Y coordinate
      * @return the transformed point in PCL coordinates
      */
-    public abstract Point2D transformedPoint(int x, int y);
+    public abstract Point2D transformedPoint(final int x, final int y);
 
     /**
      * Returns the current {@link GraphicContext} instance.
+     * 
      * @return the graphic context
      */
     public abstract GraphicContext getGraphicContext();

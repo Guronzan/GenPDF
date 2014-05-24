@@ -26,7 +26,8 @@ import org.apache.xmlgraphics.image.GraphicsConstants;
 import org.apache.xmlgraphics.image.loader.ImageContext;
 
 /**
- * Very simple ImageContext implementation that uses the <code>Toolkit</code>'s screen resolution.
+ * Very simple ImageContext implementation that uses the <code>Toolkit</code>'s
+ * screen resolution.
  */
 public class DefaultImageContext implements ImageContext {
 
@@ -45,6 +46,7 @@ public class DefaultImageContext implements ImageContext {
     }
 
     /** {@inheritDoc} */
+    @Override
     public float getSourceResolution() {
         return this.sourceResolution;
     }

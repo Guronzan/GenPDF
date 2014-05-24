@@ -26,48 +26,67 @@ import org.apache.fop.complexscripts.util.ScriptContextTester;
 // CSOFF: ParameterNumberCheck
 
 /**
- * <p>The <code>GlyphPositioningState</code> implements an state object used during glyph positioning
- * processing.</p>
+ * <p>
+ * The <code>GlyphPositioningState</code> implements an state object used during
+ * glyph positioning processing.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 
 public class GlyphPositioningState extends GlyphProcessingState {
 
     /** font size */
-    private int fontSize;
+    private final int fontSize;
     /** default advancements */
-    private int[] widths;
+    private final int[] widths;
     /** current adjustments */
-    private int[][] adjustments;
+    private final int[][] adjustments;
     /** if true, then some adjustment was applied */
     private boolean adjusted;
 
     /**
      * Construct glyph positioning state.
-     * @param gs input glyph sequence
-     * @param script script identifier
-     * @param language language identifier
-     * @param feature feature identifier
-     * @param fontSize font size (in micropoints)
-     * @param widths array of design advancements (in glyph index order)
-     * @param adjustments positioning adjustments to which positioning is applied
-     * @param sct script context tester (or null)
+     * 
+     * @param gs
+     *            input glyph sequence
+     * @param script
+     *            script identifier
+     * @param language
+     *            language identifier
+     * @param feature
+     *            feature identifier
+     * @param fontSize
+     *            font size (in micropoints)
+     * @param widths
+     *            array of design advancements (in glyph index order)
+     * @param adjustments
+     *            positioning adjustments to which positioning is applied
+     * @param sct
+     *            script context tester (or null)
      */
-    public GlyphPositioningState ( GlyphSequence gs, String script, String language, String feature, int fontSize, int[] widths, int[][] adjustments, ScriptContextTester sct ) {
-        super ( gs, script, language, feature, sct );
+    public GlyphPositioningState(final GlyphSequence gs, final String script,
+            final String language, final String feature, final int fontSize,
+            final int[] widths, final int[][] adjustments,
+            final ScriptContextTester sct) {
+        super(gs, script, language, feature, sct);
         this.fontSize = fontSize;
         this.widths = widths;
         this.adjustments = adjustments;
     }
 
     /**
-     * Construct glyph positioning state using an existing state object using shallow copy
-     * except as follows: input glyph sequence is copied deep except for its characters array.
-     * @param ps existing positioning state to copy from
+     * Construct glyph positioning state using an existing state object using
+     * shallow copy except as follows: input glyph sequence is copied deep
+     * except for its characters array.
+     * 
+     * @param ps
+     *            existing positioning state to copy from
      */
-    public GlyphPositioningState ( GlyphPositioningState ps ) {
-        super ( ps );
+    public GlyphPositioningState(final GlyphPositioningState ps) {
+        super(ps);
         this.fontSize = ps.fontSize;
         this.widths = ps.widths;
         this.adjustments = ps.adjustments;
@@ -75,12 +94,14 @@ public class GlyphPositioningState extends GlyphProcessingState {
 
     /**
      * Obtain design advancement (width) of glyph at specified index.
-     * @param gi glyph index
+     * 
+     * @param gi
+     *            glyph index
      * @return design advancement, or zero if glyph index is not present
      */
-    public int getWidth ( int gi ) {
-        if ( ( widths != null ) && ( gi < widths.length ) ) {
-            return widths [ gi ];
+    public int getWidth(final int gi) {
+        if (this.widths != null && gi < this.widths.length) {
+            return this.widths[gi];
         } else {
             return 0;
         }
@@ -88,23 +109,29 @@ public class GlyphPositioningState extends GlyphProcessingState {
 
     /**
      * Perform adjustments at current position index.
-     * @param v value containing adjustments
+     * 
+     * @param v
+     *            value containing adjustments
      * @return true if a non-zero adjustment was made
      */
-    public boolean adjust ( GlyphPositioningTable.Value v ) {
-        return adjust ( v, 0 );
+    public boolean adjust(final GlyphPositioningTable.Value v) {
+        return adjust(v, 0);
     }
 
     /**
      * Perform adjustments at specified offset from current position index.
-     * @param v value containing adjustments
-     * @param offset from current position index
+     * 
+     * @param v
+     *            value containing adjustments
+     * @param offset
+     *            from current position index
      * @return true if a non-zero adjustment was made
      */
-    public boolean adjust ( GlyphPositioningTable.Value v, int offset ) {
+    public boolean adjust(final GlyphPositioningTable.Value v, final int offset) {
         assert v != null;
-        if ( ( index + offset ) < indexLast ) {
-            return v.adjust ( adjustments [ index + offset ], fontSize );
+        if (this.index + offset < this.indexLast) {
+            return v.adjust(this.adjustments[this.index + offset],
+                    this.fontSize);
         } else {
             throw new IndexOutOfBoundsException();
         }
@@ -112,21 +139,27 @@ public class GlyphPositioningState extends GlyphProcessingState {
 
     /**
      * Obtain current adjustments at current position index.
+     * 
      * @return array of adjustments (int[4]) at current position
      */
     public int[] getAdjustment() {
-        return getAdjustment ( 0 );
+        return getAdjustment(0);
     }
 
     /**
-     * Obtain current adjustments at specified offset from current position index.
-     * @param offset from current position index
+     * Obtain current adjustments at specified offset from current position
+     * index.
+     * 
+     * @param offset
+     *            from current position index
      * @return array of adjustments (int[4]) at specified offset
-     * @throws IndexOutOfBoundsException if offset is invalid
+     * @throws IndexOutOfBoundsException
+     *             if offset is invalid
      */
-    public int[] getAdjustment ( int offset ) throws IndexOutOfBoundsException {
-        if ( ( index + offset ) < indexLast ) {
-            return adjustments [ index + offset ];
+    public int[] getAdjustment(final int offset)
+            throws IndexOutOfBoundsException {
+        if (this.index + offset < this.indexLast) {
+            return this.adjustments[this.index + offset];
         } else {
             throw new IndexOutOfBoundsException();
         }
@@ -135,46 +168,53 @@ public class GlyphPositioningState extends GlyphProcessingState {
     /**
      * Apply positioning subtable to current state at current position (only),
      * resulting in the consumption of zero or more input glyphs.
-     * @param st the glyph positioning subtable to apply
-     * @return true if subtable applied, or false if it did not (e.g., its
-     * input coverage table did not match current input context)
+     * 
+     * @param st
+     *            the glyph positioning subtable to apply
+     * @return true if subtable applied, or false if it did not (e.g., its input
+     *         coverage table did not match current input context)
      */
-    public boolean apply ( GlyphPositioningSubtable st ) {
+    public boolean apply(final GlyphPositioningSubtable st) {
         assert st != null;
-        updateSubtableState ( st );
-        boolean applied = st.position ( this );
+        updateSubtableState(st);
+        final boolean applied = st.position(this);
         resetSubtableState();
         return applied;
     }
 
     /**
-     * Apply a sequence of matched rule lookups to the <code>nig</code> input glyphs
-     * starting at the current position. If lookups are non-null and non-empty, then
-     * all input glyphs specified by <code>nig</code> are consumed irregardless of
-     * whether any specified lookup applied.
-     * @param lookups array of matched lookups (or null)
-     * @param nig number of glyphs in input sequence, starting at current position, to which
-     * the lookups are to apply, and to be consumed once the application has finished
+     * Apply a sequence of matched rule lookups to the <code>nig</code> input
+     * glyphs starting at the current position. If lookups are non-null and
+     * non-empty, then all input glyphs specified by <code>nig</code> are
+     * consumed irregardless of whether any specified lookup applied.
+     * 
+     * @param lookups
+     *            array of matched lookups (or null)
+     * @param nig
+     *            number of glyphs in input sequence, starting at current
+     *            position, to which the lookups are to apply, and to be
+     *            consumed once the application has finished
      * @return true if lookups are non-null and non-empty; otherwise, false
      */
-    public boolean apply ( GlyphTable.RuleLookup[] lookups, int nig ) {
-        if ( ( lookups != null ) && ( lookups.length > 0 ) ) {
+    public boolean apply(final GlyphTable.RuleLookup[] lookups, final int nig) {
+        if (lookups != null && lookups.length > 0) {
             // apply each rule lookup to extracted input glyph array
-            for ( int i = 0, n = lookups.length; i < n; i++ ) {
-                GlyphTable.RuleLookup l = lookups [ i ];
-                if ( l != null ) {
-                    GlyphTable.LookupTable lt = l.getLookup();
-                    if ( lt != null ) {
+            for (int i = 0, n = lookups.length; i < n; i++) {
+                final GlyphTable.RuleLookup l = lookups[i];
+                if (l != null) {
+                    final GlyphTable.LookupTable lt = l.getLookup();
+                    if (lt != null) {
                         // perform positioning on a copy of previous state
-                        GlyphPositioningState ps = new GlyphPositioningState ( this );
+                        final GlyphPositioningState ps = new GlyphPositioningState(
+                                this);
                         // apply lookup table positioning
-                        if ( lt.position ( ps, l.getSequenceIndex() ) ) {
-                            setAdjusted ( true );
+                        if (lt.position(ps, l.getSequenceIndex())) {
+                            setAdjusted(true);
                         }
                     }
                 }
             }
-            consume ( nig );
+            consume(nig);
             return true;
         } else {
             return false;
@@ -184,26 +224,30 @@ public class GlyphPositioningState extends GlyphProcessingState {
     /**
      * Apply default application semantices; namely, consume one input glyph.
      */
+    @Override
     public void applyDefault() {
         super.applyDefault();
     }
 
     /**
      * Set adjusted state, used to record effect of non-zero adjustment.
-     * @param adjusted true if to set adjusted state, otherwise false to
-     * clear adjusted state
+     * 
+     * @param adjusted
+     *            true if to set adjusted state, otherwise false to clear
+     *            adjusted state
      */
-    public void setAdjusted ( boolean adjusted ) {
+    public void setAdjusted(final boolean adjusted) {
         this.adjusted = adjusted;
     }
 
     /**
      * Get adjusted state.
-     * @return adjusted true if some non-zero adjustment occurred and
-     * was recorded by {@link #setAdjusted}; otherwise, false.
+     * 
+     * @return adjusted true if some non-zero adjustment occurred and was
+     *         recorded by {@link #setAdjusted}; otherwise, false.
      */
     public boolean getAdjusted() {
-        return adjusted;
+        return this.adjusted;
     }
 
 }

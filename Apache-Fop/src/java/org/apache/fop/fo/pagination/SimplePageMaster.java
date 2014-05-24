@@ -23,8 +23,6 @@ package org.apache.fop.fo.pagination;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.datatypes.Length;
 import org.apache.fop.datatypes.Numeric;
@@ -36,15 +34,17 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.ValidationException;
 import org.apache.fop.fo.properties.CommonMarginBlock;
 import org.apache.fop.traits.WritingMode;
+import org.xml.sax.Locator;
 
 /**
- * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_simple-page-master">
- * <code>fo:simple-page-master</code></a> object.
- * This creates a simple page from the specified regions
- * and attributes.
+ * Class modelling the <a
+ * href="http://www.w3.org/TR/xsl/#fo_simple-page-master">
+ * <code>fo:simple-page-master</code></a> object. This creates a simple page
+ * from the specified regions and attributes.
  */
 public class SimplePageMaster extends FObj {
-    // The value of FO traits (refined properties) that apply to fo:simple-page-master.
+    // The value of FO traits (refined properties) that apply to
+    // fo:simple-page-master.
     private CommonMarginBlock commonMarginBlock;
     private String masterName;
     private Length pageHeight;
@@ -58,7 +58,7 @@ public class SimplePageMaster extends FObj {
      */
     private Map<String, Region> regions;
 
-     // used for node validation
+    // used for node validation
     private boolean hasRegionBody = false;
     private boolean hasRegionBefore = false;
     private boolean hasRegionAfter = false;
@@ -68,104 +68,120 @@ public class SimplePageMaster extends FObj {
     /**
      * Base constructor
      *
-     * @param parent {@link FONode} that is the parent of this object
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public SimplePageMaster(FONode parent) {
+    public SimplePageMaster(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
-        commonMarginBlock = pList.getMarginBlockProps();
-        masterName = pList.get(PR_MASTER_NAME).getString();
-        pageHeight = pList.get(PR_PAGE_HEIGHT).getLength();
-        pageWidth = pList.get(PR_PAGE_WIDTH).getLength();
-        referenceOrientation = pList.get(PR_REFERENCE_ORIENTATION).getNumeric();
-        writingMode = WritingMode.valueOf(pList.get(PR_WRITING_MODE).getEnum());
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
+        this.commonMarginBlock = pList.getMarginBlockProps();
+        this.masterName = pList.get(PR_MASTER_NAME).getString();
+        this.pageHeight = pList.get(PR_PAGE_HEIGHT).getLength();
+        this.pageWidth = pList.get(PR_PAGE_WIDTH).getLength();
+        this.referenceOrientation = pList.get(PR_REFERENCE_ORIENTATION)
+                .getNumeric();
+        this.writingMode = WritingMode.valueOf(pList.get(PR_WRITING_MODE)
+                .getEnum());
 
-        if (masterName == null || masterName.equals("")) {
+        if (this.masterName == null || this.masterName.equals("")) {
             missingPropertyError("master-name");
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
-        LayoutMasterSet layoutMasterSet = (LayoutMasterSet) parent;
+        final LayoutMasterSet layoutMasterSet = (LayoutMasterSet) this.parent;
 
-        if (masterName == null) {
+        if (this.masterName == null) {
             missingPropertyError("master-name");
         } else {
             layoutMasterSet.addSimplePageMaster(this);
         }
 
-        //Well, there are only 5 regions so we can save a bit of memory here
-        regions = new HashMap<String, Region>(5);
+        // Well, there are only 5 regions so we can save a bit of memory here
+        this.regions = new HashMap<String, Region>(5);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
-        if (!hasRegionBody) {
-            missingChildElementError(
-                    "(region-body, region-before?, region-after?, region-start?, region-end?)");
+        if (!this.hasRegionBody) {
+            missingChildElementError("(region-body, region-before?, region-after?, region-start?, region-end?)");
         }
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL Content Model: (region-body,region-before?,region-after?,region-start?,region-end?)
+     * {@inheritDoc} <br>
+     * XSL Content Model:
+     * (region-body,region-before?,region-after?,region-start?,region-end?)
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-            throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             if (localName.equals("region-body")) {
-                if (hasRegionBody) {
+                if (this.hasRegionBody) {
                     tooManyNodesError(loc, "fo:region-body");
                 } else {
-                    hasRegionBody = true;
+                    this.hasRegionBody = true;
                 }
             } else if (localName.equals("region-before")) {
-                if (!hasRegionBody) {
-                    nodesOutOfOrderError(loc, "fo:region-body", "fo:region-before");
-                } else if (hasRegionBefore) {
+                if (!this.hasRegionBody) {
+                    nodesOutOfOrderError(loc, "fo:region-body",
+                            "fo:region-before");
+                } else if (this.hasRegionBefore) {
                     tooManyNodesError(loc, "fo:region-before");
-                } else if (hasRegionAfter) {
-                    nodesOutOfOrderError(loc, "fo:region-before", "fo:region-after");
-                } else if (hasRegionStart) {
-                    nodesOutOfOrderError(loc, "fo:region-before", "fo:region-start");
-                } else if (hasRegionEnd) {
-                    nodesOutOfOrderError(loc, "fo:region-before", "fo:region-end");
+                } else if (this.hasRegionAfter) {
+                    nodesOutOfOrderError(loc, "fo:region-before",
+                            "fo:region-after");
+                } else if (this.hasRegionStart) {
+                    nodesOutOfOrderError(loc, "fo:region-before",
+                            "fo:region-start");
+                } else if (this.hasRegionEnd) {
+                    nodesOutOfOrderError(loc, "fo:region-before",
+                            "fo:region-end");
                 } else {
-                    hasRegionBefore = true;
+                    this.hasRegionBefore = true;
                 }
             } else if (localName.equals("region-after")) {
-                if (!hasRegionBody) {
-                    nodesOutOfOrderError(loc, "fo:region-body", "fo:region-after");
-                } else if (hasRegionAfter) {
+                if (!this.hasRegionBody) {
+                    nodesOutOfOrderError(loc, "fo:region-body",
+                            "fo:region-after");
+                } else if (this.hasRegionAfter) {
                     tooManyNodesError(loc, "fo:region-after");
-                } else if (hasRegionStart) {
-                    nodesOutOfOrderError(loc, "fo:region-after", "fo:region-start");
-                } else if (hasRegionEnd) {
-                    nodesOutOfOrderError(loc, "fo:region-after", "fo:region-end");
+                } else if (this.hasRegionStart) {
+                    nodesOutOfOrderError(loc, "fo:region-after",
+                            "fo:region-start");
+                } else if (this.hasRegionEnd) {
+                    nodesOutOfOrderError(loc, "fo:region-after",
+                            "fo:region-end");
                 } else {
-                    hasRegionAfter = true;
+                    this.hasRegionAfter = true;
                 }
             } else if (localName.equals("region-start")) {
-                if (!hasRegionBody) {
-                    nodesOutOfOrderError(loc, "fo:region-body", "fo:region-start");
-                } else if (hasRegionStart) {
+                if (!this.hasRegionBody) {
+                    nodesOutOfOrderError(loc, "fo:region-body",
+                            "fo:region-start");
+                } else if (this.hasRegionStart) {
                     tooManyNodesError(loc, "fo:region-start");
-                } else if (hasRegionEnd) {
-                    nodesOutOfOrderError(loc, "fo:region-start", "fo:region-end");
+                } else if (this.hasRegionEnd) {
+                    nodesOutOfOrderError(loc, "fo:region-start",
+                            "fo:region-end");
                 } else {
-                    hasRegionStart = true;
+                    this.hasRegionStart = true;
                 }
             } else if (localName.equals("region-end")) {
-                if (!hasRegionBody) {
+                if (!this.hasRegionBody) {
                     nodesOutOfOrderError(loc, "fo:region-body", "fo:region-end");
-                } else if (hasRegionEnd) {
+                } else if (this.hasRegionEnd) {
                     tooManyNodesError(loc, "fo:region-end");
                 } else {
-                    hasRegionEnd = true;
+                    this.hasRegionEnd = true;
                 }
             } else {
                 invalidChildError(loc, nsURI, localName);
@@ -174,14 +190,16 @@ public class SimplePageMaster extends FObj {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean generatesReferenceAreas() {
         return true;
     }
 
     /** {@inheritDoc} */
-    protected void addChildNode(FONode child) throws FOPException {
+    @Override
+    protected void addChildNode(final FONode child) throws FOPException {
         if (child instanceof Region) {
-            addRegion((Region)child);
+            addRegion((Region) child);
         } else {
             super.addChildNode(child);
         }
@@ -189,75 +207,74 @@ public class SimplePageMaster extends FObj {
 
     /**
      * Adds a region to this simple-page-master.
-     * @param region region to add
+     * 
+     * @param region
+     *            region to add
      */
-    protected void addRegion(Region region) {
-        regions.put(String.valueOf(region.getNameId()), region);
+    protected void addRegion(final Region region) {
+        this.regions.put(String.valueOf(region.getNameId()), region);
     }
 
     /**
-     * Gets the context for the width of the page-reference-area,
-     * taking into account the reference-orientation.
+     * Gets the context for the width of the page-reference-area, taking into
+     * account the reference-orientation.
      *
-     * @param lengthBase    the lengthBase to use to resolve percentages
+     * @param lengthBase
+     *            the lengthBase to use to resolve percentages
      * @return context for the width of the page-reference-area
      */
-    protected final PercentBaseContext getPageWidthContext(int lengthBase) {
-        return (this.referenceOrientation.getValue() % 180 == 0)
-                ? new SimplePercentBaseContext(
-                        null,
-                        lengthBase,
-                        this.getPageWidth().getValue())
-                : new SimplePercentBaseContext(
-                        null,
-                        lengthBase,
-                        this.getPageHeight().getValue());
+    protected final PercentBaseContext getPageWidthContext(final int lengthBase) {
+        return this.referenceOrientation.getValue() % 180 == 0 ? new SimplePercentBaseContext(
+                null, lengthBase, getPageWidth().getValue())
+        : new SimplePercentBaseContext(null, lengthBase,
+                getPageHeight().getValue());
     }
 
     /**
-     * Gets the context for the height of the page-reference-area,
-     * taking into account the reference-orientation.
+     * Gets the context for the height of the page-reference-area, taking into
+     * account the reference-orientation.
      *
-     * @param lengthBase    the lengthBase to use to resolve percentages
+     * @param lengthBase
+     *            the lengthBase to use to resolve percentages
      * @return the context for the height of the page-reference-area
      */
-    protected final PercentBaseContext getPageHeightContext(int lengthBase) {
-        return (this.referenceOrientation.getValue() % 180 == 0)
-                ? new SimplePercentBaseContext(
-                        null,
-                        lengthBase,
-                        this.getPageHeight().getValue())
-                : new SimplePercentBaseContext(
-                        null,
-                        lengthBase,
-                        this.getPageWidth().getValue());
+    protected final PercentBaseContext getPageHeightContext(final int lengthBase) {
+        return this.referenceOrientation.getValue() % 180 == 0 ? new SimplePercentBaseContext(
+                null, lengthBase, getPageHeight().getValue())
+        : new SimplePercentBaseContext(null, lengthBase, getPageWidth()
+                        .getValue());
     }
 
     /**
      * Returns the region for a given region class.
-     * @param regionId Constants ID of the FO representing the region
+     * 
+     * @param regionId
+     *            Constants ID of the FO representing the region
      * @return the region, null if it doesn't exist
      */
-    public Region getRegion(int regionId) {
-        return regions.get(String.valueOf(regionId));
+    public Region getRegion(final int regionId) {
+        return this.regions.get(String.valueOf(regionId));
     }
 
     /**
      * Returns a Map of regions associated with this simple-page-master
+     * 
      * @return the regions
      */
     public Map<String, Region> getRegions() {
-        return regions;
+        return this.regions;
     }
 
     /**
      * Indicates if a region with a given name exists in this
      * simple-page-master.
-     * @param regionName name of the region to lookup
+     * 
+     * @param regionName
+     *            name of the region to lookup
      * @return True if a region with this name exists
      */
-    protected boolean regionNameExists(String regionName) {
-        for (Region r : regions.values()) {
+    protected boolean regionNameExists(final String regionName) {
+        for (final Region r : this.regions.values()) {
             if (r.getRegionName().equals(regionName)) {
                 return true;
             }
@@ -267,43 +284,46 @@ public class SimplePageMaster extends FObj {
 
     /** @return the Common Margin Properties-Block. */
     public CommonMarginBlock getCommonMarginBlock() {
-        return commonMarginBlock;
+        return this.commonMarginBlock;
     }
 
     /** @return "master-name" FO trait. */
     public String getMasterName() {
-        return masterName;
+        return this.masterName;
     }
 
     /** @return the "page-width" FO trait. */
     public Length getPageWidth() {
-        return pageWidth;
+        return this.pageWidth;
     }
 
     /** @return the "page-height" FO trait. */
     public Length getPageHeight() {
-        return pageHeight;
+        return this.pageHeight;
     }
 
     /** @return the "reference-orientation" FO trait. */
     public int getReferenceOrientation() {
-        return referenceOrientation.getValue();
+        return this.referenceOrientation.getValue();
     }
 
     /** @return the "writing-mode" FO trait. */
     public WritingMode getWritingMode() {
-        return writingMode;
+        return this.writingMode;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "simple-page-master";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_SIMPLE_PAGE_MASTER}
      */
+    @Override
     public int getNameId() {
         return FO_SIMPLE_PAGE_MASTER;
     }

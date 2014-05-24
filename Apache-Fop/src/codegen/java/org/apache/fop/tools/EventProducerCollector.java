@@ -45,11 +45,12 @@ import com.thoughtworks.qdox.model.Type;
  */
 class EventProducerCollector {
 
-    private static final String CLASSNAME_EVENT_PRODUCER = EventProducer.class.getName();
+    private static final String CLASSNAME_EVENT_PRODUCER = EventProducer.class
+            .getName();
     private static final Map<String, Class<?>> PRIMITIVE_MAP;
 
     static {
-        Map<String, Class<?>> m = new java.util.HashMap<String, Class<?>>();
+        final Map<String, Class<?>> m = new java.util.HashMap<String, Class<?>>();
         m.put("boolean", Boolean.class);
         m.put("byte", Byte.class);
         m.put("char", Character.class);
@@ -61,8 +62,8 @@ class EventProducerCollector {
         PRIMITIVE_MAP = Collections.unmodifiableMap(m);
     }
 
-    private DocletTagFactory tagFactory;
-    private List<EventModel> models = new java.util.ArrayList<EventModel>();
+    private final DocletTagFactory tagFactory;
+    private final List<EventModel> models = new java.util.ArrayList<EventModel>();
 
     /**
      * Creates a new EventProducerCollector.
@@ -73,6 +74,7 @@ class EventProducerCollector {
 
     /**
      * Creates the {@link DocletTagFactory} to be used by the collector.
+     * 
      * @return the doclet tag factory
      */
     protected DocletTagFactory createDocletTagFactory() {
@@ -80,22 +82,29 @@ class EventProducerCollector {
     }
 
     /**
-     * Scans a file and processes it if it extends the {@link EventProducer} interface.
-     * @param src the source file (a Java source file)
+     * Scans a file and processes it if it extends the {@link EventProducer}
+     * interface.
+     * 
+     * @param src
+     *            the source file (a Java source file)
      * @return true if the file contained an EventProducer interface
-     * @throws IOException if an I/O error occurs
-     * @throws EventConventionException if the EventProducer conventions are violated
-     * @throws ClassNotFoundException if a required class cannot be found
+     * @throws IOException
+     *             if an I/O error occurs
+     * @throws EventConventionException
+     *             if the EventProducer conventions are violated
+     * @throws ClassNotFoundException
+     *             if a required class cannot be found
      */
-    public boolean scanFile(File src)
-            throws IOException, EventConventionException, ClassNotFoundException {
-        JavaDocBuilder builder = new JavaDocBuilder(this.tagFactory);
+    public boolean scanFile(final File src) throws IOException,
+            EventConventionException, ClassNotFoundException {
+        final JavaDocBuilder builder = new JavaDocBuilder(this.tagFactory);
         builder.addSource(src);
-        JavaClass[] classes = builder.getClasses();
+        final JavaClass[] classes = builder.getClasses();
         boolean eventProducerFound = false;
         for (int i = 0, c = classes.length; i < c; i++) {
-            JavaClass clazz = classes[i];
-            if (clazz.isInterface() && implementsInterface(clazz, CLASSNAME_EVENT_PRODUCER)) {
+            final JavaClass clazz = classes[i];
+            if (clazz.isInterface()
+                    && implementsInterface(clazz, CLASSNAME_EVENT_PRODUCER)) {
                 processEventProducerInterface(clazz);
                 eventProducerFound = true;
             }
@@ -103,10 +112,10 @@ class EventProducerCollector {
         return eventProducerFound;
     }
 
-    private boolean implementsInterface(JavaClass clazz, String intf) {
-        JavaClass[] classes = clazz.getImplementedInterfaces();
+    private boolean implementsInterface(final JavaClass clazz, final String intf) {
+        final JavaClass[] classes = clazz.getImplementedInterfaces();
         for (int i = 0, c = classes.length; i < c; i++) {
-            JavaClass cl = classes[i];
+            final JavaClass cl = classes[i];
             if (cl.getFullyQualifiedName().equals(intf)) {
                 return true;
             }
@@ -115,85 +124,98 @@ class EventProducerCollector {
     }
 
     /**
-     * Processes an EventProducer interface and creates an EventProducerModel from it.
-     * @param clazz the EventProducer interface
-     * @throws EventConventionException if the event producer conventions are violated
-     * @throws ClassNotFoundException if a required class cannot be found
+     * Processes an EventProducer interface and creates an EventProducerModel
+     * from it.
+     * 
+     * @param clazz
+     *            the EventProducer interface
+     * @throws EventConventionException
+     *             if the event producer conventions are violated
+     * @throws ClassNotFoundException
+     *             if a required class cannot be found
      */
-    protected void processEventProducerInterface(JavaClass clazz)
-                throws EventConventionException, ClassNotFoundException {
-        EventProducerModel prodMeta = new EventProducerModel(clazz.getFullyQualifiedName());
-        JavaMethod[] methods = clazz.getMethods(true);
+    protected void processEventProducerInterface(final JavaClass clazz)
+            throws EventConventionException, ClassNotFoundException {
+        final EventProducerModel prodMeta = new EventProducerModel(
+                clazz.getFullyQualifiedName());
+        final JavaMethod[] methods = clazz.getMethods(true);
         for (int i = 0, c = methods.length; i < c; i++) {
-            JavaMethod method = methods[i];
-            EventMethodModel methodMeta = createMethodModel(method);
+            final JavaMethod method = methods[i];
+            final EventMethodModel methodMeta = createMethodModel(method);
             prodMeta.addMethod(methodMeta);
         }
-        EventModel model = new EventModel();
+        final EventModel model = new EventModel();
         model.addProducer(prodMeta);
-        models.add(model);
+        this.models.add(model);
     }
 
-    private EventMethodModel createMethodModel(JavaMethod method)
+    private EventMethodModel createMethodModel(final JavaMethod method)
             throws EventConventionException, ClassNotFoundException {
-        JavaClass clazz = method.getParentClass();
-        //Check EventProducer conventions
+        final JavaClass clazz = method.getParentClass();
+        // Check EventProducer conventions
         if (!method.getReturnType().isVoid()) {
             throw new EventConventionException("All methods of interface "
-                    + clazz.getFullyQualifiedName() + " must have return type 'void'!");
+                    + clazz.getFullyQualifiedName()
+                    + " must have return type 'void'!");
         }
-        String methodSig = clazz.getFullyQualifiedName() + "." + method.getCallSignature();
-        JavaParameter[] params = method.getParameters();
+        final String methodSig = clazz.getFullyQualifiedName() + "."
+                + method.getCallSignature();
+        final JavaParameter[] params = method.getParameters();
         if (params.length < 1) {
             throw new EventConventionException("The method " + methodSig
                     + " must have at least one parameter: 'Object source'!");
         }
-        Type firstType = params[0].getType();
+        final Type firstType = params[0].getType();
         if (firstType.isPrimitive() || !"source".equals(params[0].getName())) {
-            throw new EventConventionException("The first parameter of the method " + methodSig
-                    + " must be: 'Object source'!");
+            throw new EventConventionException(
+                    "The first parameter of the method " + methodSig
+                            + " must be: 'Object source'!");
         }
 
-        //build method model
-        DocletTag tag = method.getTagByName("event.severity");
+        // build method model
+        final DocletTag tag = method.getTagByName("event.severity");
         EventSeverity severity;
         if (tag != null) {
             severity = EventSeverity.valueOf(tag.getValue());
         } else {
             severity = EventSeverity.INFO;
         }
-        EventMethodModel methodMeta = new EventMethodModel(
+        final EventMethodModel methodMeta = new EventMethodModel(
                 method.getName(), severity);
         if (params.length > 1) {
             for (int j = 1, cj = params.length; j < cj; j++) {
-                JavaParameter p = params[j];
+                final JavaParameter p = params[j];
                 Class<?> type;
-                JavaClass pClass = p.getType().getJavaClass();
+                final JavaClass pClass = p.getType().getJavaClass();
                 if (p.getType().isPrimitive()) {
                     type = PRIMITIVE_MAP.get(pClass.getName());
                     if (type == null) {
                         throw new UnsupportedOperationException(
-                                "Primitive datatype not supported: " + pClass.getName());
+                                "Primitive datatype not supported: "
+                                        + pClass.getName());
                     }
                 } else {
-                    String className = pClass.getFullyQualifiedName();
+                    final String className = pClass.getFullyQualifiedName();
                     type = Class.forName(className);
                 }
                 methodMeta.addParameter(type, p.getName());
             }
         }
-        Type[] exceptions = method.getExceptions();
+        final Type[] exceptions = method.getExceptions();
         if (exceptions != null && exceptions.length > 0) {
-            //We only use the first declared exception because that is always thrown
-            JavaClass cl = exceptions[0].getJavaClass();
+            // We only use the first declared exception because that is always
+            // thrown
+            final JavaClass cl = exceptions[0].getJavaClass();
             methodMeta.setExceptionClass(cl.getFullyQualifiedName());
-            methodMeta.setSeverity(EventSeverity.FATAL); //In case it's not set in the comments
+            methodMeta.setSeverity(EventSeverity.FATAL); // In case it's not set
+                                                         // in the comments
         }
         return methodMeta;
     }
 
     /**
      * Returns the event model that has been accumulated.
+     * 
      * @return the event model.
      */
     public List<EventModel> getModels() {

@@ -33,14 +33,14 @@ public class HexEncoderTestCase {
      */
     @Test
     public void testEncodeChar() {
-        char[] digits = new char[] {'0', '0', '0', '0'};
+        final char[] digits = new char[] { '0', '0', '0', '0' };
         for (int c = 0; c <= 0xFFFF; c++) {
             assertEquals(new String(digits), HexEncoder.encode((char) c));
             increment(digits);
         }
     }
 
-    private static void increment(char[] digits) {
+    private static void increment(final char[] digits) {
         int d = 4;
         do {
             d--;
@@ -48,7 +48,7 @@ public class HexEncoderTestCase {
         } while (digits[d] == '0' && d > 0);
     }
 
-    private static char successor(char d) {
+    private static char successor(final char d) {
         if (d == '9') {
             return 'A';
         } else if (d == 'F') {

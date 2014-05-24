@@ -19,8 +19,8 @@
 
 package org.apache.fop.layoutmgr;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.area.AreaTreeHandler;
 import org.apache.fop.area.AreaTreeModel;
 import org.apache.fop.area.LineArea;
@@ -36,10 +36,9 @@ import org.apache.fop.layoutmgr.inline.ContentLayoutManager;
  * LayoutManager for a PageSequence. This class is instantiated by
  * area.AreaTreeHandler for each fo:page-sequence found in the input document.
  */
+@Slf4j
 public class PageSequenceLayoutManager extends
         AbstractPageSequenceLayoutManager {
-
-    private static Log log = LogFactory.getLog(PageSequenceLayoutManager.class);
 
     private final PageProvider pageProvider;
 
@@ -71,7 +70,7 @@ public class PageSequenceLayoutManager extends
 
     /**
      * Provides access to this object
-     * 
+     *
      * @return this PageSequenceLayoutManager instance
      */
     @Override
@@ -209,7 +208,7 @@ public class PageSequenceLayoutManager extends
     /**
      * The last page number of the sequence may be incremented, as determined by
      * the force-page-count formatting property semantics
-     * 
+     *
      * @param lastPageNum
      *            number of sequence
      * @return the forced last page number of sequence

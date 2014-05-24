@@ -39,58 +39,65 @@ public class TempFileStreamCache implements StreamCache {
     /**
      * The temp file.
      */
-    private File tempFile;
+    private final File tempFile;
 
     /**
      * Creates a new TempFileStreamCache.
      *
-     * @throws IOException if there is an IO error
+     * @throws IOException
+     *             if there is an IO error
      */
     public TempFileStreamCache() throws IOException {
-        tempFile = File.createTempFile("org.apache.fop.pdf.StreamCache-",
-                                       ".temp");
-        tempFile.deleteOnExit();
+        this.tempFile = File.createTempFile("org.apache.fop.pdf.StreamCache-",
+                ".temp");
+        this.tempFile.deleteOnExit();
     }
 
     /**
-     * Get the current OutputStream. Do not store it - it may change
-     * from call to call.
+     * Get the current OutputStream. Do not store it - it may change from call
+     * to call.
      *
-     * @throws IOException if there is an IO error
+     * @throws IOException
+     *             if there is an IO error
      * @return the output stream for this cache
      */
+    @Override
     public OutputStream getOutputStream() throws IOException {
-        if (output == null) {
-            output = new java.io.BufferedOutputStream(
-                       new java.io.FileOutputStream(tempFile));
+        if (this.output == null) {
+            this.output = new java.io.BufferedOutputStream(
+                    new java.io.FileOutputStream(this.tempFile));
         }
-        return output;
+        return this.output;
     }
 
     /**
      * {@inheritDoc}
      */
-    public void write(byte[] data) throws IOException {
+    @Override
+    public void write(final byte[] data) throws IOException {
         getOutputStream().write(data);
     }
 
     /**
      * Outputs the cached bytes to the given stream.
      *
-     * @param out the output stream to write to
+     * @param out
+     *            the output stream to write to
      * @return the number of bytes written
-     * @throws IOException if there is an IO error
+     * @throws IOException
+     *             if there is an IO error
      */
-    public int outputContents(OutputStream out) throws IOException {
-        if (output == null) {
+    @Override
+    public int outputContents(final OutputStream out) throws IOException {
+        if (this.output == null) {
             return 0;
         }
 
-        output.close();
-        output = null;
+        this.output.close();
+        this.output = null;
 
         // don't need a buffer because copy() is buffered
-        InputStream input = new java.io.FileInputStream(tempFile);
+        final InputStream input = new java.io.FileInputStream(this.tempFile);
         try {
             return IOUtils.copy(input, out);
         } finally {
@@ -101,28 +108,32 @@ public class TempFileStreamCache implements StreamCache {
     /**
      * Returns the current size of the stream.
      *
-     * @throws IOException if there is an IO error
+     * @throws IOException
+     *             if there is an IO error
      * @return the size of the cache
      */
+    @Override
     public int getSize() throws IOException {
-        if (output != null) {
-            output.flush();
+        if (this.output != null) {
+            this.output.flush();
         }
-        return (int) tempFile.length();
+        return (int) this.tempFile.length();
     }
 
     /**
      * Clears and resets the cache.
      *
-     * @throws IOException if there is an IO error
+     * @throws IOException
+     *             if there is an IO error
      */
+    @Override
     public void clear() throws IOException {
-        if (output != null) {
-            output.close();
-            output = null;
+        if (this.output != null) {
+            this.output.close();
+            this.output = null;
         }
-        if (tempFile.exists()) {
-            tempFile.delete();
+        if (this.tempFile.exists()) {
+            this.tempFile.delete();
         }
     }
 }

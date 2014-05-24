@@ -36,88 +36,100 @@ import org.apache.fop.util.CharUtilities;
  */
 public class BidiOverride extends Inline {
 
-    // The value of FO traits (refined properties) that apply to fo:bidi-override
+    // The value of FO traits (refined properties) that apply to
+    // fo:bidi-override
     // (that are not implemented by InlineLevel).
     private Property letterSpacing;
     private Property wordSpacing;
     private int direction;
     private int unicodeBidi;
+
     // private int scoreSpaces;
     // End of trait values
 
     /**
      * Base constructor
      *
-     * @param parent FONode that is the parent of this object
+     * @param parent
+     *            FONode that is the parent of this object
      */
-    public BidiOverride(FONode parent) {
+    public BidiOverride(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        letterSpacing = pList.get(PR_LETTER_SPACING);
-        wordSpacing = pList.get(PR_WORD_SPACING);
-        direction = pList.get(PR_DIRECTION).getEnum();
-        unicodeBidi = pList.get(PR_UNICODE_BIDI).getEnum();
+        this.letterSpacing = pList.get(PR_LETTER_SPACING);
+        this.wordSpacing = pList.get(PR_WORD_SPACING);
+        this.direction = pList.get(PR_DIRECTION).getEnum();
+        this.unicodeBidi = pList.get(PR_UNICODE_BIDI).getEnum();
     }
 
     /** @return the "letter-spacing" trait */
     public Property getLetterSpacing() {
-        return letterSpacing;
+        return this.letterSpacing;
     }
 
     /** @return the "word-spacing" trait */
     public Property getWordSpacing() {
-        return wordSpacing;
+        return this.wordSpacing;
     }
 
     /** @return the "direction" trait */
     public int getDirection() {
-        return direction;
+        return this.direction;
     }
 
     /** @return the "unicodeBidi" trait */
     public int getUnicodeBidi() {
-        return unicodeBidi;
+        return this.unicodeBidi;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "bidi-override";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_BIDI_OVERRIDE}
      */
+    @Override
     public int getNameId() {
         return FO_BIDI_OVERRIDE;
     }
 
     @Override
-    protected Stack collectDelimitedTextRanges ( Stack ranges, DelimitedTextRange currentRange ) {
+    protected Stack collectDelimitedTextRanges(Stack ranges,
+            final DelimitedTextRange currentRange) {
         char pfx = 0;
         char sfx = 0;
-        int unicodeBidi = getUnicodeBidi();
-        int direction = getDirection();
-        if ( unicodeBidi == Constants.EN_BIDI_OVERRIDE ) {
-            pfx = ( direction == Constants.EN_RTL ) ? CharUtilities.RLO : CharUtilities.LRO;
+        final int unicodeBidi = getUnicodeBidi();
+        final int direction = getDirection();
+        if (unicodeBidi == Constants.EN_BIDI_OVERRIDE) {
+            pfx = direction == Constants.EN_RTL ? CharUtilities.RLO
+                    : CharUtilities.LRO;
             sfx = CharUtilities.PDF;
-        } else if ( unicodeBidi == Constants.EN_EMBED ) {
-            pfx = ( direction == Constants.EN_RTL ) ? CharUtilities.RLE : CharUtilities.LRE;
+        } else if (unicodeBidi == Constants.EN_EMBED) {
+            pfx = direction == Constants.EN_RTL ? CharUtilities.RLE
+                    : CharUtilities.LRE;
             sfx = CharUtilities.PDF;
         }
-        if ( currentRange != null ) {
-            if ( pfx != 0 ) {
-                currentRange.append ( pfx, this );
+        if (currentRange != null) {
+            if (pfx != 0) {
+                currentRange.append(pfx, this);
             }
-            for ( Iterator it = getChildNodes(); ( it != null ) && it.hasNext();) {
-                ranges = ( (FONode) it.next() ).collectDelimitedTextRanges ( ranges );
+            for (final Iterator it = getChildNodes(); it != null
+                    && it.hasNext();) {
+                ranges = ((FONode) it.next())
+                        .collectDelimitedTextRanges(ranges);
             }
-            if ( sfx != 0 ) {
-                currentRange.append ( sfx, this );
+            if (sfx != 0) {
+                currentRange.append(sfx, this);
             }
         }
         return ranges;

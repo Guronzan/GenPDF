@@ -19,24 +19,19 @@
 
 package org.apache.fop.complexscripts;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
 import org.apache.fop.complexscripts.bidi.BidiTestSuite;
 import org.apache.fop.complexscripts.fonts.FontsTestSuite;
 import org.apache.fop.complexscripts.scripts.ScriptsTestSuite;
 import org.apache.fop.complexscripts.util.UtilTestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Test suite for complex scripts functionality.
  */
 @RunWith(Suite.class)
-@SuiteClasses({
-    BidiTestSuite.class,
-    FontsTestSuite.class,
-    ScriptsTestSuite.class,
-    UtilTestSuite.class
-})
+@SuiteClasses({ BidiTestSuite.class, FontsTestSuite.class,
+        ScriptsTestSuite.class, UtilTestSuite.class })
 public class ComplexScriptsTestSuite {
 }

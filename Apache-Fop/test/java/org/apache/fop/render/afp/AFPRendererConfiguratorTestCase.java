@@ -19,19 +19,18 @@
 
 package org.apache.fop.render.afp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.xml.sax.SAXException;
 
 import org.apache.fop.afp.AFPPaintingState;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FopFactory;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.xml.sax.SAXException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Test case for {@link AFPRendererConfigurator}.
@@ -52,16 +51,17 @@ public class AFPRendererConfiguratorTestCase {
     /**
      * Assigns an FOUserAgen with a config file at <code>uri</code>
      *
-     * @param uri the URI of the config file
+     * @param uri
+     *            the URI of the config file
      */
-    private void setConfigFile(String uri) {
-        String confTestsDir = "test/resources/conf/afp/";
+    private void setConfigFile(final String uri) {
+        final String confTestsDir = "test/resources/conf/afp/";
         try {
             userAgent.getFactory().setUserConfig(confTestsDir + uri);
-            sut = new AFPRendererConfigurator(userAgent);
-        } catch (IOException ioe) {
+            this.sut = new AFPRendererConfigurator(userAgent);
+        } catch (final IOException ioe) {
             fail("IOException: " + ioe);
-        } catch (SAXException se) {
+        } catch (final SAXException se) {
             fail("SAXException: " + se);
         }
     }
@@ -69,7 +69,8 @@ public class AFPRendererConfiguratorTestCase {
     /**
      * Test several config files relating to JPEG images in AFP.
      *
-     * @throws FOPException if an error is thrown
+     * @throws FOPException
+     *             if an error is thrown
      */
     @Test
     public void testJpegImageConfig() throws FOPException {
@@ -78,15 +79,17 @@ public class AFPRendererConfiguratorTestCase {
         testJpegSettings("bitmap_encode_quality.xconf", 0.5f, false);
     }
 
-    private void testJpegSettings(String uri, float bitmapEncodingQual, boolean canEmbed)
+    private void testJpegSettings(final String uri,
+            final float bitmapEncodingQual, final boolean canEmbed)
             throws FOPException {
-        AFPDocumentHandler docHandler = new AFPDocumentHandler();
+        final AFPDocumentHandler docHandler = new AFPDocumentHandler();
 
         setConfigFile(uri);
-        sut.configure(docHandler);
+        this.sut.configure(docHandler);
 
-        AFPPaintingState paintingState = docHandler.getPaintingState();
-        assertEquals(bitmapEncodingQual, paintingState.getBitmapEncodingQuality(), 0.01f);
+        final AFPPaintingState paintingState = docHandler.getPaintingState();
+        assertEquals(bitmapEncodingQual,
+                paintingState.getBitmapEncodingQuality(), 0.01f);
         assertEquals(canEmbed, paintingState.canEmbedJpeg());
     }
 }

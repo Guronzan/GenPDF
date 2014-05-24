@@ -19,9 +19,6 @@
 
 package org.apache.fop.render.afp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +31,9 @@ import org.apache.fop.afp.parser.UnparsedStructuredField;
 import org.apache.fop.apps.FOUserAgent;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 /**
  * Tests generation of afp:no-operation (NOPs).
  */
@@ -41,27 +41,31 @@ public class NoOperationTestCase extends AbstractAFPTest {
 
     /**
      * Tests afp:no-operation.
-     * @throws Exception if an error occurs
+     * 
+     * @throws Exception
+     *             if an error occurs
      */
     @Test
     public void testNoOperation() throws Exception {
-        FOUserAgent ua = fopFactory.newFOUserAgent();
-        File outputFile = renderFile(ua, "nops.fo", "");
+        final FOUserAgent ua = this.fopFactory.newFOUserAgent();
+        final File outputFile = renderFile(ua, "nops.fo", "");
 
         InputStream in = new java.io.FileInputStream(outputFile);
         try {
-            MODCAParser parser = new MODCAParser(in);
-            UnparsedStructuredField field = skipTo(parser, 0xD3A8A8); //Begin Document
+            final MODCAParser parser = new MODCAParser(in);
+            UnparsedStructuredField field = skipTo(parser, 0xD3A8A8); // Begin
+                                                                      // Document
 
-            //NOP in fo:declarations
+            // NOP in fo:declarations
             field = parser.readNextStructuredField();
             assertEquals(0xD3EEEE, field.getSfTypeID());
             assertEquals("fo:declarations", getNopText(field));
 
             field = parser.readNextStructuredField();
-            assertEquals(0xD3A8AD, field.getSfTypeID()); //Begin Named Page Group
+            assertEquals(0xD3A8AD, field.getSfTypeID()); // Begin Named Page
+                                                         // Group
 
-            //NOPs in fo:page-sequence
+            // NOPs in fo:page-sequence
             field = parser.readNextStructuredField();
             assertEquals(0xD3EEEE, field.getSfTypeID());
             assertEquals("fo:page-sequence: start", getNopText(field));
@@ -70,14 +74,14 @@ public class NoOperationTestCase extends AbstractAFPTest {
             assertEquals("fo:page-sequence: end", getNopText(field));
 
             field = parser.readNextStructuredField();
-            assertEquals(0xD3A8AF, field.getSfTypeID()); //Begin Page
+            assertEquals(0xD3A8AF, field.getSfTypeID()); // Begin Page
 
-            field = skipTo(parser, 0xD3A9C9); //End Active Environment Group
+            field = skipTo(parser, 0xD3A9C9); // End Active Environment Group
             field = parser.readNextStructuredField();
             assertEquals(0xD3EEEE, field.getSfTypeID());
             assertEquals("fo:simple-page-master: first", getNopText(field));
 
-            field = skipTo(parser, 0xD3A9C9); //End Active Environment Group
+            field = skipTo(parser, 0xD3A9C9); // End Active Environment Group
             field = parser.readNextStructuredField();
             assertEquals(0xD3EEEE, field.getSfTypeID());
             assertEquals("fo:simple-page-master: rest", getNopText(field));
@@ -88,9 +92,10 @@ public class NoOperationTestCase extends AbstractAFPTest {
         int counter = 0;
         in = new java.io.FileInputStream(outputFile);
         try {
-            MODCAParser parser = new MODCAParser(in);
+            final MODCAParser parser = new MODCAParser(in);
             while (true) {
-                UnparsedStructuredField field = parser.readNextStructuredField();
+                final UnparsedStructuredField field = parser
+                        .readNextStructuredField();
                 if (field == null) {
                     break;
                 }
@@ -101,16 +106,18 @@ public class NoOperationTestCase extends AbstractAFPTest {
         } finally {
             IOUtils.closeQuietly(in);
         }
-        assertEquals(6, counter); //decl, 2 * ps, 3 * page/spm
+        assertEquals(6, counter); // decl, 2 * ps, 3 * page/spm
     }
 
-    private String getNopText(UnparsedStructuredField field) throws UnsupportedEncodingException {
-        byte[] data = field.getData();
-        String text = new String(data, AFPConstants.EBCIDIC_ENCODING);
+    private String getNopText(final UnparsedStructuredField field)
+            throws UnsupportedEncodingException {
+        final byte[] data = field.getData();
+        final String text = new String(data, AFPConstants.EBCIDIC_ENCODING);
         return text;
     }
 
-    private UnparsedStructuredField skipTo(MODCAParser parser, int typeID) throws IOException {
+    private UnparsedStructuredField skipTo(final MODCAParser parser,
+            final int typeID) throws IOException {
         UnparsedStructuredField field = null;
         do {
             field = parser.readNextStructuredField();

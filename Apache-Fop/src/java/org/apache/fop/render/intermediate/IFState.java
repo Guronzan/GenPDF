@@ -38,10 +38,10 @@ public final class IFState {
     private Color textColor;
 
     private IFState() {
-        //nop
+        // nop
     }
 
-    private IFState(IFState parent) {
+    private IFState(final IFState parent) {
         this.parent = parent;
 
         this.fontFamily = parent.fontFamily;
@@ -80,17 +80,20 @@ public final class IFState {
 
     /**
      * Returns the font family.
+     * 
      * @return the font family
      */
     public String getFontFamily() {
-        return fontFamily;
+        return this.fontFamily;
     }
 
     /**
      * Sets the font family.
-     * @param family the new font family
+     * 
+     * @param family
+     *            the new font family
      */
-    public void setFontFamily(String family) {
+    public void setFontFamily(final String family) {
         if (!family.equals(this.fontFamily)) {
             this.fontChanged = true;
         }
@@ -99,17 +102,20 @@ public final class IFState {
 
     /**
      * Returns the font size.
+     * 
      * @return the font size (in mpt)
      */
     public int getFontSize() {
-        return fontSize;
+        return this.fontSize;
     }
 
     /**
      * Sets the font size.
-     * @param size the new font size (in mpt)
+     * 
+     * @param size
+     *            the new font size (in mpt)
      */
-    public void setFontSize(int size) {
+    public void setFontSize(final int size) {
         if (size != this.fontSize) {
             this.fontChanged = true;
         }
@@ -118,17 +124,20 @@ public final class IFState {
 
     /**
      * Returns the font style.
+     * 
      * @return the font style
      */
     public String getFontStyle() {
-        return fontStyle;
+        return this.fontStyle;
     }
 
     /**
      * Set the font style
-     * @param style the new font style
+     * 
+     * @param style
+     *            the new font style
      */
-    public void setFontStyle(String style) {
+    public void setFontStyle(final String style) {
         if (!style.equals(this.fontStyle)) {
             this.fontChanged = true;
         }
@@ -137,17 +146,20 @@ public final class IFState {
 
     /**
      * Returns the font weight.
+     * 
      * @return the font weight
      */
     public int getFontWeight() {
-        return fontWeight;
+        return this.fontWeight;
     }
 
     /**
      * Sets the font weight
-     * @param weight the new font weight
+     * 
+     * @param weight
+     *            the new font weight
      */
-    public void setFontWeight(int weight) {
+    public void setFontWeight(final int weight) {
         if (weight != this.fontWeight) {
             this.fontChanged = true;
         }
@@ -156,17 +168,20 @@ public final class IFState {
 
     /**
      * Returns the font variant.
+     * 
      * @return the font variant
      */
     public String getFontVariant() {
-        return fontVariant;
+        return this.fontVariant;
     }
 
     /**
      * Sets the font variant.
-     * @param variant the new font variant
+     * 
+     * @param variant
+     *            the new font variant
      */
-    public void setFontVariant(String variant) {
+    public void setFontVariant(final String variant) {
         if (!variant.equals(this.fontVariant)) {
             this.fontChanged = true;
         }
@@ -175,22 +190,24 @@ public final class IFState {
 
     /**
      * Returns the text color.
+     * 
      * @return the text color
      */
     public Color getTextColor() {
-        return textColor;
+        return this.textColor;
     }
 
     /**
      * Sets the text color.
-     * @param color the new text color
+     * 
+     * @param color
+     *            the new text color
      */
-    public void setTextColor(Color color) {
+    public void setTextColor(final Color color) {
         if (!ColorUtil.isSameColor(color, this.textColor)) {
             this.fontChanged = true;
         }
         this.textColor = color;
     }
-
 
 }

@@ -44,7 +44,8 @@ public final class DefaultColorConverter implements ColorConverter {
     }
 
     /** {@inheritDoc} */
-    public Color convert(Color color) {
+    @Override
+    public Color convert(final Color color) {
         return color;
     }
 }

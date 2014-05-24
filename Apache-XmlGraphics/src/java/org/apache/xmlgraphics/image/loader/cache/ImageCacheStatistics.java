@@ -37,12 +37,15 @@ public class ImageCacheStatistics implements ImageCacheListener {
 
     /**
      * Main constructor.
-     * @param detailed true if the cache hits/misses for each Image instance should be recorded.
+     * 
+     * @param detailed
+     *            true if the cache hits/misses for each Image instance should
+     *            be recorded.
      */
-    public ImageCacheStatistics(boolean detailed) {
+    public ImageCacheStatistics(final boolean detailed) {
         if (detailed) {
-            imageCacheHitMap = new java.util.HashMap();
-            imageCacheMissMap = new java.util.HashMap();
+            this.imageCacheHitMap = new java.util.HashMap();
+            this.imageCacheMissMap = new java.util.HashMap();
         }
     }
 
@@ -56,22 +59,25 @@ public class ImageCacheStatistics implements ImageCacheListener {
     }
 
     /** {@inheritDoc} */
-    public void invalidHit(String uri) {
-        invalidHits++;
+    @Override
+    public void invalidHit(final String uri) {
+        this.invalidHits++;
     }
 
     /** {@inheritDoc} */
-    public void cacheHitImageInfo(String uri) {
-        imageInfoCacheHits++;
+    @Override
+    public void cacheHitImageInfo(final String uri) {
+        this.imageInfoCacheHits++;
     }
 
     /** {@inheritDoc} */
-    public void cacheMissImageInfo(String uri) {
-        imageInfoCacheMisses++;
+    @Override
+    public void cacheMissImageInfo(final String uri) {
+        this.imageInfoCacheMisses++;
     }
 
-    private void increaseEntry(Map map, Object key) {
-        Integer v = (Integer)map.get(key);
+    private void increaseEntry(final Map map, final Object key) {
+        Integer v = (Integer) map.get(key);
         if (v == null) {
             v = new Integer(1);
         } else {
@@ -81,75 +87,84 @@ public class ImageCacheStatistics implements ImageCacheListener {
     }
 
     /** {@inheritDoc} */
-    public void cacheHitImage(ImageKey key) {
-        imageCacheHits++;
-        if (imageCacheHitMap != null) {
-            increaseEntry(imageCacheHitMap, key);
+    @Override
+    public void cacheHitImage(final ImageKey key) {
+        this.imageCacheHits++;
+        if (this.imageCacheHitMap != null) {
+            increaseEntry(this.imageCacheHitMap, key);
         }
     }
 
     /** {@inheritDoc} */
-    public void cacheMissImage(ImageKey key) {
-        imageCacheMisses++;
-        if (imageCacheMissMap != null) {
-            increaseEntry(imageCacheMissMap, key);
+    @Override
+    public void cacheMissImage(final ImageKey key) {
+        this.imageCacheMisses++;
+        if (this.imageCacheMissMap != null) {
+            increaseEntry(this.imageCacheMissMap, key);
         }
     }
 
     /**
      * Returns the number of times an invalid URI is tried.
+     * 
      * @return the number of times an invalid URI is tried.
      */
     public int getInvalidHits() {
-        return invalidHits;
+        return this.invalidHits;
     }
 
     /**
      * Returns the number of cache hits for ImageInfo instances.
+     * 
      * @return the number of cache hits for ImageInfo instances.
      */
     public int getImageInfoCacheHits() {
-        return imageInfoCacheHits;
+        return this.imageInfoCacheHits;
     }
 
     /**
      * Returns the number of cache misses for ImageInfo instances.
+     * 
      * @return the number of cache misses for ImageInfo instances.
      */
     public int getImageInfoCacheMisses() {
-        return imageInfoCacheMisses;
+        return this.imageInfoCacheMisses;
     }
 
     /**
      * Returns the number of cache hits for Image instances.
+     * 
      * @return the number of cache hits for Image instances.
      */
     public int getImageCacheHits() {
-        return imageCacheHits;
+        return this.imageCacheHits;
     }
 
     /**
      * Returns the number of cache misses for Image instances.
+     * 
      * @return the number of cache misses for Image instances.
      */
     public int getImageCacheMisses() {
-        return imageCacheMisses;
+        return this.imageCacheMisses;
     }
 
     /**
      * Returns a Map<ImageKey, Integer> with the number of cache hits.
+     * 
      * @return a Map<ImageKey, Integer> with the number of cache hits
      */
     public Map getImageCacheHitMap() {
-        return Collections.unmodifiableMap(imageCacheHitMap);
+        return Collections.unmodifiableMap(this.imageCacheHitMap);
     }
 
     /**
      * Returns a Map<ImageKey, Integer> with the number of cache misses.
+     * 
      * @return a Map<ImageKey, Integer> with the number of cache misses
      */
     public Map getImageCacheMissMap() {
-        return Collections.unmodifiableMap(imageCacheMissMap);
+        return Collections.unmodifiableMap(this.imageCacheMissMap);
     }
 
 }

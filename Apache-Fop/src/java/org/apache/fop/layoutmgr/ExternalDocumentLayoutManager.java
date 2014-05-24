@@ -26,8 +26,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.ResourceEventProducer;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.area.AreaTreeHandler;
@@ -56,11 +56,9 @@ import org.apache.xmlgraphics.image.loader.util.ImageUtil;
  * instantiated by area.AreaTreeHandler for each fo:external-document found in
  * the input document.
  */
+@Slf4j
 public class ExternalDocumentLayoutManager extends
         AbstractPageSequenceLayoutManager {
-
-    private static Log log = LogFactory
-            .getLog(ExternalDocumentLayoutManager.class);
 
     private ImageLayout imageLayout;
 

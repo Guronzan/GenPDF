@@ -30,32 +30,39 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.xmlgraphics.image.loader.ImageContext;
 
 /**
- * Very simple implementation of the ImageSessionContext interface. It works for absolute URLs
- * and local filenames only. Consider writing your own implementation of the ImageSessionContext
- * if you need more sophisticated functionality.
+ * Very simple implementation of the ImageSessionContext interface. It works for
+ * absolute URLs and local filenames only. Consider writing your own
+ * implementation of the ImageSessionContext if you need more sophisticated
+ * functionality.
  */
 public class DefaultImageSessionContext extends AbstractImageSessionContext {
 
-    private ImageContext context;
-    private File baseDir;
+    private final ImageContext context;
+    private final File baseDir;
 
     /**
      * Main constructor.
-     * @param context the parent image context
-     * @param baseDir the base directory for resolving relative filenames
+     * 
+     * @param context
+     *            the parent image context
+     * @param baseDir
+     *            the base directory for resolving relative filenames
      */
-    public DefaultImageSessionContext(ImageContext context, File baseDir) {
+    public DefaultImageSessionContext(final ImageContext context,
+            final File baseDir) {
         this.context = context;
         this.baseDir = baseDir;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageContext getParentContext() {
         return this.context;
     }
 
     /**
      * Returns the base directory for resolving relative filenames.
+     * 
      * @return the base directory
      */
     public File getBaseDir() {
@@ -63,25 +70,28 @@ public class DefaultImageSessionContext extends AbstractImageSessionContext {
     }
 
     /** {@inheritDoc} */
-    protected Source resolveURI(String uri) {
+    @Override
+    protected Source resolveURI(final String uri) {
         try {
-            URL url = new URL(uri);
+            final URL url = new URL(uri);
             return new StreamSource(url.openStream(), url.toExternalForm());
-        } catch (MalformedURLException e) {
-            File f = new File(baseDir, uri);
+        } catch (final MalformedURLException e) {
+            final File f = new File(this.baseDir, uri);
             if (f.isFile()) {
                 return new StreamSource(f);
             } else {
                 return null;
             }
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             return null;
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public float getTargetResolution() {
-        return getParentContext().getSourceResolution(); //same as source resolution
+        return getParentContext().getSourceResolution(); // same as source
+                                                         // resolution
     }
 
 }

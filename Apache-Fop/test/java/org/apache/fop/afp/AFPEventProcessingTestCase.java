@@ -24,56 +24,61 @@ import java.io.InputStream;
 
 import javax.xml.transform.TransformerException;
 
-import org.junit.Test;
-import org.xml.sax.SAXException;
-
-import org.apache.xmlgraphics.util.MimeConstants;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.events.EventProcessingTestCase;
+import org.apache.xmlgraphics.util.MimeConstants;
+import org.junit.Test;
+import org.xml.sax.SAXException;
 
 /**
  * A test class for testing AFP events.
  */
 public class AFPEventProcessingTestCase {
 
-    private EventProcessingTestCase eventsTests = new EventProcessingTestCase();
+    private final EventProcessingTestCase eventsTests = new EventProcessingTestCase();
     private static final String CONFIG_BASE_DIR = EventProcessingTestCase.CONFIG_BASE_DIR;
 
-    private void testInvalidConfigEvent(String xconf, String eventId)
-            throws FOPException, TransformerException, IOException, SAXException {
-        InputStream inStream = getClass().getResourceAsStream("simple.fo");
-        eventsTests.doTest(inStream, CONFIG_BASE_DIR + xconf,
-                AFPEventProducer.class.getName() + eventId, MimeConstants.MIME_AFP);
+    private void testInvalidConfigEvent(final String xconf, final String eventId)
+            throws FOPException, TransformerException, IOException,
+            SAXException {
+        final InputStream inStream = getClass()
+                .getResourceAsStream("simple.fo");
+        this.eventsTests.doTest(inStream, CONFIG_BASE_DIR + xconf,
+                AFPEventProducer.class.getName() + eventId,
+                MimeConstants.MIME_AFP);
     }
 
     @Test
-    public void testMissingFontConfigurationElement() throws FOPException, TransformerException,
-            IOException, SAXException {
+    public void testMissingFontConfigurationElement() throws FOPException,
+            TransformerException, IOException, SAXException {
         testInvalidConfigEvent("afp-font-missing.xconf", ".fontConfigMissing");
     }
 
     @Test
-    public void testInvalidCharactersetName() throws FOPException, TransformerException,
-            IOException, SAXException {
-        testInvalidConfigEvent("afp-invalid-characterset.xconf", ".characterSetNameInvalid");
+    public void testInvalidCharactersetName() throws FOPException,
+            TransformerException, IOException, SAXException {
+        testInvalidConfigEvent("afp-invalid-characterset.xconf",
+                ".characterSetNameInvalid");
     }
 
     @Test
-    public void testinvalidConfig() throws FOPException, TransformerException, IOException,
-            SAXException {
-        testInvalidConfigEvent("afp-invalid-config.xconf", ".invalidConfiguration");
+    public void testinvalidConfig() throws FOPException, TransformerException,
+            IOException, SAXException {
+        testInvalidConfigEvent("afp-invalid-config.xconf",
+                ".invalidConfiguration");
     }
 
     @Test
-    public void testRasterFontElementMissing() throws FOPException, TransformerException,
-            IOException, SAXException {
-        testInvalidConfigEvent("afp-raster-font-missing.xconf", ".fontConfigMissing");
+    public void testRasterFontElementMissing() throws FOPException,
+            TransformerException, IOException, SAXException {
+        testInvalidConfigEvent("afp-raster-font-missing.xconf",
+                ".fontConfigMissing");
     }
 
     @Test
-    public void testTripletElementMissing() throws FOPException, TransformerException,
-            IOException, SAXException {
-        testInvalidConfigEvent("afp-triplet-missing.xconf", ".fontConfigMissing");
+    public void testTripletElementMissing() throws FOPException,
+            TransformerException, IOException, SAXException {
+        testInvalidConfigEvent("afp-triplet-missing.xconf",
+                ".fontConfigMissing");
     }
 }

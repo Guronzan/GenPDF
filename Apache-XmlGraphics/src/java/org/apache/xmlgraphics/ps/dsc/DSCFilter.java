@@ -27,10 +27,13 @@ import org.apache.xmlgraphics.ps.dsc.events.DSCEvent;
 public interface DSCFilter {
 
     /**
-     * Indicates whether a particular event is acceptable or if it should be skipped/ignored.
-     * @param event the DSC event
+     * Indicates whether a particular event is acceptable or if it should be
+     * skipped/ignored.
+     * 
+     * @param event
+     *            the DSC event
      * @return true if the event should be accepted
      */
-    boolean accept(DSCEvent event);
+    boolean accept(final DSCEvent event);
 
 }

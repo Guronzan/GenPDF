@@ -23,9 +23,10 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * This class is used to observe Knuth element lists generated within the layout managers. This
- * is mainly used for the purpose of automated testing. This implementation here does nothing.
- * Please see the subclass within the test code.
+ * This class is used to observe Knuth element lists generated within the layout
+ * managers. This is mainly used for the purpose of automated testing. This
+ * implementation here does nothing. Please see the subclass within the test
+ * code.
  */
 public final class ElementListObserver {
 
@@ -36,9 +37,11 @@ public final class ElementListObserver {
 
     /**
      * Adds a new Observer to the list.
-     * @param observer the observer implementation
+     * 
+     * @param observer
+     *            the observer implementation
      */
-    public static void addObserver(Observer observer) {
+    public static void addObserver(final Observer observer) {
         if (!isObservationActive()) {
             activeObservers = new java.util.ArrayList();
         }
@@ -46,11 +49,13 @@ public final class ElementListObserver {
     }
 
     /**
-     * Removes an Observer from the list. This call simply returns if the observer was not on
-     * the list and does nothing.
-     * @param observer the observer to remove
+     * Removes an Observer from the list. This call simply returns if the
+     * observer was not on the list and does nothing.
+     * 
+     * @param observer
+     *            the observer to remove
      */
-    public static void removeObserver(Observer observer) {
+    public static void removeObserver(final Observer observer) {
         if (isObservationActive()) {
             activeObservers.remove(observer);
         }
@@ -58,18 +63,24 @@ public final class ElementListObserver {
 
     /**
      * Notifies all registered observers about the element list.
-     * @param elementList the Knuth element list
-     * @param category the category for the element list (example: main, static-content, table-cell)
-     * @param id ID for the element list (may be null)
+     * 
+     * @param elementList
+     *            the Knuth element list
+     * @param category
+     *            the category for the element list (example: main,
+     *            static-content, table-cell)
+     * @param id
+     *            ID for the element list (may be null)
      */
-    public static void observe(List elementList, String category, String id) {
+    public static void observe(final List elementList, final String category,
+            final String id) {
         if (isObservationActive()) {
             if (category == null) {
                 throw new NullPointerException("category must not be null");
             }
-            Iterator i = activeObservers.iterator();
+            final Iterator i = activeObservers.iterator();
             while (i.hasNext()) {
-                ((Observer)i.next()).observe(elementList, category, id);
+                ((Observer) i.next()).observe(elementList, category, id);
             }
         }
     }
@@ -86,12 +97,17 @@ public final class ElementListObserver {
 
         /**
          * Notifies the observer about the element list.
-         * @param elementList the Knuth element list
-         * @param category the category for the element list (example: main, static-content or
-         * table-cell)
-         * @param id ID for the element list (may be null)
+         * 
+         * @param elementList
+         *            the Knuth element list
+         * @param category
+         *            the category for the element list (example: main,
+         *            static-content or table-cell)
+         * @param id
+         *            ID for the element list (may be null)
          */
-        void observe(List elementList, String category, String id);
+        void observe(final List elementList, final String category,
+                final String id);
 
     }
 

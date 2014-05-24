@@ -24,17 +24,9 @@ import java.awt.color.ColorSpace;
 import java.io.IOException;
 import java.io.InputStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.apache.xmlgraphics.image.loader.Image;
-import org.apache.xmlgraphics.image.loader.ImageFlavor;
-import org.apache.xmlgraphics.image.loader.ImageSize;
-import org.apache.xmlgraphics.image.loader.impl.ImageRawJPEG;
-import org.apache.xmlgraphics.image.loader.impl.JPEGConstants;
-import org.apache.xmlgraphics.util.MimeConstants;
-
 import org.apache.fop.afp.AFPDataObjectInfo;
 import org.apache.fop.afp.AFPImageObjectInfo;
 import org.apache.fop.afp.AFPObjectAreaInfo;
@@ -45,19 +37,25 @@ import org.apache.fop.afp.ioca.ImageContent;
 import org.apache.fop.afp.modca.ResourceObject;
 import org.apache.fop.render.ImageHandler;
 import org.apache.fop.render.RenderingContext;
+import org.apache.xmlgraphics.image.loader.Image;
+import org.apache.xmlgraphics.image.loader.ImageFlavor;
+import org.apache.xmlgraphics.image.loader.ImageSize;
+import org.apache.xmlgraphics.image.loader.impl.ImageRawJPEG;
+import org.apache.xmlgraphics.image.loader.impl.JPEGConstants;
+import org.apache.xmlgraphics.util.MimeConstants;
 
 /**
- * {@link ImageHandler} implementation which handles ImageRawJPEG instances. JPEG data is
- * embedded directly (not decoded) into IOCA images (FS11 or FS45).
+ * {@link ImageHandler} implementation which handles ImageRawJPEG instances.
+ * JPEG data is embedded directly (not decoded) into IOCA images (FS11 or FS45).
  */
-public class AFPImageHandlerRawJPEG extends AFPImageHandler implements ImageHandler {
+@Slf4j
+public class AFPImageHandlerRawJPEG extends AFPImageHandler implements
+ImageHandler {
 
-    /** logging instance */
-    private final Log log = LogFactory.getLog(AFPImageHandlerRawJPEG.class);
-
-    private void setDefaultResourceLevel(AFPImageObjectInfo imageObjectInfo,
-            AFPResourceManager resourceManager) {
-        AFPResourceInfo resourceInfo = imageObjectInfo.getResourceInfo();
+    private void setDefaultResourceLevel(
+            final AFPImageObjectInfo imageObjectInfo,
+            final AFPResourceManager resourceManager) {
+        final AFPResourceInfo resourceInfo = imageObjectInfo.getResourceInfo();
         if (!resourceInfo.levelChanged()) {
             resourceInfo.setLevel(resourceManager.getResourceLevelDefaults()
                     .getDefaultResourceLevel(ResourceObject.TYPE_IMAGE));
@@ -71,42 +69,47 @@ public class AFPImageHandlerRawJPEG extends AFPImageHandler implements ImageHand
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getPriority() {
         return 150;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class<?> getSupportedImageClass() {
         return ImageRawJPEG.class;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor[] getSupportedImageFlavors() {
-        return new ImageFlavor[] {ImageFlavor.RAW_JPEG};
+        return new ImageFlavor[] { ImageFlavor.RAW_JPEG };
     }
 
     /** {@inheritDoc} */
-    public void handleImage(RenderingContext context, Image image, Rectangle pos)
-            throws IOException {
-        AFPRenderingContext afpContext = (AFPRenderingContext)context;
+    @Override
+    public void handleImage(final RenderingContext context, final Image image,
+            final Rectangle pos) throws IOException {
+        final AFPRenderingContext afpContext = (AFPRenderingContext) context;
 
-        AFPImageObjectInfo imageObjectInfo = (AFPImageObjectInfo)createDataObjectInfo();
-        AFPPaintingState paintingState = afpContext.getPaintingState();
+        final AFPImageObjectInfo imageObjectInfo = (AFPImageObjectInfo) createDataObjectInfo();
+        final AFPPaintingState paintingState = afpContext.getPaintingState();
 
         // set resource information
-        setResourceInformation(imageObjectInfo,
-                image.getInfo().getOriginalURI(),
-                afpContext.getForeignAttributes());
-        setDefaultResourceLevel(imageObjectInfo, afpContext.getResourceManager());
+        setResourceInformation(imageObjectInfo, image.getInfo()
+                .getOriginalURI(), afpContext.getForeignAttributes());
+        setDefaultResourceLevel(imageObjectInfo,
+                afpContext.getResourceManager());
 
         // Positioning
-        imageObjectInfo.setObjectAreaInfo(createObjectAreaInfo(paintingState, pos));
+        imageObjectInfo.setObjectAreaInfo(createObjectAreaInfo(paintingState,
+                pos));
         updateIntrinsicSize(imageObjectInfo, paintingState, image.getSize());
 
         // Image content
-        ImageRawJPEG jpeg = (ImageRawJPEG)image;
+        final ImageRawJPEG jpeg = (ImageRawJPEG) image;
         imageObjectInfo.setCompression(ImageContent.COMPID_JPEG);
-        ColorSpace cs = jpeg.getColorSpace();
+        final ColorSpace cs = jpeg.getColorSpace();
         switch (cs.getType()) {
         case ColorSpace.TYPE_GRAY:
             imageObjectInfo.setMimeType(MimeConstants.MIME_AFP_IOCA_FS11);
@@ -128,10 +131,11 @@ public class AFPImageHandlerRawJPEG extends AFPImageHandler implements ImageHand
                     "Color space of JPEG image not supported: " + cs);
         }
 
-        boolean included = afpContext.getResourceManager().tryIncludeObject(imageObjectInfo);
+        final boolean included = afpContext.getResourceManager()
+                .tryIncludeObject(imageObjectInfo);
         if (!included) {
             log.debug("Embedding undecoded JPEG as IOCA image...");
-            InputStream inputStream = jpeg.createInputStream();
+            final InputStream inputStream = jpeg.createInputStream();
             try {
                 imageObjectInfo.setData(IOUtils.toByteArray(inputStream));
             } finally {
@@ -143,59 +147,65 @@ public class AFPImageHandlerRawJPEG extends AFPImageHandler implements ImageHand
         }
     }
 
-    private void updateIntrinsicSize(AFPImageObjectInfo imageObjectInfo,
-            AFPPaintingState paintingState, ImageSize targetSize) {
-        //Update image object info
-        imageObjectInfo.setDataHeightRes((int)Math.round(
-                targetSize.getDpiHorizontal() * 10));
-        imageObjectInfo.setDataWidthRes((int)Math.round(
-                targetSize.getDpiVertical() * 10));
+    private void updateIntrinsicSize(final AFPImageObjectInfo imageObjectInfo,
+            final AFPPaintingState paintingState, final ImageSize targetSize) {
+        // Update image object info
+        imageObjectInfo.setDataHeightRes((int) Math.round(targetSize
+                .getDpiHorizontal() * 10));
+        imageObjectInfo.setDataWidthRes((int) Math.round(targetSize
+                .getDpiVertical() * 10));
         imageObjectInfo.setDataHeight(targetSize.getHeightPx());
         imageObjectInfo.setDataWidth(targetSize.getWidthPx());
 
         // set object area info
-        int resolution = paintingState.getResolution();
-        AFPObjectAreaInfo objectAreaInfo = imageObjectInfo.getObjectAreaInfo();
+        final int resolution = paintingState.getResolution();
+        final AFPObjectAreaInfo objectAreaInfo = imageObjectInfo
+                .getObjectAreaInfo();
         objectAreaInfo.setResolution(resolution);
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible(RenderingContext targetContext, Image image) {
+    @Override
+    public boolean isCompatible(final RenderingContext targetContext,
+            final Image image) {
         if (!(targetContext instanceof AFPRenderingContext)) {
-            return false; //AFP-specific image handler
+            return false; // AFP-specific image handler
         }
-        AFPRenderingContext context = (AFPRenderingContext)targetContext;
-        AFPPaintingState paintingState = context.getPaintingState();
+        final AFPRenderingContext context = (AFPRenderingContext) targetContext;
+        final AFPPaintingState paintingState = context.getPaintingState();
         if (!paintingState.canEmbedJpeg()) {
             return false;
         }
         if (paintingState.getBitsPerPixel() < 8) {
-            return false; //This would stand in the way of dithering and cause exceptions
+            return false; // This would stand in the way of dithering and cause
+            // exceptions
         }
         if (image == null) {
-            return true; //Don't know the image format, yet
+            return true; // Don't know the image format, yet
         }
         if (image instanceof ImageRawJPEG) {
-            ImageRawJPEG jpeg = (ImageRawJPEG)image;
-            ColorSpace cs = jpeg.getColorSpace();
+            final ImageRawJPEG jpeg = (ImageRawJPEG) image;
+            final ColorSpace cs = jpeg.getColorSpace();
             switch (cs.getType()) {
             case ColorSpace.TYPE_GRAY:
             case ColorSpace.TYPE_RGB:
-                //ok
+                // ok
                 break;
             case ColorSpace.TYPE_CMYK:
                 if (!paintingState.isCMYKImagesSupported()) {
-                    return false; //CMYK is disabled
-                    //Note: you may need to disable this image handler through configuration
-                    //if you want to paint a CMYK JPEG on 24bit and less configurations.
+                    return false; // CMYK is disabled
+                    // Note: you may need to disable this image handler through
+                    // configuration
+                    // if you want to paint a CMYK JPEG on 24bit and less
+                    // configurations.
                 }
                 break;
             default:
-                return false; //not supported
+                return false; // not supported
             }
 
             if (jpeg.getSOFType() != JPEGConstants.SOF0) {
-                return false; //We'll let only baseline DCT through.
+                return false; // We'll let only baseline DCT through.
             }
             return true;
         }

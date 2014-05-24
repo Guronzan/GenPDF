@@ -20,16 +20,18 @@
 package org.apache.fop.apps;
 
 /**
- * Frequently used MIME types for various file formats used when working with Apache FOP.
+ * Frequently used MIME types for various file formats used when working with
+ * Apache FOP.
  */
-public interface MimeConstants extends org.apache.xmlgraphics.util.MimeConstants {
+public interface MimeConstants extends
+        org.apache.xmlgraphics.util.MimeConstants {
 
     /** Apache FOP's AWT preview (non-standard MIME type) */
     String MIME_FOP_AWT_PREVIEW = "application/X-fop-awt-preview";
     /** Apache FOP's Direct Printing (non-standard MIME type) */
-    String MIME_FOP_PRINT       = "application/X-fop-print";
+    String MIME_FOP_PRINT = "application/X-fop-print";
     /** Apache FOP's area tree XML */
-    String MIME_FOP_AREA_TREE   = "application/X-fop-areatree";
+    String MIME_FOP_AREA_TREE = "application/X-fop-areatree";
     /** Apache FOP's intermediate format XML */
-    String MIME_FOP_IF          = "application/X-fop-intermediate-format";
+    String MIME_FOP_IF = "application/X-fop-intermediate-format";
 }

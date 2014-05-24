@@ -23,13 +23,12 @@ import java.awt.Dimension;
 
 import javax.xml.transform.Result;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.fop.render.intermediate.IFConstants;
 import org.apache.fop.render.intermediate.IFException;
 import org.apache.fop.render.intermediate.IFPainter;
 import org.apache.fop.util.XMLUtil;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * {@link org.apache.fop.render.intermediate.IFDocumentHandler} implementation
@@ -41,139 +40,160 @@ public class SVGPrintDocumentHandler extends AbstractSVGDocumentHandler {
      * Default constructor.
      */
     public SVGPrintDocumentHandler() {
-        //nop
+        // nop
     }
 
     /**
-     * Creates a new SVGPrintPainter that sends the XML content it generates to the given
-     * SAX ContentHandler.
-     * @param result the JAXP Result object to receive the generated content
-     * @throws IFException if an error occurs setting up the output
+     * Creates a new SVGPrintPainter that sends the XML content it generates to
+     * the given SAX ContentHandler.
+     * 
+     * @param result
+     *            the JAXP Result object to receive the generated content
+     * @throws IFException
+     *             if an error occurs setting up the output
      */
-    public SVGPrintDocumentHandler(Result result) throws IFException {
+    public SVGPrintDocumentHandler(final Result result) throws IFException {
         setResult(result);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean supportsPagesOutOfOrder() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return MIME_SVG_PRINT;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startDocument() throws IFException {
         super.startDocument();
         try {
-            handler.startDocument();
-            handler.startPrefixMapping("", NAMESPACE);
-            handler.startPrefixMapping(XLINK_PREFIX, XLINK_NAMESPACE);
-            handler.startPrefixMapping("if", IFConstants.NAMESPACE);
-            AttributesImpl atts = new AttributesImpl();
-            XMLUtil.addAttribute(atts, "version", "1.2"); //SVG Print is SVG 1.2
-            handler.startElement("svg", atts);
-        } catch (SAXException e) {
+            this.handler.startDocument();
+            this.handler.startPrefixMapping("", NAMESPACE);
+            this.handler.startPrefixMapping(XLINK_PREFIX, XLINK_NAMESPACE);
+            this.handler.startPrefixMapping("if", IFConstants.NAMESPACE);
+            final AttributesImpl atts = new AttributesImpl();
+            XMLUtil.addAttribute(atts, "version", "1.2"); // SVG Print is SVG
+                                                          // 1.2
+            this.handler.startElement("svg", atts);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startDocument()", e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endDocument() throws IFException {
         try {
-            handler.endElement("svg");
-            handler.endDocument();
-        } catch (SAXException e) {
+            this.handler.endElement("svg");
+            this.handler.endDocument();
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endDocument()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void startPageSequence(String id) throws IFException {
+    @Override
+    public void startPageSequence(final String id) throws IFException {
         try {
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             if (id != null) {
                 atts.addAttribute(XML_NAMESPACE, "id", "xml:id", CDATA, id);
             }
-            handler.startElement("pageSet", atts);
-        } catch (SAXException e) {
+            this.handler.startElement("pageSet", atts);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startPageSequence()", e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endPageSequence() throws IFException {
         try {
-            handler.endElement("pageSet");
-        } catch (SAXException e) {
+            this.handler.endElement("pageSet");
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endPageSequence()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void startPage(int index, String name, String pageMasterName, Dimension size)
-                throws IFException {
+    @Override
+    public void startPage(final int index, final String name,
+            final String pageMasterName, final Dimension size)
+            throws IFException {
         try {
-            AttributesImpl atts = new AttributesImpl();
+            final AttributesImpl atts = new AttributesImpl();
             /*
-            XMLUtil.addAttribute(atts, "index", Integer.toString(index));
-            XMLUtil.addAttribute(atts, "name", name);
-            */
-            //NOTE: SVG Print doesn't support individual page sizes for each page
+             * XMLUtil.addAttribute(atts, "index", Integer.toString(index));
+             * XMLUtil.addAttribute(atts, "name", name);
+             */
+            // NOTE: SVG Print doesn't support individual page sizes for each
+            // page
             atts.addAttribute(IFConstants.NAMESPACE, "width", "if:width",
                     CDATA, Integer.toString(size.width));
             atts.addAttribute(IFConstants.NAMESPACE, "height", "if:height",
                     CDATA, Integer.toString(size.height));
-            atts.addAttribute(IFConstants.NAMESPACE, "viewBox", "if:viewBox", CDATA,
-                    "0 0 " + Integer.toString(size.width) + " " + Integer.toString(size.height));
-            handler.startElement("page", atts);
-        } catch (SAXException e) {
+            atts.addAttribute(IFConstants.NAMESPACE, "viewBox", "if:viewBox",
+                    CDATA, "0 0 " + Integer.toString(size.width) + " "
+                            + Integer.toString(size.height));
+            this.handler.startElement("page", atts);
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startPage()", e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startPageHeader() throws IFException {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endPageHeader() throws IFException {
     }
 
     /** {@inheritDoc} */
+    @Override
     public IFPainter startPageContent() throws IFException {
         try {
-            handler.startElement("g");
-        } catch (SAXException e) {
+            this.handler.startElement("g");
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startPageContent()", e);
         }
-        return new SVGPainter(this, handler);
+        return new SVGPainter(this, this.handler);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endPageContent() throws IFException {
         try {
-            handler.endElement("g");
-        } catch (SAXException e) {
+            this.handler.endElement("g");
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endPageContent()", e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startPageTrailer() throws IFException {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endPageTrailer() throws IFException {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endPage() throws IFException {
         try {
-            handler.endElement("page");
-        } catch (SAXException e) {
+            this.handler.endElement("page");
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endPage()", e);
         }
     }

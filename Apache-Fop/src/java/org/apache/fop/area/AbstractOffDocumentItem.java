@@ -20,52 +20,53 @@
 package org.apache.fop.area;
 
 /**
- * Abstract base class for objects that are processed by the renderer outside
- * of the actual document.
- * This object can be handled by the renderer according to these
- * possibilities: IMMEDIATELY, AFTER_PAGE, START_OF_DOC or END_OF_DOC.
+ * Abstract base class for objects that are processed by the renderer outside of
+ * the actual document. This object can be handled by the renderer according to
+ * these possibilities: IMMEDIATELY, AFTER_PAGE, START_OF_DOC or END_OF_DOC.
  */
 public abstract class AbstractOffDocumentItem implements OffDocumentItem {
 
     /**
-     * Process this extension immediately when
-     * being handled by the area tree.
+     * Process this extension immediately when being handled by the area tree.
      */
     public static final int IMMEDIATELY = 0;
 
     /**
-     * Process this extension after the next page is rendered
-     * or prepared when being handled by the area tree.
+     * Process this extension after the next page is rendered or prepared when
+     * being handled by the area tree.
      */
     public static final int AFTER_PAGE = 1;
 
     /**
-     * Process this extension at the end of the document once
-     * all pages have been fully rendered.
+     * Process this extension at the end of the document once all pages have
+     * been fully rendered.
      */
     public static final int END_OF_DOC = 2;
 
     /**
-     * Process this extension at the start of the document right
-     * before the first page-sequence is processed.
+     * Process this extension at the start of the document right before the
+     * first page-sequence is processed.
      */
     public static final int START_OF_DOC = 2;
-
 
     /** Indicates in what phase the item should be processed. */
     protected int whenToProcess = IMMEDIATELY;
 
     /**
      * Get an indicator of when this item should be processed
+     * 
      * @return int constant (IMMEDIATELY, AFTER_PAGE, START_OF_DOC, END_OF_DOC)
      */
+    @Override
     public int getWhenToProcess() {
-        return whenToProcess;
+        return this.whenToProcess;
     }
 
     /**
      * Return a human-readable name for this ODI (for error messages, etc.)
+     * 
      * @return String name of ODI
      */
+    @Override
     public abstract String getName();
 }

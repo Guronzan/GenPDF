@@ -19,40 +19,45 @@
 
 package org.apache.fop.config;
 
-import static org.junit.Assert.fail;
-
 import java.net.MalformedURLException;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.apps.FOURIResolver;
 import org.junit.Test;
 
+import static org.junit.Assert.fail;
+
 /**
  * This tests some aspects of the {@link FOURIResolver} class.
  */
+@Slf4j
 public class FOURIResolverTestCase {
 
     /**
      * Checks the {@link FOURIResolver#checkBaseURL(String)} method.
-     * @throws Exception if an error occurs
+     *
+     * @throws Exception
+     *             if an error occurs
      */
     @Test
     public void testCheckBaseURI() throws Exception {
-        FOURIResolver resolver = new FOURIResolver(true);
-        System.out.println(resolver.checkBaseURL("./test/config"));
-        System.out.println(resolver.checkBaseURL("file:test/config"));
-        System.out.println(resolver.checkBaseURL("fantasy:myconfig"));
-        System.out.println(resolver.checkBaseURL("file:test\\config\\"));
+        final FOURIResolver resolver = new FOURIResolver(true);
+        log.info(resolver.checkBaseURL("./test/config"));
+        log.info(resolver.checkBaseURL("file:test/config"));
+        log.info(resolver.checkBaseURL("fantasy:myconfig"));
+        log.info(resolver.checkBaseURL("file:test\\config\\"));
         try {
             resolver.checkBaseURL("./doesnotexist");
             fail("Expected an exception for a inexistent base directory");
-        } catch (MalformedURLException mfue) {
-            //expected
+        } catch (final MalformedURLException mfue) {
+            // expected
         }
         try {
             resolver.checkBaseURL("file:doesnotexist");
             fail("Expected an exception for a inexistent base URI");
-        } catch (MalformedURLException mfue) {
-            //expected
+        } catch (final MalformedURLException mfue) {
+            // expected
         }
     }
 

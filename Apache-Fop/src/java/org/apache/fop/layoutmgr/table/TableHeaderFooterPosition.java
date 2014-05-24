@@ -25,8 +25,8 @@ import org.apache.fop.layoutmgr.LayoutManager;
 import org.apache.fop.layoutmgr.Position;
 
 /**
- * This class represents a Position specific to TableContentLayoutManager. Used for table
- * headers and footers at the beginning and end of a table.
+ * This class represents a Position specific to TableContentLayoutManager. Used
+ * for table headers and footers at the beginning and end of a table.
  */
 class TableHeaderFooterPosition extends Position {
 
@@ -37,28 +37,34 @@ class TableHeaderFooterPosition extends Position {
 
     /**
      * Creates a new TableHeaderFooterPosition.
-     * @param lm applicable layout manager
-     * @param header True indicates a position for a header, false for a footer.
-     * @param nestedElements Element list representing the header/footer
+     * 
+     * @param lm
+     *            applicable layout manager
+     * @param header
+     *            True indicates a position for a header, false for a footer.
+     * @param nestedElements
+     *            Element list representing the header/footer
      */
-    protected TableHeaderFooterPosition(LayoutManager lm,
-            boolean header, List nestedElements) {
+    protected TableHeaderFooterPosition(final LayoutManager lm,
+            final boolean header, final List nestedElements) {
         super(lm);
         this.header = header;
         this.nestedElements = nestedElements;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean generatesAreas() {
         return true;
     }
 
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("Table");
-        sb.append(header ? "Header" : "Footer");
+        final StringBuffer sb = new StringBuffer("Table");
+        sb.append(this.header ? "Header" : "Footer");
         sb.append("Position:");
         sb.append(getIndex()).append("(");
-        sb.append(nestedElements);
+        sb.append(this.nestedElements);
         sb.append(")");
         return sb.toString();
     }

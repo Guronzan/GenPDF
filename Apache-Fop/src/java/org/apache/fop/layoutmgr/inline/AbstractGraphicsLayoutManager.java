@@ -32,12 +32,12 @@ import org.apache.fop.fo.properties.CommonBorderPaddingBackground;
 import org.apache.fop.layoutmgr.LayoutContext;
 import org.apache.fop.layoutmgr.TraitSetter;
 
-
 /**
  * LayoutManager handling the common tasks for the fo:instream-foreign-object
  * and fo:external-graphics formatting objects
  */
-public abstract class AbstractGraphicsLayoutManager extends LeafNodeLayoutManager {
+public abstract class AbstractGraphicsLayoutManager extends
+        LeafNodeLayoutManager {
 
     /**
      * Constructor.
@@ -45,7 +45,7 @@ public abstract class AbstractGraphicsLayoutManager extends LeafNodeLayoutManage
      * @param node
      *            the formatting object that creates this area
      */
-    public AbstractGraphicsLayoutManager(AbstractGraphics node) {
+    public AbstractGraphicsLayoutManager(final AbstractGraphics node) {
         super(node);
     }
 
@@ -55,43 +55,52 @@ public abstract class AbstractGraphicsLayoutManager extends LeafNodeLayoutManage
      * @return the viewport inline area
      */
     private InlineViewport getInlineArea() {
-        final AbstractGraphics fobj = (AbstractGraphics)this.fobj;
-        Dimension intrinsicSize = new Dimension(
-                fobj.getIntrinsicWidth(),
+        final AbstractGraphics fobj = (AbstractGraphics) this.fobj;
+        final Dimension intrinsicSize = new Dimension(fobj.getIntrinsicWidth(),
                 fobj.getIntrinsicHeight());
-        int bidiLevel = fobj.getBidiLevel();
+        final int bidiLevel = fobj.getBidiLevel();
 
-        //TODO Investigate if the line-height property has to be taken into the calculation
-        //somehow. There was some code here that hints in this direction but it was disabled.
+        // TODO Investigate if the line-height property has to be taken into the
+        // calculation
+        // somehow. There was some code here that hints in this direction but it
+        // was disabled.
 
-        ImageLayout imageLayout = new ImageLayout(fobj, this, intrinsicSize);
-        Rectangle placement = imageLayout.getPlacement();
+        final ImageLayout imageLayout = new ImageLayout(fobj, this,
+                intrinsicSize);
+        final Rectangle placement = imageLayout.getPlacement();
 
-        CommonBorderPaddingBackground borderProps = fobj.getCommonBorderPaddingBackground();
+        final CommonBorderPaddingBackground borderProps = fobj
+                .getCommonBorderPaddingBackground();
         setCommonBorderPaddingBackground(borderProps);
 
-        //Determine extra BPD from borders and padding
-        int beforeBPD = borderProps.getPadding(CommonBorderPaddingBackground.BEFORE, false, this);
-        beforeBPD += borderProps.getBorderWidth(CommonBorderPaddingBackground.BEFORE, false);
+        // Determine extra BPD from borders and padding
+        int beforeBPD = borderProps.getPadding(
+                CommonBorderPaddingBackground.BEFORE, false, this);
+        beforeBPD += borderProps.getBorderWidth(
+                CommonBorderPaddingBackground.BEFORE, false);
 
         placement.y += beforeBPD;
 
-        //Determine extra IPD from borders and padding
-        if ( ( bidiLevel == -1 ) || ( ( bidiLevel & 1 ) == 0 ) ) {
-            int startIPD = borderProps.getPadding(CommonBorderPaddingBackground.START, false, this);
-            startIPD += borderProps.getBorderWidth(CommonBorderPaddingBackground.START, false);
+        // Determine extra IPD from borders and padding
+        if (bidiLevel == -1 || (bidiLevel & 1) == 0) {
+            int startIPD = borderProps.getPadding(
+                    CommonBorderPaddingBackground.START, false, this);
+            startIPD += borderProps.getBorderWidth(
+                    CommonBorderPaddingBackground.START, false);
             placement.x += startIPD;
         } else {
-            int endIPD = borderProps.getPadding(CommonBorderPaddingBackground.END, false, this);
-            endIPD += borderProps.getBorderWidth(CommonBorderPaddingBackground.END, false);
+            int endIPD = borderProps.getPadding(
+                    CommonBorderPaddingBackground.END, false, this);
+            endIPD += borderProps.getBorderWidth(
+                    CommonBorderPaddingBackground.END, false);
             placement.x += endIPD;
         }
 
-        Area viewportArea = getChildArea();
+        final Area viewportArea = getChildArea();
         TraitSetter.setProducerID(viewportArea, fobj.getId());
         transferForeignAttributes(viewportArea);
 
-        InlineViewport vp = new InlineViewport(viewportArea, bidiLevel);
+        final InlineViewport vp = new InlineViewport(viewportArea, bidiLevel);
         TraitSetter.addStructureTreeElement(vp, fobj.getStructureTreeElement());
         TraitSetter.setProducerID(vp, fobj.getId());
         vp.setIPD(imageLayout.getViewportSize().width);
@@ -101,39 +110,37 @@ public abstract class AbstractGraphicsLayoutManager extends LeafNodeLayoutManage
         vp.setBlockProgressionOffset(0);
 
         // Common Border, Padding, and Background Properties
-        TraitSetter.addBorders(vp, borderProps
-                                , false, false, false, false, this);
-        TraitSetter.addPadding(vp, borderProps
-                                , false, false, false, false, this);
+        TraitSetter.addBorders(vp, borderProps, false, false, false, false,
+                this);
+        TraitSetter.addPadding(vp, borderProps, false, false, false, false,
+                this);
         TraitSetter.addBackground(vp, borderProps, this);
 
         return vp;
     }
 
     /** {@inheritDoc} */
-    public List getNextKnuthElements(LayoutContext context,
-                                           int alignment) {
-        InlineViewport areaCurrent = getInlineArea();
+    @Override
+    public List getNextKnuthElements(final LayoutContext context,
+            final int alignment) {
+        final InlineViewport areaCurrent = getInlineArea();
         setCurrentArea(areaCurrent);
         return super.getNextKnuthElements(context, alignment);
     }
 
     /** {@inheritDoc} */
-    protected AlignmentContext makeAlignmentContext(LayoutContext context) {
-        final AbstractGraphics fobj = (AbstractGraphics)this.fobj;
-        return new AlignmentContext(
-                get(context).getAllocBPD()
-                , fobj.getAlignmentAdjust()
-                , fobj.getAlignmentBaseline()
-                , fobj.getBaselineShift()
-                , fobj.getDominantBaseline()
-                , context.getAlignmentContext()
-            );
+    @Override
+    protected AlignmentContext makeAlignmentContext(final LayoutContext context) {
+        final AbstractGraphics fobj = (AbstractGraphics) this.fobj;
+        return new AlignmentContext(get(context).getAllocBPD(),
+                fobj.getAlignmentAdjust(), fobj.getAlignmentBaseline(),
+                fobj.getBaselineShift(), fobj.getDominantBaseline(),
+                context.getAlignmentContext());
     }
 
     /**
-     * Returns the image of foreign object area to be put into
-     * the viewport.
+     * Returns the image of foreign object area to be put into the viewport.
+     * 
      * @return the appropriate area
      */
     protected abstract Area getChildArea();
@@ -143,12 +150,13 @@ public abstract class AbstractGraphicsLayoutManager extends LeafNodeLayoutManage
     /**
      * {@inheritDoc}
      */
-    public int getBaseLength(int lengthBase, FObj fobj) {
+    @Override
+    public int getBaseLength(final int lengthBase, final FObj fobj) {
         switch (lengthBase) {
         case LengthBase.IMAGE_INTRINSIC_WIDTH:
-            return ((AbstractGraphics)fobj).getIntrinsicWidth();
+            return ((AbstractGraphics) fobj).getIntrinsicWidth();
         case LengthBase.IMAGE_INTRINSIC_HEIGHT:
-            return ((AbstractGraphics)fobj).getIntrinsicHeight();
+            return ((AbstractGraphics) fobj).getIntrinsicHeight();
         case LengthBase.ALIGNMENT_ADJUST:
             return get(null).getBPD();
         default: // Delegate to super class
@@ -156,4 +164,3 @@ public abstract class AbstractGraphicsLayoutManager extends LeafNodeLayoutManage
         }
     }
 }
-

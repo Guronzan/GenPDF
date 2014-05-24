@@ -25,8 +25,8 @@ import org.apache.fop.layoutmgr.LayoutManager;
 import org.apache.fop.layoutmgr.Position;
 
 /**
- * This class represents a Position specific to TableContentLayoutManager. Used for table
- * headers and footers at breaks.
+ * This class represents a Position specific to TableContentLayoutManager. Used
+ * for table headers and footers at breaks.
  */
 class TableHFPenaltyPosition extends Position {
 
@@ -37,24 +37,28 @@ class TableHFPenaltyPosition extends Position {
 
     /**
      * Creates a new TableHFPenaltyPosition
-     * @param lm applicable layout manager
+     * 
+     * @param lm
+     *            applicable layout manager
      */
-    protected TableHFPenaltyPosition(LayoutManager lm) {
+    protected TableHFPenaltyPosition(final LayoutManager lm) {
         super(lm);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean generatesAreas() {
         return true;
     }
 
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("TableHFPenaltyPosition:");
+        final StringBuffer sb = new StringBuffer("TableHFPenaltyPosition:");
         sb.append(getIndex()).append("(");
         sb.append("header:");
-        sb.append(headerElements);
+        sb.append(this.headerElements);
         sb.append(", footer:");
-        sb.append(footerElements);
+        sb.append(this.footerElements);
         sb.append(")");
         return sb.toString();
     }

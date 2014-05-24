@@ -26,7 +26,7 @@ import org.apache.xmlgraphics.java2d.Graphics2DImagePainter;
 import org.apache.xmlgraphics.util.MimeConstants;
 
 /**
- *  A graphics object info which contains necessary painting objects
+ * A graphics object info which contains necessary painting objects
  */
 public class AFPGraphicsObjectInfo extends AFPDataObjectInfo {
 
@@ -51,9 +51,10 @@ public class AFPGraphicsObjectInfo extends AFPDataObjectInfo {
     /**
      * Sets the graphics painter
      *
-     * @param graphicsPainter the graphics painter
+     * @param graphicsPainter
+     *            the graphics painter
      */
-    public void setPainter(Graphics2DImagePainter graphicsPainter) {
+    public void setPainter(final Graphics2DImagePainter graphicsPainter) {
         this.painter = graphicsPainter;
     }
 
@@ -63,27 +64,29 @@ public class AFPGraphicsObjectInfo extends AFPDataObjectInfo {
      * @return the graphics area
      */
     public Rectangle2D getArea() {
-        AFPObjectAreaInfo objectAreaInfo = getObjectAreaInfo();
-        int width = objectAreaInfo.getWidth();
-        int height = objectAreaInfo.getHeight();
+        final AFPObjectAreaInfo objectAreaInfo = getObjectAreaInfo();
+        final int width = objectAreaInfo.getWidth();
+        final int height = objectAreaInfo.getHeight();
         return new Rectangle(width, height);
     }
 
     /**
      * Sets the graphics area area
      *
-     * @param area the graphics object area
+     * @param area
+     *            the graphics object area
      */
-    public void setArea(Rectangle2D area) {
+    public void setArea(final Rectangle2D area) {
         this.area = area;
     }
 
     /**
      * Sets the AFP graphics 2D implementation
      *
-     * @param g2d the AFP graphics 2D implementation
+     * @param g2d
+     *            the AFP graphics 2D implementation
      */
-    public void setGraphics2D(AFPGraphics2D g2d) {
+    public void setGraphics2D(final AFPGraphics2D g2d) {
         this.g2d = g2d;
     }
 
@@ -97,11 +100,13 @@ public class AFPGraphicsObjectInfo extends AFPDataObjectInfo {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "GraphicsObjectInfo{" + super.toString() + "}";
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return MimeConstants.MIME_SVG;
     }

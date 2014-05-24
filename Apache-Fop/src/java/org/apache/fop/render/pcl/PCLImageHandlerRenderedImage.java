@@ -25,52 +25,56 @@ import java.awt.geom.Point2D;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 
+import org.apache.fop.render.ImageHandler;
+import org.apache.fop.render.RenderingContext;
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.impl.ImageRendered;
 
-import org.apache.fop.render.ImageHandler;
-import org.apache.fop.render.RenderingContext;
-
 /**
- * Image handler implementation that paints {@link RenderedImage} instances in PCL.
+ * Image handler implementation that paints {@link RenderedImage} instances in
+ * PCL.
  */
 public class PCLImageHandlerRenderedImage implements ImageHandler {
 
     /** {@inheritDoc} */
+    @Override
     public int getPriority() {
         return 300;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class getSupportedImageClass() {
         return ImageRendered.class;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor[] getSupportedImageFlavors() {
-        return new ImageFlavor[] {
-            ImageFlavor.BUFFERED_IMAGE,
-            ImageFlavor.RENDERED_IMAGE,
-        };
+        return new ImageFlavor[] { ImageFlavor.BUFFERED_IMAGE,
+                ImageFlavor.RENDERED_IMAGE, };
     }
 
     /** {@inheritDoc} */
-    public void handleImage(RenderingContext context, Image image, Rectangle pos)
-            throws IOException {
-        PCLRenderingContext pclContext = (PCLRenderingContext)context;
-        ImageRendered imageRend = (ImageRendered)image;
-        PCLGenerator gen = pclContext.getPCLGenerator();
+    @Override
+    public void handleImage(final RenderingContext context, final Image image,
+            final Rectangle pos) throws IOException {
+        final PCLRenderingContext pclContext = (PCLRenderingContext) context;
+        final ImageRendered imageRend = (ImageRendered) image;
+        final PCLGenerator gen = pclContext.getPCLGenerator();
 
-        RenderedImage ri = imageRend.getRenderedImage();
-        Point2D transPoint = pclContext.transformedPoint(pos.x, pos.y);
+        final RenderedImage ri = imageRend.getRenderedImage();
+        final Point2D transPoint = pclContext.transformedPoint(pos.x, pos.y);
         gen.setCursorPos(transPoint.getX(), transPoint.getY());
         gen.paintBitmap(ri, new Dimension(pos.width, pos.height),
                 pclContext.isSourceTransparencyEnabled());
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible(RenderingContext targetContext, Image image) {
+    @Override
+    public boolean isCompatible(final RenderingContext targetContext,
+            final Image image) {
         return (image == null || image instanceof ImageRendered)
                 && targetContext instanceof PCLRenderingContext;
     }

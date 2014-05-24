@@ -56,21 +56,21 @@ public class PreloaderEMF extends AbstractImagePreloader {
     private static final int VRES_MM_OFFSET = 84;
 
     /** {@inheritDoc} */
-    public ImageInfo preloadImage(String uri, Source src, ImageContext context)
-                throws IOException, ImageException {
+    @Override
+    public ImageInfo preloadImage(final String uri, final Source src,
+            final ImageContext context) throws IOException, ImageException {
         if (!ImageUtil.hasImageInputStream(src)) {
             return null;
         }
-        ImageInputStream in = ImageUtil.needImageInputStream(src);
-        byte[] header = getHeader(in, EMF_SIG_LENGTH);
-        boolean supported
-            = ( (header[SIGNATURE_OFFSET + 0] == (byte) 0x20)
-            && (header[SIGNATURE_OFFSET + 1] == (byte) 0x45)
-            && (header[SIGNATURE_OFFSET + 2] == (byte) 0x4D)
-            && (header[SIGNATURE_OFFSET + 3] == (byte) 0x46) );
+        final ImageInputStream in = ImageUtil.needImageInputStream(src);
+        final byte[] header = getHeader(in, EMF_SIG_LENGTH);
+        final boolean supported = header[SIGNATURE_OFFSET + 0] == (byte) 0x20
+                && header[SIGNATURE_OFFSET + 1] == (byte) 0x45
+                && header[SIGNATURE_OFFSET + 2] == (byte) 0x4D
+                && header[SIGNATURE_OFFSET + 3] == (byte) 0x46;
 
         if (supported) {
-            ImageInfo info = new ImageInfo(uri, "image/emf");
+            final ImageInfo info = new ImageInfo(uri, "image/emf");
             info.setSize(determineSize(in, context));
             return info;
         } else {
@@ -78,32 +78,32 @@ public class PreloaderEMF extends AbstractImagePreloader {
         }
     }
 
-    private ImageSize determineSize(ImageInputStream in, ImageContext context)
-            throws IOException, ImageException {
+    private ImageSize determineSize(final ImageInputStream in,
+            final ImageContext context) throws IOException {
         in.mark();
-        ByteOrder oldByteOrder = in.getByteOrder();
+        final ByteOrder oldByteOrder = in.getByteOrder();
         try {
-            ImageSize size = new ImageSize();
+            final ImageSize size = new ImageSize();
 
             // BMP uses little endian notation!
             in.setByteOrder(ByteOrder.LITTLE_ENDIAN);
 
-            //resolution
+            // resolution
             in.skipBytes(WIDTH_OFFSET);
-            int width = (int)in.readUnsignedInt();
-            int height = (int)in.readUnsignedInt();
+            int width = (int) in.readUnsignedInt();
+            int height = (int) in.readUnsignedInt();
 
             in.skipBytes(HRES_PIXEL_OFFSET - WIDTH_OFFSET - 8);
-            long hresPixel = in.readUnsignedInt();
-            long vresPixel = in.readUnsignedInt();
-            long hresMM = in.readUnsignedInt();
-            long vresMM = in.readUnsignedInt();
-            double resHorz = hresPixel / UnitConv.mm2in(hresMM);
-            double resVert = vresPixel / UnitConv.mm2in(vresMM);
+            final long hresPixel = in.readUnsignedInt();
+            final long vresPixel = in.readUnsignedInt();
+            final long hresMM = in.readUnsignedInt();
+            final long vresMM = in.readUnsignedInt();
+            final double resHorz = hresPixel / UnitConv.mm2in(hresMM);
+            final double resVert = vresPixel / UnitConv.mm2in(vresMM);
             size.setResolution(resHorz, resVert);
 
-            width = (int)Math.round(UnitConv.mm2mpt(width / 100f));
-            height = (int)Math.round(UnitConv.mm2mpt(height / 100f));
+            width = (int) Math.round(UnitConv.mm2mpt(width / 100f));
+            height = (int) Math.round(UnitConv.mm2mpt(height / 100f));
             size.setSizeInMillipoints(width, height);
             size.calcPixelsFromSize();
 

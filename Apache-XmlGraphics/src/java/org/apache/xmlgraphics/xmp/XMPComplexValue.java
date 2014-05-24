@@ -28,8 +28,10 @@ public abstract class XMPComplexValue implements XMLizable {
 
     /**
      * Returns a normal Java object representing the value if it is available.
-     * @return a simple object value or null if no such value can be returned (for example,
-     *          because the value is an array and has multiple entries.
+     * 
+     * @return a simple object value or null if no such value can be returned
+     *         (for example, because the value is an array and has multiple
+     *         entries.
      */
     public abstract Object getSimpleValue();
 

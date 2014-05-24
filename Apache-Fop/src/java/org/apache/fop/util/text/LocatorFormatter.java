@@ -19,9 +19,8 @@
 
 package org.apache.fop.util.text;
 
-import org.xml.sax.Locator;
-
 import org.apache.fop.util.text.AdvancedMessageFormat.ObjectFormatter;
+import org.xml.sax.Locator;
 
 /**
  * Object formatter for the SAX Locator object.
@@ -29,13 +28,16 @@ import org.apache.fop.util.text.AdvancedMessageFormat.ObjectFormatter;
 public class LocatorFormatter implements ObjectFormatter {
 
     /** {@inheritDoc} */
-    public void format(StringBuffer sb, Object obj) {
-        Locator loc = (Locator)obj;
-        sb.append(loc.getLineNumber()).append(":").append(loc.getColumnNumber());
+    @Override
+    public void format(final StringBuffer sb, final Object obj) {
+        final Locator loc = (Locator) obj;
+        sb.append(loc.getLineNumber()).append(":")
+                .append(loc.getColumnNumber());
     }
 
     /** {@inheritDoc} */
-    public boolean supportsObject(Object obj) {
+    @Override
+    public boolean supportsObject(final Object obj) {
         return obj instanceof Locator;
     }
 

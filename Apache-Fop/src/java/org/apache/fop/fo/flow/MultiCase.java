@@ -26,8 +26,7 @@ import org.apache.fop.fo.PropertyList;
 
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_multi-case">
- * <code>fo:multi-case</code></a> object.
- * TODO implement validateChildNode()
+ * <code>fo:multi-case</code></a> object. TODO implement validateChildNode()
  */
 public class MultiCase extends FObj {
     // The value of properties relevant for fo:multi-case.
@@ -35,7 +34,7 @@ public class MultiCase extends FObj {
     // private ToBeImplementedProperty caseName;
     // private ToBeImplementedProperty caseTitle;
     // Unused but valid items, commented out for performance:
-    //     private CommonAccessibility commonAccessibility;
+    // private CommonAccessibility commonAccessibility;
     // End of property values
 
     private static boolean notImplementedWarningGiven = false;
@@ -43,40 +42,45 @@ public class MultiCase extends FObj {
     /**
      * Base constructor
      *
-     * @param parent {@link FONode} that is the parent of this object
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public MultiCase(FONode parent) {
+    public MultiCase(final FONode parent) {
         super(parent);
 
         if (!notImplementedWarningGiven) {
-            getFOValidationEventProducer().unimplementedFeature(this, getName(),
-                    getName(), getLocator());
+            getFOValidationEventProducer().unimplementedFeature(this,
+                    getName(), getName(), getLocator());
             notImplementedWarningGiven = true;
         }
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        startingState = pList.get(PR_STARTING_STATE).getEnum();
+        this.startingState = pList.get(PR_STARTING_STATE).getEnum();
         // caseName = pList.get(PR_CASE_NAME);
         // caseTitle = pList.get(PR_CASE_TITLE);
     }
 
     /** @return the "starting-state" property */
     public int getStartingState() {
-        return startingState;
+        return this.startingState;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "multi-case";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_MULTI_CASE}
      */
+    @Override
     public int getNameId() {
         return FO_MULTI_CASE;
     }

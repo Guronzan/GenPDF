@@ -21,17 +21,16 @@ package org.apache.fop.render.ps.fonts;
 
 import java.io.IOException;
 
+import org.apache.fop.fonts.truetype.TTFGlyphOutputStream;
+import org.apache.fop.fonts.truetype.TTFTableOutputStream;
+import org.apache.xmlgraphics.ps.PSGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-
-import org.apache.xmlgraphics.ps.PSGenerator;
-
-import org.apache.fop.fonts.truetype.TTFGlyphOutputStream;
-import org.apache.fop.fonts.truetype.TTFTableOutputStream;
 
 /**
  * Tests PSTTFOuputStream
@@ -45,46 +44,52 @@ public class PSTTFOutputStreamTestCase {
      */
     @Before
     public void setUp() {
-        gen = mock(PSGenerator.class);
-        out = new PSTTFOutputStream(gen);
+        this.gen = mock(PSGenerator.class);
+        this.out = new PSTTFOutputStream(this.gen);
     }
 
     /**
-     * Test startFontStream() - Just tests that the font is properly initiated in the PostScript
-     * document (in this case with "/sfnts[")
-     * @throws IOException write exception.
+     * Test startFontStream() - Just tests that the font is properly initiated
+     * in the PostScript document (in this case with "/sfnts[")
+     * 
+     * @throws IOException
+     *             write exception.
      */
     @Test
     public void testStartFontStream() throws IOException {
-        out.startFontStream();
-        verify(gen).write("/sfnts[");
+        this.out.startFontStream();
+        verify(this.gen).write("/sfnts[");
     }
 
     /**
-     * Test getTableOutputStream() - we need to test that the inheritance model is properly obeyed.
+     * Test getTableOutputStream() - we need to test that the inheritance model
+     * is properly obeyed.
      */
     @Test
     public void testGetTableOutputStream() {
-        TTFTableOutputStream tableOut = out.getTableOutputStream();
+        final TTFTableOutputStream tableOut = this.out.getTableOutputStream();
         assertTrue(tableOut instanceof PSTTFTableOutputStream);
     }
 
     /**
-     * Test getGlyphOutputStream() - we need to test that the inheritance model is properly obeyed.
+     * Test getGlyphOutputStream() - we need to test that the inheritance model
+     * is properly obeyed.
      */
     @Test
     public void testGetGlyphOutputStream() {
-        TTFGlyphOutputStream glyphOut = out.getGlyphOutputStream();
+        final TTFGlyphOutputStream glyphOut = this.out.getGlyphOutputStream();
         assertTrue(glyphOut instanceof PSTTFGlyphOutputStream);
     }
 
     /**
      * Test endFontStream()
-     * @exception IOException write error.
+     * 
+     * @exception IOException
+     *                write error.
      */
     @Test
     public void testEndFontStream() throws IOException {
-        out.endFontStream();
-        verify(gen).writeln("] def");
+        this.out.endFontStream();
+        verify(this.gen).writeln("] def");
     }
 }

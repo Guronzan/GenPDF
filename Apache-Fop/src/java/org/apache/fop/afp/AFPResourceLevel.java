@@ -49,10 +49,9 @@ public class AFPResourceLevel {
     private static final String NAME_PRINT_FILE = "print-file";
     private static final String NAME_EXTERNAL = "external";
 
-    private static final String[] NAMES = new String[] {
-        NAME_INLINE, NAME_PAGE, NAME_PAGE_GROUP, NAME_DOCUMENT, NAME_PRINT_FILE, NAME_EXTERNAL
-    };
-
+    private static final String[] NAMES = new String[] { NAME_INLINE,
+            NAME_PAGE, NAME_PAGE_GROUP, NAME_DOCUMENT, NAME_PRINT_FILE,
+            NAME_EXTERNAL };
 
     /** where the resource will reside in the AFP output */
     private int level = PRINT_FILE; // default is print-file level (images)
@@ -63,7 +62,9 @@ public class AFPResourceLevel {
     /**
      * Sets the resource placement level within the AFP output
      *
-     * @param levelString the resource level (page, page-group, document, print-file or external)
+     * @param levelString
+     *            the resource level (page, page-group, document, print-file or
+     *            external)
      * @return true if the resource level was successfully set
      */
     public static AFPResourceLevel valueOf(String levelString) {
@@ -84,18 +85,20 @@ public class AFPResourceLevel {
     /**
      * Main constructor
      *
-     * @param level the resource level
+     * @param level
+     *            the resource level
      */
-    public AFPResourceLevel(int level) {
+    public AFPResourceLevel(final int level) {
         setLevel(level);
     }
 
     /**
      * Sets the resource level
      *
-     * @param level the resource level
+     * @param level
+     *            the resource level
      */
-    public void setLevel(int level) {
+    public void setLevel(final int level) {
         this.level = level;
     }
 
@@ -105,7 +108,7 @@ public class AFPResourceLevel {
      * @return true if this is at page level
      */
     public boolean isPage() {
-       return level == PAGE;
+        return this.level == PAGE;
     }
 
     /**
@@ -114,7 +117,7 @@ public class AFPResourceLevel {
      * @return true if this is at page group level
      */
     public boolean isPageGroup() {
-        return level == PAGE_GROUP;
+        return this.level == PAGE_GROUP;
     }
 
     /**
@@ -123,7 +126,7 @@ public class AFPResourceLevel {
      * @return true if this is at document level
      */
     public boolean isDocument() {
-        return level == DOCUMENT;
+        return this.level == DOCUMENT;
     }
 
     /**
@@ -132,7 +135,7 @@ public class AFPResourceLevel {
      * @return true if this is at external level
      */
     public boolean isExternal() {
-        return level == EXTERNAL;
+        return this.level == EXTERNAL;
     }
 
     /**
@@ -141,7 +144,7 @@ public class AFPResourceLevel {
      * @return true if this is at print-file level
      */
     public boolean isPrintFile() {
-        return level == PRINT_FILE;
+        return this.level == PRINT_FILE;
     }
 
     /**
@@ -150,7 +153,7 @@ public class AFPResourceLevel {
      * @return true if this resource level is inline
      */
     public boolean isInline() {
-        return level == INLINE;
+        return this.level == INLINE;
     }
 
     /**
@@ -165,37 +168,43 @@ public class AFPResourceLevel {
     /**
      * Sets the external destination of the resource
      *
-     * @param filePath the external resource group file
+     * @param filePath
+     *            the external resource group file
      */
-    public void setExternalFilePath(String filePath) {
+    public void setExternalFilePath(final String filePath) {
         this.extFilePath = filePath;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return NAMES[level] +  (isExternal() ? ", file=" + extFilePath : "");
+        return NAMES[this.level]
+                + (isExternal() ? ", file=" + this.extFilePath : "");
     }
 
     /** {@inheritDoc} */
-    public boolean equals(Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || !(obj instanceof AFPResourceLevel)) {
+        if (obj == null || !(obj instanceof AFPResourceLevel)) {
             return false;
         }
 
-        AFPResourceLevel rl = (AFPResourceLevel)obj;
-        return (level == rl.level)
-            && (extFilePath == rl.extFilePath
-                    || extFilePath != null && extFilePath.equals(rl.extFilePath));
+        final AFPResourceLevel rl = (AFPResourceLevel) obj;
+        return this.level == rl.level
+                && (this.extFilePath == rl.extFilePath || this.extFilePath != null
+                        && this.extFilePath.equals(rl.extFilePath));
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + level;
-        hash = 31 * hash + (null == extFilePath ? 0 : extFilePath.hashCode());
+        hash = 31 * hash + this.level;
+        hash = 31 * hash
+                + (null == this.extFilePath ? 0 : this.extFilePath.hashCode());
         return hash;
     }
 }

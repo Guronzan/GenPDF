@@ -34,86 +34,100 @@ import org.apache.fop.layoutmgr.TraitSetter;
 /**
  * LayoutManager for the fo:page-number-citation(-last) formatting object
  */
-public abstract class AbstractPageNumberCitationLayoutManager extends LeafNodeLayoutManager {
+public abstract class AbstractPageNumberCitationLayoutManager extends
+        LeafNodeLayoutManager {
 
     /** The page number citation object */
     protected AbstractPageNumberCitation fobj;
     /** Font for the page-number-citation */
     protected Font font;
 
-    /** Indicates whether the page referred to by the citation has been resolved yet */
+    /**
+     * Indicates whether the page referred to by the citation has been resolved
+     * yet
+     */
     protected boolean resolved = false;
 
     /**
      * Constructor
      *
-     * @param node the formatting object that creates this area
-     * TODO better retrieval of font info
+     * @param node
+     *            the formatting object that creates this area TODO better
+     *            retrieval of font info
      */
-    public AbstractPageNumberCitationLayoutManager(AbstractPageNumberCitation node) {
+    public AbstractPageNumberCitationLayoutManager(
+            final AbstractPageNumberCitation node) {
         super(node);
-        fobj = node;
+        this.fobj = node;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void initialize() {
-        FontInfo fi = fobj.getFOEventHandler().getFontInfo();
-        FontTriplet[] fontkeys = fobj.getCommonFont().getFontState(fi);
-        font = fi.getFontInstance(fontkeys[0], fobj.getCommonFont().fontSize.getValue(this));
-        setCommonBorderPaddingBackground(fobj.getCommonBorderPaddingBackground());
+        final FontInfo fi = this.fobj.getFOEventHandler().getFontInfo();
+        final FontTriplet[] fontkeys = this.fobj.getCommonFont().getFontState(
+                fi);
+        this.font = fi.getFontInstance(fontkeys[0],
+                this.fobj.getCommonFont().fontSize.getValue(this));
+        setCommonBorderPaddingBackground(this.fobj
+                .getCommonBorderPaddingBackground());
     }
 
     /**
      * {@inheritDoc}
      */
-    protected AlignmentContext makeAlignmentContext(LayoutContext context) {
-        return new AlignmentContext(
-                font
-                , fobj.getLineHeight().getOptimum(this).getLength().getValue(this)
-                , fobj.getAlignmentAdjust()
-                , fobj.getAlignmentBaseline()
-                , fobj.getBaselineShift()
-                , fobj.getDominantBaseline()
-                , context.getAlignmentContext()
-            );
+    @Override
+    protected AlignmentContext makeAlignmentContext(final LayoutContext context) {
+        return new AlignmentContext(this.font, this.fobj.getLineHeight()
+                .getOptimum(this).getLength().getValue(this),
+                this.fobj.getAlignmentAdjust(),
+                this.fobj.getAlignmentBaseline(), this.fobj.getBaselineShift(),
+                this.fobj.getDominantBaseline(), context.getAlignmentContext());
     }
 
     /** {@inheritDoc} */
-    public abstract InlineArea get(LayoutContext context);
+    @Override
+    public abstract InlineArea get(final LayoutContext context);
 
     /**
-     * {@inheritDoc}
-     *                                                                      , LayoutContext)
+     * {@inheritDoc} , LayoutContext)
      */
-    public void addAreas(PositionIterator posIter, LayoutContext context) {
+    @Override
+    public void addAreas(final PositionIterator posIter,
+            final LayoutContext context) {
         super.addAreas(posIter, context);
-        if (!resolved) {
-            getPSLM().addUnresolvedArea(fobj.getRefId(), (Resolvable) curArea);
+        if (!this.resolved) {
+            getPSLM().addUnresolvedArea(this.fobj.getRefId(),
+                    (Resolvable) this.curArea);
         }
     }
 
     /**
      * Updates the traits for the generated text area.
-     * @param text the text area
+     * 
+     * @param text
+     *            the text area
      */
-    protected void updateTextAreaTraits(TextArea text) {
-        TraitSetter.setProducerID(text, fobj.getId());
-        text.setBPD(font.getAscender() - font.getDescender());
-        text.setBaselineOffset(font.getAscender());
-        TraitSetter.addFontTraits(text, font);
-        text.addTrait(Trait.COLOR, fobj.getColor());
-        TraitSetter.addStructureTreeElement(text, fobj.getStructureTreeElement());
-        TraitSetter.addTextDecoration(text, fobj.getTextDecoration());
+    protected void updateTextAreaTraits(final TextArea text) {
+        TraitSetter.setProducerID(text, this.fobj.getId());
+        text.setBPD(this.font.getAscender() - this.font.getDescender());
+        text.setBaselineOffset(this.font.getAscender());
+        TraitSetter.addFontTraits(text, this.font);
+        text.addTrait(Trait.COLOR, this.fobj.getColor());
+        TraitSetter.addStructureTreeElement(text,
+                this.fobj.getStructureTreeElement());
+        TraitSetter.addTextDecoration(text, this.fobj.getTextDecoration());
     }
 
     /**
-     * @param str string to be measured
+     * @param str
+     *            string to be measured
      * @return width (in millipoints ??) of the string
      */
-    protected int getStringWidth(String str) {
+    protected int getStringWidth(final String str) {
         int width = 0;
         for (int count = 0; count < str.length(); count++) {
-            width += font.getCharWidth(str.charAt(count));
+            width += this.font.getCharWidth(str.charAt(count));
         }
         return width;
     }
@@ -122,8 +136,7 @@ public abstract class AbstractPageNumberCitationLayoutManager extends LeafNodeLa
      * @return bidi level governing abstract page number citation
      */
     protected int getBidiLevel() {
-        return fobj.getBidiLevel();
+        return this.fobj.getBidiLevel();
     }
 
 }
-

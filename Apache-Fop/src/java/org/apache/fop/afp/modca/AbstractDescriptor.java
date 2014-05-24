@@ -22,7 +22,8 @@ package org.apache.fop.afp.modca;
 /**
  * Base class for AFP descriptor objects
  */
-public abstract class AbstractDescriptor extends AbstractTripletStructuredObject {
+public abstract class AbstractDescriptor extends
+        AbstractTripletStructuredObject {
 
     /** width of this descriptor */
     protected int width = 0;
@@ -40,15 +41,20 @@ public abstract class AbstractDescriptor extends AbstractTripletStructuredObject
     }
 
     /**
-     * Constructor a PresentationTextDescriptor for the specified
-     * width and height.
+     * Constructor a PresentationTextDescriptor for the specified width and
+     * height.
      *
-     * @param width The width of the page.
-     * @param height The height of the page.
-     * @param widthRes The width resolution of the page.
-     * @param heightRes The height resolution of the page.
+     * @param width
+     *            The width of the page.
+     * @param height
+     *            The height of the page.
+     * @param widthRes
+     *            The width resolution of the page.
+     * @param heightRes
+     *            The height resolution of the page.
      */
-    public AbstractDescriptor(int width, int height, int widthRes, int heightRes) {
+    public AbstractDescriptor(final int width, final int height,
+            final int widthRes, final int heightRes) {
         this.width = width;
         this.height = height;
         this.widthRes = widthRes;
@@ -56,11 +62,11 @@ public abstract class AbstractDescriptor extends AbstractTripletStructuredObject
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "width=" + width
-        + ", height=" + height
-        + ", widthRes=" + widthRes
-        + ", heightRes=" + heightRes;
+        return "width=" + this.width + ", height=" + this.height
+                + ", widthRes=" + this.widthRes + ", heightRes="
+                + this.heightRes;
     }
 
     /**

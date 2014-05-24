@@ -27,7 +27,8 @@ import org.apache.fop.pdf.PDFDictionary;
 import org.apache.fop.pdf.PDFDocument;
 
 /**
- * A cross-reference table, as described in Section 3.4.3 of the PDF 1.5 Reference.
+ * A cross-reference table, as described in Section 3.4.3 of the PDF 1.5
+ * Reference.
  */
 public class CrossReferenceTable extends CrossReferenceObject {
 
@@ -35,38 +36,39 @@ public class CrossReferenceTable extends CrossReferenceObject {
 
     private final StringBuilder pdf = new StringBuilder(256);
 
-    public CrossReferenceTable(TrailerDictionary trailerDictionary, long startxref,
-            List<Long> location) {
+    public CrossReferenceTable(final TrailerDictionary trailerDictionary,
+            final long startxref, final List<Long> location) {
         super(trailerDictionary, startxref);
         this.objectReferences = location;
     }
 
-    public void output(OutputStream stream) throws IOException {
+    @Override
+    public void output(final OutputStream stream) throws IOException {
         outputXref();
         writeTrailer(stream);
     }
 
     private void outputXref() throws IOException {
-        pdf.append("xref\n0 ");
-        pdf.append(objectReferences.size() + 1);
-        pdf.append("\n0000000000 65535 f \n");
-        for (Long objectReference : objectReferences) {
+        this.pdf.append("xref\n0 ");
+        this.pdf.append(this.objectReferences.size() + 1);
+        this.pdf.append("\n0000000000 65535 f \n");
+        for (final Long objectReference : this.objectReferences) {
             final String padding = "0000000000";
-            String s = String.valueOf(objectReference);
+            final String s = String.valueOf(objectReference);
             if (s.length() > 10) {
                 throw new IOException("PDF file too large."
                         + " PDF 1.4 cannot grow beyond approx. 9.3GB.");
             }
-            String loc = padding.substring(s.length()) + s;
-            pdf.append(loc).append(" 00000 n \n");
+            final String loc = padding.substring(s.length()) + s;
+            this.pdf.append(loc).append(" 00000 n \n");
         }
     }
 
-    private void writeTrailer(OutputStream stream) throws IOException {
-        pdf.append("trailer\n");
-        stream.write(PDFDocument.encode(pdf.toString()));
-        PDFDictionary dictionary = trailerDictionary.getDictionary();
-        dictionary.put("/Size", objectReferences.size() + 1);
+    private void writeTrailer(final OutputStream stream) throws IOException {
+        this.pdf.append("trailer\n");
+        stream.write(PDFDocument.encode(this.pdf.toString()));
+        final PDFDictionary dictionary = this.trailerDictionary.getDictionary();
+        dictionary.put("/Size", this.objectReferences.size() + 1);
         dictionary.output(stream);
     }
 

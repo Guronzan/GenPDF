@@ -23,26 +23,33 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 
 /**
- * Special SoftReference subclass that holds an additional key object that can be used to remove
- * a reference from a Map once the referenced object is collected, for example.
+ * Special SoftReference subclass that holds an additional key object that can
+ * be used to remove a reference from a Map once the referenced object is
+ * collected, for example.
  */
 public class SoftReferenceWithKey extends SoftReference {
 
-    private Object key;
+    private final Object key;
 
     /**
      * Creates a new SoftReference with a key.
-     * @param referent object the new soft reference will refer to
-     * @param key the key object
-     * @param q queue the soft reference is registered with
+     * 
+     * @param referent
+     *            object the new soft reference will refer to
+     * @param key
+     *            the key object
+     * @param q
+     *            queue the soft reference is registered with
      */
-    public SoftReferenceWithKey(Object referent, Object key, ReferenceQueue q) {
+    public SoftReferenceWithKey(final Object referent, final Object key,
+            final ReferenceQueue q) {
         super(referent, q);
         this.key = key;
     }
 
     /**
      * Returns the key associated with this reference.
+     * 
      * @return the key
      */
     public Object getKey() {

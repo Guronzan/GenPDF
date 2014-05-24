@@ -19,7 +19,6 @@
 
 package org.apache.fop.util;
 
-
 /**
  * A collection of constants for XML handling.
  */

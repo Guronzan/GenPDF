@@ -29,28 +29,31 @@ public class AttributeValue extends java.util.ArrayList {
     private static final long serialVersionUID = 748610847500940557L;
 
     /**
-     * Returns an <code>AttributeValue</code> object holding the
-     * value of the specified <code>String</code>.
+     * Returns an <code>AttributeValue</code> object holding the value of the
+     * specified <code>String</code>.
      *
-     * @param valuesString the value to be parsed
-     * @return     an <code>AttributeValue</code> object holding the value
-     *             represented by the string argument.
+     * @param valuesString
+     *            the value to be parsed
+     * @return an <code>AttributeValue</code> object holding the value
+     *         represented by the string argument.
      */
-    public static AttributeValue valueOf(String valuesString) {
-        AttributeValue attribute = new AttributeValue();
-        StringTokenizer stringTokenizer = new StringTokenizer(valuesString, ",");
+    public static AttributeValue valueOf(final String valuesString) {
+        final AttributeValue attribute = new AttributeValue();
+        final StringTokenizer stringTokenizer = new StringTokenizer(
+                valuesString, ",");
         if (stringTokenizer.countTokens() > 1) {
             while (stringTokenizer.hasMoreTokens()) {
-                String token = stringTokenizer.nextToken().trim();
-                AttributeValue tokenAttribute = AttributeValue.valueOf(token);
+                final String token = stringTokenizer.nextToken().trim();
+                final AttributeValue tokenAttribute = AttributeValue
+                        .valueOf(token);
                 attribute.addAll(tokenAttribute);
             }
         } else {
-            String token = stringTokenizer.nextToken().trim();
+            final String token = stringTokenizer.nextToken().trim();
             Object value = null;
             try {
                 value = Integer.valueOf(token);
-            } catch (NumberFormatException ex) {
+            } catch (final NumberFormatException ex) {
                 value = FontWeightRange.valueOf(token);
                 if (value == null) {
                     value = token;

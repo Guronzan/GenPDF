@@ -19,13 +19,13 @@
 
 package org.apache.fop.pdf;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for {@link PDFRectangle}.
@@ -33,16 +33,19 @@ import java.io.OutputStream;
 public class PDFRectangleTestCase {
 
     /**
-     * Test outputInline() - ensure properly formatted co-ords are printed to the output stream.
-     * @throws IOException if an I/O error occurs
+     * Test outputInline() - ensure properly formatted co-ords are printed to
+     * the output stream.
+     * 
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Test
     public void testOutputInline() throws IOException {
-        OutputStream out = new ByteArrayOutputStream();
+        final OutputStream out = new ByteArrayOutputStream();
         // These are arbitrary values thus have no meaning
-        PDFRectangle rect = new PDFRectangle(1, 2, 3, 4);
+        final PDFRectangle rect = new PDFRectangle(1, 2, 3, 4);
 
-        StringBuilder textBuffer = new StringBuilder();
+        final StringBuilder textBuffer = new StringBuilder();
         // Ensure text before the outputInline() is maintained
         textBuffer.append("Test ");
 

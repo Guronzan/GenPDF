@@ -26,10 +26,13 @@ public interface PropertyListMaker {
 
     /**
      * Make a property list.
-     * @param fobj the FO from which the new property list is associated
-     * @param parentPropertyList the parent property list
+     * 
+     * @param fobj
+     *            the FO from which the new property list is associated
+     * @param parentPropertyList
+     *            the parent property list
      * @return the new property list
      */
-    PropertyList make(FObj fobj, PropertyList parentPropertyList);
+    PropertyList make(final FObj fobj, final PropertyList parentPropertyList);
 
 }

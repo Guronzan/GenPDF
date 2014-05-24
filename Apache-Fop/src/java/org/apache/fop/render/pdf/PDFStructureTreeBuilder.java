@@ -22,8 +22,6 @@ package org.apache.fop.render.pdf;
 import java.util.LinkedList;
 import java.util.Locale;
 
-import org.xml.sax.Attributes;
-
 import org.apache.fop.accessibility.StructureTreeElement;
 import org.apache.fop.accessibility.StructureTreeEventHandler;
 import org.apache.fop.events.EventBroadcaster;
@@ -34,6 +32,7 @@ import org.apache.fop.pdf.PDFObject;
 import org.apache.fop.pdf.PDFParentTree;
 import org.apache.fop.pdf.PDFStructElem;
 import org.apache.fop.pdf.PDFStructTreeRoot;
+import org.xml.sax.Attributes;
 
 class PDFStructureTreeBuilder implements StructureTreeEventHandler {
 
@@ -47,80 +46,100 @@ class PDFStructureTreeBuilder implements StructureTreeEventHandler {
 
     private PDFStructElem rootStructureElement;
 
-    void setPdfFactory(PDFFactory pdfFactory) {
+    void setPdfFactory(final PDFFactory pdfFactory) {
         this.pdfFactory = pdfFactory;
     }
 
-    void setLogicalStructureHandler(PDFLogicalStructureHandler logicalStructureHandler) {
+    void setLogicalStructureHandler(
+            final PDFLogicalStructureHandler logicalStructureHandler) {
         this.logicalStructureHandler = logicalStructureHandler;
         createRootStructureElement();
     }
 
     private void createRootStructureElement() {
-        assert rootStructureElement == null;
-        PDFParentTree parentTree = logicalStructureHandler.getParentTree();
-        PDFStructTreeRoot structTreeRoot = pdfFactory.getDocument().makeStructTreeRoot(parentTree);
-        rootStructureElement = createStructureElement("root", structTreeRoot, null);
-        structTreeRoot.addKid(rootStructureElement);
+        assert this.rootStructureElement == null;
+        final PDFParentTree parentTree = this.logicalStructureHandler
+                .getParentTree();
+        final PDFStructTreeRoot structTreeRoot = this.pdfFactory.getDocument()
+                .makeStructTreeRoot(parentTree);
+        this.rootStructureElement = createStructureElement("root",
+                structTreeRoot, null);
+        structTreeRoot.addKid(this.rootStructureElement);
     }
 
-    void setEventBroadcaster(EventBroadcaster eventBroadcaster) {
+    void setEventBroadcaster(final EventBroadcaster eventBroadcaster) {
         this.eventBroadcaster = eventBroadcaster;
     }
 
-    public void startPageSequence(Locale language, String role) {
-        ancestors = new LinkedList<PDFStructElem>();
-        PDFStructElem structElem = createStructureElement("page-sequence", rootStructureElement, role);
+    @Override
+    public void startPageSequence(final Locale language, final String role) {
+        this.ancestors = new LinkedList<PDFStructElem>();
+        final PDFStructElem structElem = createStructureElement(
+                "page-sequence", this.rootStructureElement, role);
         if (language != null) {
             structElem.setLanguage(language);
         }
-        rootStructureElement.addKid(structElem);
-        ancestors.add(structElem);
+        this.rootStructureElement.addKid(structElem);
+        this.ancestors.add(structElem);
     }
 
-    private PDFStructElem createStructureElement(String name, PDFObject parent, String role) {
-        PDFName structureType = FOToPDFRoleMap.mapFormattingObject(name, role, parent, eventBroadcaster);
-        return pdfFactory.getDocument().makeStructureElement(structureType, parent);
+    private PDFStructElem createStructureElement(final String name,
+            final PDFObject parent, final String role) {
+        final PDFName structureType = FOToPDFRoleMap.mapFormattingObject(name,
+                role, parent, this.eventBroadcaster);
+        return this.pdfFactory.getDocument().makeStructureElement(
+                structureType, parent);
     }
 
+    @Override
     public void endPageSequence() {
     }
 
-    public StructureTreeElement startNode(String name, Attributes attributes) {
-        PDFStructElem parent = ancestors.getFirst();
-        String role = attributes.getValue("role");
-        PDFStructElem structElem = createStructureElement(name, parent, role);
+    @Override
+    public StructureTreeElement startNode(final String name,
+            final Attributes attributes) {
+        final PDFStructElem parent = this.ancestors.getFirst();
+        final String role = attributes.getValue("role");
+        final PDFStructElem structElem = createStructureElement(name, parent,
+                role);
         parent.addKid(structElem);
-        ancestors.addFirst(structElem);
+        this.ancestors.addFirst(structElem);
         return structElem;
     }
 
-    public void endNode(String name) {
+    @Override
+    public void endNode(final String name) {
         removeFirstAncestor();
     }
 
     private void removeFirstAncestor() {
-        ancestors.removeFirst();
+        this.ancestors.removeFirst();
     }
 
-    public StructureTreeElement startImageNode(String name, Attributes attributes) {
-        PDFStructElem parent = ancestors.getFirst();
-        String role = attributes.getValue("role");
-        PDFStructElem structElem = createStructureElement(name, parent, role);
+    @Override
+    public StructureTreeElement startImageNode(final String name,
+            final Attributes attributes) {
+        final PDFStructElem parent = this.ancestors.getFirst();
+        final String role = attributes.getValue("role");
+        final PDFStructElem structElem = createStructureElement(name, parent,
+                role);
         parent.addKid(structElem);
-        String altTextNode = attributes.getValue(ExtensionElementMapping.URI, "alt-text");
+        final String altTextNode = attributes.getValue(
+                ExtensionElementMapping.URI, "alt-text");
         if (altTextNode != null) {
             structElem.put("Alt", altTextNode);
         } else {
             structElem.put("Alt", "No alternate text specified");
         }
-        ancestors.addFirst(structElem);
+        this.ancestors.addFirst(structElem);
         return structElem;
     }
 
-    public StructureTreeElement startReferencedNode(String name, Attributes attributes) {
-        PDFStructElem parent = ancestors.getFirst();
-        String role = attributes.getValue("role");
+    @Override
+    public StructureTreeElement startReferencedNode(final String name,
+            final Attributes attributes) {
+        final PDFStructElem parent = this.ancestors.getFirst();
+        final String role = attributes.getValue("role");
         PDFStructElem structElem;
         if ("#PCDATA".equals(name)) {
             structElem = new PDFStructElem.Placeholder(parent, name);
@@ -128,7 +147,7 @@ class PDFStructureTreeBuilder implements StructureTreeEventHandler {
             structElem = createStructureElement(name, parent, role);
         }
         parent.addKid(structElem);
-        ancestors.addFirst(structElem);
+        this.ancestors.addFirst(structElem);
         return structElem;
     }
 

@@ -19,90 +19,103 @@
 
 package org.apache.fop.render.pdf;
 
-import static org.junit.Assert.fail;
-
 import java.io.File;
 
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.pdf.PDFConformanceException;
 import org.junit.Test;
 
+import static org.junit.Assert.fail;
+
 /**
  * Tests PDF/A-1 functionality.
  */
 public class PDFAConformanceTestCase extends BasePDFTest {
 
-    private File foBaseDir = new File("test/xml/pdf-a");
-    private boolean dumpPDF = Boolean.getBoolean("PDFAConformanceTestCase.dumpPDF");
+    private final File foBaseDir = new File("test/xml/pdf-a");
+    private final boolean dumpPDF = Boolean
+            .getBoolean("PDFAConformanceTestCase.dumpPDF");
 
-
-    /** create an FOUserAgent for our tests
-     *  @return an initialized FOUserAgent
+    /**
+     * create an FOUserAgent for our tests
+     * 
+     * @return an initialized FOUserAgent
      * */
     protected FOUserAgent getUserAgent() {
-        final FOUserAgent userAgent = fopFactory.newFOUserAgent();
+        final FOUserAgent userAgent = this.fopFactory.newFOUserAgent();
         userAgent.getRendererOptions().put("pdf-a-mode", "PDF/A-1b");
         return userAgent;
     }
 
     /**
      * Test exception when PDF/A-1 is enabled and everything is as it should.
-     * @throws Exception if the test fails
+     * 
+     * @throws Exception
+     *             if the test fails
      */
     @Test
     public void testAllOk() throws Exception {
-        File foFile = new File(foBaseDir, "minimal-pdf-a.fo");
-        convertFO(foFile, getUserAgent(), dumpPDF);
+        final File foFile = new File(this.foBaseDir, "minimal-pdf-a.fo");
+        convertFO(foFile, getUserAgent(), this.dumpPDF);
     }
 
     /**
      * Test exception when PDF/A-1 is enabled together with encryption.
-     * @throws Exception if the test fails
+     * 
+     * @throws Exception
+     *             if the test fails
      */
     @Test
     public void testNoEncryption() throws Exception {
         final FOUserAgent ua = getUserAgent();
-        ua.getRendererOptions().put("owner-password", "mypassword"); //To enabled encryption
-        File foFile = new File(foBaseDir, "minimal-pdf-a.fo");
+        ua.getRendererOptions().put("owner-password", "mypassword"); // To
+                                                                     // enabled
+                                                                     // encryption
+        final File foFile = new File(this.foBaseDir, "minimal-pdf-a.fo");
         try {
-            convertFO(foFile, ua, dumpPDF);
+            convertFO(foFile, ua, this.dumpPDF);
             fail("Expected PDFConformanceException. PDF/A-1 and PDF encryption don't go together.");
-        } catch (PDFConformanceException e) {
-            //Good!
+        } catch (final PDFConformanceException e) {
+            // Good!
         }
     }
 
     /**
-     * Test exception when PDF/A-1 is enabled and a font is used which is not embedded.
-     * @throws Exception if the test fails
+     * Test exception when PDF/A-1 is enabled and a font is used which is not
+     * embedded.
+     * 
+     * @throws Exception
+     *             if the test fails
      */
     @Test
     public void testFontNotEmbedded() throws Exception {
-        File foFile = new File(foBaseDir, "base14-font.fo");
+        final File foFile = new File(this.foBaseDir, "base14-font.fo");
         try {
-            convertFO(foFile, getUserAgent(), dumpPDF);
+            convertFO(foFile, getUserAgent(), this.dumpPDF);
             fail("Expected PDFConformanceException. PDF/A-1 wants all fonts embedded.");
-        } catch (PDFConformanceException e) {
-            //Good!
+        } catch (final PDFConformanceException e) {
+            // Good!
         }
     }
 
     /**
      * Test exception when PDF/A-1 is enabled and images.
-     * @throws Exception if the test fails
+     * 
+     * @throws Exception
+     *             if the test fails
      */
     @Test
     public void testImages() throws Exception {
-        File foFile = new File(foBaseDir, "with-rgb-images.fo");
-        convertFO(foFile, getUserAgent(), dumpPDF);
+        File foFile = new File(this.foBaseDir, "with-rgb-images.fo");
+        convertFO(foFile, getUserAgent(), this.dumpPDF);
 
-        foFile = new File(foBaseDir, "with-cmyk-images.fo");
+        foFile = new File(this.foBaseDir, "with-cmyk-images.fo");
         try {
-            convertFO(foFile, getUserAgent(), dumpPDF);
+            convertFO(foFile, getUserAgent(), this.dumpPDF);
             fail("Expected PDFConformanceException."
                     + " PDF/A-1 does not allow mixing DeviceRGB and DeviceCMYK.");
-        } catch (PDFConformanceException e) {
-            //Good!
+        } catch (final PDFConformanceException e) {
+            // Good!
         }
     }
 

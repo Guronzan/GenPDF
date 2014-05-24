@@ -31,27 +31,30 @@ import static org.junit.Assert.assertTrue;
 public class GraphicsSetLineWidthTestCase {
 
     private final int multiplier = 5;
-    private final GraphicsSetLineWidth gslw = new GraphicsSetLineWidth(multiplier);
+    private final GraphicsSetLineWidth gslw = new GraphicsSetLineWidth(
+            this.multiplier);
 
     @Test
     public void testGetDataLength() {
-        assertEquals(2, gslw.getDataLength());
+        assertEquals(2, this.gslw.getDataLength());
     }
 
     @Test
     public void testWriteToStream() throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        gslw.writeToStream(baos);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        this.gslw.writeToStream(baos);
         baos.close();
         // expected: 0x19 (order code), 0x05 (integral multiplier)
-        byte[] expected = new byte[] {0x19, 0x05};
+        final byte[] expected = new byte[] { 0x19, 0x05 };
         assertTrue(Arrays.equals(expected, baos.toByteArray()));
     }
 
     @Test
     public void testToString() {
         // lets make sure we keep good coverage...
-        assertEquals("GraphicsSetLineWidth{multiplier=" + multiplier + "}", gslw.toString());
+        assertEquals(
+                "GraphicsSetLineWidth{multiplier=" + this.multiplier + "}",
+                this.gslw.toString());
     }
 
 }

@@ -25,54 +25,57 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.expr.PropertyException;
 
 /**
- * Store all common margin properties for inlines.
- * See Sec. 7.11 of the XSL-FO Standard.
- * Public "structure" allows direct member access.
+ * Store all common margin properties for inlines. See Sec. 7.11 of the XSL-FO
+ * Standard. Public "structure" allows direct member access.
  */
 public class CommonMarginInline {
 
     /**
      * The "margin-top" property.
      */
-    public Length marginTop;                                    // CSOK: VisibilityModifier
+    public Length marginTop; // CSOK: VisibilityModifier
 
     /**
      * The "margin-bottom" property.
      */
-    public Length marginBottom;                                 // CSOK: VisibilityModifier
+    public Length marginBottom; // CSOK: VisibilityModifier
 
     /**
      * The "margin-left" property.
      */
-    public Length marginLeft;                                   // CSOK: VisibilityModifier
+    public Length marginLeft; // CSOK: VisibilityModifier
 
     /**
      * The "margin-right" property.
      */
-    public Length marginRight;                                  // CSOK: VisibilityModifier
+    public Length marginRight; // CSOK: VisibilityModifier
 
     /**
      * The "space-start" property.
      */
-    public SpaceProperty spaceStart;                            // CSOK: VisibilityModifier
+    public SpaceProperty spaceStart; // CSOK: VisibilityModifier
 
     /**
      * The "space-end" property.
      */
-    public SpaceProperty spaceEnd;                              // CSOK: VisibilityModifier
+    public SpaceProperty spaceEnd; // CSOK: VisibilityModifier
 
     /**
      * Create a CommonMarginInline object.
-     * @param pList The PropertyList with propery values.
-     * @throws PropertyException if a property exception occurs
+     * 
+     * @param pList
+     *            The PropertyList with propery values.
+     * @throws PropertyException
+     *             if a property exception occurs
      */
-    public CommonMarginInline(PropertyList pList) throws PropertyException {
-        marginTop = pList.get(Constants.PR_MARGIN_TOP).getLength();
-        marginBottom = pList.get(Constants.PR_MARGIN_BOTTOM).getLength();
-        marginLeft = pList.get(Constants.PR_MARGIN_LEFT).getLength();
-        marginRight = pList.get(Constants.PR_MARGIN_RIGHT).getLength();
+    public CommonMarginInline(final PropertyList pList)
+            throws PropertyException {
+        this.marginTop = pList.get(Constants.PR_MARGIN_TOP).getLength();
+        this.marginBottom = pList.get(Constants.PR_MARGIN_BOTTOM).getLength();
+        this.marginLeft = pList.get(Constants.PR_MARGIN_LEFT).getLength();
+        this.marginRight = pList.get(Constants.PR_MARGIN_RIGHT).getLength();
 
-        spaceStart = pList.get(Constants.PR_SPACE_START).getSpace();
-        spaceEnd = pList.get(Constants.PR_SPACE_END).getSpace();
+        this.spaceStart = pList.get(Constants.PR_SPACE_START).getSpace();
+        this.spaceEnd = pList.get(Constants.PR_SPACE_END).getSpace();
     }
 }

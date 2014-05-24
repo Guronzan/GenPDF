@@ -22,16 +22,19 @@ package org.apache.fop.render.rtf;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.xmlgraphics.util.UnitConv;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.properties.FixedLength;
-
+import org.apache.xmlgraphics.util.UnitConv;
 
 /**
- * <p>Converts XSL-FO units to RTF units.</p>
+ * <p>
+ * Converts XSL-FO units to RTF units.
+ * </p>
  *
- * <p>This work was originally developed by Bertrand Delacretaz (bdelacretaz@codeconsult.ch).</p>
+ * <p>
+ * This work was originally developed by Bertrand Delacretaz
+ * (bdelacretaz@codeconsult.ch).
+ * </p>
  */
 
 final class FoUnitsConverter {
@@ -40,11 +43,13 @@ final class FoUnitsConverter {
     /** points to twips: 1 twip is 1/20 of a point */
     public static final float POINT_TO_TWIPS = 20f;
 
-    /** millimeters and centimeters to twips: , one point is 1/72 of an inch, one inch is 25.4 mm */
+    /**
+     * millimeters and centimeters to twips: , one point is 1/72 of an inch, one
+     * inch is 25.4 mm
+     */
     public static final float IN_TO_TWIPS = UnitConv.IN2PT * POINT_TO_TWIPS;
     public static final float MM_TO_TWIPS = IN_TO_TWIPS / UnitConv.IN2MM;
     public static final float CM_TO_TWIPS = 10 * MM_TO_TWIPS;
-
 
     /** conversion factors keyed by xsl:fo units names */
     private static final Map TWIP_FACTORS = new HashMap();
@@ -64,14 +69,16 @@ final class FoUnitsConverter {
         return INSTANCE;
     }
 
-    /** convert given value to RTF units
-     *  @param foValue a value like "12mm"
-     *  TODO: tested with "mm" units only, needs work to comply with FO spec
-     *  Why does it search for period instead of simply breaking last two
-     *  Characters into another units string? - Chris
+    /**
+     * convert given value to RTF units
+     * 
+     * @param foValue
+     *            a value like "12mm" TODO: tested with "mm" units only, needs
+     *            work to comply with FO spec Why does it search for period
+     *            instead of simply breaking last two Characters into another
+     *            units string? - Chris
      */
-    float convertToTwips(String foValue)
-            throws FOPException {
+    float convertToTwips(String foValue) throws FOPException {
         foValue = foValue.trim();
 
         // break value into number and units
@@ -92,9 +99,8 @@ final class FoUnitsConverter {
         return numberToTwips(number.toString(), units.toString());
     }
 
-
     /** convert given value to twips according to given units */
-    private float numberToTwips(String number, String units)
+    private float numberToTwips(final String number, final String units)
             throws FOPException {
         float result = 0;
 
@@ -103,16 +109,17 @@ final class FoUnitsConverter {
             if (number != null && number.trim().length() > 0) {
                 result = Float.valueOf(number).floatValue();
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new FOPException("number format error: cannot convert '"
-                                   + number + "' to float value");
+                    + number + "' to float value");
         }
 
         // find conversion factor
         if (units != null && units.trim().length() > 0) {
-            final Float factor = (Float)TWIP_FACTORS.get(units.toLowerCase());
+            final Float factor = (Float) TWIP_FACTORS.get(units.toLowerCase());
             if (factor == null) {
-                throw new FOPException("conversion factor not found for '" + units + "' units");
+                throw new FOPException("conversion factor not found for '"
+                        + units + "' units");
             }
             result *= factor.floatValue();
         }
@@ -125,23 +132,23 @@ final class FoUnitsConverter {
         size = size.trim();
         final String sFONTSUFFIX = FixedLength.POINT;
         if (!size.endsWith(sFONTSUFFIX)) {
-            throw new FOPException("Invalid font size '" + size + "', must end with '"
-                                   + sFONTSUFFIX + "'");
+            throw new FOPException("Invalid font size '" + size
+                    + "', must end with '" + sFONTSUFFIX + "'");
         }
 
         float result = 0;
         size = size.substring(0, size.length() - sFONTSUFFIX.length());
         try {
-            result = (Float.valueOf(size).floatValue());
-        } catch (Exception e) {
+            result = Float.valueOf(size).floatValue();
+        } catch (final Exception e) {
             throw new FOPException("Invalid font size value '" + size + "'");
         }
 
         // RTF font size units are in half-points
-        return (int)(result * 2.0);
+        return (int) (result * 2.0);
     }
 
-    public float convertMptToTwips(int width) {
+    public float convertMptToTwips(final int width) {
         return width * POINT_TO_TWIPS / 1000;
     }
 }

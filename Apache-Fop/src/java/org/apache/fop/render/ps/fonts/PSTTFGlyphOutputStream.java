@@ -24,10 +24,11 @@ import java.io.IOException;
 import org.apache.fop.fonts.truetype.TTFGlyphOutputStream;
 
 /**
- * Streams glyphs in accordance with the constraints of the PostScript file format.
- * Mainly, PostScript strings have a limited capacity and the font data may have to be
- * broken down into several strings; however, this must occur at well-defined places like
- * table or glyph boundaries. See also Adobe Technical Note #5012, <em>The Type 42 Font
+ * Streams glyphs in accordance with the constraints of the PostScript file
+ * format. Mainly, PostScript strings have a limited capacity and the font data
+ * may have to be broken down into several strings; however, this must occur at
+ * well-defined places like table or glyph boundaries. See also Adobe Technical
+ * Note #5012, <em>The Type 42 Font
  * Format Specification</em>.
  */
 public class PSTTFGlyphOutputStream implements TTFGlyphOutputStream {
@@ -37,39 +38,45 @@ public class PSTTFGlyphOutputStream implements TTFGlyphOutputStream {
 
     private int lastStringBoundary;
 
-    private PSTTFGenerator ttfGen;
+    private final PSTTFGenerator ttfGen;
 
     /**
      * Constructor
-     * @param ttfGen PSTTFGenerator
+     * 
+     * @param ttfGen
+     *            PSTTFGenerator
      */
-    public PSTTFGlyphOutputStream(PSTTFGenerator ttfGen) {
+    public PSTTFGlyphOutputStream(final PSTTFGenerator ttfGen) {
         this.ttfGen = ttfGen;
     }
 
+    @Override
     public void startGlyphStream() throws IOException {
-        ttfGen.startString();
+        this.ttfGen.startString();
     }
 
-    public void streamGlyph(byte[] glyphData, int offset, int size) throws IOException {
+    @Override
+    public void streamGlyph(final byte[] glyphData, final int offset,
+            final int size) throws IOException {
         if (size > PSTTFGenerator.MAX_BUFFER_SIZE) {
             throw new UnsupportedOperationException("The glyph is " + size
                     + " bytes. There may be an error in the font file.");
         }
 
-        if (size + (byteCounter - lastStringBoundary) < PSTTFGenerator.MAX_BUFFER_SIZE) {
-            ttfGen.streamBytes(glyphData, offset, size);
+        if (size + this.byteCounter - this.lastStringBoundary < PSTTFGenerator.MAX_BUFFER_SIZE) {
+            this.ttfGen.streamBytes(glyphData, offset, size);
         } else {
-            ttfGen.endString();
-            lastStringBoundary = byteCounter;
-            ttfGen.startString();
-            ttfGen.streamBytes(glyphData, offset, size);
+            this.ttfGen.endString();
+            this.lastStringBoundary = this.byteCounter;
+            this.ttfGen.startString();
+            this.ttfGen.streamBytes(glyphData, offset, size);
         }
-        byteCounter += size;
+        this.byteCounter += size;
     }
 
+    @Override
     public void endGlyphStream() throws IOException {
-        ttfGen.endString();
+        this.ttfGen.endString();
     }
 
 }

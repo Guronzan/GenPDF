@@ -22,27 +22,33 @@ package org.apache.fop.events;
 import java.util.List;
 
 /**
- * EventListener implementation forwards events to possibly multiple other EventListeners.
+ * EventListener implementation forwards events to possibly multiple other
+ * EventListeners.
  */
 public class CompositeEventListener implements EventListener {
 
-    private List listeners = new java.util.ArrayList();
+    private final List listeners = new java.util.ArrayList();
 
     /**
-     * Adds an event listener to the broadcaster. It is appended to the list of previously
-     * registered listeners (the order of registration defines the calling order).
-     * @param listener the listener to be added
+     * Adds an event listener to the broadcaster. It is appended to the list of
+     * previously registered listeners (the order of registration defines the
+     * calling order).
+     * 
+     * @param listener
+     *            the listener to be added
      */
-    public synchronized void addEventListener(EventListener listener) {
+    public synchronized void addEventListener(final EventListener listener) {
         this.listeners.add(listener);
     }
 
     /**
-     * Removes an event listener from the broadcaster. If the event listener is not registered,
-     * nothing happens.
-     * @param listener the listener to be removed
+     * Removes an event listener from the broadcaster. If the event listener is
+     * not registered, nothing happens.
+     * 
+     * @param listener
+     *            the listener to be removed
      */
-    public synchronized void removeEventListener(EventListener listener) {
+    public synchronized void removeEventListener(final EventListener listener) {
         this.listeners.remove(listener);
     }
 
@@ -51,17 +57,21 @@ public class CompositeEventListener implements EventListener {
     }
 
     /**
-     * Indicates whether any listeners have been registered with the broadcaster.
+     * Indicates whether any listeners have been registered with the
+     * broadcaster.
+     * 
      * @return true if listeners are present, false otherwise
      */
     public boolean hasEventListeners() {
-        return (getListenerCount() > 0);
+        return getListenerCount() > 0;
     }
 
     /** {@inheritDoc} */
-    public synchronized void processEvent(Event event) {
+    @Override
+    public synchronized void processEvent(final Event event) {
         for (int i = 0, c = getListenerCount(); i < c; i++) {
-            EventListener listener = (EventListener)this.listeners.get(i);
+            final EventListener listener = (EventListener) this.listeners
+                    .get(i);
             listener.processEvent(event);
         }
     }

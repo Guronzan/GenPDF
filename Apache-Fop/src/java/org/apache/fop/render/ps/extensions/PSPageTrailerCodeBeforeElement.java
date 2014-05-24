@@ -32,9 +32,11 @@ public class PSPageTrailerCodeBeforeElement extends AbstractPSCommentElement {
 
     /**
      * Main constructor
-     * @param parent parent node
+     * 
+     * @param parent
+     *            parent node
      */
-    public PSPageTrailerCodeBeforeElement(FONode parent) {
+    public PSPageTrailerCodeBeforeElement(final FONode parent) {
         super(parent);
     }
 
@@ -42,6 +44,7 @@ public class PSPageTrailerCodeBeforeElement extends AbstractPSCommentElement {
      * @return local name
      * @see org.apache.fop.fo.FONode#getLocalName()
      */
+    @Override
     public String getLocalName() {
         return PSPageTrailerCodeBefore.ELEMENT;
     }
@@ -49,6 +52,7 @@ public class PSPageTrailerCodeBeforeElement extends AbstractPSCommentElement {
     /**
      * @return instance of its extension attachment object
      */
+    @Override
     protected ExtensionAttachment instantiateExtensionAttachment() {
         return new PSPageTrailerCodeBefore();
     }

@@ -24,26 +24,26 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.expr.PropertyException;
 
 /**
- * Shorthand parser for page-break-before, page-break-after and page-break-inside.
- * Used to set the corresponding keep-* and break-* properties.
+ * Shorthand parser for page-break-before, page-break-after and
+ * page-break-inside. Used to set the corresponding keep-* and break-*
+ * properties.
  */
 public class PageBreakShorthandParser implements ShorthandParser {
 
     /**
      * {@inheritDoc}
      */
-    public Property getValueForProperty(int propId,
-                                               Property property,
-                                               PropertyMaker maker,
-                                               PropertyList propertyList)
-                    throws PropertyException {
+    @Override
+    public Property getValueForProperty(final int propId,
+            final Property property, final PropertyMaker maker,
+            final PropertyList propertyList) throws PropertyException {
 
         if (propId == Constants.PR_KEEP_WITH_PREVIOUS
                 || propId == Constants.PR_KEEP_WITH_NEXT
                 || propId == Constants.PR_KEEP_TOGETHER) {
             if (property.getEnum() == Constants.EN_AVOID) {
-                return maker.make(null, Constants.CP_WITHIN_PAGE,
-                            propertyList, "always", propertyList.getFObj());
+                return maker.make(null, Constants.CP_WITHIN_PAGE, propertyList,
+                        "always", propertyList.getFObj());
             }
         } else if (propId == Constants.PR_BREAK_BEFORE
                 || propId == Constants.PR_BREAK_AFTER) {
@@ -51,12 +51,14 @@ public class PageBreakShorthandParser implements ShorthandParser {
             case Constants.EN_ALWAYS:
                 return EnumProperty.getInstance(Constants.EN_PAGE, "PAGE");
             case Constants.EN_LEFT:
-                return EnumProperty.getInstance(Constants.EN_EVEN_PAGE, "EVEN_PAGE");
+                return EnumProperty.getInstance(Constants.EN_EVEN_PAGE,
+                        "EVEN_PAGE");
             case Constants.EN_RIGHT:
-                return EnumProperty.getInstance(Constants.EN_ODD_PAGE, "ODD_PAGE");
+                return EnumProperty.getInstance(Constants.EN_ODD_PAGE,
+                        "ODD_PAGE");
             case Constants.EN_AVOID:
             default:
-                //nop;
+                // nop;
             }
         }
         return null;

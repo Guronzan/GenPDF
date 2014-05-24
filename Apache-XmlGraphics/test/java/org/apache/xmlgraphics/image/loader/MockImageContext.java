@@ -36,10 +36,11 @@ public class MockImageContext implements ImageContext {
 
     private static MockImageContext instance;
 
-    private ImageManager imageManager;
+    private final ImageManager imageManager;
 
     /**
      * Returns a singleton instance of the mock image context.
+     * 
      * @return the singleton
      */
     public static MockImageContext getInstance() {
@@ -50,14 +51,15 @@ public class MockImageContext implements ImageContext {
     }
 
     /**
-     * Returns an image context for testing that only contains platform- and classpath-independent
-     * implementations so consistent test results can be obtained irrespective of the test
-     * environment.
+     * Returns an image context for testing that only contains platform- and
+     * classpath-independent implementations so consistent test results can be
+     * obtained irrespective of the test environment.
+     * 
      * @return a new image context
      */
     public static MockImageContext newSafeInstance() {
-        MockImageContext ic = new MockImageContext(false);
-        ImageImplRegistry registry = ic.getImageManager().getRegistry();
+        final MockImageContext ic = new MockImageContext(false);
+        final ImageImplRegistry registry = ic.getImageManager().getRegistry();
         registry.registerPreloader(new PreloaderTIFF());
         registry.registerPreloader(new PreloaderJPEG());
         registry.registerPreloader(new PreloaderEPS());
@@ -71,19 +73,24 @@ public class MockImageContext implements ImageContext {
 
     /**
      * Creates a new mock image context.
-     * @param discover true to enable plug-in discovery
+     * 
+     * @param discover
+     *            true to enable plug-in discovery
      */
-    public MockImageContext(boolean discover) {
-        this.imageManager = new ImageManager(new ImageImplRegistry(discover), this);
+    public MockImageContext(final boolean discover) {
+        this.imageManager = new ImageManager(new ImageImplRegistry(discover),
+                this);
     }
 
     /** {@inheritDoc} */
+    @Override
     public float getSourceResolution() {
         return 72;
     }
 
     /**
      * Returns the image manager.
+     * 
      * @return the image manager
      */
     public ImageManager getImageManager() {
@@ -92,6 +99,7 @@ public class MockImageContext implements ImageContext {
 
     /**
      * Creates a new image session context.
+     * 
      * @return the image session context
      */
     public ImageSessionContext newSessionContext() {

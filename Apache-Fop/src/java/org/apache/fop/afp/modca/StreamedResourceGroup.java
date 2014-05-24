@@ -38,10 +38,12 @@ public class StreamedResourceGroup extends ResourceGroup implements Completable 
     /**
      * Main constructor
      *
-     * @param name the resource group name
-     * @param os the outputstream
+     * @param name
+     *            the resource group name
+     * @param os
+     *            the outputstream
      */
-    public StreamedResourceGroup(String name, OutputStream os) {
+    public StreamedResourceGroup(final String name, final OutputStream os) {
         super(name);
         this.os = os;
     }
@@ -49,29 +51,34 @@ public class StreamedResourceGroup extends ResourceGroup implements Completable 
     /**
      * Adds a resource to the external resource group
      *
-     * @param namedObject a named object
-     * @throws IOException thrown if an I/O exception of some sort has occurred.
+     * @param namedObject
+     *            a named object
+     * @throws IOException
+     *             thrown if an I/O exception of some sort has occurred.
      */
-    public void addObject(AbstractNamedAFPObject namedObject) throws IOException {
-        if (!started) {
-            writeStart(os);
-            started = true;
+    @Override
+    public void addObject(final AbstractNamedAFPObject namedObject)
+            throws IOException {
+        if (!this.started) {
+            writeStart(this.os);
+            this.started = true;
         }
         try {
-            namedObject.writeToStream(os);
+            namedObject.writeToStream(this.os);
         } finally {
-            os.flush();
+            this.os.flush();
         }
     }
 
     /**
      * Closes this external resource group file
      *
-     * @throws IOException thrown if an I/O exception of some sort has occurred.
+     * @throws IOException
+     *             thrown if an I/O exception of some sort has occurred.
      */
     public void close() throws IOException {
-        writeEnd(os);
-        complete = true;
+        writeEnd(this.os);
+        this.complete = true;
     }
 
     /**
@@ -84,11 +91,13 @@ public class StreamedResourceGroup extends ResourceGroup implements Completable 
     }
 
     /** {@inheritDoc} */
-    public void setComplete(boolean complete) {
+    @Override
+    public void setComplete(final boolean complete) {
         this.complete = complete;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isComplete() {
         return this.complete;
     }

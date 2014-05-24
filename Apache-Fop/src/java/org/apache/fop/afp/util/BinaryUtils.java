@@ -34,7 +34,7 @@ public final class BinaryUtils {
      * Convert an int into the corresponding byte array by encoding each two
      * hexadecimal digits as a char. This will return a byte array to the length
      * specified by bufsize.
-     * 
+     *
      * @param integer
      *            The int representation.
      * @param bufsize
@@ -62,7 +62,7 @@ public final class BinaryUtils {
     /**
      * Convert an int into the corresponding byte array by encoding each two
      * hexadecimal digits as a char.
-     * 
+     *
      * @param integer
      *            The int representation
      * @return the hexadecimal digits as a byte array
@@ -74,7 +74,7 @@ public final class BinaryUtils {
     /**
      * Convert a String of hexadecimal digits into the corresponding byte array
      * by encoding each two hexadecimal digits as a byte.
-     * 
+     *
      * @param digits
      *            The hexadecimal digits representation.
      * @return the hexadecimal digits as a byte array
@@ -119,7 +119,7 @@ public final class BinaryUtils {
 
     /**
      * Convert the specified short into a byte array.
-     * 
+     *
      * @param value
      *            The value to be converted.
      * @param array
@@ -135,7 +135,7 @@ public final class BinaryUtils {
 
     /**
      * Convert the specified short into a byte array.
-     * 
+     *
      * @param value
      *            The value to be converted.
      * @return The byte array

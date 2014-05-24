@@ -52,12 +52,17 @@ public class PDFRectangle implements PDFWritable {
     /**
      * create a rectangle giving the four separate values
      *
-     * @param llx  lower left x coordinate
-     * @param lly  lower left y coordinate
-     * @param urx  upper right x coordinate
-     * @param ury  upper right y coordinate
+     * @param llx
+     *            lower left x coordinate
+     * @param lly
+     *            lower left y coordinate
+     * @param urx
+     *            upper right x coordinate
+     * @param ury
+     *            upper right y coordinate
      */
-    public PDFRectangle(int llx, int lly, int urx, int ury) {
+    public PDFRectangle(final int llx, final int lly, final int urx,
+            final int ury) {
         this.llx = llx;
         this.lly = lly;
         this.urx = urx;
@@ -67,9 +72,10 @@ public class PDFRectangle implements PDFWritable {
     /**
      * create a rectangle giving an array of four values
      *
-     * @param array values in the order llx, lly, urx, ury
+     * @param array
+     *            values in the order llx, lly, urx, ury
      */
-    public PDFRectangle(int[] array) {
+    public PDFRectangle(final int[] array) {
         this.llx = array[0];
         this.lly = array[1];
         this.urx = array[2];
@@ -77,16 +83,15 @@ public class PDFRectangle implements PDFWritable {
     }
 
     private String format() {
-        StringBuilder textBuffer = new StringBuilder(32);
+        final StringBuilder textBuffer = new StringBuilder(32);
         format(textBuffer);
         return textBuffer.toString();
     }
 
-    private void format(StringBuilder textBuffer) {
-        textBuffer.append('[').append(llx)
-                  .append(' ').append(lly)
-                  .append(' ').append(urx)
-                  .append(' ').append(ury).append(']');
+    private void format(final StringBuilder textBuffer) {
+        textBuffer.append('[').append(this.llx).append(' ').append(this.lly)
+                .append(' ').append(this.urx).append(' ').append(this.ury)
+                .append(']');
     }
 
     /** {@inheritDoc} */
@@ -96,7 +101,9 @@ public class PDFRectangle implements PDFWritable {
     }
 
     /** {@inheritDoc} */
-    public void outputInline(OutputStream out, StringBuilder textBuffer) throws IOException {
+    @Override
+    public void outputInline(final OutputStream out,
+            final StringBuilder textBuffer) throws IOException {
         format(textBuffer);
     }
 }

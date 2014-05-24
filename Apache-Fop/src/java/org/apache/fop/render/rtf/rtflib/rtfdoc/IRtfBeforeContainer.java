@@ -35,9 +35,11 @@ public interface IRtfBeforeContainer {
 
     /**
      *
-     * @param attrs Attributes of new header
+     * @param attrs
+     *            Attributes of new header
      * @return RtfBefore for new header object
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    RtfBefore newBefore(RtfAttributes attrs) throws IOException;
+    RtfBefore newBefore(final RtfAttributes attrs) throws IOException;
 }

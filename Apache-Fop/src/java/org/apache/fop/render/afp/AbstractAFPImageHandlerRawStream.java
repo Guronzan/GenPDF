@@ -24,11 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-
-import org.apache.xmlgraphics.image.loader.Image;
-import org.apache.xmlgraphics.image.loader.ImageSize;
-import org.apache.xmlgraphics.image.loader.impl.ImageRawStream;
-
 import org.apache.fop.afp.AFPDataObjectInfo;
 import org.apache.fop.afp.AFPObjectAreaInfo;
 import org.apache.fop.afp.AFPPaintingState;
@@ -37,58 +32,68 @@ import org.apache.fop.afp.AFPResourceManager;
 import org.apache.fop.afp.modca.ResourceObject;
 import org.apache.fop.render.ImageHandler;
 import org.apache.fop.render.RenderingContext;
+import org.apache.xmlgraphics.image.loader.Image;
+import org.apache.xmlgraphics.image.loader.ImageSize;
+import org.apache.xmlgraphics.image.loader.impl.ImageRawStream;
 
 /**
  * A base abstract AFP raw stream image handler
  */
 public abstract class AbstractAFPImageHandlerRawStream extends AFPImageHandler
-        implements ImageHandler {
+implements ImageHandler {
 
     /**
-     * Sets additional parameters on the image object info being built. By default, this
-     * method does nothing but it can be overridden to provide additional functionality.
-     * @param imageObjectInfo the image object info being built
-     * @param image the image being processed
+     * Sets additional parameters on the image object info being built. By
+     * default, this method does nothing but it can be overridden to provide
+     * additional functionality.
+     * 
+     * @param imageObjectInfo
+     *            the image object info being built
+     * @param image
+     *            the image being processed
      */
-    protected void setAdditionalParameters(AFPDataObjectInfo imageObjectInfo,
-            ImageRawStream image) {
-        //nop
+    protected void setAdditionalParameters(
+            final AFPDataObjectInfo imageObjectInfo, final ImageRawStream image) {
+        // nop
     }
 
-    private void updateDataObjectInfo(AFPDataObjectInfo dataObjectInfo,
-            ImageRawStream rawStream, AFPResourceManager resourceManager) throws IOException {
+    private void updateDataObjectInfo(final AFPDataObjectInfo dataObjectInfo,
+            final ImageRawStream rawStream,
+            final AFPResourceManager resourceManager) throws IOException {
         dataObjectInfo.setMimeType(rawStream.getFlavor().getMimeType());
 
-        AFPResourceInfo resourceInfo = dataObjectInfo.getResourceInfo();
+        final AFPResourceInfo resourceInfo = dataObjectInfo.getResourceInfo();
         if (!resourceInfo.levelChanged()) {
             resourceInfo.setLevel(resourceManager.getResourceLevelDefaults()
                     .getDefaultResourceLevel(ResourceObject.TYPE_IMAGE));
         }
 
-        InputStream inputStream = rawStream.createInputStream();
+        final InputStream inputStream = rawStream.createInputStream();
         try {
             dataObjectInfo.setData(IOUtils.toByteArray(inputStream));
         } finally {
             IOUtils.closeQuietly(inputStream);
         }
 
-        int dataHeight = rawStream.getSize().getHeightPx();
+        final int dataHeight = rawStream.getSize().getHeightPx();
         dataObjectInfo.setDataHeight(dataHeight);
 
-        int dataWidth = rawStream.getSize().getWidthPx();
+        final int dataWidth = rawStream.getSize().getWidthPx();
         dataObjectInfo.setDataWidth(dataWidth);
 
-        ImageSize imageSize = rawStream.getSize();
-        dataObjectInfo.setDataHeightRes((int) (imageSize.getDpiHorizontal() * 10));
+        final ImageSize imageSize = rawStream.getSize();
+        dataObjectInfo
+                .setDataHeightRes((int) (imageSize.getDpiHorizontal() * 10));
         dataObjectInfo.setDataWidthRes((int) (imageSize.getDpiVertical() * 10));
     }
 
     /** {@inheritDoc} */
-    public void handleImage(RenderingContext context, Image image, Rectangle pos)
-            throws IOException {
-        AFPRenderingContext afpContext = (AFPRenderingContext)context;
+    @Override
+    public void handleImage(final RenderingContext context, final Image image,
+            final Rectangle pos) throws IOException {
+        final AFPRenderingContext afpContext = (AFPRenderingContext) context;
 
-        AFPDataObjectInfo dataObjectInfo = createDataObjectInfo();
+        final AFPDataObjectInfo dataObjectInfo = createDataObjectInfo();
 
         // set resource information
         setResourceInformation(dataObjectInfo,
@@ -96,18 +101,22 @@ public abstract class AbstractAFPImageHandlerRawStream extends AFPImageHandler
                 afpContext.getForeignAttributes());
 
         // Positioning
-        dataObjectInfo.setObjectAreaInfo(createObjectAreaInfo(afpContext.getPaintingState(), pos));
+        dataObjectInfo.setObjectAreaInfo(createObjectAreaInfo(
+                afpContext.getPaintingState(), pos));
 
         // set object area info
-        //AFPObjectAreaInfo objectAreaInfo = dataObjectInfo.getObjectAreaInfo();
-        AFPPaintingState paintingState = afpContext.getPaintingState();
-        int resolution = paintingState.getResolution();
-        AFPObjectAreaInfo objectAreaInfo = dataObjectInfo.getObjectAreaInfo();
+        // AFPObjectAreaInfo objectAreaInfo =
+        // dataObjectInfo.getObjectAreaInfo();
+        final AFPPaintingState paintingState = afpContext.getPaintingState();
+        final int resolution = paintingState.getResolution();
+        final AFPObjectAreaInfo objectAreaInfo = dataObjectInfo
+                .getObjectAreaInfo();
         objectAreaInfo.setResolution(resolution);
 
         // Image content
-        ImageRawStream imageStream = (ImageRawStream)image;
-        updateDataObjectInfo(dataObjectInfo, imageStream, afpContext.getResourceManager());
+        final ImageRawStream imageStream = (ImageRawStream) image;
+        updateDataObjectInfo(dataObjectInfo, imageStream,
+                afpContext.getResourceManager());
         setAdditionalParameters(dataObjectInfo, imageStream);
 
         // Create image

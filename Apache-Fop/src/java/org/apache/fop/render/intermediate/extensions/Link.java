@@ -27,20 +27,24 @@ import java.awt.Rectangle;
 public class Link {
 
     private AbstractAction action;
-    private Rectangle targetRect;
+    private final Rectangle targetRect;
 
     /**
      * Creates a new named destination.
-     * @param action the action performed when the destination is selected
-     * @param targetRect the target rectangle (coordinates in millipoints)
+     * 
+     * @param action
+     *            the action performed when the destination is selected
+     * @param targetRect
+     *            the target rectangle (coordinates in millipoints)
      */
-    public Link(AbstractAction action, Rectangle targetRect) {
+    public Link(final AbstractAction action, final Rectangle targetRect) {
         this.action = action;
         this.targetRect = targetRect;
     }
 
     /**
      * Returns the action performed when the destination is selected.
+     * 
      * @return the action
      */
     public AbstractAction getAction() {
@@ -48,7 +52,9 @@ public class Link {
     }
 
     /**
-     * Returns the target rectangle, i.e. the hot zone in which the link is activated.
+     * Returns the target rectangle, i.e. the hot zone in which the link is
+     * activated.
+     * 
      * @return the target rectangle
      */
     public Rectangle getTargetRect() {
@@ -57,9 +63,11 @@ public class Link {
 
     /**
      * Sets the action performed when the destination is selected.
-     * @param action the action
+     * 
+     * @param action
+     *            the action
      */
-    public void setAction(AbstractAction action) {
+    public void setAction(final AbstractAction action) {
         this.action = action;
     }
 

@@ -34,9 +34,12 @@ import java.io.IOException;
 public interface IRtfPageNumberCitationContainer {
     /**
      *
-     * @param id String identifying new page number citation
+     * @param id
+     *            String identifying new page number citation
      * @return RtfPageNumberCitation new page number citation object
-     * @throws IOException for I/O problems
+     * @throws IOException
+     *             for I/O problems
      */
-    RtfPageNumberCitation newPageNumberCitation(String id) throws IOException;
+    RtfPageNumberCitation newPageNumberCitation(final String id)
+            throws IOException;
 }

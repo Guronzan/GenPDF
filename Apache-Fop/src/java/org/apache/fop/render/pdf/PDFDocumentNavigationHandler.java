@@ -44,9 +44,11 @@ import org.apache.fop.render.intermediate.extensions.URIAction;
 import org.apache.fop.render.pdf.PDFDocumentHandler.PageReference;
 
 /**
- * Implementation of the {@link IFDocumentNavigationHandler} interface for PDF output.
+ * Implementation of the {@link IFDocumentNavigationHandler} interface for PDF
+ * output.
  */
-public class PDFDocumentNavigationHandler implements IFDocumentNavigationHandler {
+public class PDFDocumentNavigationHandler implements
+        IFDocumentNavigationHandler {
 
     private final PDFDocumentHandler documentHandler;
 
@@ -55,9 +57,11 @@ public class PDFDocumentNavigationHandler implements IFDocumentNavigationHandler
 
     /**
      * Default constructor.
-     * @param documentHandler the parent document handler
+     * 
+     * @param documentHandler
+     *            the parent document handler
      */
-    public PDFDocumentNavigationHandler(PDFDocumentHandler documentHandler) {
+    public PDFDocumentNavigationHandler(final PDFDocumentHandler documentHandler) {
         super();
         this.documentHandler = documentHandler;
     }
@@ -67,56 +71,65 @@ public class PDFDocumentNavigationHandler implements IFDocumentNavigationHandler
     }
 
     /** {@inheritDoc} */
-    public void renderNamedDestination(NamedDestination destination) throws IFException {
-        PDFAction action = getAction(destination.getAction());
-        getPDFDoc().getFactory().makeDestination(
-                destination.getName(), action.makeReference());
+    @Override
+    public void renderNamedDestination(final NamedDestination destination)
+            throws IFException {
+        final PDFAction action = getAction(destination.getAction());
+        getPDFDoc().getFactory().makeDestination(destination.getName(),
+                action.makeReference());
     }
 
     /** {@inheritDoc} */
-    public void renderBookmarkTree(BookmarkTree tree) throws IFException {
-        Iterator iter = tree.getBookmarks().iterator();
+    @Override
+    public void renderBookmarkTree(final BookmarkTree tree) throws IFException {
+        final Iterator iter = tree.getBookmarks().iterator();
         while (iter.hasNext()) {
-            Bookmark b = (Bookmark)iter.next();
+            final Bookmark b = (Bookmark) iter.next();
             renderBookmark(b, null);
         }
     }
 
-    private void renderBookmark(Bookmark bookmark, PDFOutline parent) throws IFException {
+    private void renderBookmark(final Bookmark bookmark, PDFOutline parent)
+            throws IFException {
         if (parent == null) {
             parent = getPDFDoc().getOutlineRoot();
         }
-        PDFAction action = getAction(bookmark.getAction());
-        String actionRef = (action != null ? action.makeReference().toString() : null);
-        PDFOutline pdfOutline = getPDFDoc().getFactory().makeOutline(parent,
-            bookmark.getTitle(), actionRef, bookmark.isShown());
-        Iterator iter = bookmark.getChildBookmarks().iterator();
+        final PDFAction action = getAction(bookmark.getAction());
+        final String actionRef = action != null ? action.makeReference()
+                .toString() : null;
+        final PDFOutline pdfOutline = getPDFDoc().getFactory().makeOutline(
+                parent, bookmark.getTitle(), actionRef, bookmark.isShown());
+        final Iterator iter = bookmark.getChildBookmarks().iterator();
         while (iter.hasNext()) {
-            Bookmark b = (Bookmark)iter.next();
+            final Bookmark b = (Bookmark) iter.next();
             renderBookmark(b, pdfOutline);
         }
     }
 
     /** {@inheritDoc} */
-    public void renderLink(Link link) throws IFException {
-        Rectangle targetRect = link.getTargetRect();
-        int pageHeight = documentHandler.currentPageRef.getPageDimension().height;
-        Rectangle2D targetRect2D = new Rectangle2D.Double(
+    @Override
+    public void renderLink(final Link link) throws IFException {
+        final Rectangle targetRect = link.getTargetRect();
+        final int pageHeight = this.documentHandler.currentPageRef
+                .getPageDimension().height;
+        final Rectangle2D targetRect2D = new Rectangle2D.Double(
                 targetRect.getMinX() / 1000.0,
                 (pageHeight - targetRect.getMinY() - targetRect.getHeight()) / 1000.0,
-                targetRect.getWidth() / 1000.0,
-                targetRect.getHeight() / 1000.0);
-        PDFAction pdfAction = getAction(link.getAction());
-        //makeLink() currently needs a PDFAction and not a reference
-        //TODO Revisit when PDFLink is converted to a PDFDictionary
-        PDFLink pdfLink = getPDFDoc().getFactory().makeLink(
-                targetRect2D, pdfAction);
+                targetRect.getWidth() / 1000.0, targetRect.getHeight() / 1000.0);
+        final PDFAction pdfAction = getAction(link.getAction());
+        // makeLink() currently needs a PDFAction and not a reference
+        // TODO Revisit when PDFLink is converted to a PDFDictionary
+        final PDFLink pdfLink = getPDFDoc().getFactory().makeLink(targetRect2D,
+                pdfAction);
         if (pdfLink != null) {
-            PDFStructElem structure = (PDFStructElem) link.getAction().getStructureTreeElement();
-            if (documentHandler.getUserAgent().isAccessibilityEnabled() && structure != null) {
-                documentHandler.getLogicalStructureHandler().addLinkContentItem(pdfLink, structure);
+            final PDFStructElem structure = (PDFStructElem) link.getAction()
+                    .getStructureTreeElement();
+            if (this.documentHandler.getUserAgent().isAccessibilityEnabled()
+                    && structure != null) {
+                this.documentHandler.getLogicalStructureHandler()
+                        .addLinkContentItem(pdfLink, structure);
             }
-            documentHandler.currentPage.addAnnotation(pdfLink);
+            this.documentHandler.currentPage.addAnnotation(pdfLink);
         }
     }
 
@@ -127,34 +140,39 @@ public class PDFDocumentNavigationHandler implements IFDocumentNavigationHandler
     }
 
     /** {@inheritDoc} */
-    public void addResolvedAction(AbstractAction action) throws IFException {
+    @Override
+    public void addResolvedAction(final AbstractAction action)
+            throws IFException {
         assert action.isComplete();
-        PDFAction pdfAction = (PDFAction)this.incompleteActions.remove(action.getID());
+        final PDFAction pdfAction = (PDFAction) this.incompleteActions
+                .remove(action.getID());
         if (pdfAction == null) {
             getAction(action);
         } else if (pdfAction instanceof PDFGoTo) {
-            PDFGoTo pdfGoTo = (PDFGoTo)pdfAction;
-            updateTargetLocation(pdfGoTo, (GoToXYAction)action);
+            final PDFGoTo pdfGoTo = (PDFGoTo) pdfAction;
+            updateTargetLocation(pdfGoTo, (GoToXYAction) action);
         } else {
             throw new UnsupportedOperationException(
-                    "Action type not supported: " + pdfAction.getClass().getName());
+                    "Action type not supported: "
+                            + pdfAction.getClass().getName());
         }
     }
 
-    private PDFAction getAction(AbstractAction action) throws IFException {
+    private PDFAction getAction(final AbstractAction action) throws IFException {
         if (action == null) {
             return null;
         }
-        PDFAction pdfAction = (PDFAction)this.completeActions.get(action.getID());
+        PDFAction pdfAction = (PDFAction) this.completeActions.get(action
+                .getID());
         if (pdfAction != null) {
             return pdfAction;
         } else if (action instanceof GoToXYAction) {
-            pdfAction = (PDFAction) incompleteActions.get(action.getID());
+            pdfAction = (PDFAction) this.incompleteActions.get(action.getID());
             if (pdfAction != null) {
                 return pdfAction;
             } else {
-                GoToXYAction a = (GoToXYAction)action;
-                PDFGoTo pdfGoTo = new PDFGoTo(null);
+                final GoToXYAction a = (GoToXYAction) action;
+                final PDFGoTo pdfGoTo = new PDFGoTo(null);
                 getPDFDoc().assignObjectNumber(pdfGoTo);
                 if (action.isComplete()) {
                     updateTargetLocation(pdfGoTo, a);
@@ -164,13 +182,13 @@ public class PDFDocumentNavigationHandler implements IFDocumentNavigationHandler
                 return pdfGoTo;
             }
         } else if (action instanceof URIAction) {
-            URIAction u = (URIAction)action;
+            final URIAction u = (URIAction) action;
             assert u.isComplete();
-            String uri = u.getURI();
-            PDFFactory factory = getPDFDoc().getFactory();
+            final String uri = u.getURI();
+            final PDFFactory factory = getPDFDoc().getFactory();
             pdfAction = factory.getExternalAction(uri, u.isNewWindow());
             if (!pdfAction.hasObjectNumber()) {
-                //Some PDF actions are pooled
+                // Some PDF actions are pooled
                 getPDFDoc().registerObject(pdfAction);
             }
             this.completeActions.put(action.getID(), pdfAction);
@@ -181,24 +199,26 @@ public class PDFDocumentNavigationHandler implements IFDocumentNavigationHandler
         }
     }
 
-    private void updateTargetLocation(PDFGoTo pdfGoTo, GoToXYAction action)
-      throws IFException {
-        PageReference pageRef = this.documentHandler.getPageReference(action.getPageIndex());
-        if ( pageRef == null ) {
-            throw new
-                IFException("Can't resolve page reference @ index: " + action.getPageIndex(), null);
+    private void updateTargetLocation(final PDFGoTo pdfGoTo,
+            final GoToXYAction action) throws IFException {
+        final PageReference pageRef = this.documentHandler
+                .getPageReference(action.getPageIndex());
+        if (pageRef == null) {
+            throw new IFException("Can't resolve page reference @ index: "
+                    + action.getPageIndex(), null);
         } else {
-            //Convert target location from millipoints to points and adjust for different
-            //page origin
+            // Convert target location from millipoints to points and adjust for
+            // different
+            // page origin
             Point2D p2d = null;
-            p2d = new Point2D.Double(
-                    action.getTargetLocation().x / 1000.0,
-                    (pageRef.getPageDimension().height - action.getTargetLocation().y) / 1000.0);
-            String pdfPageRef = pageRef.getPageRef();
+            p2d = new Point2D.Double(action.getTargetLocation().x / 1000.0,
+                    (pageRef.getPageDimension().height - action
+                            .getTargetLocation().y) / 1000.0);
+            final String pdfPageRef = pageRef.getPageRef();
             pdfGoTo.setPageReference(pdfPageRef);
             pdfGoTo.setPosition(p2d);
 
-            //Queue this object now that it's complete
+            // Queue this object now that it's complete
             getPDFDoc().addObject(pdfGoTo);
             this.completeActions.put(action.getID(), pdfGoTo);
         }

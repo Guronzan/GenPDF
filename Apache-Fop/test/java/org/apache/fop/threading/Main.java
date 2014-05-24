@@ -35,38 +35,42 @@ import org.apache.avalon.framework.logger.ConsoleLogger;
 public class Main {
 
     private static void prompt() throws IOException {
-        BufferedReader in = new BufferedReader(new java.io.InputStreamReader(System.in));
+        final BufferedReader in = new BufferedReader(
+                new java.io.InputStreamReader(System.in));
         System.out.print("Press return to continue...");
         in.readLine();
     }
 
     /**
      * Main method.
-     * @param args the command-line arguments
+     * 
+     * @param args
+     *            the command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
-            //Read configuration
-            File cfgFile = new File(args[0]);
-            DefaultConfigurationBuilder builder = new DefaultConfigurationBuilder();
-            Configuration cfg = builder.buildFromFile(cfgFile);
+            // Read configuration
+            final File cfgFile = new File(args[0]);
+            final DefaultConfigurationBuilder builder = new DefaultConfigurationBuilder();
+            final Configuration cfg = builder.buildFromFile(cfgFile);
 
-            boolean doPrompt = cfg.getAttributeAsBoolean("prompt", false);
+            final boolean doPrompt = cfg.getAttributeAsBoolean("prompt", false);
             if (doPrompt) {
                 prompt();
             }
 
-            //Setup testbed
-            FOPTestbed testbed = new FOPTestbed();
-            ContainerUtil.enableLogging(testbed, new ConsoleLogger(ConsoleLogger.LEVEL_INFO));
+            // Setup testbed
+            final FOPTestbed testbed = new FOPTestbed();
+            ContainerUtil.enableLogging(testbed, new ConsoleLogger(
+                    ConsoleLogger.LEVEL_INFO));
             ContainerUtil.configure(testbed, cfg);
             ContainerUtil.initialize(testbed);
 
-            //Start tests
+            // Start tests
             testbed.doStressTest();
 
             System.exit(0);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             System.err.println(ExceptionUtil.printStackTrace(e));
             System.exit(-1);
         }

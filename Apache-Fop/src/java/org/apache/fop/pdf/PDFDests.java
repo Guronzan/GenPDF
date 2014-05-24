@@ -36,12 +36,13 @@ public class PDFDests extends PDFNameTreeNode {
 
     /**
      * Create a named destination
-     * @param destinationList a list of destinations
+     * 
+     * @param destinationList
+     *            a list of destinations
      */
-    public PDFDests(List destinationList) {
+    public PDFDests(final List destinationList) {
         this();
         setNames(new PDFArray(this, destinationList));
     }
 
 }
-

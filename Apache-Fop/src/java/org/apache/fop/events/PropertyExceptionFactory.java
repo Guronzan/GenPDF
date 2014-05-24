@@ -30,9 +30,10 @@ import org.apache.fop.fo.expr.PropertyException;
 public class PropertyExceptionFactory implements ExceptionFactory {
 
     /** {@inheritDoc} */
-    public Throwable createException(Event event) {
-        String msg = EventFormatter.format(event, Locale.ENGLISH);
-        PropertyException ex = new PropertyException(msg);
+    @Override
+    public Throwable createException(final Event event) {
+        final String msg = EventFormatter.format(event, Locale.ENGLISH);
+        final PropertyException ex = new PropertyException(msg);
         if (!Locale.ENGLISH.equals(Locale.getDefault())) {
             ex.setLocalizedMessage(EventFormatter.format(event));
         }
@@ -40,6 +41,7 @@ public class PropertyExceptionFactory implements ExceptionFactory {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class<PropertyException> getExceptionClass() {
         return PropertyException.class;
     }

@@ -27,8 +27,8 @@ import java.util.Date;
 import java.util.Random;
 
 /**
- * A class to generate the File Identifier of a PDF document (the ID entry of the file
- * trailer dictionary).
+ * A class to generate the File Identifier of a PDF document (the ID entry of
+ * the file trailer dictionary).
  */
 abstract class FileIDGenerator {
 
@@ -38,22 +38,22 @@ abstract class FileIDGenerator {
 
     private static final class RandomFileIDGenerator extends FileIDGenerator {
 
-        private byte[] fileID;
+        private final byte[] fileID;
 
         private RandomFileIDGenerator() {
-            Random random = new Random();
-            fileID = new byte[16];
-            random.nextBytes(fileID);
+            final Random random = new Random();
+            this.fileID = new byte[16];
+            random.nextBytes(this.fileID);
         }
 
         @Override
         byte[] getOriginalFileID() {
-            return fileID;
+            return this.fileID;
         }
 
         @Override
         byte[] getUpdatedFileID() {
-            return fileID;
+            return this.fileID;
         }
 
     }
@@ -66,17 +66,18 @@ abstract class FileIDGenerator {
 
         private final MessageDigest digest;
 
-        DigestFileIDGenerator(PDFDocument document) throws NoSuchAlgorithmException {
+        DigestFileIDGenerator(final PDFDocument document)
+                throws NoSuchAlgorithmException {
             this.document = document;
             this.digest = MessageDigest.getInstance("MD5");
         }
 
         @Override
         byte[] getOriginalFileID() {
-            if (fileID == null) {
+            if (this.fileID == null) {
                 generateFileID();
             }
-            return fileID;
+            return this.fileID;
         }
 
         @Override
@@ -85,39 +86,44 @@ abstract class FileIDGenerator {
         }
 
         private void generateFileID() {
-            DateFormat df = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
-            digest.update(PDFDocument.encode(df.format(new Date())));
-            // Ignoring the filename here for simplicity even though it's recommended
+            final DateFormat df = new SimpleDateFormat(
+                    "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS");
+            this.digest.update(PDFDocument.encode(df.format(new Date())));
+            // Ignoring the filename here for simplicity even though it's
+            // recommended
             // by the PDF spec
-            digest.update(PDFDocument.encode(String.valueOf(document.getCurrentFileSize())));
-            digest.update(document.getInfo().toPDF());
-            fileID = digest.digest();
+            this.digest.update(PDFDocument.encode(String.valueOf(this.document
+                    .getCurrentFileSize())));
+            this.digest.update(this.document.getInfo().toPDF());
+            this.fileID = this.digest.digest();
         }
 
     }
 
     /**
-     * Use this method when the file ID is needed before the document is finalized. The
-     * digest method recommended by the PDF Reference is based, among other things, on the
-     * file size.
+     * Use this method when the file ID is needed before the document is
+     * finalized. The digest method recommended by the PDF Reference is based,
+     * among other things, on the file size.
      *
-     * @return an instance that generates a random sequence of bytes for the File
-     * Identifier
+     * @return an instance that generates a random sequence of bytes for the
+     *         File Identifier
      */
     static FileIDGenerator getRandomFileIDGenerator() {
         return new RandomFileIDGenerator();
     }
 
     /**
-     * Returns an instance that generates a file ID using the digest method recommended by
-     * the PDF Reference. To properly follow the Reference, the size of the document must
-     * no longer change after this method is called.
+     * Returns an instance that generates a file ID using the digest method
+     * recommended by the PDF Reference. To properly follow the Reference, the
+     * size of the document must no longer change after this method is called.
      *
-     * @param document the document whose File Identifier must be generated
+     * @param document
+     *            the document whose File Identifier must be generated
      * @return the generator
-     * @throws NoSuchAlgorithmException if the MD5 Digest algorithm is not available
+     * @throws NoSuchAlgorithmException
+     *             if the MD5 Digest algorithm is not available
      */
-    static FileIDGenerator getDigestFileIDGenerator(PDFDocument document)
+    static FileIDGenerator getDigestFileIDGenerator(final PDFDocument document)
             throws NoSuchAlgorithmException {
         return new DigestFileIDGenerator(document);
     }

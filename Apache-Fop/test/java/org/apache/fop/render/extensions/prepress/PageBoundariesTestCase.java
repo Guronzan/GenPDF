@@ -19,14 +19,14 @@
 
 package org.apache.fop.render.extensions.prepress;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
 import java.awt.Dimension;
 import java.awt.Rectangle;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 /**
  * Tests for the fox:bleed, fox:crop-offset, fox:crop-box extension properties.
@@ -44,17 +44,18 @@ public class PageBoundariesTestCase {
     /** Test for page boundaries. */
     @Test
     public void testBoundaries1() {
-        PageBoundaries boundaries = new PageBoundaries(TEST_AREA_SIZE, BLEED, CROP_OFFSET, null);
+        final PageBoundaries boundaries = new PageBoundaries(TEST_AREA_SIZE,
+                BLEED, CROP_OFFSET, null);
         assertEquals(TEST_AREA, boundaries.getTrimBox());
 
-        Rectangle bleedBox = boundaries.getBleedBox();
+        final Rectangle bleedBox = boundaries.getBleedBox();
         assertNotNull("Expected not null object", bleedBox);
         assertEquals(-5000, bleedBox.x);
         assertEquals(-5000, bleedBox.y);
         assertEquals(30000, bleedBox.width);
         assertEquals(25000, bleedBox.height);
 
-        Rectangle mediaBox = boundaries.getMediaBox();
+        final Rectangle mediaBox = boundaries.getMediaBox();
         assertNotNull("Expected not null object", mediaBox);
         assertEquals(-8000, mediaBox.x);
         assertEquals(-8000, mediaBox.y);
@@ -65,9 +66,9 @@ public class PageBoundariesTestCase {
     /** Test for page boundaries. */
     @Test
     public void testBoundaries2() {
-        PageBoundaries boundaries = new PageBoundaries(
-                TEST_AREA_SIZE, BLEED, null, null);
-        Rectangle bleedBox = boundaries.getBleedBox();
+        final PageBoundaries boundaries = new PageBoundaries(TEST_AREA_SIZE,
+                BLEED, null, null);
+        final Rectangle bleedBox = boundaries.getBleedBox();
         assertNotNull("Expected not null object", bleedBox);
         assertEquals(-5000, bleedBox.x);
         assertEquals(-5000, bleedBox.y);
@@ -79,85 +80,94 @@ public class PageBoundariesTestCase {
     /** Two values for the properties. */
     @Test
     public void testBoundaries2Values() {
-        PageBoundaries boundaries = new PageBoundaries(
-                TEST_AREA_SIZE, "5pt  10pt", "6pt \t 12pt", null);
-        Rectangle bleedBox = boundaries.getBleedBox();
+        final PageBoundaries boundaries = new PageBoundaries(TEST_AREA_SIZE,
+                "5pt  10pt", "6pt \t 12pt", null);
+        final Rectangle bleedBox = boundaries.getBleedBox();
         assertEquals(-10000, bleedBox.x);
-        assertEquals(-5000,  bleedBox.y);
-        assertEquals(40000,  bleedBox.width);
-        assertEquals(25000,  bleedBox.height);
+        assertEquals(-5000, bleedBox.y);
+        assertEquals(40000, bleedBox.width);
+        assertEquals(25000, bleedBox.height);
 
-        Rectangle mediaBox = boundaries.getMediaBox();
+        final Rectangle mediaBox = boundaries.getMediaBox();
         assertEquals(-12000, mediaBox.x);
-        assertEquals(-6000,  mediaBox.y);
-        assertEquals(44000,  mediaBox.width);
-        assertEquals(27000,  mediaBox.height);
+        assertEquals(-6000, mediaBox.y);
+        assertEquals(44000, mediaBox.width);
+        assertEquals(27000, mediaBox.height);
     }
 
     /** Three values for the properties. */
     @Test
     public void testBoundaries3Values() {
-        PageBoundaries boundaries = new PageBoundaries(
-                TEST_AREA_SIZE, "5pt  10pt 7pt", "6pt \t 12pt 14pt", null);
-        Rectangle bleedBox = boundaries.getBleedBox();
+        final PageBoundaries boundaries = new PageBoundaries(TEST_AREA_SIZE,
+                "5pt  10pt 7pt", "6pt \t 12pt 14pt", null);
+        final Rectangle bleedBox = boundaries.getBleedBox();
         assertEquals(-10000, bleedBox.x);
-        assertEquals(-5000,  bleedBox.y);
-        assertEquals(40000,  bleedBox.width);
-        assertEquals(27000,  bleedBox.height);
+        assertEquals(-5000, bleedBox.y);
+        assertEquals(40000, bleedBox.width);
+        assertEquals(27000, bleedBox.height);
 
-        Rectangle mediaBox = boundaries.getMediaBox();
+        final Rectangle mediaBox = boundaries.getMediaBox();
         assertEquals(-12000, mediaBox.x);
-        assertEquals(-6000,  mediaBox.y);
-        assertEquals(44000,  mediaBox.width);
-        assertEquals(35000,  mediaBox.height);
+        assertEquals(-6000, mediaBox.y);
+        assertEquals(44000, mediaBox.width);
+        assertEquals(35000, mediaBox.height);
     }
 
     /** Four values for the properties. */
     @Test
     public void testBoundaries4Values() {
-        PageBoundaries boundaries = new PageBoundaries(
-                TEST_AREA_SIZE, "5pt  6pt 7pt   8pt", "9pt 10pt  11pt 12pt", null);
-        Rectangle bleedBox = boundaries.getBleedBox();
-        assertEquals(-8000,  bleedBox.x);
-        assertEquals(-5000,  bleedBox.y);
-        assertEquals(34000,  bleedBox.width);
-        assertEquals(27000,  bleedBox.height);
+        final PageBoundaries boundaries = new PageBoundaries(TEST_AREA_SIZE,
+                "5pt  6pt 7pt   8pt", "9pt 10pt  11pt 12pt", null);
+        final Rectangle bleedBox = boundaries.getBleedBox();
+        assertEquals(-8000, bleedBox.x);
+        assertEquals(-5000, bleedBox.y);
+        assertEquals(34000, bleedBox.width);
+        assertEquals(27000, bleedBox.height);
 
-        Rectangle mediaBox = boundaries.getMediaBox();
+        final Rectangle mediaBox = boundaries.getMediaBox();
         assertEquals(-12000, mediaBox.x);
-        assertEquals(-9000,  mediaBox.y);
-        assertEquals(42000,  mediaBox.width);
-        assertEquals(35000,  mediaBox.height);
+        assertEquals(-9000, mediaBox.y);
+        assertEquals(42000, mediaBox.width);
+        assertEquals(35000, mediaBox.height);
     }
 
     /** Test for the different values of crop-box. */
     @Test
     public void testCropBox() {
-        PageBoundaries boundaries = new PageBoundaries(TEST_AREA_SIZE, BLEED, CROP_OFFSET, null);
+        PageBoundaries boundaries = new PageBoundaries(TEST_AREA_SIZE, BLEED,
+                CROP_OFFSET, null);
         assertEquals(boundaries.getMediaBox(), boundaries.getCropBox());
 
         boundaries = new PageBoundaries(TEST_AREA_SIZE, BLEED, CROP_OFFSET, "");
         assertEquals(boundaries.getMediaBox(), boundaries.getCropBox());
 
-        boundaries = new PageBoundaries(TEST_AREA_SIZE, BLEED, CROP_OFFSET, "trim-box");
+        boundaries = new PageBoundaries(TEST_AREA_SIZE, BLEED, CROP_OFFSET,
+                "trim-box");
         assertEquals(TEST_AREA, boundaries.getCropBox());
 
-        boundaries = new PageBoundaries(TEST_AREA_SIZE, BLEED, CROP_OFFSET, "bleed-box");
+        boundaries = new PageBoundaries(TEST_AREA_SIZE, BLEED, CROP_OFFSET,
+                "bleed-box");
         assertEquals(boundaries.getBleedBox(), boundaries.getCropBox());
 
-        boundaries = new PageBoundaries(TEST_AREA_SIZE, BLEED, CROP_OFFSET, "media-box");
+        boundaries = new PageBoundaries(TEST_AREA_SIZE, BLEED, CROP_OFFSET,
+                "media-box");
         assertEquals(boundaries.getMediaBox(), boundaries.getCropBox());
     }
 
     /** Test for default values returned when properties are null. */
     @Test
     public void testBoundariesNull() {
-        PageBoundaries b = new PageBoundaries(TEST_AREA_SIZE, null, null, null);
+        final PageBoundaries b = new PageBoundaries(TEST_AREA_SIZE, null, null,
+                null);
 
-        assertEquals("Result should be the same as TEST_AREA object", b.getTrimBox(), TEST_AREA);
-        assertEquals("Result should be the same as TEST_AREA object", b.getBleedBox(), TEST_AREA);
-        assertEquals("Result should be the same as TEST_AREA object", b.getMediaBox(), TEST_AREA);
-        assertEquals("Result should be the same as TEST_AREA object", b.getCropBox(), TEST_AREA);
+        assertEquals("Result should be the same as TEST_AREA object",
+                b.getTrimBox(), TEST_AREA);
+        assertEquals("Result should be the same as TEST_AREA object",
+                b.getBleedBox(), TEST_AREA);
+        assertEquals("Result should be the same as TEST_AREA object",
+                b.getMediaBox(), TEST_AREA);
+        assertEquals("Result should be the same as TEST_AREA object",
+                b.getCropBox(), TEST_AREA);
     }
 
     /** Units must be specified. */
@@ -166,7 +176,7 @@ public class PageBoundariesTestCase {
         try {
             new PageBoundaries(TEST_AREA_SIZE, "0", null, null);
             fail("Expected IllegalArgumentException. Box should have units");
-        } catch (IllegalArgumentException iae) {
+        } catch (final IllegalArgumentException iae) {
             // Good!
         }
     }

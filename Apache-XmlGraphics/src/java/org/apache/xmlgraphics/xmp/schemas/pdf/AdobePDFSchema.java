@@ -40,15 +40,19 @@ public class AdobePDFSchema extends XMPSchema {
     }
 
     /**
-     * Creates and returns an adapter for this schema around the given metadata object.
-     * @param meta the metadata object
+     * Creates and returns an adapter for this schema around the given metadata
+     * object.
+     * 
+     * @param meta
+     *            the metadata object
      * @return the newly instantiated adapter
      */
-    public static AdobePDFAdapter getAdapter(Metadata meta) {
+    public static AdobePDFAdapter getAdapter(final Metadata meta) {
         return new AdobePDFAdapter(meta, NAMESPACE);
     }
 
     /** @see org.apache.xmlgraphics.xmp.XMPSchema#getDefaultMergeRuleSet() */
+    @Override
     public MergeRuleSet getDefaultMergeRuleSet() {
         return mergeRuleSet;
     }

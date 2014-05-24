@@ -32,15 +32,19 @@ import org.apache.fop.fo.properties.CommonBorderPaddingBackground.BorderInfo;
 public class CollapsingBorderModelEyeCatching extends CollapsingBorderModel {
 
     /** {@inheritDoc} */
-    public BorderSpecification determineWinner(BorderSpecification border1,
-            BorderSpecification border2, boolean discard) {
-        BorderInfo bi1 = border1.getBorderInfo();
-        BorderInfo bi2 = border2.getBorderInfo();
+    @Override
+    public BorderSpecification determineWinner(
+            final BorderSpecification border1,
+            final BorderSpecification border2, final boolean discard) {
+        final BorderInfo bi1 = border1.getBorderInfo();
+        final BorderInfo bi2 = border2.getBorderInfo();
         if (discard) {
             if (bi1.getWidth().isDiscard()) {
                 if (bi2.getWidth().isDiscard()) {
                     return new BorderSpecification(
-                            CommonBorderPaddingBackground.getDefaultBorderInfo(), 0/*TODO*/);
+                            CommonBorderPaddingBackground
+                                    .getDefaultBorderInfo(),
+                            0/* TODO */);
                 } else {
                     return border2;
                 }
@@ -53,10 +57,11 @@ public class CollapsingBorderModelEyeCatching extends CollapsingBorderModel {
     }
 
     /** {@inheritDoc} */
-    public BorderSpecification determineWinner(BorderSpecification border1,
-            BorderSpecification border2) {
-        BorderInfo bi1 = border1.getBorderInfo();
-        BorderInfo bi2 = border2.getBorderInfo();
+    @Override
+    public BorderSpecification determineWinner(
+            final BorderSpecification border1, final BorderSpecification border2) {
+        final BorderInfo bi1 = border1.getBorderInfo();
+        final BorderInfo bi2 = border2.getBorderInfo();
         // Rule 1
         if (bi1.getStyle() == Constants.EN_HIDDEN) {
             return border1;
@@ -70,12 +75,12 @@ public class CollapsingBorderModelEyeCatching extends CollapsingBorderModel {
             return border2;
         }
         // Rule 3
-        int width1 = bi1.getRetainedWidth();
-        int width2 = bi2.getRetainedWidth();
+        final int width1 = bi1.getRetainedWidth();
+        final int width2 = bi2.getRetainedWidth();
         if (width1 > width2) {
             return border1;
         } else if (width1 == width2) {
-            int cmp = compareStyles(bi1.getStyle(), bi2.getStyle());
+            final int cmp = compareStyles(bi1.getStyle(), bi2.getStyle());
             if (cmp > 0) {
                 return border1;
             } else if (cmp < 0) {
@@ -85,7 +90,7 @@ public class CollapsingBorderModelEyeCatching extends CollapsingBorderModel {
             return border2;
         }
         // Rule 4
-        int cmp = compareFOs(border1.getHolder(), border2.getHolder());
+        final int cmp = compareFOs(border1.getHolder(), border2.getHolder());
         if (cmp > 0) {
             return border1;
         } else if (cmp < 0) {

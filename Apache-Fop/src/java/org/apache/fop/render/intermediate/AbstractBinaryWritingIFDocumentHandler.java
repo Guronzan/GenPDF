@@ -40,7 +40,7 @@ import org.apache.fop.fonts.base14.Base14FontCollection;
  * implementations.
  */
 public abstract class AbstractBinaryWritingIFDocumentHandler extends
-        AbstractIFDocumentHandler {
+AbstractIFDocumentHandler {
 
     /** The output stream to write the document to */
     protected OutputStream outputStream;

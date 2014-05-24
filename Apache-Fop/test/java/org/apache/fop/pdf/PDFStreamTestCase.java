@@ -19,16 +19,16 @@
 
 package org.apache.fop.pdf;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class PDFStreamTestCase {
 
@@ -36,10 +36,10 @@ public class PDFStreamTestCase {
 
     @Before
     public void createStream() {
-        stream = new PDFStream();
-        stream.setObjectNumber(1);
-        PDFDocument pdfDocument = new PDFDocument("Apache FOP");
-        stream.setDocument(pdfDocument);
+        this.stream = new PDFStream();
+        this.stream.setObjectNumber(1);
+        final PDFDocument pdfDocument = new PDFDocument("Apache FOP");
+        this.stream.setDocument(pdfDocument);
     }
 
     @Test
@@ -49,67 +49,67 @@ public class PDFStreamTestCase {
     }
 
     private void testGetFilterList() {
-        PDFFilterList filterList = stream.getFilterList();
+        final PDFFilterList filterList = this.stream.getFilterList();
         assertFalse(filterList.isInitialized());
         assertEquals(0, filterList.getFilters().size());
     }
 
     private void testSetupFilterList() {
-        stream.setupFilterList();
-        PDFFilterList filterList = stream.getFilterList();
+        this.stream.setupFilterList();
+        final PDFFilterList filterList = this.stream.getFilterList();
         assertTrue(filterList.isInitialized());
         assertEquals(1, filterList.getFilters().size());
-        PDFFilter filter = filterList.getFilters().get(0);
+        final PDFFilter filter = filterList.getFilters().get(0);
         assertEquals("/FlateDecode", filter.getName());
     }
 
     @Test
     public void customFilter() {
-        PDFFilterList filters = stream.getFilterList();
+        final PDFFilterList filters = this.stream.getFilterList();
         filters.addFilter("null");
         assertTrue(filters.isInitialized());
         assertEquals(1, filters.getFilters().size());
-        PDFFilter filter = filters.getFilters().get(0);
+        final PDFFilter filter = filters.getFilters().get(0);
         assertEquals("", filter.getName());
     }
 
     @Test
     public void testStream() throws IOException {
-        PDFFilterList filters = stream.getFilterList();
+        final PDFFilterList filters = this.stream.getFilterList();
         filters.addFilter("null");
-        byte[] bytes = createSampleData();
-        stream.setData(bytes);
-        ByteArrayOutputStream actual = new ByteArrayOutputStream();
-        stream.outputRawStreamData(actual);
+        final byte[] bytes = createSampleData();
+        this.stream.setData(bytes);
+        final ByteArrayOutputStream actual = new ByteArrayOutputStream();
+        this.stream.outputRawStreamData(actual);
         assertArrayEquals(bytes, actual.toByteArray());
     }
 
     @Test
     public void testEncodeStream() throws IOException {
-        PDFFilterList filters = stream.getFilterList();
+        final PDFFilterList filters = this.stream.getFilterList();
         filters.addFilter("null");
-        byte[] bytes = createSampleData();
-        stream.setData(bytes);
-        ByteArrayOutputStream actual = new ByteArrayOutputStream();
-        StreamCache streamCache = stream.encodeStream();
+        final byte[] bytes = createSampleData();
+        this.stream.setData(bytes);
+        final ByteArrayOutputStream actual = new ByteArrayOutputStream();
+        final StreamCache streamCache = this.stream.encodeStream();
         streamCache.outputContents(actual);
         assertArrayEquals(bytes, actual.toByteArray());
     }
 
     @Test
     public void testEncodeAndWriteStream() throws IOException {
-        PDFFilterList filters = stream.getFilterList();
+        final PDFFilterList filters = this.stream.getFilterList();
         filters.addFilter("null");
-        byte[] bytes = createSampleData();
-        stream.setData(bytes);
-        ByteArrayOutputStream actual = new ByteArrayOutputStream();
-        PDFNumber number = new PDFNumber();
-        stream.encodeAndWriteStream(actual, number);
+        final byte[] bytes = createSampleData();
+        this.stream.setData(bytes);
+        final ByteArrayOutputStream actual = new ByteArrayOutputStream();
+        final PDFNumber number = new PDFNumber();
+        this.stream.encodeAndWriteStream(actual, number);
         assertArrayEquals(createSampleStreamData(), actual.toByteArray());
     }
 
     private byte[] createSampleData() {
-        byte[] bytes = new byte[10];
+        final byte[] bytes = new byte[10];
         for (int i = 0; i < 10; i++) {
             bytes[i] = (byte) i;
         }
@@ -117,7 +117,7 @@ public class PDFStreamTestCase {
     }
 
     private byte[] createSampleStreamData() throws IOException {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream();
         stream.write("stream\n".getBytes("US-ASCII"));
         stream.write(createSampleData());
         stream.write("\nendstream".getBytes("US-ASCII"));

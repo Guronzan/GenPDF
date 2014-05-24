@@ -25,38 +25,42 @@ import org.apache.fop.afp.AFPTextDataInfo;
 import org.apache.fop.afp.fonts.CharactersetEncoder;
 
 /**
- * {@link PtocaProducer} implementation that interprets {@link AFPTextDataInfo} objects.
+ * {@link PtocaProducer} implementation that interprets {@link AFPTextDataInfo}
+ * objects.
  */
 public class TextDataInfoProducer implements PtocaProducer, PtocaConstants {
 
-    private AFPTextDataInfo textDataInfo;
+    private final AFPTextDataInfo textDataInfo;
 
     /**
      * Main constructor.
-     * @param textDataInfo the info object
+     * 
+     * @param textDataInfo
+     *            the info object
      */
-    public TextDataInfoProducer(AFPTextDataInfo textDataInfo) {
+    public TextDataInfoProducer(final AFPTextDataInfo textDataInfo) {
         this.textDataInfo = textDataInfo;
     }
 
     /** {@inheritDoc} */
-    public void produce(PtocaBuilder builder) throws IOException {
-        builder.setTextOrientation(textDataInfo.getRotation());
-        builder.absoluteMoveBaseline(textDataInfo.getY());
-        builder.absoluteMoveInline(textDataInfo.getX());
+    @Override
+    public void produce(final PtocaBuilder builder) throws IOException {
+        builder.setTextOrientation(this.textDataInfo.getRotation());
+        builder.absoluteMoveBaseline(this.textDataInfo.getY());
+        builder.absoluteMoveInline(this.textDataInfo.getX());
 
-        builder.setVariableSpaceCharacterIncrement(
-                textDataInfo.getVariableSpaceCharacterIncrement());
-        builder.setInterCharacterAdjustment(
-                textDataInfo.getInterCharacterAdjustment());
-        builder.setExtendedTextColor(textDataInfo.getColor());
-        builder.setCodedFont((byte)textDataInfo.getFontReference());
-
+        builder.setVariableSpaceCharacterIncrement(this.textDataInfo
+                .getVariableSpaceCharacterIncrement());
+        builder.setInterCharacterAdjustment(this.textDataInfo
+                .getInterCharacterAdjustment());
+        builder.setExtendedTextColor(this.textDataInfo.getColor());
+        builder.setCodedFont((byte) this.textDataInfo.getFontReference());
 
         // Add transparent data
-        String textString = textDataInfo.getString();
-        String encoding = textDataInfo.getEncoding();
-        builder.addTransparentData(CharactersetEncoder.encodeSBCS(textString, encoding));
+        final String textString = this.textDataInfo.getString();
+        final String encoding = this.textDataInfo.getEncoding();
+        builder.addTransparentData(CharactersetEncoder.encodeSBCS(textString,
+                encoding));
     }
 
 }

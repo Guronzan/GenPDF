@@ -21,10 +21,8 @@ package org.apache.fop.render.rtf;
 
 import java.awt.Color;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
-import org.apache.fop.apps.FOPException;
 import org.apache.fop.datatypes.Length;
 import org.apache.fop.datatypes.PercentBaseContext;
 import org.apache.fop.fo.Constants;
@@ -49,18 +47,19 @@ import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfLeader;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfText;
 
 /**
- * <p>Converts FO properties to RtfAttributes.</p>
+ * <p>
+ * Converts FO properties to RtfAttributes.
+ * </p>
  *
- * <p>This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch),
- * Boris Poudérous (boris.pouderous@eads-telecom.com),
- * Peter Herweg (pherweg@web.de),
- * Normand Massé,
- * Christopher Scott (scottc@westinghouse.com), and
- * Roberto Marra (roberto@link-u.com).</p>
+ * <p>
+ * This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch),
+ * Boris Poudérous (boris.pouderous@eads-telecom.com), Peter Herweg
+ * (pherweg@web.de), Normand Massé, Christopher Scott
+ * (scottc@westinghouse.com), and Roberto Marra (roberto@link-u.com).
+ * </p>
  */
+@Slf4j
 final class TextAttributesConverter {
-
-    private static Log log = LogFactory.getLog(TextAttributesConverter.class);
 
     /**
      * Constructor is private, because it's just a utility class.
@@ -70,15 +69,17 @@ final class TextAttributesConverter {
 
     /**
      * Converts all known text FO properties to RtfAttributes
-     * @param fobj the FO for which the attributes are to be converted
+     *
+     * @param fobj
+     *            the FO for which the attributes are to be converted
      */
-    public static RtfAttributes convertAttributes(Block fobj)
-                throws FOPException {
-        FOPRtfAttributes attrib = new FOPRtfAttributes();
+    public static RtfAttributes convertAttributes(final Block fobj) {
+        final FOPRtfAttributes attrib = new FOPRtfAttributes();
         attrFont(fobj.getCommonFont(), attrib);
         attrFontColor(fobj.getColor(), attrib);
-        //attrTextDecoration(fobj.getTextDecoration(), attrib);
-        attrBlockBackgroundColor(fobj.getCommonBorderPaddingBackground(), attrib);
+        // attrTextDecoration(fobj.getTextDecoration(), attrib);
+        attrBlockBackgroundColor(fobj.getCommonBorderPaddingBackground(),
+                attrib);
         attrBlockMargin(fobj.getCommonMarginBlock(), attrib);
         attrBlockTextAlign(fobj.getTextAlign(), attrib);
         attrBorder(fobj.getCommonBorderPaddingBackground(), attrib, fobj);
@@ -87,12 +88,13 @@ final class TextAttributesConverter {
         return attrib;
     }
 
-    private static void attrBreak(Block fobj, FOPRtfAttributes attrib) {
-        int breakValue = fobj.getBreakBefore();
+    private static void attrBreak(final Block fobj,
+            final FOPRtfAttributes attrib) {
+        final int breakValue = fobj.getBreakBefore();
         if (breakValue != Constants.EN_AUTO) {
-            //"sect" Creates a new section and a page break,
-            //a simple page break with control word "page" caused
-            //some problems
+            // "sect" Creates a new section and a page break,
+            // a simple page break with control word "page" caused
+            // some problems
             boolean bHasTableCellParent = false;
             FONode f = fobj;
             while (f.getParent() != null) {
@@ -121,19 +123,21 @@ final class TextAttributesConverter {
                 log.warn("Cannot create break-before for a block inside a table.");
             }
         }
-        //Break after is handled in RtfCloseGroupMark
+        // Break after is handled in RtfCloseGroupMark
     }
 
     /**
      * Converts all known text FO properties to RtfAttributes
-     * @param fobj FObj whose properties are to be converted
+     *
+     * @param fobj
+     *            FObj whose properties are to be converted
      */
-    public static RtfAttributes convertBlockContainerAttributes(BlockContainer fobj)
-                throws FOPException {
-        FOPRtfAttributes attrib = new FOPRtfAttributes();
+    public static RtfAttributes convertBlockContainerAttributes(
+            final BlockContainer fobj) {
+        final FOPRtfAttributes attrib = new FOPRtfAttributes();
         attrBackgroundColor(fobj.getCommonBorderPaddingBackground(), attrib);
         attrBlockMargin(fobj.getCommonMarginBlock(), attrib);
-        //attrBlockDimension(fobj, attrib);
+        // attrBlockDimension(fobj, attrib);
         attrBorder(fobj.getCommonBorderPaddingBackground(), attrib, fobj);
 
         return attrib;
@@ -141,12 +145,13 @@ final class TextAttributesConverter {
 
     /**
      * Converts all character related FO properties to RtfAttributes.
-     * @param fobj FObj whose properties are to be converted
+     *
+     * @param fobj
+     *            FObj whose properties are to be converted
      */
-    public static RtfAttributes convertCharacterAttributes(
-            FOText fobj) throws FOPException {
+    public static RtfAttributes convertCharacterAttributes(final FOText fobj) {
 
-        FOPRtfAttributes attrib = new FOPRtfAttributes();
+        final FOPRtfAttributes attrib = new FOPRtfAttributes();
         attrFont(fobj.getCommonFont(), attrib);
         attrFontColor(fobj.getColor(), attrib);
         attrTextDecoration(fobj.getTextDecoration(), attrib);
@@ -156,12 +161,13 @@ final class TextAttributesConverter {
 
     /**
      * Converts all character related FO properties to RtfAttributes.
-     * @param fobj FObj whose properties are to be converted
+     *
+     * @param fobj
+     *            FObj whose properties are to be converted
      */
-    public static RtfAttributes convertCharacterAttributes(
-            PageNumber fobj) throws FOPException {
+    public static RtfAttributes convertCharacterAttributes(final PageNumber fobj) {
 
-        FOPRtfAttributes attrib = new FOPRtfAttributes();
+        final FOPRtfAttributes attrib = new FOPRtfAttributes();
         attrFont(fobj.getCommonFont(), attrib);
         attrTextDecoration(fobj.getTextDecoration(), attrib);
         attrBackgroundColor(fobj.getCommonBorderPaddingBackground(), attrib);
@@ -170,12 +176,13 @@ final class TextAttributesConverter {
 
     /**
      * Converts all character related FO properties to RtfAttributes.
-     * @param fobj FObj whose properties are to be converted
+     *
+     * @param fobj
+     *            FObj whose properties are to be converted
      */
-    public static RtfAttributes convertCharacterAttributes(
-            Inline fobj) throws FOPException {
+    public static RtfAttributes convertCharacterAttributes(final Inline fobj) {
 
-        FOPRtfAttributes attrib = new FOPRtfAttributes();
+        final FOPRtfAttributes attrib = new FOPRtfAttributes();
         attrFont(fobj.getCommonFont(), attrib);
         attrFontColor(fobj.getColor(), attrib);
 
@@ -184,28 +191,30 @@ final class TextAttributesConverter {
         return attrib;
     }
 
-
     /**
      * Converts FO properties used by RtfLeader to RtfAttributes.
-     * @param fobj Leader
-     * @param context PercentBaseContext
+     *
+     * @param fobj
+     *            Leader
+     * @param context
+     *            PercentBaseContext
      * @return RtfAttributes
-     * @throws FOPException
      */
-    public static RtfAttributes convertLeaderAttributes(Leader fobj, PercentBaseContext context)
-                throws FOPException {
+    public static RtfAttributes convertLeaderAttributes(final Leader fobj,
+            final PercentBaseContext context) {
         boolean tab = false;
-        FOPRtfAttributes attrib = new FOPRtfAttributes();
-        attrib.set(RtfText.ATTR_FONT_FAMILY,
-        RtfFontManager.getInstance().getFontNumber(fobj.getCommonFont().getFirstFontFamily()));
+        final FOPRtfAttributes attrib = new FOPRtfAttributes();
+        attrib.set(RtfText.ATTR_FONT_FAMILY, RtfFontManager.getInstance()
+                .getFontNumber(fobj.getCommonFont().getFirstFontFamily()));
 
         if (fobj.getLeaderLength() != null) {
-            attrib.set(RtfLeader.LEADER_WIDTH, convertMptToTwips(fobj.getLeaderLength().getMaximum(
-                    context).getLength().getValue(context)));
+            attrib.set(RtfLeader.LEADER_WIDTH, convertMptToTwips(fobj
+                    .getLeaderLength().getMaximum(context).getLength()
+                    .getValue(context)));
 
             if (fobj.getLeaderLength().getMaximum(context) instanceof PercentLength) {
-                if (((PercentLength)fobj.getLeaderLength().getMaximum(context)).getString().equals(
-                            "100.0%")) {
+                if (((PercentLength) fobj.getLeaderLength().getMaximum(context))
+                        .getString().equals("100.0%")) {
                     // Use Tab instead of white spaces
                     attrib.set(RtfLeader.LEADER_USETAB, 1);
                     tab = true;
@@ -216,76 +225,89 @@ final class TextAttributesConverter {
         attrFontColor(fobj.getColor(), attrib);
 
         if (fobj.getLeaderPatternWidth() != null) {
-            //TODO calculate pattern width not possible for white spaces, because its using
-            //underlines for tab it would work with LEADER_PATTERN_WIDTH (expndtw)
+            // TODO calculate pattern width not possible for white spaces,
+            // because its using
+            // underlines for tab it would work with LEADER_PATTERN_WIDTH
+            // (expndtw)
         }
 
-        switch(fobj.getLeaderPattern()) {
+        switch (fobj.getLeaderPattern()) {
         case Constants.EN_DOTS:
             if (tab) {
-                attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_TAB_DOTTED);
+                attrib.set(RtfLeader.LEADER_TABLEAD,
+                        RtfLeader.LEADER_TAB_DOTTED);
             } else {
                 attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_DOTTED);
             }
             break;
         case Constants.EN_SPACE:
-            //nothing has to be set for spaces
+            // nothing has to be set for spaces
             break;
         case Constants.EN_RULE:
-            //Things like start-indent, space-after, ... not supported?
-            //Leader class does not offer these properties
-            //TODO aggregate them with the leader width or
+            // Things like start-indent, space-after, ... not supported?
+            // Leader class does not offer these properties
+            // TODO aggregate them with the leader width or
             // create a second - blank leader - before
 
             if (fobj.getRuleThickness() != null) {
-                //TODO See inside RtfLeader, better calculation for
-                //white spaces would be necessary
-                //attrib.set(RtfLeader.LEADER_RULE_THICKNESS,
-                //    fobj.getRuleThickness().getValue(context));
+                // TODO See inside RtfLeader, better calculation for
+                // white spaces would be necessary
+                // attrib.set(RtfLeader.LEADER_RULE_THICKNESS,
+                // fobj.getRuleThickness().getValue(context));
                 log.warn("RTF: fo:leader rule-thickness not supported");
             }
 
             switch (fobj.getRuleStyle()) {
             case Constants.EN_SOLID:
                 if (tab) {
-                    attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_TAB_THICK);
+                    attrib.set(RtfLeader.LEADER_TABLEAD,
+                            RtfLeader.LEADER_TAB_THICK);
                 } else {
                     attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_THICK);
                 }
                 break;
             case Constants.EN_DASHED:
                 if (tab) {
-                    attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_TAB_MIDDLEDOTTED);
+                    attrib.set(RtfLeader.LEADER_TABLEAD,
+                            RtfLeader.LEADER_TAB_MIDDLEDOTTED);
                 } else {
-                    attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_MIDDLEDOTTED);
+                    attrib.set(RtfLeader.LEADER_TABLEAD,
+                            RtfLeader.LEADER_MIDDLEDOTTED);
                 }
                 break;
             case Constants.EN_DOTTED:
                 if (tab) {
-                    attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_TAB_DOTTED);
+                    attrib.set(RtfLeader.LEADER_TABLEAD,
+                            RtfLeader.LEADER_TAB_DOTTED);
                 } else {
-                    attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_DOTTED);
+                    attrib.set(RtfLeader.LEADER_TABLEAD,
+                            RtfLeader.LEADER_DOTTED);
                 }
                 break;
             case Constants.EN_DOUBLE:
                 if (tab) {
-                    attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_TAB_EQUAL);
+                    attrib.set(RtfLeader.LEADER_TABLEAD,
+                            RtfLeader.LEADER_TAB_EQUAL);
                 } else {
                     attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_EQUAL);
                 }
                 break;
             case Constants.EN_GROOVE:
                 if (tab) {
-                    attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_TAB_HYPHENS);
+                    attrib.set(RtfLeader.LEADER_TABLEAD,
+                            RtfLeader.LEADER_TAB_HYPHENS);
                 } else {
-                    attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_HYPHENS);
+                    attrib.set(RtfLeader.LEADER_TABLEAD,
+                            RtfLeader.LEADER_HYPHENS);
                 }
                 break;
             case Constants.EN_RIDGE:
                 if (tab) {
-                    attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_TAB_UNDERLINE);
+                    attrib.set(RtfLeader.LEADER_TABLEAD,
+                            RtfLeader.LEADER_TAB_UNDERLINE);
                 } else {
-                    attrib.set(RtfLeader.LEADER_TABLEAD, RtfLeader.LEADER_UNDERLINE);
+                    attrib.set(RtfLeader.LEADER_TABLEAD,
+                            RtfLeader.LEADER_UNDERLINE);
                 }
                 break;
             default:
@@ -305,19 +327,21 @@ final class TextAttributesConverter {
         return attrib;
     }
 
-    private static int convertMptToTwips(int mpt) {
-        return Math.round(FoUnitsConverter.getInstance().convertMptToTwips(mpt));
+    private static int convertMptToTwips(final int mpt) {
+        return Math
+                .round(FoUnitsConverter.getInstance().convertMptToTwips(mpt));
     }
 
-    private static void attrFont(CommonFont font, FOPRtfAttributes rtfAttr) {
-        rtfAttr.set(RtfText.ATTR_FONT_FAMILY,
-                RtfFontManager.getInstance().getFontNumber(font.getFirstFontFamily()));
+    private static void attrFont(final CommonFont font,
+            final FOPRtfAttributes rtfAttr) {
+        rtfAttr.set(RtfText.ATTR_FONT_FAMILY, RtfFontManager.getInstance()
+                .getFontNumber(font.getFirstFontFamily()));
         rtfAttr.setHalfPoints(RtfText.ATTR_FONT_SIZE, font.fontSize);
 
         if (font.getFontWeight() == Constants.EN_700
                 || font.getFontWeight() == Constants.EN_800
                 || font.getFontWeight() == Constants.EN_900) {
-            //Everything from 700 and above is declared as bold
+            // Everything from 700 and above is declared as bold
             rtfAttr.set("b", 1);
         } else {
             rtfAttr.set("b", 0);
@@ -329,27 +353,23 @@ final class TextAttributesConverter {
             rtfAttr.set(RtfText.ATTR_ITALIC, 0);
         }
 
-
     }
 
-
-    private static void attrFontColor(Color colorType, RtfAttributes rtfAttr) {
+    private static void attrFontColor(final Color colorType,
+            final RtfAttributes rtfAttr) {
         // Cell background color
         if (colorType != null) {
-           if (colorType.getAlpha() != 0
-                    || colorType.getRed() != 0
-                    || colorType.getGreen() != 0
-                    || colorType.getBlue() != 0) {
+            if (colorType.getAlpha() != 0 || colorType.getRed() != 0
+                    || colorType.getGreen() != 0 || colorType.getBlue() != 0) {
                 rtfAttr.set(RtfText.ATTR_FONT_COLOR,
                         convertFOPColorToRTF(colorType));
             }
         }
     }
 
-
-
-    private static void attrTextDecoration(CommonTextDecoration textDecoration,
-                RtfAttributes rtfAttr) {
+    private static void attrTextDecoration(
+            final CommonTextDecoration textDecoration,
+            final RtfAttributes rtfAttr) {
         if (textDecoration == null) {
             rtfAttr.set(RtfText.ATTR_UNDERLINE, 0);
             rtfAttr.set(RtfText.ATTR_STRIKETHROUGH, 0);
@@ -369,46 +389,43 @@ final class TextAttributesConverter {
         }
     }
 
-    private static void attrBlockMargin(CommonMarginBlock cmb, FOPRtfAttributes rtfAttr) {
-        rtfAttr.setTwips(RtfText.SPACE_BEFORE,
-                cmb.spaceBefore.getOptimum(null).getLength());
-        rtfAttr.setTwips(RtfText.SPACE_AFTER,
-                cmb.spaceAfter.getOptimum(null).getLength());
+    private static void attrBlockMargin(final CommonMarginBlock cmb,
+            final FOPRtfAttributes rtfAttr) {
+        rtfAttr.setTwips(RtfText.SPACE_BEFORE, cmb.spaceBefore.getOptimum(null)
+                .getLength());
+        rtfAttr.setTwips(RtfText.SPACE_AFTER, cmb.spaceAfter.getOptimum(null)
+                .getLength());
         rtfAttr.setTwips(RtfText.LEFT_INDENT_BODY, cmb.startIndent);
         rtfAttr.setTwips(RtfText.RIGHT_INDENT_BODY, cmb.endIndent);
     }
 
-
     /*
-    private static void attrBlockDimension(FObj fobj, FOPRtfAttributes rtfAttr) {
-        Length ipd = fobj.getProperty(Constants.PR_INLINE_PROGRESSION_DIMENSION)
-                .getLengthRange().getOptimum().getLength();
-        if (ipd.getEnum() != Constants.EN_AUTO) {
-            rtfAttr.set(RtfText.FRAME_WIDTH, ipd);
-        }
-        Length bpd = fobj.getProperty(Constants.PR_BLOCK_PROGRESSION_DIMENSION)
-                .getLengthRange().getOptimum().getLength();
-        if (bpd.getEnum() != Constants.EN_AUTO) {
-            rtfAttr.set(RtfText.FRAME_HEIGHT, bpd);
-        }
-    }
-    */
+     * private static void attrBlockDimension(FObj fobj, FOPRtfAttributes
+     * rtfAttr) { Length ipd =
+     * fobj.getProperty(Constants.PR_INLINE_PROGRESSION_DIMENSION)
+     * .getLengthRange().getOptimum().getLength(); if (ipd.getEnum() !=
+     * Constants.EN_AUTO) { rtfAttr.set(RtfText.FRAME_WIDTH, ipd); } Length bpd
+     * = fobj.getProperty(Constants.PR_BLOCK_PROGRESSION_DIMENSION)
+     * .getLengthRange().getOptimum().getLength(); if (bpd.getEnum() !=
+     * Constants.EN_AUTO) { rtfAttr.set(RtfText.FRAME_HEIGHT, bpd); } }
+     */
 
-    private static void attrBlockTextAlign(int alignment, RtfAttributes rtfAttr) {
+    private static void attrBlockTextAlign(final int alignment,
+            final RtfAttributes rtfAttr) {
         String rtfValue = null;
         switch (alignment) {
-            case Constants.EN_CENTER:
-                rtfValue = RtfText.ALIGN_CENTER;
-                break;
-            case Constants.EN_END:
-                rtfValue = RtfText.ALIGN_RIGHT;
-                break;
-            case Constants.EN_JUSTIFY:
-                rtfValue = RtfText.ALIGN_JUSTIFIED;
-                break;
-            default:
-                rtfValue = RtfText.ALIGN_LEFT;
-                break;
+        case Constants.EN_CENTER:
+            rtfValue = RtfText.ALIGN_CENTER;
+            break;
+        case Constants.EN_END:
+            rtfValue = RtfText.ALIGN_RIGHT;
+            break;
+        case Constants.EN_JUSTIFY:
+            rtfValue = RtfText.ALIGN_JUSTIFIED;
+            break;
+        default:
+            rtfValue = RtfText.ALIGN_LEFT;
+            break;
         }
 
         rtfAttr.set(rtfValue);
@@ -419,7 +436,7 @@ final class TextAttributesConverter {
      * <code>rtfAttr</code>.
      */
     private static void attrBlockBackgroundColor(
-                CommonBorderPaddingBackground bpb, RtfAttributes rtfAttr) {
+            final CommonBorderPaddingBackground bpb, final RtfAttributes rtfAttr) {
         if (bpb.hasBackground()) {
             rtfAttr.set(RtfText.SHADING, RtfText.FULL_SHADING);
             rtfAttr.set(RtfText.SHADING_FRONT_COLOR,
@@ -428,25 +445,25 @@ final class TextAttributesConverter {
     }
 
     /** Adds border information from <code>bpb</code> to <code>rtrAttr</code>. */
-    private static void attrBorder(CommonBorderPaddingBackground bpb,
-           RtfAttributes rtfAttr, FONode fobj) {
-       if (hasBorder(fobj.getParent())) {
-           attrInlineBorder(bpb, rtfAttr);
-           return;
-       }
+    private static void attrBorder(final CommonBorderPaddingBackground bpb,
+            final RtfAttributes rtfAttr, final FONode fobj) {
+        if (hasBorder(fobj.getParent())) {
+            attrInlineBorder(bpb, rtfAttr);
+            return;
+        }
 
-       BorderAttributesConverter.makeBorder(bpb,
-               CommonBorderPaddingBackground.BEFORE, rtfAttr,
-               IBorderAttributes.BORDER_TOP);
-       BorderAttributesConverter.makeBorder(bpb,
-               CommonBorderPaddingBackground.AFTER, rtfAttr,
-               IBorderAttributes.BORDER_BOTTOM);
-       BorderAttributesConverter.makeBorder(bpb,
-               CommonBorderPaddingBackground.START, rtfAttr,
-               IBorderAttributes.BORDER_LEFT);
-       BorderAttributesConverter.makeBorder(bpb,
-               CommonBorderPaddingBackground.END, rtfAttr,
-               IBorderAttributes.BORDER_RIGHT);
+        BorderAttributesConverter.makeBorder(bpb,
+                CommonBorderPaddingBackground.BEFORE, rtfAttr,
+                IBorderAttributes.BORDER_TOP);
+        BorderAttributesConverter.makeBorder(bpb,
+                CommonBorderPaddingBackground.AFTER, rtfAttr,
+                IBorderAttributes.BORDER_BOTTOM);
+        BorderAttributesConverter.makeBorder(bpb,
+                CommonBorderPaddingBackground.START, rtfAttr,
+                IBorderAttributes.BORDER_LEFT);
+        BorderAttributesConverter.makeBorder(bpb,
+                CommonBorderPaddingBackground.END, rtfAttr,
+                IBorderAttributes.BORDER_RIGHT);
     }
 
     /** @return true, if element <code>node</code> has border. */
@@ -454,11 +471,13 @@ final class TextAttributesConverter {
         while (node != null) {
             CommonBorderPaddingBackground commonBorderPaddingBackground = null;
             if (node instanceof Block) {
-                Block block = (Block) node;
-                commonBorderPaddingBackground = block.getCommonBorderPaddingBackground();
+                final Block block = (Block) node;
+                commonBorderPaddingBackground = block
+                        .getCommonBorderPaddingBackground();
             } else if (node instanceof BlockContainer) {
-                BlockContainer container = (BlockContainer) node;
-                commonBorderPaddingBackground = container.getCommonBorderPaddingBackground();
+                final BlockContainer container = (BlockContainer) node;
+                commonBorderPaddingBackground = container
+                        .getCommonBorderPaddingBackground();
             }
 
             if (commonBorderPaddingBackground != null
@@ -471,9 +490,12 @@ final class TextAttributesConverter {
         return false;
     }
 
-    /** Adds inline border information from <code>bpb</code> to <code>rtrAttr</code>. */
-    private static void attrInlineBorder(CommonBorderPaddingBackground bpb,
-            RtfAttributes rtfAttr) {
+    /**
+     * Adds inline border information from <code>bpb</code> to
+     * <code>rtrAttr</code>.
+     */
+    private static void attrInlineBorder(
+            final CommonBorderPaddingBackground bpb, final RtfAttributes rtfAttr) {
         BorderAttributesConverter.makeBorder(bpb,
                 CommonBorderPaddingBackground.BEFORE, rtfAttr,
                 IBorderAttributes.BORDER_CHARACTER);
@@ -482,53 +504,60 @@ final class TextAttributesConverter {
     /**
      * Reads background-color from bl and writes it to rtfAttr.
      *
-     * @param bpb the CommonBorderPaddingBackground from which the properties are read
-     * @param rtfAttr the RtfAttributes object the attributes are written to
+     * @param bpb
+     *            the CommonBorderPaddingBackground from which the properties
+     *            are read
+     * @param rtfAttr
+     *            the RtfAttributes object the attributes are written to
      */
-    private static void attrBackgroundColor(CommonBorderPaddingBackground bpb,
-                RtfAttributes rtfAttr) {
-        Color fopValue = bpb.backgroundColor;
+    private static void attrBackgroundColor(
+            final CommonBorderPaddingBackground bpb, final RtfAttributes rtfAttr) {
+        final Color fopValue = bpb.backgroundColor;
         int rtfColor = 0;
-        /* FOP uses a default background color of "transparent", which is
-           actually a transparent black, which is generally not suitable as a
-           default here. Changing FOP's default to "white" causes problems in
-           PDF output, so we will look for the default here & change it to
-           "auto". */
-        if ((fopValue == null)
-                || ((fopValue.getRed() == 0)
-                && (fopValue.getGreen() == 0)
-                && (fopValue.getBlue() == 0)
-                && (fopValue.getAlpha() == 0))) {
+        /*
+         * FOP uses a default background color of "transparent", which is
+         * actually a transparent black, which is generally not suitable as a
+         * default here. Changing FOP's default to "white" causes problems in
+         * PDF output, so we will look for the default here & change it to
+         * "auto".
+         */
+        if (fopValue == null || fopValue.getRed() == 0
+                && fopValue.getGreen() == 0 && fopValue.getBlue() == 0
+                && fopValue.getAlpha() == 0) {
             return;
         } else {
             rtfColor = convertFOPColorToRTF(fopValue);
         }
 
         rtfAttr.set(RtfText.ATTR_BACKGROUND_COLOR, rtfColor);
-   }
+    }
 
-   private static void attrBaseLineShift(Length baselineShift, RtfAttributes rtfAttr) {
+    private static void attrBaseLineShift(final Length baselineShift,
+            final RtfAttributes rtfAttr) {
 
-       int s = baselineShift.getEnum();
+        final int s = baselineShift.getEnum();
 
-       if (s == Constants.EN_SUPER) {
-           rtfAttr.set(RtfText.ATTR_SUPERSCRIPT);
-       } else if (s == Constants.EN_SUB) {
-           rtfAttr.set(RtfText.ATTR_SUBSCRIPT);
-       }
-   }
+        if (s == Constants.EN_SUPER) {
+            rtfAttr.set(RtfText.ATTR_SUPERSCRIPT);
+        } else if (s == Constants.EN_SUB) {
+            rtfAttr.set(RtfText.ATTR_SUBSCRIPT);
+        }
+    }
 
-   /**
-    * Converts a FOP ColorType to the integer pointing into the RTF color table
-    * @param fopColor the ColorType object to be converted
-    * @return integer pointing into the RTF color table
-    */
-   public static int convertFOPColorToRTF(Color fopColor) {
-       // TODO: This code is duplicated in FOPRtfAttributesConverter
-       int redComponent = fopColor.getRed();
-       int greenComponent = fopColor.getGreen();
-       int blueComponent = fopColor.getBlue();
-       return RtfColorTable.getInstance().getColorNumber(redComponent,
-               greenComponent, blueComponent).intValue();
-   }
+    /**
+     * Converts a FOP ColorType to the integer pointing into the RTF color table
+     *
+     * @param fopColor
+     *            the ColorType object to be converted
+     * @return integer pointing into the RTF color table
+     */
+    public static int convertFOPColorToRTF(final Color fopColor) {
+        // TODO: This code is duplicated in FOPRtfAttributesConverter
+        final int redComponent = fopColor.getRed();
+        final int greenComponent = fopColor.getGreen();
+        final int blueComponent = fopColor.getBlue();
+        return RtfColorTable.getInstance()
+                .getColorNumber(redComponent, greenComponent, blueComponent)
+                .intValue();
+    }
 }

@@ -21,7 +21,6 @@ package org.apache.fop.layoutmgr;
 
 import java.util.List;
 
-
 /**
  * Represents a list of block level Knuth elements.
  */
@@ -40,38 +39,44 @@ public class BlockKnuthSequence extends KnuthSequence {
 
     /**
      * Creates a new list from an existing list.
-     * @param list The list from which to create the new list.
+     *
+     * @param list
+     *            The list from which to create the new list.
      */
-    public BlockKnuthSequence(List list) {
+    public BlockKnuthSequence(final List list) {
         super(list);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isInlineSequence() {
         return false;
     }
 
     /** {@inheritDoc} */
-    public boolean canAppendSequence(KnuthSequence sequence) {
-        return !sequence.isInlineSequence() && !isClosed;
+    @Override
+    public boolean canAppendSequence(final KnuthSequence sequence) {
+        return !sequence.isInlineSequence() && !this.isClosed;
     }
 
     /** {@inheritDoc} */
-    public boolean appendSequence(KnuthSequence sequence) {
+    @Override
+    public boolean appendSequence(final KnuthSequence sequence) {
         // log.debug("Cannot append a sequence without a BreakElement");
         return false;
     }
 
     /** {@inheritDoc} */
-    public boolean appendSequence(KnuthSequence sequence, boolean keepTogether,
-                                  BreakElement breakElement) {
+    @Override
+    public boolean appendSequence(final KnuthSequence sequence,
+            final boolean keepTogether, final BreakElement breakElement) {
         if (!canAppendSequence(sequence)) {
             return false;
         }
         if (keepTogether) {
             breakElement.setPenaltyValue(KnuthElement.INFINITE);
             add(breakElement);
-        } else if (!((ListElement) getLast()).isGlue()) {
+        } else if (!getLast().isGlue()) {
             breakElement.setPenaltyValue(0);
             add(breakElement);
         }
@@ -80,8 +85,9 @@ public class BlockKnuthSequence extends KnuthSequence {
     }
 
     /** {@inheritDoc} */
+    @Override
     public KnuthSequence endSequence() {
-        isClosed = true;
+        this.isClosed = true;
         return this;
     }
 

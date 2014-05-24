@@ -28,21 +28,24 @@ public class ProjectMember {
     private String function;
     private String email;
 
-
     /**
      * Default no-parameter constructor.
      */
     public ProjectMember() {
     }
 
-
     /**
      * Convenience constructor.
-     * @param name name of the project member
-     * @param function function in the team
-     * @param email email address
+     * 
+     * @param name
+     *            name of the project member
+     * @param function
+     *            function in the team
+     * @param email
+     *            email address
      */
-    public ProjectMember(String name, String function, String email) {
+    public ProjectMember(final String name, final String function,
+            final String email) {
         setName(name);
         setFunction(function);
         setEmail(email);
@@ -50,54 +53,58 @@ public class ProjectMember {
 
     /**
      * Returns the name.
+     * 
      * @return String the name
      */
     public String getName() {
-        return name;
+        return this.name;
     }
-
 
     /**
      * Returns the function.
+     * 
      * @return String the function
      */
     public String getFunction() {
-        return function;
+        return this.function;
     }
-
 
     /**
      * Returns the email address.
+     * 
      * @return String the email address
      */
     public String getEmail() {
-        return email;
+        return this.email;
     }
-
 
     /**
      * Sets the name.
-     * @param name The name to set
+     * 
+     * @param name
+     *            The name to set
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
-
     /**
      * Sets the function.
-     * @param function The function to set
+     * 
+     * @param function
+     *            The function to set
      */
-    public void setFunction(String function) {
+    public void setFunction(final String function) {
         this.function = function;
     }
 
-
     /**
      * Sets the email address.
-     * @param email The email address to set
+     * 
+     * @param email
+     *            The email address to set
      */
-    public void setEmail(String email) {
+    public void setEmail(final String email) {
         this.email = email;
     }
 

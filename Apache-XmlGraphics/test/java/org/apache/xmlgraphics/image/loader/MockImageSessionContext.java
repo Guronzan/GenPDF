@@ -30,11 +30,12 @@ public class MockImageSessionContext extends DefaultImageSessionContext {
 
     public static final File IMAGE_BASE_DIR = new File("./test/images/");
 
-    public MockImageSessionContext(ImageContext context) {
+    public MockImageSessionContext(final ImageContext context) {
         super(context, IMAGE_BASE_DIR);
     }
 
     /** {@inheritDoc} */
+    @Override
     public float getTargetResolution() {
         return 300;
     }

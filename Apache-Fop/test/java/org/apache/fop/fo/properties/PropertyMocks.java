@@ -19,24 +19,25 @@
 
 package org.apache.fop.fo.properties;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import org.apache.fop.datatypes.Numeric;
 import org.apache.fop.datatypes.PercentBaseContext;
 import org.apache.fop.fo.Constants;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Helper class to create mocks of various kinds of properties.
  */
 public final class PropertyMocks {
 
-    private PropertyMocks() { }
+    private PropertyMocks() {
+    }
 
     /**
-     * Creates and returns a generic mock property returning decent defaults for the
-     * {@link Property#getString()}, {@link Property#getEnum()} and
+     * Creates and returns a generic mock property returning decent defaults for
+     * the {@link Property#getString()}, {@link Property#getEnum()} and
      * {@link Property#getLengthRange()} methods.
      *
      * @return a mock all-purpose property
@@ -45,8 +46,9 @@ public final class PropertyMocks {
         final Property mockGenericProperty = mock(Property.class);
         when(mockGenericProperty.getString()).thenReturn("A non-empty string");
         when(mockGenericProperty.getEnum()).thenReturn(Constants.EN_SPACE);
-        LengthRangeProperty lengthRangeProperty = mockLengthRangeProperty();
-        when(mockGenericProperty.getLengthRange()).thenReturn(lengthRangeProperty);
+        final LengthRangeProperty lengthRangeProperty = mockLengthRangeProperty();
+        when(mockGenericProperty.getLengthRange()).thenReturn(
+                lengthRangeProperty);
         return mockGenericProperty;
     }
 
@@ -54,7 +56,7 @@ public final class PropertyMocks {
         final LengthRangeProperty mockLengthRangeProperty = mock(LengthRangeProperty.class);
         final Property optimum = mockOptimumProperty();
         when(mockLengthRangeProperty.getOptimum(any(PercentBaseContext.class)))
-                .thenReturn(optimum);
+        .thenReturn(optimum);
         return mockLengthRangeProperty;
     }
 

@@ -19,12 +19,12 @@
 
 package org.apache.fop.pdf;
 
-import static org.junit.Assert.assertEquals;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for {@link PDFReference}.
@@ -32,18 +32,20 @@ import java.io.IOException;
 public class PDFReferenceTestCase {
 
     /**
-     * Tests outputInline() - ensure that this object is properly formatted when printed to the
-     * output stream.
-     * @throws IOException if an I/O error occurs
+     * Tests outputInline() - ensure that this object is properly formatted when
+     * printed to the output stream.
+     * 
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Test
     public void testOutputInline() throws IOException {
-        PDFName name = new PDFName("Test name");
+        final PDFName name = new PDFName("Test name");
         name.setObjectNumber(2);
-        PDFReference pdfRef = new PDFReference(name);
+        final PDFReference pdfRef = new PDFReference(name);
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        StringBuilder textBuffer = new StringBuilder();
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final StringBuilder textBuffer = new StringBuilder();
         // Ensure that text before outputInline() is kept
         textBuffer.append("Text ");
 
@@ -52,13 +54,14 @@ public class PDFReferenceTestCase {
     }
 
     /**
-     * Tests toString() - since this is used quite a lot, we have to ensure the format is correct.
+     * Tests toString() - since this is used quite a lot, we have to ensure the
+     * format is correct.
      */
     @Test
     public void testToString() {
-        PDFName name = new PDFName("arbitrary");
+        final PDFName name = new PDFName("arbitrary");
         name.setObjectNumber(10);
-        PDFReference ref = new PDFReference(name);
+        final PDFReference ref = new PDFReference(name);
         assertEquals("10 0 R", ref.toString());
     }
 }

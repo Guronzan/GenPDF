@@ -27,8 +27,11 @@ import org.apache.fop.apps.FOPException;
 public interface RendererConfigurator {
     /**
      * Configures a renderer
-     * @param renderer renderer
-     * @throws FOPException fop exception
+     * 
+     * @param renderer
+     *            renderer
+     * @throws FOPException
+     *             fop exception
      */
-    void configure(Renderer renderer) throws FOPException;
+    void configure(final Renderer renderer) throws FOPException;
 }

@@ -19,10 +19,10 @@
 
 package org.apache.fop.afp;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for {@link AFPPaintingState}.
@@ -35,7 +35,7 @@ public class AFPPaintingStateTestCase {
      */
     @Before
     public void setUp() {
-        sut = new AFPPaintingState();
+        this.sut = new AFPPaintingState();
     }
 
     /**
@@ -43,19 +43,19 @@ public class AFPPaintingStateTestCase {
      */
     @Test
     public void testGetSetBitmapEncodingQuality() {
-        sut.setBitmapEncodingQuality(0.5f);
-        assertEquals(0.5f, sut.getBitmapEncodingQuality(), 0.01f);
+        this.sut.setBitmapEncodingQuality(0.5f);
+        assertEquals(0.5f, this.sut.getBitmapEncodingQuality(), 0.01f);
 
-        sut.setBitmapEncodingQuality(0.9f);
-        assertEquals(0.9f, sut.getBitmapEncodingQuality(), 0.01f);
+        this.sut.setBitmapEncodingQuality(0.9f);
+        assertEquals(0.9f, this.sut.getBitmapEncodingQuality(), 0.01f);
     }
 
     /**
      * Test {,set}CanEmbedJpeg
      */
     public void testGetSetCanEmbedJpeg() {
-        assertEquals(false, sut.canEmbedJpeg());
-        sut.setCanEmbedJpeg(true);
-        assertEquals(true, sut.canEmbedJpeg());
+        assertEquals(false, this.sut.canEmbedJpeg());
+        this.sut.setCanEmbedJpeg(true);
+        assertEquals(true, this.sut.canEmbedJpeg());
     }
 }

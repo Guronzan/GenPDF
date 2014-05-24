@@ -22,10 +22,14 @@ package org.apache.fop.hyphenation;
 import java.io.Serializable;
 
 /**
- * <p>This class implements a simple char vector with access to the
- * underlying array.</p>
+ * <p>
+ * This class implements a simple char vector with access to the underlying
+ * array.
+ * </p>
  *
- * <p>This work was authored by Carlos Villegas (cav@uniscope.co.jp).</p>
+ * <p>
+ * This work was authored by Carlos Villegas (cav@uniscope.co.jp).
+ * </p>
  */
 public class CharVector implements Cloneable, Serializable {
 
@@ -56,113 +60,131 @@ public class CharVector implements Cloneable, Serializable {
 
     /**
      * Construct char vector instance.
-     * @param capacity initial block size
+     * 
+     * @param capacity
+     *            initial block size
      */
-    public CharVector(int capacity) {
+    public CharVector(final int capacity) {
         if (capacity > 0) {
-            blockSize = capacity;
+            this.blockSize = capacity;
         } else {
-            blockSize = DEFAULT_BLOCK_SIZE;
+            this.blockSize = DEFAULT_BLOCK_SIZE;
         }
-        array = new char[blockSize];
-        n = 0;
+        this.array = new char[this.blockSize];
+        this.n = 0;
     }
 
     /**
      * Construct char vector instance.
-     * @param a char array to use
+     * 
+     * @param a
+     *            char array to use
      */
-    public CharVector(char[] a) {
-        blockSize = DEFAULT_BLOCK_SIZE;
-        array = a;
-        n = a.length;
+    public CharVector(final char[] a) {
+        this.blockSize = DEFAULT_BLOCK_SIZE;
+        this.array = a;
+        this.n = a.length;
     }
 
     /**
      * Construct char vector instance.
-     * @param a char array to use
-     * @param capacity initial block size
+     * 
+     * @param a
+     *            char array to use
+     * @param capacity
+     *            initial block size
      */
-    public CharVector(char[] a, int capacity) {
+    public CharVector(final char[] a, final int capacity) {
         if (capacity > 0) {
-            blockSize = capacity;
+            this.blockSize = capacity;
         } else {
-            blockSize = DEFAULT_BLOCK_SIZE;
+            this.blockSize = DEFAULT_BLOCK_SIZE;
         }
-        array = a;
-        n = a.length;
+        this.array = a;
+        this.n = a.length;
     }
 
     /**
      * Reset length of vector, but don't clear contents.
      */
     public void clear() {
-        n = 0;
+        this.n = 0;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Object clone() throws CloneNotSupportedException {
-        CharVector cv = (CharVector) super.clone();
-        cv.array = (char[])array.clone();
+        final CharVector cv = (CharVector) super.clone();
+        cv.array = this.array.clone();
         return cv;
     }
 
     /**
      * Obtain char vector array.
+     * 
      * @return char array
      */
     public char[] getArray() {
-        return array;
+        return this.array;
     }
 
     /**
      * Obtain number of items in array.
+     * 
      * @return number of items
      */
     public int length() {
-        return n;
+        return this.n;
     }
 
     /**
      * Obtain capacity of array.
+     * 
      * @return current capacity of array
      */
     public int capacity() {
-        return array.length;
+        return this.array.length;
     }
 
     /**
      * Pet char at index.
-     * @param index the index
-     * @param val a char
+     * 
+     * @param index
+     *            the index
+     * @param val
+     *            a char
      */
-    public void put(int index, char val) {
-        array[index] = val;
+    public void put(final int index, final char val) {
+        this.array[index] = val;
     }
 
     /**
      * Get char at index.
-     * @param index the index
+     * 
+     * @param index
+     *            the index
      * @return a char
      */
-    public char get(int index) {
-        return array[index];
+    public char get(final int index) {
+        return this.array[index];
     }
 
     /**
      * This is to implement memory allocation in the array. Like malloc().
-     * @param size to allocate
+     * 
+     * @param size
+     *            to allocate
      * @return previous length
      */
-    public int alloc(int size) {
-        int index = n;
-        int len = array.length;
-        if (n + size >= len) {
-            char[] aux = new char[len + blockSize];
-            System.arraycopy(array, 0, aux, 0, len);
-            array = aux;
+    public int alloc(final int size) {
+        final int index = this.n;
+        final int len = this.array.length;
+        if (this.n + size >= len) {
+            final char[] aux = new char[len + this.blockSize];
+            System.arraycopy(this.array, 0, aux, 0, len);
+            this.array = aux;
         }
-        n += size;
+        this.n += size;
         return index;
     }
 
@@ -170,10 +192,10 @@ public class CharVector implements Cloneable, Serializable {
      * Trim char vector to current length.
      */
     public void trimToSize() {
-        if (n < array.length) {
-            char[] aux = new char[n];
-            System.arraycopy(array, 0, aux, 0, n);
-            array = aux;
+        if (this.n < this.array.length) {
+            final char[] aux = new char[this.n];
+            System.arraycopy(this.array, 0, aux, 0, this.n);
+            this.array = aux;
         }
     }
 

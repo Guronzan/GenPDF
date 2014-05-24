@@ -20,8 +20,8 @@
 package org.apache.xmlgraphics.image.writer;
 
 /**
- * Parameters for the encoder which is accessed through the
- * ImageWriter interface.
+ * Parameters for the encoder which is accessed through the ImageWriter
+ * interface.
  *
  * @version $Id: ImageWriterParams.java 734420 2009-01-14 15:38:32Z maxberger $
  */
@@ -36,7 +36,7 @@ public class ImageWriterParams {
      * Default constructor.
      */
     public ImageWriterParams() {
-        //nop
+        // nop
     }
 
     /**
@@ -47,16 +47,16 @@ public class ImageWriterParams {
     }
 
     /**
-     * @return the quality value for encoding a JPEG image
-     *          (0.0-1.0), or null if undefined
+     * @return the quality value for encoding a JPEG image (0.0-1.0), or null if
+     *         undefined
      */
     public Float getJPEGQuality() {
         return this.jpegQuality;
     }
 
     /**
-     * @return true if the baseline quantization table is forced,
-     *          or null if undefined.
+     * @return true if the baseline quantization table is forced, or null if
+     *         undefined.
      */
     public Boolean getJPEGForceBaseline() {
         return this.jpegForceBaseline;
@@ -69,27 +69,34 @@ public class ImageWriterParams {
 
     /**
      * Sets the target resolution of the bitmap image to be written.
-     * @param dpi the resolution in dpi
+     * 
+     * @param dpi
+     *            the resolution in dpi
      */
-    public void setResolution(int dpi) {
+    public void setResolution(final int dpi) {
         this.resolution = new Integer(dpi);
     }
 
     /**
      * Sets the quality setting for encoding JPEG images.
-     * @param quality the quality setting (0.0-1.0)
-     * @param forceBaseline force baseline quantization table
+     * 
+     * @param quality
+     *            the quality setting (0.0-1.0)
+     * @param forceBaseline
+     *            force baseline quantization table
      */
-    public void setJPEGQuality(float quality, boolean forceBaseline) {
+    public void setJPEGQuality(final float quality, final boolean forceBaseline) {
         this.jpegQuality = new Float(quality);
         this.jpegForceBaseline = forceBaseline ? Boolean.TRUE : false;
     }
 
     /**
      * Set the compression method that shall be used to encode the image.
-     * @param method the compression method
+     * 
+     * @param method
+     *            the compression method
      */
-    public void setCompressionMethod(String method) {
+    public void setCompressionMethod(final String method) {
         this.compressionMethod = method;
     }
 }

@@ -23,8 +23,8 @@ import java.awt.image.RenderedImage;
 import java.io.IOException;
 
 /**
- * Interface which allows writing multiple images into one image file if the output format
- * supports this feature.
+ * Interface which allows writing multiple images into one image file if the
+ * output format supports this feature.
  *
  * @version $Id: MultiImageWriter.java 1345683 2012-06-03 14:50:33Z gadams $
  */
@@ -32,11 +32,15 @@ public interface MultiImageWriter {
 
     /**
      * Encodes an image and writes it to the image file.
-     * @param image the image to be encoded
-     * @param params a parameters object to customize the encoding.
-     * @throws IOException In case of an /IO problem
+     * 
+     * @param image
+     *            the image to be encoded
+     * @param params
+     *            a parameters object to customize the encoding.
+     * @throws IOException
+     *             In case of an /IO problem
      */
-    void writeImage(RenderedImage image, ImageWriterParams params)
+    void writeImage(final RenderedImage image, final ImageWriterParams params)
             throws IOException;
 
     void close() throws IOException;

@@ -28,29 +28,37 @@ import org.apache.fop.apps.FOUserAgent;
  */
 public class SVGUserAgent extends SimpleSVGUserAgent {
 
-    private SVGEventProducer eventProducer;
+    private final SVGEventProducer eventProducer;
     private Exception lastException;
 
     /**
      * Creates a new SVGUserAgent.
-     * @param foUserAgent the FO user agent to associate with this SVG user agent
-     * @param at the current transform
+     * 
+     * @param foUserAgent
+     *            the FO user agent to associate with this SVG user agent
+     * @param at
+     *            the current transform
      */
-    public SVGUserAgent(FOUserAgent foUserAgent, AffineTransform at) {
+    public SVGUserAgent(final FOUserAgent foUserAgent, final AffineTransform at) {
         super(foUserAgent.getSourcePixelUnitToMillimeter(), at);
-        this.eventProducer = SVGEventProducer.Provider.get(foUserAgent.getEventBroadcaster());
+        this.eventProducer = SVGEventProducer.Provider.get(foUserAgent
+                .getEventBroadcaster());
     }
 
     /**
      * Creates a new SVGUserAgent.
-     * @param foUserAgent the FO user agent to associate with this SVG user agent
+     * 
+     * @param foUserAgent
+     *            the FO user agent to associate with this SVG user agent
      */
-    public SVGUserAgent(FOUserAgent foUserAgent) {
+    public SVGUserAgent(final FOUserAgent foUserAgent) {
         this(foUserAgent, new AffineTransform());
     }
 
     /**
-     * Returns the last exception sent to the {@link #displayError(Exception)} method.
+     * Returns the last exception sent to the {@link #displayError(Exception)}
+     * method.
+     * 
      * @return the last exception or null if no exception occurred
      */
     public Exception getLastException() {
@@ -59,35 +67,47 @@ public class SVGUserAgent extends SimpleSVGUserAgent {
 
     /**
      * Displays an error message.
-     * @param message the message to display
+     * 
+     * @param message
+     *            the message to display
      */
-    public void displayError(String message) {
+    @Override
+    public void displayError(final String message) {
         this.eventProducer.error(this, message, null);
     }
 
     /**
      * Displays an error resulting from the specified Exception.
-     * @param ex the exception to display
+     * 
+     * @param ex
+     *            the exception to display
      */
-    public void displayError(Exception ex) {
+    @Override
+    public void displayError(final Exception ex) {
         this.lastException = ex;
         this.eventProducer.error(this, ex.getLocalizedMessage(), ex);
     }
 
     /**
-     * Displays a message in the User Agent interface.
-     * The given message is typically displayed in a status bar.
-     * @param message the message to display
+     * Displays a message in the User Agent interface. The given message is
+     * typically displayed in a status bar.
+     * 
+     * @param message
+     *            the message to display
      */
-    public void displayMessage(String message) {
+    @Override
+    public void displayMessage(final String message) {
         this.eventProducer.info(this, message);
     }
 
     /**
      * Shows an alert dialog box.
-     * @param message the message to display
+     * 
+     * @param message
+     *            the message to display
      */
-    public void showAlert(String message) {
+    @Override
+    public void showAlert(final String message) {
         this.eventProducer.alert(this, message);
     }
 

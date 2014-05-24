@@ -36,13 +36,11 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
+import org.apache.fop.apps.FopFactory;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
-
-import org.apache.fop.apps.FopFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Helper class for running FOP tests.
@@ -50,13 +48,14 @@ import org.apache.fop.apps.FopFactory;
 public class TestAssistant {
 
     // configure fopFactory as desired
-    private FopFactory fopFactory = FopFactory.newInstance();
-    private FopFactory fopFactoryWithBase14Kerning = FopFactory.newInstance();
+    private final FopFactory fopFactory = FopFactory.newInstance();
+    private final FopFactory fopFactoryWithBase14Kerning = FopFactory
+            .newInstance();
 
-    private SAXTransformerFactory tfactory
-            = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
+    private final SAXTransformerFactory tfactory = (SAXTransformerFactory) SAXTransformerFactory
+            .newInstance();
 
-    private DocumentBuilderFactory domBuilderFactory;
+    private final DocumentBuilderFactory domBuilderFactory;
 
     private Templates testcase2fo;
     private Templates testcase2checks;
@@ -65,125 +64,155 @@ public class TestAssistant {
      * Main constructor.
      */
     public TestAssistant() {
-        fopFactory.getFontManager().setBase14KerningEnabled(false);
-        fopFactoryWithBase14Kerning.getFontManager().setBase14KerningEnabled(true);
-        domBuilderFactory = DocumentBuilderFactory.newInstance();
-        domBuilderFactory.setNamespaceAware(true);
-        domBuilderFactory.setValidating(false);
+        this.fopFactory.getFontManager().setBase14KerningEnabled(false);
+        this.fopFactoryWithBase14Kerning.getFontManager()
+                .setBase14KerningEnabled(true);
+        this.domBuilderFactory = DocumentBuilderFactory.newInstance();
+        this.domBuilderFactory.setNamespaceAware(true);
+        this.domBuilderFactory.setValidating(false);
     }
 
     /**
-     * Returns the stylesheet for convert extracting the XSL-FO part from the test case.
+     * Returns the stylesheet for convert extracting the XSL-FO part from the
+     * test case.
+     * 
      * @return the stylesheet
-     * @throws TransformerConfigurationException if an error occurs loading the stylesheet
+     * @throws TransformerConfigurationException
+     *             if an error occurs loading the stylesheet
      */
-    public Templates getTestcase2FOStylesheet() throws TransformerConfigurationException {
-        if (testcase2fo == null) {
-            //Load and cache stylesheet
-            Source src = new StreamSource(new File("test/layoutengine/testcase2fo.xsl"));
-            testcase2fo = tfactory.newTemplates(src);
+    public Templates getTestcase2FOStylesheet()
+            throws TransformerConfigurationException {
+        if (this.testcase2fo == null) {
+            // Load and cache stylesheet
+            final Source src = new StreamSource(new File(
+                    "test/layoutengine/testcase2fo.xsl"));
+            this.testcase2fo = this.tfactory.newTemplates(src);
         }
-        return testcase2fo;
+        return this.testcase2fo;
     }
 
     /**
-     * Returns the stylesheet for convert extracting the checks from the test case.
+     * Returns the stylesheet for convert extracting the checks from the test
+     * case.
+     * 
      * @return the stylesheet
-     * @throws TransformerConfigurationException if an error occurs loading the stylesheet
+     * @throws TransformerConfigurationException
+     *             if an error occurs loading the stylesheet
      */
-    private Templates getTestcase2ChecksStylesheet() throws TransformerConfigurationException {
-        if (testcase2checks == null) {
-            //Load and cache stylesheet
-            Source src = new StreamSource(new File("test/layoutengine/testcase2checks.xsl"));
-            testcase2checks = tfactory.newTemplates(src);
+    private Templates getTestcase2ChecksStylesheet()
+            throws TransformerConfigurationException {
+        if (this.testcase2checks == null) {
+            // Load and cache stylesheet
+            final Source src = new StreamSource(new File(
+                    "test/layoutengine/testcase2checks.xsl"));
+            this.testcase2checks = this.tfactory.newTemplates(src);
         }
-        return testcase2checks;
+        return this.testcase2checks;
     }
 
     /**
      * Returns the element from the given XML file that encloses the tests.
      *
-     * @param testFile a test case
+     * @param testFile
+     *            a test case
      * @return the parent element of the group(s) of checks
-     * @throws TransformerException if an error occurs while extracting the test element
+     * @throws TransformerException
+     *             if an error occurs while extracting the test element
      */
-    public Element getTestRoot(File testFile) throws TransformerException {
-        Transformer transformer = getTestcase2ChecksStylesheet().newTransformer();
-        DOMResult res = new DOMResult();
+    public Element getTestRoot(final File testFile) throws TransformerException {
+        final Transformer transformer = getTestcase2ChecksStylesheet()
+                .newTransformer();
+        final DOMResult res = new DOMResult();
         transformer.transform(new StreamSource(testFile), res);
-        Document doc = (Document) res.getNode();
+        final Document doc = (Document) res.getNode();
         return doc.getDocumentElement();
     }
 
-    public FopFactory getFopFactory(boolean base14KerningEnabled) {
-        FopFactory effFactory = (base14KerningEnabled ? fopFactoryWithBase14Kerning : fopFactory);
+    public FopFactory getFopFactory(final boolean base14KerningEnabled) {
+        final FopFactory effFactory = base14KerningEnabled ? this.fopFactoryWithBase14Kerning
+                : this.fopFactory;
         return effFactory;
     }
 
-    public FopFactory getFopFactory(Document testDoc) {
-        boolean base14KerningEnabled = isBase14KerningEnabled(testDoc);
-        FopFactory effFactory = getFopFactory(base14KerningEnabled);
+    public FopFactory getFopFactory(final Document testDoc) {
+        final boolean base14KerningEnabled = isBase14KerningEnabled(testDoc);
+        final FopFactory effFactory = getFopFactory(base14KerningEnabled);
 
-        boolean strictValidation = isStrictValidation(testDoc);
+        final boolean strictValidation = isStrictValidation(testDoc);
         effFactory.setStrictValidation(strictValidation);
 
         return effFactory;
     }
 
-    private boolean isBase14KerningEnabled(Document testDoc) {
+    private boolean isBase14KerningEnabled(final Document testDoc) {
         try {
-            XObject xo = XPathAPI.eval(testDoc, "/testcase/cfg/base14kerning");
-            String s = xo.str();
-            return ("true".equalsIgnoreCase(s));
-        } catch (TransformerException e) {
-            throw new RuntimeException("Error while evaluating XPath expression", e);
+            final XObject xo = XPathAPI.eval(testDoc,
+                    "/testcase/cfg/base14kerning");
+            final String s = xo.str();
+            return "true".equalsIgnoreCase(s);
+        } catch (final TransformerException e) {
+            throw new RuntimeException(
+                    "Error while evaluating XPath expression", e);
         }
     }
 
-    private boolean isStrictValidation(Document testDoc) {
+    private boolean isStrictValidation(final Document testDoc) {
         try {
-            XObject xo = XPathAPI.eval(testDoc, "/testcase/cfg/strict-validation");
-            return !("false".equalsIgnoreCase(xo.str()));
-        } catch (TransformerException e) {
-            throw new RuntimeException("Error while evaluating XPath expression", e);
+            final XObject xo = XPathAPI.eval(testDoc,
+                    "/testcase/cfg/strict-validation");
+            return !"false".equalsIgnoreCase(xo.str());
+        } catch (final TransformerException e) {
+            throw new RuntimeException(
+                    "Error while evaluating XPath expression", e);
         }
     }
 
     /**
      * Loads a test case into a DOM document.
-     * @param testFile the test file
+     * 
+     * @param testFile
+     *            the test file
      * @return the loaded test case
-     * @throws IOException if an I/O error occurs loading the test case
+     * @throws IOException
+     *             if an I/O error occurs loading the test case
      */
-    public Document loadTestCase(File testFile)
-            throws IOException {
+    public Document loadTestCase(final File testFile) throws IOException {
         try {
-            DocumentBuilder builder = domBuilderFactory.newDocumentBuilder();
-            Document testDoc = builder.parse(testFile);
+            final DocumentBuilder builder = this.domBuilderFactory
+                    .newDocumentBuilder();
+            final Document testDoc = builder.parse(testFile);
             return testDoc;
-        } catch (Exception e) {
-            throw new IOException("Error while loading test case: " + e.getMessage());
+        } catch (final Exception e) {
+            throw new IOException("Error while loading test case: "
+                    + e.getMessage());
         }
     }
 
     /**
      * Serialize the DOM for later inspection.
-     * @param doc the DOM document
-     * @param target target file
-     * @throws TransformerException if a problem occurs during serialization
+     * 
+     * @param doc
+     *            the DOM document
+     * @param target
+     *            target file
+     * @throws TransformerException
+     *             if a problem occurs during serialization
      */
-    public void saveDOM(Document doc, File target) throws TransformerException {
-        Transformer transformer = getTransformerFactory().newTransformer();
-        Source src = new DOMSource(doc);
-        Result res = new StreamResult(target);
+    public void saveDOM(final Document doc, final File target)
+            throws TransformerException {
+        final Transformer transformer = getTransformerFactory()
+                .newTransformer();
+        final Source src = new DOMSource(doc);
+        final Result res = new StreamResult(target);
         transformer.transform(src, res);
     }
 
     /**
      * Returns the SAXTransformerFactory.
+     * 
      * @return the SAXTransformerFactory
      */
     public SAXTransformerFactory getTransformerFactory() {
-        return tfactory;
+        return this.tfactory;
     }
 }

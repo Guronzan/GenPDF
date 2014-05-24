@@ -26,6 +26,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.fop.afp.AFPConstants;
@@ -60,6 +62,7 @@ import org.apache.fop.util.LogUtil;
 /**
  * AFP Renderer configurator
  */
+@Slf4j
 public class AFPRendererConfigurator extends PrintRendererConfigurator {
 
     private final AFPEventProducer eventProducer;

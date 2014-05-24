@@ -31,13 +31,14 @@ import org.apache.xmlgraphics.image.GraphicsUtil;
 // CSOFF: WhitespaceAround
 
 /**
- * This implements CachableRed based on a BufferedImage.
- * You can use this to wrap a BufferedImage that you want to
- * appear as a CachableRed.
- * It essentially ignores the dependency and dirty region methods.
+ * This implements CachableRed based on a BufferedImage. You can use this to
+ * wrap a BufferedImage that you want to appear as a CachableRed. It essentially
+ * ignores the dependency and dirty region methods.
  *
  * Originally authored by Thomas DeWeese.
- * @version $Id: BufferedImageCachableRed.java 1345683 2012-06-03 14:50:33Z gadams $
+ * 
+ * @version $Id: BufferedImageCachableRed.java 1345683 2012-06-03 14:50:33Z
+ *          gadams $
  */
 public class BufferedImageCachableRed extends AbstractRed {
     // The bufferedImage that we wrap...
@@ -46,96 +47,93 @@ public class BufferedImageCachableRed extends AbstractRed {
     /**
      * Construct an instance of CachableRed around a BufferedImage.
      */
-    public BufferedImageCachableRed(BufferedImage bi) {
-        super((CachableRed)null,
-              new Rectangle(bi.getMinX(),  bi.getMinY(),
-                            bi.getWidth(), bi.getHeight()),
-              bi.getColorModel(), bi.getSampleModel(),
-              bi.getMinX(), bi.getMinY(), null);
+    public BufferedImageCachableRed(final BufferedImage bi) {
+        super((CachableRed) null, new Rectangle(bi.getMinX(), bi.getMinY(),
+                bi.getWidth(), bi.getHeight()), bi.getColorModel(), bi
+                .getSampleModel(), bi.getMinX(), bi.getMinY(), null);
 
         this.bi = bi;
     }
 
-    public BufferedImageCachableRed(BufferedImage bi,
-                                            int xloc, int yloc) {
-        super((CachableRed)null, new Rectangle(xloc,  yloc,
-                                               bi.getWidth(),
-                                               bi.getHeight()),
-              bi.getColorModel(), bi.getSampleModel(), xloc, yloc, null);
+    public BufferedImageCachableRed(final BufferedImage bi, final int xloc,
+            final int yloc) {
+        super((CachableRed) null, new Rectangle(xloc, yloc, bi.getWidth(),
+                bi.getHeight()), bi.getColorModel(), bi.getSampleModel(), xloc,
+                yloc, null);
 
         this.bi = bi;
     }
 
+    @Override
     public Rectangle getBounds() {
-        return new Rectangle(getMinX(),
-                             getMinY(),
-                             getWidth(),
-                             getHeight());
+        return new Rectangle(getMinX(), getMinY(), getWidth(), getHeight());
     }
 
     /**
      * fetch the bufferedImage from this node.
      */
-    public BufferedImage getBufferedImage() {
-        return bi;
-    }
+     public BufferedImage getBufferedImage() {
+        return this.bi;
+     }
 
-    public Object getProperty(String name) {
-        return bi.getProperty(name);
-    }
+     @Override
+     public Object getProperty(final String name) {
+         return this.bi.getProperty(name);
+     }
 
-    public String [] getPropertyNames() {
-        return bi.getPropertyNames();
-    }
+     @Override
+     public String[] getPropertyNames() {
+         return this.bi.getPropertyNames();
+     }
 
-    public Raster getTile(int tileX, int tileY) {
-        return bi.getTile(tileX,tileY);
-    }
+     @Override
+     public Raster getTile(final int tileX, final int tileY) {
+         return this.bi.getTile(tileX, tileY);
+     }
 
-    public Raster getData() {
-        Raster r = bi.getData();
-        return r.createTranslatedChild(getMinX(), getMinY());
-    }
+     @Override
+     public Raster getData() {
+         final Raster r = this.bi.getData();
+         return r.createTranslatedChild(getMinX(), getMinY());
+     }
 
-    public Raster getData(Rectangle rect) {
-        Rectangle r = (Rectangle)rect.clone();
+     @Override
+     public Raster getData(final Rectangle rect) {
+         Rectangle r = (Rectangle) rect.clone();
 
-        if (!r.intersects(getBounds()))
-            return null;
-        r = r.intersection(getBounds());
-        r.translate(-getMinX(), - getMinY());
+         if (!r.intersects(getBounds())) {
+             return null;
+         }
+         r = r.intersection(getBounds());
+         r.translate(-getMinX(), -getMinY());
 
-        Raster ret = bi.getData(r);
-        return ret.createTranslatedChild(ret.getMinX()+getMinX(),
-                                         ret.getMinY()+getMinY());
-    }
+         final Raster ret = this.bi.getData(r);
+         return ret.createTranslatedChild(ret.getMinX() + getMinX(),
+                ret.getMinY() + getMinY());
+     }
 
-    public WritableRaster copyData(WritableRaster wr) {
-        WritableRaster wr2 = wr.createWritableTranslatedChild
-            (wr.getMinX()-getMinX(),
-             wr.getMinY()-getMinY());
+     @Override
+     public WritableRaster copyData(final WritableRaster wr) {
+         final WritableRaster wr2 = wr.createWritableTranslatedChild(
+                wr.getMinX() - getMinX(), wr.getMinY() - getMinY());
 
-        GraphicsUtil.copyData(bi.getRaster(), wr2);
+         GraphicsUtil.copyData(this.bi.getRaster(), wr2);
 
-        /* This was the original code. This is _bad_ since it causes a
-         * multiply and divide of the alpha channel to do the draw
-         * operation.  I believe that at some point I switched to
-         * drawImage in order to avoid some issues with
-         * BufferedImage's copyData implementation but I can't
-         * reproduce them now. Anyway I'm now using GraphicsUtil which
-         * should generally be as fast if not faster...
+         /*
+         * This was the original code. This is _bad_ since it causes a multiply
+         * and divide of the alpha channel to do the draw operation. I believe
+         * that at some point I switched to drawImage in order to avoid some
+         * issues with BufferedImage's copyData implementation but I can't
+         * reproduce them now. Anyway I'm now using GraphicsUtil which should
+         * generally be as fast if not faster...
          */
-        /*
-          BufferedImage dest;
-         dest = new BufferedImage(bi.getColorModel(),
-                                  wr.createWritableTranslatedChild(0,0),
-                                  bi.getColorModel().isAlphaPremultiplied(),
-                                  null);
-         java.awt.Graphics2D g2d = dest.createGraphics();
-         g2d.drawImage(bi, null, getMinX()-wr.getMinX(),
-                       getMinY()-wr.getMinY());
-         g2d.dispose();
+         /*
+         * BufferedImage dest; dest = new BufferedImage(bi.getColorModel(),
+         * wr.createWritableTranslatedChild(0,0),
+         * bi.getColorModel().isAlphaPremultiplied(), null); java.awt.Graphics2D
+         * g2d = dest.createGraphics(); g2d.drawImage(bi, null,
+         * getMinX()-wr.getMinX(), getMinY()-wr.getMinY()); g2d.dispose();
          */
-        return wr;
-    }
+         return wr;
+     }
 }

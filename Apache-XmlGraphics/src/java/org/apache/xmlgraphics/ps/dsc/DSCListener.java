@@ -29,16 +29,22 @@ import org.apache.xmlgraphics.ps.dsc.events.DSCEvent;
 public interface DSCListener {
 
     /**
-     * Called for each DSC event. You can call methods on the DSC parser to skip comments,
-     * for example. But implementations need to be good citizens and take into account that
-     * multiple listeners can be active at the same time and that they might interfere with
-     * other listeners. When returning from the call, state information such as filters should
-     * be restored.
-     * @param event the DSC event
-     * @param parser the DSC parser
-     * @throws IOException if an I/O error occurs
-     * @throws DSCException if a DSC-specific error occurs
+     * Called for each DSC event. You can call methods on the DSC parser to skip
+     * comments, for example. But implementations need to be good citizens and
+     * take into account that multiple listeners can be active at the same time
+     * and that they might interfere with other listeners. When returning from
+     * the call, state information such as filters should be restored.
+     * 
+     * @param event
+     *            the DSC event
+     * @param parser
+     *            the DSC parser
+     * @throws IOException
+     *             if an I/O error occurs
+     * @throws DSCException
+     *             if a DSC-specific error occurs
      */
-    void processEvent(DSCEvent event, DSCParser parser) throws IOException, DSCException;
+    void processEvent(final DSCEvent event, final DSCParser parser)
+            throws IOException, DSCException;
 
 }

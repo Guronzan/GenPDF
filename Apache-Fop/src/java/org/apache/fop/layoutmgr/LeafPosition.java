@@ -22,46 +22,55 @@ package org.apache.fop.layoutmgr;
 /** A leaf position. */
 public class LeafPosition extends Position {
 
-    private int leafPos;
+    private final int leafPos;
 
     /**
      * Construct a leaf position.
-     * @param layoutManager the associated layout manager
-     * @param pos the leaf position
+     * 
+     * @param layoutManager
+     *            the associated layout manager
+     * @param pos
+     *            the leaf position
      */
-    public LeafPosition(LayoutManager layoutManager, int pos) {
+    public LeafPosition(final LayoutManager layoutManager, final int pos) {
         super(layoutManager);
-        leafPos = pos;
+        this.leafPos = pos;
     }
 
     /**
      * Construct a leaf position.
-     * @param layoutManager the associated layout manager
-     * @param pos the leaf position
-     * @param index the index
+     * 
+     * @param layoutManager
+     *            the associated layout manager
+     * @param pos
+     *            the leaf position
+     * @param index
+     *            the index
      */
-    public LeafPosition(LayoutManager layoutManager, int pos, int index) {
+    public LeafPosition(final LayoutManager layoutManager, final int pos,
+            final int index) {
         super(layoutManager, index);
-        leafPos = pos;
+        this.leafPos = pos;
     }
 
     /** @return leaf position */
     public int getLeafPos() {
-        return leafPos;
+        return this.leafPos;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean generatesAreas() {
         return getLM() != null;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         sb.append("LeafPos:").append(getIndex()).append("(");
         sb.append("pos=").append(getLeafPos());
         sb.append(", lm=").append(getShortLMName()).append(")");
         return sb.toString();
     }
 }
-

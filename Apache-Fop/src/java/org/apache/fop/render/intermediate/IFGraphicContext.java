@@ -33,7 +33,7 @@ public class IFGraphicContext extends GraphicContext {
 
     private static final AffineTransform[] EMPTY_TRANSFORM_ARRAY = new AffineTransform[0];
 
-    private ArrayList groupList = new ArrayList();
+    private final ArrayList groupList = new ArrayList();
 
     /**
      * Default constructor.
@@ -44,9 +44,11 @@ public class IFGraphicContext extends GraphicContext {
 
     /**
      * Copy constructor.
-     * @param graphicContext the graphic context to make a copy of
+     * 
+     * @param graphicContext
+     *            the graphic context to make a copy of
      */
-    protected IFGraphicContext(IFGraphicContext graphicContext) {
+    protected IFGraphicContext(final IFGraphicContext graphicContext) {
         super(graphicContext);
         // N.B. do not perform deep copy on groupList; doing so causes
         // a junit regression... have not investigated cause... [GA]
@@ -56,12 +58,16 @@ public class IFGraphicContext extends GraphicContext {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object clone() {
-        return new IFGraphicContext ( this );
+        return new IFGraphicContext(this);
     }
 
-    /** @param group a group */
-    public void pushGroup(Group group) {
+    /**
+     * @param group
+     *            a group
+     */
+    public void pushGroup(final Group group) {
         this.groupList.add(group);
         for (int i = 0, c = group.getTransforms().length; i < c; i++) {
             transform(group.getTransforms()[i]);
@@ -70,12 +76,12 @@ public class IFGraphicContext extends GraphicContext {
 
     /** @return array of groups */
     public Group[] getGroups() {
-        return (Group[])this.groupList.toArray(new Group[getGroupStackSize()]);
+        return (Group[]) this.groupList.toArray(new Group[getGroupStackSize()]);
     }
 
     /** @return array of groups after clearing group list */
     public Group[] dropGroups() {
-        Group[] groups = getGroups();
+        final Group[] groups = getGroups();
         this.groupList.clear();
         return groups;
     }
@@ -88,22 +94,26 @@ public class IFGraphicContext extends GraphicContext {
     /** a group */
     public static class Group {
 
-        private AffineTransform[] transforms;
+        private final AffineTransform[] transforms;
 
         /**
          * Construct a Group.
-         * @param transforms an array of transforms
+         * 
+         * @param transforms
+         *            an array of transforms
          */
-        public Group(AffineTransform[] transforms) {
+        public Group(final AffineTransform[] transforms) {
             this.transforms = transforms;
         }
 
         /**
          * Construct a Group.
-         * @param transform a transform
+         * 
+         * @param transform
+         *            a transform
          */
-        public Group(AffineTransform transform) {
-            this(new AffineTransform[] {transform});
+        public Group(final AffineTransform transform) {
+            this(new AffineTransform[] { transform });
         }
 
         /** Default constructor. */
@@ -117,24 +127,29 @@ public class IFGraphicContext extends GraphicContext {
         }
 
         /**
-         * @param painter a painter
-         * @throws IFException in not caught
+         * @param painter
+         *            a painter
+         * @throws IFException
+         *             in not caught
          */
-        public void start(IFPainter painter) throws IFException {
-            painter.startGroup(transforms);
+        public void start(final IFPainter painter) throws IFException {
+            painter.startGroup(this.transforms);
         }
 
         /**
-         * @param painter a painter
-         * @throws IFException in not caught
+         * @param painter
+         *            a painter
+         * @throws IFException
+         *             in not caught
          */
-        public void end(IFPainter painter) throws IFException {
+        public void end(final IFPainter painter) throws IFException {
             painter.endGroup();
         }
 
         /** {@inheritDoc} */
+        @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer("group: ");
+            final StringBuffer sb = new StringBuffer("group: ");
             IFUtil.toString(getTransforms(), sb);
             return sb.toString();
         }
@@ -144,16 +159,21 @@ public class IFGraphicContext extends GraphicContext {
     /** a viewport */
     public static class Viewport extends Group {
 
-        private Dimension size;
-        private Rectangle clipRect;
+        private final Dimension size;
+        private final Rectangle clipRect;
 
         /**
          * Construct a viewport.
-         * @param transforms an array of transforms
-         * @param size a dimension
-         * @param clipRect a clip rectangle
+         * 
+         * @param transforms
+         *            an array of transforms
+         * @param size
+         *            a dimension
+         * @param clipRect
+         *            a clip rectangle
          */
-        public Viewport(AffineTransform[] transforms, Dimension size, Rectangle clipRect) {
+        public Viewport(final AffineTransform[] transforms,
+                final Dimension size, final Rectangle clipRect) {
             super(transforms);
             this.size = size;
             this.clipRect = clipRect;
@@ -161,12 +181,17 @@ public class IFGraphicContext extends GraphicContext {
 
         /**
          * Construct a viewport.
-         * @param transform a transform
-         * @param size a dimension
-         * @param clipRect a clip rectangle
+         * 
+         * @param transform
+         *            a transform
+         * @param size
+         *            a dimension
+         * @param clipRect
+         *            a clip rectangle
          */
-        public Viewport(AffineTransform transform, Dimension size, Rectangle clipRect) {
-            this(new AffineTransform[] {transform}, size, clipRect);
+        public Viewport(final AffineTransform transform, final Dimension size,
+                final Rectangle clipRect) {
+            this(new AffineTransform[] { transform }, size, clipRect);
         }
 
         /** @return the viewport's size */
@@ -180,18 +205,21 @@ public class IFGraphicContext extends GraphicContext {
         }
 
         /** {@inheritDoc} */
-        public void start(IFPainter painter) throws IFException {
-            painter.startViewport(getTransforms(), size, clipRect);
+        @Override
+        public void start(final IFPainter painter) throws IFException {
+            painter.startViewport(getTransforms(), this.size, this.clipRect);
         }
 
         /** {@inheritDoc} */
-        public void end(IFPainter painter) throws IFException {
+        @Override
+        public void end(final IFPainter painter) throws IFException {
             painter.endViewport();
         }
 
         /** {@inheritDoc} */
+        @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer("viewport: ");
+            final StringBuffer sb = new StringBuffer("viewport: ");
             IFUtil.toString(getTransforms(), sb);
             sb.append(", ").append(getSize());
             if (getClipRect() != null) {

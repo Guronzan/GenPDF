@@ -31,7 +31,7 @@ public interface ResourceAccessor {
     /**
      * Creates a new {@link InputStream} for the given URI that allows read
      * access to an external resource.
-     * 
+     *
      * @param uri
      *            the URI of an external resource.
      * @return the new input stream

@@ -20,7 +20,8 @@
 package org.apache.fop.tools;
 
 /**
- * This exception is used to indicate a violation of the conventions for event producers.
+ * This exception is used to indicate a violation of the conventions for event
+ * producers.
  */
 public class EventConventionException extends Exception {
 
@@ -28,9 +29,11 @@ public class EventConventionException extends Exception {
 
     /**
      * Creates a new EventConventionException
-     * @param message the error message
+     * 
+     * @param message
+     *            the error message
      */
-    public EventConventionException(String message) {
+    public EventConventionException(final String message) {
         super(message);
     }
 

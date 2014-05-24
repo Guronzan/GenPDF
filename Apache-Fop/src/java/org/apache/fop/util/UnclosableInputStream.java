@@ -30,15 +30,17 @@ public class UnclosableInputStream extends FilterInputStream {
     /**
      * Default constructor.
      *
-     * @param in the Stream to filter.
+     * @param in
+     *            the Stream to filter.
      */
-    public UnclosableInputStream(InputStream in) {
+    public UnclosableInputStream(final InputStream in) {
         super(in);
     }
 
     /**
      * Does <strong>not</strong> close the original stream.
      */
+    @Override
     public void close() {
         // ignore
     }

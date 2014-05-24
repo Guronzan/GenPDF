@@ -19,12 +19,6 @@
 
 package org.apache.fop.fo.properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import org.junit.Test;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.fo.Constants;
@@ -35,10 +29,16 @@ import org.apache.fop.fo.expr.PropertyException;
 import org.apache.fop.fo.flow.AbstractGraphics;
 import org.apache.fop.fo.flow.ExternalGraphic;
 import org.apache.fop.fo.flow.InstreamForeignObject;
+import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * Tests that the fox:alt-text property is correctly set on objects that support it.
+ * Tests that the fox:alt-text property is correctly set on objects that support
+ * it.
  */
 public class AltTextHolderTestCase {
 
@@ -55,22 +55,26 @@ public class AltTextHolderTestCase {
     }
 
     private FONode mockFONode() {
-        FONode mockFONode = FONodeMocks.mockFONode();
-        FOUserAgent mockFOUserAgent = mockFONode.getFOEventHandler().getUserAgent();
+        final FONode mockFONode = FONodeMocks.mockFONode();
+        final FOUserAgent mockFOUserAgent = mockFONode.getFOEventHandler()
+                .getUserAgent();
         when(mockFOUserAgent.isAccessibilityEnabled()).thenReturn(true);
         return mockFONode;
     }
 
-    private void testAltTextGetter(AbstractGraphics g) throws FOPException {
+    private void testAltTextGetter(final AbstractGraphics g)
+            throws FOPException {
         g.bind(mockPropertyList());
-        assertEquals(altText, g.getAltText());
+        assertEquals(this.altText, g.getAltText());
     }
 
     private PropertyList mockPropertyList() throws PropertyException {
-        PropertyList mockPropertyList = PropertyListMocks.mockPropertyList();
-        Property mockAltText = mock(Property.class);
-        when(mockAltText.getString()).thenReturn(altText);
-        when(mockPropertyList.get(Constants.PR_X_ALT_TEXT)).thenReturn(mockAltText);
+        final PropertyList mockPropertyList = PropertyListMocks
+                .mockPropertyList();
+        final Property mockAltText = mock(Property.class);
+        when(mockAltText.getString()).thenReturn(this.altText);
+        when(mockPropertyList.get(Constants.PR_X_ALT_TEXT)).thenReturn(
+                mockAltText);
         return mockPropertyList;
     }
 

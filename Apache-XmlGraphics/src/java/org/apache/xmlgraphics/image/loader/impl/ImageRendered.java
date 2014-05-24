@@ -29,7 +29,8 @@ import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
 
 /**
- * This class is an implementation of the Image interface exposing a RenderedImage.
+ * This class is an implementation of the Image interface exposing a
+ * RenderedImage.
  */
 public class ImageRendered extends AbstractImage {
 
@@ -40,17 +41,22 @@ public class ImageRendered extends AbstractImage {
 
     /**
      * Main constructor.
-     * @param info the image info object
-     * @param red the RenderedImage instance
-     * @param transparentColor the transparent color or null
+     * 
+     * @param info
+     *            the image info object
+     * @param red
+     *            the RenderedImage instance
+     * @param transparentColor
+     *            the transparent color or null
      */
-    public ImageRendered(ImageInfo info, RenderedImage red, Color transparentColor) {
+    public ImageRendered(final ImageInfo info, final RenderedImage red,
+            final Color transparentColor) {
         super(info);
         this.red = red;
         this.transparentColor = transparentColor;
         this.colorSpace = red.getColorModel().getColorSpace();
         if (this.colorSpace instanceof ICC_ColorSpace) {
-            ICC_ColorSpace icccs = (ICC_ColorSpace) this.colorSpace;
+            final ICC_ColorSpace icccs = (ICC_ColorSpace) this.colorSpace;
             this.iccProfile = icccs.getProfile();
         } else {
             this.iccProfile = null;
@@ -58,17 +64,20 @@ public class ImageRendered extends AbstractImage {
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getFlavor() {
         return ImageFlavor.RENDERED_IMAGE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isCacheable() {
         return true;
     }
 
     /**
      * Returns the contained RenderedImage instance.
+     * 
      * @return the RenderedImage instance
      */
     public RenderedImage getRenderedImage() {
@@ -76,17 +85,20 @@ public class ImageRendered extends AbstractImage {
     }
 
     /** {@inheritDoc} */
+    @Override
     public ColorSpace getColorSpace() {
         return this.colorSpace;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ICC_Profile getICCProfile() {
         return this.iccProfile;
     }
 
     /**
      * Returns the transparent color if available.
+     * 
      * @return the transparent color or null
      */
     public Color getTransparentColor() {

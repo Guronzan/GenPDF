@@ -33,128 +33,156 @@ import java.util.Vector;
 // CSOFF: WhitespaceAround
 
 /**
- * This implements CachableRed around a RenderedImage.
- * You can use this to wrap a RenderedImage that you want to
- * appear as a CachableRed.
- * It essentially ignores the dependency and dirty region methods.
+ * This implements CachableRed around a RenderedImage. You can use this to wrap
+ * a RenderedImage that you want to appear as a CachableRed. It essentially
+ * ignores the dependency and dirty region methods.
  *
- * @version $Id: RenderedImageCachableRed.java 1345683 2012-06-03 14:50:33Z gadams $
+ * @version $Id: RenderedImageCachableRed.java 1345683 2012-06-03 14:50:33Z
+ *          gadams $
  *
- * Originally authored by Thomas DeWeese.
+ *          Originally authored by Thomas DeWeese.
  */
 public class RenderedImageCachableRed implements CachableRed {
 
-    public static CachableRed wrap(RenderedImage ri) {
-        if (ri instanceof CachableRed)
+    public static CachableRed wrap(final RenderedImage ri) {
+        if (ri instanceof CachableRed) {
             return (CachableRed) ri;
-        if (ri instanceof BufferedImage)
-            return new BufferedImageCachableRed((BufferedImage)ri);
+        }
+        if (ri instanceof BufferedImage) {
+            return new BufferedImageCachableRed((BufferedImage) ri);
+        }
         return new RenderedImageCachableRed(ri);
     }
 
-    private RenderedImage src;
-    private Vector srcs = new Vector(0);
+    private final RenderedImage src;
+    private final Vector srcs = new Vector(0);
 
-    public RenderedImageCachableRed(RenderedImage src) {
-        if(src == null){
+    public RenderedImageCachableRed(final RenderedImage src) {
+        if (src == null) {
             throw new NullPointerException();
         }
         this.src = src;
     }
 
+    @Override
     public Vector getSources() {
-        return srcs; // should always be empty...
+        return this.srcs; // should always be empty...
     }
 
+    @Override
     public Rectangle getBounds() {
-        return new Rectangle(getMinX(),    // could we cache the rectangle??
-                             getMinY(),
-                             getWidth(),
-                             getHeight());
+        return new Rectangle(getMinX(), // could we cache the rectangle??
+                getMinY(), getWidth(), getHeight());
     }
 
+    @Override
     public int getMinX() {
-        return src.getMinX();
+        return this.src.getMinX();
     }
+
+    @Override
     public int getMinY() {
-        return src.getMinY();
+        return this.src.getMinY();
     }
 
+    @Override
     public int getWidth() {
-        return src.getWidth();
+        return this.src.getWidth();
     }
+
+    @Override
     public int getHeight() {
-        return src.getHeight();
+        return this.src.getHeight();
     }
 
+    @Override
     public ColorModel getColorModel() {
-        return src.getColorModel();
+        return this.src.getColorModel();
     }
 
+    @Override
     public SampleModel getSampleModel() {
-        return src.getSampleModel();
+        return this.src.getSampleModel();
     }
 
+    @Override
     public int getMinTileX() {
-        return src.getMinTileX();
+        return this.src.getMinTileX();
     }
+
+    @Override
     public int getMinTileY() {
-        return src.getMinTileY();
+        return this.src.getMinTileY();
     }
 
+    @Override
     public int getNumXTiles() {
-        return src.getNumXTiles();
+        return this.src.getNumXTiles();
     }
+
+    @Override
     public int getNumYTiles() {
-        return src.getNumYTiles();
+        return this.src.getNumYTiles();
     }
 
+    @Override
     public int getTileGridXOffset() {
-        return src.getTileGridXOffset();
+        return this.src.getTileGridXOffset();
     }
 
+    @Override
     public int getTileGridYOffset() {
-        return src.getTileGridYOffset();
+        return this.src.getTileGridYOffset();
     }
 
+    @Override
     public int getTileWidth() {
-        return src.getTileWidth();
+        return this.src.getTileWidth();
     }
+
+    @Override
     public int getTileHeight() {
-        return src.getTileHeight();
+        return this.src.getTileHeight();
     }
 
-    public Object getProperty(String name) {
-        return src.getProperty(name);
+    @Override
+    public Object getProperty(final String name) {
+        return this.src.getProperty(name);
     }
 
+    @Override
     public String[] getPropertyNames() {
-        return src.getPropertyNames();
+        return this.src.getPropertyNames();
     }
 
-    public Raster getTile(int tileX, int tileY) {
-        return src.getTile(tileX, tileY);
+    @Override
+    public Raster getTile(final int tileX, final int tileY) {
+        return this.src.getTile(tileX, tileY);
     }
 
-    public WritableRaster copyData(WritableRaster raster) {
-        return src.copyData(raster);
+    @Override
+    public WritableRaster copyData(final WritableRaster raster) {
+        return this.src.copyData(raster);
     }
 
+    @Override
     public Raster getData() {
-        return src.getData();
+        return this.src.getData();
     }
 
-    public Raster getData(Rectangle rect) {
-        return src.getData(rect);
+    @Override
+    public Raster getData(final Rectangle rect) {
+        return this.src.getData(rect);
     }
 
-    public Shape getDependencyRegion(int srcIndex, Rectangle outputRgn) {
-        throw new IndexOutOfBoundsException
-            ("Nonexistant source requested.");
+    @Override
+    public Shape getDependencyRegion(final int srcIndex,
+            final Rectangle outputRgn) {
+        throw new IndexOutOfBoundsException("Nonexistant source requested.");
     }
 
-    public Shape getDirtyRegion(int srcIndex, Rectangle inputRgn) {
-        throw new IndexOutOfBoundsException
-            ("Nonexistant source requested.");
+    @Override
+    public Shape getDirtyRegion(final int srcIndex, final Rectangle inputRgn) {
+        throw new IndexOutOfBoundsException("Nonexistant source requested.");
     }
 }

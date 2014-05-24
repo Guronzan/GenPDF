@@ -19,14 +19,14 @@
 
 package org.apache.fop.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Tests for XMLResourceBundle.
@@ -34,11 +34,12 @@ import org.junit.Test;
 public class XMLResourceBundleTestCase {
 
     @Test
-    public void testWithValidFile() throws Exception {
-        ResourceBundle bundle = XMLResourceBundle.getXMLBundle(
-                getClass().getName(), Locale.ENGLISH, getClass().getClassLoader());
-        ResourceBundle bundleDE = XMLResourceBundle.getXMLBundle(
-                getClass().getName(), Locale.GERMAN, getClass().getClassLoader());
+    public void testWithValidFile() {
+        final ResourceBundle bundle = XMLResourceBundle.getXMLBundle(getClass()
+                .getName(), Locale.ENGLISH, getClass().getClassLoader());
+        final ResourceBundle bundleDE = XMLResourceBundle.getXMLBundle(
+                getClass().getName(), Locale.GERMAN, getClass()
+                .getClassLoader());
 
         assertEquals("", bundle.getLocale().getLanguage());
         assertEquals("de", bundleDE.getLocale().getLanguage());
@@ -46,19 +47,20 @@ public class XMLResourceBundleTestCase {
         assertEquals("Hello World!", bundle.getString("hello-world"));
         assertEquals("Hallo Welt!", bundleDE.getString("hello-world"));
 
-        //Check fallback to English
+        // Check fallback to English
         assertEquals("Untranslatable", bundle.getString("untranslatable"));
         assertEquals("Untranslatable", bundleDE.getString("untranslatable"));
     }
 
     @Test
-    public void testWithInvalidFile() throws Exception {
+    public void testWithInvalidFile() {
         try {
-            ResourceBundle bundle = XMLResourceBundle.getXMLBundle(
-                    "org.apache.fop.util.invalid-translation-file", getClass().getClassLoader());
+            final ResourceBundle bundle = XMLResourceBundle.getXMLBundle(
+                    "org.apache.fop.util.invalid-translation-file", getClass()
+                    .getClassLoader());
             fail("Expected exception");
-        } catch (MissingResourceException e) {
-            //expected
+        } catch (final MissingResourceException e) {
+            // expected
         }
     }
 

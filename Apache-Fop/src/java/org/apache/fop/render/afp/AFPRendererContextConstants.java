@@ -22,13 +22,14 @@ package org.apache.fop.render.afp;
 import org.apache.fop.render.RendererContextConstants;
 
 /**
- * Defines a number of standard constants (keys) for use by the RendererContext class.
+ * Defines a number of standard constants (keys) for use by the RendererContext
+ * class.
  */
 public interface AFPRendererContextConstants extends RendererContextConstants {
 
     /**
-     * Key for a Boolean value that enables grayscale processing instead of color
-     * processing.
+     * Key for a Boolean value that enables grayscale processing instead of
+     * color processing.
      */
     String AFP_GRAYSCALE = "afpGrayscale";
 

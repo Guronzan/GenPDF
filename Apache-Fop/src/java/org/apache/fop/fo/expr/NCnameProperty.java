@@ -35,9 +35,11 @@ public class NCnameProperty extends Property {
 
     /**
      * Constructor
-     * @param ncName string representing the ncName
+     * 
+     * @param ncName
+     *            string representing the ncName
      */
-    public NCnameProperty(String ncName) {
+    public NCnameProperty(final String ncName) {
         this.ncName = ncName;
     }
 
@@ -45,16 +47,20 @@ public class NCnameProperty extends Property {
      * If a system color, return the corresponding value.
      *
      * @param foUserAgent
-     *     Reference to FOP user agent - keeps track of cached ColorMaps for ICC colors
+     *            Reference to FOP user agent - keeps track of cached ColorMaps
+     *            for ICC colors
      * @return Color object corresponding to the NCName
      */
-    public Color getColor(FOUserAgent foUserAgent)  {
+    @Override
+    public Color getColor(final FOUserAgent foUserAgent) {
         try {
-            return ColorUtil.parseColorString(foUserAgent, ncName);
-        } catch (PropertyException e) {
-            //Not logging this error since for properties like "border" you would get an awful
-            //lot of error messages for things like "solid" not being valid colors.
-            //log.error("Can't create color value: " + e.getMessage());
+            return ColorUtil.parseColorString(foUserAgent, this.ncName);
+        } catch (final PropertyException e) {
+            // Not logging this error since for properties like "border" you
+            // would get an awful
+            // lot of error messages for things like "solid" not being valid
+            // colors.
+            // log.error("Can't create color value: " + e.getMessage());
             return null;
         }
     }
@@ -62,6 +68,7 @@ public class NCnameProperty extends Property {
     /**
      * @return the name as a String (should be specified with quotes!)
      */
+    @Override
     public String getString() {
         return this.ncName;
     }
@@ -69,6 +76,7 @@ public class NCnameProperty extends Property {
     /**
      * @return the name as an Object.
      */
+    @Override
     public Object getObject() {
         return this.ncName;
     }
@@ -76,24 +84,25 @@ public class NCnameProperty extends Property {
     /**
      * @return ncName for this
      */
+    @Override
     public String getNCname() {
         return this.ncName;
     }
 
     @Override
     public int hashCode() {
-        return CompareUtil.getHashCode(ncName);
+        return CompareUtil.getHashCode(this.ncName);
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
         if (!(obj instanceof NCnameProperty)) {
             return false;
         }
-        NCnameProperty other = (NCnameProperty) obj;
-        return CompareUtil.equal(ncName, other.ncName);
+        final NCnameProperty other = (NCnameProperty) obj;
+        return CompareUtil.equal(this.ncName, other.ncName);
     }
 }

@@ -20,10 +20,14 @@
 package org.apache.fop.pdf;
 
 /**
- * <p>PDF Filter exception.
- * This is used for exceptions relating to use a PDF filter.</p>
+ * <p>
+ * PDF Filter exception. This is used for exceptions relating to use a PDF
+ * filter.
+ * </p>
  *
- * <p>This work was authored by Eric Schaeffer.</p>
+ * <p>
+ * This work was authored by Eric Schaeffer.
+ * </p>
  */
 public class PDFFilterException extends Exception {
     /**
@@ -35,10 +39,10 @@ public class PDFFilterException extends Exception {
     /**
      * Create a filter exception with a message.
      *
-     * @param message the error message
+     * @param message
+     *            the error message
      */
-    public PDFFilterException(String message) {
+    public PDFFilterException(final String message) {
         super(message);
     }
 }
-

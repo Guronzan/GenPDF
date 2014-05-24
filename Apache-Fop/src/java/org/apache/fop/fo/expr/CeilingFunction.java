@@ -25,18 +25,21 @@ import org.apache.fop.fo.properties.Property;
 class CeilingFunction extends FunctionBase {
 
     /** {@inheritDoc} */
+    @Override
     public int getRequiredArgsCount() {
         return 1;
     }
 
     /** {@inheritDoc} */
-    public Property eval(Property[] args, PropertyInfo pInfo) throws PropertyException {
-        Number dbl = args[0].getNumber();
+    @Override
+    public Property eval(final Property[] args, final PropertyInfo pInfo)
+            throws PropertyException {
+        final Number dbl = args[0].getNumber();
         if (dbl == null) {
-            throw new PropertyException("Non number operand to ceiling function");
+            throw new PropertyException(
+                    "Non number operand to ceiling function");
         }
         return NumberProperty.getInstance(Math.ceil(dbl.doubleValue()));
     }
 
 }
-

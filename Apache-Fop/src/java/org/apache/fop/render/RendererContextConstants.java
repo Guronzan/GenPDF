@@ -20,7 +20,8 @@
 package org.apache.fop.render;
 
 /**
- * Defines a number of standard constants (keys) for use by the RendererContext class.
+ * Defines a number of standard constants (keys) for use by the RendererContext
+ * class.
  */
 public interface RendererContextConstants {
 
@@ -46,8 +47,8 @@ public interface RendererContextConstants {
     String HANDLER_CONFIGURATION = "cfg";
 
     /**
-     * An optional Map (keys: QName, values: String) with attributes containing additional hints
-     * for rendering.
+     * An optional Map (keys: QName, values: String) with attributes containing
+     * additional hints for rendering.
      */
     String FOREIGN_ATTRIBUTES = "foreign-attributes";
 

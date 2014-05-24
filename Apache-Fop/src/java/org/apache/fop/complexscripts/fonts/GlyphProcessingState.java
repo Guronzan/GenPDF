@@ -32,10 +32,14 @@ import org.apache.fop.complexscripts.util.ScriptContextTester;
 // CSOFF: NoWhitespaceAfterCheck
 
 /**
- * <p>The <code>GlyphProcessingState</code> implements a common, base state object used during glyph substitution
- * and positioning processing.</p>
+ * <p>
+ * The <code>GlyphProcessingState</code> implements a common, base state object
+ * used during glyph substitution and positioning processing.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 
 public class GlyphProcessingState {
@@ -75,143 +79,185 @@ public class GlyphProcessingState {
 
     /**
      * Construct glyph processing state.
-     * @param gs input glyph sequence
-     * @param script script identifier
-     * @param language language identifier
-     * @param feature feature identifier
-     * @param sct script context tester (or null)
+     * 
+     * @param gs
+     *            input glyph sequence
+     * @param script
+     *            script identifier
+     * @param language
+     *            language identifier
+     * @param feature
+     *            feature identifier
+     * @param sct
+     *            script context tester (or null)
      */
-    protected GlyphProcessingState ( GlyphSequence gs, String script, String language, String feature, ScriptContextTester sct ) {
+    protected GlyphProcessingState(final GlyphSequence gs, final String script,
+            final String language, final String feature,
+            final ScriptContextTester sct) {
         this.script = script;
         this.language = language;
         this.feature = feature;
         this.igs = gs;
         this.indexLast = gs.getGlyphCount();
         this.sct = sct;
-        this.gct = ( sct != null ) ? sct.getTester ( feature ) : null;
-        this.ignoreBase = new GlyphTester() { public boolean test(int gi, int flags) { return isIgnoredBase(gi, flags); } };
-        this.ignoreLigature = new GlyphTester() { public boolean test(int gi, int flags) { return isIgnoredLigature(gi, flags); } };
-        this.ignoreMark = new GlyphTester() { public boolean test(int gi, int flags) { return isIgnoredMark(gi, flags); } };
+        this.gct = sct != null ? sct.getTester(feature) : null;
+        this.ignoreBase = new GlyphTester() {
+            @Override
+            public boolean test(final int gi, final int flags) {
+                return isIgnoredBase(gi, flags);
+            }
+        };
+            this.ignoreLigature = new GlyphTester() {
+            @Override
+            public boolean test(final int gi, final int flags) {
+                return isIgnoredLigature(gi, flags);
+            }
+        };
+                this.ignoreMark = new GlyphTester() {
+            @Override
+            public boolean test(final int gi, final int flags) {
+                return isIgnoredMark(gi, flags);
+            }
+        };
     }
 
     /**
-     * Construct glyph processing state using an existing state object using shallow copy
-     * except as follows: input glyph sequence is copied deep except for its characters array.
-     * @param s existing processing state to copy from
+     * Construct glyph processing state using an existing state object using
+     * shallow copy except as follows: input glyph sequence is copied deep
+     * except for its characters array.
+     * 
+     * @param s
+     *            existing processing state to copy from
      */
-    protected GlyphProcessingState ( GlyphProcessingState s ) {
-        this ( new GlyphSequence ( s.igs ), s.script, s.language, s.feature, s.sct );
-        setPosition ( s.index );
+    protected GlyphProcessingState(final GlyphProcessingState s) {
+        this(new GlyphSequence(s.igs), s.script, s.language, s.feature, s.sct);
+        setPosition(s.index);
     }
 
     /**
      * Set governing glyph definition table.
-     * @param gdef glyph definition table (or null, to unset)
+     * 
+     * @param gdef
+     *            glyph definition table (or null, to unset)
      */
-    public void setGDEF ( GlyphDefinitionTable gdef ) {
-        if ( this.gdef == null ) {
+    public void setGDEF(final GlyphDefinitionTable gdef) {
+        if (this.gdef == null) {
             this.gdef = gdef;
-        } else if ( gdef == null ) {
+        } else if (gdef == null) {
             this.gdef = null;
         }
     }
 
     /**
      * Obtain governing glyph definition table.
+     * 
      * @return glyph definition table (or null, to not set)
      */
     public GlyphDefinitionTable getGDEF() {
-        return gdef;
+        return this.gdef;
     }
 
     /**
      * Set governing lookup flags
-     * @param flags lookup flags (or zero, to unset)
+     * 
+     * @param flags
+     *            lookup flags (or zero, to unset)
      */
-    public void setLookupFlags ( int flags ) {
-        if ( this.lookupFlags == 0 ) {
+    public void setLookupFlags(final int flags) {
+        if (this.lookupFlags == 0) {
             this.lookupFlags = flags;
-        } else if ( flags == 0 ) {
+        } else if (flags == 0) {
             this.lookupFlags = 0;
         }
     }
 
     /**
-     * Obtain governing lookup  flags.
+     * Obtain governing lookup flags.
+     * 
      * @return lookup flags (zero may indicate unset or no flags)
      */
     public int getLookupFlags() {
-        return lookupFlags;
+        return this.lookupFlags;
     }
 
     /**
      * Obtain governing class match set.
-     * @param gi glyph index that may be used to determine which match set applies
+     * 
+     * @param gi
+     *            glyph index that may be used to determine which match set
+     *            applies
      * @return class match set (zero may indicate unset or no set)
      */
-    public int getClassMatchSet ( int gi ) {
+    public int getClassMatchSet(final int gi) {
         return 0;
     }
 
     /**
      * Set default ignore tester.
-     * @param ignoreDefault glyph tester (or null, to unset)
+     * 
+     * @param ignoreDefault
+     *            glyph tester (or null, to unset)
      */
-    public void setIgnoreDefault ( GlyphTester ignoreDefault ) {
-        if ( this.ignoreDefault == null ) {
+    public void setIgnoreDefault(final GlyphTester ignoreDefault) {
+        if (this.ignoreDefault == null) {
             this.ignoreDefault = ignoreDefault;
-        } else if ( ignoreDefault == null ) {
+        } else if (ignoreDefault == null) {
             this.ignoreDefault = null;
         }
     }
 
     /**
      * Obtain governing default ignores tester.
+     * 
      * @return default ignores tester
      */
     public GlyphTester getIgnoreDefault() {
-        return ignoreDefault;
+        return this.ignoreDefault;
     }
 
     /**
-     * Update glyph subtable specific state. Each time a
-     * different glyph subtable is to be applied, it is used
-     * to update this state prior to application, after which
-     * this state is to be reset.
-     * @param st glyph subtable to use for update
+     * Update glyph subtable specific state. Each time a different glyph
+     * subtable is to be applied, it is used to update this state prior to
+     * application, after which this state is to be reset.
+     * 
+     * @param st
+     *            glyph subtable to use for update
      */
-    public void updateSubtableState ( GlyphSubtable st ) {
-        setGDEF ( st.getGDEF() );
-        setLookupFlags ( st.getFlags() );
-        setIgnoreDefault ( getIgnoreTester ( getLookupFlags() ) );
+    public void updateSubtableState(final GlyphSubtable st) {
+        setGDEF(st.getGDEF());
+        setLookupFlags(st.getFlags());
+        setIgnoreDefault(getIgnoreTester(getLookupFlags()));
     }
 
     /**
      * Reset glyph subtable specific state.
      */
     public void resetSubtableState() {
-        setGDEF ( null );
-        setLookupFlags ( 0 );
-        setIgnoreDefault ( null );
+        setGDEF(null);
+        setLookupFlags(0);
+        setIgnoreDefault(null);
     }
 
     /**
      * Obtain current position index in input glyph sequence.
+     * 
      * @return current index
      */
     public int getPosition() {
-        return index;
+        return this.index;
     }
 
     /**
      * Set (seek to) position index in input glyph sequence.
-     * @param index to seek to
-     * @throws IndexOutOfBoundsException if index is less than zero
-     * or exceeds last valid position
+     * 
+     * @param index
+     *            to seek to
+     * @throws IndexOutOfBoundsException
+     *             if index is less than zero or exceeds last valid position
      */
-    public void setPosition ( int index ) throws IndexOutOfBoundsException {
-        if ( ( index >= 0 ) && ( index <= indexLast ) ) {
-            this.index =  index;
+    public void setPosition(final int index) throws IndexOutOfBoundsException {
+        if (index >= 0 && index <= this.indexLast) {
+            this.index = index;
         } else {
             throw new IndexOutOfBoundsException();
         }
@@ -219,108 +265,117 @@ public class GlyphProcessingState {
 
     /**
      * Obtain last valid position index in input glyph sequence.
+     * 
      * @return current last index
      */
     public int getLastPosition() {
-        return indexLast;
+        return this.indexLast;
     }
 
     /**
-     * Determine if at least one glyph remains in
-     * input sequence.
+     * Determine if at least one glyph remains in input sequence.
+     * 
      * @return true if one or more glyph remains
      */
     public boolean hasNext() {
-        return hasNext ( 1 );
+        return hasNext(1);
     }
 
     /**
-     * Determine if at least <code>count</code> glyphs remain in
-     * input sequence.
-     * @param count of glyphs to test
+     * Determine if at least <code>count</code> glyphs remain in input sequence.
+     * 
+     * @param count
+     *            of glyphs to test
      * @return true if at least <code>count</code> glyphs are available
      */
-    public boolean hasNext ( int count ) {
-        return ( index + count ) <= indexLast;
+    public boolean hasNext(final int count) {
+        return this.index + count <= this.indexLast;
     }
 
     /**
-     * Update the current position index based upon previously consumed
-     * glyphs, i.e., add the consuemd count to the current position index.
-     * If no glyphs were previously consumed, then forces exactly one
-     * glyph to be consumed.
+     * Update the current position index based upon previously consumed glyphs,
+     * i.e., add the consuemd count to the current position index. If no glyphs
+     * were previously consumed, then forces exactly one glyph to be consumed.
+     * 
      * @return the new (updated) position index
      */
     public int next() {
-        if ( index < indexLast ) {
+        if (this.index < this.indexLast) {
             // force consumption of at least one input glyph
-            if ( consumed == 0 ) {
-                consumed = 1;
+            if (this.consumed == 0) {
+                this.consumed = 1;
             }
-            index += consumed;
-            consumed = 0;
-            if ( index > indexLast ) {
-                index = indexLast;
+            this.index += this.consumed;
+            this.consumed = 0;
+            if (this.index > this.indexLast) {
+                this.index = this.indexLast;
             }
         }
-        return index;
+        return this.index;
     }
 
     /**
-     * Determine if at least one backtrack (previous) glyph is present
-     * in input sequence.
+     * Determine if at least one backtrack (previous) glyph is present in input
+     * sequence.
+     * 
      * @return true if one or more glyph remains
      */
     public boolean hasPrev() {
-        return hasPrev ( 1 );
+        return hasPrev(1);
     }
 
     /**
-     * Determine if at least <code>count</code> backtrack (previous) glyphs
-     * are present in input sequence.
-     * @param count of glyphs to test
+     * Determine if at least <code>count</code> backtrack (previous) glyphs are
+     * present in input sequence.
+     * 
+     * @param count
+     *            of glyphs to test
      * @return true if at least <code>count</code> glyphs are available
      */
-    public boolean hasPrev ( int count ) {
-        return ( index - count ) >= 0;
+    public boolean hasPrev(final int count) {
+        return this.index - count >= 0;
     }
 
     /**
-     * Update the current position index based upon previously consumed
-     * glyphs, i.e., subtract the consuemd count from the current position index.
-     * If no glyphs were previously consumed, then forces exactly one
-     * glyph to be consumed. This method is used to traverse an input
-     * glyph sequence in reverse order.
+     * Update the current position index based upon previously consumed glyphs,
+     * i.e., subtract the consuemd count from the current position index. If no
+     * glyphs were previously consumed, then forces exactly one glyph to be
+     * consumed. This method is used to traverse an input glyph sequence in
+     * reverse order.
+     * 
      * @return the new (updated) position index
      */
     public int prev() {
-        if ( index > 0 ) {
+        if (this.index > 0) {
             // force consumption of at least one input glyph
-            if ( consumed == 0 ) {
-                consumed = 1;
+            if (this.consumed == 0) {
+                this.consumed = 1;
             }
-            index -= consumed;
-            consumed = 0;
-            if ( index < 0 ) {
-                index = 0;
+            this.index -= this.consumed;
+            this.consumed = 0;
+            if (this.index < 0) {
+                this.index = 0;
             }
         }
-        return index;
+        return this.index;
     }
 
     /**
-     * Record the consumption of <code>count</code> glyphs such that
-     * this consumption never exceeds the number of glyphs in the input glyph
+     * Record the consumption of <code>count</code> glyphs such that this
+     * consumption never exceeds the number of glyphs in the input glyph
      * sequence.
-     * @param count of glyphs to consume
+     * 
+     * @param count
+     *            of glyphs to consume
      * @return newly adjusted consumption count
-     * @throws IndexOutOfBoundsException if count would cause consumption
-     * to exceed count of glyphs in input glyph sequence
+     * @throws IndexOutOfBoundsException
+     *             if count would cause consumption to exceed count of glyphs in
+     *             input glyph sequence
      */
-    public int consume ( int count ) throws IndexOutOfBoundsException {
-        if ( ( consumed + count ) <= indexLast ) {
-            consumed += count;
-            return consumed;
+    public int consume(final int count) throws IndexOutOfBoundsException {
+        if (this.consumed + count <= this.indexLast) {
+            this.consumed += count;
+            return this.consumed;
         } else {
             throw new IndexOutOfBoundsException();
         }
@@ -328,134 +383,176 @@ public class GlyphProcessingState {
 
     /**
      * Determine if any consumption has occurred.
+     * 
      * @return true if consumption count is greater than zero
      */
     public boolean didConsume() {
-        return consumed > 0;
+        return this.consumed > 0;
     }
 
     /**
      * Obtain reference to input glyph sequence, which must not be modified.
+     * 
      * @return input glyph sequence
      */
     public GlyphSequence getInput() {
-        return igs;
+        return this.igs;
     }
 
     /**
      * Obtain glyph at specified offset from current position.
-     * @param offset from current position
+     * 
+     * @param offset
+     *            from current position
      * @return glyph at specified offset from current position
-     * @throws IndexOutOfBoundsException if no glyph available at offset
+     * @throws IndexOutOfBoundsException
+     *             if no glyph available at offset
      */
-    public int getGlyph ( int offset ) throws IndexOutOfBoundsException {
-        int i = index + offset;
-        if ( ( i >= 0 ) && ( i < indexLast ) ) {
-            return igs.getGlyph ( i );
+    public int getGlyph(final int offset) throws IndexOutOfBoundsException {
+        final int i = this.index + offset;
+        if (i >= 0 && i < this.indexLast) {
+            return this.igs.getGlyph(i);
         } else {
-            throw new IndexOutOfBoundsException ( "attempting index at " + i );
+            throw new IndexOutOfBoundsException("attempting index at " + i);
         }
     }
 
     /**
      * Obtain glyph at current position.
+     * 
      * @return glyph at current position
-     * @throws IndexOutOfBoundsException if no glyph available
+     * @throws IndexOutOfBoundsException
+     *             if no glyph available
      */
     public int getGlyph() throws IndexOutOfBoundsException {
-        return getGlyph ( 0 );
+        return getGlyph(0);
     }
 
     /**
      * Set (replace) glyph at specified offset from current position.
-     * @param offset from current position
-     * @param glyph to set at specified offset from current position
-     * @throws IndexOutOfBoundsException if specified offset is not valid position
+     * 
+     * @param offset
+     *            from current position
+     * @param glyph
+     *            to set at specified offset from current position
+     * @throws IndexOutOfBoundsException
+     *             if specified offset is not valid position
      */
-    public void setGlyph ( int offset, int glyph ) throws IndexOutOfBoundsException {
-        int i = index + offset;
-        if ( ( i >= 0 ) && ( i < indexLast ) ) {
-            igs.setGlyph ( i, glyph );
+    public void setGlyph(final int offset, final int glyph)
+            throws IndexOutOfBoundsException {
+        final int i = this.index + offset;
+        if (i >= 0 && i < this.indexLast) {
+            this.igs.setGlyph(i, glyph);
         } else {
-            throw new IndexOutOfBoundsException ( "attempting index at " + i );
+            throw new IndexOutOfBoundsException("attempting index at " + i);
         }
     }
 
     /**
-     * Obtain character association of glyph at specified offset from current position.
-     * @param offset from current position
+     * Obtain character association of glyph at specified offset from current
+     * position.
+     * 
+     * @param offset
+     *            from current position
      * @return character association of glyph at current position
-     * @throws IndexOutOfBoundsException if offset results in an invalid index into input glyph sequence
+     * @throws IndexOutOfBoundsException
+     *             if offset results in an invalid index into input glyph
+     *             sequence
      */
-    public GlyphSequence.CharAssociation getAssociation ( int offset ) throws IndexOutOfBoundsException {
-        int i = index + offset;
-        if ( ( i >= 0 ) && ( i < indexLast ) ) {
-            return igs.getAssociation ( i );
+    public GlyphSequence.CharAssociation getAssociation(final int offset)
+            throws IndexOutOfBoundsException {
+        final int i = this.index + offset;
+        if (i >= 0 && i < this.indexLast) {
+            return this.igs.getAssociation(i);
         } else {
-            throw new IndexOutOfBoundsException ( "attempting index at " + i );
+            throw new IndexOutOfBoundsException("attempting index at " + i);
         }
     }
 
     /**
      * Obtain character association of glyph at current position.
+     * 
      * @return character association of glyph at current position
-     * @throws IndexOutOfBoundsException if no glyph available
+     * @throws IndexOutOfBoundsException
+     *             if no glyph available
      */
-    public GlyphSequence.CharAssociation getAssociation() throws IndexOutOfBoundsException {
-        return getAssociation ( 0 );
+    public GlyphSequence.CharAssociation getAssociation()
+            throws IndexOutOfBoundsException {
+        return getAssociation(0);
     }
 
     /**
-     * Obtain <code>count</code> glyphs starting at specified offset from current position. If
-     * <code>reverseOrder</code> is true, then glyphs are returned in reverse order starting at specified offset
-     * and going in reverse towards beginning of input glyph sequence.
-     * @param offset from current position
-     * @param count number of glyphs to obtain
-     * @param reverseOrder true if to obtain in reverse order
-     * @param ignoreTester glyph tester to use to determine which glyphs are ignored (or null, in which case none are ignored)
-     * @param glyphs array to use to fetch glyphs
-     * @param counts int[2] array to receive fetched glyph counts, where counts[0] will
-     * receive the number of glyphs obtained, and counts[1] will receive the number of glyphs
-     * ignored
+     * Obtain <code>count</code> glyphs starting at specified offset from
+     * current position. If <code>reverseOrder</code> is true, then glyphs are
+     * returned in reverse order starting at specified offset and going in
+     * reverse towards beginning of input glyph sequence.
+     * 
+     * @param offset
+     *            from current position
+     * @param count
+     *            number of glyphs to obtain
+     * @param reverseOrder
+     *            true if to obtain in reverse order
+     * @param ignoreTester
+     *            glyph tester to use to determine which glyphs are ignored (or
+     *            null, in which case none are ignored)
+     * @param glyphs
+     *            array to use to fetch glyphs
+     * @param counts
+     *            int[2] array to receive fetched glyph counts, where counts[0]
+     *            will receive the number of glyphs obtained, and counts[1] will
+     *            receive the number of glyphs ignored
      * @return array of glyphs
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public int[] getGlyphs ( int offset, int count, boolean reverseOrder, GlyphTester ignoreTester, int[] glyphs, int[] counts ) throws IndexOutOfBoundsException {
-        if ( count < 0 ) {
-            count = getGlyphsAvailable ( offset, reverseOrder, ignoreTester ) [ 0 ];
+    public int[] getGlyphs(final int offset, int count,
+            final boolean reverseOrder, final GlyphTester ignoreTester,
+            int[] glyphs, final int[] counts) throws IndexOutOfBoundsException {
+        if (count < 0) {
+            count = getGlyphsAvailable(offset, reverseOrder, ignoreTester)[0];
         }
-        int start = index + offset;
-        if ( start < 0 ) {
-            throw new IndexOutOfBoundsException ( "will attempt index at " + start );
-        } else if ( ! reverseOrder && ( ( start + count ) > indexLast ) ) {
-            throw new IndexOutOfBoundsException ( "will attempt index at " + ( start + count ) );
-        } else if ( reverseOrder && ( ( start + 1 ) < count ) ) {
-            throw new IndexOutOfBoundsException ( "will attempt index at " + ( start - count ) );
+        final int start = this.index + offset;
+        if (start < 0) {
+            throw new IndexOutOfBoundsException("will attempt index at "
+                    + start);
+        } else if (!reverseOrder && start + count > this.indexLast) {
+            throw new IndexOutOfBoundsException("will attempt index at "
+                    + (start + count));
+        } else if (reverseOrder && start + 1 < count) {
+            throw new IndexOutOfBoundsException("will attempt index at "
+                    + (start - count));
         }
-        if ( glyphs == null ) {
-            glyphs = new int [ count ];
-        } else if ( glyphs.length != count ) {
-            throw new IllegalArgumentException ( "glyphs array is non-null, but its length (" + glyphs.length + "), is not equal to count (" + count + ")" );
+        if (glyphs == null) {
+            glyphs = new int[count];
+        } else if (glyphs.length != count) {
+            throw new IllegalArgumentException(
+                    "glyphs array is non-null, but its length ("
+                            + glyphs.length + "), is not equal to count ("
+                            + count + ")");
         }
-        if ( ! reverseOrder ) {
-            return getGlyphsForward ( start, count, ignoreTester, glyphs, counts );
+        if (!reverseOrder) {
+            return getGlyphsForward(start, count, ignoreTester, glyphs, counts);
         } else {
-            return getGlyphsReverse ( start, count, ignoreTester, glyphs, counts );
+            return getGlyphsReverse(start, count, ignoreTester, glyphs, counts);
         }
     }
 
-    private int[] getGlyphsForward ( int start, int count, GlyphTester ignoreTester, int[] glyphs, int[] counts ) throws IndexOutOfBoundsException {
+    private int[] getGlyphsForward(final int start, final int count,
+            final GlyphTester ignoreTester, final int[] glyphs,
+            final int[] counts) throws IndexOutOfBoundsException {
         int counted = 0;
         int ignored = 0;
-        for ( int i = start, n = indexLast, k = 0; i < n; i++ ) {
-            int gi = getGlyph ( i - index );
-            if ( gi == 65535 ) {
+        for (int i = start, n = this.indexLast, k = 0; i < n; i++) {
+            final int gi = getGlyph(i - this.index);
+            if (gi == 65535) {
                 ignored++;
             } else {
-                if ( ( ignoreTester == null ) || ! ignoreTester.test ( gi, getLookupFlags() ) ) {
-                    if ( k < count ) {
-                        glyphs [ k++ ] = gi;
+                if (ignoreTester == null
+                        || !ignoreTester.test(gi, getLookupFlags())) {
+                    if (k < count) {
+                        glyphs[k++] = gi;
                         counted++;
                     } else {
                         break;
@@ -465,24 +562,27 @@ public class GlyphProcessingState {
                 }
             }
         }
-        if ( ( counts != null ) && ( counts.length > 1 ) ) {
+        if (counts != null && counts.length > 1) {
             counts[0] = counted;
             counts[1] = ignored;
         }
         return glyphs;
     }
 
-    private int[] getGlyphsReverse ( int start, int count, GlyphTester ignoreTester, int[] glyphs, int[] counts ) throws IndexOutOfBoundsException {
+    private int[] getGlyphsReverse(final int start, final int count,
+            final GlyphTester ignoreTester, final int[] glyphs,
+            final int[] counts) throws IndexOutOfBoundsException {
         int counted = 0;
         int ignored = 0;
-        for ( int i = start, k = 0; i >= 0; i-- ) {
-            int gi = getGlyph ( i - index );
-            if ( gi == 65535 ) {
+        for (int i = start, k = 0; i >= 0; i--) {
+            final int gi = getGlyph(i - this.index);
+            if (gi == 65535) {
                 ignored++;
             } else {
-                if ( ( ignoreTester == null ) || ! ignoreTester.test ( gi, getLookupFlags() ) ) {
-                    if ( k < count ) {
-                        glyphs [ k++ ] = gi;
+                if (ignoreTester == null
+                        || !ignoreTester.test(gi, getLookupFlags())) {
+                    if (k < count) {
+                        glyphs[k++] = gi;
                         counted++;
                     } else {
                         break;
@@ -492,7 +592,7 @@ public class GlyphProcessingState {
                 }
             }
         }
-        if ( ( counts != null ) && ( counts.length > 1 ) ) {
+        if (counts != null && counts.length > 1) {
             counts[0] = counted;
             counts[1] = ignored;
         }
@@ -500,98 +600,144 @@ public class GlyphProcessingState {
     }
 
     /**
-     * Obtain <code>count</code> glyphs starting at specified offset from current position. If
-     * offset is negative, then glyphs are returned in reverse order starting at specified offset
-     * and going in reverse towards beginning of input glyph sequence.
-     * @param offset from current position
-     * @param count number of glyphs to obtain
-     * @param glyphs array to use to fetch glyphs
-     * @param counts int[2] array to receive fetched glyph counts, where counts[0] will
-     * receive the number of glyphs obtained, and counts[1] will receive the number of glyphs
-     * ignored
+     * Obtain <code>count</code> glyphs starting at specified offset from
+     * current position. If offset is negative, then glyphs are returned in
+     * reverse order starting at specified offset and going in reverse towards
+     * beginning of input glyph sequence.
+     * 
+     * @param offset
+     *            from current position
+     * @param count
+     *            number of glyphs to obtain
+     * @param glyphs
+     *            array to use to fetch glyphs
+     * @param counts
+     *            int[2] array to receive fetched glyph counts, where counts[0]
+     *            will receive the number of glyphs obtained, and counts[1] will
+     *            receive the number of glyphs ignored
      * @return array of glyphs
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public int[] getGlyphs ( int offset, int count, int[] glyphs, int[] counts ) throws IndexOutOfBoundsException {
-        return getGlyphs ( offset, count, offset < 0, ignoreDefault, glyphs, counts );
+    public int[] getGlyphs(final int offset, final int count,
+            final int[] glyphs, final int[] counts)
+            throws IndexOutOfBoundsException {
+        return getGlyphs(offset, count, offset < 0, this.ignoreDefault, glyphs,
+                counts);
     }
 
     /**
-     * Obtain all glyphs starting from current position to end of input glyph sequence.
+     * Obtain all glyphs starting from current position to end of input glyph
+     * sequence.
+     * 
      * @return array of available glyphs
-     * @throws IndexOutOfBoundsException if no glyph available
+     * @throws IndexOutOfBoundsException
+     *             if no glyph available
      */
     public int[] getGlyphs() throws IndexOutOfBoundsException {
-        return getGlyphs ( 0, indexLast - index, false, null, null, null );
+        return getGlyphs(0, this.indexLast - this.index, false, null, null,
+                null);
     }
 
     /**
-     * Obtain <code>count</code> ignored glyphs starting at specified offset from current position. If
-     * <code>reverseOrder</code> is true, then glyphs are returned in reverse order starting at specified offset
-     * and going in reverse towards beginning of input glyph sequence.
-     * @param offset from current position
-     * @param count number of glyphs to obtain
-     * @param reverseOrder true if to obtain in reverse order
-     * @param ignoreTester glyph tester to use to determine which glyphs are ignored (or null, in which case none are ignored)
-     * @param glyphs array to use to fetch glyphs
-     * @param counts int[2] array to receive fetched glyph counts, where counts[0] will
-     * receive the number of glyphs obtained, and counts[1] will receive the number of glyphs
-     * ignored
+     * Obtain <code>count</code> ignored glyphs starting at specified offset
+     * from current position. If <code>reverseOrder</code> is true, then glyphs
+     * are returned in reverse order starting at specified offset and going in
+     * reverse towards beginning of input glyph sequence.
+     * 
+     * @param offset
+     *            from current position
+     * @param count
+     *            number of glyphs to obtain
+     * @param reverseOrder
+     *            true if to obtain in reverse order
+     * @param ignoreTester
+     *            glyph tester to use to determine which glyphs are ignored (or
+     *            null, in which case none are ignored)
+     * @param glyphs
+     *            array to use to fetch glyphs
+     * @param counts
+     *            int[2] array to receive fetched glyph counts, where counts[0]
+     *            will receive the number of glyphs obtained, and counts[1] will
+     *            receive the number of glyphs ignored
      * @return array of glyphs
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public int[] getIgnoredGlyphs ( int offset, int count, boolean reverseOrder, GlyphTester ignoreTester, int[] glyphs, int[] counts ) throws IndexOutOfBoundsException {
-        return getGlyphs ( offset, count, reverseOrder, new NotGlyphTester ( ignoreTester ), glyphs, counts );
+    public int[] getIgnoredGlyphs(final int offset, final int count,
+            final boolean reverseOrder, final GlyphTester ignoreTester,
+            final int[] glyphs, final int[] counts)
+            throws IndexOutOfBoundsException {
+        return getGlyphs(offset, count, reverseOrder, new NotGlyphTester(
+                ignoreTester), glyphs, counts);
     }
 
     /**
-     * Obtain <code>count</code> ignored glyphs starting at specified offset from current position. If <code>offset</code> is
-     * negative, then fetch in reverse order.
-     * @param offset from current position
-     * @param count number of glyphs to obtain
+     * Obtain <code>count</code> ignored glyphs starting at specified offset
+     * from current position. If <code>offset</code> is negative, then fetch in
+     * reverse order.
+     * 
+     * @param offset
+     *            from current position
+     * @param count
+     *            number of glyphs to obtain
      * @return array of glyphs
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public int[] getIgnoredGlyphs ( int offset, int count ) throws IndexOutOfBoundsException {
-        return getIgnoredGlyphs ( offset, count, offset < 0, ignoreDefault, null, null );
+    public int[] getIgnoredGlyphs(final int offset, final int count)
+            throws IndexOutOfBoundsException {
+        return getIgnoredGlyphs(offset, count, offset < 0, this.ignoreDefault,
+                null, null);
     }
 
     /**
-     * Determine number of glyphs available starting at specified offset from current position. If
-     * <code>reverseOrder</code> is true, then search backwards in input glyph sequence.
-     * @param offset from current position
-     * @param reverseOrder true if to obtain in reverse order
-     * @param ignoreTester glyph tester to use to determine which glyphs to count (or null, in which case none are ignored)
-     * @return an int[2] array where counts[0] is the number of glyphs available, and counts[1] is the number of glyphs ignored
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * Determine number of glyphs available starting at specified offset from
+     * current position. If <code>reverseOrder</code> is true, then search
+     * backwards in input glyph sequence.
+     * 
+     * @param offset
+     *            from current position
+     * @param reverseOrder
+     *            true if to obtain in reverse order
+     * @param ignoreTester
+     *            glyph tester to use to determine which glyphs to count (or
+     *            null, in which case none are ignored)
+     * @return an int[2] array where counts[0] is the number of glyphs
+     *         available, and counts[1] is the number of glyphs ignored
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public int[] getGlyphsAvailable ( int offset, boolean reverseOrder, GlyphTester ignoreTester ) throws IndexOutOfBoundsException {
-        int start = index + offset;
-        if ( ( start < 0 ) || ( start > indexLast ) ) {
+    public int[] getGlyphsAvailable(final int offset,
+            final boolean reverseOrder, final GlyphTester ignoreTester)
+            throws IndexOutOfBoundsException {
+        final int start = this.index + offset;
+        if (start < 0 || start > this.indexLast) {
             return new int[] { 0, 0 };
-        } else if ( ! reverseOrder ) {
-            return getGlyphsAvailableForward ( start, ignoreTester );
+        } else if (!reverseOrder) {
+            return getGlyphsAvailableForward(start, ignoreTester);
         } else {
-            return getGlyphsAvailableReverse ( start, ignoreTester );
+            return getGlyphsAvailableReverse(start, ignoreTester);
         }
     }
 
-    private int[] getGlyphsAvailableForward ( int start, GlyphTester ignoreTester ) throws IndexOutOfBoundsException {
+    private int[] getGlyphsAvailableForward(final int start,
+            final GlyphTester ignoreTester) throws IndexOutOfBoundsException {
         int counted = 0;
         int ignored = 0;
-        if ( ignoreTester == null ) {
-            counted = indexLast - start;
+        if (ignoreTester == null) {
+            counted = this.indexLast - start;
         } else {
-            for ( int i = start, n = indexLast; i < n; i++ ) {
-                int gi = getGlyph ( i - index );
-                if ( gi == 65535 ) {
+            for (int i = start, n = this.indexLast; i < n; i++) {
+                final int gi = getGlyph(i - this.index);
+                if (gi == 65535) {
                     ignored++;
                 } else {
-                    if ( ignoreTester.test ( gi, getLookupFlags() ) ) {
+                    if (ignoreTester.test(gi, getLookupFlags())) {
                         ignored++;
                     } else {
                         counted++;
@@ -602,18 +748,19 @@ public class GlyphProcessingState {
         return new int[] { counted, ignored };
     }
 
-    private int[] getGlyphsAvailableReverse ( int start, GlyphTester ignoreTester ) throws IndexOutOfBoundsException {
+    private int[] getGlyphsAvailableReverse(final int start,
+            final GlyphTester ignoreTester) throws IndexOutOfBoundsException {
         int counted = 0;
         int ignored = 0;
-        if ( ignoreTester == null ) {
+        if (ignoreTester == null) {
             counted = start + 1;
         } else {
-            for ( int i = start; i >= 0; i-- ) {
-                int gi = getGlyph ( i - index );
-                if ( gi == 65535 ) {
+            for (int i = start; i >= 0; i--) {
+                final int gi = getGlyph(i - this.index);
+                if (gi == 65535) {
                     ignored++;
                 } else {
-                    if ( ignoreTester.test ( gi, getLookupFlags() ) ) {
+                    if (ignoreTester.test(gi, getLookupFlags())) {
                         ignored++;
                     } else {
                         counted++;
@@ -625,85 +772,122 @@ public class GlyphProcessingState {
     }
 
     /**
-     * Determine number of glyphs available starting at specified offset from current position. If
-     * <code>reverseOrder</code> is true, then search backwards in input glyph sequence. Uses the
-     * default ignores tester.
-     * @param offset from current position
-     * @param reverseOrder true if to obtain in reverse order
-     * @return an int[2] array where counts[0] is the number of glyphs available, and counts[1] is the number of glyphs ignored
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * Determine number of glyphs available starting at specified offset from
+     * current position. If <code>reverseOrder</code> is true, then search
+     * backwards in input glyph sequence. Uses the default ignores tester.
+     * 
+     * @param offset
+     *            from current position
+     * @param reverseOrder
+     *            true if to obtain in reverse order
+     * @return an int[2] array where counts[0] is the number of glyphs
+     *         available, and counts[1] is the number of glyphs ignored
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public int[] getGlyphsAvailable ( int offset, boolean reverseOrder ) throws IndexOutOfBoundsException {
-        return getGlyphsAvailable ( offset, reverseOrder, ignoreDefault );
+    public int[] getGlyphsAvailable(final int offset, final boolean reverseOrder)
+            throws IndexOutOfBoundsException {
+        return getGlyphsAvailable(offset, reverseOrder, this.ignoreDefault);
     }
 
     /**
-     * Determine number of glyphs available starting at specified offset from current position. If
-     * offset is negative, then search backwards in input glyph sequence. Uses the
-     * default ignores tester.
-     * @param offset from current position
-     * @return an int[2] array where counts[0] is the number of glyphs available, and counts[1] is the number of glyphs ignored
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * Determine number of glyphs available starting at specified offset from
+     * current position. If offset is negative, then search backwards in input
+     * glyph sequence. Uses the default ignores tester.
+     * 
+     * @param offset
+     *            from current position
+     * @return an int[2] array where counts[0] is the number of glyphs
+     *         available, and counts[1] is the number of glyphs ignored
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public int[] getGlyphsAvailable ( int offset ) throws IndexOutOfBoundsException {
-        return getGlyphsAvailable ( offset, offset < 0 );
+    public int[] getGlyphsAvailable(final int offset)
+            throws IndexOutOfBoundsException {
+        return getGlyphsAvailable(offset, offset < 0);
     }
 
     /**
-     * Obtain <code>count</code> character associations of glyphs starting at specified offset from current position. If
-     * <code>reverseOrder</code> is true, then associations are returned in reverse order starting at specified offset
-     * and going in reverse towards beginning of input glyph sequence.
-     * @param offset from current position
-     * @param count number of associations to obtain
-     * @param reverseOrder true if to obtain in reverse order
-     * @param ignoreTester glyph tester to use to determine which glyphs are ignored (or null, in which case none are ignored)
-     * @param associations array to use to fetch associations
-     * @param counts int[2] array to receive fetched association counts, where counts[0] will
-     * receive the number of associations obtained, and counts[1] will receive the number of glyphs whose
-     * associations were ignored
+     * Obtain <code>count</code> character associations of glyphs starting at
+     * specified offset from current position. If <code>reverseOrder</code> is
+     * true, then associations are returned in reverse order starting at
+     * specified offset and going in reverse towards beginning of input glyph
+     * sequence.
+     * 
+     * @param offset
+     *            from current position
+     * @param count
+     *            number of associations to obtain
+     * @param reverseOrder
+     *            true if to obtain in reverse order
+     * @param ignoreTester
+     *            glyph tester to use to determine which glyphs are ignored (or
+     *            null, in which case none are ignored)
+     * @param associations
+     *            array to use to fetch associations
+     * @param counts
+     *            int[2] array to receive fetched association counts, where
+     *            counts[0] will receive the number of associations obtained,
+     *            and counts[1] will receive the number of glyphs whose
+     *            associations were ignored
      * @return array of associations
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public GlyphSequence.CharAssociation[] getAssociations ( int offset, int count, boolean reverseOrder, GlyphTester ignoreTester, GlyphSequence.CharAssociation[] associations, int[] counts )
-        throws IndexOutOfBoundsException {
-        if ( count < 0 ) {
-            count = getGlyphsAvailable ( offset, reverseOrder, ignoreTester ) [ 0 ];
+    public GlyphSequence.CharAssociation[] getAssociations(final int offset,
+            int count, final boolean reverseOrder,
+            final GlyphTester ignoreTester,
+            GlyphSequence.CharAssociation[] associations, final int[] counts)
+            throws IndexOutOfBoundsException {
+        if (count < 0) {
+            count = getGlyphsAvailable(offset, reverseOrder, ignoreTester)[0];
         }
-        int start = index + offset;
-        if ( start < 0 ) {
-            throw new IndexOutOfBoundsException ( "will attempt index at " + start );
-        } else if ( ! reverseOrder && ( ( start + count ) > indexLast ) ) {
-            throw new IndexOutOfBoundsException ( "will attempt index at " + ( start + count ) );
-        } else if ( reverseOrder && ( ( start + 1 ) < count ) ) {
-            throw new IndexOutOfBoundsException ( "will attempt index at " + ( start - count ) );
+        final int start = this.index + offset;
+        if (start < 0) {
+            throw new IndexOutOfBoundsException("will attempt index at "
+                    + start);
+        } else if (!reverseOrder && start + count > this.indexLast) {
+            throw new IndexOutOfBoundsException("will attempt index at "
+                    + (start + count));
+        } else if (reverseOrder && start + 1 < count) {
+            throw new IndexOutOfBoundsException("will attempt index at "
+                    + (start - count));
         }
-        if ( associations == null ) {
-            associations = new GlyphSequence.CharAssociation [ count ];
-        } else if ( associations.length != count ) {
-            throw new IllegalArgumentException ( "associations array is non-null, but its length (" + associations.length + "), is not equal to count (" + count + ")" );
+        if (associations == null) {
+            associations = new GlyphSequence.CharAssociation[count];
+        } else if (associations.length != count) {
+            throw new IllegalArgumentException(
+                    "associations array is non-null, but its length ("
+                            + associations.length
+                            + "), is not equal to count (" + count + ")");
         }
-        if ( ! reverseOrder ) {
-            return getAssociationsForward ( start, count, ignoreTester, associations, counts );
+        if (!reverseOrder) {
+            return getAssociationsForward(start, count, ignoreTester,
+                    associations, counts);
         } else {
-            return getAssociationsReverse ( start, count, ignoreTester, associations, counts );
+            return getAssociationsReverse(start, count, ignoreTester,
+                    associations, counts);
         }
     }
 
-    private GlyphSequence.CharAssociation[] getAssociationsForward ( int start, int count, GlyphTester ignoreTester, GlyphSequence.CharAssociation[] associations, int[] counts )
-        throws IndexOutOfBoundsException {
+    private GlyphSequence.CharAssociation[] getAssociationsForward(
+            final int start, final int count, final GlyphTester ignoreTester,
+            final GlyphSequence.CharAssociation[] associations,
+            final int[] counts) throws IndexOutOfBoundsException {
         int counted = 0;
         int ignored = 0;
-        for ( int i = start, n = indexLast, k = 0; i < n; i++ ) {
-            int gi = getGlyph ( i - index );
-            if ( gi == 65535 ) {
+        for (int i = start, n = this.indexLast, k = 0; i < n; i++) {
+            final int gi = getGlyph(i - this.index);
+            if (gi == 65535) {
                 ignored++;
             } else {
-                if ( ( ignoreTester == null ) || ! ignoreTester.test ( gi, getLookupFlags() ) ) {
-                    if ( k < count ) {
-                        associations [ k++ ] = getAssociation ( i - index );
+                if (ignoreTester == null
+                        || !ignoreTester.test(gi, getLookupFlags())) {
+                    if (k < count) {
+                        associations[k++] = getAssociation(i - this.index);
                         counted++;
                     } else {
                         break;
@@ -713,25 +897,28 @@ public class GlyphProcessingState {
                 }
             }
         }
-        if ( ( counts != null ) && ( counts.length > 1 ) ) {
+        if (counts != null && counts.length > 1) {
             counts[0] = counted;
             counts[1] = ignored;
         }
         return associations;
     }
 
-    private GlyphSequence.CharAssociation[] getAssociationsReverse ( int start, int count, GlyphTester ignoreTester, GlyphSequence.CharAssociation[] associations, int[] counts )
-        throws IndexOutOfBoundsException {
+    private GlyphSequence.CharAssociation[] getAssociationsReverse(
+            final int start, final int count, final GlyphTester ignoreTester,
+            final GlyphSequence.CharAssociation[] associations,
+            final int[] counts) throws IndexOutOfBoundsException {
         int counted = 0;
         int ignored = 0;
-        for ( int i = start, k = 0; i >= 0; i-- ) {
-            int gi = getGlyph ( i - index );
-            if ( gi == 65535 ) {
+        for (int i = start, k = 0; i >= 0; i--) {
+            final int gi = getGlyph(i - this.index);
+            if (gi == 65535) {
                 ignored++;
             } else {
-                if ( ( ignoreTester == null ) || ! ignoreTester.test ( gi, getLookupFlags() ) ) {
-                    if ( k < count ) {
-                        associations [ k++ ] = getAssociation ( i - index );
+                if (ignoreTester == null
+                        || !ignoreTester.test(gi, getLookupFlags())) {
+                    if (k < count) {
+                        associations[k++] = getAssociation(i - this.index);
                         counted++;
                     } else {
                         break;
@@ -741,7 +928,7 @@ public class GlyphProcessingState {
                 }
             }
         }
-        if ( ( counts != null ) && ( counts.length > 1 ) ) {
+        if (counts != null && counts.length > 1) {
             counts[0] = counted;
             counts[1] = ignored;
         }
@@ -749,105 +936,148 @@ public class GlyphProcessingState {
     }
 
     /**
-     * Obtain <code>count</code> character associations of glyphs starting at specified offset from current position. If
-     * offset is negative, then search backwards in input glyph sequence. Uses the
-     * default ignores tester.
-     * @param offset from current position
-     * @param count number of associations to obtain
+     * Obtain <code>count</code> character associations of glyphs starting at
+     * specified offset from current position. If offset is negative, then
+     * search backwards in input glyph sequence. Uses the default ignores
+     * tester.
+     * 
+     * @param offset
+     *            from current position
+     * @param count
+     *            number of associations to obtain
      * @return array of associations
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public GlyphSequence.CharAssociation[] getAssociations ( int offset, int count ) throws IndexOutOfBoundsException {
-        return getAssociations ( offset, count, offset < 0, ignoreDefault, null, null );
+    public GlyphSequence.CharAssociation[] getAssociations(final int offset,
+            final int count) throws IndexOutOfBoundsException {
+        return getAssociations(offset, count, offset < 0, this.ignoreDefault,
+                null, null);
     }
 
     /**
-     * Obtain <code>count</code> character associations of ignored glyphs starting at specified offset from current position. If
-     * <code>reverseOrder</code> is true, then glyphs are returned in reverse order starting at specified offset
-     * and going in reverse towards beginning of input glyph sequence.
-     * @param offset from current position
-     * @param count number of character associations to obtain
-     * @param reverseOrder true if to obtain in reverse order
-     * @param ignoreTester glyph tester to use to determine which glyphs are ignored (or null, in which case none are ignored)
-     * @param associations array to use to fetch associations
-     * @param counts int[2] array to receive fetched association counts, where counts[0] will
-     * receive the number of associations obtained, and counts[1] will receive the number of glyphs whose
-     * associations were ignored
+     * Obtain <code>count</code> character associations of ignored glyphs
+     * starting at specified offset from current position. If
+     * <code>reverseOrder</code> is true, then glyphs are returned in reverse
+     * order starting at specified offset and going in reverse towards beginning
+     * of input glyph sequence.
+     * 
+     * @param offset
+     *            from current position
+     * @param count
+     *            number of character associations to obtain
+     * @param reverseOrder
+     *            true if to obtain in reverse order
+     * @param ignoreTester
+     *            glyph tester to use to determine which glyphs are ignored (or
+     *            null, in which case none are ignored)
+     * @param associations
+     *            array to use to fetch associations
+     * @param counts
+     *            int[2] array to receive fetched association counts, where
+     *            counts[0] will receive the number of associations obtained,
+     *            and counts[1] will receive the number of glyphs whose
+     *            associations were ignored
      * @return array of associations
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public GlyphSequence.CharAssociation[] getIgnoredAssociations ( int offset, int count, boolean reverseOrder, GlyphTester ignoreTester, GlyphSequence.CharAssociation[] associations, int[] counts )
-        throws IndexOutOfBoundsException {
-        return getAssociations ( offset, count, reverseOrder, new NotGlyphTester ( ignoreTester ), associations, counts );
+    public GlyphSequence.CharAssociation[] getIgnoredAssociations(
+            final int offset, final int count, final boolean reverseOrder,
+            final GlyphTester ignoreTester,
+            final GlyphSequence.CharAssociation[] associations,
+            final int[] counts) throws IndexOutOfBoundsException {
+        return getAssociations(offset, count, reverseOrder, new NotGlyphTester(
+                ignoreTester), associations, counts);
     }
 
     /**
-     * Obtain <code>count</code> character associations of ignored glyphs starting at specified offset from current position. If
-     * offset is negative, then search backwards in input glyph sequence. Uses the
-     * default ignores tester.
-     * @param offset from current position
-     * @param count number of character associations to obtain
+     * Obtain <code>count</code> character associations of ignored glyphs
+     * starting at specified offset from current position. If offset is
+     * negative, then search backwards in input glyph sequence. Uses the default
+     * ignores tester.
+     * 
+     * @param offset
+     *            from current position
+     * @param count
+     *            number of character associations to obtain
      * @return array of associations
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public GlyphSequence.CharAssociation[] getIgnoredAssociations ( int offset, int count ) throws IndexOutOfBoundsException {
-        return getIgnoredAssociations ( offset, count, offset < 0, ignoreDefault, null, null );
+    public GlyphSequence.CharAssociation[] getIgnoredAssociations(
+            final int offset, final int count) throws IndexOutOfBoundsException {
+        return getIgnoredAssociations(offset, count, offset < 0,
+                this.ignoreDefault, null, null);
     }
 
     /**
-     * Replace subsequence of input glyph sequence starting at specified offset from current position and of
-     * length <code>count</code> glyphs with a subsequence of the sequence <code>gs</code> starting from the specified
+     * Replace subsequence of input glyph sequence starting at specified offset
+     * from current position and of length <code>count</code> glyphs with a
+     * subsequence of the sequence <code>gs</code> starting from the specified
      * offset <code>gsOffset</code> of length <code>gsCount</code> glyphs.
-     * @param offset from current position
-     * @param count number of glyphs to replace, which, if negative means all glyphs from offset to end of input sequence
-     * @param gs glyph sequence from which to obtain replacement glyphs
-     * @param gsOffset offset of first glyph in replacement sequence
-     * @param gsCount count of glyphs in replacement sequence starting at <code>gsOffset</code>
-     * @return true if replacement occurred, or false if replacement would result in no change to input glyph sequence
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * 
+     * @param offset
+     *            from current position
+     * @param count
+     *            number of glyphs to replace, which, if negative means all
+     *            glyphs from offset to end of input sequence
+     * @param gs
+     *            glyph sequence from which to obtain replacement glyphs
+     * @param gsOffset
+     *            offset of first glyph in replacement sequence
+     * @param gsCount
+     *            count of glyphs in replacement sequence starting at
+     *            <code>gsOffset</code>
+     * @return true if replacement occurred, or false if replacement would
+     *         result in no change to input glyph sequence
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public boolean replaceInput ( int offset, int count, GlyphSequence gs, int gsOffset, int gsCount ) throws IndexOutOfBoundsException {
-        int nig = ( igs != null ) ? igs.getGlyphCount() : 0;
+    public boolean replaceInput(final int offset, int count,
+            final GlyphSequence gs, int gsOffset, int gsCount)
+            throws IndexOutOfBoundsException {
+        final int nig = this.igs != null ? this.igs.getGlyphCount() : 0;
         int position = getPosition() + offset;
-        if ( position < 0 ) {
+        if (position < 0) {
             position = 0;
-        } else if ( position > nig ) {
+        } else if (position > nig) {
             position = nig;
         }
-        if ( ( count < 0 ) || ( ( position + count ) > nig ) ) {
+        if (count < 0 || position + count > nig) {
             count = nig - position;
         }
-        int nrg = ( gs != null ) ? gs.getGlyphCount() : 0;
-        if ( gsOffset < 0 ) {
+        final int nrg = gs != null ? gs.getGlyphCount() : 0;
+        if (gsOffset < 0) {
             gsOffset = 0;
-        } else if ( gsOffset > nrg ) {
+        } else if (gsOffset > nrg) {
             gsOffset = nrg;
         }
-        if ( ( gsCount < 0 ) || ( ( gsOffset + gsCount ) > nrg ) ) {
+        if (gsCount < 0 || gsOffset + gsCount > nrg) {
             gsCount = nrg - gsOffset;
         }
-        int ng = nig + gsCount - count;
-        IntBuffer gb = IntBuffer.allocate ( ng );
-        List al = new ArrayList ( ng );
-        for ( int i = 0, n = position; i < n; i++ ) {
-            gb.put ( igs.getGlyph ( i ) );
-            al.add ( igs.getAssociation ( i ) );
+        final int ng = nig + gsCount - count;
+        final IntBuffer gb = IntBuffer.allocate(ng);
+        final List al = new ArrayList(ng);
+        for (int i = 0, n = position; i < n; i++) {
+            gb.put(this.igs.getGlyph(i));
+            al.add(this.igs.getAssociation(i));
         }
-        for ( int i = gsOffset, n = gsOffset + gsCount; i < n; i++ ) {
-            gb.put ( gs.getGlyph ( i ) );
-            al.add ( gs.getAssociation ( i ) );
+        for (int i = gsOffset, n = gsOffset + gsCount; i < n; i++) {
+            gb.put(gs.getGlyph(i));
+            al.add(gs.getAssociation(i));
         }
-        for ( int i = position + count, n = nig; i < n; i++ ) {
-            gb.put ( igs.getGlyph ( i ) );
-            al.add ( igs.getAssociation ( i ) );
+        for (int i = position + count, n = nig; i < n; i++) {
+            gb.put(this.igs.getGlyph(i));
+            al.add(this.igs.getAssociation(i));
         }
         gb.flip();
-        if ( igs.compareGlyphs ( gb ) != 0 ) {
-            this.igs = new GlyphSequence ( igs.getCharacters(), gb, al );
+        if (this.igs.compareGlyphs(gb) != 0) {
+            this.igs = new GlyphSequence(this.igs.getCharacters(), gb, al);
             this.indexLast = gb.limit();
             return true;
         } else {
@@ -856,39 +1086,57 @@ public class GlyphProcessingState {
     }
 
     /**
-     * Replace subsequence of input glyph sequence starting at specified offset from current position and of
-     * length <code>count</code> glyphs with all glyphs in the replacement sequence <code>gs</code>.
-     * @param offset from current position
-     * @param count number of glyphs to replace, which, if negative means all glyphs from offset to end of input sequence
-     * @param gs glyph sequence from which to obtain replacement glyphs
-     * @return true if replacement occurred, or false if replacement would result in no change to input glyph sequence
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * Replace subsequence of input glyph sequence starting at specified offset
+     * from current position and of length <code>count</code> glyphs with all
+     * glyphs in the replacement sequence <code>gs</code>.
+     * 
+     * @param offset
+     *            from current position
+     * @param count
+     *            number of glyphs to replace, which, if negative means all
+     *            glyphs from offset to end of input sequence
+     * @param gs
+     *            glyph sequence from which to obtain replacement glyphs
+     * @return true if replacement occurred, or false if replacement would
+     *         result in no change to input glyph sequence
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public boolean replaceInput ( int offset, int count, GlyphSequence gs ) throws IndexOutOfBoundsException {
-        return replaceInput ( offset, count, gs, 0, gs.getGlyphCount() );
+    public boolean replaceInput(final int offset, final int count,
+            final GlyphSequence gs) throws IndexOutOfBoundsException {
+        return replaceInput(offset, count, gs, 0, gs.getGlyphCount());
     }
 
     /**
-     * Erase glyphs in input glyph sequence starting at specified offset from current position, where each glyph
-     * in the specified <code>glyphs</code> array is matched, one at a time, and when a (forward searching) match is found
-     * in the input glyph sequence, the matching glyph is replaced with the glyph index 65535.
-     * @param offset from current position
-     * @param glyphs array of glyphs to erase
-     * @return the number of glyphs erased, which may be less than the number of specified glyphs
-     * @throws IndexOutOfBoundsException if offset or count results in an
-     * invalid index into input glyph sequence
+     * Erase glyphs in input glyph sequence starting at specified offset from
+     * current position, where each glyph in the specified <code>glyphs</code>
+     * array is matched, one at a time, and when a (forward searching) match is
+     * found in the input glyph sequence, the matching glyph is replaced with
+     * the glyph index 65535.
+     * 
+     * @param offset
+     *            from current position
+     * @param glyphs
+     *            array of glyphs to erase
+     * @return the number of glyphs erased, which may be less than the number of
+     *         specified glyphs
+     * @throws IndexOutOfBoundsException
+     *             if offset or count results in an invalid index into input
+     *             glyph sequence
      */
-    public int erase ( int offset, int[] glyphs ) throws IndexOutOfBoundsException {
-        int start = index + offset;
-        if ( ( start < 0 ) || ( start > indexLast ) ) {
-            throw new IndexOutOfBoundsException ( "will attempt index at " + start );
+    public int erase(final int offset, final int[] glyphs)
+            throws IndexOutOfBoundsException {
+        final int start = this.index + offset;
+        if (start < 0 || start > this.indexLast) {
+            throw new IndexOutOfBoundsException("will attempt index at "
+                    + start);
         } else {
             int erased = 0;
-            for ( int i = start - index, n = indexLast - start; i < n; i++ ) {
-                int gi = getGlyph ( i );
-                if ( gi == glyphs [ erased ] ) {
-                    setGlyph ( i, 65535 );
+            for (int i = start - this.index, n = this.indexLast - start; i < n; i++) {
+                final int gi = getGlyph(i);
+                if (gi == glyphs[erased]) {
+                    setGlyph(i, 65535);
                     erased++;
                 }
             }
@@ -897,16 +1145,20 @@ public class GlyphProcessingState {
     }
 
     /**
-     * Determine if is possible that the current input sequence satisfies a script specific
-     * context testing predicate. If no predicate applies, then application is always possible.
-     * @return true if no script specific context tester applies or if a specified tester returns
-     * true for the current input sequence context
+     * Determine if is possible that the current input sequence satisfies a
+     * script specific context testing predicate. If no predicate applies, then
+     * application is always possible.
+     * 
+     * @return true if no script specific context tester applies or if a
+     *         specified tester returns true for the current input sequence
+     *         context
      */
     public boolean maybeApplicable() {
-        if ( gct == null ) {
+        if (this.gct == null) {
             return true;
         } else {
-            return gct.test ( script, language, feature, igs, index, getLookupFlags() );
+            return this.gct.test(this.script, this.language, this.feature,
+                    this.igs, this.index, getLookupFlags());
         }
     }
 
@@ -914,151 +1166,186 @@ public class GlyphProcessingState {
      * Apply default application semantices; namely, consume one glyph.
      */
     public void applyDefault() {
-        consumed += 1;
+        this.consumed += 1;
     }
 
     /**
      * Determine if specified glyph is a base glyph according to the governing
      * glyph definition table.
-     * @param gi glyph index to test
-     * @return true if glyph definition table records glyph as a base glyph; otherwise, false
+     * 
+     * @param gi
+     *            glyph index to test
+     * @return true if glyph definition table records glyph as a base glyph;
+     *         otherwise, false
      */
-    public boolean isBase ( int gi ) {
-        if ( gdef != null ) {
-            return gdef.isGlyphClass ( gi, GlyphDefinitionTable.GLYPH_CLASS_BASE );
+    public boolean isBase(final int gi) {
+        if (this.gdef != null) {
+            return this.gdef.isGlyphClass(gi,
+                    GlyphDefinitionTable.GLYPH_CLASS_BASE);
         } else {
             return false;
         }
     }
 
     /**
-     * Determine if specified glyph is an ignored base glyph according to the governing
-     * glyph definition table.
-     * @param gi glyph index to test
-     * @param flags that apply to lookup in scope
-     * @return true if glyph definition table records glyph as a base glyph; otherwise, false
+     * Determine if specified glyph is an ignored base glyph according to the
+     * governing glyph definition table.
+     * 
+     * @param gi
+     *            glyph index to test
+     * @param flags
+     *            that apply to lookup in scope
+     * @return true if glyph definition table records glyph as a base glyph;
+     *         otherwise, false
      */
-    public boolean isIgnoredBase ( int gi, int flags ) {
-        return ( ( flags & GlyphSubtable.LF_IGNORE_BASE ) != 0 ) && isBase ( gi );
+    public boolean isIgnoredBase(final int gi, final int flags) {
+        return (flags & GlyphSubtable.LF_IGNORE_BASE) != 0 && isBase(gi);
     }
 
     /**
-     * Determine if specified glyph is an ligature glyph according to the governing
-     * glyph definition table.
-     * @param gi glyph index to test
-     * @return true if glyph definition table records glyph as a ligature glyph; otherwise, false
+     * Determine if specified glyph is an ligature glyph according to the
+     * governing glyph definition table.
+     * 
+     * @param gi
+     *            glyph index to test
+     * @return true if glyph definition table records glyph as a ligature glyph;
+     *         otherwise, false
      */
-    public boolean isLigature ( int gi ) {
-        if ( gdef != null ) {
-            return gdef.isGlyphClass ( gi, GlyphDefinitionTable.GLYPH_CLASS_LIGATURE );
+    public boolean isLigature(final int gi) {
+        if (this.gdef != null) {
+            return this.gdef.isGlyphClass(gi,
+                    GlyphDefinitionTable.GLYPH_CLASS_LIGATURE);
         } else {
             return false;
         }
     }
 
     /**
-     * Determine if specified glyph is an ignored ligature glyph according to the governing
-     * glyph definition table.
-     * @param gi glyph index to test
-     * @param flags that apply to lookup in scope
-     * @return true if glyph definition table records glyph as a ligature glyph; otherwise, false
+     * Determine if specified glyph is an ignored ligature glyph according to
+     * the governing glyph definition table.
+     * 
+     * @param gi
+     *            glyph index to test
+     * @param flags
+     *            that apply to lookup in scope
+     * @return true if glyph definition table records glyph as a ligature glyph;
+     *         otherwise, false
      */
-    public boolean isIgnoredLigature ( int gi, int flags ) {
-        return ( ( flags & GlyphSubtable.LF_IGNORE_LIGATURE ) != 0 ) && isLigature ( gi );
+    public boolean isIgnoredLigature(final int gi, final int flags) {
+        return (flags & GlyphSubtable.LF_IGNORE_LIGATURE) != 0
+                && isLigature(gi);
     }
 
     /**
      * Determine if specified glyph is a mark glyph according to the governing
      * glyph definition table.
-     * @param gi glyph index to test
-     * @return true if glyph definition table records glyph as a mark glyph; otherwise, false
+     * 
+     * @param gi
+     *            glyph index to test
+     * @return true if glyph definition table records glyph as a mark glyph;
+     *         otherwise, false
      */
-    public boolean isMark ( int gi ) {
-        if ( gdef != null ) {
-            return gdef.isGlyphClass ( gi, GlyphDefinitionTable.GLYPH_CLASS_MARK );
+    public boolean isMark(final int gi) {
+        if (this.gdef != null) {
+            return this.gdef.isGlyphClass(gi,
+                    GlyphDefinitionTable.GLYPH_CLASS_MARK);
         } else {
             return false;
         }
     }
 
     /**
-     * Determine if specified glyph is an ignored ligature glyph according to the governing
-     * glyph definition table.
-     * @param gi glyph index to test
-     * @param flags that apply to lookup in scope
-     * @return true if glyph definition table records glyph as a ligature glyph; otherwise, false
+     * Determine if specified glyph is an ignored ligature glyph according to
+     * the governing glyph definition table.
+     * 
+     * @param gi
+     *            glyph index to test
+     * @param flags
+     *            that apply to lookup in scope
+     * @return true if glyph definition table records glyph as a ligature glyph;
+     *         otherwise, false
      */
-    public boolean isIgnoredMark ( int gi, int flags ) {
-        if ( ( flags & GlyphSubtable.LF_IGNORE_MARK ) != 0 ) {
-            return isMark ( gi );
-        } else if ( ( flags & GlyphSubtable.LF_MARK_ATTACHMENT_TYPE ) != 0 ) {
-            int lac = ( flags & GlyphSubtable.LF_MARK_ATTACHMENT_TYPE ) >> 8;
-            int gac = gdef.getMarkAttachClass ( gi );
-            return ( gac != lac );
+    public boolean isIgnoredMark(final int gi, final int flags) {
+        if ((flags & GlyphSubtable.LF_IGNORE_MARK) != 0) {
+            return isMark(gi);
+        } else if ((flags & GlyphSubtable.LF_MARK_ATTACHMENT_TYPE) != 0) {
+            final int lac = (flags & GlyphSubtable.LF_MARK_ATTACHMENT_TYPE) >> 8;
+            final int gac = this.gdef.getMarkAttachClass(gi);
+            return gac != lac;
         } else {
             return false;
         }
     }
 
     /**
-     * Obtain an ignored glyph tester that corresponds to the specified lookup flags.
-     * @param flags lookup flags
+     * Obtain an ignored glyph tester that corresponds to the specified lookup
+     * flags.
+     * 
+     * @param flags
+     *            lookup flags
      * @return a glyph tester
      */
-    public GlyphTester getIgnoreTester ( int flags ) {
-        if ( ( flags & GlyphSubtable.LF_IGNORE_BASE ) != 0 ) {
-            if ( ( flags & (GlyphSubtable.LF_IGNORE_LIGATURE | GlyphSubtable.LF_IGNORE_MARK) ) == 0 ) {
-                return ignoreBase;
+    public GlyphTester getIgnoreTester(final int flags) {
+        if ((flags & GlyphSubtable.LF_IGNORE_BASE) != 0) {
+            if ((flags & (GlyphSubtable.LF_IGNORE_LIGATURE | GlyphSubtable.LF_IGNORE_MARK)) == 0) {
+                return this.ignoreBase;
             } else {
-                return getCombinedIgnoreTester ( flags );
+                return getCombinedIgnoreTester(flags);
             }
         }
-        if ( ( flags & GlyphSubtable.LF_IGNORE_LIGATURE ) != 0 ) {
-            if ( ( flags & (GlyphSubtable.LF_IGNORE_BASE | GlyphSubtable.LF_IGNORE_MARK) ) == 0 ) {
-                return ignoreLigature;
+        if ((flags & GlyphSubtable.LF_IGNORE_LIGATURE) != 0) {
+            if ((flags & (GlyphSubtable.LF_IGNORE_BASE | GlyphSubtable.LF_IGNORE_MARK)) == 0) {
+                return this.ignoreLigature;
             } else {
-                return getCombinedIgnoreTester ( flags );
+                return getCombinedIgnoreTester(flags);
             }
         }
-        if ( ( flags & GlyphSubtable.LF_IGNORE_MARK ) != 0 ) {
-            if ( ( flags & (GlyphSubtable.LF_IGNORE_BASE | GlyphSubtable.LF_IGNORE_LIGATURE) ) == 0 ) {
-                return ignoreMark;
+        if ((flags & GlyphSubtable.LF_IGNORE_MARK) != 0) {
+            if ((flags & (GlyphSubtable.LF_IGNORE_BASE | GlyphSubtable.LF_IGNORE_LIGATURE)) == 0) {
+                return this.ignoreMark;
             } else {
-                return getCombinedIgnoreTester ( flags );
+                return getCombinedIgnoreTester(flags);
             }
         }
         return null;
     }
 
     /**
-     * Obtain an ignored glyph tester that corresponds to the specified multiple (combined) lookup flags.
-     * @param flags lookup flags
+     * Obtain an ignored glyph tester that corresponds to the specified multiple
+     * (combined) lookup flags.
+     * 
+     * @param flags
+     *            lookup flags
      * @return a glyph tester
      */
-    public GlyphTester getCombinedIgnoreTester ( int flags ) {
-        GlyphTester[] gta = new GlyphTester [ 3 ];
+    public GlyphTester getCombinedIgnoreTester(final int flags) {
+        final GlyphTester[] gta = new GlyphTester[3];
         int ngt = 0;
-        if ( ( flags & GlyphSubtable.LF_IGNORE_BASE ) != 0 ) {
-            gta [ ngt++ ] = ignoreBase;
+        if ((flags & GlyphSubtable.LF_IGNORE_BASE) != 0) {
+            gta[ngt++] = this.ignoreBase;
         }
-        if ( ( flags & GlyphSubtable.LF_IGNORE_LIGATURE ) != 0 ) {
-            gta [ ngt++ ] = ignoreLigature;
+        if ((flags & GlyphSubtable.LF_IGNORE_LIGATURE) != 0) {
+            gta[ngt++] = this.ignoreLigature;
         }
-        if ( ( flags & GlyphSubtable.LF_IGNORE_MARK ) != 0 ) {
-            gta [ ngt++ ] = ignoreMark;
+        if ((flags & GlyphSubtable.LF_IGNORE_MARK) != 0) {
+            gta[ngt++] = this.ignoreMark;
         }
-        return getCombinedOrTester ( gta, ngt );
+        return getCombinedOrTester(gta, ngt);
     }
 
     /**
      * Obtain an combined OR glyph tester.
-     * @param gta an array of glyph testers
-     * @param ngt number of glyph testers present in specified array
+     * 
+     * @param gta
+     *            an array of glyph testers
+     * @param ngt
+     *            number of glyph testers present in specified array
      * @return a combined OR glyph tester
      */
-    public GlyphTester getCombinedOrTester ( GlyphTester[] gta, int ngt ) {
-        if ( ngt > 0 ) {
-            return new CombinedOrGlyphTester ( gta, ngt );
+    public GlyphTester getCombinedOrTester(final GlyphTester[] gta,
+            final int ngt) {
+        if (ngt > 0) {
+            return new CombinedOrGlyphTester(gta, ngt);
         } else {
             return null;
         }
@@ -1066,13 +1353,17 @@ public class GlyphProcessingState {
 
     /**
      * Obtain an combined AND glyph tester.
-     * @param gta an array of glyph testers
-     * @param ngt number of glyph testers present in specified array
+     * 
+     * @param gta
+     *            an array of glyph testers
+     * @param ngt
+     *            number of glyph testers present in specified array
      * @return a combined AND glyph tester
      */
-    public GlyphTester getCombinedAndTester ( GlyphTester[] gta, int ngt ) {
-        if ( ngt > 0 ) {
-            return new CombinedAndGlyphTester ( gta, ngt );
+    public GlyphTester getCombinedAndTester(final GlyphTester[] gta,
+            final int ngt) {
+        if (ngt > 0) {
+            return new CombinedAndGlyphTester(gta, ngt);
         } else {
             return null;
         }
@@ -1080,18 +1371,21 @@ public class GlyphProcessingState {
 
     /** combined OR glyph tester */
     private static class CombinedOrGlyphTester implements GlyphTester {
-        private GlyphTester[] gta;
-        private int ngt;
-        CombinedOrGlyphTester ( GlyphTester[] gta, int ngt ) {
+        private final GlyphTester[] gta;
+        private final int ngt;
+
+        CombinedOrGlyphTester(final GlyphTester[] gta, final int ngt) {
             this.gta = gta;
             this.ngt = ngt;
         }
+
         /** {@inheritDoc} */
-        public boolean test ( int gi, int flags ) {
-            for ( int i = 0, n = ngt; i < n; i++ ) {
-                GlyphTester gt = gta [ i ];
-                if ( gt != null ) {
-                    if ( gt.test ( gi, flags ) ) {
+        @Override
+        public boolean test(final int gi, final int flags) {
+            for (int i = 0, n = this.ngt; i < n; i++) {
+                final GlyphTester gt = this.gta[i];
+                if (gt != null) {
+                    if (gt.test(gi, flags)) {
                         return true;
                     }
                 }
@@ -1102,18 +1396,21 @@ public class GlyphProcessingState {
 
     /** combined AND glyph tester */
     private static class CombinedAndGlyphTester implements GlyphTester {
-        private GlyphTester[] gta;
-        private int ngt;
-        CombinedAndGlyphTester ( GlyphTester[] gta, int ngt ) {
+        private final GlyphTester[] gta;
+        private final int ngt;
+
+        CombinedAndGlyphTester(final GlyphTester[] gta, final int ngt) {
             this.gta = gta;
             this.ngt = ngt;
         }
+
         /** {@inheritDoc} */
-        public boolean test ( int gi, int flags ) {
-            for ( int i = 0, n = ngt; i < n; i++ ) {
-                GlyphTester gt = gta [ i ];
-                if ( gt != null ) {
-                    if ( ! gt.test ( gi, flags ) ) {
+        @Override
+        public boolean test(final int gi, final int flags) {
+            for (int i = 0, n = this.ngt; i < n; i++) {
+                final GlyphTester gt = this.gta[i];
+                if (gt != null) {
+                    if (!gt.test(gi, flags)) {
                         return false;
                     }
                 }
@@ -1124,14 +1421,17 @@ public class GlyphProcessingState {
 
     /** NOT glyph tester */
     private static class NotGlyphTester implements GlyphTester {
-        private GlyphTester gt;
-        NotGlyphTester ( GlyphTester gt ) {
+        private final GlyphTester gt;
+
+        NotGlyphTester(final GlyphTester gt) {
             this.gt = gt;
         }
+
         /** {@inheritDoc} */
-        public boolean test ( int gi, int flags ) {
-            if ( gt != null ) {
-                if ( gt.test ( gi, flags ) ) {
+        @Override
+        public boolean test(final int gi, final int flags) {
+            if (this.gt != null) {
+                if (this.gt.test(gi, flags)) {
                     return false;
                 }
             }

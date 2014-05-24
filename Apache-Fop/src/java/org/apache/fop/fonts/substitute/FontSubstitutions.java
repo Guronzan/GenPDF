@@ -22,24 +22,22 @@ package org.apache.fop.fonts.substitute;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.fonts.FontInfo;
 import org.apache.fop.fonts.FontTriplet;
 
 /**
  * Font substitutions
  */
+@Slf4j
 public class FontSubstitutions extends java.util.ArrayList<FontSubstitution> {
 
     private static final long serialVersionUID = -9173104935431899722L;
 
-    /** logging instance */
-    protected static final Log log = LogFactory.getLog(FontSubstitutions.class);
-
     /**
      * Adjusts a given fontInfo using this font substitution catalog
-     * 
+     *
      * @param fontInfo
      *            font info
      */

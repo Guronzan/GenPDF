@@ -41,12 +41,13 @@ public class StandardTestSuite {
 
     /**
      * Builds the test suite
+     * 
      * @return the test suite
      */
     public static Test suite() {
-        TestSuite suite = new TestSuite(
-            "Basic functionality test suite for XML Graphics Commons");
-        //$JUnit-BEGIN$
+        final TestSuite suite = new TestSuite(
+                "Basic functionality test suite for XML Graphics Commons");
+        // $JUnit-BEGIN$
         suite.addTest(new TestSuite(Base64Test.class));
         suite.addTest(new TestSuite(ASCII85InputStreamTestCase.class));
         suite.addTest(new TestSuite(ASCII85OutputStreamTestCase.class));
@@ -58,7 +59,7 @@ public class StandardTestSuite {
         suite.addTest(new TestSuite(DSCToolsTestCase.class));
         suite.addTest(new TestSuite(ListenerTestCase.class));
         suite.addTest(new TestSuite(UnitConvTestCase.class));
-        //$JUnit-END$
+        // $JUnit-END$
         return suite;
     }
 }

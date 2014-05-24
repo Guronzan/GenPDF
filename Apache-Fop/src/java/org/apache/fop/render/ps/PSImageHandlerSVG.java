@@ -23,76 +23,76 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.io.IOException;
 
-import org.w3c.dom.Document;
-
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.GVTBuilder;
 import org.apache.batik.gvt.GraphicsNode;
-
-import org.apache.xmlgraphics.image.loader.Image;
-import org.apache.xmlgraphics.image.loader.ImageFlavor;
-import org.apache.xmlgraphics.image.loader.impl.ImageXMLDOM;
-import org.apache.xmlgraphics.java2d.ps.PSGraphics2D;
-import org.apache.xmlgraphics.ps.PSGenerator;
-
 import org.apache.fop.image.loader.batik.BatikImageFlavors;
 import org.apache.fop.image.loader.batik.BatikUtil;
 import org.apache.fop.render.ImageHandler;
 import org.apache.fop.render.RenderingContext;
 import org.apache.fop.svg.SVGEventProducer;
 import org.apache.fop.svg.SVGUserAgent;
+import org.apache.xmlgraphics.image.loader.Image;
+import org.apache.xmlgraphics.image.loader.ImageFlavor;
+import org.apache.xmlgraphics.image.loader.impl.ImageXMLDOM;
+import org.apache.xmlgraphics.java2d.ps.PSGraphics2D;
+import org.apache.xmlgraphics.ps.PSGenerator;
+import org.w3c.dom.Document;
 
 /**
  * Image handler implementation which handles SVG images for PostScript output.
  */
 public class PSImageHandlerSVG implements ImageHandler {
 
-    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {
-        BatikImageFlavors.SVG_DOM
-    };
+    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] { BatikImageFlavors.SVG_DOM };
 
     /** {@inheritDoc} */
-    public void handleImage(RenderingContext context, Image image, Rectangle pos)
-                throws IOException {
-        PSRenderingContext psContext = (PSRenderingContext)context;
-        PSGenerator gen = psContext.getGenerator();
-        ImageXMLDOM imageSVG = (ImageXMLDOM)image;
+    @Override
+    public void handleImage(final RenderingContext context, final Image image,
+            final Rectangle pos) throws IOException {
+        final PSRenderingContext psContext = (PSRenderingContext) context;
+        final PSGenerator gen = psContext.getGenerator();
+        final ImageXMLDOM imageSVG = (ImageXMLDOM) image;
 
-        //Controls whether text painted by Batik is generated using text or path operations
-        boolean strokeText = false;
-        //TODO Configure text stroking
+        // Controls whether text painted by Batik is generated using text or
+        // path operations
+        final boolean strokeText = false;
+        // TODO Configure text stroking
 
-        SVGUserAgent ua
-             = new SVGUserAgent(context.getUserAgent(), new AffineTransform());
+        final SVGUserAgent ua = new SVGUserAgent(context.getUserAgent(),
+                new AffineTransform());
 
-        PSGraphics2D graphics = new PSGraphics2D(strokeText, gen);
+        final PSGraphics2D graphics = new PSGraphics2D(strokeText, gen);
         graphics.setGraphicContext(new org.apache.xmlgraphics.java2d.GraphicContext());
 
-        BridgeContext ctx = new PSBridgeContext(ua,
-                (strokeText ? null : psContext.getFontInfo()),
-                context.getUserAgent().getFactory().getImageManager(),
-                context.getUserAgent().getImageSessionContext());
+        BridgeContext ctx = new PSBridgeContext(ua, strokeText ? null
+                : psContext.getFontInfo(), context.getUserAgent().getFactory()
+                .getImageManager(), context.getUserAgent()
+                .getImageSessionContext());
 
-        //Cloning SVG DOM as Batik attaches non-thread-safe facilities (like the CSS engine)
-        //to it.
-        Document clonedDoc = BatikUtil.cloneSVGDocument(imageSVG.getDocument());
+        // Cloning SVG DOM as Batik attaches non-thread-safe facilities (like
+        // the CSS engine)
+        // to it.
+        final Document clonedDoc = BatikUtil.cloneSVGDocument(imageSVG
+                .getDocument());
 
         GraphicsNode root;
         try {
-            GVTBuilder builder = new GVTBuilder();
+            final GVTBuilder builder = new GVTBuilder();
             root = builder.build(ctx, clonedDoc);
-        } catch (Exception e) {
-            SVGEventProducer eventProducer = SVGEventProducer.Provider.get(
-                    context.getUserAgent().getEventBroadcaster());
-            eventProducer.svgNotBuilt(this, e, image.getInfo().getOriginalURI());
+        } catch (final Exception e) {
+            final SVGEventProducer eventProducer = SVGEventProducer.Provider
+                    .get(context.getUserAgent().getEventBroadcaster());
+            eventProducer
+                    .svgNotBuilt(this, e, image.getInfo().getOriginalURI());
             return;
         }
         // get the 'width' and 'height' attributes of the SVG document
-        float w = (float)ctx.getDocumentSize().getWidth() * 1000f;
-        float h = (float)ctx.getDocumentSize().getHeight() * 1000f;
+        final float w = (float) ctx.getDocumentSize().getWidth() * 1000f;
+        final float h = (float) ctx.getDocumentSize().getHeight() * 1000f;
 
-        float sx = pos.width / w;
-        float sy = pos.height / h;
+        final float sx = pos.width / w;
+        final float sy = pos.height / h;
 
         ctx = null;
 
@@ -101,9 +101,8 @@ public class PSImageHandlerSVG implements ImageHandler {
         final boolean clip = false;
         if (clip) {
             /*
-             * Clip to the svg area.
-             * Note: To have the svg overlay (under) a text area then use
-             * an fo:block-container
+             * Clip to the svg area. Note: To have the svg overlay (under) a
+             * text area then use an fo:block-container
              */
             gen.writeln("newpath");
             gen.defineRect(pos.getMinX() / 1000f, pos.getMinY() / 1000f,
@@ -114,18 +113,20 @@ public class PSImageHandlerSVG implements ImageHandler {
         // transform so that the coordinates (0,0) is from the top left
         // and positive is down and to the right. (0,0) is where the
         // viewBox puts it.
-        gen.concatMatrix(sx, 0, 0, sy, pos.getMinX() / 1000f, pos.getMinY() / 1000f);
+        gen.concatMatrix(sx, 0, 0, sy, pos.getMinX() / 1000f,
+                pos.getMinY() / 1000f);
 
-        AffineTransform transform = new AffineTransform();
+        final AffineTransform transform = new AffineTransform();
         // scale to viewbox
         transform.translate(pos.getMinX(), pos.getMinY());
         gen.getCurrentState().concatMatrix(transform);
         try {
             root.paint(graphics);
-        } catch (Exception e) {
-            SVGEventProducer eventProducer = SVGEventProducer.Provider.get(
-                    context.getUserAgent().getEventBroadcaster());
-            eventProducer.svgRenderingError(this, e, image.getInfo().getOriginalURI());
+        } catch (final Exception e) {
+            final SVGEventProducer eventProducer = SVGEventProducer.Provider
+                    .get(context.getUserAgent().getEventBroadcaster());
+            eventProducer.svgRenderingError(this, e, image.getInfo()
+                    .getOriginalURI());
         }
 
         gen.restoreGraphicsState();
@@ -133,27 +134,33 @@ public class PSImageHandlerSVG implements ImageHandler {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getPriority() {
         return 400;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class getSupportedImageClass() {
         return ImageXMLDOM.class;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor[] getSupportedImageFlavors() {
         return FLAVORS;
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible(RenderingContext targetContext, Image image) {
+    @Override
+    public boolean isCompatible(final RenderingContext targetContext,
+            final Image image) {
         if (targetContext instanceof PSRenderingContext) {
-            PSRenderingContext psContext = (PSRenderingContext)targetContext;
+            final PSRenderingContext psContext = (PSRenderingContext) targetContext;
             return !psContext.isCreateForms()
-                && (image == null || (image instanceof ImageXMLDOM
-                        && image.getFlavor().isCompatible(BatikImageFlavors.SVG_DOM)));
+                    && (image == null || image instanceof ImageXMLDOM
+                            && image.getFlavor().isCompatible(
+                                    BatikImageFlavors.SVG_DOM));
         }
         return false;
     }

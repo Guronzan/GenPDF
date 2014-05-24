@@ -22,15 +22,14 @@ package org.apache.fop.render.pdf.extensions;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.datatypes.URISpecification;
 import org.apache.fop.fo.Constants;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.extensions.ExtensionAttachment;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 /**
  * Extension element for pdf:embedded-file.
@@ -42,28 +41,31 @@ public class PDFEmbeddedFileElement extends AbstractPDFExtensionElement {
 
     /**
      * Main constructor
-     * @param parent parent FO node
+     * 
+     * @param parent
+     *            parent FO node
      */
-    protected PDFEmbeddedFileElement(FONode parent) {
+    protected PDFEmbeddedFileElement(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
         super.startOfNode();
-        if (parent.getNameId() != Constants.FO_DECLARATIONS) {
-            invalidChildError(getLocator(), parent.getName(), getNamespaceURI(), getName(),
-                "rule.childOfDeclarations");
+        if (this.parent.getNameId() != Constants.FO_DECLARATIONS) {
+            invalidChildError(getLocator(), this.parent.getName(),
+                    getNamespaceURI(), getName(), "rule.childOfDeclarations");
         }
     }
 
     /** {@inheritDoc} */
-    public void processNode(String elementName, Locator locator,
-                            Attributes attlist, PropertyList propertyList)
-                                throws FOPException {
-        PDFEmbeddedFileExtensionAttachment embeddedFile
-            = (PDFEmbeddedFileExtensionAttachment)getExtensionAttachment();
-        String desc = attlist.getValue("description");
+    @Override
+    public void processNode(final String elementName, final Locator locator,
+            final Attributes attlist, final PropertyList propertyList)
+            throws FOPException {
+        final PDFEmbeddedFileExtensionAttachment embeddedFile = (PDFEmbeddedFileExtensionAttachment) getExtensionAttachment();
+        final String desc = attlist.getValue("description");
         if (desc != null && desc.length() > 0) {
             embeddedFile.setDesc(desc);
         }
@@ -77,17 +79,17 @@ public class PDFEmbeddedFileElement extends AbstractPDFExtensionElement {
         String filename = attlist.getValue("filename");
         if (filename == null || filename.length() == 0) {
             try {
-                URI uri = new URI(src);
-                String path = uri.getPath();
-                int idx = path.lastIndexOf('/');
+                final URI uri = new URI(src);
+                final String path = uri.getPath();
+                final int idx = path.lastIndexOf('/');
                 if (idx > 0) {
                     filename = path.substring(idx + 1);
                 } else {
                     filename = path;
                 }
                 embeddedFile.setFilename(filename);
-            } catch (URISyntaxException e) {
-                //Filename could not be deduced from URI
+            } catch (final URISyntaxException e) {
+                // Filename could not be deduced from URI
                 missingPropertyError("name");
             }
         }
@@ -95,11 +97,13 @@ public class PDFEmbeddedFileElement extends AbstractPDFExtensionElement {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return ELEMENT;
     }
 
     /** {@inheritDoc} */
+    @Override
     protected ExtensionAttachment instantiateExtensionAttachment() {
         return new PDFEmbeddedFileExtensionAttachment();
     }

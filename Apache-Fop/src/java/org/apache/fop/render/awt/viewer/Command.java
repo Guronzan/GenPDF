@@ -42,7 +42,7 @@ public class Command extends AbstractAction {
     /**
      * Creates <code>Command</code> object with a given name and sets the name
      * as a tooltip text. No associated icon image.
-     * 
+     *
      * @param name
      *            of the command
      * @param mnemonic
@@ -59,7 +59,7 @@ public class Command extends AbstractAction {
     /**
      * Creates <code>Command</code> object with a given name, the same tooltip
      * text and icon image if appropriate image file is found.
-     * 
+     *
      * @param name
      *            name of the command
      * @param iconName

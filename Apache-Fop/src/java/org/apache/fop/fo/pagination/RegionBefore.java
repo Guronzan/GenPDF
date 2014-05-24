@@ -34,59 +34,69 @@ import org.apache.fop.fo.FONode;
 public class RegionBefore extends RegionBA {
 
     /**
-     * Create a RegionBefore instance that is a child of the
-     * given parent {@link FONode}.
-     * @param parent    the {@link FONode} that is to be the parent
+     * Create a RegionBefore instance that is a child of the given parent
+     * {@link FONode}.
+     * 
+     * @param parent
+     *            the {@link FONode} that is to be the parent
      */
-    public RegionBefore(FONode parent) {
+    public RegionBefore(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String getDefaultRegionName() {
         return "xsl-region-before";
     }
 
     /** {@inheritDoc} */
-    public Rectangle getViewportRectangle (FODimension reldims) {
-        /* Special rules apply to resolving extent as values are resolved relative
-         * to the page size and reference orientation.
+    @Override
+    public Rectangle getViewportRectangle(final FODimension reldims) {
+        /*
+         * Special rules apply to resolving extent as values are resolved
+         * relative to the page size and reference orientation.
          */
-        PercentBaseContext pageWidthContext = getPageWidthContext(LengthBase.CUSTOM_BASE);
-        PercentBaseContext pageHeightContext = getPageHeightContext(LengthBase.CUSTOM_BASE);
+        final PercentBaseContext pageWidthContext = getPageWidthContext(LengthBase.CUSTOM_BASE);
+        final PercentBaseContext pageHeightContext = getPageHeightContext(LengthBase.CUSTOM_BASE);
         PercentBaseContext neighbourContext;
         Rectangle vpRect;
         // [TBD] WRITING MODE ALERT
-        switch ( getWritingMode().getEnumValue() ) {
+        switch (getWritingMode().getEnumValue()) {
         case Constants.EN_TB_LR:
         case Constants.EN_TB_RL:
             neighbourContext = pageHeightContext;
-            vpRect = new Rectangle(0, 0, getExtent().getValue(pageWidthContext), reldims.ipd);
+            vpRect = new Rectangle(0, 0,
+                    getExtent().getValue(pageWidthContext), reldims.ipd);
             break;
         case Constants.EN_LR_TB:
         case Constants.EN_RL_TB:
         default:
             neighbourContext = pageWidthContext;
-            vpRect = new Rectangle(0, 0, reldims.ipd, getExtent().getValue(pageHeightContext));
+            vpRect = new Rectangle(0, 0, reldims.ipd, getExtent().getValue(
+                    pageHeightContext));
             break;
         }
         if (getPrecedence() == EN_FALSE) {
-            adjustIPD(vpRect, layoutMaster.getWritingMode(), neighbourContext);
+            adjustIPD(vpRect, this.layoutMaster.getWritingMode(),
+                    neighbourContext);
         }
         return vpRect;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "region-before";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_REGION_BEFORE}
      */
+    @Override
     public int getNameId() {
         return FO_REGION_BEFORE;
     }
 }
-

@@ -37,35 +37,48 @@ public interface BitmapRendererEventProducer extends EventProducer {
 
         /**
          * Returns an event producer.
-         * @param broadcaster the event broadcaster to use
+         * 
+         * @param broadcaster
+         *            the event broadcaster to use
          * @return the event producer
          */
-        public static BitmapRendererEventProducer get(EventBroadcaster broadcaster) {
-            return (BitmapRendererEventProducer)broadcaster.getEventProducerFor(
-                    BitmapRendererEventProducer.class);
+        public static BitmapRendererEventProducer get(
+                final EventBroadcaster broadcaster) {
+            return (BitmapRendererEventProducer) broadcaster
+                    .getEventProducerFor(BitmapRendererEventProducer.class);
         }
     }
 
     /**
      * No filename information available. Stopping early after the first page.
-     * @param source the event source
+     * 
+     * @param source
+     *            the event source
      * @event.severity WARN
      */
-    void stoppingAfterFirstPageNoFilename(Object source);
+    void stoppingAfterFirstPageNoFilename(final Object source);
 
     /**
-     * Image writer does not support multiple images. Only the first page has been produced.
-     * @param source the event source
+     * Image writer does not support multiple images. Only the first page has
+     * been produced.
+     * 
+     * @param source
+     *            the event source
      * @event.severity WARN
      */
-    void stoppingAfterFirstPageNoMultiWriter(Object source);
+    void stoppingAfterFirstPageNoMultiWriter(final Object source);
 
     /**
      * No ImageWriter found.
-     * @param source the event source
-     * @param mime the target MIME type
-     * @throws IOException the I/O error provoked by the method call
+     * 
+     * @param source
+     *            the event source
+     * @param mime
+     *            the target MIME type
+     * @throws IOException
+     *             the I/O error provoked by the method call
      * @event.severity FATAL
      */
-    void noImageWriterFound(Object source, String mime) throws IOException;
+    void noImageWriterFound(final Object source, final String mime)
+            throws IOException;
 }

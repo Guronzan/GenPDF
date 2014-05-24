@@ -24,52 +24,66 @@ import java.util.Iterator;
 import org.apache.xmlgraphics.util.QName;
 
 /**
- * This interface is implemented by the top-level Metadata class and stuctured properties.
+ * This interface is implemented by the top-level Metadata class and stuctured
+ * properties.
  */
 public interface PropertyAccess {
 
     /**
      * Sets a property.
-     * @param prop the property
+     * 
+     * @param prop
+     *            the property
      */
-    void setProperty(XMPProperty prop);
+    void setProperty(final XMPProperty prop);
 
     /**
      * Returns a property
-     * @param uri the namespace URI of the property
-     * @param localName the local name of the property
+     * 
+     * @param uri
+     *            the namespace URI of the property
+     * @param localName
+     *            the local name of the property
      * @return the requested property or null if it's not available
      */
-    XMPProperty getProperty(String uri, String localName);
+    XMPProperty getProperty(final String uri, final String localName);
 
     /**
      * Returns a property.
-     * @param name the name of the property
+     * 
+     * @param name
+     *            the name of the property
      * @return the requested property or null if it's not available
      */
-    XMPProperty getProperty(QName name);
+    XMPProperty getProperty(final QName name);
 
     /**
      * Removes a property and returns it if it was found.
-     * @param name the name of the property
+     * 
+     * @param name
+     *            the name of the property
      * @return the removed property or null if it was not found
      */
-    XMPProperty removeProperty(QName name);
+    XMPProperty removeProperty(final QName name);
 
     /**
-     * Returns the rdf:value property. This is a shortcut for getProperty(XMPConstants.RDF_VALUE).
+     * Returns the rdf:value property. This is a shortcut for
+     * getProperty(XMPConstants.RDF_VALUE).
+     * 
      * @return the rdf:value property or null if it's no available
      */
     XMPProperty getValueProperty();
 
     /**
      * Returns the number of properties.
+     * 
      * @return the number of properties in this metadata object.
      */
     int getPropertyCount();
 
     /**
      * Returns an Iterator over all properties in this structured property.
+     * 
      * @return an Iterator over all properties
      */
     Iterator iterator();

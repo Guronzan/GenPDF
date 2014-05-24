@@ -19,14 +19,13 @@
 
 package org.apache.fop.render.ps.extensions;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.Constants;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.extensions.ExtensionAttachment;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 /**
  * Extension element for ps:ps-setpagedevice.
@@ -38,49 +37,65 @@ public class PSSetPageDeviceElement extends AbstractPSExtensionElement {
 
     /**
      * Main constructor
-     * @param parent parent FO node
+     * 
+     * @param parent
+     *            parent FO node
      */
-    protected PSSetPageDeviceElement(FONode parent) {
+    protected PSSetPageDeviceElement(final FONode parent) {
         super(parent);
     }
 
     /**
-     * Called after processNode() is called. Subclasses can do additional processing.
-     * @throws FOPException if there's a problem during processing
+     * Called after processNode() is called. Subclasses can do additional
+     * processing.
+     * 
+     * @throws FOPException
+     *             if there's a problem during processing
      * @see org.apache.fop.fo.FONode#startOfNode()
      */
+    @Override
     protected void startOfNode() throws FOPException {
         super.startOfNode();
-        if ( !((parent.getNameId() == Constants.FO_DECLARATIONS)
-                || (parent.getNameId() == Constants.FO_SIMPLE_PAGE_MASTER)) ) {
-            invalidChildError(getLocator(), parent.getName(), getNamespaceURI(), getName(),
+        if (!(this.parent.getNameId() == Constants.FO_DECLARATIONS || this.parent
+                .getNameId() == Constants.FO_SIMPLE_PAGE_MASTER)) {
+            invalidChildError(getLocator(), this.parent.getName(),
+                    getNamespaceURI(), getName(),
                     "rule.childOfSPMorDeclarations");
         }
     }
 
     /**
      * Initialize the node with its name, location information, and attributes
-     * The attributes must be used immediately as the sax attributes
-     * will be altered for the next element.
-     * @param elementName element name (e.g., "fo:block")
-     * @param locator Locator object (ignored by default)
-     * @param attlist Collection of attributes passed to us from the parser.
-     * @param propertyList property list
-     * @throws FOPException if there's a problem during processing
+     * The attributes must be used immediately as the sax attributes will be
+     * altered for the next element.
+     * 
+     * @param elementName
+     *            element name (e.g., "fo:block")
+     * @param locator
+     *            Locator object (ignored by default)
+     * @param attlist
+     *            Collection of attributes passed to us from the parser.
+     * @param propertyList
+     *            property list
+     * @throws FOPException
+     *             if there's a problem during processing
      * @see org.apache.fop.fo.FONode#processNode
      */
-    public void processNode(String elementName, Locator locator,
-                            Attributes attlist, PropertyList propertyList)
-                                throws FOPException {
-        String name = attlist.getValue("name");
+    @Override
+    public void processNode(final String elementName, final Locator locator,
+            final Attributes attlist, final PropertyList propertyList)
+            throws FOPException {
+        final String name = attlist.getValue("name");
         if (name != null && name.length() > 0) {
-            ((PSSetPageDevice)getExtensionAttachment()).setName(name);
+            ((PSSetPageDevice) getExtensionAttachment()).setName(name);
         }
     }
 
     /**
      * @return local name
-     * @see org.apache.fop.fo.FONode#getLocalName() */
+     * @see org.apache.fop.fo.FONode#getLocalName()
+     */
+    @Override
     public String getLocalName() {
         return ELEMENT;
     }
@@ -88,8 +103,9 @@ public class PSSetPageDeviceElement extends AbstractPSExtensionElement {
     /**
      * @return a new PSSetPageDevice object
      * @see org.apache.fop.render.ps.extensions.AbstractPSExtensionElement
-     * #instantiateExtensionAttachment()
+     *      #instantiateExtensionAttachment()
      */
+    @Override
     protected ExtensionAttachment instantiateExtensionAttachment() {
         return new PSSetPageDevice();
     }

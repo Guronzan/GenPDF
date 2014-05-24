@@ -42,14 +42,17 @@ public abstract class AbstractResourceDSCComment extends AbstractDSCComment {
 
     /**
      * Creates a new instance for a given PSResource instance
-     * @param resource the resource
+     * 
+     * @param resource
+     *            the resource
      */
-    public AbstractResourceDSCComment(PSResource resource) {
+    public AbstractResourceDSCComment(final PSResource resource) {
         this.resource = resource;
     }
 
     /**
      * Returns the associated PSResource.
+     * 
      * @return the resource
      */
     public PSResource getResource() {
@@ -57,35 +60,37 @@ public abstract class AbstractResourceDSCComment extends AbstractDSCComment {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasValues() {
         return true;
     }
 
     /** {@inheritDoc} */
-    public void parseValue(String value) {
-        List params = splitParams(value);
-        Iterator iter = params.iterator();
-        String name = (String)iter.next();
+    @Override
+    public void parseValue(final String value) {
+        final List params = splitParams(value);
+        final Iterator iter = params.iterator();
+        final String name = (String) iter.next();
         if (PSResource.TYPE_FONT.equals(name)) {
-            String fontname = (String)iter.next();
+            final String fontname = (String) iter.next();
             this.resource = new PSResource(name, fontname);
         } else if (PSResource.TYPE_PROCSET.equals(name)) {
-            String procname = (String)iter.next();
-            String version = (String)iter.next();
-            String revision = (String)iter.next();
-            this.resource = new PSProcSet(procname,
-                    Float.parseFloat(version), Integer.parseInt(revision));
+            final String procname = (String) iter.next();
+            final String version = (String) iter.next();
+            final String revision = (String) iter.next();
+            this.resource = new PSProcSet(procname, Float.parseFloat(version),
+                    Integer.parseInt(revision));
         } else if (PSResource.TYPE_FILE.equals(name)) {
-            String filename = (String)iter.next();
+            final String filename = (String) iter.next();
             this.resource = new PSResource(name, filename);
         } else if (PSResource.TYPE_FORM.equals(name)) {
-            String formname = (String)iter.next();
+            final String formname = (String) iter.next();
             this.resource = new PSResource(name, formname);
         } else if (PSResource.TYPE_PATTERN.equals(name)) {
-            String patternname = (String)iter.next();
+            final String patternname = (String) iter.next();
             this.resource = new PSResource(name, patternname);
         } else if (PSResource.TYPE_ENCODING.equals(name)) {
-            String encodingname = (String)iter.next();
+            final String encodingname = (String) iter.next();
             this.resource = new PSResource(name, encodingname);
         } else {
             throw new IllegalArgumentException("Invalid resource type: " + name);
@@ -93,7 +98,8 @@ public abstract class AbstractResourceDSCComment extends AbstractDSCComment {
     }
 
     /** {@inheritDoc} */
-    public void generate(PSGenerator gen) throws IOException {
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
         gen.writeDSCComment(getName(), getResource());
     }
 

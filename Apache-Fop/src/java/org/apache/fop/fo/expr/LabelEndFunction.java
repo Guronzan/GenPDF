@@ -35,34 +35,41 @@ import org.apache.fop.fo.properties.Property;
 public class LabelEndFunction extends FunctionBase {
 
     /** {@inheritDoc} */
+    @Override
     public int getRequiredArgsCount() {
         return 0;
     }
 
     /** {@inheritDoc} */
-    public Property eval(Property[] args, PropertyInfo pInfo) throws PropertyException {
+    @Override
+    public Property eval(final Property[] args, final PropertyInfo pInfo)
+            throws PropertyException {
 
-        Length distance = pInfo.getPropertyList().get(
-                Constants.PR_PROVISIONAL_DISTANCE_BETWEEN_STARTS).getLength();
-        Length separation = pInfo.getPropertyList().getNearestSpecified(
-                Constants.PR_PROVISIONAL_LABEL_SEPARATION).getLength();
+        final Length distance = pInfo.getPropertyList()
+                .get(Constants.PR_PROVISIONAL_DISTANCE_BETWEEN_STARTS)
+                .getLength();
+        final Length separation = pInfo.getPropertyList()
+                .getNearestSpecified(Constants.PR_PROVISIONAL_LABEL_SEPARATION)
+                .getLength();
 
         PropertyList pList = pInfo.getPropertyList();
         while (pList != null && !(pList.getFObj() instanceof ListItem)) {
             pList = pList.getParentPropertyList();
         }
         if (pList == null) {
-            throw new PropertyException("label-end() called from outside an fo:list-item");
+            throw new PropertyException(
+                    "label-end() called from outside an fo:list-item");
         }
-        Length startIndent = pList.get(Constants.PR_START_INDENT).getLength();
+        final Length startIndent = pList.get(Constants.PR_START_INDENT)
+                .getLength();
 
-        LengthBase base = new LengthBase(pInfo.getPropertyList(),
-                                         LengthBase.CONTAINING_REFAREA_WIDTH);
-        PercentLength refWidth = new PercentLength(1.0, base);
+        final LengthBase base = new LengthBase(pInfo.getPropertyList(),
+                LengthBase.CONTAINING_REFAREA_WIDTH);
+        final PercentLength refWidth = new PercentLength(1.0, base);
 
         Numeric labelEnd = distance;
         labelEnd = NumericOp.addition(labelEnd, startIndent);
-        //TODO add start-intrusion-adjustment
+        // TODO add start-intrusion-adjustment
         labelEnd = NumericOp.subtraction(labelEnd, separation);
 
         labelEnd = NumericOp.subtraction(refWidth, labelEnd);

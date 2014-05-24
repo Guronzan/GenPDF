@@ -47,7 +47,7 @@ public class StructuredFieldReader {
 
     /**
      * The constructor for the StructuredFieldReader
-     * 
+     *
      * @param inputStream
      *            the input stream to process
      */
@@ -59,7 +59,7 @@ public class StructuredFieldReader {
      * Get the next structured field as identified by the identifier parameter
      * (this must be a valid MO:DCA structured field). Note: The returned data
      * does not include the field length and identifier!
-     * 
+     *
      * @param identifier
      *            the three byte identifier
      * @throws IOException

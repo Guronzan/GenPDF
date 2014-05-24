@@ -27,18 +27,23 @@ import java.util.List;
  */
 public class Bookmark {
 
-    private String title;
-    private boolean show;
+    private final String title;
+    private final boolean show;
     private List childBookmarks;
     private AbstractAction action;
 
     /**
      * Creates a new bookmark.
-     * @param title the bookmark's title
-     * @param show true if the bookmark shall be shown, false for hidden
-     * @param action the action performed when the bookmark is clicked
+     * 
+     * @param title
+     *            the bookmark's title
+     * @param show
+     *            true if the bookmark shall be shown, false for hidden
+     * @param action
+     *            the action performed when the bookmark is clicked
      */
-    public Bookmark(String title, boolean show, AbstractAction action) {
+    public Bookmark(final String title, final boolean show,
+            final AbstractAction action) {
         this.title = title;
         this.show = show;
         this.action = action;
@@ -46,6 +51,7 @@ public class Bookmark {
 
     /**
      * Returns the bookmark's title.
+     * 
      * @return the title
      */
     public String getTitle() {
@@ -54,6 +60,7 @@ public class Bookmark {
 
     /**
      * Indicates whether the bookmark shall be shown initially.
+     * 
      * @return true if it shall be shown
      */
     public boolean isShown() {
@@ -62,6 +69,7 @@ public class Bookmark {
 
     /**
      * Returns the action performed when the bookmark is clicked.
+     * 
      * @return the action
      */
     public AbstractAction getAction() {
@@ -70,17 +78,21 @@ public class Bookmark {
 
     /**
      * Sets the action performed when the bookmark is clicked.
-     * @param action the action
+     * 
+     * @param action
+     *            the action
      */
-    public void setAction(AbstractAction action) {
+    public void setAction(final AbstractAction action) {
         this.action = action;
     }
 
     /**
      * Adds a child bookmark.
-     * @param bookmark the child bookmark
+     * 
+     * @param bookmark
+     *            the child bookmark
      */
-    public void addChildBookmark(Bookmark bookmark) {
+    public void addChildBookmark(final Bookmark bookmark) {
         if (this.childBookmarks == null) {
             this.childBookmarks = new java.util.ArrayList();
         }
@@ -89,6 +101,7 @@ public class Bookmark {
 
     /**
      * Returns a list of child bookmarks.
+     * 
      * @return the child bookmarks
      */
     public List getChildBookmarks() {

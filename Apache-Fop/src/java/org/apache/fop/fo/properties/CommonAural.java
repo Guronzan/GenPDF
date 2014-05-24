@@ -22,105 +22,106 @@ package org.apache.fop.fo.properties;
 import org.apache.fop.fo.PropertyList;
 
 /**
- * Stores all common aural properties.
- * See Sec. 7.6 of the XSL-FO Standard.
+ * Stores all common aural properties. See Sec. 7.6 of the XSL-FO Standard.
  * Public "structure" allows direct member access.
  */
 public class CommonAural {
     /**
      * The "azimuth" property.
      */
-    public int azimuth;                                         // CSOK: VisibilityModifier
+    public int azimuth; // CSOK: VisibilityModifier
 
     /**
      * The "cueAfter" property.
      */
-    public String cueAfter;                                     // CSOK: VisibilityModifier
+    public String cueAfter; // CSOK: VisibilityModifier
 
     /**
      * The "cueBefore" property.
      */
-    public String cueBefore;                                    // CSOK: VisibilityModifier
+    public String cueBefore; // CSOK: VisibilityModifier
 
     /**
      * The "elevation" property.
      */
-    public int elevation;                                       // CSOK: VisibilityModifier
+    public int elevation; // CSOK: VisibilityModifier
 
     /**
      * The "pauseAfter" property.
      */
-    public int pauseAfter;                                      // CSOK: VisibilityModifier
+    public int pauseAfter; // CSOK: VisibilityModifier
 
     /**
      * The "pauseBefore" property.
      */
-    public int pauseBefore;                                     // CSOK: VisibilityModifier
+    public int pauseBefore; // CSOK: VisibilityModifier
 
     /**
      * The "pitch" property.
      */
-    public int pitch;                                           // CSOK: VisibilityModifier
+    public int pitch; // CSOK: VisibilityModifier
 
     /**
      * The "pitch-range" property.
      */
-    public int pitchRange;                                      // CSOK: VisibilityModifier
+    public int pitchRange; // CSOK: VisibilityModifier
 
     /**
      * The "playDuring" property.
      */
-    public int playDuring;                                      // CSOK: VisibilityModifier
+    public int playDuring; // CSOK: VisibilityModifier
 
     /**
      * The "richness" property.
      */
-    public int richness;                                        // CSOK: VisibilityModifier
+    public int richness; // CSOK: VisibilityModifier
 
     /**
      * The "speak" property.
      */
-    public int speak;                                           // CSOK: VisibilityModifier
+    public int speak; // CSOK: VisibilityModifier
 
     /**
      * The "speak-header" property.
      */
-    public int speakHeader;                                     // CSOK: VisibilityModifier
+    public int speakHeader; // CSOK: VisibilityModifier
 
     /**
      * The "speak-numeral" property.
      */
-    public int speakNumeral;                                    // CSOK: VisibilityModifier
+    public int speakNumeral; // CSOK: VisibilityModifier
 
     /**
      * The "speak-punctuation" property.
      */
-    public int speakPunctuation;                                // CSOK: VisibilityModifier
+    public int speakPunctuation; // CSOK: VisibilityModifier
 
     /**
      * The "speech-rate" property.
      */
-    public int speechRate;                                      // CSOK: VisibilityModifier
+    public int speechRate; // CSOK: VisibilityModifier
 
     /**
      * The "stress" property.
      */
-    public int stress;                                          // CSOK: VisibilityModifier
+    public int stress; // CSOK: VisibilityModifier
 
     /**
      * The "voice-family" property.
      */
-    public int voiceFamily;                                     // CSOK: VisibilityModifier
+    public int voiceFamily; // CSOK: VisibilityModifier
 
     /**
      * The "volume" property.
      */
-    public int volume;                                          // CSOK: VisibilityModifier
+    public int volume; // CSOK: VisibilityModifier
 
     /**
      * Create a CommonAbsolutePosition object.
-     * @param pList The PropertyList with propery values.
+     * 
+     * @param pList
+     *            The PropertyList with propery values.
      */
-    public CommonAural(PropertyList pList) {
+    public CommonAural(final PropertyList pList) {
     }
 }

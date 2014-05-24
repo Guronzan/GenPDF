@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-/* $Id: FopFactoryConfigurator.java 1296483 2012-03-02 21:34:30Z gadams $ */
+/* $Id: java 1296483 2012-03-02 21:34:30Z gadams $ */
 
 package org.apache.fop.apps;
 
@@ -27,11 +27,11 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
 import org.apache.avalon.framework.configuration.DefaultConfigurationBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.fop.fonts.FontManagerConfigurator;
 import org.apache.fop.hyphenation.HyphenationTreeCache;
 import org.apache.fop.util.LogUtil;
@@ -43,6 +43,7 @@ import org.xml.sax.SAXException;
 /**
  * FopFactory configurator
  */
+@Slf4j
 public class FopFactoryConfigurator {
 
     /** Defines if FOP should use an alternative rule to determine text indents */
@@ -71,9 +72,6 @@ public class FopFactoryConfigurator {
 
     private static final String PREFER_RENDERER = "prefer-renderer";
 
-    /** logger instance */
-    private final Log log = LogFactory.getLog(FopFactoryConfigurator.class);
-
     /** Fop factory */
     private FopFactory factory = null;
 
@@ -85,7 +83,7 @@ public class FopFactoryConfigurator {
 
     /**
      * Default constructor
-     * 
+     *
      * @param factory
      *            fop factory
      */
@@ -97,26 +95,26 @@ public class FopFactoryConfigurator {
     /**
      * Initializes user agent settings from the user configuration file, if
      * present: baseURL, resolution, default page size,...
-     * 
+     *
      * @param factory
      *            fop factory
      * @throws FOPException
      *             fop exception
      */
     public void configure(final FopFactory factory) throws FOPException { // CSOK:
-                                                                          // MethodLength
+        // MethodLength
         // strict configuration
         if (this.cfg.getChild("strict-configuration", false) != null) {
             try {
                 factory.setStrictUserConfigValidation(this.cfg.getChild(
                         "strict-configuration").getValueAsBoolean());
             } catch (final ConfigurationException e) {
-                LogUtil.handleException(this.log, e, false);
+                LogUtil.handleException(log, e, false);
             }
         }
         final boolean strict = factory.validateUserConfigStrictly();
-        if (this.log.isDebugEnabled()) {
-            this.log.debug("Initializing FopFactory Configuration" + "with "
+        if (log.isDebugEnabled()) {
+            log.debug("Initializing FopFactory Configuration" + "with "
                     + (strict ? "strict" : "permissive") + " validation");
         }
 
@@ -125,7 +123,7 @@ public class FopFactoryConfigurator {
                 this.factory.setAccessibility(this.cfg
                         .getChild("accessibility").getValueAsBoolean());
             } catch (final ConfigurationException e) {
-                LogUtil.handleException(this.log, e, strict);
+                LogUtil.handleException(log, e, strict);
             }
         }
 
@@ -135,7 +133,7 @@ public class FopFactoryConfigurator {
                 factory.setStrictValidation(this.cfg.getChild(
                         "strict-validation").getValueAsBoolean());
             } catch (final ConfigurationException e) {
-                LogUtil.handleException(this.log, e, strict);
+                LogUtil.handleException(log, e, strict);
             }
         }
 
@@ -148,7 +146,7 @@ public class FopFactoryConfigurator {
             try {
                 factory.setBaseURL(path);
             } catch (final MalformedURLException mfue) {
-                LogUtil.handleException(this.log, mfue, strict);
+                LogUtil.handleException(log, mfue, strict);
             }
         }
         if (this.cfg.getChild("hyphenation-base", false) != null) {
@@ -159,7 +157,7 @@ public class FopFactoryConfigurator {
             try {
                 factory.setHyphenBaseURL(path);
             } catch (final MalformedURLException mfue) {
-                LogUtil.handleException(this.log, mfue, strict);
+                LogUtil.handleException(log, mfue, strict);
             }
         }
 
@@ -171,9 +169,9 @@ public class FopFactoryConfigurator {
                 .getChildren("hyphenation-pattern");
         if (hyphPatConfig.length != 0) {
             final Map/* <String,String> */hyphPatNames = new HashMap/*
-                                                                     * <String,
-                                                                     * String>
-                                                                     */();
+             * <String,
+             * String>
+             */();
             for (final Configuration element : hyphPatConfig) {
                 String lang;
                 String country;
@@ -186,7 +184,7 @@ public class FopFactoryConfigurator {
                     addError(
                             "The lang attribute of a hyphenation-pattern configuration"
                                     + " element must exist (" + location + ")",
-                            error);
+                                    error);
                 } else if (!lang.matches("[a-zA-Z]{2}")) {
                     addError(
                             "The lang attribute of a hyphenation-pattern configuration"
@@ -217,15 +215,15 @@ public class FopFactoryConfigurator {
                 }
 
                 if (error.length() != 0) {
-                    LogUtil.handleError(this.log, error.toString(), strict);
+                    LogUtil.handleError(log, error.toString(), strict);
                     continue;
                 }
 
                 final String llccKey = HyphenationTreeCache.constructLlccKey(
                         lang, country);
                 hyphPatNames.put(llccKey, filename);
-                if (this.log.isDebugEnabled()) {
-                    this.log.debug("Using hyphenation pattern filename "
+                if (log.isDebugEnabled()) {
+                    log.debug("Using hyphenation pattern filename "
                             + filename
                             + " for lang=\""
                             + lang
@@ -240,20 +238,18 @@ public class FopFactoryConfigurator {
         // renderer options
         if (this.cfg.getChild("source-resolution", false) != null) {
             factory.setSourceResolution(this.cfg.getChild("source-resolution")
-                    .getValueAsFloat(
-                            FopFactoryConfigurator.DEFAULT_SOURCE_RESOLUTION));
-            if (this.log.isDebugEnabled()) {
-                this.log.debug("source-resolution set to: "
+                    .getValueAsFloat(DEFAULT_SOURCE_RESOLUTION));
+            if (log.isDebugEnabled()) {
+                log.debug("source-resolution set to: "
                         + factory.getSourceResolution() + "dpi (px2mm="
                         + factory.getSourcePixelUnitToMillimeter() + ")");
             }
         }
         if (this.cfg.getChild("target-resolution", false) != null) {
             factory.setTargetResolution(this.cfg.getChild("target-resolution")
-                    .getValueAsFloat(
-                            FopFactoryConfigurator.DEFAULT_TARGET_RESOLUTION));
-            if (this.log.isDebugEnabled()) {
-                this.log.debug("target-resolution set to: "
+                    .getValueAsFloat(DEFAULT_TARGET_RESOLUTION));
+            if (log.isDebugEnabled()) {
+                log.debug("target-resolution set to: "
                         + factory.getTargetResolution() + "dpi (px2mm="
                         + factory.getTargetPixelUnitToMillimeter() + ")");
             }
@@ -264,25 +260,24 @@ public class FopFactoryConfigurator {
                         .getChild("break-indent-inheritance")
                         .getValueAsBoolean());
             } catch (final ConfigurationException e) {
-                LogUtil.handleException(this.log, e, strict);
+                LogUtil.handleException(log, e, strict);
             }
         }
         final Configuration pageConfig = this.cfg
                 .getChild("default-page-settings");
         if (pageConfig.getAttribute("height", null) != null) {
             factory.setPageHeight(pageConfig.getAttribute("height",
-                    FopFactoryConfigurator.DEFAULT_PAGE_HEIGHT));
-            if (this.log.isInfoEnabled()) {
-                this.log.info("Default page-height set to: "
+                    DEFAULT_PAGE_HEIGHT));
+            if (log.isInfoEnabled()) {
+                log.info("Default page-height set to: "
                         + factory.getPageHeight());
             }
         }
         if (pageConfig.getAttribute("width", null) != null) {
             factory.setPageWidth(pageConfig.getAttribute("width",
-                    FopFactoryConfigurator.DEFAULT_PAGE_WIDTH));
-            if (this.log.isInfoEnabled()) {
-                this.log.info("Default page-width set to: "
-                        + factory.getPageWidth());
+                    DEFAULT_PAGE_WIDTH));
+            if (log.isInfoEnabled()) {
+                log.info("Default page-width set to: " + factory.getPageWidth());
             }
         }
 
@@ -292,7 +287,7 @@ public class FopFactoryConfigurator {
                 factory.getRendererFactory().setRendererPreferred(
                         this.cfg.getChild(PREFER_RENDERER).getValueAsBoolean());
             } catch (final ConfigurationException e) {
-                LogUtil.handleException(this.log, e, strict);
+                LogUtil.handleException(log, e, strict);
             }
         }
 
@@ -337,7 +332,7 @@ public class FopFactoryConfigurator {
                     try {
                         p = Penalty.toPenalty(Integer.parseInt(value));
                     } catch (final NumberFormatException nfe) {
-                        LogUtil.handleException(this.log, nfe, strict);
+                        LogUtil.handleException(log, nfe, strict);
                     }
                 }
                 if (p != null) {
@@ -345,13 +340,13 @@ public class FopFactoryConfigurator {
                 }
             }
         } catch (final ConfigurationException e) {
-            LogUtil.handleException(this.log, e, strict);
+            LogUtil.handleException(log, e, strict);
         }
     }
 
     /**
      * Set the user configuration.
-     * 
+     *
      * @param userConfigFile
      *            the configuration file
      * @throws IOException
@@ -360,7 +355,7 @@ public class FopFactoryConfigurator {
      *             if a parsing error occurs
      */
     public void setUserConfig(final File userConfigFile) throws SAXException,
-            IOException {
+    IOException {
         try {
             final DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
             setUserConfig(cfgBuilder.buildFromFile(userConfigFile));
@@ -371,7 +366,7 @@ public class FopFactoryConfigurator {
 
     /**
      * Set the user configuration from an URI.
-     * 
+     *
      * @param uri
      *            the URI to the configuration file
      * @throws IOException
@@ -380,7 +375,7 @@ public class FopFactoryConfigurator {
      *             if a parsing error occurs
      */
     public void setUserConfig(final String uri) throws SAXException,
-            IOException {
+    IOException {
         try {
             final DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
             setUserConfig(cfgBuilder.build(uri));
@@ -391,7 +386,7 @@ public class FopFactoryConfigurator {
 
     /**
      * Set the user configuration.
-     * 
+     *
      * @param cfg
      *            avalon configuration
      * @throws FOPException
@@ -405,7 +400,7 @@ public class FopFactoryConfigurator {
 
     /**
      * Get the avalon user configuration.
-     * 
+     *
      * @return the user configuration
      */
     public Configuration getUserConfig() {

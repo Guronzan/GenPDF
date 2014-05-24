@@ -19,24 +19,22 @@
 
 package org.apache.fop.afp.svg;
 
-import org.apache.xmlgraphics.image.loader.ImageFlavor;
-
 import org.apache.fop.image.loader.batik.BatikImageFlavors;
 import org.apache.fop.svg.AbstractFOPImageElementBridge;
+import org.apache.xmlgraphics.image.loader.ImageFlavor;
 
 /**
  * An AFP specific implementation of a Batik SVGImageElementBridge
  */
 public class AFPImageElementBridge extends AbstractFOPImageElementBridge {
 
-    private final ImageFlavor[] supportedFlavors = new ImageFlavor[]
-                                                                   {//ImageFlavor.RAW_JPEG,
-                                                                    //ImageFlavor.RAW_CCITTFAX,
-                                                                    ImageFlavor.GRAPHICS2D,
-                                                                    BatikImageFlavors.SVG_DOM};
+    private final ImageFlavor[] supportedFlavors = new ImageFlavor[] {// ImageFlavor.RAW_JPEG,
+                                                                      // ImageFlavor.RAW_CCITTFAX,
+            ImageFlavor.GRAPHICS2D, BatikImageFlavors.SVG_DOM };
 
     /** {@inheritDoc} */
+    @Override
     protected ImageFlavor[] getSupportedFlavours() {
-        return supportedFlavors;
+        return this.supportedFlavors;
     }
 }

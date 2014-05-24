@@ -26,13 +26,11 @@ import org.junit.runners.Suite;
  * JUnit test suit for running layout engine test under JUnit control.
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-        org.apache.fop.fo.flow.table.AllTests.class,
-        org.apache.fop.fo.pagination.AllTests.class,
-        org.apache.fop.fotreetest.FOTreeTestCase.class,
-        org.apache.fop.fo.properties.CommonAccessibilityHolderTestCase.class,
-        org.apache.fop.fo.DelegatingFOEventHandlerTestCase.class
-})
+@Suite.SuiteClasses({ org.apache.fop.fo.flow.table.AllTests.class,
+    org.apache.fop.fo.pagination.AllTests.class,
+    org.apache.fop.fotreetest.FOTreeTestCase.class,
+    org.apache.fop.fo.properties.CommonAccessibilityHolderTestCase.class,
+    org.apache.fop.fo.DelegatingFOEventHandlerTestCase.class })
 public final class FOTreeTestSuite {
 
 }

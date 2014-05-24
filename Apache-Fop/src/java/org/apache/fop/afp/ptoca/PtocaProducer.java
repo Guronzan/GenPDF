@@ -22,16 +22,21 @@ package org.apache.fop.afp.ptoca;
 import java.io.IOException;
 
 /**
- * Producer interface that is passed to a {@link org.apache.fop.afp.modca.PresentationTextObject}
- * to produce PTOCA control sequences using a {@link PtocaBuilder}.
+ * Producer interface that is passed to a
+ * {@link org.apache.fop.afp.modca.PresentationTextObject} to produce PTOCA
+ * control sequences using a {@link PtocaBuilder}.
  */
 public interface PtocaProducer {
 
     /**
-     * Produces the PTOCA control sequences by calling methods on {@link PtocaBuilder}.
-     * @param builder the builder object
-     * @throws IOException if an I/O error occurs
+     * Produces the PTOCA control sequences by calling methods on
+     * {@link PtocaBuilder}.
+     * 
+     * @param builder
+     *            the builder object
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    void produce(PtocaBuilder builder) throws IOException;
+    void produce(final PtocaBuilder builder) throws IOException;
 
 }

@@ -35,7 +35,7 @@ public interface Graphics2DAdapter {
      * the image with the given extents (in mpt) can be painted by the painter
      * passed to this method. The Graphics2DImagePainter is then passed this
      * Graphics2D instance so the image can be painted.
-     * 
+     *
      * @param painter
      *            the painter which will paint the actual image
      * @param context

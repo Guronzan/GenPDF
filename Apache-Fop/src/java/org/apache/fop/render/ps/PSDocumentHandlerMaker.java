@@ -30,22 +30,24 @@ import org.apache.fop.render.intermediate.IFDocumentHandler;
  */
 public class PSDocumentHandlerMaker extends AbstractIFDocumentHandlerMaker {
 
-    private static final String[] MIMES = new String[]
-                              {MimeConstants.MIME_POSTSCRIPT};
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_POSTSCRIPT };
 
     /** {@inheritDoc} */
-    public IFDocumentHandler makeIFDocumentHandler(FOUserAgent ua) {
-        PSDocumentHandler handler = new PSDocumentHandler();
+    @Override
+    public IFDocumentHandler makeIFDocumentHandler(final FOUserAgent ua) {
+        final PSDocumentHandler handler = new PSDocumentHandler();
         handler.setContext(new IFContext(ua));
         return handler;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

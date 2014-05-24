@@ -24,22 +24,26 @@ package org.apache.fop.pdf;
  */
 public class PDFLaunch extends PDFAction {
 
-    private PDFReference externalFileSpec;
+    private final PDFReference externalFileSpec;
 
     /**
      * Creates a new /Launch action.
-     * @param fileSpec the file specification to launch
+     * 
+     * @param fileSpec
+     *            the file specification to launch
      */
-    public PDFLaunch(PDFFileSpec fileSpec) {
+    public PDFLaunch(final PDFFileSpec fileSpec) {
         this(fileSpec.makeReference());
     }
 
     /**
      * Creates a new /Launch action.
-     * @param fileSpec a reference to the file specification
+     * 
+     * @param fileSpec
+     *            a reference to the file specification
      */
-    public PDFLaunch(PDFReference fileSpec) {
-        PDFObject fs = fileSpec.getObject();
+    public PDFLaunch(final PDFReference fileSpec) {
+        final PDFObject fs = fileSpec.getObject();
         if (fs != null) {
             assert fs instanceof PDFFileSpec;
         }
@@ -47,22 +51,25 @@ public class PDFLaunch extends PDFAction {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getAction() {
-        return this.referencePDF();
+        return referencePDF();
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toPDFString() {
-        StringBuffer sb = new StringBuffer(64);
+        final StringBuffer sb = new StringBuffer(64);
         sb.append("<<\n/S /Launch\n/F ");
-        sb.append(externalFileSpec.toString());
+        sb.append(this.externalFileSpec.toString());
         sb.append("\n>>");
 
         return sb.toString();
     }
 
     /** {@inheritDoc} */
-    protected boolean contentEquals(PDFObject obj) {
+    @Override
+    protected boolean contentEquals(final PDFObject obj) {
         if (this == obj) {
             return true;
         }
@@ -71,9 +78,10 @@ public class PDFLaunch extends PDFAction {
             return false;
         }
 
-        PDFLaunch launch = (PDFLaunch) obj;
+        final PDFLaunch launch = (PDFLaunch) obj;
 
-        if (!launch.externalFileSpec.toString().equals(externalFileSpec.toString())) {
+        if (!launch.externalFileSpec.toString().equals(
+                this.externalFileSpec.toString())) {
             return false;
         }
 

@@ -47,59 +47,76 @@ import org.apache.xmlgraphics.util.UnitConv;
 public class ImageConverterG2D2Bitmap extends AbstractImageConverter {
 
     /** {@inheritDoc} */
-    public Image convert(Image src, Map hints) {
+    @Override
+    public Image convert(final Image src, final Map hints) {
         checkSourceFlavor(src);
-        ImageGraphics2D g2dImage = (ImageGraphics2D)src;
+        final ImageGraphics2D g2dImage = (ImageGraphics2D) src;
 
-        Object formatIntent = hints.get(ImageProcessingHints.BITMAP_TYPE_INTENT);
+        final Object formatIntent = hints
+                .get(ImageProcessingHints.BITMAP_TYPE_INTENT);
         int bitsPerPixel = 24;
         if (ImageProcessingHints.BITMAP_TYPE_INTENT_GRAY.equals(formatIntent)) {
             bitsPerPixel = 8;
-        } else if (ImageProcessingHints.BITMAP_TYPE_INTENT_MONO.equals(formatIntent)) {
+        } else if (ImageProcessingHints.BITMAP_TYPE_INTENT_MONO
+                .equals(formatIntent)) {
             bitsPerPixel = 1;
         }
 
-        Object transparencyIntent = hints.get(ImageProcessingHints.TRANSPARENCY_INTENT);
+        final Object transparencyIntent = hints
+                .get(ImageProcessingHints.TRANSPARENCY_INTENT);
         boolean withAlpha = true;
-        if (ImageProcessingHints.TRANSPARENCY_INTENT_IGNORE.equals(transparencyIntent)) {
+        if (ImageProcessingHints.TRANSPARENCY_INTENT_IGNORE
+                .equals(transparencyIntent)) {
             withAlpha = false;
         }
 
         int resolution = GraphicsConstants.DEFAULT_SAMPLE_DPI;
-        Number res = (Number)hints.get(ImageProcessingHints.TARGET_RESOLUTION);
+        final Number res = (Number) hints
+                .get(ImageProcessingHints.TARGET_RESOLUTION);
         if (res != null) {
             resolution = res.intValue();
         }
 
-        BufferedImage bi = paintToBufferedImage(g2dImage, bitsPerPixel, withAlpha, resolution);
+        final BufferedImage bi = paintToBufferedImage(g2dImage, bitsPerPixel,
+                withAlpha, resolution);
 
-        ImageBuffered bufImage = new ImageBuffered(src.getInfo(), bi, null);
+        final ImageBuffered bufImage = new ImageBuffered(src.getInfo(), bi,
+                null);
         return bufImage;
     }
 
     /**
      * Paints a Graphics2D image on a BufferedImage and returns this bitmap.
-     * @param g2dImage the Graphics2D image
-     * @param bitsPerPixel the desired number of bits per pixel (supported: 1, 8, 24)
-     * @param withAlpha true if the generated image should have an alpha channel
-     * @param resolution the requested bitmap resolution
+     * 
+     * @param g2dImage
+     *            the Graphics2D image
+     * @param bitsPerPixel
+     *            the desired number of bits per pixel (supported: 1, 8, 24)
+     * @param withAlpha
+     *            true if the generated image should have an alpha channel
+     * @param resolution
+     *            the requested bitmap resolution
      * @return the newly created BufferedImage
      */
-    protected BufferedImage paintToBufferedImage(ImageGraphics2D g2dImage,
-            int bitsPerPixel, boolean withAlpha, int resolution) {
-        ImageSize size = g2dImage.getSize();
+    protected BufferedImage paintToBufferedImage(
+            final ImageGraphics2D g2dImage, final int bitsPerPixel,
+            boolean withAlpha, final int resolution) {
+        final ImageSize size = g2dImage.getSize();
 
         RenderingHints additionalHints = null;
-        int bmw = (int)Math.ceil(UnitConv.mpt2px(size.getWidthMpt(), resolution));
-        int bmh = (int)Math.ceil(UnitConv.mpt2px(size.getHeightMpt(), resolution));
+        final int bmw = (int) Math.ceil(UnitConv.mpt2px(size.getWidthMpt(),
+                resolution));
+        final int bmh = (int) Math.ceil(UnitConv.mpt2px(size.getHeightMpt(),
+                resolution));
         BufferedImage bi;
         switch (bitsPerPixel) {
         case 1:
             bi = new BufferedImage(bmw, bmh, BufferedImage.TYPE_BYTE_BINARY);
             withAlpha = false;
-            //withAlpha is ignored in this case
+            // withAlpha is ignored in this case
             additionalHints = new RenderingHints(null);
-            //The following usually has no effect but some class libraries might support it
+            // The following usually has no effect but some class libraries
+            // might support it
             additionalHints.put(RenderingHints.KEY_DITHERING,
                     RenderingHints.VALUE_DITHER_ENABLE);
             break;
@@ -118,7 +135,7 @@ public class ImageConverterG2D2Bitmap extends AbstractImageConverter {
             }
         }
 
-        Graphics2D g2d = bi.createGraphics();
+        final Graphics2D g2d = bi.createGraphics();
         try {
             g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
                     RenderingHints.VALUE_FRACTIONALMETRICS_ON);
@@ -132,20 +149,18 @@ public class ImageConverterG2D2Bitmap extends AbstractImageConverter {
             if (!withAlpha) {
                 g2d.clearRect(0, 0, bmw, bmh);
             }
-            /* debug code
-            int off = 2;
-            g2d.drawLine(off, 0, off, bmh);
-            g2d.drawLine(bmw - off, 0, bmw - off, bmh);
-            g2d.drawLine(0, off, bmw, off);
-            g2d.drawLine(0, bmh - off, bmw, bmh - off);
-            */
-            double sx = (double)bmw / size.getWidthMpt();
-            double sy = (double)bmh / size.getHeightMpt();
+            /*
+             * debug code int off = 2; g2d.drawLine(off, 0, off, bmh);
+             * g2d.drawLine(bmw - off, 0, bmw - off, bmh); g2d.drawLine(0, off,
+             * bmw, off); g2d.drawLine(0, bmh - off, bmw, bmh - off);
+             */
+            final double sx = (double) bmw / size.getWidthMpt();
+            final double sy = (double) bmh / size.getHeightMpt();
             g2d.scale(sx, sy);
 
-            //Paint the image on the BufferedImage
-            Rectangle2D area = new Rectangle2D.Double(
-                    0.0, 0.0, size.getWidthMpt(), size.getHeightMpt());
+            // Paint the image on the BufferedImage
+            final Rectangle2D area = new Rectangle2D.Double(0.0, 0.0,
+                    size.getWidthMpt(), size.getHeightMpt());
             g2dImage.getGraphics2DImagePainter().paint(g2d, area);
         } finally {
             g2d.dispose();
@@ -153,46 +168,48 @@ public class ImageConverterG2D2Bitmap extends AbstractImageConverter {
         return bi;
     }
 
-    private static BufferedImage createGrayBufferedImageWithAlpha(int width, int height) {
+    private static BufferedImage createGrayBufferedImageWithAlpha(
+            final int width, final int height) {
         BufferedImage bi;
-        boolean alphaPremultiplied = true;
-        int bands = 2;
-        int[] bits = new int[bands];
+        final boolean alphaPremultiplied = true;
+        final int bands = 2;
+        final int[] bits = new int[bands];
         for (int i = 0; i < bands; i++) {
             bits[i] = 8;
         }
-        ColorModel cm = new ComponentColorModel(
-                ColorSpace.getInstance(ColorSpace.CS_GRAY),
-                bits,
-                true, alphaPremultiplied,
-                Transparency.TRANSLUCENT,
+        final ColorModel cm = new ComponentColorModel(
+                ColorSpace.getInstance(ColorSpace.CS_GRAY), bits, true,
+                alphaPremultiplied, Transparency.TRANSLUCENT,
                 DataBuffer.TYPE_BYTE);
-        WritableRaster wr = Raster.createInterleavedRaster(
-                DataBuffer.TYPE_BYTE,
-                width, height, bands,
-                new Point(0, 0));
+        final WritableRaster wr = Raster.createInterleavedRaster(
+                DataBuffer.TYPE_BYTE, width, height, bands, new Point(0, 0));
         bi = new BufferedImage(cm, wr, alphaPremultiplied, null);
         return bi;
     }
 
     /**
-     * Sets rendering hints on the Graphics2D created for painting to a BufferedImage. Subclasses
-     * can modify the settings to customize the behaviour.
-     * @param g2d the Graphics2D instance
+     * Sets rendering hints on the Graphics2D created for painting to a
+     * BufferedImage. Subclasses can modify the settings to customize the
+     * behaviour.
+     * 
+     * @param g2d
+     *            the Graphics2D instance
      */
-    protected void setRenderingHintsForBufferedImage(Graphics2D g2d) {
+    protected void setRenderingHintsForBufferedImage(final Graphics2D g2d) {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_OFF);
+                RenderingHints.VALUE_ANTIALIAS_OFF);
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-            RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+                RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getSourceFlavor() {
         return ImageFlavor.GRAPHICS2D;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getTargetFlavor() {
         return ImageFlavor.BUFFERED_IMAGE;
     }

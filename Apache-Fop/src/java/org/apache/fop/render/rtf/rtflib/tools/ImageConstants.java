@@ -27,16 +27,20 @@ package org.apache.fop.render.rtf.rtflib.tools;
  */
 
 /**
- * <p>Here will be defined all supported image formats.
- *  This class belongs to the <fo:external-graphic> tag processing.</p>
+ * <p>
+ * Here will be defined all supported image formats. This class belongs to the
+ * <fo:external-graphic> tag processing.
+ * </p>
  *
- * <p>This work was authored by Andreas Putz (a.putz@skynamics.com).</p>
+ * <p>
+ * This work was authored by Andreas Putz (a.putz@skynamics.com).
+ * </p>
  */
 
 public final class ImageConstants {
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
     // @@ Symbolic constants
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
 
     /** Defines the case, if image is not supported */
     public static final int I_NOT_SUPPORTED = -1;
@@ -65,9 +69,9 @@ public final class ImageConstants {
     /** GIF file extension */
     public static final String GIF_EXT = "gif";
 
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
     // @@ Construction
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
 
     /**
      * Private constructor.

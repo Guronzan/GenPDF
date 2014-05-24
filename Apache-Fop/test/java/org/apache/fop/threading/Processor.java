@@ -31,16 +31,22 @@ public interface Processor {
 
     /**
      * Process a file.
-     * @param src the Source for the FO or XML file
-     * @param templates a JAXP Templates object for an XSLT transformation or null
-     * @param out the OutputStream for the target file
-     * @throws Exception if an error occurs
+     * 
+     * @param src
+     *            the Source for the FO or XML file
+     * @param templates
+     *            a JAXP Templates object for an XSLT transformation or null
+     * @param out
+     *            the OutputStream for the target file
+     * @throws Exception
+     *             if an error occurs
      */
-    void process(Source src, Templates templates, OutputStream out)
-            throws Exception;
+    void process(final Source src, final Templates templates,
+            final OutputStream out) throws Exception;
 
     /**
      * Returns the target file extension for the configured output format.
+     * 
      * @return the target file extension (for example ".pdf")
      */
     String getTargetFileExtension();

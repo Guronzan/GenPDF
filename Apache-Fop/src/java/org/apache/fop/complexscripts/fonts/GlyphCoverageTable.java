@@ -23,22 +23,24 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 // CSOFF: LineLengthCheck
 // CSOFF: InnerAssignmentCheck
 // CSOFF: NoWhitespaceAfterCheck
 
 /**
- * <p>.Base class implementation of glyph coverage table.</p>
+ * <p>
+ * .Base class implementation of glyph coverage table.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
-public final class GlyphCoverageTable extends GlyphMappingTable implements GlyphCoverageMapping {
-
-    /* logging instance */
-    private static final Log log = LogFactory.getLog(GlyphCoverageTable.class);                                         // CSOK: ConstantNameCheck
+@Slf4j
+public final class GlyphCoverageTable extends GlyphMappingTable implements
+GlyphCoverageMapping {
 
     /** empty mapping table */
     public static final int GLYPH_COVERAGE_TYPE_EMPTY = GLYPH_MAPPING_TYPE_EMPTY;
@@ -49,61 +51,68 @@ public final class GlyphCoverageTable extends GlyphMappingTable implements Glyph
     /** range based mapping table */
     public static final int GLYPH_COVERAGE_TYPE_RANGE = GLYPH_MAPPING_TYPE_RANGE;
 
-    private GlyphCoverageMapping cm;
+    private final GlyphCoverageMapping cm;
 
-    private GlyphCoverageTable ( GlyphCoverageMapping cm ) {
+    private GlyphCoverageTable(final GlyphCoverageMapping cm) {
         assert cm != null;
         assert cm instanceof GlyphMappingTable;
         this.cm = cm;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getType() {
-        return ( (GlyphMappingTable) cm ) .getType();
+        return ((GlyphMappingTable) this.cm).getType();
     }
 
     /** {@inheritDoc} */
+    @Override
     public List getEntries() {
-        return ( (GlyphMappingTable) cm ) .getEntries();
+        return ((GlyphMappingTable) this.cm).getEntries();
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getCoverageSize() {
-        return cm.getCoverageSize();
+        return this.cm.getCoverageSize();
     }
 
     /** {@inheritDoc} */
-    public int getCoverageIndex ( int gid ) {
-        return cm.getCoverageIndex ( gid );
+    @Override
+    public int getCoverageIndex(final int gid) {
+        return this.cm.getCoverageIndex(gid);
     }
 
     /**
      * Create glyph coverage table.
-     * @param entries list of mapped or ranged coverage entries, or null or empty list
+     *
+     * @param entries
+     *            list of mapped or ranged coverage entries, or null or empty
+     *            list
      * @return a new covera table instance
      */
-    public static GlyphCoverageTable createCoverageTable ( List entries ) {
+    public static GlyphCoverageTable createCoverageTable(final List entries) {
         GlyphCoverageMapping cm;
-        if ( ( entries == null ) || ( entries.size() == 0 ) ) {
-            cm = new EmptyCoverageTable ( entries );
-        } else if ( isMappedCoverage ( entries ) ) {
-            cm = new MappedCoverageTable ( entries );
-        } else if ( isRangeCoverage ( entries ) ) {
-            cm = new RangeCoverageTable ( entries );
+        if (entries == null || entries.size() == 0) {
+            cm = new EmptyCoverageTable(entries);
+        } else if (isMappedCoverage(entries)) {
+            cm = new MappedCoverageTable(entries);
+        } else if (isRangeCoverage(entries)) {
+            cm = new RangeCoverageTable(entries);
         } else {
             cm = null;
         }
         assert cm != null : "unknown coverage type";
-        return new GlyphCoverageTable ( cm );
+        return new GlyphCoverageTable(cm);
     }
 
-    private static boolean isMappedCoverage ( List entries ) {
-        if ( ( entries == null ) || ( entries.size() == 0 ) ) {
+    private static boolean isMappedCoverage(final List entries) {
+        if (entries == null || entries.size() == 0) {
             return false;
         } else {
-            for ( Iterator it = entries.iterator(); it.hasNext();) {
-                Object o = it.next();
-                if ( ! ( o instanceof Integer ) ) {
+            for (final Iterator it = entries.iterator(); it.hasNext();) {
+                final Object o = it.next();
+                if (!(o instanceof Integer)) {
                     return false;
                 }
             }
@@ -111,13 +120,13 @@ public final class GlyphCoverageTable extends GlyphMappingTable implements Glyph
         }
     }
 
-    private static boolean isRangeCoverage ( List entries ) {
-        if ( ( entries == null ) || ( entries.size() == 0 ) ) {
+    private static boolean isRangeCoverage(final List entries) {
+        if (entries == null || entries.size() == 0) {
             return false;
         } else {
-            for ( Iterator it = entries.iterator(); it.hasNext();) {
-                Object o = it.next();
-                if ( ! ( o instanceof MappingRange ) ) {
+            for (final Iterator it = entries.iterator(); it.hasNext();) {
+                final Object o = it.next();
+                if (!(o instanceof MappingRange)) {
                     return false;
                 }
             }
@@ -125,113 +134,144 @@ public final class GlyphCoverageTable extends GlyphMappingTable implements Glyph
         }
     }
 
-    private static class EmptyCoverageTable extends GlyphMappingTable.EmptyMappingTable implements GlyphCoverageMapping {
-        public EmptyCoverageTable ( List entries ) {
-            super ( entries );
+    private static class EmptyCoverageTable extends
+    GlyphMappingTable.EmptyMappingTable implements GlyphCoverageMapping {
+        public EmptyCoverageTable(final List entries) {
+            super(entries);
         }
+
         /** {@inheritDoc} */
+        @Override
         public int getCoverageSize() {
             return 0;
         }
+
         /** {@inheritDoc} */
-        public int getCoverageIndex ( int gid ) {
+        @Override
+        public int getCoverageIndex(final int gid) {
             return -1;
         }
     }
 
-    private static class MappedCoverageTable extends GlyphMappingTable.MappedMappingTable implements GlyphCoverageMapping {
+    private static class MappedCoverageTable extends
+    GlyphMappingTable.MappedMappingTable implements
+    GlyphCoverageMapping {
         private int[] map;
-        public MappedCoverageTable ( List entries ) {
-            populate ( entries );
+
+        public MappedCoverageTable(final List entries) {
+            populate(entries);
         }
+
         /** {@inheritDoc} */
+        @Override
         public List getEntries() {
-            List entries = new java.util.ArrayList();
-            if ( map != null ) {
-                for ( int i = 0, n = map.length; i < n; i++ ) {
-                    entries.add ( Integer.valueOf ( map [ i ] ) );
+            final List entries = new java.util.ArrayList();
+            if (this.map != null) {
+                for (final int element : this.map) {
+                    entries.add(Integer.valueOf(element));
                 }
             }
             return entries;
         }
+
         /** {@inheritDoc} */
+        @Override
         public int getMappingSize() {
-            return ( map != null ) ? map.length : 0;
+            return this.map != null ? this.map.length : 0;
         }
-        public int getMappedIndex ( int gid ) {
+
+        @Override
+        public int getMappedIndex(final int gid) {
             int i;
-            if ( ( i = Arrays.binarySearch ( map, gid ) ) >= 0 ) {
+            if ((i = Arrays.binarySearch(this.map, gid)) >= 0) {
                 return i;
             } else {
                 return -1;
             }
         }
+
         /** {@inheritDoc} */
+        @Override
         public int getCoverageSize() {
             return getMappingSize();
         }
+
         /** {@inheritDoc} */
-        public int getCoverageIndex ( int gid ) {
-            return getMappedIndex ( gid );
+        @Override
+        public int getCoverageIndex(final int gid) {
+            return getMappedIndex(gid);
         }
-        private void populate ( List entries ) {
+
+        private void populate(final List entries) {
             int i = 0;
             int skipped = 0;
-            int n = entries.size();
+            final int n = entries.size();
             int gidMax = -1;
-            int[] map = new int [ n ];
-            for ( Iterator it = entries.iterator(); it.hasNext();) {
-                Object o = it.next();
-                if ( o instanceof Integer ) {
-                    int gid = ( (Integer) o ) . intValue();
-                    if ( ( gid >= 0 ) && ( gid < 65536 ) ) {
-                        if ( gid > gidMax ) {
-                            map [ i++ ] = gidMax = gid;
+            final int[] map = new int[n];
+            for (final Iterator it = entries.iterator(); it.hasNext();) {
+                final Object o = it.next();
+                if (o instanceof Integer) {
+                    final int gid = ((Integer) o).intValue();
+                    if (gid >= 0 && gid < 65536) {
+                        if (gid > gidMax) {
+                            map[i++] = gidMax = gid;
                         } else {
-                            log.info ( "ignoring out of order or duplicate glyph index: " + gid );
+                            log.info("ignoring out of order or duplicate glyph index: "
+                                    + gid);
                             skipped++;
                         }
                     } else {
-                        throw new AdvancedTypographicTableFormatException ( "illegal glyph index: " + gid );
+                        throw new AdvancedTypographicTableFormatException(
+                                "illegal glyph index: " + gid);
                     }
                 } else {
-                    throw new AdvancedTypographicTableFormatException ( "illegal coverage entry, must be Integer: " + o );
+                    throw new AdvancedTypographicTableFormatException(
+                            "illegal coverage entry, must be Integer: " + o);
                 }
             }
-            assert ( i + skipped ) == n;
+            assert i + skipped == n;
             assert this.map == null;
             this.map = map;
         }
+
         /** {@inheritDoc} */
+        @Override
         public String toString() {
-            StringBuffer sb = new StringBuffer();
+            final StringBuffer sb = new StringBuffer();
             sb.append('{');
-            for ( int i = 0, n = map.length; i < n; i++ ) {
-                if ( i > 0 ) {
+            for (int i = 0, n = this.map.length; i < n; i++) {
+                if (i > 0) {
                     sb.append(',');
                 }
-                sb.append ( Integer.toString ( map [ i ] ) );
+                sb.append(Integer.toString(this.map[i]));
             }
             sb.append('}');
             return sb.toString();
         }
     }
 
-    private static class RangeCoverageTable extends GlyphMappingTable.RangeMappingTable implements GlyphCoverageMapping {
-        public RangeCoverageTable ( List entries ) {
-            super ( entries );
+    private static class RangeCoverageTable extends
+    GlyphMappingTable.RangeMappingTable implements GlyphCoverageMapping {
+        public RangeCoverageTable(final List entries) {
+            super(entries);
         }
+
         /** {@inheritDoc} */
-        public int getMappedIndex ( int gid, int s, int m ) {
+        @Override
+        public int getMappedIndex(final int gid, final int s, final int m) {
             return m + gid - s;
         }
+
         /** {@inheritDoc} */
+        @Override
         public int getCoverageSize() {
             return getMappingSize();
         }
+
         /** {@inheritDoc} */
-        public int getCoverageIndex ( int gid ) {
-            return getMappedIndex ( gid );
+        @Override
+        public int getCoverageIndex(final int gid) {
+            return getMappedIndex(gid);
         }
     }
 

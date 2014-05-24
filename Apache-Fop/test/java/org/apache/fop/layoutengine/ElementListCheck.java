@@ -37,62 +37,66 @@ import org.w3c.dom.Text;
  */
 public class ElementListCheck implements LayoutEngineCheck {
 
-    private String category;
+    private final String category;
     private String id;
     private int index = -1;
-    private Element checkElement;
+    private final Element checkElement;
 
     /**
      * Creates a new instance from a DOM node.
-     * @param node DOM node that defines this check
+     * 
+     * @param node
+     *            DOM node that defines this check
      */
-    public ElementListCheck(Node node) {
-        this.category = node.getAttributes().getNamedItem("category").getNodeValue();
+    public ElementListCheck(final Node node) {
+        this.category = node.getAttributes().getNamedItem("category")
+                .getNodeValue();
         if (node.getAttributes().getNamedItem("id") != null) {
             this.id = node.getAttributes().getNamedItem("id").getNodeValue();
         }
         if (!haveID()) {
             if (node.getAttributes().getNamedItem("index") != null) {
-                String s = node.getAttributes().getNamedItem("index").getNodeValue();
+                final String s = node.getAttributes().getNamedItem("index")
+                        .getNodeValue();
                 this.index = Integer.parseInt(s);
             }
         }
-        this.checkElement = (Element)node;
+        this.checkElement = (Element) node;
     }
 
     /**
      * @see org.apache.fop.layoutengine.LayoutEngineCheck
      */
-    public void check(LayoutResult result) {
-        ElementListCollector.ElementList elementList = findElementList(result);
-        NodeList children = checkElement.getChildNodes();
+    @Override
+    public void check(final LayoutResult result) {
+        final ElementListCollector.ElementList elementList = findElementList(result);
+        final NodeList children = this.checkElement.getChildNodes();
         int pos = -1;
         for (int i = 0; i < children.getLength(); i++) {
-            Node node = children.item(i);
+            final Node node = children.item(i);
             if (node instanceof Element) {
                 pos++;
-                Element domEl = (Element)node;
-                KnuthElement knuthEl = (KnuthElement)elementList.getElementList().get(pos);
+                final Element domEl = (Element) node;
+                final KnuthElement knuthEl = (KnuthElement) elementList
+                        .getElementList().get(pos);
                 if ("skip".equals(domEl.getLocalName())) {
                     pos += Integer.parseInt(getElementText(domEl)) - 1;
                 } else if ("box".equals(domEl.getLocalName())) {
                     if (!(knuthEl instanceof KnuthBox)) {
-                        fail("Expected KnuthBox"
-                                + " at position " + pos
+                        fail("Expected KnuthBox" + " at position " + pos
                                 + " but got: " + knuthEl.getClass().getName());
                     }
                     if (domEl.getAttribute("w").length() > 0) {
-                        int w = Integer.parseInt(domEl.getAttribute("w"));
+                        final int w = Integer.parseInt(domEl.getAttribute("w"));
                         if (w != knuthEl.getWidth()) {
-                            fail("Expected w=" + w
-                                    + " at position " + pos
+                            fail("Expected w=" + w + " at position " + pos
                                     + " but got: " + knuthEl.getWidth());
                         }
                     }
                     if ("true".equals(domEl.getAttribute("aux"))) {
                         if (!knuthEl.isAuxiliary()) {
-                            fail("Expected auxiliary box"
-                                    + " at position " + pos);
+                            fail("Expected auxiliary box" + " at position "
+                                    + pos);
                         }
                     }
                     if ("false".equals(domEl.getAttribute("aux"))) {
@@ -103,56 +107,54 @@ public class ElementListCheck implements LayoutEngineCheck {
                     }
                 } else if ("penalty".equals(domEl.getLocalName())) {
                     if (!(knuthEl instanceof KnuthPenalty)) {
-                        fail("Expected KnuthPenalty "
-                                + " at position " + pos
+                        fail("Expected KnuthPenalty " + " at position " + pos
                                 + " but got: " + knuthEl.getClass().getName());
                     }
-                    KnuthPenalty pen = (KnuthPenalty)knuthEl;
+                    final KnuthPenalty pen = (KnuthPenalty) knuthEl;
                     if (domEl.getAttribute("w").length() > 0) {
-                        int w = Integer.parseInt(domEl.getAttribute("w"));
+                        final int w = Integer.parseInt(domEl.getAttribute("w"));
                         if (w != knuthEl.getWidth()) {
-                            fail("Expected w=" + w
-                                    + " at position " + pos
+                            fail("Expected w=" + w + " at position " + pos
                                     + " but got: " + knuthEl.getWidth());
                         }
                     }
                     if (domEl.getAttribute("p").length() > 0) {
                         if ("<0".equals(domEl.getAttribute("p"))) {
                             if (knuthEl.getPenalty() >= 0) {
-                                fail("Expected p<0"
-                                        + " at position " + pos
+                                fail("Expected p<0" + " at position " + pos
                                         + " but got: " + knuthEl.getPenalty());
                             }
                         } else if (">0".equals(domEl.getAttribute("p"))) {
                             if (knuthEl.getPenalty() <= 0) {
-                                fail("Expected p>0"
-                                        + " at position " + pos
+                                fail("Expected p>0" + " at position " + pos
                                         + " but got: " + knuthEl.getPenalty());
                             }
                         } else {
                             int p;
                             if ("INF".equalsIgnoreCase(domEl.getAttribute("p"))) {
-                                p = KnuthPenalty.INFINITE;
-                            } else if ("INFINITE".equalsIgnoreCase(domEl.getAttribute("p"))) {
-                                p = KnuthPenalty.INFINITE;
-                            } else if ("-INF".equalsIgnoreCase(domEl.getAttribute("p"))) {
-                                p = -KnuthPenalty.INFINITE;
-                            } else if ("-INFINITE".equalsIgnoreCase(domEl.getAttribute("p"))) {
-                                p = -KnuthPenalty.INFINITE;
+                                p = KnuthElement.INFINITE;
+                            } else if ("INFINITE".equalsIgnoreCase(domEl
+                                    .getAttribute("p"))) {
+                                p = KnuthElement.INFINITE;
+                            } else if ("-INF".equalsIgnoreCase(domEl
+                                    .getAttribute("p"))) {
+                                p = -KnuthElement.INFINITE;
+                            } else if ("-INFINITE".equalsIgnoreCase(domEl
+                                    .getAttribute("p"))) {
+                                p = -KnuthElement.INFINITE;
                             } else {
                                 p = Integer.parseInt(domEl.getAttribute("p"));
                             }
                             if (p != knuthEl.getPenalty()) {
-                                fail("Expected p=" + p
-                                        + " at position " + pos
+                                fail("Expected p=" + p + " at position " + pos
                                         + " but got: " + knuthEl.getPenalty());
                             }
                         }
                     }
                     if ("true".equals(domEl.getAttribute("flagged"))) {
                         if (!pen.isPenaltyFlagged()) {
-                            fail("Expected flagged penalty"
-                                    + " at position " + pos);
+                            fail("Expected flagged penalty" + " at position "
+                                    + pos);
                         }
                     } else if ("false".equals(domEl.getAttribute("flagged"))) {
                         if (pen.isPenaltyFlagged()) {
@@ -162,8 +164,8 @@ public class ElementListCheck implements LayoutEngineCheck {
                     }
                     if ("true".equals(domEl.getAttribute("aux"))) {
                         if (!pen.isAuxiliary()) {
-                            fail("Expected auxiliary penalty"
-                                    + " at position " + pos);
+                            fail("Expected auxiliary penalty" + " at position "
+                                    + pos);
                         }
                     } else if ("false".equals(domEl.getAttribute("aux"))) {
                         if (pen.isAuxiliary()) {
@@ -173,21 +175,20 @@ public class ElementListCheck implements LayoutEngineCheck {
                     }
                 } else if ("glue".equals(domEl.getLocalName())) {
                     if (!(knuthEl instanceof KnuthGlue)) {
-                        fail("Expected KnuthGlue"
-                                + " at position " + pos
+                        fail("Expected KnuthGlue" + " at position " + pos
                                 + " but got: " + knuthEl.getClass().getName());
                     }
-                    KnuthGlue glue = (KnuthGlue)knuthEl;
+                    final KnuthGlue glue = (KnuthGlue) knuthEl;
                     if (domEl.getAttribute("w").length() > 0) {
-                        int w = Integer.parseInt(domEl.getAttribute("w"));
+                        final int w = Integer.parseInt(domEl.getAttribute("w"));
                         if (w != knuthEl.getWidth()) {
-                            fail("Expected w=" + w
-                                    + " at position " + pos
+                            fail("Expected w=" + w + " at position " + pos
                                     + " but got: " + knuthEl.getWidth());
                         }
                     }
                     if (domEl.getAttribute("y").length() > 0) {
-                        int stretch = Integer.parseInt(domEl.getAttribute("y"));
+                        final int stretch = Integer.parseInt(domEl
+                                .getAttribute("y"));
                         if (stretch != knuthEl.getStretch()) {
                             fail("Expected y=" + stretch
                                     + " (stretch) at position " + pos
@@ -195,7 +196,8 @@ public class ElementListCheck implements LayoutEngineCheck {
                         }
                     }
                     if (domEl.getAttribute("z").length() > 0) {
-                        int shrink = Integer.parseInt(domEl.getAttribute("z"));
+                        final int shrink = Integer.parseInt(domEl
+                                .getAttribute("z"));
                         if (shrink != knuthEl.getShrink()) {
                             fail("Expected z=" + shrink
                                     + " (shrink) at position " + pos
@@ -203,35 +205,38 @@ public class ElementListCheck implements LayoutEngineCheck {
                         }
                     }
                 } else {
-                    throw new IllegalArgumentException("Invalid child node for 'element-list': "
-                            + domEl.getLocalName()
-                            + " at position " + pos + " (" + this + ")");
+                    throw new IllegalArgumentException(
+                            "Invalid child node for 'element-list': "
+                                    + domEl.getLocalName() + " at position "
+                                    + pos + " (" + this + ")");
                 }
 
             }
         }
         pos++;
         if (elementList.getElementList().size() > pos) {
-            fail("There are "
-                    + (elementList.getElementList().size() - pos)
+            fail("There are " + (elementList.getElementList().size() - pos)
                     + " unchecked elements at the end of the list");
         }
     }
 
-    private void fail(String msg) {
+    private void fail(final String msg) {
         throw new RuntimeException(msg + " (" + this + ")");
     }
 
     private boolean haveID() {
-        return (this.id != null && this.id.length() > 0);
+        return this.id != null && this.id.length() > 0;
     }
 
-    private ElementListCollector.ElementList findElementList(LayoutResult result) {
-        List candidates = new java.util.ArrayList();
-        Iterator iter = result.getElementListCollector().getElementLists().iterator();
+    private ElementListCollector.ElementList findElementList(
+            final LayoutResult result) {
+        final List candidates = new java.util.ArrayList();
+        final Iterator iter = result.getElementListCollector()
+                .getElementLists().iterator();
         while (iter.hasNext()) {
-            ElementListCollector.ElementList el = (ElementListCollector.ElementList)iter.next();
-            if (el.getCategory().equals(category)) {
+            final ElementListCollector.ElementList el = (ElementListCollector.ElementList) iter
+                    .next();
+            if (el.getCategory().equals(this.category)) {
                 if (haveID() && this.id.equals(el.getID())) {
                     candidates.add(el);
                     break;
@@ -241,36 +246,39 @@ public class ElementListCheck implements LayoutEngineCheck {
             }
         }
         if (candidates.size() == 0) {
-            throw new ArrayIndexOutOfBoundsException("Requested element list not found");
-        } else if (index >= 0) {
-            return (ElementListCollector.ElementList)candidates.get(index);
+            throw new ArrayIndexOutOfBoundsException(
+                    "Requested element list not found");
+        } else if (this.index >= 0) {
+            return (ElementListCollector.ElementList) candidates
+                    .get(this.index);
         } else {
-            return (ElementListCollector.ElementList)candidates.get(0);
+            return (ElementListCollector.ElementList) candidates.get(0);
         }
     }
 
-    private static String getElementText(Element el) {
-        StringBuffer sb = new StringBuffer();
-        NodeList children = el.getChildNodes();
+    private static String getElementText(final Element el) {
+        final StringBuffer sb = new StringBuffer();
+        final NodeList children = el.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
-            Node node = children.item(i);
+            final Node node = children.item(i);
             if (node instanceof Text) {
-                sb.append(((Text)node).getData());
+                sb.append(((Text) node).getData());
             } else if (node instanceof CDATASection) {
-                sb.append(((CDATASection)node).getData());
+                sb.append(((CDATASection) node).getData());
             }
         }
         return sb.toString();
     }
 
     /** @see java.lang.Object#toString() */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("element-list");
-        sb.append(" category=").append(category);
+        final StringBuffer sb = new StringBuffer("element-list");
+        sb.append(" category=").append(this.category);
         if (haveID()) {
-            sb.append(" id=").append(id);
-        } else if (index >= 0) {
-            sb.append(" index=").append(index);
+            sb.append(" id=").append(this.id);
+        } else if (this.index >= 0) {
+            sb.append(" index=").append(this.index);
         }
         return sb.toString();
     }

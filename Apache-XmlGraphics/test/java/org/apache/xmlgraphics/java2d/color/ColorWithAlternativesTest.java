@@ -23,45 +23,53 @@ import java.awt.Color;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+
 /**
  * Tests the {@link ColorWithAlternatives} class.
  */
 public class ColorWithAlternativesTest extends TestCase {
 
-    public void testEquals() throws Exception {
+    @Test
+    public void testEquals() {
         Color col1 = new ColorWithAlternatives(255, 204, 0, null);
-        Color col2 = new Color(255, 204, 0);
+        final Color col2 = new Color(255, 204, 0);
 
         assertEquals(col1, col2);
         assertEquals(col2, col1);
 
-        CIELabColorSpace lab = ColorSpaces.getCIELabColorSpaceD50();
-        Color postgelbLab = lab.toColor(83.25f, 16.45f, 96.89f, 1.0f);
-        col1 = new ColorWithAlternatives(255, 204, 0, new Color[] {postgelbLab});
+        final CIELabColorSpace lab = ColorSpaces.getCIELabColorSpaceD50();
+        final Color postgelbLab = lab.toColor(83.25f, 16.45f, 96.89f, 1.0f);
+        col1 = new ColorWithAlternatives(255, 204, 0,
+                new Color[] { postgelbLab });
 
-        //java.awt.Color tests on the sRGB value only
+        // java.awt.Color tests on the sRGB value only
         assertEquals(col1, col2);
         assertEquals(col2, col1);
     }
 
-    public void testSameColor() throws Exception {
+    @Test
+    public void testSameColor() {
         Color col1 = new ColorWithAlternatives(255, 204, 0, null);
-        Color col2 = new Color(255, 204, 0);
+        final Color col2 = new Color(255, 204, 0);
 
-        //No alternatives. Only sRGB counts.
+        // No alternatives. Only sRGB counts.
         assertTrue(ColorUtil.isSameColor(col1, col2));
 
-        CIELabColorSpace lab = ColorSpaces.getCIELabColorSpaceD50();
-        Color postgelbLab = lab.toColor(83.25f, 16.45f, 96.89f, 1.0f);
-        col1 = new ColorWithAlternatives(255, 204, 0, new Color[] {postgelbLab});
+        final CIELabColorSpace lab = ColorSpaces.getCIELabColorSpaceD50();
+        final Color postgelbLab = lab.toColor(83.25f, 16.45f, 96.89f, 1.0f);
+        col1 = new ColorWithAlternatives(255, 204, 0,
+                new Color[] { postgelbLab });
 
-        //Same sRGB value but one color with alternatives:
+        // Same sRGB value but one color with alternatives:
         assertFalse(ColorUtil.isSameColor(col1, col2));
 
-        //Once the spotcolor naked and once as part of a color with alternatives
+        // Once the spotcolor naked and once as part of a color with
+        // alternatives
         assertFalse(ColorUtil.isSameColor(postgelbLab, col1));
 
-        //sRGB values is calculated from Lab color and doesn't exactly match the selected fallback
+        // sRGB values is calculated from Lab color and doesn't exactly match
+        // the selected fallback
         assertFalse(postgelbLab.equals(col1));
     }
 

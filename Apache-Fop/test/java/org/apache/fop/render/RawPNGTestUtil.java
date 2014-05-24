@@ -37,24 +37,35 @@ public final class RawPNGTestUtil {
     }
 
     /**
-     * Builds a PNG IDAT section for a square of a given color and alpha; the filter is fixed.
-     * @param gray the gray color; set to -1 if using RGB
-     * @param red the red color; ignored if gray > -1
-     * @param green the green color; ignored if gray > -1
-     * @param blue the blue color; ignored if gray > -1
-     * @param alpha the alpha color; set to -1 if not present
+     * Builds a PNG IDAT section for a square of a given color and alpha; the
+     * filter is fixed.
+     * 
+     * @param gray
+     *            the gray color; set to -1 if using RGB
+     * @param red
+     *            the red color; ignored if gray > -1
+     * @param green
+     *            the green color; ignored if gray > -1
+     * @param blue
+     *            the blue color; ignored if gray > -1
+     * @param alpha
+     *            the alpha color; set to -1 if not present
      * @return the PNG IDAT byte array
      * @throws IOException
      */
-    public static byte[] buildGRGBAData(int gray, int red, int green, int blue, int alpha) throws IOException {
-        // build an image, 32x32, Gray or RGB, with or without alpha, and with filter
-        int filter = 0;
-        int numRows = NUM_ROWS;
-        int numColumns = NUM_COLUMNS;
-        int numComponents = (gray > -1 ? 1 : 3) + (alpha > -1 ? 1 : 0);
-        int numBytesPerRow = numColumns * numComponents + 1; // 1 for filter
-        int numBytes = numRows * numBytesPerRow;
-        byte[] data = new byte[numBytes];
+    public static byte[] buildGRGBAData(final int gray, final int red,
+            final int green, final int blue, final int alpha)
+            throws IOException {
+        // build an image, 32x32, Gray or RGB, with or without alpha, and with
+        // filter
+        final int filter = 0;
+        final int numRows = NUM_ROWS;
+        final int numColumns = NUM_COLUMNS;
+        final int numComponents = (gray > -1 ? 1 : 3) + (alpha > -1 ? 1 : 0);
+        final int numBytesPerRow = numColumns * numComponents + 1; // 1 for
+                                                                   // filter
+        final int numBytes = numRows * numBytesPerRow;
+        final byte[] data = new byte[numBytes];
         for (int r = 0; r < numRows; r++) {
             data[r * numBytesPerRow] = (byte) filter;
             for (int c = 0; c < numColumns; c++) {
@@ -75,15 +86,16 @@ public final class RawPNGTestUtil {
                 }
             }
         }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DeflaterOutputStream dos = new DeflaterOutputStream(baos, new Deflater());
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final DeflaterOutputStream dos = new DeflaterOutputStream(baos,
+                new Deflater());
         dos.write(data);
         dos.close();
         return baos.toByteArray();
     }
 
     /**
-     * 
+     *
      * @return a default ImageSize
      */
     public static ImageSize getImageSize() {

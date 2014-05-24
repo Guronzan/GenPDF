@@ -24,7 +24,8 @@ import org.apache.xmlgraphics.image.loader.ImageInfo;
 import org.apache.xmlgraphics.java2d.Graphics2DImagePainter;
 
 /**
- * This class is an implementation of the Image interface exposing a Graphics2DImagePainter.
+ * This class is an implementation of the Image interface exposing a
+ * Graphics2DImagePainter.
  */
 public class ImageGraphics2D extends AbstractImage {
 
@@ -32,26 +33,33 @@ public class ImageGraphics2D extends AbstractImage {
 
     /**
      * Main constructor.
-     * @param info the image info object
-     * @param painter the image painter that will paint the Java2D image
+     * 
+     * @param info
+     *            the image info object
+     * @param painter
+     *            the image painter that will paint the Java2D image
      */
-    public ImageGraphics2D(ImageInfo info, Graphics2DImagePainter painter) {
+    public ImageGraphics2D(final ImageInfo info,
+            final Graphics2DImagePainter painter) {
         super(info);
         setGraphics2DImagePainter(painter);
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getFlavor() {
         return ImageFlavor.GRAPHICS2D;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isCacheable() {
         return true;
     }
 
     /**
      * Returns the contained Graphics2DImagePainter instance.
+     * 
      * @return the image painter
      */
     public Graphics2DImagePainter getGraphics2DImagePainter() {
@@ -60,9 +68,11 @@ public class ImageGraphics2D extends AbstractImage {
 
     /**
      * Sets the Graphics2DImagePainter instance.
-     * @param painter the image painter
+     * 
+     * @param painter
+     *            the image painter
      */
-    public void setGraphics2DImagePainter(Graphics2DImagePainter painter) {
+    public void setGraphics2DImagePainter(final Graphics2DImagePainter painter) {
         this.painter = painter;
     }
 

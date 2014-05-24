@@ -31,20 +31,23 @@ import org.apache.fop.render.AbstractFOEventHandlerMaker;
  */
 public class MIFFOEventHandlerMaker extends AbstractFOEventHandlerMaker {
 
-    private static final String[] MIMES = new String[] {MimeConstants.MIME_MIF};
-
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_MIF };
 
     /** {@inheritDoc} */
-    public FOEventHandler makeFOEventHandler(FOUserAgent ua, OutputStream out) {
+    @Override
+    public FOEventHandler makeFOEventHandler(final FOUserAgent ua,
+            final OutputStream out) {
         return new MIFHandler(ua, out);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

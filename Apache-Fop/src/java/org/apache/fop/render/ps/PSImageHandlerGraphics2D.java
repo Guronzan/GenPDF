@@ -26,6 +26,7 @@ import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 
+import org.apache.fop.render.RenderingContext;
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
@@ -36,37 +37,36 @@ import org.apache.xmlgraphics.ps.FormGenerator;
 import org.apache.xmlgraphics.ps.PSGenerator;
 import org.apache.xmlgraphics.ps.PSProcSets;
 
-import org.apache.fop.render.RenderingContext;
-
 /**
- * Image handler implementation which handles vector graphics (Java2D) for PostScript output.
+ * Image handler implementation which handles vector graphics (Java2D) for
+ * PostScript output.
  */
 public class PSImageHandlerGraphics2D implements PSImageHandler {
 
-    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {
-        ImageFlavor.GRAPHICS2D
-    };
+    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] { ImageFlavor.GRAPHICS2D };
 
     /** {@inheritDoc} */
-    public void handleImage(RenderingContext context, Image image, Rectangle pos)
-                throws IOException {
-        PSRenderingContext psContext = (PSRenderingContext)context;
-        PSGenerator gen = psContext.getGenerator();
-        ImageGraphics2D imageG2D = (ImageGraphics2D)image;
-        Graphics2DImagePainter painter = imageG2D.getGraphics2DImagePainter();
+    @Override
+    public void handleImage(final RenderingContext context, final Image image,
+            final Rectangle pos) throws IOException {
+        final PSRenderingContext psContext = (PSRenderingContext) context;
+        final PSGenerator gen = psContext.getGenerator();
+        final ImageGraphics2D imageG2D = (ImageGraphics2D) image;
+        final Graphics2DImagePainter painter = imageG2D
+                .getGraphics2DImagePainter();
 
-        float fx = (float)pos.getX() / 1000f;
-        float fy = (float)pos.getY() / 1000f;
-        float fwidth = (float)pos.getWidth() / 1000f;
-        float fheight = (float)pos.getHeight() / 1000f;
+        final float fx = (float) pos.getX() / 1000f;
+        final float fy = (float) pos.getY() / 1000f;
+        final float fwidth = (float) pos.getWidth() / 1000f;
+        final float fheight = (float) pos.getHeight() / 1000f;
 
         // get the 'width' and 'height' attributes of the SVG document
-        Dimension dim = painter.getImageSize();
-        float imw = (float)dim.getWidth() / 1000f;
-        float imh = (float)dim.getHeight() / 1000f;
+        final Dimension dim = painter.getImageSize();
+        final float imw = (float) dim.getWidth() / 1000f;
+        final float imh = (float) dim.getHeight() / 1000f;
 
-        float sx = fwidth / (float)imw;
-        float sy = fheight / (float)imh;
+        final float sx = fwidth / imw;
+        final float sy = fheight / imh;
 
         gen.commentln("%FOPBeginGraphics2D");
         gen.saveGraphicsState();
@@ -84,72 +84,86 @@ public class PSImageHandlerGraphics2D implements PSImageHandler {
         gen.concatMatrix(sx, 0, 0, sy, fx, fy);
 
         final boolean textAsShapes = false;
-        PSGraphics2D graphics = new PSGraphics2D(textAsShapes, gen);
+        final PSGraphics2D graphics = new PSGraphics2D(textAsShapes, gen);
         graphics.setGraphicContext(new org.apache.xmlgraphics.java2d.GraphicContext());
-        AffineTransform transform = new AffineTransform();
+        final AffineTransform transform = new AffineTransform();
         // scale to viewbox
         transform.translate(fx, fy);
         gen.getCurrentState().concatMatrix(transform);
-        Rectangle2D area = new Rectangle2D.Double(0.0, 0.0, imw, imh);
+        final Rectangle2D area = new Rectangle2D.Double(0.0, 0.0, imw, imh);
         painter.paint(graphics, area);
         gen.restoreGraphicsState();
         gen.commentln("%FOPEndGraphics2D");
     }
 
     /** {@inheritDoc} */
-    public void generateForm(RenderingContext context, Image image, final PSImageFormResource form)
-            throws IOException {
-        PSRenderingContext psContext = (PSRenderingContext)context;
-        PSGenerator gen = psContext.getGenerator();
-        final ImageGraphics2D imageG2D = (ImageGraphics2D)image;
-        ImageInfo info = image.getInfo();
+    @Override
+    public void generateForm(final RenderingContext context, final Image image,
+            final PSImageFormResource form) throws IOException {
+        final PSRenderingContext psContext = (PSRenderingContext) context;
+        final PSGenerator gen = psContext.getGenerator();
+        final ImageGraphics2D imageG2D = (ImageGraphics2D) image;
+        final ImageInfo info = image.getInfo();
 
-        FormGenerator formGen = buildFormGenerator(gen.getPSLevel(), form, info, imageG2D);
+        final FormGenerator formGen = buildFormGenerator(gen.getPSLevel(),
+                form, info, imageG2D);
         formGen.generate(gen);
     }
+
     /** {@inheritDoc} */
+    @Override
     public int getPriority() {
         return 200;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class getSupportedImageClass() {
         return ImageGraphics2D.class;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor[] getSupportedImageFlavors() {
         return FLAVORS;
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible(RenderingContext targetContext, Image image) {
+    @Override
+    public boolean isCompatible(final RenderingContext targetContext,
+            final Image image) {
         if (targetContext instanceof PSRenderingContext) {
-            return (image == null || image instanceof ImageGraphics2D);
+            return image == null || image instanceof ImageGraphics2D;
         }
         return false;
     }
 
-    private FormGenerator buildFormGenerator(int psLanguageLevel, final PSImageFormResource form,
-            final ImageInfo info, final ImageGraphics2D imageG2D) {
-        String imageDescription = info.getMimeType() + " " + info.getOriginalURI();
+    private FormGenerator buildFormGenerator(final int psLanguageLevel,
+            final PSImageFormResource form, final ImageInfo info,
+            final ImageGraphics2D imageG2D) {
+        final String imageDescription = info.getMimeType() + " "
+                + info.getOriginalURI();
         final Dimension2D dimensionsPt = info.getSize().getDimensionPt();
         final Dimension2D dimensionsMpt = info.getSize().getDimensionMpt();
         FormGenerator formGen;
 
         if (psLanguageLevel <= 2) {
-            formGen = new EPSFormGenerator(form.getName(), imageDescription, dimensionsPt) {
+            formGen = new EPSFormGenerator(form.getName(), imageDescription,
+                    dimensionsPt) {
 
                 @Override
-                void doGeneratePaintProc(PSGenerator gen) throws IOException {
+                void doGeneratePaintProc(final PSGenerator gen)
+                        throws IOException {
                     paintImageG2D(imageG2D, dimensionsMpt, gen);
                 }
             };
         } else {
-            formGen = new EPSFormGenerator(form.getName(), imageDescription, dimensionsPt) {
+            formGen = new EPSFormGenerator(form.getName(), imageDescription,
+                    dimensionsPt) {
 
                 @Override
-                protected void generateAdditionalDataStream(PSGenerator gen) throws IOException {
+                protected void generateAdditionalDataStream(
+                        final PSGenerator gen) throws IOException {
                     gen.writeln("/" + form.getName() + ":Data currentfile <<");
                     gen.writeln("  /Filter /SubFileDecode");
                     gen.writeln("  /DecodeParms << /EODCount 0 /EODString (%FOPEndOfData) >>");
@@ -160,7 +174,8 @@ public class PSImageHandlerGraphics2D implements PSImageHandler {
                 }
 
                 @Override
-                void doGeneratePaintProc(PSGenerator gen) throws IOException {
+                void doGeneratePaintProc(final PSGenerator gen)
+                        throws IOException {
                     gen.writeln(form.getName() + ":Data 0 setfileposition");
                     gen.writeln(form.getName() + ":Data cvx exec");
                 }
@@ -171,22 +186,24 @@ public class PSImageHandlerGraphics2D implements PSImageHandler {
 
     private abstract static class EPSFormGenerator extends FormGenerator {
 
-        EPSFormGenerator(String formName, String title, Dimension2D dimensions) {
+        EPSFormGenerator(final String formName, final String title,
+                final Dimension2D dimensions) {
             super(formName, title, dimensions);
         }
 
-        protected void paintImageG2D(final ImageGraphics2D imageG2D, Dimension2D dimensionsMpt,
-                PSGenerator gen) throws IOException {
-            PSGraphics2DAdapter adapter = new PSGraphics2DAdapter(gen, false);
-            adapter.paintImage(imageG2D.getGraphics2DImagePainter(),
-                        null,
-                        0, 0,
-                        (int) Math.round(dimensionsMpt.getWidth()),
-                        (int) Math.round(dimensionsMpt.getHeight()));
+        protected void paintImageG2D(final ImageGraphics2D imageG2D,
+                final Dimension2D dimensionsMpt, final PSGenerator gen)
+                throws IOException {
+            final PSGraphics2DAdapter adapter = new PSGraphics2DAdapter(gen,
+                    false);
+            adapter.paintImage(imageG2D.getGraphics2DImagePainter(), null, 0,
+                    0, (int) Math.round(dimensionsMpt.getWidth()),
+                    (int) Math.round(dimensionsMpt.getHeight()));
         }
 
         @Override
-        protected final void generatePaintProc(PSGenerator gen) throws IOException {
+        protected final void generatePaintProc(final PSGenerator gen)
+                throws IOException {
             gen.getResourceTracker().notifyResourceUsageOnPage(
                     PSProcSets.EPS_PROCSET);
             gen.writeln("BeginEPSF");
@@ -194,6 +211,7 @@ public class PSImageHandlerGraphics2D implements PSImageHandler {
             gen.writeln("EndEPSF");
         }
 
-        abstract void doGeneratePaintProc(PSGenerator gen) throws IOException;
+        abstract void doGeneratePaintProc(final PSGenerator gen)
+                throws IOException;
     }
 }

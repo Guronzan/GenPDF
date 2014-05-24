@@ -25,8 +25,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Stack;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.accessibility.StructureTreeElement;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
@@ -47,6 +47,7 @@ import org.xml.sax.helpers.LocatorImpl;
 /**
  * Base class for nodes in the XML tree
  */
+@Slf4j
 public abstract class FONode implements Cloneable {
 
     /** the XSL-FO namespace URI */
@@ -66,9 +67,6 @@ public abstract class FONode implements Cloneable {
      * <code>getColumnNumber()</code> for file, line, column information
      */
     protected Locator locator;
-
-    /** Logger for fo-tree related messages **/
-    protected static final Log log = LogFactory.getLog(FONode.class);
 
     /**
      * Base constructor
@@ -127,7 +125,7 @@ public abstract class FONode implements Cloneable {
 
     /**
      * Set the location information for this element
-     * 
+     *
      * @param locator
      *            the org.xml.sax.Locator object
      */
@@ -165,7 +163,7 @@ public abstract class FONode implements Cloneable {
     /**
      * Returns the context class providing information used during FO tree
      * building.
-     * 
+     *
      * @return the builder context
      */
     public FOTreeBuilderContext getBuilderContext() {
@@ -174,7 +172,7 @@ public abstract class FONode implements Cloneable {
 
     /**
      * Indicates whether this node is a child of an fo:marker.
-     * 
+     *
      * @return true if this node is a child of an fo:marker
      */
     protected boolean inMarker() {
@@ -189,15 +187,6 @@ public abstract class FONode implements Cloneable {
      */
     public FOUserAgent getUserAgent() {
         return getFOEventHandler().getUserAgent();
-    }
-
-    /**
-     * Returns the logger for the node.
-     *
-     * @return the logger
-     */
-    public Log getLogger() {
-        return log;
     }
 
     /**
@@ -423,7 +412,7 @@ public abstract class FONode implements Cloneable {
     /**
      * Helper function to obtain standard usage prefix for FOP related namespace
      * URIs.
-     * 
+     *
      * @param namespaceURI
      *            URI of node found (e.g., "http://www.w3.org/1999/XSL/Format")
      * @return the prefix or null if none
@@ -447,7 +436,7 @@ public abstract class FONode implements Cloneable {
      * name pairs in text messages. For readability, using fo:, fox:, svg:, for
      * those namespaces even though that prefix may not have been chosen in the
      * document.
-     * 
+     *
      * @param namespaceURI
      *            URI of node found (e.g., "http://www.w3.org/1999/XSL/Format")
      * @param localName
@@ -468,7 +457,7 @@ public abstract class FONode implements Cloneable {
 
     /**
      * Returns an instance of the FOValidationEventProducer.
-     * 
+     *
      * @return an event producer for FO validation
      */
     protected FOValidationEventProducer getFOValidationEventProducer() {
@@ -479,7 +468,7 @@ public abstract class FONode implements Cloneable {
     /**
      * Helper function to standardize "too many" error exceptions (e.g., two
      * fo:declarations within fo:root)
-     * 
+     *
      * @param loc
      *            org.xml.sax.Locator object of the error (*not* parent node)
      * @param nsURI
@@ -515,7 +504,7 @@ public abstract class FONode implements Cloneable {
      * Helper function to standardize "too many" error exceptions (e.g., two
      * fo:declarations within fo:root) This overloaded method helps make the
      * caller code better self-documenting
-     * 
+     *
      * @param loc
      *            org.xml.sax.Locator object of the error (*not* parent node)
      * @param offendingNode
@@ -551,7 +540,7 @@ public abstract class FONode implements Cloneable {
     /**
      * Helper function to standardize "out of order" exceptions (e.g.,
      * fo:layout-master-set appearing after fo:page-sequence)
-     * 
+     *
      * @param loc
      *            org.xml.sax.Locator object of the error (*not* parent node)
      * @param tooLateNode
@@ -642,7 +631,7 @@ public abstract class FONode implements Cloneable {
      * Helper function to throw an error caused by missing mandatory child
      * elements. E.g., fo:layout-master-set not having any page-master child
      * element.
-     * 
+     *
      * @param contentModel
      *            The XSL Content Model for the fo: object or a similar
      *            description indicating the necessary child elements.
@@ -737,7 +726,7 @@ public abstract class FONode implements Cloneable {
      * a node. Call this method only in exceptional conditions because this
      * method may perform quite extensive information gathering inside the FO
      * tree.
-     * 
+     *
      * @return a String containing context information
      */
     // [GA] remove deprecation - no alternative specified
@@ -776,7 +765,7 @@ public abstract class FONode implements Cloneable {
      * information gathering inside the FO tree. All text returned by this
      * method that is not extracted from document content needs to be
      * locale-independent.
-     * 
+     *
      * @return a String containing context information
      */
     protected String getContextInfoAlt() {
@@ -826,7 +815,7 @@ public abstract class FONode implements Cloneable {
 
     /**
      * Gathers context information for the getContextInfo() method.
-     * 
+     *
      * @return the collected context information or null, if none is available
      */
     protected String gatherContextInfo() {
@@ -991,7 +980,7 @@ public abstract class FONode implements Cloneable {
      * Determine if node has a delimited text range boundary. N.B. that we
      * report this to be true by default, while specific subclasses override
      * this method to report false.
-     * 
+     *
      * @param boundary
      *            one of {EN_BEFORE, EN_AFTER, or EN_BOTH} enumeration constants
      * @return true if indicated boundary (or boundaries) constitute a delimited
@@ -1004,7 +993,7 @@ public abstract class FONode implements Cloneable {
     /**
      * Collect the sequence of delimited text ranges, where each new range is
      * pushed onto RANGES.
-     * 
+     *
      * @param ranges
      *            a stack of delimited text ranges
      * @return the (possibly) updated stack of delimited text ranges
@@ -1034,7 +1023,7 @@ public abstract class FONode implements Cloneable {
      * Collect the sequence of delimited text ranges, where each new range is
      * pushed onto RANGES, where default implementation collects ranges of child
      * nodes.
-     * 
+     *
      * @param ranges
      *            a stack of delimited text ranges
      * @param currentRange
@@ -1051,7 +1040,7 @@ public abstract class FONode implements Cloneable {
 
     /**
      * Determine if this node is a new bidi RANGE block item.
-     * 
+     *
      * @return true if this node is a new bidi RANGE block item
      */
     public boolean isBidiRangeBlockItem() {
@@ -1068,7 +1057,7 @@ public abstract class FONode implements Cloneable {
      * <li>the node of the RCUR is the same node as FN or a descendent node of
      * FN</li>
      * </ul>
-     * 
+     *
      * @param ranges
      *            stack of delimited text ranges
      * @return new range (if constructed and pushed onto stack) or current range
@@ -1077,7 +1066,7 @@ public abstract class FONode implements Cloneable {
     private DelimitedTextRange maybeNewRange(final Stack ranges) {
         DelimitedTextRange rCur = null; // current range (top of range stack)
         DelimitedTextRange rNew = null; // new range to be pushed onto range
-                                        // stack
+        // stack
         if (ranges.empty()) {
             if (isBidiRangeBlockItem()) {
                 rNew = new DelimitedTextRange(this);

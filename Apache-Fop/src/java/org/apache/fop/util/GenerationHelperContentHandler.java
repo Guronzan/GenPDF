@@ -19,16 +19,15 @@
 
 package org.apache.fop.util;
 
+import org.apache.xmlgraphics.util.QName;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import org.apache.xmlgraphics.util.QName;
-
 /**
- * This class is a delegating SAX ContentHandler which has the purpose to provide a few handy
- * methods that make life easier when generating SAX events.
+ * This class is a delegating SAX ContentHandler which has the purpose to
+ * provide a few handy methods that make life easier when generating SAX events.
  */
 public class GenerationHelperContentHandler extends DelegatingContentHandler {
 
@@ -37,19 +36,25 @@ public class GenerationHelperContentHandler extends DelegatingContentHandler {
     private String mainNamespace;
 
     /**
-     * Main constructor. If the given handler also implements any of the EntityResolver,
-     * DTDHandler, LexicalHandler or ErrorHandler interfaces, these are set automatically.
-     * @param handler the SAX content handler to delegate all calls to
-     * @param mainNamespace the main namespace used for generated XML content when abbreviated
-     *                          ContentHandler calls are used.
+     * Main constructor. If the given handler also implements any of the
+     * EntityResolver, DTDHandler, LexicalHandler or ErrorHandler interfaces,
+     * these are set automatically.
+     * 
+     * @param handler
+     *            the SAX content handler to delegate all calls to
+     * @param mainNamespace
+     *            the main namespace used for generated XML content when
+     *            abbreviated ContentHandler calls are used.
      */
-    public GenerationHelperContentHandler(ContentHandler handler, String mainNamespace) {
+    public GenerationHelperContentHandler(final ContentHandler handler,
+            final String mainNamespace) {
         super(handler);
         this.mainNamespace = mainNamespace;
     }
 
     /**
      * Returns the main namespace used for generated XML content.
+     * 
      * @return the main namespace
      */
     public String getMainNamespace() {
@@ -57,94 +62,132 @@ public class GenerationHelperContentHandler extends DelegatingContentHandler {
     }
 
     /**
-     * Sets the main namespace used for generated XML content when abbreviated ContentHandler
-     * calls are used.
-     * @param namespaceURI the new main namespace URI
+     * Sets the main namespace used for generated XML content when abbreviated
+     * ContentHandler calls are used.
+     * 
+     * @param namespaceURI
+     *            the new main namespace URI
      */
-    public void setMainNamespace(String namespaceURI) {
+    public void setMainNamespace(final String namespaceURI) {
         this.mainNamespace = namespaceURI;
     }
 
     /**
      * Convenience method to generate a startElement SAX event.
-     * @param localName the local name of the element
-     * @param atts the attributes
-     * @throws SAXException if a SAX exception occurs
+     * 
+     * @param localName
+     *            the local name of the element
+     * @param atts
+     *            the attributes
+     * @throws SAXException
+     *             if a SAX exception occurs
      */
-    public void startElement(String localName, Attributes atts) throws SAXException {
-        getDelegateContentHandler().startElement(getMainNamespace(), localName, localName, atts);
+    public void startElement(final String localName, final Attributes atts)
+            throws SAXException {
+        getDelegateContentHandler().startElement(getMainNamespace(), localName,
+                localName, atts);
     }
 
     /**
      * Convenience method to generate a startElement SAX event.
-     * @param localName the local name of the element
-     * @throws SAXException if a SAX exception occurs
+     * 
+     * @param localName
+     *            the local name of the element
+     * @throws SAXException
+     *             if a SAX exception occurs
      */
-    public void startElement(String localName) throws SAXException {
+    public void startElement(final String localName) throws SAXException {
         startElement(localName, EMPTY_ATTS);
     }
 
     /**
      * Convenience method to generate a startElement SAX event.
-     * @param qName the qualified name of the element
-     * @param atts the attributes
-     * @throws SAXException if a SAX exception occurs
+     * 
+     * @param qName
+     *            the qualified name of the element
+     * @param atts
+     *            the attributes
+     * @throws SAXException
+     *             if a SAX exception occurs
      */
-    public void startElement(QName qName, Attributes atts) throws SAXException {
-        getDelegateContentHandler().startElement(qName.getNamespaceURI(), qName.getLocalName(),
-                qName.getQName(), atts);
+    public void startElement(final QName qName, final Attributes atts)
+            throws SAXException {
+        getDelegateContentHandler().startElement(qName.getNamespaceURI(),
+                qName.getLocalName(), qName.getQName(), atts);
     }
 
     /**
      * Convenience method to generate a startElement SAX event.
-     * @param qName the qualified name of the element
-     * @throws SAXException if a SAX exception occurs
+     * 
+     * @param qName
+     *            the qualified name of the element
+     * @throws SAXException
+     *             if a SAX exception occurs
      */
-    public void startElement(QName qName) throws SAXException {
+    public void startElement(final QName qName) throws SAXException {
         startElement(qName, EMPTY_ATTS);
     }
 
     /**
      * Convenience method to generate a endElement SAX event.
-     * @param localName the local name of the element
-     * @throws SAXException if a SAX exception occurs
+     * 
+     * @param localName
+     *            the local name of the element
+     * @throws SAXException
+     *             if a SAX exception occurs
      */
-    public void endElement(String localName) throws SAXException {
-        getDelegateContentHandler().endElement(getMainNamespace(), localName, localName);
+    public void endElement(final String localName) throws SAXException {
+        getDelegateContentHandler().endElement(getMainNamespace(), localName,
+                localName);
     }
 
     /**
      * Convenience method to generate a startElement SAX event.
-     * @param qName the qualified name of the element
-     * @throws SAXException if a SAX exception occurs
+     * 
+     * @param qName
+     *            the qualified name of the element
+     * @throws SAXException
+     *             if a SAX exception occurs
      */
-    public void endElement(QName qName) throws SAXException {
-        getDelegateContentHandler().endElement(qName.getNamespaceURI(), qName.getLocalName(),
-                qName.getQName());
+    public void endElement(final QName qName) throws SAXException {
+        getDelegateContentHandler().endElement(qName.getNamespaceURI(),
+                qName.getLocalName(), qName.getQName());
     }
 
     /**
      * Convenience method to generate an empty element with attributes.
-     * @param localName the local name of the element
-     * @param atts the attributes
-     * @throws SAXException if a SAX exception occurs
+     * 
+     * @param localName
+     *            the local name of the element
+     * @param atts
+     *            the attributes
+     * @throws SAXException
+     *             if a SAX exception occurs
      */
-    public void element(String localName, Attributes atts) throws SAXException {
-        getDelegateContentHandler().startElement(getMainNamespace(), localName, localName, atts);
-        getDelegateContentHandler().endElement(getMainNamespace(), localName, localName);
+    public void element(final String localName, final Attributes atts)
+            throws SAXException {
+        getDelegateContentHandler().startElement(getMainNamespace(), localName,
+                localName, atts);
+        getDelegateContentHandler().endElement(getMainNamespace(), localName,
+                localName);
     }
 
     /**
      * Convenience method to generate an empty element with attributes.
-     * @param qName the qualified name of the element
-     * @param atts the attributes
-     * @throws SAXException if a SAX exception occurs
+     * 
+     * @param qName
+     *            the qualified name of the element
+     * @param atts
+     *            the attributes
+     * @throws SAXException
+     *             if a SAX exception occurs
      */
-    public void element(QName qName, Attributes atts) throws SAXException {
-        getDelegateContentHandler().startElement(qName.getNamespaceURI(), qName.getLocalName(),
-                qName.getQName(), atts);
-        getDelegateContentHandler().endElement(qName.getNamespaceURI(), qName.getLocalName(),
-                qName.getQName());
+    public void element(final QName qName, final Attributes atts)
+            throws SAXException {
+        getDelegateContentHandler().startElement(qName.getNamespaceURI(),
+                qName.getLocalName(), qName.getQName(), atts);
+        getDelegateContentHandler().endElement(qName.getNamespaceURI(),
+                qName.getLocalName(), qName.getQName());
     }
 
 }

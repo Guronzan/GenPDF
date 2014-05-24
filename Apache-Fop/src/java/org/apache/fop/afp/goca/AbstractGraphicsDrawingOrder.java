@@ -26,7 +26,7 @@ import org.apache.fop.afp.modca.AbstractAFPObject;
  * A base GOCA drawing order
  */
 public abstract class AbstractGraphicsDrawingOrder extends AbstractAFPObject
-    implements StructuredData {
+        implements StructuredData {
 
     /**
      * Returns the order code of this structured field
@@ -41,10 +41,10 @@ public abstract class AbstractGraphicsDrawingOrder extends AbstractAFPObject
      * @return the coordinate data
      */
     byte[] getData() {
-        int len = getDataLength();
-        byte[] data = new byte[len];
+        final int len = getDataLength();
+        final byte[] data = new byte[len];
         data[0] = getOrderCode();
-        data[1] = (byte)(len - 2);
+        data[1] = (byte) (len - 2);
         return data;
     }
 
@@ -54,7 +54,7 @@ public abstract class AbstractGraphicsDrawingOrder extends AbstractAFPObject
      * @return the short name of this GOCA object
      */
     public String getName() {
-        String className = getClass().getName();
+        final String className = getClass().getName();
         return className.substring(className.lastIndexOf(".") + 1);
     }
 }

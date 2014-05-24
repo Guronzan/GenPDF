@@ -43,19 +43,19 @@ import org.apache.fop.afp.util.BinaryUtils;
 public class IncludeObject extends AbstractNamedAFPObject {
 
     /** the object referenced is of type page segment */
-    public static final byte TYPE_PAGE_SEGMENT = (byte)0x5F;
+    public static final byte TYPE_PAGE_SEGMENT = (byte) 0x5F;
 
     /** the object referenced is of type other */
-    public static final byte TYPE_OTHER = (byte)0x92;
+    public static final byte TYPE_OTHER = (byte) 0x92;
 
     /** the object referenced is of type graphic */
-    public static final byte TYPE_GRAPHIC = (byte)0xBB;
+    public static final byte TYPE_GRAPHIC = (byte) 0xBB;
 
     /** the object referenced is of type barcode */
-    public static final byte TYPE_BARCODE = (byte)0xEB;
+    public static final byte TYPE_BARCODE = (byte) 0xEB;
 
     /** the object referenced is of type image */
-    public static final byte TYPE_IMAGE = (byte)0xFB;
+    public static final byte TYPE_IMAGE = (byte) 0xFB;
 
     /** the object type referenced (default is other) */
     private byte objectType = TYPE_OTHER;
@@ -80,9 +80,10 @@ public class IncludeObject extends AbstractNamedAFPObject {
      * be a fixed length of eight characters and is the name of the referenced
      * object.
      *
-     * @param name the name of this include object
+     * @param name
+     *            the name of this include object
      */
-    public IncludeObject(String name) {
+    public IncludeObject(final String name) {
         super(name);
     }
 
@@ -92,31 +93,35 @@ public class IncludeObject extends AbstractNamedAFPObject {
      * @param orientation
      *            The orientation (0,90, 180, 270)
      */
-    public void setObjectAreaOrientation(int orientation) {
-        this.oaOrent = AxisOrientation.getRightHandedAxisOrientationFor(orientation);
+    public void setObjectAreaOrientation(final int orientation) {
+        this.oaOrent = AxisOrientation
+                .getRightHandedAxisOrientationFor(orientation);
     }
 
     /**
      * Sets the x and y offset to the origin in the object area
      *
-     * @param x the X-axis origin of the object area
-     * @param y the Y-axis origin of the object area
+     * @param x
+     *            the X-axis origin of the object area
+     * @param y
+     *            the Y-axis origin of the object area
      */
-    public void setObjectAreaOffset(int x, int y) {
+    public void setObjectAreaOffset(final int x, final int y) {
         this.xoaOset = x;
         this.yoaOset = y;
     }
 
     /**
-     * Sets the x and y offset of the content area to the object area
-     * used in conjunction with the
-     * {@link MappingOptionTriplet#POSITION} and
+     * Sets the x and y offset of the content area to the object area used in
+     * conjunction with the {@link MappingOptionTriplet#POSITION} and
      * {@link MappingOptionTriplet#POSITION_AND_TRIM}.
      *
-     * @param x the X-axis origin defined in the object
-     * @param y the Y-axis origin defined in the object
+     * @param x
+     *            the X-axis origin defined in the object
+     * @param y
+     *            the Y-axis origin defined in the object
      */
-    public void setContentAreaOffset(int x, int y) {
+    public void setContentAreaOffset(final int x, final int y) {
         this.xocaOset = x;
         this.yocaOset = y;
     }
@@ -124,35 +129,39 @@ public class IncludeObject extends AbstractNamedAFPObject {
     /**
      * Sets the data object type
      *
-     * @param type the data object type
+     * @param type
+     *            the data object type
      */
-    public void setObjectType(byte type) {
+    public void setObjectType(final byte type) {
         this.objectType = type;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[36];
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[36];
         super.copySF(data, Type.INCLUDE, Category.DATA_RESOURCE);
 
         // Set the total record length
-        int tripletDataLength = getTripletDataLength();
-        byte[] len = BinaryUtils.convert(35 + tripletDataLength, 2); //Ignore first byte
+        final int tripletDataLength = getTripletDataLength();
+        final byte[] len = BinaryUtils.convert(35 + tripletDataLength, 2); // Ignore
+                                                                           // first
+                                                                           // byte
         data[1] = len[0];
         data[2] = len[1];
 
         data[17] = 0x00; // reserved
-        data[18] = objectType;
+        data[18] = this.objectType;
 
-        writeOsetTo(data, 19, xoaOset);
+        writeOsetTo(data, 19, this.xoaOset);
 
-        writeOsetTo(data, 22, yoaOset);
+        writeOsetTo(data, 22, this.yoaOset);
 
-        oaOrent.writeTo(data, 25);
+        this.oaOrent.writeTo(data, 25);
 
-        writeOsetTo(data, 29, xocaOset);
+        writeOsetTo(data, 29, this.xocaOset);
 
-        writeOsetTo(data, 32, yocaOset);
+        writeOsetTo(data, 32, this.yocaOset);
 
         // RefCSys (Reference coordinate system)
         data[35] = 0x01; // Page or overlay coordinate system
@@ -164,73 +173,77 @@ public class IncludeObject extends AbstractNamedAFPObject {
         writeTriplets(os);
     }
 
-    private static void writeOsetTo(byte[] out, int offset, int oset) {
+    private static void writeOsetTo(final byte[] out, final int offset,
+            final int oset) {
         if (oset > -1) {
-            byte[] y = BinaryUtils.convert(oset, 3);
+            final byte[] y = BinaryUtils.convert(oset, 3);
             out[offset] = y[0];
             out[offset + 1] = y[1];
             out[offset + 2] = y[2];
         } else {
-            out[offset] = (byte)0xFF;
-            out[offset + 1] = (byte)0xFF;
-            out[offset + 2] = (byte)0xFF;
+            out[offset] = (byte) 0xFF;
+            out[offset + 1] = (byte) 0xFF;
+            out[offset + 2] = (byte) 0xFF;
         }
     }
 
     private String getObjectTypeName() {
         String objectTypeName = null;
-        if (objectType == TYPE_PAGE_SEGMENT) {
+        if (this.objectType == TYPE_PAGE_SEGMENT) {
             objectTypeName = "page segment";
-        } else if (objectType == TYPE_OTHER) {
+        } else if (this.objectType == TYPE_OTHER) {
             objectTypeName = "other";
-        } else if (objectType == TYPE_GRAPHIC) {
+        } else if (this.objectType == TYPE_GRAPHIC) {
             objectTypeName = "graphic";
-        } else if (objectType == TYPE_BARCODE) {
+        } else if (this.objectType == TYPE_BARCODE) {
             objectTypeName = "barcode";
-        } else if (objectType == TYPE_IMAGE) {
+        } else if (this.objectType == TYPE_IMAGE) {
             objectTypeName = "image";
         }
         return objectTypeName;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "IncludeObject{name=" + this.getName()
-            + ", objectType=" + getObjectTypeName()
-            + ", xoaOset=" + xoaOset
-            + ", yoaOset=" + yoaOset
-            + ", oaOrent" + oaOrent
-            + ", xocaOset=" + xocaOset
-            + ", yocaOset=" + yocaOset
-            + "}";
+        return "IncludeObject{name=" + getName() + ", objectType="
+                + getObjectTypeName() + ", xoaOset=" + this.xoaOset
+                + ", yoaOset=" + this.yoaOset + ", oaOrent" + this.oaOrent
+                + ", xocaOset=" + this.xocaOset + ", yocaOset=" + this.yocaOset
+                + "}";
     }
 
     /**
      * Sets the mapping option
      *
-     * @param optionValue the mapping option value
+     * @param optionValue
+     *            the mapping option value
      */
-    public void setMappingOption(byte optionValue) {
+    public void setMappingOption(final byte optionValue) {
         addTriplet(new MappingOptionTriplet(optionValue));
     }
 
     /**
      * Sets the extent of an object area in the X and Y directions
      *
-     * @param x the x direction extent
-     * @param y the y direction extent
+     * @param x
+     *            the x direction extent
+     * @param y
+     *            the y direction extent
      */
-    public void setObjectAreaSize(int x, int y) {
+    public void setObjectAreaSize(final int x, final int y) {
         addTriplet(new ObjectAreaSizeTriplet(x, y));
     }
 
     /**
      * Sets the measurement units used to specify the units of measure
      *
-     * @param xRes units per base on the x-axis
-     * @param yRes units per base on the y-axis
+     * @param xRes
+     *            units per base on the x-axis
+     * @param yRes
+     *            units per base on the y-axis
      */
-    public void setMeasurementUnits(int xRes, int yRes) {
+    public void setMeasurementUnits(final int xRes, final int yRes) {
         addTriplet(new MeasurementUnitsTriplet(xRes, xRes));
     }
 

@@ -29,35 +29,40 @@ import org.apache.fop.fo.FONode;
 public class ListItemBody extends AbstractListItemPart {
 
     /**
-     * @param parent FONode that is the parent of this object
+     * @param parent
+     *            FONode that is the parent of this object
      */
-    public ListItemBody(FONode parent) {
+    public ListItemBody(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
         super.startOfNode();
         getFOEventHandler().startListBody(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
         super.endOfNode();
         getFOEventHandler().endListBody(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "list-item-body";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_LIST_ITEM_BODY}
      */
+    @Override
     public int getNameId() {
         return FO_LIST_ITEM_BODY;
     }
 }
-

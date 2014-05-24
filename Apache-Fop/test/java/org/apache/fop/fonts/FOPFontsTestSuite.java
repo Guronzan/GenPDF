@@ -19,24 +19,20 @@
 
 package org.apache.fop.fonts;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
 import org.apache.fop.fonts.truetype.FontFileReaderTestCase;
 import org.apache.fop.fonts.truetype.TTFFileTestCase;
 import org.apache.fop.fonts.truetype.TTFSubSetFileTestCase;
 import org.apache.fop.fonts.truetype.TTFTableNameTestCase;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * A test suite designed for org.apache.fop.fonts.*
  */
 @RunWith(Suite.class)
-@SuiteClasses({
-        EncodingModeTestCase.class,
-        FontFileReaderTestCase.class,
-        TTFFileTestCase.class,
-        TTFSubSetFileTestCase.class,
-        TTFTableNameTestCase.class })
+@SuiteClasses({ EncodingModeTestCase.class, FontFileReaderTestCase.class,
+    TTFFileTestCase.class, TTFSubSetFileTestCase.class,
+    TTFTableNameTestCase.class })
 public final class FOPFontsTestSuite {
 }

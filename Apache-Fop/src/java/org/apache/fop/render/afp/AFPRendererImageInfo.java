@@ -23,10 +23,9 @@ import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
+import org.apache.fop.render.RendererContext;
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
-
-import org.apache.fop.render.RendererContext;
 
 /**
  * The AFP image information
@@ -57,16 +56,24 @@ public class AFPRendererImageInfo {
     /**
      * Main constructor
      *
-     * @param uri the image uri
-     * @param pos the image content area
-     * @param origin the current position
-     * @param info the image info
-     * @param img the image
-     * @param rendererContext the renderer context
-     * @param foreignAttributes the foreign attributes
+     * @param uri
+     *            the image uri
+     * @param pos
+     *            the image content area
+     * @param origin
+     *            the current position
+     * @param info
+     *            the image info
+     * @param img
+     *            the image
+     * @param rendererContext
+     *            the renderer context
+     * @param foreignAttributes
+     *            the foreign attributes
      */
-    public AFPRendererImageInfo(String uri, Rectangle2D pos, Point origin,
-            ImageInfo info, Image img, RendererContext rendererContext, Map foreignAttributes) {
+    public AFPRendererImageInfo(final String uri, final Rectangle2D pos,
+            final Point origin, final ImageInfo info, final Image img,
+            final RendererContext rendererContext, final Map foreignAttributes) {
         this.uri = uri;
         this.pos = pos;
         this.origin = origin;
@@ -79,9 +86,10 @@ public class AFPRendererImageInfo {
     /**
      * Sets the renderer context
      *
-     * @param rendererContext the renderer context
+     * @param rendererContext
+     *            the renderer context
      */
-    public void setRendererContext(RendererContext rendererContext) {
+    public void setRendererContext(final RendererContext rendererContext) {
         this.rendererContext = rendererContext;
     }
 
@@ -114,6 +122,7 @@ public class AFPRendererImageInfo {
 
     /**
      * Return the foreign attributes
+     * 
      * @return the foreign attributes
      */
     public Map getForeignAttributes() {
@@ -148,16 +157,14 @@ public class AFPRendererImageInfo {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "AFPRendererImageInfo{\n"
-            + "\turi=" + uri + ",\n"
-            + "\tinfo=" + info + ",\n"
-            + "\tpos=" + pos + ",\n"
-            + "\torigin=" + origin + ",\n"
-            + "\timg=" + img + ",\n"
-            + "\tforeignAttributes=" + foreignAttributes + ",\n"
-            + "\trendererContext=" + rendererContext + "\n"
-        + "}";
+        return "AFPRendererImageInfo{\n" + "\turi=" + this.uri + ",\n"
+                + "\tinfo=" + this.info + ",\n" + "\tpos=" + this.pos + ",\n"
+                + "\torigin=" + this.origin + ",\n" + "\timg=" + this.img
+                + ",\n" + "\tforeignAttributes=" + this.foreignAttributes
+                + ",\n" + "\trendererContext=" + this.rendererContext + "\n"
+                + "}";
 
     }
 }

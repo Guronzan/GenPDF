@@ -32,6 +32,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.complexscripts.fonts.GlyphPositioningTable;
 import org.apache.fop.complexscripts.fonts.GlyphSubstitutionTable;
 import org.apache.fop.complexscripts.fonts.ttx.TTXFile;
@@ -40,138 +42,155 @@ import org.apache.fop.complexscripts.util.GlyphSequence;
 /**
  * Tests for functionality related to the arabic script.
  */
+@Slf4j
 public class GenerateArabicTestData implements ArabicTestConstants {
 
-    public static void main ( String[] args ) {
+    public static void main(final String[] args) {
         boolean compile = false;
         boolean help = false;
-        for ( String a : args ) {
-            if ( a.equals("-c") ) {
+        for (final String a : args) {
+            if (a.equals("-c")) {
                 compile = true;
             }
-            if ( a.equals("-?") ) {
+            if (a.equals("-?")) {
                 help = true;
             }
         }
-        if ( help ) {
+        if (help) {
             help();
-        } else if ( compile ) {
+        } else if (compile) {
             compile();
         }
     }
 
     private static void help() {
-        StringBuffer sb = new StringBuffer();
-        sb.append ( "org.apache.fop.complexscripts.arabic.ArabicTestCase" );
-        sb.append ( " [-compile]" );
-        sb.append ( " [-?]" );
-        System.out.println ( sb.toString() );
+        final StringBuffer sb = new StringBuffer();
+        sb.append("org.apache.fop.complexscripts.arabic.ArabicTestCase");
+        sb.append(" [-compile]");
+        sb.append(" [-?]");
+        log.info(sb.toString());
     }
 
     private static void compile() {
-        for ( String sfn : srcFiles ) {
+        for (final String sfn : srcFiles) {
             try {
-                String spn = srcFilesDir + File.separator + sfn + "." + WF_FILE_SRC_EXT;
-                compile ( WF_FILE_SCRIPT, WF_FILE_LANGUAGE, spn );
-            } catch ( Exception e ) {
-                System.err.println ( e.getMessage() );
+                final String spn = srcFilesDir + File.separator + sfn + "."
+                        + WF_FILE_SRC_EXT;
+                compile(WF_FILE_SCRIPT, WF_FILE_LANGUAGE, spn);
+            } catch (final Exception e) {
+                System.err.println(e.getMessage());
             }
         }
     }
 
-    private static void compile ( String script, String language, String spn ) {
+    private static void compile(final String script, final String language,
+            final String spn) {
         int fno = 0;
-        for ( String tfn : ttxFonts ) {
-            TTXFile tf = TTXFile.getFromCache ( ttxFontsDir + File.separator + tfn );
+        for (final String tfn : ttxFonts) {
+            final TTXFile tf = TTXFile.getFromCache(ttxFontsDir
+                    + File.separator + tfn);
             assert tf != null;
-            List data = compile ( script, language, spn, tfn, tf );
-            output ( makeDataPathName ( spn, fno++ ), data );
+            final List data = compile(script, language, spn, tfn, tf);
+            output(makeDataPathName(spn, fno++), data);
         }
     }
 
-    private static List compile ( String script, String language, String spn, String tfn, TTXFile tf ) {
-        List<Object[]> data = new ArrayList<Object[]>();
-        data.add ( new Object[] { script, language, spn, tfn } );
-        GlyphSubstitutionTable gsub = tf.getGSUB();
-        GlyphPositioningTable gpos = tf.getGPOS();
-        int[] widths = tf.getWidths();
-        if ( ( gsub != null ) && ( gpos != null ) ) {
+    private static List compile(final String script, final String language,
+            final String spn, final String tfn, final TTXFile tf) {
+        final List<Object[]> data = new ArrayList<Object[]>();
+        data.add(new Object[] { script, language, spn, tfn });
+        final GlyphSubstitutionTable gsub = tf.getGSUB();
+        final GlyphPositioningTable gpos = tf.getGPOS();
+        final int[] widths = tf.getWidths();
+        if (gsub != null && gpos != null) {
             FileInputStream fis = null;
             try {
-                fis = new FileInputStream ( spn );
-                if ( fis != null ) {
-                    LineNumberReader lr = new LineNumberReader ( new InputStreamReader ( fis, Charset.forName ( "UTF-8" ) ) );
+                fis = new FileInputStream(spn);
+                if (fis != null) {
+                    final LineNumberReader lr = new LineNumberReader(
+                            new InputStreamReader(fis, Charset.forName("UTF-8")));
                     String wf;
-                    while ( ( wf = lr.readLine() ) != null ) {
-                        GlyphSequence igs = tf.mapCharsToGlyphs ( wf );
-                        GlyphSequence ogs = gsub.substitute ( igs, script, language );
-                        int[][] paa = new int [ ogs.getGlyphCount() ] [ 4 ];
-                        if ( ! gpos.position ( ogs, script, language, 1000, widths, paa ) ) {
+                    while ((wf = lr.readLine()) != null) {
+                        final GlyphSequence igs = tf.mapCharsToGlyphs(wf);
+                        final GlyphSequence ogs = gsub.substitute(igs, script,
+                                language);
+                        int[][] paa = new int[ogs.getGlyphCount()][4];
+                        if (!gpos.position(ogs, script, language, 1000, widths,
+                                paa)) {
                             paa = null;
                         }
-                        data.add ( new Object[] { wf, getGlyphs ( igs ), getGlyphs ( ogs ), paa } );
+                        data.add(new Object[] { wf, getGlyphs(igs),
+                                getGlyphs(ogs), paa });
                     }
                     lr.close();
                 }
-            } catch ( FileNotFoundException e ) {
-                throw new RuntimeException ( e.getMessage(), e );
-            } catch ( IOException e ) {
-                throw new RuntimeException ( e.getMessage(), e );
-            } catch ( Exception e ) {
-                throw new RuntimeException ( e.getMessage(), e );
+            } catch (final FileNotFoundException e) {
+                throw new RuntimeException(e.getMessage(), e);
+            } catch (final IOException e) {
+                throw new RuntimeException(e.getMessage(), e);
+            } catch (final Exception e) {
+                throw new RuntimeException(e.getMessage(), e);
             } finally {
-                if ( fis != null ) {
-                    try { fis.close(); } catch ( Exception e ) {}
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (final Exception e) {
+                    }
                 }
             }
         } else {
             assert gsub != null;
             assert gpos != null;
         }
-        System.err.println ( "compiled " + ( data.size() - 1 ) + " word forms using font " + tfn );
+        System.err.println("compiled " + (data.size() - 1)
+                + " word forms using font " + tfn);
         return data;
     }
 
-    private static int[] getGlyphs ( GlyphSequence gs ) {
-        IntBuffer gb = gs.getGlyphs();
-        int[] ga = new int [ gb.limit() ];
+    private static int[] getGlyphs(final GlyphSequence gs) {
+        final IntBuffer gb = gs.getGlyphs();
+        final int[] ga = new int[gb.limit()];
         gb.rewind();
-        gb.get ( ga );
+        gb.get(ga);
         return ga;
     }
 
-    private static String makeDataPathName ( String spn, int fno ) {
-        File f = new File ( spn );
-        return datFilesDir + File.separator + stripExtension ( f.getName() ) + "-f" + fno + "." + WF_FILE_DAT_EXT;
+    private static String makeDataPathName(final String spn, final int fno) {
+        final File f = new File(spn);
+        return datFilesDir + File.separator + stripExtension(f.getName())
+                + "-f" + fno + "." + WF_FILE_DAT_EXT;
     }
 
-    private static String stripExtension ( String s ) {
-        int i = s.lastIndexOf ( '.' );
-        if ( i >= 0 ) {
-            return s.substring ( 0, i );
+    private static String stripExtension(final String s) {
+        final int i = s.lastIndexOf('.');
+        if (i >= 0) {
+            return s.substring(0, i);
         } else {
             return s;
         }
     }
 
-    private static void output ( String dpn, List<Object[]> data ) {
+    private static void output(final String dpn, final List<Object[]> data) {
         FileOutputStream fos = null;
         try {
-            fos = new FileOutputStream ( dpn );
-            if ( fos != null ) {
-                ObjectOutputStream oos = new ObjectOutputStream ( fos );
-                oos.writeObject ( data );
+            fos = new FileOutputStream(dpn);
+            if (fos != null) {
+                final ObjectOutputStream oos = new ObjectOutputStream(fos);
+                oos.writeObject(data);
                 oos.close();
             }
-        } catch ( FileNotFoundException e ) {
-            throw new RuntimeException ( e.getMessage(), e );
-        } catch ( IOException e ) {
-            throw new RuntimeException ( e.getMessage(), e );
-        } catch ( Exception e ) {
-            throw new RuntimeException ( e.getMessage(), e );
+        } catch (final FileNotFoundException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } catch (final Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
         } finally {
-            if ( fos != null ) {
-                try { fos.close(); } catch ( Exception e ) {}
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (final Exception e) {
+                }
             }
         }
     }

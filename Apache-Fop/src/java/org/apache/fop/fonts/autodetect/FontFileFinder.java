@@ -26,23 +26,20 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.apache.fop.fonts.FontEventListener;
 
 /**
  * Helps to autodetect/locate available operating system fonts.
  */
+@Slf4j
 public class FontFileFinder extends DirectoryWalker implements FontFinder {
-
-    /** logging instance */
-    private final Log log = LogFactory.getLog(FontFileFinder.class);
 
     /** default depth limit of recursion when searching for font files **/
     public static final int DEFAULT_DEPTH_LIMIT = -1;
@@ -50,85 +47,98 @@ public class FontFileFinder extends DirectoryWalker implements FontFinder {
 
     /**
      * Default constructor
-     * @param listener for throwing font related events
+     *
+     * @param listener
+     *            for throwing font related events
      */
-    public FontFileFinder(FontEventListener listener) {
+    public FontFileFinder(final FontEventListener listener) {
         this(DEFAULT_DEPTH_LIMIT, listener);
     }
 
     /**
      * Constructor
-     * @param depthLimit recursion depth limit
-     * @param listener for throwing font related events
+     *
+     * @param depthLimit
+     *            recursion depth limit
+     * @param listener
+     *            for throwing font related events
      */
-    public FontFileFinder(int depthLimit, FontEventListener listener) {
+    public FontFileFinder(final int depthLimit, final FontEventListener listener) {
         super(getDirectoryFilter(), getFileFilter(), depthLimit);
-        eventListener = listener;
+        this.eventListener = listener;
     }
 
     /**
-     * Font directory filter.  Currently ignores hidden directories.
+     * Font directory filter. Currently ignores hidden directories.
+     *
      * @return IOFileFilter font directory filter
      */
     protected static IOFileFilter getDirectoryFilter() {
-        return FileFilterUtils.andFileFilter(
-                FileFilterUtils.directoryFileFilter(),
-                FileFilterUtils.notFileFilter(FileFilterUtils.prefixFileFilter("."))
-        );
+        return FileFilterUtils.and(FileFilterUtils.directoryFileFilter(),
+                FileFilterUtils.notFileFilter(FileFilterUtils
+                        .prefixFileFilter(".")));
     }
 
     /**
-     * Font file filter.  Currently searches for files with .ttf, .ttc, .otf, and .pfb extensions.
+     * Font file filter. Currently searches for files with .ttf, .ttc, .otf, and
+     * .pfb extensions.
+     *
      * @return IOFileFilter font file filter
      */
     protected static IOFileFilter getFileFilter() {
-        return FileFilterUtils.andFileFilter(
-                FileFilterUtils.fileFileFilter(),
-                new WildcardFileFilter(
-                        new String[] {"*.ttf", "*.otf", "*.pfb", "*.ttc"},
-                        IOCase.INSENSITIVE)
-        );
+        return FileFilterUtils.and(FileFilterUtils.fileFileFilter(),
+                new WildcardFileFilter(new String[] { "*.ttf", "*.otf",
+                        "*.pfb", "*.ttc" }, IOCase.INSENSITIVE));
     }
 
     /**
-     * @param directory directory to handle
-     * @param depth recursion depth
-     * @param results collection
-     * @return whether directory should be handled
-     * {@inheritDoc}
+     * @param directory
+     *            directory to handle
+     * @param depth
+     *            recursion depth
+     * @param results
+     *            collection
+     * @return whether directory should be handled {@inheritDoc}
      */
     @Override
-    protected boolean handleDirectory(File directory, int depth, Collection results) {
+    protected boolean handleDirectory(final File directory, final int depth,
+            final Collection results) {
         return true;
     }
 
     /**
-     * @param file file to handle
-     * @param depth recursion depth
-     * @param results collection
-     * {@inheritDoc}
+     * @param file
+     *            file to handle
+     * @param depth
+     *            recursion depth
+     * @param results
+     *            collection {@inheritDoc}
      */
     @Override
-    protected void handleFile(File file, int depth, Collection results) {
+    protected void handleFile(final File file, final int depth,
+            final Collection results) {
         try {
             // Looks Strange, but is actually recommended over just .URL()
             results.add(file.toURI().toURL());
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             log.debug("MalformedURLException" + e.getMessage());
         }
     }
 
     /**
-     * @param directory the directory being processed
-     * @param depth the current directory level
-     * @param results the collection of results objects
-     * {@inheritDoc}
+     * @param directory
+     *            the directory being processed
+     * @param depth
+     *            the current directory level
+     * @param results
+     *            the collection of results objects {@inheritDoc}
      */
     @Override
-    protected void handleDirectoryEnd(File directory, int depth, Collection results) {
+    protected void handleDirectoryEnd(final File directory, final int depth,
+            final Collection results) {
         if (log.isDebugEnabled()) {
             log.debug(directory + ": found " + results.size() + " font"
-                    + ((results.size() == 1) ? "" : "s"));
+                    + (results.size() == 1 ? "" : "s"));
         }
     }
 
@@ -136,9 +146,10 @@ public class FontFileFinder extends DirectoryWalker implements FontFinder {
      * Automagically finds a list of font files on local system
      *
      * @return List&lt;URL&gt; of font files
-     * @throws IOException io exception
-     * {@inheritDoc}
+     * @throws IOException
+     *             io exception {@inheritDoc}
      */
+    @Override
     public List<URL> find() throws IOException {
         final FontDirFinder fontDirFinder;
         final String osName = System.getProperty("os.name");
@@ -151,9 +162,9 @@ public class FontFileFinder extends DirectoryWalker implements FontFinder {
                 fontDirFinder = new UnixFontDirFinder();
             }
         }
-        List<File> fontDirs = fontDirFinder.find();
-        List<URL> results = new java.util.ArrayList<URL>();
-        for (File dir : fontDirs) {
+        final List<File> fontDirs = fontDirFinder.find();
+        final List<URL> results = new java.util.ArrayList<URL>();
+        for (final File dir : fontDirs) {
             super.walk(dir, results);
         }
         return results;
@@ -162,15 +173,17 @@ public class FontFileFinder extends DirectoryWalker implements FontFinder {
     /**
      * Searches a given directory for font files
      *
-     * @param dir directory to search
+     * @param dir
+     *            directory to search
      * @return list of font files
-     * @throws IOException thrown if an I/O exception of some sort has occurred
+     * @throws IOException
+     *             thrown if an I/O exception of some sort has occurred
      */
-    public List<URL> find(String dir) throws IOException {
-        List<URL> results = new java.util.ArrayList<URL>();
-        File directory = new File(dir);
+    public List<URL> find(final String dir) throws IOException {
+        final List<URL> results = new java.util.ArrayList<URL>();
+        final File directory = new File(dir);
         if (!directory.isDirectory()) {
-            eventListener.fontDirectoryNotFound(this, dir);
+            this.eventListener.fontDirectoryNotFound(this, dir);
         } else {
             super.walk(directory, results);
         }

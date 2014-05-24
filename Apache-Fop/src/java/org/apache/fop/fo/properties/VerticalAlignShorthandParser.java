@@ -23,138 +23,148 @@ import org.apache.fop.fo.Constants;
 import org.apache.fop.fo.PropertyList;
 
 /**
- * A shorthand parser for the vertical-align shorthand. It is used to set
- * values for alignment-baseline, alignment-adjust, baseline-shift
- * and dominant-baseline.
+ * A shorthand parser for the vertical-align shorthand. It is used to set values
+ * for alignment-baseline, alignment-adjust, baseline-shift and
+ * dominant-baseline.
  */
 public class VerticalAlignShorthandParser implements ShorthandParser, Constants {
 
     /**
      * {@inheritDoc}
      */
-    public Property getValueForProperty(int propId,
-                                        Property property,
-                                        PropertyMaker maker,
-                                        PropertyList propertyList) {
-        int propVal = property.getEnum();
+    @Override
+    public Property getValueForProperty(final int propId,
+            final Property property, final PropertyMaker maker,
+            final PropertyList propertyList) {
+        final int propVal = property.getEnum();
         switch (propVal) {
-            case EN_BASELINE:
-                switch (propId) {
-                    case PR_ALIGNMENT_BASELINE:
-                        return EnumProperty.getInstance(EN_BASELINE, "BASELINE");
-                    case PR_ALIGNMENT_ADJUST:
-                        return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
-                    case PR_BASELINE_SHIFT:
-                        return new EnumLength(EnumProperty.getInstance(EN_BASELINE, "BASELINE"));
-                    case PR_DOMINANT_BASELINE:
-                        return EnumProperty.getInstance(EN_AUTO, "AUTO");
-                    default:
-                        break;
-                }
-            case EN_TOP:
-                switch (propId) {
-                    case PR_ALIGNMENT_BASELINE:
-                        return EnumProperty.getInstance(EN_BEFORE_EDGE, "BEFORE_EDGE");
-                    case PR_ALIGNMENT_ADJUST:
-                        return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
-                    case PR_BASELINE_SHIFT:
-                        return new EnumLength(EnumProperty.getInstance(EN_BASELINE, "BASELINE"));
-                    case PR_DOMINANT_BASELINE:
-                        return EnumProperty.getInstance(EN_AUTO, "AUTO");
-                    default:
-                        break;
-                }
-            case EN_TEXT_TOP:
-                switch (propId) {
-                    case PR_ALIGNMENT_BASELINE:
-                        return EnumProperty.getInstance(EN_TEXT_BEFORE_EDGE, "TEXT_BEFORE_EDGE");
-                    case PR_ALIGNMENT_ADJUST:
-                        return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
-                    case PR_BASELINE_SHIFT:
-                        return new EnumLength(EnumProperty.getInstance(EN_BASELINE, "BASELINE"));
-                    case PR_DOMINANT_BASELINE:
-                        return EnumProperty.getInstance(EN_AUTO, "AUTO");
-                    default:
-                        break;
-                }
-            case EN_MIDDLE:
-                switch (propId) {
-                    case PR_ALIGNMENT_BASELINE:
-                        return EnumProperty.getInstance(EN_MIDDLE, "MIDDLE");
-                    case PR_ALIGNMENT_ADJUST:
-                        return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
-                    case PR_BASELINE_SHIFT:
-                        return new EnumLength(EnumProperty.getInstance(EN_BASELINE, "BASELINE"));
-                    case PR_DOMINANT_BASELINE:
-                        return EnumProperty.getInstance(EN_AUTO, "AUTO");
-                    default:
-                        break;
-                }
-            case EN_BOTTOM:
-                switch (propId) {
-                    case PR_ALIGNMENT_BASELINE:
-                        return EnumProperty.getInstance(EN_AFTER_EDGE, "AFTER_EDGE");
-                    case PR_ALIGNMENT_ADJUST:
-                        return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
-                    case PR_BASELINE_SHIFT:
-                        return new EnumLength(EnumProperty.getInstance(EN_BASELINE, "BASELINE"));
-                    case PR_DOMINANT_BASELINE:
-                        return EnumProperty.getInstance(EN_AUTO, "AUTO");
-                    default:
-                        break;
-                }
-            case EN_TEXT_BOTTOM:
-                switch (propId) {
-                    case PR_ALIGNMENT_BASELINE:
-                        return EnumProperty.getInstance(EN_TEXT_AFTER_EDGE, "TEXT_AFTER_EDGE");
-                    case PR_ALIGNMENT_ADJUST:
-                        return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
-                    case PR_BASELINE_SHIFT:
-                        return new EnumLength(EnumProperty.getInstance(EN_BASELINE, "BASELINE"));
-                    case PR_DOMINANT_BASELINE:
-                        return EnumProperty.getInstance(EN_AUTO, "AUTO");
-                    default:
-                        break;
-                }
-            case EN_SUB:
-                switch (propId) {
-                    case PR_ALIGNMENT_BASELINE:
-                        return EnumProperty.getInstance(EN_BASELINE, "BASELINE");
-                    case PR_ALIGNMENT_ADJUST:
-                        return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
-                    case PR_BASELINE_SHIFT:
-                        return new EnumLength(EnumProperty.getInstance(EN_SUB, "SUB"));
-                    case PR_DOMINANT_BASELINE:
-                        return EnumProperty.getInstance(EN_AUTO, "AUTO");
-                    default:
-                        break;
-                }
-            case EN_SUPER:
-                switch (propId) {
-                    case PR_ALIGNMENT_BASELINE:
-                        return EnumProperty.getInstance(EN_BASELINE, "BASELINE");
-                    case PR_ALIGNMENT_ADJUST:
-                        return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
-                    case PR_BASELINE_SHIFT:
-                        return new EnumLength(EnumProperty.getInstance(EN_SUPER, "SUPER"));
-                    case PR_DOMINANT_BASELINE:
-                        return EnumProperty.getInstance(EN_AUTO, "AUTO");
-                    default:
-                        break;
-                }
+        case EN_BASELINE:
+            switch (propId) {
+            case PR_ALIGNMENT_BASELINE:
+                return EnumProperty.getInstance(EN_BASELINE, "BASELINE");
+            case PR_ALIGNMENT_ADJUST:
+                return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
+            case PR_BASELINE_SHIFT:
+                return new EnumLength(EnumProperty.getInstance(EN_BASELINE,
+                        "BASELINE"));
+            case PR_DOMINANT_BASELINE:
+                return EnumProperty.getInstance(EN_AUTO, "AUTO");
             default:
-                switch (propId) {
-                    case PR_ALIGNMENT_BASELINE:
-                        return EnumProperty.getInstance(EN_BASELINE, "BASELINE");
-                    case PR_ALIGNMENT_ADJUST:
-                        return property;
-                    case PR_BASELINE_SHIFT:
-                        return new EnumLength(EnumProperty.getInstance(EN_BASELINE, "BASELINE"));
-                    case PR_DOMINANT_BASELINE:
-                        return EnumProperty.getInstance(EN_AUTO, "AUTO");
-                    default:
-                        break;
-                }
+                break;
+            }
+        case EN_TOP:
+            switch (propId) {
+            case PR_ALIGNMENT_BASELINE:
+                return EnumProperty.getInstance(EN_BEFORE_EDGE, "BEFORE_EDGE");
+            case PR_ALIGNMENT_ADJUST:
+                return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
+            case PR_BASELINE_SHIFT:
+                return new EnumLength(EnumProperty.getInstance(EN_BASELINE,
+                        "BASELINE"));
+            case PR_DOMINANT_BASELINE:
+                return EnumProperty.getInstance(EN_AUTO, "AUTO");
+            default:
+                break;
+            }
+        case EN_TEXT_TOP:
+            switch (propId) {
+            case PR_ALIGNMENT_BASELINE:
+                return EnumProperty.getInstance(EN_TEXT_BEFORE_EDGE,
+                        "TEXT_BEFORE_EDGE");
+            case PR_ALIGNMENT_ADJUST:
+                return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
+            case PR_BASELINE_SHIFT:
+                return new EnumLength(EnumProperty.getInstance(EN_BASELINE,
+                        "BASELINE"));
+            case PR_DOMINANT_BASELINE:
+                return EnumProperty.getInstance(EN_AUTO, "AUTO");
+            default:
+                break;
+            }
+        case EN_MIDDLE:
+            switch (propId) {
+            case PR_ALIGNMENT_BASELINE:
+                return EnumProperty.getInstance(EN_MIDDLE, "MIDDLE");
+            case PR_ALIGNMENT_ADJUST:
+                return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
+            case PR_BASELINE_SHIFT:
+                return new EnumLength(EnumProperty.getInstance(EN_BASELINE,
+                        "BASELINE"));
+            case PR_DOMINANT_BASELINE:
+                return EnumProperty.getInstance(EN_AUTO, "AUTO");
+            default:
+                break;
+            }
+        case EN_BOTTOM:
+            switch (propId) {
+            case PR_ALIGNMENT_BASELINE:
+                return EnumProperty.getInstance(EN_AFTER_EDGE, "AFTER_EDGE");
+            case PR_ALIGNMENT_ADJUST:
+                return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
+            case PR_BASELINE_SHIFT:
+                return new EnumLength(EnumProperty.getInstance(EN_BASELINE,
+                        "BASELINE"));
+            case PR_DOMINANT_BASELINE:
+                return EnumProperty.getInstance(EN_AUTO, "AUTO");
+            default:
+                break;
+            }
+        case EN_TEXT_BOTTOM:
+            switch (propId) {
+            case PR_ALIGNMENT_BASELINE:
+                return EnumProperty.getInstance(EN_TEXT_AFTER_EDGE,
+                        "TEXT_AFTER_EDGE");
+            case PR_ALIGNMENT_ADJUST:
+                return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
+            case PR_BASELINE_SHIFT:
+                return new EnumLength(EnumProperty.getInstance(EN_BASELINE,
+                        "BASELINE"));
+            case PR_DOMINANT_BASELINE:
+                return EnumProperty.getInstance(EN_AUTO, "AUTO");
+            default:
+                break;
+            }
+        case EN_SUB:
+            switch (propId) {
+            case PR_ALIGNMENT_BASELINE:
+                return EnumProperty.getInstance(EN_BASELINE, "BASELINE");
+            case PR_ALIGNMENT_ADJUST:
+                return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
+            case PR_BASELINE_SHIFT:
+                return new EnumLength(EnumProperty.getInstance(EN_SUB, "SUB"));
+            case PR_DOMINANT_BASELINE:
+                return EnumProperty.getInstance(EN_AUTO, "AUTO");
+            default:
+                break;
+            }
+        case EN_SUPER:
+            switch (propId) {
+            case PR_ALIGNMENT_BASELINE:
+                return EnumProperty.getInstance(EN_BASELINE, "BASELINE");
+            case PR_ALIGNMENT_ADJUST:
+                return new EnumLength(EnumProperty.getInstance(EN_AUTO, "AUTO"));
+            case PR_BASELINE_SHIFT:
+                return new EnumLength(EnumProperty.getInstance(EN_SUPER,
+                        "SUPER"));
+            case PR_DOMINANT_BASELINE:
+                return EnumProperty.getInstance(EN_AUTO, "AUTO");
+            default:
+                break;
+            }
+        default:
+            switch (propId) {
+            case PR_ALIGNMENT_BASELINE:
+                return EnumProperty.getInstance(EN_BASELINE, "BASELINE");
+            case PR_ALIGNMENT_ADJUST:
+                return property;
+            case PR_BASELINE_SHIFT:
+                return new EnumLength(EnumProperty.getInstance(EN_BASELINE,
+                        "BASELINE"));
+            case PR_DOMINANT_BASELINE:
+                return EnumProperty.getInstance(EN_AUTO, "AUTO");
+            default:
+                break;
+            }
         }
         return null;
     }

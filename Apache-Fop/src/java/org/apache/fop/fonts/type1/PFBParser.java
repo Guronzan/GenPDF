@@ -40,20 +40,23 @@ public class PFBParser {
         try {
             CURRENTFILE_EEXEC = "currentfile eexec".getBytes("US-ASCII");
             CLEARTOMARK = "cleartomark".getBytes("US-ASCII");
-        } catch (java.io.UnsupportedEncodingException e) {
-            throw new RuntimeException("Incompatible VM. It doesn't support the US-ASCII encoding");
+        } catch (final java.io.UnsupportedEncodingException e) {
+            throw new RuntimeException(
+                    "Incompatible VM. It doesn't support the US-ASCII encoding");
         }
     }
 
-
     /**
      * Parses a PFB file into a PFBData object.
-     * @param url URL to load the PFB file from
+     * 
+     * @param url
+     *            URL to load the PFB file from
      * @return PFBData memory representation of the font
-     * @throws IOException In case of an I/O problem
+     * @throws IOException
+     *             In case of an I/O problem
      */
-    public PFBData parsePFB(java.net.URL url) throws IOException {
-        InputStream in = url.openStream();
+    public PFBData parsePFB(final java.net.URL url) throws IOException {
+        final InputStream in = url.openStream();
         try {
             return parsePFB(in);
         } finally {
@@ -61,15 +64,17 @@ public class PFBParser {
         }
     }
 
-
     /**
      * Parses a PFB file into a PFBData object.
-     * @param pfbFile File to load the PFB file from
+     * 
+     * @param pfbFile
+     *            File to load the PFB file from
      * @return PFBData memory representation of the font
-     * @throws IOException In case of an I/O problem
+     * @throws IOException
+     *             In case of an I/O problem
      */
-    public PFBData parsePFB(java.io.File pfbFile) throws IOException {
-        InputStream in = new java.io.FileInputStream(pfbFile);
+    public PFBData parsePFB(final java.io.File pfbFile) throws IOException {
+        final InputStream in = new java.io.FileInputStream(pfbFile);
         try {
             return parsePFB(in);
         } finally {
@@ -77,19 +82,21 @@ public class PFBParser {
         }
     }
 
-
     /**
      * Parses a PFB file into a PFBData object.
-     * @param in InputStream to load the PFB file from
+     * 
+     * @param in
+     *            InputStream to load the PFB file from
      * @return PFBData memory representation of the font
-     * @throws IOException In case of an I/O problem
+     * @throws IOException
+     *             In case of an I/O problem
      */
-    public PFBData parsePFB(InputStream in) throws IOException {
-        PFBData pfb = new PFBData();
-        BufferedInputStream bin = new BufferedInputStream(in);
-        DataInputStream din = new DataInputStream(bin);
+    public PFBData parsePFB(final InputStream in) throws IOException {
+        final PFBData pfb = new PFBData();
+        final BufferedInputStream bin = new BufferedInputStream(in);
+        final DataInputStream din = new DataInputStream(bin);
         din.mark(32);
-        int firstByte = din.readUnsignedByte();
+        final int firstByte = din.readUnsignedByte();
         din.reset();
         if (firstByte == 128) {
             pfb.setPFBFormat(PFBData.PFB_PC);
@@ -101,68 +108,66 @@ public class PFBParser {
         return pfb;
     }
 
-
     private static int swapInteger(final int value) {
-        return (((value >> 0) & 0xff) << 24)
-             + (((value >> 8) & 0xff) << 16)
-             + (((value >> 16) & 0xff) << 8)
-             + (((value >> 24) & 0xff) << 0);
+        return ((value >> 0 & 0xff) << 24) + ((value >> 8 & 0xff) << 16)
+                + ((value >> 16 & 0xff) << 8) + ((value >> 24 & 0xff) << 0);
     }
 
-
-    private void parsePCFormat(PFBData pfb, DataInputStream din) throws IOException {
+    private void parsePCFormat(final PFBData pfb, final DataInputStream din)
+            throws IOException {
         int segmentHead;
         int segmentType;
-        int bytesRead;
+        final int bytesRead;
 
-        //Read first segment
+        // Read first segment
         segmentHead = din.readUnsignedByte();
         if (segmentHead != 128) {
             throw new IOException("Invalid file format. Expected ASCII 80hex");
         }
-        segmentType = din.readUnsignedByte(); //Read
-        int len1 = swapInteger(din.readInt());
-        byte[] headerSegment = new byte[len1];
+        segmentType = din.readUnsignedByte(); // Read
+        final int len1 = swapInteger(din.readInt());
+        final byte[] headerSegment = new byte[len1];
         din.readFully(headerSegment);
         pfb.setHeaderSegment(headerSegment);
 
-        //Read second segment
+        // Read second segment
         segmentHead = din.readUnsignedByte();
         if (segmentHead != 128) {
             throw new IOException("Invalid file format. Expected ASCII 80hex");
         }
         segmentType = din.readUnsignedByte();
-        int len2 = swapInteger(din.readInt());
-        byte[] encryptedSegment = new byte[len2];
+        final int len2 = swapInteger(din.readInt());
+        final byte[] encryptedSegment = new byte[len2];
         din.readFully(encryptedSegment);
         pfb.setEncryptedSegment(encryptedSegment);
 
-        //Read third segment
+        // Read third segment
         segmentHead = din.readUnsignedByte();
         if (segmentHead != 128) {
             throw new IOException("Invalid file format. Expected ASCII 80hex");
         }
         segmentType = din.readUnsignedByte();
-        int len3 = swapInteger(din.readInt());
-        byte[] trailerSegment = new byte[len3];
+        final int len3 = swapInteger(din.readInt());
+        final byte[] trailerSegment = new byte[len3];
         din.readFully(trailerSegment);
         pfb.setTrailerSegment(trailerSegment);
 
-        //Read EOF indicator
+        // Read EOF indicator
         segmentHead = din.readUnsignedByte();
         if (segmentHead != 128) {
             throw new IOException("Invalid file format. Expected ASCII 80hex");
         }
         segmentType = din.readUnsignedByte();
         if (segmentType != 3) {
-            throw new IOException("Expected segment type 3, but found: " + segmentType);
+            throw new IOException("Expected segment type 3, but found: "
+                    + segmentType);
         }
     }
 
-
-    private static boolean byteCmp(byte[] src, int srcOffset, byte[] cmp) {
+    private static boolean byteCmp(final byte[] src, final int srcOffset,
+            final byte[] cmp) {
         for (int i = 0; i < cmp.length; i++) {
-            // System.out.println("Compare: " + src[srcOffset + i] + " " + cmp[i]);
+            // log.info("Compare: " + src[srcOffset + i] + " " + cmp[i]);
             if (src[srcOffset + i] != cmp[i]) {
                 return false;
             }
@@ -170,17 +175,18 @@ public class PFBParser {
         return true;
     }
 
-    private void calcLengths(PFBData pfb, byte[] originalData) {
+    private void calcLengths(final PFBData pfb, final byte[] originalData) {
         // Calculate length 1 and 3
-        // System.out.println ("Checking font, size = "+originalData.length);
+        // log.info ("Checking font, size = "+originalData.length);
 
         // Length1 is the size of the initial ascii portion
         // search for "currentfile eexec"
         // Get the first binary number and search backwards for "eexec"
         int len1 = 30;
 
-        // System.out.println("Length1="+len1);
-        while (!byteCmp(originalData, len1 - CURRENTFILE_EEXEC.length, CURRENTFILE_EEXEC)) {
+        // log.info("Length1="+len1);
+        while (!byteCmp(originalData, len1 - CURRENTFILE_EEXEC.length,
+                CURRENTFILE_EEXEC)) {
             len1++;
         }
 
@@ -192,32 +198,32 @@ public class PFBParser {
         len3 -= CLEARTOMARK.length;
         while (!byteCmp(originalData, originalData.length + len3, CLEARTOMARK)) {
             len3--;
-            // System.out.println("Len3="+len3);
+            // log.info("Len3="+len3);
         }
         len3 = -len3;
         len3++;
         // Eat 512 zeroes
         int numZeroes = 0;
-        byte[] ws1 = new byte[]{0x0D}; //CR
-        byte[] ws2 = new byte[]{0x0A}; //LF
-        byte[] ws3 = new byte[]{0x30}; //"0"
+        final byte[] ws1 = new byte[] { 0x0D }; // CR
+        final byte[] ws2 = new byte[] { 0x0A }; // LF
+        final byte[] ws3 = new byte[] { 0x30 }; // "0"
         while ((originalData[originalData.length - len3] == ws1[0]
-                || originalData[originalData.length - len3] == ws2[0]
-                || originalData[originalData.length - len3] == ws3[0])
-                && numZeroes < 512) {
+                || originalData[originalData.length - len3] == ws2[0] || originalData[originalData.length
+                - len3] == ws3[0])
+                        && numZeroes < 512) {
             len3++;
             if (originalData[originalData.length - len3] == ws3[0]) {
                 numZeroes++;
             }
         }
-        // System.out.println("Length3="+len3);
+        // log.info("Length3="+len3);
 
-        //Create the 3 segments
+        // Create the 3 segments
         byte[] buffer = new byte[len1];
         System.arraycopy(originalData, 0, buffer, 0, len1);
         pfb.setHeaderSegment(buffer);
 
-        int len2 = originalData.length - len3 - len1;
+        final int len2 = originalData.length - len3 - len1;
         buffer = new byte[len2];
         System.arraycopy(originalData, len1, buffer, 0, len2);
         pfb.setEncryptedSegment(buffer);
@@ -227,7 +233,7 @@ public class PFBParser {
         pfb.setTrailerSegment(buffer);
     }
 
-    private void parseRAWFormat(PFBData pfb, BufferedInputStream bin)
+    private void parseRAWFormat(final PFBData pfb, final BufferedInputStream bin)
             throws IOException {
         calcLengths(pfb, IOUtils.toByteArray(bin));
     }

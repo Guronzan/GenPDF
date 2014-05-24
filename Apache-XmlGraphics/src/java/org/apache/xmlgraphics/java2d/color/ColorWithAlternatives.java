@@ -23,18 +23,20 @@ import java.awt.Color;
 import java.awt.color.ColorSpace;
 
 /**
- * Extended {@link Color} class allowing to specify a prioritized list of alternative colors.
- * The alternative colors shall be the ones that are preferred if an output format supports them.
- * This is normally used for passing device-specific colors through to the output format.
+ * Extended {@link Color} class allowing to specify a prioritized list of
+ * alternative colors. The alternative colors shall be the ones that are
+ * preferred if an output format supports them. This is normally used for
+ * passing device-specific colors through to the output format.
  * <p>
- * This class only adds a single reference to a color array which should not increase memory
- * consumption by much if no alternative colors are specified.
+ * This class only adds a single reference to a color array which should not
+ * increase memory consumption by much if no alternative colors are specified.
  * <p>
- * <b>Important:</b> Due to a flaw in {@link Color#equals(Object)}, the <code>equals()</code>
- * method should not be used to compare two colors, especially when used to update the current
- * color for some output format. {@link Color} only takes the sRGB values into account but not
- * more the advanced facets of this class. Use {@link ColorUtil#isSameColor(Color, Color)} for
- * such a check.
+ * <b>Important:</b> Due to a flaw in {@link Color#equals(Object)}, the
+ * <code>equals()</code> method should not be used to compare two colors,
+ * especially when used to update the current color for some output format.
+ * {@link Color} only takes the sRGB values into account but not more the
+ * advanced facets of this class. Use
+ * {@link ColorUtil#isSameColor(Color, Color)} for such a check.
  */
 public class ColorWithAlternatives extends Color {
 
@@ -44,112 +46,155 @@ public class ColorWithAlternatives extends Color {
 
     /**
      * Constructor for RGBA colors.
-     * @param r the red component
-     * @param g the green component
-     * @param b the blue component
-     * @param a the alpha component
-     * @param alternativeColors the prioritized list of alternative colors.
+     * 
+     * @param r
+     *            the red component
+     * @param g
+     *            the green component
+     * @param b
+     *            the blue component
+     * @param a
+     *            the alpha component
+     * @param alternativeColors
+     *            the prioritized list of alternative colors.
      * @see Color#Color(float, float, float, float)
      */
-    public ColorWithAlternatives(float r, float g, float b, float a, Color[] alternativeColors) {
+    public ColorWithAlternatives(final float r, final float g, final float b,
+            final float a, final Color[] alternativeColors) {
         super(r, g, b, a);
         initAlternativeColors(alternativeColors);
     }
 
     /**
      * Constructor for RGB colors.
-     * @param r the red component
-     * @param g the green component
-     * @param b the blue component
-     * @param alternativeColors the prioritized list of alternative colors.
+     * 
+     * @param r
+     *            the red component
+     * @param g
+     *            the green component
+     * @param b
+     *            the blue component
+     * @param alternativeColors
+     *            the prioritized list of alternative colors.
      * @see Color#Color(float, float, float)
      */
-    public ColorWithAlternatives(float r, float g, float b, Color[] alternativeColors) {
+    public ColorWithAlternatives(final float r, final float g, final float b,
+            final Color[] alternativeColors) {
         super(r, g, b);
         initAlternativeColors(alternativeColors);
     }
 
     /**
      * Constructor for RGBA colors.
-     * @param rgba the combined RGBA value
-     * @param hasalpha true if the alpha bits are valid, false otherwise
-     * @param alternativeColors the prioritized list of alternative colors.
+     * 
+     * @param rgba
+     *            the combined RGBA value
+     * @param hasalpha
+     *            true if the alpha bits are valid, false otherwise
+     * @param alternativeColors
+     *            the prioritized list of alternative colors.
      * @see Color#Color(int, boolean)
      */
-    public ColorWithAlternatives(int rgba, boolean hasalpha, Color[] alternativeColors) {
+    public ColorWithAlternatives(final int rgba, final boolean hasalpha,
+            final Color[] alternativeColors) {
         super(rgba, hasalpha);
         initAlternativeColors(alternativeColors);
     }
 
     /**
      * Constructor for RGBA colors.
-     * @param r the red component
-     * @param g the green component
-     * @param b the blue component
-     * @param a the alpha component
-     * @param alternativeColors the prioritized list of alternative colors.
+     * 
+     * @param r
+     *            the red component
+     * @param g
+     *            the green component
+     * @param b
+     *            the blue component
+     * @param a
+     *            the alpha component
+     * @param alternativeColors
+     *            the prioritized list of alternative colors.
      * @see Color#Color(int, int, int, int)
      */
-    public ColorWithAlternatives(int r, int g, int b, int a, Color[] alternativeColors) {
+    public ColorWithAlternatives(final int r, final int g, final int b,
+            final int a, final Color[] alternativeColors) {
         super(r, g, b, a);
         initAlternativeColors(alternativeColors);
     }
 
     /**
      * Constructor for RGB colors.
-     * @param r the red component
-     * @param g the green component
-     * @param b the blue component
-     * @param alternativeColors the prioritized list of alternative colors.
+     * 
+     * @param r
+     *            the red component
+     * @param g
+     *            the green component
+     * @param b
+     *            the blue component
+     * @param alternativeColors
+     *            the prioritized list of alternative colors.
      * @see Color#Color(int, int, int)
      */
-    public ColorWithAlternatives(int r, int g, int b, Color[] alternativeColors) {
+    public ColorWithAlternatives(final int r, final int g, final int b,
+            final Color[] alternativeColors) {
         super(r, g, b);
         initAlternativeColors(alternativeColors);
     }
 
     /**
      * Constructor for RGB colors.
-     * @param rgb the combined RGB components
-     * @param alternativeColors the prioritized list of alternative colors.
+     * 
+     * @param rgb
+     *            the combined RGB components
+     * @param alternativeColors
+     *            the prioritized list of alternative colors.
      * @see Color#Color(int)
      */
-    public ColorWithAlternatives(int rgb, Color[] alternativeColors) {
+    public ColorWithAlternatives(final int rgb, final Color[] alternativeColors) {
         super(rgb);
         initAlternativeColors(alternativeColors);
     }
 
     /**
      * Constructor for colors with an arbitrary color space.
-     * @param cspace the color space
-     * @param components the color components
-     * @param alpha the alpha component
-     * @param alternativeColors the prioritized list of alternative colors.
+     * 
+     * @param cspace
+     *            the color space
+     * @param components
+     *            the color components
+     * @param alpha
+     *            the alpha component
+     * @param alternativeColors
+     *            the prioritized list of alternative colors.
      * @see Color#Color(ColorSpace, float[], float)
      */
-    public ColorWithAlternatives(ColorSpace cspace, float[] components, float alpha,
-            Color[] alternativeColors) {
+    public ColorWithAlternatives(final ColorSpace cspace,
+            final float[] components, final float alpha,
+            final Color[] alternativeColors) {
         super(cspace, components, alpha);
         initAlternativeColors(alternativeColors);
     }
 
-    private void initAlternativeColors(Color[] colors) {
+    private void initAlternativeColors(final Color[] colors) {
         if (colors != null) {
-            //Colors are immutable but array are not, so copy
+            // Colors are immutable but array are not, so copy
             this.alternativeColors = new Color[colors.length];
-            System.arraycopy(colors, 0, this.alternativeColors, 0, colors.length);
+            System.arraycopy(colors, 0, this.alternativeColors, 0,
+                    colors.length);
         }
     }
 
     /**
-     * Returns the list of alternative colors. An empty array will be returned if no alternative
-     * colors are available.
+     * Returns the list of alternative colors. An empty array will be returned
+     * if no alternative colors are available.
+     * 
      * @return the list of alternative colors
      */
     public Color[] getAlternativeColors() {
         if (this.alternativeColors != null) {
-            Color[] cols = new Color[this.alternativeColors.length];
-            System.arraycopy(this.alternativeColors, 0, cols, 0, this.alternativeColors.length);
+            final Color[] cols = new Color[this.alternativeColors.length];
+            System.arraycopy(this.alternativeColors, 0, cols, 0,
+                    this.alternativeColors.length);
             return cols;
         } else {
             return new Color[0];
@@ -158,18 +203,22 @@ public class ColorWithAlternatives extends Color {
 
     /**
      * Indicates whether alternative colors are available.
+     * 
      * @return true if alternative colors are available.
      */
     public boolean hasAlternativeColors() {
-        return this.alternativeColors != null && this.alternativeColors.length > 0;
+        return this.alternativeColors != null
+                && this.alternativeColors.length > 0;
     }
 
     /**
      * Indicates whether another instance has the same alternative colors.
-     * @param col the color to compare the alternatives to
+     * 
+     * @param col
+     *            the color to compare the alternatives to
      * @return true if the same alternative colors are present
      */
-    public boolean hasSameAlternativeColors(ColorWithAlternatives col) {
+    public boolean hasSameAlternativeColors(final ColorWithAlternatives col) {
         if (!hasAlternativeColors()) {
             return !col.hasAlternativeColors();
         }
@@ -178,14 +227,14 @@ public class ColorWithAlternatives extends Color {
             return false;
         }
         // this.hasAlternativeColors() && col.hasAlternativeColors()
-        Color[] alt1 = getAlternativeColors();
-        Color[] alt2 = col.getAlternativeColors();
+        final Color[] alt1 = getAlternativeColors();
+        final Color[] alt2 = col.getAlternativeColors();
         if (alt1.length != alt2.length) {
             return false;
         }
         for (int i = 0, c = alt1.length; i < c; i++) {
-            Color c1 = alt1[i];
-            Color c2 = alt2[i];
+            final Color c1 = alt1[i];
+            final Color c2 = alt2[i];
             if (!ColorUtil.isSameColor(c1, c2)) {
                 return false;
             }
@@ -194,11 +243,14 @@ public class ColorWithAlternatives extends Color {
     }
 
     /**
-     * Returns the first alternative color found with the given color space type.
-     * @param colorSpaceType the color space type ({@link ColorSpace}.TYPE_*).
+     * Returns the first alternative color found with the given color space
+     * type.
+     * 
+     * @param colorSpaceType
+     *            the color space type ({@link ColorSpace}.TYPE_*).
      * @return the requested alternative color or null, if no match was found
      */
-    public Color getFirstAlternativeOfType(int colorSpaceType) {
+    public Color getFirstAlternativeOfType(final int colorSpaceType) {
         if (hasAlternativeColors()) {
             for (int i = 0, c = this.alternativeColors.length; i < c; i++) {
                 if (this.alternativeColors[i].getColorSpace().getType() == colorSpaceType) {

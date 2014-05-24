@@ -33,14 +33,15 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * SAX 2 Event Handler which simply delegates all calls to another ContentHandler. Subclasses can
- * do additional processing. This class is the passive counterpart to XMLFilterImpl.
+ * SAX 2 Event Handler which simply delegates all calls to another
+ * ContentHandler. Subclasses can do additional processing. This class is the
+ * passive counterpart to XMLFilterImpl.
  * <p>
- * The ContentHandler is the only instance that is required. All others (DTDHandler,
- * EntityResolver, LexicalHandler and ErrorHandler) may be ignored.
+ * The ContentHandler is the only instance that is required. All others
+ * (DTDHandler, EntityResolver, LexicalHandler and ErrorHandler) may be ignored.
  */
-public class DelegatingContentHandler
-        implements EntityResolver, DTDHandler, ContentHandler, LexicalHandler, ErrorHandler {
+public class DelegatingContentHandler implements EntityResolver, DTDHandler,
+        ContentHandler, LexicalHandler, ErrorHandler {
 
     private ContentHandler delegate;
     private EntityResolver entityResolver;
@@ -52,27 +53,30 @@ public class DelegatingContentHandler
      * Main constructor.
      */
     public DelegatingContentHandler() {
-        //nop
+        // nop
     }
 
     /**
-     * Convenience constructor. If the given handler also implements any of the EntityResolver,
-     * DTDHandler, LexicalHandler or ErrorHandler interfaces, these are set automatically.
-     * @param handler the content handler to delegate to
+     * Convenience constructor. If the given handler also implements any of the
+     * EntityResolver, DTDHandler, LexicalHandler or ErrorHandler interfaces,
+     * these are set automatically.
+     * 
+     * @param handler
+     *            the content handler to delegate to
      */
-    public DelegatingContentHandler(ContentHandler handler) {
+    public DelegatingContentHandler(final ContentHandler handler) {
         setDelegateContentHandler(handler);
         if (handler instanceof EntityResolver) {
-            setDelegateEntityResolver((EntityResolver)handler);
+            setDelegateEntityResolver((EntityResolver) handler);
         }
         if (handler instanceof DTDHandler) {
-            setDelegateDTDHandler((DTDHandler)handler);
+            setDelegateDTDHandler((DTDHandler) handler);
         }
         if (handler instanceof LexicalHandler) {
-            setDelegateLexicalHandler((LexicalHandler)handler);
+            setDelegateLexicalHandler((LexicalHandler) handler);
         }
         if (handler instanceof ErrorHandler) {
-            setDelegateErrorHandler((ErrorHandler)handler);
+            setDelegateErrorHandler((ErrorHandler) handler);
         }
     }
 
@@ -85,51 +89,62 @@ public class DelegatingContentHandler
 
     /**
      * Sets the delegate ContentHandler that all events are forwarded to.
-     * @param handler the delegate instance
+     * 
+     * @param handler
+     *            the delegate instance
      */
-    public void setDelegateContentHandler(ContentHandler handler) {
+    public void setDelegateContentHandler(final ContentHandler handler) {
         this.delegate = handler;
     }
 
     /**
      * Sets the delegate EntityResolver.
-     * @param resolver the delegate instance
+     * 
+     * @param resolver
+     *            the delegate instance
      */
-    public void setDelegateEntityResolver(EntityResolver resolver) {
+    public void setDelegateEntityResolver(final EntityResolver resolver) {
         this.entityResolver = resolver;
     }
 
     /**
      * Sets the delegate DTDHandler.
-     * @param handler the delegate instance
+     * 
+     * @param handler
+     *            the delegate instance
      */
-    public void setDelegateDTDHandler(DTDHandler handler) {
+    public void setDelegateDTDHandler(final DTDHandler handler) {
         this.dtdHandler = handler;
     }
 
     /**
      * Sets the delegate LexicalHandler.
-     * @param handler the delegate instance
+     * 
+     * @param handler
+     *            the delegate instance
      */
-    public void setDelegateLexicalHandler(LexicalHandler handler) {
+    public void setDelegateLexicalHandler(final LexicalHandler handler) {
         this.lexicalHandler = handler;
     }
 
     /**
      * Sets the delegate ErrorHandler.
-     * @param handler the delegate instance
+     * 
+     * @param handler
+     *            the delegate instance
      */
-    public void setDelegateErrorHandler(ErrorHandler handler) {
+    public void setDelegateErrorHandler(final ErrorHandler handler) {
         this.errorHandler = handler;
     }
 
     // ==== EntityResolver
 
     /** {@inheritDoc} */
-    public InputSource resolveEntity(String publicId, String systemId)
-            throws SAXException, IOException {
-        if (entityResolver != null) {
-            return entityResolver.resolveEntity(publicId, systemId);
+    @Override
+    public InputSource resolveEntity(final String publicId,
+            final String systemId) throws SAXException, IOException {
+        if (this.entityResolver != null) {
+            return this.entityResolver.resolveEntity(publicId, systemId);
         } else {
             return null;
         }
@@ -138,150 +153,184 @@ public class DelegatingContentHandler
     // ==== DTDHandler
 
     /** {@inheritDoc} */
-    public void notationDecl(String name, String publicId, String systemId) throws SAXException {
-        if (dtdHandler != null) {
-            dtdHandler.notationDecl(name, publicId, systemId);
+    @Override
+    public void notationDecl(final String name, final String publicId,
+            final String systemId) throws SAXException {
+        if (this.dtdHandler != null) {
+            this.dtdHandler.notationDecl(name, publicId, systemId);
         }
     }
 
     /** {@inheritDoc} */
-    public void unparsedEntityDecl(String name, String publicId, String systemId,
-            String notationName) throws SAXException {
-        if (dtdHandler != null) {
-            dtdHandler.unparsedEntityDecl(name, publicId, systemId, notationName);
+    @Override
+    public void unparsedEntityDecl(final String name, final String publicId,
+            final String systemId, final String notationName)
+            throws SAXException {
+        if (this.dtdHandler != null) {
+            this.dtdHandler.unparsedEntityDecl(name, publicId, systemId,
+                    notationName);
         }
     }
 
     // ==== ContentHandler
 
     /** {@inheritDoc} */
-    public void setDocumentLocator(Locator locator) {
-        delegate.setDocumentLocator(locator);
+    @Override
+    public void setDocumentLocator(final Locator locator) {
+        this.delegate.setDocumentLocator(locator);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startDocument() throws SAXException {
-        delegate.startDocument();
+        this.delegate.startDocument();
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endDocument() throws SAXException {
-        delegate.endDocument();
+        this.delegate.endDocument();
     }
 
     /** {@inheritDoc} */
-    public void startPrefixMapping(String prefix, String uri) throws SAXException {
-        delegate.startPrefixMapping(prefix, uri);
+    @Override
+    public void startPrefixMapping(final String prefix, final String uri)
+            throws SAXException {
+        this.delegate.startPrefixMapping(prefix, uri);
     }
 
     /** {@inheritDoc} */
-    public void endPrefixMapping(String prefix) throws SAXException {
-        delegate.endPrefixMapping(prefix);
+    @Override
+    public void endPrefixMapping(final String prefix) throws SAXException {
+        this.delegate.endPrefixMapping(prefix);
     }
 
     /** {@inheritDoc} */
-    public void startElement(String uri, String localName, String qName,
-                Attributes atts) throws SAXException {
-        delegate.startElement(uri, localName, qName, atts);
+    @Override
+    public void startElement(final String uri, final String localName,
+            final String qName, final Attributes atts) throws SAXException {
+        this.delegate.startElement(uri, localName, qName, atts);
     }
 
     /** {@inheritDoc} */
-    public void endElement(String uri, String localName, String qName) throws SAXException {
-        delegate.endElement(uri, localName, qName);
+    @Override
+    public void endElement(final String uri, final String localName,
+            final String qName) throws SAXException {
+        this.delegate.endElement(uri, localName, qName);
     }
 
     /** {@inheritDoc} */
-    public void characters(char[] ch, int start, int length) throws SAXException {
-        delegate.characters(ch, start, length);
+    @Override
+    public void characters(final char[] ch, final int start, final int length)
+            throws SAXException {
+        this.delegate.characters(ch, start, length);
     }
 
     /** {@inheritDoc} */
-    public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-        delegate.ignorableWhitespace(ch, start, length);
+    @Override
+    public void ignorableWhitespace(final char[] ch, final int start,
+            final int length) throws SAXException {
+        this.delegate.ignorableWhitespace(ch, start, length);
     }
 
     /** {@inheritDoc} */
-    public void processingInstruction(String target, String data) throws SAXException {
-        delegate.processingInstruction(target, data);
+    @Override
+    public void processingInstruction(final String target, final String data)
+            throws SAXException {
+        this.delegate.processingInstruction(target, data);
     }
 
     /** {@inheritDoc} */
-    public void skippedEntity(String name) throws SAXException {
-        delegate.skippedEntity(name);
+    @Override
+    public void skippedEntity(final String name) throws SAXException {
+        this.delegate.skippedEntity(name);
     }
 
     // ==== LexicalHandler
 
     /** {@inheritDoc} */
-    public void startDTD(String name, String publicId, String systemId) throws SAXException {
-        if (lexicalHandler != null) {
-            lexicalHandler.startDTD(name, publicId, systemId);
+    @Override
+    public void startDTD(final String name, final String publicId,
+            final String systemId) throws SAXException {
+        if (this.lexicalHandler != null) {
+            this.lexicalHandler.startDTD(name, publicId, systemId);
         }
 
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endDTD() throws SAXException {
-        if (lexicalHandler != null) {
-            lexicalHandler.endDTD();
+        if (this.lexicalHandler != null) {
+            this.lexicalHandler.endDTD();
         }
     }
 
     /** {@inheritDoc} */
-    public void startEntity(String name) throws SAXException {
-        if (lexicalHandler != null) {
-            lexicalHandler.startEntity(name);
+    @Override
+    public void startEntity(final String name) throws SAXException {
+        if (this.lexicalHandler != null) {
+            this.lexicalHandler.startEntity(name);
         }
     }
 
     /** {@inheritDoc} */
-    public void endEntity(String name) throws SAXException {
-        if (lexicalHandler != null) {
-            lexicalHandler.endEntity(name);
+    @Override
+    public void endEntity(final String name) throws SAXException {
+        if (this.lexicalHandler != null) {
+            this.lexicalHandler.endEntity(name);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startCDATA() throws SAXException {
-        if (lexicalHandler != null) {
-            lexicalHandler.startCDATA();
+        if (this.lexicalHandler != null) {
+            this.lexicalHandler.startCDATA();
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endCDATA() throws SAXException {
-        if (lexicalHandler != null) {
-            lexicalHandler.endCDATA();
+        if (this.lexicalHandler != null) {
+            this.lexicalHandler.endCDATA();
         }
     }
 
     /** {@inheritDoc} */
-    public void comment(char[] ch, int start, int length) throws SAXException {
-        if (lexicalHandler != null) {
-            lexicalHandler.comment(ch, start, length);
+    @Override
+    public void comment(final char[] ch, final int start, final int length)
+            throws SAXException {
+        if (this.lexicalHandler != null) {
+            this.lexicalHandler.comment(ch, start, length);
         }
     }
 
     // ==== ErrorHandler
 
     /** {@inheritDoc} */
-    public void warning(SAXParseException exception) throws SAXException {
-        if (errorHandler != null) {
-            errorHandler.warning(exception);
+    @Override
+    public void warning(final SAXParseException exception) throws SAXException {
+        if (this.errorHandler != null) {
+            this.errorHandler.warning(exception);
         }
     }
 
     /** {@inheritDoc} */
-    public void error(SAXParseException exception) throws SAXException {
-        if (errorHandler != null) {
-            errorHandler.error(exception);
+    @Override
+    public void error(final SAXParseException exception) throws SAXException {
+        if (this.errorHandler != null) {
+            this.errorHandler.error(exception);
         }
     }
 
     /** {@inheritDoc} */
-    public void fatalError(SAXParseException exception) throws SAXException {
-        if (errorHandler != null) {
-            errorHandler.fatalError(exception);
+    @Override
+    public void fatalError(final SAXParseException exception)
+            throws SAXException {
+        if (this.errorHandler != null) {
+            this.errorHandler.fatalError(exception);
         }
     }
 

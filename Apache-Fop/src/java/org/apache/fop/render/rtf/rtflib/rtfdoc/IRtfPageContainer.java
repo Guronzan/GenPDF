@@ -29,16 +29,25 @@ package org.apache.fop.render.rtf.rtflib.rtfdoc;
 import java.io.IOException;
 
 /**
- * <p>Interface for RtfElements that can contain RtfText elements.</p>
+ * <p>
+ * Interface for RtfElements that can contain RtfText elements.
+ * </p>
  *
- * <p>This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch).</p>
+ * <p>
+ * This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch).
+ * </p>
  */
 
 public interface IRtfPageContainer {
-    /** close current text run if any and start a new one with specified attributes
-     * @param attrs attributes for the new Page
+    /**
+     * close current text run if any and start a new one with specified
+     * attributes
+     * 
+     * @param attrs
+     *            attributes for the new Page
      * @return new Page object
-     * @throws IOException for I/O problems.
+     * @throws IOException
+     *             for I/O problems.
      */
-    RtfPage newPage(RtfAttributes attrs) throws IOException;
+    RtfPage newPage(final RtfAttributes attrs) throws IOException;
 }

@@ -31,6 +31,8 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.xml.sax.InputSource;
 
 /**
@@ -43,6 +45,7 @@ import org.xml.sax.InputSource;
  * This work was authored by Carlos Villegas (cav@uniscope.co.jp).
  * </p>
  */
+@Slf4j
 public class HyphenationTree extends TernaryTree implements PatternConsumer {
 
     private static final long serialVersionUID = -7842107987915665573L;
@@ -79,7 +82,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
      * Packs the values by storing them in 4 bits, two values into a byte Values
      * range is from 0 to 9. We use zero as terminator, so we'll add 1 to the
      * value.
-     * 
+     *
      * @param values
      *            a string of digits from '0' to '9' representing the
      *            interletter values.
@@ -94,12 +97,12 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
         final byte[] va = this.vspace.getArray();
         for (i = 0; i < n; i++) {
             final int j = i >> 1;
-        final byte v = (byte) (values.charAt(i) - '0' + 1 & 0x0f);
-        if ((i & 1) == 1) {
-            va[j + offset] = (byte) (va[j + offset] | v);
-        } else {
-            va[j + offset] = (byte) (v << 4); // big endian
-        }
+            final byte v = (byte) (values.charAt(i) - '0' + 1 & 0x0f);
+            if ((i & 1) == 1) {
+                va[j + offset] = (byte) (va[j + offset] | v);
+            } else {
+                va[j + offset] = (byte) (v << 4); // big endian
+            }
         }
         va[m - 1 + offset] = 0; // terminator
         return offset;
@@ -107,7 +110,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
 
     /**
      * Unpack values.
-     * 
+     *
      * @param k
      *            an integer
      * @return a string
@@ -131,7 +134,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
 
     /**
      * Read hyphenation patterns from an XML file.
-     * 
+     *
      * @param filename
      *            the filename
      * @throws HyphenationException
@@ -151,7 +154,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
 
     /**
      * Read hyphenation patterns from an XML file.
-     * 
+     *
      * @param source
      *            the InputSource for the file
      * @throws HyphenationException
@@ -176,7 +179,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
 
     /**
      * Find pattern.
-     * 
+     *
      * @param pat
      *            a pattern
      * @return a string
@@ -191,7 +194,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
 
     /**
      * String compare, returns 0 if equal or t is a substring of s.
-     * 
+     *
      * @param s
      *            first character array
      * @param si
@@ -216,7 +219,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
 
     /**
      * Get values.
-     * 
+     *
      * @param k
      *            an integer
      * @return a byte array
@@ -263,7 +266,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
      * tree instead of a trie, almost halves the the memory used by Lout or TeX.
      * It's also faster than using a hash table
      * </p>
-     * 
+     *
      * @param word
      *            null terminated word to match
      * @param index
@@ -336,7 +339,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
 
     /**
      * Hyphenate word and return a Hyphenation object.
-     * 
+     *
      * @param word
      *            the word to be hyphenated
      * @param remainCharCount
@@ -370,7 +373,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
 
     /**
      * Hyphenate word and return an array of hyphenation points.
-     * 
+     *
      * @param w
      *            char array that contains the word
      * @param offset
@@ -483,7 +486,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
      * with the stored patterns. Usually pattern files use only lower case
      * characters, in this case a class for letter 'a', for example, should be
      * defined as "aA", the first character being the normalization char.
-     * 
+     *
      * @param chargroup
      *            a character class (group)
      */
@@ -503,7 +506,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
     /**
      * Add an exception to the tree. It is used by {@link PatternParser
      * PatternParser} class as callback to store the hyphenation exceptions.
-     * 
+     *
      * @param word
      *            normalized word
      * @param hyphenatedword
@@ -518,7 +521,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
     /**
      * Add a pattern to the tree. Mainly, to be used by {@link PatternParser
      * PatternParser} class as callback to add a pattern to the tree.
-     * 
+     *
      * @param pattern
      *            the hyphenation pattern
      * @param ivalue
@@ -541,15 +544,14 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
      */
     @Override
     public void printStats() {
-        System.out.println("Value space size = "
-                + Integer.toString(this.vspace.length()));
+        log.info("Value space size = " + Integer.toString(this.vspace.length()));
         super.printStats();
 
     }
 
     /**
      * Main entry point for this hyphenation utility application.
-     * 
+     *
      * @param argv
      *            array of command linee arguments
      * @throws Exception
@@ -571,7 +573,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
             if (token.equals("f")) {
                 System.out.print("Pattern: ");
                 token = in.readLine().trim();
-                System.out.println("Values: " + ht.findPattern(token));
+                log.info("Values: " + ht.findPattern(token));
             } else if (token.equals("s")) {
                 System.out.print("Minimun value: ");
                 token = in.readLine().trim();
@@ -626,11 +628,11 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
                 System.out.print("Word: ");
                 token = in.readLine().trim();
                 System.out.print("Hyphenation points: ");
-                System.out.println(ht.hyphenate(token, minCharCount,
-                        minCharCount));
+                log.info(ht.hyphenate(token, minCharCount, minCharCount)
+                        .toString());
             } else if (token.equals("b")) {
                 if (ht == null) {
-                    System.out.println("No patterns have been loaded.");
+                    log.info("No patterns have been loaded.");
                     break;
                 }
                 System.out.print("Word list filename: ");
@@ -649,20 +651,20 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
                                 minCharCount, minCharCount);
                         if (hyp != null) {
                             final String hword = hyp.toString();
-                            // System.out.println(line);
-                            // System.out.println(hword);
+                            // log.info(line);
+                            // log.info(hword);
                         } else {
-                            // System.out.println("No hyphenation");
+                            // log.info("No hyphenation");
                         }
                         counter++;
                     }
                 } catch (final Exception ioe) {
-                    System.out.println("Exception " + ioe);
+                    log.info("Exception " + ioe);
                     ioe.printStackTrace();
                 }
                 final long endtime = System.currentTimeMillis();
                 final long result = endtime - starttime;
-                System.out.println(counter + " words in " + result
+                log.info(counter + " words in " + result
                         + " Milliseconds hyphenated");
 
             } else if (token.equals("q")) {

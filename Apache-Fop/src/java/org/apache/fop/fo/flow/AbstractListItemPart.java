@@ -19,8 +19,6 @@
 
 package org.apache.fop.fo.flow;
 
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.FObj;
@@ -29,19 +27,22 @@ import org.apache.fop.fo.ValidationException;
 import org.apache.fop.fo.properties.CommonAccessibility;
 import org.apache.fop.fo.properties.CommonAccessibilityHolder;
 import org.apache.fop.fo.properties.KeepProperty;
+import org.xml.sax.Locator;
 
 /**
  * Common superclass for <a href="http://www.w3.org/TR/xsl/#fo_list-item-label">
- * <code>fo:list-item-label</code></a> and <a href="http://www.w3.org/TR/xsl/#fo_list-item-body">
+ * <code>fo:list-item-label</code></a> and <a
+ * href="http://www.w3.org/TR/xsl/#fo_list-item-body">
  * <code>fo:list-item-body</code></a>.
  */
-public abstract class AbstractListItemPart extends FObj implements CommonAccessibilityHolder {
+public abstract class AbstractListItemPart extends FObj implements
+        CommonAccessibilityHolder {
 
     private CommonAccessibility commonAccessibility;
 
     private KeepProperty keepTogether;
     // Valid properties, commented out for performance:
-    //   private CommonAccessibility commonAccessibility;
+    // private CommonAccessibility commonAccessibility;
     // End of property values
 
     /** used for FO validation */
@@ -50,55 +51,59 @@ public abstract class AbstractListItemPart extends FObj implements CommonAccessi
     /**
      * Base constructor
      *
-     * @param parent {@link FONode} that is the parent of this object
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public AbstractListItemPart(FONode parent) {
+    public AbstractListItemPart(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        commonAccessibility = CommonAccessibility.getInstance(pList);
-        keepTogether = pList.get(PR_KEEP_TOGETHER).getKeep();
+        this.commonAccessibility = CommonAccessibility.getInstance(pList);
+        this.keepTogether = pList.get(PR_KEEP_TOGETHER).getKeep();
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL Content Model: marker* (%block;)+
+     * {@inheritDoc} <br>
+     * XSL Content Model: marker* (%block;)+
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-        throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             if (localName.equals("marker")) {
-                if (blockItemFound) {
-                   nodesOutOfOrderError(loc, "fo:marker", "(%block;)");
+                if (this.blockItemFound) {
+                    nodesOutOfOrderError(loc, "fo:marker", "(%block;)");
                 }
             } else if (!isBlockItem(nsURI, localName)) {
                 invalidChildError(loc, nsURI, localName);
             } else {
-                blockItemFound = true;
+                this.blockItemFound = true;
             }
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
         if (!this.blockItemFound) {
-            String contentModel = "marker* (%block;)+";
+            final String contentModel = "marker* (%block;)+";
             getFOValidationEventProducer().missingChildElement(this, getName(),
                     contentModel, true, getLocator());
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public CommonAccessibility getCommonAccessibility() {
-        return commonAccessibility;
+        return this.commonAccessibility;
     }
 
-    /** @return the "keep-together" property.  */
+    /** @return the "keep-together" property. */
     public KeepProperty getKeepTogether() {
-        return keepTogether;
+        return this.keepTogether;
     }
 }
-

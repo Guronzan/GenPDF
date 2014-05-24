@@ -34,13 +34,18 @@ public class KnuthInlineBox extends KnuthBox {
     /**
      * Create a new KnuthBox.
      *
-     * @param width            the width of this box
-     * @param alignmentContext the alignmentContext for this box
-     * @param pos              the Position stored in this box
-     * @param auxiliary        is this box auxiliary?
+     * @param width
+     *            the width of this box
+     * @param alignmentContext
+     *            the alignmentContext for this box
+     * @param pos
+     *            the Position stored in this box
+     * @param auxiliary
+     *            is this box auxiliary?
      */
-    public KnuthInlineBox
-        (int width, AlignmentContext alignmentContext, Position pos, boolean auxiliary) {
+    public KnuthInlineBox(final int width,
+            final AlignmentContext alignmentContext, final Position pos,
+            final boolean auxiliary) {
         super(width, pos, auxiliary);
         this.alignmentContext = alignmentContext;
     }
@@ -49,27 +54,28 @@ public class KnuthInlineBox extends KnuthBox {
      * @return the alignment context.
      */
     public AlignmentContext getAlignmentContext() {
-        return alignmentContext;
+        return this.alignmentContext;
     }
 
     /**
-     * @param fblm the FootnoteBodyLM this box must hold a reference to
+     * @param fblm
+     *            the FootnoteBodyLM this box must hold a reference to
      */
-    public void setFootnoteBodyLM(FootnoteBodyLayoutManager fblm) {
-        footnoteBodyLM = fblm;
+    public void setFootnoteBodyLM(final FootnoteBodyLayoutManager fblm) {
+        this.footnoteBodyLM = fblm;
     }
 
     /**
      * @return the FootnoteBodyLM this box holds a reference to
      */
     public FootnoteBodyLayoutManager getFootnoteBodyLM() {
-        return footnoteBodyLM;
+        return this.footnoteBodyLM;
     }
 
     /**
      * @return true if this box holds a reference to a FootnoteBodyLM
      */
     public boolean isAnchor() {
-        return (footnoteBodyLM != null);
+        return this.footnoteBodyLM != null;
     }
 }

@@ -37,42 +37,53 @@ public abstract class AFPImageHandler implements ImageHandlerBase {
     private static final int Y = 1;
 
     /** foreign attribute reader */
-    private final AFPForeignAttributeReader foreignAttributeReader
-        = new AFPForeignAttributeReader();
+    private final AFPForeignAttributeReader foreignAttributeReader = new AFPForeignAttributeReader();
 
     /**
      * Sets resource information on the data object info.
-     * @param dataObjectInfo the data object info instance
-     * @param uri the image's URI (or null if no URI is available)
-     * @param foreignAttributes a Map of foreign attributes (or null)
+     * 
+     * @param dataObjectInfo
+     *            the data object info instance
+     * @param uri
+     *            the image's URI (or null if no URI is available)
+     * @param foreignAttributes
+     *            a Map of foreign attributes (or null)
      */
-    protected void setResourceInformation(AFPDataObjectInfo dataObjectInfo,
-            String uri, Map foreignAttributes) {
-        AFPResourceInfo resourceInfo
-            = foreignAttributeReader.getResourceInfo(foreignAttributes);
+    protected void setResourceInformation(
+            final AFPDataObjectInfo dataObjectInfo, final String uri,
+            final Map foreignAttributes) {
+        final AFPResourceInfo resourceInfo = this.foreignAttributeReader
+                .getResourceInfo(foreignAttributes);
         resourceInfo.setUri(uri);
         dataObjectInfo.setResourceInfo(resourceInfo);
     }
 
     /**
-     * Creates and returns an {@link AFPObjectAreaInfo} instance for the placement of the image.
-     * @param paintingState the painting state
-     * @param targetRect the target rectangle in which to place the image (coordinates in mpt)
+     * Creates and returns an {@link AFPObjectAreaInfo} instance for the
+     * placement of the image.
+     * 
+     * @param paintingState
+     *            the painting state
+     * @param targetRect
+     *            the target rectangle in which to place the image (coordinates
+     *            in mpt)
      * @return the newly created object area info instance
      */
-    public static AFPObjectAreaInfo createObjectAreaInfo(AFPPaintingState paintingState,
-            Rectangle targetRect) {
-        AFPUnitConverter unitConv = paintingState.getUnitConverter();
+    public static AFPObjectAreaInfo createObjectAreaInfo(
+            final AFPPaintingState paintingState, final Rectangle targetRect) {
+        final AFPUnitConverter unitConv = paintingState.getUnitConverter();
 
-        int[] coords = unitConv.mpts2units(new float[] {targetRect.x, targetRect.y});
+        final int[] coords = unitConv.mpts2units(new float[] { targetRect.x,
+                targetRect.y });
 
-        int width = Math.round(unitConv.mpt2units(targetRect.width));
+        final int width = Math.round(unitConv.mpt2units(targetRect.width));
 
-        int height = Math.round(unitConv.mpt2units(targetRect.height));
+        final int height = Math.round(unitConv.mpt2units(targetRect.height));
 
-        int resolution = paintingState.getResolution();
-        AFPObjectAreaInfo objectAreaInfo = new AFPObjectAreaInfo(coords[X], coords[Y], width,
-                height, resolution, paintingState.getRotation());
+        final int resolution = paintingState.getResolution();
+        final AFPObjectAreaInfo objectAreaInfo = new AFPObjectAreaInfo(
+                coords[X], coords[Y], width, height, resolution,
+                paintingState.getRotation());
         return objectAreaInfo;
     }
 

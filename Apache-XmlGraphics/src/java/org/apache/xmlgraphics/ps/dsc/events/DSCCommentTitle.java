@@ -41,14 +41,17 @@ public class DSCCommentTitle extends AbstractDSCComment {
 
     /**
      * Creates a new instance.
-     * @param title the title text
+     * 
+     * @param title
+     *            the title text
      */
-    public DSCCommentTitle(String title) {
+    public DSCCommentTitle(final String title) {
         this.title = title;
     }
 
     /**
      * Returns the title.
+     * 
      * @return the title
      */
     public String getTitle() {
@@ -56,24 +59,28 @@ public class DSCCommentTitle extends AbstractDSCComment {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return DSCConstants.TITLE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasValues() {
         return true;
     }
 
     /** {@inheritDoc} */
-    public void parseValue(String value) {
-        List params = splitParams(value);
-        Iterator iter = params.iterator();
-        this.title = (String)iter.next();
+    @Override
+    public void parseValue(final String value) {
+        final List params = splitParams(value);
+        final Iterator iter = params.iterator();
+        this.title = (String) iter.next();
     }
 
     /** {@inheritDoc} */
-    public void generate(PSGenerator gen) throws IOException {
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
         gen.writeDSCComment(getName(), getTitle());
     }
 

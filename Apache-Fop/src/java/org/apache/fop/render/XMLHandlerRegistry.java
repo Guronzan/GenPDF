@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.xmlgraphics.util.Service;
 
 /**
@@ -32,10 +32,8 @@ import org.apache.xmlgraphics.util.Service;
  * supports automatic discovery of additional XML handlers available through the
  * class path.
  */
+@Slf4j
 public class XMLHandlerRegistry {
-
-    /** the logger */
-    private static Log log = LogFactory.getLog(XMLHandlerRegistry.class);
 
     /** Map containing XML handlers for various document types */
     private final Map<String, List<XMLHandler>> handlers = new java.util.HashMap<String, List<XMLHandler>>();

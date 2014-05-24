@@ -23,167 +23,160 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-
 /**
  * This class applies a RunLengthEncode filter to the stream.
  *
- * @version  $Id: RunLengthEncodeOutputStream.java 1345683 2012-06-03 14:50:33Z gadams $
+ * @version $Id: RunLengthEncodeOutputStream.java 1345683 2012-06-03 14:50:33Z
+ *          gadams $
  *
- * Originally authored by Stephen Wolke.
+ *          Originally authored by Stephen Wolke.
  */
-public class RunLengthEncodeOutputStream extends FilterOutputStream
-            implements Finalizable {
+public class RunLengthEncodeOutputStream extends FilterOutputStream implements
+        Finalizable {
 
-    private static final int MAX_SEQUENCE_COUNT    = 127;
-    private static final int END_OF_DATA           = 128;
-    private static final int BYTE_MAX              = 256;
+    private static final int MAX_SEQUENCE_COUNT = 127;
+    private static final int END_OF_DATA = 128;
+    private static final int BYTE_MAX = 256;
 
     private static final int NOT_IDENTIFY_SEQUENCE = 0;
-    private static final int START_SEQUENCE        = 1;
-    private static final int IN_SEQUENCE           = 2;
-    private static final int NOT_IN_SEQUENCE       = 3;
+    private static final int START_SEQUENCE = 1;
+    private static final int IN_SEQUENCE = 2;
+    private static final int NOT_IN_SEQUENCE = 3;
 
     private int runCount = 0;
     private int isSequence = NOT_IDENTIFY_SEQUENCE;
-    private byte[] runBuffer = new byte[MAX_SEQUENCE_COUNT + 1];
-
+    private final byte[] runBuffer = new byte[MAX_SEQUENCE_COUNT + 1];
 
     /** @see java.io.FilterOutputStream **/
-    public RunLengthEncodeOutputStream(OutputStream out) {
+    public RunLengthEncodeOutputStream(final OutputStream out) {
         super(out);
     }
 
-
     /** @see java.io.FilterOutputStream **/
-    public void write(byte b)
-        throws java.io.IOException {
-        runBuffer[runCount] = b;
+    public void write(final byte b) throws java.io.IOException {
+        this.runBuffer[this.runCount] = b;
 
-        switch (runCount) {
+        switch (this.runCount) {
         case 0:
-            runCount = 0;
-            isSequence = NOT_IDENTIFY_SEQUENCE;
-            runCount++;
+            this.runCount = 0;
+            this.isSequence = NOT_IDENTIFY_SEQUENCE;
+            this.runCount++;
             break;
         case 1:
-            if (runBuffer[runCount] != runBuffer[runCount - 1]) {
-                isSequence = NOT_IN_SEQUENCE;
+            if (this.runBuffer[this.runCount] != this.runBuffer[this.runCount - 1]) {
+                this.isSequence = NOT_IN_SEQUENCE;
             }
-            runCount++;
+            this.runCount++;
             break;
         case 2:
-            if (runBuffer[runCount] != runBuffer[runCount - 1]) {
-                isSequence = NOT_IN_SEQUENCE;
+            if (this.runBuffer[this.runCount] != this.runBuffer[this.runCount - 1]) {
+                this.isSequence = NOT_IN_SEQUENCE;
             } else {
-                if (isSequence == NOT_IN_SEQUENCE) {
-                    isSequence = START_SEQUENCE;
+                if (this.isSequence == NOT_IN_SEQUENCE) {
+                    this.isSequence = START_SEQUENCE;
                 } else {
-                    isSequence = IN_SEQUENCE;
+                    this.isSequence = IN_SEQUENCE;
                 }
             }
-            runCount++;
+            this.runCount++;
             break;
         case MAX_SEQUENCE_COUNT:
-            if (isSequence == IN_SEQUENCE) {
-                out.write(BYTE_MAX - (MAX_SEQUENCE_COUNT - 1));
-                out.write(runBuffer[runCount - 1]);
-                runBuffer[0] = runBuffer[runCount];
-                runCount = 1;
+            if (this.isSequence == IN_SEQUENCE) {
+                this.out.write(BYTE_MAX - (MAX_SEQUENCE_COUNT - 1));
+                this.out.write(this.runBuffer[this.runCount - 1]);
+                this.runBuffer[0] = this.runBuffer[this.runCount];
+                this.runCount = 1;
             } else {
-                out.write(MAX_SEQUENCE_COUNT);
-                out.write(runBuffer, 0, runCount + 1);
-                runCount = 0;
+                this.out.write(MAX_SEQUENCE_COUNT);
+                this.out.write(this.runBuffer, 0, this.runCount + 1);
+                this.runCount = 0;
             }
-            isSequence = NOT_IDENTIFY_SEQUENCE;
+            this.isSequence = NOT_IDENTIFY_SEQUENCE;
             break;
         default:
-            switch (isSequence) {
+            switch (this.isSequence) {
             case NOT_IN_SEQUENCE:
-                if (runBuffer[runCount] == runBuffer[runCount - 1]) {
-                    isSequence = START_SEQUENCE;
+                if (this.runBuffer[this.runCount] == this.runBuffer[this.runCount - 1]) {
+                    this.isSequence = START_SEQUENCE;
                 }
-                runCount++;
+                this.runCount++;
                 break;
             case START_SEQUENCE:
-                if (runBuffer[runCount] == runBuffer[runCount - 1]) {
-                    out.write(runCount - 3);
-                    out.write(runBuffer, 0, runCount - 2);
-                    runBuffer[0] = runBuffer[runCount];
-                    runBuffer[1] = runBuffer[runCount];
-                    runBuffer[2] = runBuffer[runCount];
-                    runCount = 3;
-                    isSequence = IN_SEQUENCE;
+                if (this.runBuffer[this.runCount] == this.runBuffer[this.runCount - 1]) {
+                    this.out.write(this.runCount - 3);
+                    this.out.write(this.runBuffer, 0, this.runCount - 2);
+                    this.runBuffer[0] = this.runBuffer[this.runCount];
+                    this.runBuffer[1] = this.runBuffer[this.runCount];
+                    this.runBuffer[2] = this.runBuffer[this.runCount];
+                    this.runCount = 3;
+                    this.isSequence = IN_SEQUENCE;
                     break;
                 } else {
-                    isSequence = NOT_IN_SEQUENCE;
-                    runCount++;
+                    this.isSequence = NOT_IN_SEQUENCE;
+                    this.runCount++;
                     break;
                 }
             case IN_SEQUENCE:
             default:
-                if (runBuffer[runCount] != runBuffer[runCount - 1]) {
-                    out.write(BYTE_MAX - (runCount - 1));
-                    out.write(runBuffer[runCount - 1]);
-                    runBuffer[0] = runBuffer[runCount];
-                    runCount = 1;
-                    isSequence = NOT_IDENTIFY_SEQUENCE;
+                if (this.runBuffer[this.runCount] != this.runBuffer[this.runCount - 1]) {
+                    this.out.write(BYTE_MAX - (this.runCount - 1));
+                    this.out.write(this.runBuffer[this.runCount - 1]);
+                    this.runBuffer[0] = this.runBuffer[this.runCount];
+                    this.runCount = 1;
+                    this.isSequence = NOT_IDENTIFY_SEQUENCE;
                     break;
                 }
-                runCount++;
+                this.runCount++;
                 break;
             }
         }
     }
 
-
     /** @see java.io.FilterOutputStream **/
-    public void write(byte[] b)
-        throws IOException {
+    @Override
+    public void write(final byte[] b) throws IOException {
 
         for (int i = 0; i < b.length; i++) {
             this.write(b[i]);
         }
     }
 
-
     /** @see java.io.FilterOutputStream **/
-    public void write(byte[] b, int off, int len)
-        throws IOException {
+    @Override
+    public void write(final byte[] b, final int off, final int len)
+            throws IOException {
 
         for (int i = 0; i < len; i++) {
             this.write(b[off + i]);
         }
     }
 
-
     /** @see Finalizable **/
-    public void finalizeStream()
-        throws IOException {
-        switch (isSequence) {
+    @Override
+    public void finalizeStream() throws IOException {
+        switch (this.isSequence) {
         case IN_SEQUENCE:
-            out.write(BYTE_MAX - (runCount - 1));
-            out.write(runBuffer[runCount - 1]);
+            this.out.write(BYTE_MAX - (this.runCount - 1));
+            this.out.write(this.runBuffer[this.runCount - 1]);
             break;
         default:
-            out.write(runCount - 1);
-            out.write(runBuffer, 0, runCount);
+            this.out.write(this.runCount - 1);
+            this.out.write(this.runBuffer, 0, this.runCount);
         }
 
-        out.write(END_OF_DATA);
+        this.out.write(END_OF_DATA);
 
         flush();
-        if (out instanceof Finalizable) {
-            ((Finalizable) out).finalizeStream();
+        if (this.out instanceof Finalizable) {
+            ((Finalizable) this.out).finalizeStream();
         }
     }
 
-
     /** @see java.io.FilterOutputStream **/
-    public void close()
-        throws IOException {
+    @Override
+    public void close() throws IOException {
         finalizeStream();
         super.close();
     }
 
 }
-

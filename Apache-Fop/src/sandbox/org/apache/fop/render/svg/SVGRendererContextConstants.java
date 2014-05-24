@@ -22,7 +22,8 @@ package org.apache.fop.render.svg;
 import org.apache.fop.render.RendererContextConstants;
 
 /**
- * Defines a number of standard constants (keys) for use by the RendererContext class.
+ * Defines a number of standard constants (keys) for use by the RendererContext
+ * class.
  */
 public interface SVGRendererContextConstants extends RendererContextConstants {
 

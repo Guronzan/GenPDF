@@ -27,8 +27,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.afp.fonts.AFPFont;
 import org.apache.fop.afp.fonts.AFPFontAttributes;
@@ -62,10 +61,8 @@ import org.apache.fop.util.CharUtilities;
  * is accommodated by including resource objects in the documents that reference
  * them.
  */
+@Slf4j
 public class DataStream {
-
-    /** Static logging instance */
-    protected static final Log LOG = LogFactory.getLog("org.apache.xmlgraphics.afp");
 
     /** Boolean completion indicator */
     private boolean complete = false;
@@ -85,12 +82,12 @@ public class DataStream {
     /** The current page */
     private AbstractPageObject currentPage = null;
 
-    /** Sequence number for TLE's.*/
+    /** Sequence number for TLE's. */
     private int tleSequence = 0;
 
     /** The MO:DCA interchange set in use (default to MO:DCA-P IS/2 set) */
-    private InterchangeSet interchangeSet
-        = InterchangeSet.valueOf(InterchangeSet.MODCA_PRESENTATION_INTERCHANGE_SET_2);
+    private InterchangeSet interchangeSet = InterchangeSet
+            .valueOf(InterchangeSet.MODCA_PRESENTATION_INTERCHANGE_SET_2);
 
     private final Factory factory;
 
@@ -102,11 +99,16 @@ public class DataStream {
     /**
      * Default constructor for the AFPDocumentStream.
      *
-     * @param factory the resource factory
-     * @param paintingState the AFP painting state
-     * @param outputStream the outputstream to write to
+     * @param factory
+     *            the resource factory
+     * @param paintingState
+     *            the AFP painting state
+     * @param outputStream
+     *            the outputstream to write to
      */
-    public DataStream(Factory factory, AFPPaintingState paintingState, OutputStream outputStream) {
+    public DataStream(final Factory factory,
+            final AFPPaintingState paintingState,
+            final OutputStream outputStream) {
         this.paintingState = paintingState;
         this.factory = factory;
         this.outputStream = outputStream;
@@ -146,7 +148,7 @@ public class DataStream {
      * @param name
      *            the name of this document.
      */
-    public void setDocumentName(String name) {
+    public void setDocumentName(final String name) {
         if (name != null) {
             getDocument().setFullyQualifiedName(
                     FullyQualifiedNameTriplet.TYPE_BEGIN_DOCUMENT_REF,
@@ -157,29 +159,30 @@ public class DataStream {
     /**
      * Helper method to mark the end of the current document.
      *
-     * @throws IOException thrown if an I/O exception of some sort has occurred
+     * @throws IOException
+     *             thrown if an I/O exception of some sort has occurred
      */
     public void endDocument() throws IOException {
-        if (complete) {
-            String msg = "Invalid state - document already ended.";
-            LOG.warn("endDocument():: " + msg);
+        if (this.complete) {
+            final String msg = "Invalid state - document already ended.";
+            log.warn("endDocument():: " + msg);
             throw new IllegalStateException(msg);
         }
 
-        if (currentPageObject != null) {
+        if (this.currentPageObject != null) {
             // End the current page if necessary
             endPage();
         }
 
-        if (currentPageGroup != null) {
+        if (this.currentPageGroup != null) {
             // End the current page group if necessary
             endPageGroup();
         }
 
         // Write out document
-        if (document != null) {
-            document.endDocument();
-            document.writeToStream(this.outputStream);
+        if (this.document != null) {
+            this.document.endDocument();
+            this.document.writeToStream(this.outputStream);
         }
 
         this.outputStream.flush();
@@ -206,12 +209,13 @@ public class DataStream {
      * @param pageHeightRes
      *            the height resolution of the page
      */
-    public void startPage(int pageWidth, int pageHeight, int pageRotation,
-            int pageWidthRes, int pageHeightRes) {
-        currentPageObject = factory.createPage(pageWidth, pageHeight,
+    public void startPage(final int pageWidth, final int pageHeight,
+            final int pageRotation, final int pageWidthRes,
+            final int pageHeightRes) {
+        this.currentPageObject = this.factory.createPage(pageWidth, pageHeight,
                 pageRotation, pageWidthRes, pageHeightRes);
-        currentPage = currentPageObject;
-        currentOverlay = null;
+        this.currentPage = this.currentPageObject;
+        this.currentOverlay = null;
     }
 
     /**
@@ -234,26 +238,28 @@ public class DataStream {
      * @param overlayRotation
      *            the rotation of the overlay
      */
-    public void startOverlay(int x, int y, int width, int height, int widthRes,
-            int heightRes, int overlayRotation) {
-        this.currentOverlay = factory.createOverlay(
-                width, height, widthRes, heightRes, overlayRotation);
+    public void startOverlay(final int x, final int y, final int width,
+            final int height, final int widthRes, final int heightRes,
+            final int overlayRotation) {
+        this.currentOverlay = this.factory.createOverlay(width, height,
+                widthRes, heightRes, overlayRotation);
 
-        String overlayName = currentOverlay.getName();
-        currentPageObject.createIncludePageOverlay(overlayName, x, y, 0);
-        currentPage = currentOverlay;
+        final String overlayName = this.currentOverlay.getName();
+        this.currentPageObject.createIncludePageOverlay(overlayName, x, y, 0);
+        this.currentPage = this.currentOverlay;
     }
 
     /**
      * Helper method to mark the end of the current overlay.
      *
-     * @throws IOException thrown if an I/O exception of some sort has occurred
+     * @throws IOException
+     *             thrown if an I/O exception of some sort has occurred
      */
     public void endOverlay() throws IOException {
-        if (currentOverlay != null) {
-            currentOverlay.endPage();
-            currentOverlay = null;
-            currentPage = currentPageObject;
+        if (this.currentOverlay != null) {
+            this.currentOverlay.endPage();
+            this.currentOverlay = null;
+            this.currentPage = this.currentPageObject;
         }
     }
 
@@ -263,14 +269,14 @@ public class DataStream {
      * @return current page object that was saved
      */
     public PageObject savePage() {
-        PageObject pageObject = currentPageObject;
-        if (currentPageGroup != null) {
-            currentPageGroup.addPage(currentPageObject);
+        final PageObject pageObject = this.currentPageObject;
+        if (this.currentPageGroup != null) {
+            this.currentPageGroup.addPage(this.currentPageObject);
         } else {
-            document.addPage(currentPageObject);
+            this.document.addPage(this.currentPageObject);
         }
-        currentPageObject = null;
-        currentPage = null;
+        this.currentPageObject = null;
+        this.currentPage = null;
         return pageObject;
     }
 
@@ -280,28 +286,29 @@ public class DataStream {
      * @param pageObject
      *            page object
      */
-    public void restorePage(PageObject pageObject) {
-        currentPageObject = pageObject;
-        currentPage = pageObject;
+    public void restorePage(final PageObject pageObject) {
+        this.currentPageObject = pageObject;
+        this.currentPage = pageObject;
     }
 
     /**
      * Helper method to mark the end of the current page.
      *
-     * @throws IOException thrown if an I/O exception of some sort has occurred
+     * @throws IOException
+     *             thrown if an I/O exception of some sort has occurred
      */
     public void endPage() throws IOException {
-        if (currentPageObject != null) {
-            currentPageObject.endPage();
-            if (currentPageGroup != null) {
-                currentPageGroup.addPage(currentPageObject);
-                currentPageGroup.writeToStream(this.outputStream);
+        if (this.currentPageObject != null) {
+            this.currentPageObject.endPage();
+            if (this.currentPageGroup != null) {
+                this.currentPageGroup.addPage(this.currentPageObject);
+                this.currentPageGroup.writeToStream(this.outputStream);
             } else {
-                document.addPage(currentPageObject);
-                document.writeToStream(this.outputStream);
+                this.document.addPage(this.currentPageObject);
+                this.document.writeToStream(this.outputStream);
             }
-            currentPageObject = null;
-            currentPage = null;
+            this.currentPageObject = null;
+            this.currentPage = null;
         }
     }
 
@@ -311,13 +318,14 @@ public class DataStream {
      * @param pageFonts
      *            a collection of AFP font attributes
      */
-    public void addFontsToCurrentPage(Map pageFonts) {
-        Iterator iter = pageFonts.values().iterator();
+    public void addFontsToCurrentPage(final Map pageFonts) {
+        final Iterator iter = pageFonts.values().iterator();
         while (iter.hasNext()) {
-            AFPFontAttributes afpFontAttributes = (AFPFontAttributes) iter
+            final AFPFontAttributes afpFontAttributes = (AFPFontAttributes) iter
                     .next();
-            createFont(afpFontAttributes.getFontReference(), afpFontAttributes
-                    .getFont(), afpFontAttributes.getPointSize());
+            createFont(afpFontAttributes.getFontReference(),
+                    afpFontAttributes.getFont(),
+                    afpFontAttributes.getPointSize());
         }
     }
 
@@ -333,96 +341,109 @@ public class DataStream {
      * @param size
      *            the point size of the font
      */
-    public void createFont(int fontReference, AFPFont font, int size) {
-        currentPage.createFont(fontReference, font, size);
+    public void createFont(final int fontReference, final AFPFont font,
+            final int size) {
+        this.currentPage.createFont(fontReference, font, size);
     }
 
     /**
      * Returns a point on the current page
      *
-     * @param x the X-coordinate
-     * @param y the Y-coordinate
+     * @param x
+     *            the X-coordinate
+     * @param y
+     *            the Y-coordinate
      * @return a point on the current page
      */
-    private Point getPoint(int x, int y) {
-        return paintingState.getPoint(x, y);
+    private Point getPoint(final int x, final int y) {
+        return this.paintingState.getPoint(x, y);
     }
 
     /**
      * Helper method to create text on the current page, this method delegates
      * to the current presentation text object in order to construct the text.
      *
-     * @param textDataInfo the afp text data
-     * @param letterSpacing letter spacing to draw text with
-     * @param wordSpacing word Spacing to draw text with
-     * @param font is the font to draw text with
-     * @param charSet is the AFP Character Set to use with the text
-     * @throws UnsupportedEncodingException thrown if character encoding is not supported
+     * @param textDataInfo
+     *            the afp text data
+     * @param letterSpacing
+     *            letter spacing to draw text with
+     * @param wordSpacing
+     *            word Spacing to draw text with
+     * @param font
+     *            is the font to draw text with
+     * @param charSet
+     *            is the AFP Character Set to use with the text
+     * @throws UnsupportedEncodingException
+     *             thrown if character encoding is not supported
      */
-    public void createText(final AFPTextDataInfo textDataInfo, final int letterSpacing,
-            final int wordSpacing, final Font font, final CharacterSet charSet)
-            throws UnsupportedEncodingException {
-        int rotation = paintingState.getRotation();
+    public void createText(final AFPTextDataInfo textDataInfo,
+            final int letterSpacing, final int wordSpacing, final Font font,
+            final CharacterSet charSet) throws UnsupportedEncodingException {
+        final int rotation = this.paintingState.getRotation();
         if (rotation != 0) {
             textDataInfo.setRotation(rotation);
-            Point p = getPoint(textDataInfo.getX(), textDataInfo.getY());
+            final Point p = getPoint(textDataInfo.getX(), textDataInfo.getY());
             textDataInfo.setX(p.x);
             textDataInfo.setY(p.y);
         }
         // use PtocaProducer to create PTX records
-        PtocaProducer producer = new PtocaProducer() {
+        final PtocaProducer producer = new PtocaProducer() {
 
-            public void produce(PtocaBuilder builder) throws IOException {
+            @Override
+            public void produce(final PtocaBuilder builder) throws IOException {
                 builder.setTextOrientation(textDataInfo.getRotation());
                 builder.absoluteMoveBaseline(textDataInfo.getY());
                 builder.absoluteMoveInline(textDataInfo.getX());
 
                 builder.setExtendedTextColor(textDataInfo.getColor());
-                builder.setCodedFont((byte)textDataInfo.getFontReference());
+                builder.setCodedFont((byte) textDataInfo.getFontReference());
 
-                int l = textDataInfo.getString().length();
-                StringBuffer sb = new StringBuffer();
+                final int l = textDataInfo.getString().length();
+                final StringBuffer sb = new StringBuffer();
 
                 int interCharacterAdjustment = 0;
-                AFPUnitConverter unitConv = paintingState.getUnitConverter();
+                final AFPUnitConverter unitConv = DataStream.this.paintingState
+                        .getUnitConverter();
                 if (letterSpacing != 0) {
-                    interCharacterAdjustment = Math.round(unitConv.mpt2units(letterSpacing));
+                    interCharacterAdjustment = Math.round(unitConv
+                            .mpt2units(letterSpacing));
                 }
                 builder.setInterCharacterAdjustment(interCharacterAdjustment);
 
-                int spaceWidth = font.getCharWidth(CharUtilities.SPACE);
-                int spacing = spaceWidth + letterSpacing;
-                int fixedSpaceCharacterIncrement = Math.round(unitConv.mpt2units(spacing));
+                final int spaceWidth = font.getCharWidth(CharUtilities.SPACE);
+                final int spacing = spaceWidth + letterSpacing;
+                final int fixedSpaceCharacterIncrement = Math.round(unitConv
+                        .mpt2units(spacing));
                 int varSpaceCharacterIncrement = fixedSpaceCharacterIncrement;
                 if (wordSpacing != 0) {
-                    varSpaceCharacterIncrement = Math.round(unitConv.mpt2units(
-                            spaceWidth + wordSpacing + letterSpacing));
+                    varSpaceCharacterIncrement = Math
+                            .round(unitConv.mpt2units(spaceWidth + wordSpacing
+                                    + letterSpacing));
                 }
                 builder.setVariableSpaceCharacterIncrement(varSpaceCharacterIncrement);
 
                 boolean fixedSpaceMode = false;
 
                 for (int i = 0; i < l; i++) {
-                    char orgChar = textDataInfo.getString().charAt(i);
+                    final char orgChar = textDataInfo.getString().charAt(i);
                     float glyphAdjust = 0;
                     if (CharUtilities.isFixedWidthSpace(orgChar)) {
                         flushText(builder, sb, charSet);
-                        builder.setVariableSpaceCharacterIncrement(
-                                fixedSpaceCharacterIncrement);
+                        builder.setVariableSpaceCharacterIncrement(fixedSpaceCharacterIncrement);
                         fixedSpaceMode = true;
                         sb.append(CharUtilities.SPACE);
-                        int charWidth = font.getCharWidth(orgChar);
-                        glyphAdjust += (charWidth - spaceWidth);
+                        final int charWidth = font.getCharWidth(orgChar);
+                        glyphAdjust += charWidth - spaceWidth;
                     } else {
                         if (fixedSpaceMode) {
                             flushText(builder, sb, charSet);
-                            builder.setVariableSpaceCharacterIncrement(
-                                    varSpaceCharacterIncrement);
+                            builder.setVariableSpaceCharacterIncrement(varSpaceCharacterIncrement);
                             fixedSpaceMode = false;
                         }
                         char ch;
                         if (orgChar == CharUtilities.NBSPACE) {
-                            ch = ' '; //converted to normal space to allow word spacing
+                            ch = ' '; // converted to normal space to allow word
+                            // spacing
                         } else {
                             ch = orgChar;
                         }
@@ -431,15 +452,17 @@ public class DataStream {
 
                     if (glyphAdjust != 0) {
                         flushText(builder, sb, charSet);
-                        int increment = Math.round(unitConv.mpt2units(glyphAdjust));
+                        final int increment = Math.round(unitConv
+                                .mpt2units(glyphAdjust));
                         builder.relativeMoveInline(increment);
                     }
                 }
                 flushText(builder, sb, charSet);
             }
 
-            private void flushText(PtocaBuilder builder, StringBuffer sb,
-                    final CharacterSet charSet) throws IOException {
+            private void flushText(final PtocaBuilder builder,
+                    final StringBuffer sb, final CharacterSet charSet)
+                            throws IOException {
                 if (sb.length() > 0) {
                     builder.addTransparentData(charSet.encodeChars(sb));
                     sb.setLength(0);
@@ -448,16 +471,17 @@ public class DataStream {
 
         };
 
-        currentPage.createText(producer);
+        this.currentPage.createText(producer);
     }
 
     /**
      * Method to create a line on the current page.
      *
-     * @param lineDataInfo the line data information.
+     * @param lineDataInfo
+     *            the line data information.
      */
-    public void createLine(AFPLineDataInfo lineDataInfo) {
-        currentPage.createLine(lineDataInfo);
+    public void createLine(final AFPLineDataInfo lineDataInfo) {
+        this.currentPage.createLine(lineDataInfo);
     }
 
     /**
@@ -476,8 +500,10 @@ public class DataStream {
      * @param col
      *            the shading color
      */
-    public void createShading(int x, int y, int w, int h, Color col) {
-        currentPageObject.createShading(x, y, w, h, col.getRed(), col.getGreen(), col.getBlue());
+    public void createShading(final int x, final int y, final int w,
+            final int h, final Color col) {
+        this.currentPageObject.createShading(x, y, w, h, col.getRed(),
+                col.getGreen(), col.getBlue());
     }
 
     /**
@@ -486,12 +512,16 @@ public class DataStream {
      *
      * @param name
      *            the name of the static overlay
-     * @param x x-coordinate
-     * @param y y-coordinate
+     * @param x
+     *            x-coordinate
+     * @param y
+     *            y-coordinate
      */
-    public void createIncludePageOverlay(String name, int x, int y) {
-        currentPageObject.createIncludePageOverlay(name, x, y, paintingState.getRotation());
-        currentPageObject.getActiveEnvironmentGroup().createOverlay(name);
+    public void createIncludePageOverlay(final String name, final int x,
+            final int y) {
+        this.currentPageObject.createIncludePageOverlay(name, x, y,
+                this.paintingState.getRotation());
+        this.currentPageObject.getActiveEnvironmentGroup().createOverlay(name);
     }
 
     /**
@@ -500,8 +530,8 @@ public class DataStream {
      * @param name
      *            the name of the medium map
      */
-    public void createInvokeMediumMap(String name) {
-        currentPageGroup.createInvokeMediumMap(name);
+    public void createInvokeMediumMap(final String name) {
+        this.currentPageGroup.createInvokeMediumMap(name);
     }
 
     /**
@@ -518,10 +548,11 @@ public class DataStream {
      * @param height
      *            the height of the image
      */
-    public void createIncludePageSegment(String name, int x, int y, int width, int height) {
+    public void createIncludePageSegment(final String name, final int x,
+            final int y, final int width, final int height) {
         int xOrigin;
         int yOrigin;
-        int orientation = paintingState.getRotation();
+        final int orientation = this.paintingState.getRotation();
         switch (orientation) {
         case 90:
             xOrigin = x - height;
@@ -540,8 +571,9 @@ public class DataStream {
             yOrigin = y;
             break;
         }
-        boolean createHardPageSegments = true;
-        currentPage.createIncludePageSegment(name, xOrigin, yOrigin, createHardPageSegments);
+        final boolean createHardPageSegments = true;
+        this.currentPage.createIncludePageSegment(name, xOrigin, yOrigin,
+                createHardPageSegments);
     }
 
     /**
@@ -550,11 +582,13 @@ public class DataStream {
      * @param attributes
      *            the array of key value pairs.
      */
-    public void createPageTagLogicalElement(TagLogicalElementBean[] attributes) {
-        for (int i = 0; i < attributes.length; i++) {
-            String name = attributes[i].getKey();
-            String value = attributes[i].getValue();
-            currentPage.createTagLogicalElement(name, value, tleSequence++);
+    public void createPageTagLogicalElement(
+            final TagLogicalElementBean[] attributes) {
+        for (final TagLogicalElementBean attribute : attributes) {
+            final String name = attribute.getKey();
+            final String value = attribute.getValue();
+            this.currentPage.createTagLogicalElement(name, value,
+                    this.tleSequence++);
         }
     }
 
@@ -564,11 +598,12 @@ public class DataStream {
      * @param attributes
      *            the array of key value pairs.
      */
-    public void createPageGroupTagLogicalElement(TagLogicalElementBean[] attributes) {
-        for (int i = 0; i < attributes.length; i++) {
-            String name = attributes[i].getKey();
-            String value = attributes[i].getValue();
-            currentPageGroup.createTagLogicalElement(name, value);
+    public void createPageGroupTagLogicalElement(
+            final TagLogicalElementBean[] attributes) {
+        for (final TagLogicalElementBean attribute : attributes) {
+            final String name = attribute.getKey();
+            final String value = attribute.getValue();
+            this.currentPageGroup.createTagLogicalElement(name, value);
         }
     }
 
@@ -580,11 +615,12 @@ public class DataStream {
      * @param value
      *            The tag value
      */
-    public void createTagLogicalElement(String name, String value) {
-        if (currentPage != null) {
-            currentPage.createTagLogicalElement(name, value, tleSequence++);
+    public void createTagLogicalElement(final String name, final String value) {
+        if (this.currentPage != null) {
+            this.currentPage.createTagLogicalElement(name, value,
+                    this.tleSequence++);
         } else {
-            currentPageGroup.createTagLogicalElement(name, value);
+            this.currentPageGroup.createTagLogicalElement(name, value);
         }
     }
 
@@ -594,13 +630,13 @@ public class DataStream {
      * @param content
      *            byte data
      */
-    public void createNoOperation(String content) {
-        if (currentPage != null) {
-            currentPage.createNoOperation(content);
-        } else if (currentPageGroup != null) {
-            currentPageGroup.createNoOperation(content);
+    public void createNoOperation(final String content) {
+        if (this.currentPage != null) {
+            this.currentPage.createNoOperation(content);
+        } else if (this.currentPageGroup != null) {
+            this.currentPageGroup.createNoOperation(content);
         } else {
-            document.createNoOperation(content);
+            this.document.createNoOperation(content);
         }
     }
 
@@ -616,11 +652,12 @@ public class DataStream {
     /**
      * Start a new document.
      *
-     * @throws IOException thrown if an I/O exception of some sort has occurred
+     * @throws IOException
+     *             thrown if an I/O exception of some sort has occurred
      */
     public void startDocument() throws IOException {
-        this.document = factory.createDocument();
-        document.writeToStream(this.outputStream);
+        this.document = this.factory.createDocument();
+        this.document.writeToStream(this.outputStream);
     }
 
     /**
@@ -628,34 +665,37 @@ public class DataStream {
      * group the {@link #endPageGroup()}method must be invoked to mark the page
      * group ending.
      *
-     * @throws IOException thrown if an I/O exception of some sort has occurred
+     * @throws IOException
+     *             thrown if an I/O exception of some sort has occurred
      */
     public void startPageGroup() throws IOException {
         endPageGroup();
-        this.currentPageGroup = factory.createPageGroup(tleSequence);
+        this.currentPageGroup = this.factory.createPageGroup(this.tleSequence);
     }
 
     /**
      * Helper method to mark the end of the page group.
      *
-     * @throws IOException thrown if an I/O exception of some sort has occurred
+     * @throws IOException
+     *             thrown if an I/O exception of some sort has occurred
      */
     public void endPageGroup() throws IOException {
-        if (currentPageGroup != null) {
-            currentPageGroup.endPageGroup();
-            tleSequence = currentPageGroup.getTleSequence();
-            document.addPageGroup(currentPageGroup);
-            currentPageGroup = null;
+        if (this.currentPageGroup != null) {
+            this.currentPageGroup.endPageGroup();
+            this.tleSequence = this.currentPageGroup.getTleSequence();
+            this.document.addPageGroup(this.currentPageGroup);
+            this.currentPageGroup = null;
         }
-        document.writeToStream(outputStream); //Flush objects
+        this.document.writeToStream(this.outputStream); // Flush objects
     }
 
     /**
      * Sets the MO:DCA interchange set to use
      *
-     * @param interchangeSet the MO:DCA interchange set
+     * @param interchangeSet
+     *            the MO:DCA interchange set
      */
-    public void setInterchangeSet(InterchangeSet interchangeSet) {
+    public void setInterchangeSet(final InterchangeSet interchangeSet) {
         this.interchangeSet = interchangeSet;
     }
 
@@ -671,17 +711,18 @@ public class DataStream {
     /**
      * Returns the resource group for a given resource info
      *
-     * @param level a resource level
+     * @param level
+     *            a resource level
      * @return a resource group for the given resource info
      */
-    public ResourceGroup getResourceGroup(AFPResourceLevel level) {
+    public ResourceGroup getResourceGroup(final AFPResourceLevel level) {
         ResourceGroup resourceGroup = null;
         if (level.isDocument()) {
-            resourceGroup = document.getResourceGroup();
+            resourceGroup = this.document.getResourceGroup();
         } else if (level.isPageGroup()) {
-            resourceGroup = currentPageGroup.getResourceGroup();
+            resourceGroup = this.currentPageGroup.getResourceGroup();
         } else if (level.isPage()) {
-            resourceGroup = currentPageObject.getResourceGroup();
+            resourceGroup = this.currentPageObject.getResourceGroup();
         }
         return resourceGroup;
     }

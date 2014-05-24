@@ -31,23 +31,24 @@ import org.apache.fop.render.intermediate.IFDocumentHandler;
 public class PCLDocumentHandlerMaker extends AbstractIFDocumentHandlerMaker {
 
     private static final String[] MIMES = new String[] {
-            MimeConstants.MIME_PCL,
-            MimeConstants.MIME_PCL_ALT
-    };
+        MimeConstants.MIME_PCL, MimeConstants.MIME_PCL_ALT };
 
     /** {@inheritDoc} */
-    public IFDocumentHandler makeIFDocumentHandler(FOUserAgent ua) {
-        PCLDocumentHandler handler = new PCLDocumentHandler();
+    @Override
+    public IFDocumentHandler makeIFDocumentHandler(final FOUserAgent ua) {
+        final PCLDocumentHandler handler = new PCLDocumentHandler();
         handler.setContext(new IFContext(ua));
         return handler;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

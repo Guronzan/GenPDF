@@ -19,8 +19,6 @@
 
 package org.apache.fop.fo.extensions;
 
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.datatypes.Length;
 import org.apache.fop.fo.FONode;
@@ -29,11 +27,13 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.ValidationException;
 import org.apache.fop.fo.pagination.AbstractPageSequence;
 import org.apache.fop.fo.properties.LengthRangeProperty;
+import org.xml.sax.Locator;
 
 /**
  * Class for the fox:external-document extension element.
  */
-public class ExternalDocument extends AbstractPageSequence implements GraphicsProperties {
+public class ExternalDocument extends AbstractPageSequence implements
+        GraphicsProperties {
 
     // The value of properties relevant for fox:external-document
     private LengthRangeProperty blockProgressionDimension;
@@ -47,35 +47,41 @@ public class ExternalDocument extends AbstractPageSequence implements GraphicsPr
     private String src;
     private int textAlign;
     private Length width;
+
     // Unused but valid items, commented out for performance:
-    //     private CommonAccessibility commonAccessibility;
-    //     private CommonAural commonAural;
-    //     private String contentType;
-    //     private int scalingMethod;
+    // private CommonAccessibility commonAccessibility;
+    // private CommonAural commonAural;
+    // private String contentType;
+    // private int scalingMethod;
     // End of property values
 
     /**
      * Constructs a ExternalDocument object (called by Maker).
-     * @param parent the parent formatting object
+     * 
+     * @param parent
+     *            the parent formatting object
      */
-    public ExternalDocument(FONode parent) {
+    public ExternalDocument(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        blockProgressionDimension = pList.get(PR_BLOCK_PROGRESSION_DIMENSION).getLengthRange();
-        contentHeight = pList.get(PR_CONTENT_HEIGHT).getLength();
-        contentWidth = pList.get(PR_CONTENT_WIDTH).getLength();
-        displayAlign = pList.get(PR_DISPLAY_ALIGN).getEnum();
-        height = pList.get(PR_HEIGHT).getLength();
-        inlineProgressionDimension = pList.get(PR_INLINE_PROGRESSION_DIMENSION).getLengthRange();
-        overflow = pList.get(PR_OVERFLOW).getEnum();
-        scaling = pList.get(PR_SCALING).getEnum();
-        textAlign = pList.get(PR_TEXT_ALIGN).getEnum();
-        width = pList.get(PR_WIDTH).getLength();
-        src = pList.get(PR_SRC).getString();
+        this.blockProgressionDimension = pList.get(
+                PR_BLOCK_PROGRESSION_DIMENSION).getLengthRange();
+        this.contentHeight = pList.get(PR_CONTENT_HEIGHT).getLength();
+        this.contentWidth = pList.get(PR_CONTENT_WIDTH).getLength();
+        this.displayAlign = pList.get(PR_DISPLAY_ALIGN).getEnum();
+        this.height = pList.get(PR_HEIGHT).getLength();
+        this.inlineProgressionDimension = pList.get(
+                PR_INLINE_PROGRESSION_DIMENSION).getLengthRange();
+        this.overflow = pList.get(PR_OVERFLOW).getEnum();
+        this.scaling = pList.get(PR_SCALING).getEnum();
+        this.textAlign = pList.get(PR_TEXT_ALIGN).getEnum();
+        this.width = pList.get(PR_WIDTH).getLength();
+        this.src = pList.get(PR_SRC).getString();
 
         if (this.src == null || this.src.length() == 0) {
             missingPropertyError("src");
@@ -83,37 +89,47 @@ public class ExternalDocument extends AbstractPageSequence implements GraphicsPr
     }
 
     /**
-     * @throws FOPException in case of processing exception
+     * @throws FOPException
+     *             in case of processing exception
      * @see org.apache.fop.fo.FONode#startOfNode()
      */
+    @Override
     protected void startOfNode() throws FOPException {
         super.startOfNode();
         getFOEventHandler().startExternalDocument(this);
     }
 
     /**
-     * @throws FOPException in case of processing exception
+     * @throws FOPException
+     *             in case of processing exception
      * @see org.apache.fop.fo.FONode#endOfNode()
      */
+    @Override
     protected void endOfNode() throws FOPException {
         getFOEventHandler().endExternalDocument(this);
         super.endOfNode();
     }
 
     /**
-     * @param loc a locator
-     * @param nsURI a namespace uri or null
-     * @param localName a local name
-     * @throws ValidationException if invalid child
+     * @param loc
+     *            a locator
+     * @param nsURI
+     *            a namespace uri or null
+     * @param localName
+     *            a local name
+     * @throws ValidationException
+     *             if invalid child
      * @see org.apache.fop.fo.FONode#validateChildNode(Locator, String, String)
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-        throws ValidationException {
-            invalidChildError(loc, nsURI, localName);
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
+        invalidChildError(loc, nsURI, localName);
     }
 
     /**
      * Returns the src attribute (the URI to the embedded document).
+     * 
      * @return the src attribute
      */
     public String getSrc() {
@@ -121,59 +137,70 @@ public class ExternalDocument extends AbstractPageSequence implements GraphicsPr
     }
 
     /** {@inheritDoc} */
+    @Override
     public LengthRangeProperty getInlineProgressionDimension() {
-        return inlineProgressionDimension;
+        return this.inlineProgressionDimension;
     }
 
     /** {@inheritDoc} */
+    @Override
     public LengthRangeProperty getBlockProgressionDimension() {
-        return blockProgressionDimension;
+        return this.blockProgressionDimension;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Length getHeight() {
-        return height;
+        return this.height;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Length getWidth() {
-        return width;
+        return this.width;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Length getContentHeight() {
-        return contentHeight;
+        return this.contentHeight;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Length getContentWidth() {
-        return contentWidth;
+        return this.contentWidth;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getScaling() {
-        return scaling;
+        return this.scaling;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getOverflow() {
-        return overflow;
+        return this.overflow;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDisplayAlign() {
-        return displayAlign;
+        return this.displayAlign;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getTextAlign() {
-        return textAlign;
+        return this.textAlign;
     }
 
     /**
      * @return namespace uri
      * @see org.apache.fop.fo.FONode#getNamespaceURI()
      */
+    @Override
     public String getNamespaceURI() {
         return ExtensionElementMapping.URI;
     }
@@ -182,6 +209,7 @@ public class ExternalDocument extends AbstractPageSequence implements GraphicsPr
      * @return namespace prefix
      * @see org.apache.fop.fo.FONode#getNormalNamespacePrefix()
      */
+    @Override
     public String getNormalNamespacePrefix() {
         return "fox";
     }
@@ -190,9 +218,9 @@ public class ExternalDocument extends AbstractPageSequence implements GraphicsPr
      * @return local name
      * @see org.apache.fop.fo.FONode#getLocalName()
      */
+    @Override
     public String getLocalName() {
         return "external-document";
     }
 
 }
-

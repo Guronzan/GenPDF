@@ -27,61 +27,71 @@ import org.apache.xmlgraphics.ps.dsc.events.DSCComment;
 import org.apache.xmlgraphics.ps.dsc.events.DSCEvent;
 
 /**
- * {@link DSCListener} implementation which automatically skips data
- * between Begin/EndDocument and Begin/EndData.
+ * {@link DSCListener} implementation which automatically skips data between
+ * Begin/EndDocument and Begin/EndData.
  */
 public class DefaultNestedDocumentHandler implements DSCParserConstants,
-        NestedDocumentHandler, DSCListener {
+NestedDocumentHandler, DSCListener {
 
-    private PSGenerator gen;
+    private final PSGenerator gen;
 
     /**
      * Creates a new instance.
-     * @param gen PSGenerator to pass through the skipped content
+     * 
+     * @param gen
+     *            PSGenerator to pass through the skipped content
      */
-    public DefaultNestedDocumentHandler(PSGenerator gen) {
+    public DefaultNestedDocumentHandler(final PSGenerator gen) {
         this.gen = gen;
     }
 
     /** {@inheritDoc} */
-    public void handle(DSCEvent event, DSCParser parser) throws IOException, DSCException {
+    @Override
+    public void handle(final DSCEvent event, final DSCParser parser)
+            throws IOException, DSCException {
         processEvent(event, parser);
     }
 
     /** {@inheritDoc} */
-    public void processEvent(DSCEvent event, DSCParser parser) throws IOException, DSCException {
+    @Override
+    public void processEvent(final DSCEvent event, final DSCParser parser)
+            throws IOException, DSCException {
         if (event.isDSCComment()) {
             DSCComment comment = event.asDSCComment();
             if (DSCConstants.BEGIN_DOCUMENT.equals(comment.getName())) {
-                if (gen != null) {
-                    comment.generate(gen);
+                if (this.gen != null) {
+                    comment.generate(this.gen);
                 }
                 parser.setCheckEOF(false);
                 parser.setListenersDisabled(true);
-                comment = parser.nextDSCComment(DSCConstants.END_DOCUMENT, gen);
+                comment = parser.nextDSCComment(DSCConstants.END_DOCUMENT,
+                        this.gen);
                 if (comment == null) {
-                    throw new DSCException("File is not DSC-compliant: Didn't find an "
-                            + DSCConstants.END_DOCUMENT);
+                    throw new DSCException(
+                            "File is not DSC-compliant: Didn't find an "
+                                    + DSCConstants.END_DOCUMENT);
                 }
-                if (gen != null) {
-                    comment.generate(gen);
+                if (this.gen != null) {
+                    comment.generate(this.gen);
                 }
                 parser.setCheckEOF(true);
                 parser.setListenersDisabled(false);
                 parser.next();
             } else if (DSCConstants.BEGIN_DATA.equals(comment.getName())) {
-                if (gen != null) {
-                    comment.generate(gen);
+                if (this.gen != null) {
+                    comment.generate(this.gen);
                 }
                 parser.setCheckEOF(false);
                 parser.setListenersDisabled(true);
-                comment = parser.nextDSCComment(DSCConstants.END_DATA, gen);
+                comment = parser
+                        .nextDSCComment(DSCConstants.END_DATA, this.gen);
                 if (comment == null) {
-                    throw new DSCException("File is not DSC-compliant: Didn't find an "
-                            + DSCConstants.END_DATA);
+                    throw new DSCException(
+                            "File is not DSC-compliant: Didn't find an "
+                                    + DSCConstants.END_DATA);
                 }
-                if (gen != null) {
-                    comment.generate(gen);
+                if (this.gen != null) {
+                    comment.generate(this.gen);
                 }
                 parser.setCheckEOF(true);
                 parser.setListenersDisabled(false);

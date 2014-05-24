@@ -30,85 +30,91 @@ import java.io.PrintStream;
 import org.apache.commons.io.HexDump;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-
 import org.apache.fop.afp.parser.MODCAParser;
 import org.apache.fop.afp.parser.UnparsedStructuredField;
 
 /**
- * This class represents a tool for extracting the Type 1 PFB file from an AFP outline font.
+ * This class represents a tool for extracting the Type 1 PFB file from an AFP
+ * outline font.
  */
 public class FontPatternExtractor {
 
-    private PrintStream printStream = System.out;
+    private final PrintStream printStream = System.out;
 
     /**
      * Extracts the Type1 PFB file from the given AFP outline font.
-     * @param file the AFP file to read from
-     * @param targetDir the target directory where the PFB file is to be placed.
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param file
+     *            the AFP file to read from
+     * @param targetDir
+     *            the target directory where the PFB file is to be placed.
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public void extract(File file, File targetDir) throws IOException {
-        InputStream in = new java.io.FileInputStream(file);
+    public void extract(final File file, final File targetDir)
+            throws IOException {
+        final InputStream in = new java.io.FileInputStream(file);
         try {
-            MODCAParser parser = new MODCAParser(in);
-            ByteArrayOutputStream baout = new ByteArrayOutputStream();
+            final MODCAParser parser = new MODCAParser(in);
+            final ByteArrayOutputStream baout = new ByteArrayOutputStream();
             UnparsedStructuredField strucField;
             while ((strucField = parser.readNextStructuredField()) != null) {
                 if (strucField.getSfTypeID() == 0xD3EE89) {
-                    byte[] sfData = strucField.getData();
+                    final byte[] sfData = strucField.getData();
                     println(strucField.toString());
-                    HexDump.dump(sfData, 0, printStream, 0);
+                    HexDump.dump(sfData, 0, this.printStream, 0);
                     baout.write(sfData);
                 }
             }
 
-            ByteArrayInputStream bin = new ByteArrayInputStream(baout.toByteArray());
-            DataInputStream din = new DataInputStream(bin);
-            long len = din.readInt() & 0xFFFFFFFFL;
+            final ByteArrayInputStream bin = new ByteArrayInputStream(
+                    baout.toByteArray());
+            final DataInputStream din = new DataInputStream(bin);
+            final long len = din.readInt() & 0xFFFFFFFFL;
             println("Length: " + len);
-            din.skip(4); //checksum
-            int tidLen = din.readUnsignedShort() - 2;
-            byte[] tid = new byte[tidLen];
+            din.skip(4); // checksum
+            final int tidLen = din.readUnsignedShort() - 2;
+            final byte[] tid = new byte[tidLen];
             din.readFully(tid);
             String filename = new String(tid, "ISO-8859-1");
-            int asciiCount1 = countUSAsciiCharacters(filename);
-            String filenameEBCDIC = new String(tid, "Cp1146");
-            int asciiCount2 = countUSAsciiCharacters(filenameEBCDIC);
+            final int asciiCount1 = countUSAsciiCharacters(filename);
+            final String filenameEBCDIC = new String(tid, "Cp1146");
+            final int asciiCount2 = countUSAsciiCharacters(filenameEBCDIC);
             println("TID: " + filename + " " + filenameEBCDIC);
 
             if (asciiCount2 > asciiCount1) {
-                //Haven't found an indicator if the name is encoded in EBCDIC or not
-                //so we use a trick.
+                // Haven't found an indicator if the name is encoded in EBCDIC
+                // or not
+                // so we use a trick.
                 filename = filenameEBCDIC;
             }
             if (!filename.toLowerCase().endsWith(".pfb")) {
                 filename = filename + ".pfb";
             }
             println("Output filename: " + filename);
-            File out = new File(targetDir, filename);
+            final File out = new File(targetDir, filename);
 
-            OutputStream fout = new java.io.FileOutputStream(out);
+            final OutputStream fout = new java.io.FileOutputStream(out);
             try {
                 IOUtils.copyLarge(din, fout);
             } finally {
                 IOUtils.closeQuietly(fout);
             }
 
-
         } finally {
             IOUtils.closeQuietly(in);
         }
     }
 
-    private void println(String s) {
-        printStream.println(s);
+    private void println(final String s) {
+        this.printStream.println(s);
     }
 
     private void println() {
-        printStream.println();
+        this.printStream.println();
     }
 
-    private int countUSAsciiCharacters(String filename) {
+    private int countUSAsciiCharacters(final String filename) {
         int count = 0;
         for (int i = 0, c = filename.length(); i < c; i++) {
             if (filename.charAt(i) < 128) {
@@ -120,18 +126,20 @@ public class FontPatternExtractor {
 
     /**
      * Main method
-     * @param args the command-line arguments
+     * 
+     * @param args
+     *            the command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
-            FontPatternExtractor app = new FontPatternExtractor();
+            final FontPatternExtractor app = new FontPatternExtractor();
 
             app.println("Font Pattern Extractor");
             app.println();
 
             if (args.length > 0) {
-                String filename = args[0];
-                File file = new File(filename);
+                final String filename = args[0];
+                final File file = new File(filename);
 
                 File targetDir = file.getParentFile();
                 if (args.length > 1) {
@@ -143,13 +151,13 @@ public class FontPatternExtractor {
             } else {
                 app.println("This tool tries to extract the PFB file from an AFP outline font.");
                 app.println();
-                app.println("Usage: Java -cp ... " + FontPatternExtractor.class.getName()
+                app.println("Usage: Java -cp ... "
+                        + FontPatternExtractor.class.getName()
                         + " <afp-font-file> [<target-dir>]");
                 System.exit(-1);
             }
 
-
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             System.exit(-1);
         }

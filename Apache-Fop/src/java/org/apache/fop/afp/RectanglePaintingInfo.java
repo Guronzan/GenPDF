@@ -19,7 +19,6 @@
 
 package org.apache.fop.afp;
 
-
 /**
  * Filled rectangle painting information
  */
@@ -33,12 +32,17 @@ public class RectanglePaintingInfo implements PaintingInfo {
     /**
      * Main constructor
      *
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param width the width
-     * @param height the height
+     * @param x
+     *            the x coordinate
+     * @param y
+     *            the y coordinate
+     * @param width
+     *            the width
+     * @param height
+     *            the height
      */
-    public RectanglePaintingInfo(float x, float y, float width, float height) {
+    public RectanglePaintingInfo(final float x, final float y,
+            final float width, final float height) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -51,7 +55,7 @@ public class RectanglePaintingInfo implements PaintingInfo {
      * @return the x coordinate
      */
     protected float getX() {
-        return x;
+        return this.x;
     }
 
     /**
@@ -60,7 +64,7 @@ public class RectanglePaintingInfo implements PaintingInfo {
      * @return the y coordinate
      */
     protected float getY() {
-        return y;
+        return this.y;
     }
 
     /**
@@ -69,7 +73,7 @@ public class RectanglePaintingInfo implements PaintingInfo {
      * @return the width
      */
     protected float getWidth() {
-        return width;
+        return this.width;
     }
 
     /**
@@ -78,7 +82,7 @@ public class RectanglePaintingInfo implements PaintingInfo {
      * @return the height
      */
     protected float getHeight() {
-        return height;
+        return this.height;
     }
 
 }

@@ -23,75 +23,82 @@ package org.apache.fop.area;
 import java.util.List;
 import java.util.Locale;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.xml.sax.SAXException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
- * This is the model for the area tree object.
- * The model implementation can handle the page sequence,
- * page and off-document items.
- * The methods to access the page viewports can only
- * assume the PageViewport is valid as it remains for
- * the life of the area tree model.
+ * This is the model for the area tree object. The model implementation can
+ * handle the page sequence, page and off-document items. The methods to access
+ * the page viewports can only assume the PageViewport is valid as it remains
+ * for the life of the area tree model.
  */
+@Slf4j
 public class AreaTreeModel {
     private List<PageSequence> pageSequenceList = null;
     private int currentPageIndex = 0;
 
     /** the current page sequence */
     protected PageSequence currentPageSequence;
-    /** logger instance */
-    protected static final Log log = LogFactory.getLog(AreaTreeModel.class);
 
     /**
      * Create a new store pages model
      */
     public AreaTreeModel() {
-        pageSequenceList = new java.util.ArrayList<PageSequence>();
+        this.pageSequenceList = new java.util.ArrayList<PageSequence>();
     }
 
     /**
      * Start a page sequence on this model.
-     * @param pageSequence the page sequence about to start
+     *
+     * @param pageSequence
+     *            the page sequence about to start
      */
-    public void startPageSequence(PageSequence pageSequence) {
+    public void startPageSequence(final PageSequence pageSequence) {
         if (pageSequence == null) {
             throw new NullPointerException("pageSequence must not be null");
         }
-        if (currentPageSequence != null) {
-            currentPageIndex += currentPageSequence.getPageCount();
+        if (this.currentPageSequence != null) {
+            this.currentPageIndex += this.currentPageSequence.getPageCount();
         }
         this.currentPageSequence = pageSequence;
-        pageSequenceList.add(currentPageSequence);
+        this.pageSequenceList.add(this.currentPageSequence);
     }
 
     /**
      * Add a page to this model.
-     * @param page the page to add to the model.
+     *
+     * @param page
+     *            the page to add to the model.
      */
-    public void addPage(PageViewport page) {
-        currentPageSequence.addPage(page);
-        page.setPageIndex(currentPageIndex
-                + currentPageSequence.getPageCount() - 1);
-        page.setPageSequence(currentPageSequence);
+    public void addPage(final PageViewport page) {
+        this.currentPageSequence.addPage(page);
+        page.setPageIndex(this.currentPageIndex
+                + this.currentPageSequence.getPageCount() - 1);
+        page.setPageSequence(this.currentPageSequence);
     }
 
     /**
      * Handle an OffDocumentItem
-     * @param ext the extension to handle
+     *
+     * @param ext
+     *            the extension to handle
      */
-    public void handleOffDocumentItem(OffDocumentItem ext) { };
+    public void handleOffDocumentItem(final OffDocumentItem ext) {
+    };
 
     /**
      * Signal the end of the document for any processing.
-     * @throws SAXException if a problem was encountered.
+     *
+     * @throws SAXException
+     *             if a problem was encountered.
      */
-    public void endDocument() throws SAXException { };
+    public void endDocument() throws SAXException {
+    };
 
     /**
      * Returns the currently active page-sequence.
+     *
      * @return the currently active page-sequence
      */
     public PageSequence getCurrentPageSequence() {
@@ -100,35 +107,42 @@ public class AreaTreeModel {
 
     /**
      * Get the page sequence count.
+     *
      * @return the number of page sequences in the document.
      */
     public int getPageSequenceCount() {
-        return pageSequenceList.size();
+        return this.pageSequenceList.size();
     }
 
     /**
      * Get the page count.
-     * @param seq the page sequence to count.
+     *
+     * @param seq
+     *            the page sequence to count.
      * @return returns the number of pages in a page sequence
      */
-    public int getPageCount(int seq) {
-        return pageSequenceList.get(seq - 1).getPageCount();
+    public int getPageCount(final int seq) {
+        return this.pageSequenceList.get(seq - 1).getPageCount();
     }
 
     /**
      * Get the page for a position in the document.
-     * @param seq the page sequence number
-     * @param count the page count in the sequence
+     *
+     * @param seq
+     *            the page sequence number
+     * @param count
+     *            the page count in the sequence
      * @return the PageViewport for the particular page
      */
-    public PageViewport getPage(int seq, int count) {
-        return pageSequenceList.get(seq - 1).getPage(count);
+    public PageViewport getPage(final int seq, final int count) {
+        return this.pageSequenceList.get(seq - 1).getPage(count);
     }
 
     /**
      *
-     * @param locale The locale of the document
+     * @param locale
+     *            The locale of the document
      */
-    public void setDocumentLocale(Locale locale) {
+    public void setDocumentLocale(final Locale locale) {
     }
 }

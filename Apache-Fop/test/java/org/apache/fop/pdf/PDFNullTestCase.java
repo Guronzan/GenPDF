@@ -19,12 +19,12 @@
 
 package org.apache.fop.pdf;
 
-import static org.junit.Assert.assertEquals;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for {@link PDFNull}.
@@ -36,9 +36,9 @@ public class PDFNullTestCase extends PDFObjectTestCase {
      */
     @Test
     public void testOutputInline() throws IOException {
-        PDFNull obj = PDFNull.INSTANCE;
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        StringBuilder text = new StringBuilder();
+        final PDFNull obj = PDFNull.INSTANCE;
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        final StringBuilder text = new StringBuilder();
         obj.outputInline(out, text);
         assertEquals("null", text.toString());
 

@@ -31,28 +31,32 @@ public class PDFFontType0 extends PDFFont {
     /**
      * Create the /Font object
      *
-     * @param fontname the internal name for the font
-     * @param basefont the base font name
-     * @param encoding the character encoding schema used by the font
+     * @param fontname
+     *            the internal name for the font
+     * @param basefont
+     *            the base font name
+     * @param encoding
+     *            the character encoding schema used by the font
      */
-    public PDFFontType0(String fontname,
-                        String basefont,
-                        Object encoding) {
+    public PDFFontType0(final String fontname, final String basefont,
+            final Object encoding) {
         super(fontname, FontType.TYPE0, basefont, encoding);
     }
 
     /**
      * Create the /Font object
      *
-     * @param fontname the internal name for the font
-     * @param basefont the base font name
-     * @param encoding the character encoding schema used by the font
-     * @param descendantFonts the CIDFont upon which this font is based
+     * @param fontname
+     *            the internal name for the font
+     * @param basefont
+     *            the base font name
+     * @param encoding
+     *            the character encoding schema used by the font
+     * @param descendantFonts
+     *            the CIDFont upon which this font is based
      */
-    public PDFFontType0(String fontname,
-                        String basefont,
-                        Object encoding,
-                        PDFCIDFont descendantFonts) {
+    public PDFFontType0(final String fontname, final String basefont,
+            final Object encoding, final PDFCIDFont descendantFonts) {
         super(fontname, FontType.TYPE0, basefont, encoding);
 
         setDescendantFonts(descendantFonts);
@@ -60,17 +64,22 @@ public class PDFFontType0 extends PDFFont {
 
     /**
      * Set the descendant font
-     * @param descendantFonts the CIDFont upon which this font is based
+     * 
+     * @param descendantFonts
+     *            the CIDFont upon which this font is based
      */
-    public void setDescendantFonts(PDFCIDFont descendantFonts) {
-        put("DescendantFonts", new PDFArray(this, new PDFObject[] {descendantFonts}));
+    public void setDescendantFonts(final PDFCIDFont descendantFonts) {
+        put("DescendantFonts", new PDFArray(this,
+                new PDFObject[] { descendantFonts }));
     }
 
     /**
      * Sets the character map
-     * @param cmap the character map
+     * 
+     * @param cmap
+     *            the character map
      */
-    public void setCMAP(PDFCMap cmap) {
+    public void setCMAP(final PDFCMap cmap) {
         put("ToUnicode", cmap);
     }
 

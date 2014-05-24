@@ -27,23 +27,27 @@ import org.apache.fop.render.intermediate.IFDocumentHandler;
 /**
  * Document handler factory for SVG Print output.
  */
-public class SVGPrintDocumentHandlerMaker extends AbstractIFDocumentHandlerMaker {
+public class SVGPrintDocumentHandlerMaker extends
+        AbstractIFDocumentHandlerMaker {
 
-    private static final String[] MIMES = new String[] {SVGConstants.MIME_SVG_PRINT};
+    private static final String[] MIMES = new String[] { SVGConstants.MIME_SVG_PRINT };
 
     /** {@inheritDoc} */
-    public IFDocumentHandler makeIFDocumentHandler(FOUserAgent ua) {
-        SVGPrintDocumentHandler handler = new SVGPrintDocumentHandler();
+    @Override
+    public IFDocumentHandler makeIFDocumentHandler(final FOUserAgent ua) {
+        final SVGPrintDocumentHandler handler = new SVGPrintDocumentHandler();
         handler.setContext(new IFContext(ua));
         return handler;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

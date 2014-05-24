@@ -30,38 +30,43 @@ import org.apache.fop.afp.util.BinaryUtils;
  */
 public class AttributeQualifierTriplet extends AbstractTriplet {
 
-    private int seqNumber;
-    private int levNumber;
+    private final int seqNumber;
+    private final int levNumber;
 
     /**
      * Main constructor
      *
-     * @param seqNumber the attribute qualifier sequence number
-     * @param levNumber the attribute qualifier level number
+     * @param seqNumber
+     *            the attribute qualifier sequence number
+     * @param levNumber
+     *            the attribute qualifier level number
      */
-    public AttributeQualifierTriplet(int seqNumber, int levNumber) {
+    public AttributeQualifierTriplet(final int seqNumber, final int levNumber) {
         super(ATTRIBUTE_QUALIFIER);
         this.seqNumber = seqNumber;
         this.levNumber = levNumber;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = getData();
-        byte[] id = BinaryUtils.convert(seqNumber, 4);
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = getData();
+        final byte[] id = BinaryUtils.convert(this.seqNumber, 4);
         System.arraycopy(id, 0, data, 2, id.length);
-        byte[] level = BinaryUtils.convert(levNumber, 4);
+        final byte[] level = BinaryUtils.convert(this.levNumber, 4);
         System.arraycopy(level, 0, data, 6, level.length);
         os.write(data);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 10;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "seqNumber=" + seqNumber + ", levNumber=" + levNumber;
+        return "seqNumber=" + this.seqNumber + ", levNumber=" + this.levNumber;
     }
 }

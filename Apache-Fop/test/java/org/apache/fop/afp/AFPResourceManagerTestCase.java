@@ -19,16 +19,15 @@
 
 package org.apache.fop.afp;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.apache.xmlgraphics.util.MimeConstants;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.apache.xmlgraphics.util.MimeConstants;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test case for {@link AFPResourceManager}.
@@ -39,50 +38,56 @@ public class AFPResourceManagerTestCase {
 
     @Before
     public void setUp() throws IOException {
-        sut = new AFPResourceManager();
-        AFPPaintingState paintingState = new AFPPaintingState();
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        DataStream stream = sut.createDataStream(paintingState, outStream);
+        this.sut = new AFPResourceManager();
+        final AFPPaintingState paintingState = new AFPPaintingState();
+        final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        final DataStream stream = this.sut.createDataStream(paintingState,
+                outStream);
         stream.startPage(0, 0, 0, 10, 10);
     }
 
     /**
-     * Ensures that if tryIncludeObject() is called with a new object, it returns false suggesting
-     * that we have to create said object. However, if it is called with an object that has already
-     * been created, it returns true suggesting that we don't have to create that object again.
+     * Ensures that if tryIncludeObject() is called with a new object, it
+     * returns false suggesting that we have to create said object. However, if
+     * it is called with an object that has already been created, it returns
+     * true suggesting that we don't have to create that object again.
      * Page-segment is false.
      *
-     * @throws IOException if an I/O error occurs
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Test
     public void testTryIncludeObjectWithPageSegFalse() throws IOException {
-        AFPDataObjectInfo dataInfo = createAFPDataObjectInfo();
+        final AFPDataObjectInfo dataInfo = createAFPDataObjectInfo();
         // An empty object needs to be created every time!
-        assertFalse(sut.tryIncludeObject(dataInfo));
-        sut.createObject(dataInfo);
-        assertTrue(sut.tryIncludeObject(dataInfo));
+        assertFalse(this.sut.tryIncludeObject(dataInfo));
+        this.sut.createObject(dataInfo);
+        assertTrue(this.sut.tryIncludeObject(dataInfo));
     }
 
     /**
-     * {@code testTryIncludeObjectWithPageSegFalse()} but with page-segment true.
+     * {@code testTryIncludeObjectWithPageSegFalse()} but with page-segment
+     * true.
      *
-     * @throws IOException if an I/O error occurs
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Test
     public void testTryIncludeObjectWithPageSegTrue() throws IOException {
-        AFPDataObjectInfo dataInfo = createAFPDataObjectInfo();
+        final AFPDataObjectInfo dataInfo = createAFPDataObjectInfo();
         dataInfo.setCreatePageSegment(true);
         // An empty object needs to be created every time!
-        assertFalse(sut.tryIncludeObject(dataInfo));
-        sut.createObject(dataInfo);
-        assertTrue(sut.tryIncludeObject(dataInfo));
+        assertFalse(this.sut.tryIncludeObject(dataInfo));
+        this.sut.createObject(dataInfo);
+        assertTrue(this.sut.tryIncludeObject(dataInfo));
     }
 
     private AFPDataObjectInfo createAFPDataObjectInfo() {
-        AFPDataObjectInfo dataInfo = new AFPDataObjectInfo();
+        final AFPDataObjectInfo dataInfo = new AFPDataObjectInfo();
         dataInfo.setMimeType(MimeConstants.MIME_TIFF);
         dataInfo.setData(new byte[1]);
-        AFPObjectAreaInfo objectAreaInfo = new AFPObjectAreaInfo(0, 0, 10, 10, 1, 0);
+        final AFPObjectAreaInfo objectAreaInfo = new AFPObjectAreaInfo(0, 0,
+                10, 10, 1, 0);
         dataInfo.setObjectAreaInfo(objectAreaInfo);
         return dataInfo;
     }

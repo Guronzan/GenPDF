@@ -19,11 +19,11 @@
 
 package org.apache.fop.util;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Locale;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests {@link LanguageTags}.
@@ -36,11 +36,13 @@ public class LanguageTagsTestCase {
     }
 
     @Test
-    public void testToLanguageTag() throws Exception {
+    public void testToLanguageTag() {
         assertEquals("", LanguageTags.toLanguageTag(new Locale("")));
         assertEquals("en", LanguageTags.toLanguageTag(new Locale("en")));
-        assertEquals("en-US", LanguageTags.toLanguageTag(new Locale("en", "US")));
-        assertEquals("en-US", LanguageTags.toLanguageTag(new Locale("EN", "us")));
+        assertEquals("en-US",
+                LanguageTags.toLanguageTag(new Locale("en", "US")));
+        assertEquals("en-US",
+                LanguageTags.toLanguageTag(new Locale("EN", "us")));
     }
 
     @Test(expected = NullPointerException.class)
@@ -49,7 +51,7 @@ public class LanguageTagsTestCase {
     }
 
     @Test
-    public void testRFC3066ToLocale() throws Exception {
+    public void testRFC3066ToLocale() {
         assertEquals(new Locale(""), LanguageTags.toLocale(""));
         assertEquals(new Locale("en"), LanguageTags.toLocale("en"));
         assertEquals(new Locale("en", "US"), LanguageTags.toLocale("en-US"));

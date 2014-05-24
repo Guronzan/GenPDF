@@ -30,7 +30,10 @@ public enum RenderingIntent {
     PERCEPTUAL(ICC_Profile.icPerceptual),
     /** Relative colorimetric rendering intent. Typical use: vector graphics. */
     RELATIVE_COLORIMETRIC(ICC_Profile.icRelativeColorimetric),
-    /** Absolute colorimetric rendering intent. Typical use: logos and solid colors. */
+    /**
+     * Absolute colorimetric rendering intent. Typical use: logos and solid
+     * colors.
+     */
     ABSOLUTE_COLORIMETRIC(ICC_Profile.icAbsoluteColorimetric),
     /** Saturation rendering intent. Typical use: business graphics. */
     SATURATION(ICC_Profile.icSaturation),
@@ -39,13 +42,15 @@ public enum RenderingIntent {
 
     private int intValue;
 
-    private RenderingIntent(int value) {
+    private RenderingIntent(final int value) {
         this.intValue = value;
     }
 
     /**
-     * Returns an integer value identifying the rendering intent. This is the same value defined
-     * by the ICC specification (0..3) plus one for "auto" (4). (See also {@link ICC_Profile}.ic*)
+     * Returns an integer value identifying the rendering intent. This is the
+     * same value defined by the ICC specification (0..3) plus one for "auto"
+     * (4). (See also {@link ICC_Profile}.ic*)
+     * 
      * @return the integer value
      */
     public int getIntegerValue() {
@@ -53,19 +58,26 @@ public enum RenderingIntent {
     }
 
     /**
-     * Returns the enum value for the given integer rendering intent (as defined by the ICC
-     * specification).
-     * @param value the rendering intent as ICC value
+     * Returns the enum value for the given integer rendering intent (as defined
+     * by the ICC specification).
+     * 
+     * @param value
+     *            the rendering intent as ICC value
      * @return the matching enum
      */
-    public static RenderingIntent fromICCValue(int value) {
+    public static RenderingIntent fromICCValue(final int value) {
         switch (value) {
-        case ICC_Profile.icPerceptual: return PERCEPTUAL;
-        case ICC_Profile.icRelativeColorimetric: return RELATIVE_COLORIMETRIC;
-        case ICC_Profile.icAbsoluteColorimetric: return ABSOLUTE_COLORIMETRIC;
-        case ICC_Profile.icSaturation: return SATURATION;
+        case ICC_Profile.icPerceptual:
+            return PERCEPTUAL;
+        case ICC_Profile.icRelativeColorimetric:
+            return RELATIVE_COLORIMETRIC;
+        case ICC_Profile.icAbsoluteColorimetric:
+            return ABSOLUTE_COLORIMETRIC;
+        case ICC_Profile.icSaturation:
+            return SATURATION;
         default:
-            throw new IllegalArgumentException("Invalid value for rendering intent: " + value);
+            throw new IllegalArgumentException(
+                    "Invalid value for rendering intent: " + value);
         }
     }
 

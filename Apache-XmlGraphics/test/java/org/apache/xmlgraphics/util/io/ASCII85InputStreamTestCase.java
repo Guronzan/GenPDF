@@ -23,12 +23,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import junit.framework.TestCase;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
-
 import org.apache.xmlgraphics.util.HexUtil;
-
-import junit.framework.TestCase;
 
 /**
  * Test case for ASCII85InputStream.
@@ -37,6 +37,7 @@ import junit.framework.TestCase;
  * ASCII85OutputStream. If something fails here make sure
  * ASCII85OutputStreamTestCase runs!
  */
+@Slf4j
 public class ASCII85InputStreamTestCase extends TestCase {
 
     private static final boolean DEBUG = false;
@@ -44,50 +45,51 @@ public class ASCII85InputStreamTestCase extends TestCase {
     /**
      * @see junit.framework.TestCase#TestCase(String)
      */
-    public ASCII85InputStreamTestCase(String name) {
+    public ASCII85InputStreamTestCase(final String name) {
         super(name);
     }
 
-    private byte[] decode(String text) throws Exception {
-        byte[] ascii85 = text.getBytes("US-ASCII");
-        InputStream in = new ByteArrayInputStream(ascii85);
-        InputStream decoder = new ASCII85InputStream(in);
+    private byte[] decode(final String text) throws Exception {
+        final byte[] ascii85 = text.getBytes("US-ASCII");
+        final InputStream in = new ByteArrayInputStream(ascii85);
+        final InputStream decoder = new ASCII85InputStream(in);
         return IOUtils.toByteArray(decoder);
     }
 
-    private byte[] getChunk(int count) {
-        byte[] buf = new byte[count];
-        System.arraycopy(ASCII85OutputStreamTestCase.DATA, 0, buf, 0, buf.length);
+    private byte[] getChunk(final int count) {
+        final byte[] buf = new byte[count];
+        System.arraycopy(ASCII85OutputStreamTestCase.DATA, 0, buf, 0,
+                buf.length);
         return buf;
     }
 
-    private String encode(byte[] data, int len) throws Exception {
-        ByteArrayOutputStream baout = new ByteArrayOutputStream();
-        java.io.OutputStream out = new ASCII85OutputStream(baout);
+    private String encode(final byte[] data, final int len) throws Exception {
+        final ByteArrayOutputStream baout = new ByteArrayOutputStream();
+        final java.io.OutputStream out = new ASCII85OutputStream(baout);
         out.write(data, 0, len);
         out.close();
         return new String(baout.toByteArray(), "US-ASCII");
     }
 
-
-    private void innerTestDecode(byte[] data) throws Exception {
-        String encoded = encode(data, data.length);
+    private void innerTestDecode(final byte[] data) throws Exception {
+        final String encoded = encode(data, data.length);
         if (DEBUG) {
             if (data[0] == 0) {
-                System.out.println("self-encode: " + data.length + " chunk 000102030405...");
+                log.info("self-encode: " + data.length
+                        + " chunk 000102030405...");
             } else {
-                System.out.println("self-encode: " + new String(data, "US-ASCII")
-                    + " " + HexUtil.toHex(data));
+                log.info("self-encode: " + new String(data, "US-ASCII") + " "
+                        + HexUtil.toHex(data));
             }
-            System.out.println("  ---> " + encoded);
+            log.info("  ---> " + encoded);
         }
-        byte[] decoded = decode(encoded);
+        final byte[] decoded = decode(encoded);
         if (DEBUG) {
             if (data[0] == 0) {
-                System.out.println("decoded: " + data.length + " chunk 000102030405...");
+                log.info("decoded: " + data.length + " chunk 000102030405...");
             } else {
-                System.out.println("decoded: " + new String(decoded, "US-ASCII")
-                    + " " + HexUtil.toHex(decoded));
+                log.info("decoded: " + new String(decoded, "US-ASCII") + " "
+                        + HexUtil.toHex(decoded));
             }
         }
         assertEquals(HexUtil.toHex(data), HexUtil.toHex(decoded));
@@ -95,13 +97,15 @@ public class ASCII85InputStreamTestCase extends TestCase {
 
     /**
      * Tests the output of ASCII85.
-     * @throws Exception if an error occurs
+     *
+     * @throws Exception
+     *             if an error occurs
      */
     public void testDecode() throws Exception {
-        byte[] buf;
+        final byte[] buf;
         innerTestDecode("1. Bodypart".getBytes("US-ASCII"));
         if (DEBUG) {
-            System.out.println("===========================================");
+            log.info("===========================================");
         }
 
         innerTestDecode(getChunk(1));
@@ -110,7 +114,7 @@ public class ASCII85InputStreamTestCase extends TestCase {
         innerTestDecode(getChunk(4));
         innerTestDecode(getChunk(5));
         if (DEBUG) {
-            System.out.println("===========================================");
+            log.info("===========================================");
         }
 
         innerTestDecode(getChunk(10));
@@ -120,36 +124,35 @@ public class ASCII85InputStreamTestCase extends TestCase {
         innerTestDecode(getChunk(65));
 
         if (DEBUG) {
-            System.out.println("===========================================");
+            log.info("===========================================");
         }
         String sz;
         sz = HexUtil.toHex(decode("zz~>"));
-        assertEquals(HexUtil.toHex(new byte[] {0, 0, 0, 0, 0, 0, 0, 0}), sz);
+        assertEquals(HexUtil.toHex(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }), sz);
         sz = HexUtil.toHex(decode("z\t \0z\n~>"));
-        assertEquals(HexUtil.toHex(new byte[] {0, 0, 0, 0, 0, 0, 0, 0}), sz);
+        assertEquals(HexUtil.toHex(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 }), sz);
         if (DEBUG) {
-            System.out.println("===========================================");
+            log.info("===========================================");
         }
         try {
             decode("vz~>");
             fail("Illegal character should be detected");
-        } catch (IOException ioe) {
-            //expected
+        } catch (final IOException ioe) {
+            // expected
         }
-        /* DISABLED because of try/catch in InputStream.read(byte[], int, int).
+        /*
+         * DISABLED because of try/catch in InputStream.read(byte[], int, int).
          * Only the exception happening on the first byte in a block is being
          * reported. BUG in JDK???
          *
-        try {
-            decode("zv~>");
-            fail("Illegal character should be detected");
-        } catch (IOException ioe) {
-            //expected
-        }*/
+         * try { decode("zv~>"); fail("Illegal character should be detected"); }
+         * catch (IOException ioe) { //expected }
+         */
     }
 
     private byte[] getFullASCIIRange() {
-        java.io.ByteArrayOutputStream baout = new java.io.ByteArrayOutputStream(256);
+        final java.io.ByteArrayOutputStream baout = new java.io.ByteArrayOutputStream(
+                256);
         for (int i = 254; i < 256; i++) {
             baout.write(i);
         }
@@ -158,7 +161,9 @@ public class ASCII85InputStreamTestCase extends TestCase {
 
     /**
      * Tests the full 8-bit ASCII range.
-     * @throws Exception if an error occurs
+     *
+     * @throws Exception
+     *             if an error occurs
      */
     public void testFullASCIIRange() throws Exception {
         innerTestDecode(getFullASCIIRange());

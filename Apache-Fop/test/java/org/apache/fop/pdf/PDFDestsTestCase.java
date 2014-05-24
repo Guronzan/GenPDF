@@ -19,12 +19,12 @@
 
 package org.apache.fop.pdf;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Test case for {@link PDFDests}.
@@ -32,33 +32,38 @@ import java.util.List;
 public class PDFDestsTestCase extends PDFObjectTestCase {
 
     private PDFDests dests = new PDFDests();
-    private String expectedString = "<< /Names [(number) 10 (name) /Test#20name] >>\n";
+    private final String expectedString = "<< /Names [(number) 10 (name) /Test#20name] >>\n";
 
+    @Override
     @Before
     public void setUp() {
-        List<PDFDestination> destinations = new ArrayList<PDFDestination>();
-        PDFNumber number = new PDFNumber();
+        final List<PDFDestination> destinations = new ArrayList<PDFDestination>();
+        final PDFNumber number = new PDFNumber();
         number.setNumber(10);
-        PDFDestination testNumber = new PDFDestination("number", number);
-        testNumber.setDocument(doc);
+        final PDFDestination testNumber = new PDFDestination("number", number);
+        testNumber.setDocument(this.doc);
         destinations.add(testNumber);
-        PDFDestination testName = new PDFDestination("name", new PDFName("Test name"));
-        testName.setDocument(doc);
+        final PDFDestination testName = new PDFDestination("name", new PDFName(
+                "Test name"));
+        testName.setDocument(this.doc);
         destinations.add(testName);
 
-        dests = new PDFDests(destinations);
-        dests.setDocument(doc);
-        dests.setParent(parent);
-        pdfObjectUnderTest = dests;
+        this.dests = new PDFDests(destinations);
+        this.dests.setDocument(this.doc);
+        this.dests.setParent(this.parent);
+        this.pdfObjectUnderTest = this.dests;
     }
 
     /**
-     * Populate the object with some arbitrary values and ensure they are wrapped properly.
-     * @throws IOException if an I/O error occurs
+     * Populate the object with some arbitrary values and ensure they are
+     * wrapped properly.
+     * 
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Test
     public void testConstructor() throws IOException {
         // Seems the only way to test this is by testing the output
-        testOutputStreams(expectedString, dests);
+        testOutputStreams(this.expectedString, this.dests);
     }
 }

@@ -17,7 +17,6 @@
 
 /* $Id: SimpleLists.java 1297404 2012-03-06 10:17:54Z vhennebert $ */
 
-
 /*
  * This file is part of the RTF library of the FOP project, which was originally
  * created by Bertrand Delacretaz <bdelacretaz@codeconsult.ch> and by other
@@ -30,22 +29,26 @@ package org.apache.fop.render.rtf.rtflib.testdocs;
 import java.io.IOException;
 
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfDocumentArea;
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfList;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfListItem;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfListStyle;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfListStyleNumber;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfParagraph;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
 
-/**  Generates a simple RTF test document for the jfor rtflib package.
- *  @author Bertrand Delacretaz bdelacretaz@codeconsult.ch
+/**
+ * Generates a simple RTF test document for the jfor rtflib package.
+ * 
+ * @author Bertrand Delacretaz bdelacretaz@codeconsult.ch
  */
 
 class SimpleLists extends TestDocument {
     /** generate the body of the test document */
-    protected void generateDocument(RtfDocumentArea rda, RtfSection sect)
-    throws IOException {
-        sect.newParagraph().newText("First paragraph of the 'SimpleLists' RTF test document.");
+    @Override
+    protected void generateDocument(final RtfDocumentArea rda,
+            final RtfSection sect) throws IOException {
+        sect.newParagraph().newText(
+                "First paragraph of the 'SimpleLists' RTF test document.");
         sect.newParagraph().newText("First bulleted list with 5 items.");
         makeList(sect, 1, 5, null);
         sect.newParagraph().newText("Normal paragraph between lists 1 and 2.");
@@ -56,8 +59,8 @@ class SimpleLists extends TestDocument {
         makeList(sect, 3, 4, new RtfListStyleNumber());
     }
 
-    private void makeList(RtfSection sect, int listIndex, int nItems, RtfListStyle ls)
-    throws IOException {
+    private void makeList(final RtfSection sect, final int listIndex,
+            final int nItems, final RtfListStyle ls) throws IOException {
         final RtfList list = sect.newList(null);
         if (ls != null) {
             list.setRtfListStyle(ls);
@@ -66,7 +69,8 @@ class SimpleLists extends TestDocument {
             final RtfListItem item = list.newListItem();
             for (int j = 0; j <= i; j++) {
                 final RtfParagraph para = item.newParagraph();
-                para.newText("List " + listIndex + ", item " + i + ", paragraph " + j);
+                para.newText("List " + listIndex + ", item " + i
+                        + ", paragraph " + j);
                 if (i == 0 && j == 0) {
                     final String txt = "This item takes more than one line to check word-wrapping.";
                     para.newText(". " + "This list should have " + nItems

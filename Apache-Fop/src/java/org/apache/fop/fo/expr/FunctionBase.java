@@ -29,15 +29,20 @@ import org.apache.fop.fo.properties.StringProperty;
 public abstract class FunctionBase implements Function {
 
     /** {@inheritDoc} */
+    @Override
     public int getOptionalArgsCount() {
         return 0;
     }
 
     /** {@inheritDoc} */
-    public Property getOptionalArgDefault(int index, PropertyInfo pi) throws PropertyException {
-        if ( index >= getOptionalArgsCount() ) {
-            PropertyException e = new PropertyException ( new IndexOutOfBoundsException ( "illegal optional argument index" ) );
-            e.setPropertyInfo ( pi );
+    @Override
+    public Property getOptionalArgDefault(final int index, final PropertyInfo pi)
+            throws PropertyException {
+        if (index >= getOptionalArgsCount()) {
+            final PropertyException e = new PropertyException(
+                    new IndexOutOfBoundsException(
+                            "illegal optional argument index"));
+            e.setPropertyInfo(pi);
             throw e;
         } else {
             return null;
@@ -45,20 +50,24 @@ public abstract class FunctionBase implements Function {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasVariableArgs() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public PercentBase getPercentBase() {
         return null;
     }
 
     /**
-     * @param pi property information instance that applies to property being evaluated
+     * @param pi
+     *            property information instance that applies to property being
+     *            evaluated
      * @return string property whose value is name of property being evaluated
      */
-    protected final Property getPropertyName ( PropertyInfo pi ) {
-        return StringProperty.getInstance ( pi.getPropertyMaker().getName() );
+    protected final Property getPropertyName(final PropertyInfo pi) {
+        return StringProperty.getInstance(pi.getPropertyMaker().getName());
     }
 }

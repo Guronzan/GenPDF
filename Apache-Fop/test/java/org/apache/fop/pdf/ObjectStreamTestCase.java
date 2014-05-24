@@ -95,18 +95,18 @@ public class ObjectStreamTestCase {
                 .get("Extends");
         if (previous != null) {
             expected.append("  /Extends ").append(previous.getObjectNumber())
-            .append(" 0 R\n");
+                    .append(" 0 R\n");
         }
         expected.append("  /Type /ObjStm\n").append("  /N ").append(numObs)
-        .append("\n").append("  /First ").append(offsetsLength)
-        .append('\n').append("  /Length ")
-        .append(OBJECT_CONTENT.length() * 2 + offsetsLength + 1)
-        .append('\n').append(">>\n").append("stream\n");
+                .append("\n").append("  /First ").append(offsetsLength)
+                .append('\n').append("  /Length ")
+                .append(OBJECT_CONTENT.length() * 2 + offsetsLength + 1)
+                .append('\n').append(">>\n").append("stream\n");
         int offset = 0;
         int num = 1;
         for (final PDFObject ob : this.compressedObjects) {
             expected.append(objectStreamNumber + num++).append(' ')
-            .append(offset).append('\n');
+                    .append(offset).append('\n');
             offset += ob.toPDFString().length();
         }
         for (final PDFObject ob : this.compressedObjects) {
@@ -124,7 +124,7 @@ public class ObjectStreamTestCase {
     }
 
     private static class MockCompressedObject extends PDFObject implements
-    CompressedObject {
+            CompressedObject {
 
         @Override
         protected String toPDFString() {

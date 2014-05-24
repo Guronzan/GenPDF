@@ -24,7 +24,8 @@ import org.apache.fop.afp.modca.AbstractAFPObject;
 /**
  * A simple implementation of a MOD:CA triplet
  */
-public abstract class AbstractTriplet extends AbstractAFPObject implements Triplet {
+public abstract class AbstractTriplet extends AbstractAFPObject implements
+        Triplet {
 
     /** the triplet identifier */
     protected final byte id;
@@ -32,9 +33,10 @@ public abstract class AbstractTriplet extends AbstractAFPObject implements Tripl
     /**
      * Constructor
      *
-     * @param id the triplet identifier (see static definitions above)
+     * @param id
+     *            the triplet identifier (see static definitions above)
      */
-    public AbstractTriplet(byte id) {
+    public AbstractTriplet(final byte id) {
         this.id = id;
     }
 
@@ -53,10 +55,10 @@ public abstract class AbstractTriplet extends AbstractAFPObject implements Tripl
      * @return the structured triplet data array
      */
     public byte[] getData() {
-        int dataLen = getDataLength();
-        byte[] data = new byte[dataLen];
-        data[0] = (byte)dataLen;
-        data[1] = id;
+        final int dataLen = getDataLength();
+        final byte[] data = new byte[dataLen];
+        data[0] = (byte) dataLen;
+        data[1] = this.id;
         return data;
     }
 }

@@ -58,9 +58,10 @@ public class DashedBorderElement extends AbstractBorderElement {
      * Constructs a newly allocated <code>DashedBorderElement</code> object.
      * Fills <code>data</code> using superclass constructor.
      *
-     * @param type binary representation of type gives <code>data</code>
+     * @param type
+     *            binary representation of type gives <code>data</code>
      */
-    public DashedBorderElement(int type) {
+    public DashedBorderElement(final int type) {
         super(type);
     }
 
@@ -68,13 +69,16 @@ public class DashedBorderElement extends AbstractBorderElement {
      * Merges dashed border element with instance of solid and double border
      * element, returns instance of <code>SolidAndDoubleBorderElement</code>.
      *
-     * @param sdb instance of <code>SolidAndDoubleBorderElement</code> to merge
+     * @param sdb
+     *            instance of <code>SolidAndDoubleBorderElement</code> to merge
      * @return merged border element
      */
-    private AbstractBorderElement mergeSolid(SolidAndDoubleBorderElement sdb) {
-        AbstractBorderElement e = new SolidAndDoubleBorderElement(EN_SOLID, 0);
+    private AbstractBorderElement mergeSolid(
+            final SolidAndDoubleBorderElement sdb) {
+        final AbstractBorderElement e = new SolidAndDoubleBorderElement(
+                EN_SOLID, 0);
         for (int i = 0; i < 4; i++) {
-            e.setData(i, Math.max(data[i], sdb.getData(i)));
+            e.setData(i, Math.max(this.data[i], sdb.getData(i)));
         }
         return e;
     }
@@ -83,12 +87,13 @@ public class DashedBorderElement extends AbstractBorderElement {
      * Merges dashed border element with dashed border element and returns
      * instance of <code>DashedBorderElement</code>.
      *
-     * @param dbe instance of <code>DashedBorderElement</code> to merge
+     * @param dbe
+     *            instance of <code>DashedBorderElement</code> to merge
      * @return merged border element
      */
-    private AbstractBorderElement mergeDashed(DashedBorderElement dbe) {
+    private AbstractBorderElement mergeDashed(final DashedBorderElement dbe) {
         for (int i = 0; i < 4; i++) {
-            data[i] = Math.max(data[i], dbe.getData(i));
+            this.data[i] = Math.max(this.data[i], dbe.getData(i));
         }
         return this;
     }
@@ -100,19 +105,23 @@ public class DashedBorderElement extends AbstractBorderElement {
      * @return converted instance of <code>SolidAndDoubleBorderElement</code>
      */
     private AbstractBorderElement toSolidAndDouble() {
-        AbstractBorderElement e = new SolidAndDoubleBorderElement(EN_SOLID, 0);
+        final AbstractBorderElement e = new SolidAndDoubleBorderElement(
+                EN_SOLID, 0);
         for (int i = 0; i < 4; i++) {
-            e.setData(i, data[i]);
+            e.setData(i, this.data[i]);
         }
         return e;
     }
 
     /**
      * Merges with border element.
-     * @param e instance of AbstractBorderElement
+     * 
+     * @param e
+     *            instance of AbstractBorderElement
      * @return instance of AbstractBorderElement
      */
-    public AbstractBorderElement merge(AbstractBorderElement e) {
+    @Override
+    public AbstractBorderElement merge(final AbstractBorderElement e) {
         AbstractBorderElement abe = this;
         if (e instanceof SolidAndDoubleBorderElement) {
             abe = mergeSolid((SolidAndDoubleBorderElement) e);
@@ -127,12 +136,13 @@ public class DashedBorderElement extends AbstractBorderElement {
     /**
      * {@inheritDoc}
      */
+    @Override
     public char convert2Char() {
         int key = 0;
-        key += data[UP] * UP2;
-        key += data[DOWN] * DOWN2;
-        key += data[LEFT] * LEFT2;
-        key += data[RIGHT] * RIGHT2;
+        key += this.data[UP] * UP2;
+        key += this.data[DOWN] * DOWN2;
+        key += this.data[LEFT] * LEFT2;
+        key += this.data[RIGHT] * RIGHT2;
         char ch = map[key];
         if (ch == UNDEFINED) {
             ch = toSolidAndDouble().convert2Char();

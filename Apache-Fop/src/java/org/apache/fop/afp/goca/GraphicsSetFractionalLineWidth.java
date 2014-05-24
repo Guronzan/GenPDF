@@ -25,7 +25,8 @@ import java.io.OutputStream;
 /**
  * Sets the line width to use when stroking GOCA shapes (structured fields)
  */
-public class GraphicsSetFractionalLineWidth extends AbstractGraphicsDrawingOrder {
+public class GraphicsSetFractionalLineWidth extends
+        AbstractGraphicsDrawingOrder {
 
     /** line width multiplier */
     private final float multiplier;
@@ -33,23 +34,25 @@ public class GraphicsSetFractionalLineWidth extends AbstractGraphicsDrawingOrder
     /**
      * Main constructor
      *
-     * @param multiplier the line width multiplier
+     * @param multiplier
+     *            the line width multiplier
      */
-    public GraphicsSetFractionalLineWidth(float multiplier) {
+    public GraphicsSetFractionalLineWidth(final float multiplier) {
         this.multiplier = multiplier;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 4;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        int integral = (int) multiplier;
-        int fractional = (int) ((multiplier - (float) integral) * 256);
-        byte[] data = new byte[] {
-                getOrderCode(), // GSLW order code
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final int integral = (int) this.multiplier;
+        final int fractional = (int) ((this.multiplier - integral) * 256);
+        final byte[] data = new byte[] { getOrderCode(), // GSLW order code
                 0x02, // two bytes next
                 (byte) integral, // integral line with
                 (byte) fractional // and fractional
@@ -58,11 +61,14 @@ public class GraphicsSetFractionalLineWidth extends AbstractGraphicsDrawingOrder
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "GraphicsSetFractionalLineWidth{multiplier=" + multiplier + "}";
+        return "GraphicsSetFractionalLineWidth{multiplier=" + this.multiplier
+                + "}";
     }
 
     /** {@inheritDoc} */
+    @Override
     byte getOrderCode() {
         return 0x11;
     }

@@ -19,8 +19,6 @@
 
 package org.apache.xmlgraphics.util;
 
-import org.apache.xmlgraphics.util.UnitConv;
-
 import junit.framework.TestCase;
 
 /**
@@ -30,19 +28,32 @@ public class UnitConvTestCase extends TestCase {
 
     /**
      * Test all kinds of unit conversions.
-     * @throws Exception if the test fails
+     * 
+     * @throws Exception
+     *             if the test fails
      */
     public void testConversions() throws Exception {
         assertEquals("in2mm", 25.4, UnitConv.in2mm(1), 0.00001);
         assertEquals("mm2in", 1.0, UnitConv.mm2in(25.4), 0.00001);
-        assertEquals("mm2pt", 841.890, UnitConv.mm2pt(297), 0.001 / 2); //height of an A4 page
+        assertEquals("mm2pt", 841.890, UnitConv.mm2pt(297), 0.001 / 2); // height
+                                                                        // of an
+                                                                        // A4
+                                                                        // page
         assertEquals("mm2mpt", 841890, UnitConv.mm2mpt(297), 1.0 / 2);
         assertEquals("pt2mm", 297, UnitConv.pt2mm(841.890), 0.0001);
-        assertEquals("in2mpt", 792000, UnitConv.in2mpt(11.0), 1.0 / 2); //height of a letter page
-        assertEquals("mpt2in", 11.0, UnitConv.mpt2in(792000), 0.01 / 2); //height of a letter page
+        assertEquals("in2mpt", 792000, UnitConv.in2mpt(11.0), 1.0 / 2); // height
+                                                                        // of a
+                                                                        // letter
+                                                                        // page
+        assertEquals("mpt2in", 11.0, UnitConv.mpt2in(792000), 0.01 / 2); // height
+                                                                         // of a
+                                                                         // letter
+                                                                         // page
 
-        assertEquals("mm2px/72dpi", 841.8897764234434, UnitConv.mm2px(297.0, 72), 0);
-        assertEquals("mm2px/300dpi", 3507.8740684310146, UnitConv.mm2px(297.0, 300), 0);
+        assertEquals("mm2px/72dpi", 841.8897764234434,
+                UnitConv.mm2px(297.0, 72), 0);
+        assertEquals("mm2px/300dpi", 3507.8740684310146,
+                UnitConv.mm2px(297.0, 300), 0);
     }
 
 }

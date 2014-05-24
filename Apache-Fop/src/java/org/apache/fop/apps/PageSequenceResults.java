@@ -25,16 +25,18 @@ package org.apache.fop.apps;
  */
 public class PageSequenceResults {
 
-    private String id;
-    private int pageCount;
+    private final String id;
+    private final int pageCount;
 
     /**
      * Constructor for the PageSequenceResults object
      *
-     * @param id         ID of the page-sequence, if available
-     * @param pageCount  The number of resulting pages
+     * @param id
+     *            ID of the page-sequence, if available
+     * @param pageCount
+     *            The number of resulting pages
      */
-    public PageSequenceResults(String id, int pageCount) {
+    public PageSequenceResults(final String id, final int pageCount) {
         this.id = id;
         this.pageCount = pageCount;
     }
@@ -42,7 +44,7 @@ public class PageSequenceResults {
     /**
      * Gets the ID of the page-sequence if one was specified.
      *
-     * @return   The ID
+     * @return The ID
      */
     public String getID() {
         return this.id;
@@ -51,7 +53,7 @@ public class PageSequenceResults {
     /**
      * Gets the number of pages that resulted by processing the page-sequence.
      *
-     * @return   The number of pages generated
+     * @return The number of pages generated
      */
     public int getPageCount() {
         return this.pageCount;

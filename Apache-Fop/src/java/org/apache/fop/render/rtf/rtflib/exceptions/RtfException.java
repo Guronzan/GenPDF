@@ -27,15 +27,20 @@ package org.apache.fop.render.rtf.rtflib.exceptions;
  */
 
 /**
- * <p>Base class for rtflib exceptions.</p>
+ * <p>
+ * Base class for rtflib exceptions.
+ * </p>
  *
- * <p>This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch).</p>
+ * <p>
+ * This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch).
+ * </p>
  */
 public class RtfException extends java.io.IOException {
     /**
-     * @param reason Description of reason for Exception.
+     * @param reason
+     *            Description of reason for Exception.
      */
-    public RtfException(String reason) {
+    public RtfException(final String reason) {
         super(reason);
     }
 }

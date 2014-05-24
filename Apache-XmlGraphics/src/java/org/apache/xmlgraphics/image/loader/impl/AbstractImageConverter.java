@@ -28,16 +28,20 @@ import org.apache.xmlgraphics.image.loader.spi.ImageConverter;
 public abstract class AbstractImageConverter implements ImageConverter {
 
     /**
-     * Checks if the source flavor of the given image is compatible with this ImageConverter.
-     * @param img the image to check
+     * Checks if the source flavor of the given image is compatible with this
+     * ImageConverter.
+     * 
+     * @param img
+     *            the image to check
      */
-    protected void checkSourceFlavor(Image img) {
+    protected void checkSourceFlavor(final Image img) {
         if (!getSourceFlavor().equals(img.getFlavor())) {
             throw new IllegalArgumentException("Incompatible image: " + img);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getConversionPenalty() {
         return MEDIUM_CONVERSION_PENALTY;
     }

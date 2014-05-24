@@ -23,18 +23,19 @@ package embedding;
 import java.io.File;
 import java.io.IOException;
 
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
 //JAXP
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.Source;
-import javax.xml.transform.Result;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamSource;
+
+import lombok.extern.slf4j.Slf4j;
 
 //Avalon
 import org.apache.avalon.framework.ExceptionUtil;
-
 //FOP
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
@@ -44,36 +45,43 @@ import org.apache.fop.apps.MimeConstants;
 /**
  * This class demonstrates the use of the AWT Viewer.
  */
+@Slf4j
 public class ExampleAWTViewer {
 
     // configure fopFactory as desired
-    private FopFactory fopFactory = FopFactory.newInstance();
+    private final FopFactory fopFactory = FopFactory.newInstance();
 
     /**
      * Display an FO file in the AWT Preview.
-     * @param fo the FO file
-     * @throws IOException In case of an I/O problem
-     * @throws FOPException In case of a problem during layout
-     * @throws TransformerException In case of a problem during XML processing
+     *
+     * @param fo
+     *            the FO file
+     * @throws IOException
+     *             In case of an I/O problem
+     * @throws FOPException
+     *             In case of a problem during layout
+     * @throws TransformerException
+     *             In case of a problem during XML processing
      */
-    public void viewFO(File fo)
-                throws IOException, FOPException, TransformerException {
+    public void viewFO(final File fo) throws IOException, FOPException,
+    TransformerException {
 
-        //Setup FOP
-        Fop fop = fopFactory.newFop(MimeConstants.MIME_FOP_AWT_PREVIEW);
+        // Setup FOP
+        final Fop fop = this.fopFactory
+                .newFop(MimeConstants.MIME_FOP_AWT_PREVIEW);
 
         try {
 
-            //Load XSL-FO file (you can also do an XSL transformation here)
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer();
-            Source src = new StreamSource(fo);
-            Result res = new SAXResult(fop.getDefaultHandler());
+            // Load XSL-FO file (you can also do an XSL transformation here)
+            final TransformerFactory factory = TransformerFactory.newInstance();
+            final Transformer transformer = factory.newTransformer();
+            final Source src = new StreamSource(fo);
+            final Result res = new SAXResult(fop.getDefaultHandler());
             transformer.transform(src, res);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             if (e instanceof FOPException) {
-                throw (FOPException)e;
+                throw (FOPException) e;
             }
             throw new FOPException(e);
         }
@@ -81,31 +89,33 @@ public class ExampleAWTViewer {
 
     /**
      * Main method.
-     * @param args the command-line arguments
+     *
+     * @param args
+     *            the command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
-            System.out.println("FOP ExampleAWTViewer\n");
-            System.out.println("Preparing...");
+            log.info("FOP ExampleAWTViewer\n");
+            log.info("Preparing...");
 
-            //Setup directories
-            File baseDir = new File(".");
-            File outDir = new File(baseDir, "out");
+            // Setup directories
+            final File baseDir = new File(".");
+            final File outDir = new File(baseDir, "out");
             outDir.mkdirs();
 
-            //Setup input and output files
-            File fofile = new File(baseDir, "xml/fo/helloworld.fo");
+            // Setup input and output files
+            final File fofile = new File(baseDir, "xml/fo/helloworld.fo");
 
-            System.out.println("Input: XSL-FO (" + fofile + ")");
-            System.out.println("Output: AWT Viewer");
-            System.out.println();
-            System.out.println("Starting AWT Viewer...");
+            log.info("Input: XSL-FO (" + fofile + ")");
+            log.info("Output: AWT Viewer");
+            log.info("");
+            log.info("Starting AWT Viewer...");
 
-            ExampleAWTViewer app = new ExampleAWTViewer();
+            final ExampleAWTViewer app = new ExampleAWTViewer();
             app.viewFO(fofile);
 
-            System.out.println("Success!");
-        } catch (Exception e) {
+            log.info("Success!");
+        } catch (final Exception e) {
             System.err.println(ExceptionUtil.printStackTrace(e));
             System.exit(-1);
         }

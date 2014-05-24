@@ -25,31 +25,39 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.expr.PropertyException;
 
 /**
- * A maker which creates 'letter-spacing' and 'word-spacing' properties.
- * These two properties properties are standard space properties with
- * additinal support for the 'normal' enum value.
+ * A maker which creates 'letter-spacing' and 'word-spacing' properties. These
+ * two properties properties are standard space properties with additinal
+ * support for the 'normal' enum value.
  */
 
 public class SpacingPropertyMaker extends SpaceProperty.Maker {
     /**
      * Create a maker for [letter|word]-spacing.
-     * @param propId the id for property.
+     * 
+     * @param propId
+     *            the id for property.
      */
-    public SpacingPropertyMaker(int propId) {
+    public SpacingPropertyMaker(final int propId) {
         super(propId);
     }
 
     /**
      * Support for the 'normal' value.
-     * @param p the property to convert
-     * @param propertyList the property list to use in conversion
-     * @param fo the FO to use in conversion
+     * 
+     * @param p
+     *            the property to convert
+     * @param propertyList
+     *            the property list to use in conversion
+     * @param fo
+     *            the FO to use in conversion
      * @return the converted property
-     * @throws PropertyException if a property conversion exception occurs
+     * @throws PropertyException
+     *             if a property conversion exception occurs
      */
-    public Property convertProperty(Property p,
-                                       PropertyList propertyList,
-                                       FObj fo) throws PropertyException {
+    @Override
+    public Property convertProperty(final Property p,
+            final PropertyList propertyList, final FObj fo)
+            throws PropertyException {
         if (p.getEnum() == Constants.EN_NORMAL) {
             return p;
         }

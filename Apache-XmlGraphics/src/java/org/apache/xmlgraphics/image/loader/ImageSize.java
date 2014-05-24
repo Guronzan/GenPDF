@@ -40,26 +40,35 @@ public class ImageSize {
     private double dpiHorizontal;
     private double dpiVertical;
 
-
     /**
      * Constructor.
-     * @param widthPx the width of the image in pixels
-     * @param heightPx the height of the image in pixels
-     * @param dpiHorizontal the horizontal resolution in dots per inch
-     * @param dpiVertical the vertical resolution in dots per inch
+     * 
+     * @param widthPx
+     *            the width of the image in pixels
+     * @param heightPx
+     *            the height of the image in pixels
+     * @param dpiHorizontal
+     *            the horizontal resolution in dots per inch
+     * @param dpiVertical
+     *            the vertical resolution in dots per inch
      */
-    public ImageSize(int widthPx, int heightPx, double dpiHorizontal, double dpiVertical) {
+    public ImageSize(final int widthPx, final int heightPx,
+            final double dpiHorizontal, final double dpiVertical) {
         setSizeInPixels(widthPx, heightPx);
         setResolution(dpiHorizontal, dpiVertical);
     }
 
     /**
      * Constructor.
-     * @param widthPx the width of the image in pixels
-     * @param heightPx the height of the image in pixels
-     * @param dpi the resolution in dots per inch
+     * 
+     * @param widthPx
+     *            the width of the image in pixels
+     * @param heightPx
+     *            the height of the image in pixels
+     * @param dpi
+     *            the resolution in dots per inch
      */
-    public ImageSize(int widthPx, int heightPx, double dpi) {
+    public ImageSize(final int widthPx, final int heightPx, final double dpi) {
         this(widthPx, heightPx, dpi, dpi);
     }
 
@@ -67,63 +76,79 @@ public class ImageSize {
      * Default Constructor.
      */
     public ImageSize() {
-        //nop
+        // nop
     }
 
     /**
      * Sets the image's size in pixels.
-     * @param width the width in pixels
-     * @param height the height in pixels
+     * 
+     * @param width
+     *            the width in pixels
+     * @param height
+     *            the height in pixels
      */
-    public void setSizeInPixels(int width, int height) {
+    public void setSizeInPixels(final int width, final int height) {
         this.widthPx = width;
         this.heightPx = height;
     }
 
     /**
      * Sets the image's size in millipoints.
-     * @param width the width in millipoints
-     * @param height the height in millipoints
+     * 
+     * @param width
+     *            the width in millipoints
+     * @param height
+     *            the height in millipoints
      */
-    public void setSizeInMillipoints(int width, int height) {
+    public void setSizeInMillipoints(final int width, final int height) {
         this.widthMpt = width;
         this.heightMpt = height;
     }
 
     /**
      * Sets the image's resolution for interpreting the pixel size.
-     * @param horizontal the horizontal resolution in dpi
-     * @param vertical the vertical resolution in dpi
+     * 
+     * @param horizontal
+     *            the horizontal resolution in dpi
+     * @param vertical
+     *            the vertical resolution in dpi
      */
-    public void setResolution(double horizontal, double vertical) {
+    public void setResolution(final double horizontal, final double vertical) {
         this.dpiHorizontal = horizontal;
         this.dpiVertical = vertical;
     }
 
     /**
      * Sets the image's resolution for interpreting the pixel size.
-     * @param resolution the resolution in dpi
+     * 
+     * @param resolution
+     *            the resolution in dpi
      */
-    public void setResolution(double resolution) {
+    public void setResolution(final double resolution) {
         setResolution(resolution, resolution);
     }
 
     /**
-     * Sets the vertical position of the baseline of the image relative to the bottom of the image.
-     * The default is 0mpt (i.e. the image is bottom-aligned). This is used for MathML images, for
-     * example, which have a baseline. Using the value the images can be properly aligned with
-     * other text. Most other image don't have an implicit baseline.
-     * @param distance the distance from the bottom of the image in millipoints
+     * Sets the vertical position of the baseline of the image relative to the
+     * bottom of the image. The default is 0mpt (i.e. the image is
+     * bottom-aligned). This is used for MathML images, for example, which have
+     * a baseline. Using the value the images can be properly aligned with other
+     * text. Most other image don't have an implicit baseline.
+     * 
+     * @param distance
+     *            the distance from the bottom of the image in millipoints
      */
-    public void setBaselinePositionFromBottom(int distance) {
+    public void setBaselinePositionFromBottom(final int distance) {
         this.baselinePositionFromBottomMpt = distance;
     }
 
     /**
-     * Returns the vertical position of the baseline of the image relative to the bottom of the
-     * image. The default is 0mpt (i.e. the image is bottom-aligned). This is used for MathML
-     * images, for example, which have a baseline. Using the value the images can be properly
-     * aligned with other text. Most other image don't have an implicit baseline.
+     * Returns the vertical position of the baseline of the image relative to
+     * the bottom of the image. The default is 0mpt (i.e. the image is
+     * bottom-aligned). This is used for MathML images, for example, which have
+     * a baseline. Using the value the images can be properly aligned with other
+     * text. Most other image don't have an implicit baseline.
+     * 
      * @return the distance from the bottom of the image in millipoints
      */
     public int getBaselinePositionFromBottom() {
@@ -132,54 +157,61 @@ public class ImageSize {
 
     /**
      * Returns the image's width in pixels.
+     * 
      * @return the width in pixels
      */
     public int getWidthPx() {
-        return widthPx;
+        return this.widthPx;
     }
 
     /**
      * Returns the image's height in pixels.
+     * 
      * @return the height in pixels
      */
     public int getHeightPx() {
-        return heightPx;
+        return this.heightPx;
     }
 
     /**
      * Returns the image's width in millipoints.
+     * 
      * @return the width in millipoints
      */
     public int getWidthMpt() {
-        return widthMpt;
+        return this.widthMpt;
     }
 
     /**
      * Returns the image's height in millipoints.
+     * 
      * @return the height in millipoints
      */
     public int getHeightMpt() {
-        return heightMpt;
+        return this.heightMpt;
     }
 
     /**
      * Returns the image's horizontal resolution in dpi (dots per inch).
+     * 
      * @return the horizontal resolution in dpi
      */
     public double getDpiHorizontal() {
-        return dpiHorizontal;
+        return this.dpiHorizontal;
     }
 
     /**
      * Returns the image's vertical resolution in dpi (dots per inch).
+     * 
      * @return the vertical resolution in dpi
      */
     public double getDpiVertical() {
-        return dpiVertical;
+        return this.dpiVertical;
     }
 
     /**
      * Returns the size in millipoints as a Dimension object.
+     * 
      * @return the size in millipoints
      */
     public Dimension getDimensionMpt() {
@@ -188,14 +220,17 @@ public class ImageSize {
 
     /**
      * Returns the size in points as a Dimension2D object.
+     * 
      * @return the size in points
      */
     public Dimension2D getDimensionPt() {
-        return new Dimension2DDouble(getWidthMpt() / 1000.0, getHeightMpt() / 1000.0);
+        return new Dimension2DDouble(getWidthMpt() / 1000.0,
+                getHeightMpt() / 1000.0);
     }
 
     /**
      * Returns the size in pixels as a Dimension object.
+     * 
      * @return the size in pixels
      */
     public Dimension getDimensionPx() {
@@ -209,31 +244,40 @@ public class ImageSize {
     }
 
     /**
-     * Calculates the size in millipoints based on the size in pixels and the resolution.
+     * Calculates the size in millipoints based on the size in pixels and the
+     * resolution.
      */
     public void calcSizeFromPixels() {
         checkResolutionAvailable();
-        this.widthMpt = (int)Math.round(UnitConv.in2mpt(this.widthPx / this.dpiHorizontal));
-        this.heightMpt = (int)Math.round(UnitConv.in2mpt(this.heightPx / this.dpiVertical));
+        this.widthMpt = (int) Math.round(UnitConv.in2mpt(this.widthPx
+                / this.dpiHorizontal));
+        this.heightMpt = (int) Math.round(UnitConv.in2mpt(this.heightPx
+                / this.dpiVertical));
     }
 
     /**
-     * Calculates the size in pixels based on the size in millipoints and the resolution.
+     * Calculates the size in pixels based on the size in millipoints and the
+     * resolution.
      */
     public void calcPixelsFromSize() {
         checkResolutionAvailable();
-        this.widthPx = (int)Math.round(UnitConv.mpt2in(this.widthMpt * this.dpiHorizontal));
-        this.heightPx = (int)Math.round(UnitConv.mpt2in(this.heightMpt * this.dpiVertical));
+        this.widthPx = (int) Math.round(UnitConv.mpt2in(this.widthMpt
+                * this.dpiHorizontal));
+        this.heightPx = (int) Math.round(UnitConv.mpt2in(this.heightMpt
+                * this.dpiVertical));
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         sb.append("Size: ");
-        sb.append(getWidthMpt()).append('x').append(getHeightMpt()).append(" mpt");
+        sb.append(getWidthMpt()).append('x').append(getHeightMpt())
+                .append(" mpt");
         sb.append(" (");
         sb.append(getWidthPx()).append('x').append(getHeightPx()).append(" px");
-        sb.append(" at ").append(getDpiHorizontal()).append('x').append(getDpiVertical());
+        sb.append(" at ").append(getDpiHorizontal()).append('x')
+                .append(getDpiVertical());
         sb.append(" dpi");
         sb.append(")");
         return sb.toString();

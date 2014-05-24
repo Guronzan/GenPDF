@@ -28,8 +28,10 @@ import java.util.ResourceBundle;
 /**
  * This class provides a default implementation of the Localizable interface.
  * You can use it as a base class or as a member field and delegates various
- * work to it.<p>
+ * work to it.
+ * <p>
  * For example, to implement Localizable, the following code can be used:
+ * 
  * <pre>
  *  package mypackage;
  *  ...
@@ -41,7 +43,7 @@ import java.util.ResourceBundle;
  *      // classpath.
  *      LocalizableSupport localizableSupport =
  *          new LocalizableSupport("mypackage.resources.Messages");
- *
+ * 
  *      public void setLocale(Locale l) {
  *          localizableSupport.setLocale(l);
  *      }
@@ -53,31 +55,29 @@ import java.util.ResourceBundle;
  *      }
  *  }
  * </pre>
+ * 
  * The algorithm for the Locale lookup in a LocalizableSupport object is:
  * <ul>
- *   <li>
- *     if a Locale has been set by a call to setLocale(), use this Locale,
- *     else,
- *   <li/>
- *   <li>
- *     if a Locale has been set by a call to the setDefaultLocale() method
- *     of a LocalizableSupport object in the current LocaleGroup, use this
- *     Locale, else,
- *   </li>
- *   <li>
- *     use the object returned by Locale.getDefault() (and set by
- *     Locale.setDefault()).
- *   <li/>
+ * <li>
+ * if a Locale has been set by a call to setLocale(), use this Locale, else,
+ * <li/>
+ * <li>
+ * if a Locale has been set by a call to the setDefaultLocale() method of a
+ * LocalizableSupport object in the current LocaleGroup, use this Locale, else,</li>
+ * <li>
+ * use the object returned by Locale.getDefault() (and set by
+ * Locale.setDefault()).
+ * <li/>
  * </ul>
- * This offers the possibility to have a different Locale for each object,
- * a Locale for a group of object and/or a Locale for the JVM instance.
+ * This offers the possibility to have a different Locale for each object, a
+ * Locale for a group of object and/or a Locale for the JVM instance.
  * <p>
  * Note: if no group is specified a LocalizableSupport object belongs to a
  * default group common to each instance of LocalizableSupport.
  *
  * @version $Id: LocalizableSupport.java 1345683 2012-06-03 14:50:33Z gadams $
  *
- * Originally authored by Stephane Hillion.
+ *          Originally authored by Stephane Hillion.
  */
 public class LocalizableSupport implements Localizable {
     /**
@@ -113,137 +113,147 @@ public class LocalizableSupport implements Localizable {
     /**
      * Same as LocalizableSupport(s, null).
      */
-    public LocalizableSupport(String s) {
+    public LocalizableSupport(final String s) {
         this(s, null);
     }
 
     /**
-     * Creates a new Localizable object.
-     * The resource bundle class name is required allows the use of custom
-     * classes of resource bundles.
-     * @param s  must be the name of the class to use to get the appropriate
-     *           resource bundle given the current locale.
-     * @param cl is the classloader used to create the resource bundle,
-     *           or null.
+     * Creates a new Localizable object. The resource bundle class name is
+     * required allows the use of custom classes of resource bundles.
+     * 
+     * @param s
+     *            must be the name of the class to use to get the appropriate
+     *            resource bundle given the current locale.
+     * @param cl
+     *            is the classloader used to create the resource bundle, or
+     *            null.
      * @see java.util.ResourceBundle
      */
-    public LocalizableSupport(String s, ClassLoader cl) {
-        bundleName = s;
-        classLoader = cl;
+    public LocalizableSupport(final String s, final ClassLoader cl) {
+        this.bundleName = s;
+        this.classLoader = cl;
     }
 
     /**
-     * Implements {@link org.apache.xmlgraphics.util.i18n.Localizable#setLocale(Locale)}.
+     * Implements
+     * {@link org.apache.xmlgraphics.util.i18n.Localizable#setLocale(Locale)}.
      */
-    public void setLocale(Locale l) {
-        if (locale != l) {
-            locale = l;
-            resourceBundle = null;
+    @Override
+    public void setLocale(final Locale l) {
+        if (this.locale != l) {
+            this.locale = l;
+            this.resourceBundle = null;
         }
     }
 
     /**
-     * Implements {@link org.apache.xmlgraphics.util.i18n.Localizable#getLocale()}.
+     * Implements
+     * {@link org.apache.xmlgraphics.util.i18n.Localizable#getLocale()}.
      */
+    @Override
     public Locale getLocale() {
-        return locale;
+        return this.locale;
     }
 
     /**
-     * Implements {@link
-     * org.apache.xmlgraphics.util.i18n.ExtendedLocalizable#setLocaleGroup(LocaleGroup)}.
+     * Implements
+     * {@link org.apache.xmlgraphics.util.i18n.ExtendedLocalizable#setLocaleGroup(LocaleGroup)}
+     * .
      */
-    public void setLocaleGroup(LocaleGroup lg) {
-        localeGroup = lg;
+    public void setLocaleGroup(final LocaleGroup lg) {
+        this.localeGroup = lg;
     }
 
     /**
-     * Implements {@link
-     * org.apache.xmlgraphics.util.i18n.ExtendedLocalizable#getLocaleGroup()}.
+     * Implements
+     * {@link org.apache.xmlgraphics.util.i18n.ExtendedLocalizable#getLocaleGroup()}
+     * .
      */
     public LocaleGroup getLocaleGroup() {
-        return localeGroup;
+        return this.localeGroup;
     }
 
     /**
-     * Implements {@link
-     * org.apache.xmlgraphics.util.i18n.ExtendedLocalizable#setDefaultLocale(Locale)}.
-     * Later invocations of the instance methods will lead to update the
+     * Implements
+     * {@link org.apache.xmlgraphics.util.i18n.ExtendedLocalizable#setDefaultLocale(Locale)}
+     * . Later invocations of the instance methods will lead to update the
      * resource bundle used.
      */
-    public void setDefaultLocale(Locale l) {
-        localeGroup.setLocale(l);
+    public void setDefaultLocale(final Locale l) {
+        this.localeGroup.setLocale(l);
     }
 
     /**
-     * Implements {@link
-     * org.apache.xmlgraphics.util.i18n.ExtendedLocalizable#getDefaultLocale()}.
+     * Implements
+     * {@link org.apache.xmlgraphics.util.i18n.ExtendedLocalizable#getDefaultLocale()}
+     * .
      */
     public Locale getDefaultLocale() {
-        return localeGroup.getLocale();
+        return this.localeGroup.getLocale();
     }
 
     /**
-     * Implements {@link
-     * org.apache.xmlgraphics.util.i18n.Localizable#formatMessage(String,Object[])}.
+     * Implements
+     * {@link org.apache.xmlgraphics.util.i18n.Localizable#formatMessage(String,Object[])}
+     * .
      */
-    public String formatMessage(String key, Object[] args) {
+    @Override
+    public String formatMessage(final String key, final Object[] args) {
         getResourceBundle();
-        return MessageFormat.format(resourceBundle.getString(key), args);
+        return MessageFormat.format(this.resourceBundle.getString(key), args);
     }
 
     /**
-     * Implements {@link
-     * org.apache.xmlgraphics.util.i18n.ExtendedLocalizable#getResourceBundle()}.
+     * Implements
+     * {@link org.apache.xmlgraphics.util.i18n.ExtendedLocalizable#getResourceBundle()}
+     * .
      */
     public ResourceBundle getResourceBundle() {
         Locale l;
 
-        if (resourceBundle == null) {
-            if (locale == null) {
-                if ((l = localeGroup.getLocale()) == null) {
-                    usedLocale = Locale.getDefault();
+        if (this.resourceBundle == null) {
+            if (this.locale == null) {
+                if ((l = this.localeGroup.getLocale()) == null) {
+                    this.usedLocale = Locale.getDefault();
                 } else {
-                    usedLocale = l;
+                    this.usedLocale = l;
                 }
             } else {
-                usedLocale = locale;
+                this.usedLocale = this.locale;
             }
-            if (classLoader == null) {
-                resourceBundle = ResourceBundle.getBundle(bundleName,
-                                                          usedLocale);
+            if (this.classLoader == null) {
+                this.resourceBundle = ResourceBundle.getBundle(this.bundleName,
+                        this.usedLocale);
             } else {
-                resourceBundle = ResourceBundle.getBundle(bundleName,
-                                                          usedLocale,
-                                                          classLoader);
+                this.resourceBundle = ResourceBundle.getBundle(this.bundleName,
+                        this.usedLocale, this.classLoader);
             }
-        } else if (locale == null) {
+        } else if (this.locale == null) {
             // Check for group Locale and JVM default locale changes.
-            if ((l = localeGroup.getLocale()) == null) {
-                if (usedLocale != (l = Locale.getDefault())) {
-                    usedLocale = l;
-                    if (classLoader == null) {
-                        resourceBundle = ResourceBundle.getBundle(bundleName,
-                                                                  usedLocale);
+            if ((l = this.localeGroup.getLocale()) == null) {
+                if (this.usedLocale != (l = Locale.getDefault())) {
+                    this.usedLocale = l;
+                    if (this.classLoader == null) {
+                        this.resourceBundle = ResourceBundle.getBundle(
+                                this.bundleName, this.usedLocale);
                     } else {
-                        resourceBundle = ResourceBundle.getBundle(bundleName,
-                                                                  usedLocale,
-                                                                  classLoader);
+                        this.resourceBundle = ResourceBundle.getBundle(
+                                this.bundleName, this.usedLocale,
+                                this.classLoader);
                     }
                 }
-            } else if (usedLocale != l) {
-                usedLocale = l;
-                if (classLoader == null) {
-                    resourceBundle = ResourceBundle.getBundle(bundleName,
-                                                              usedLocale);
+            } else if (this.usedLocale != l) {
+                this.usedLocale = l;
+                if (this.classLoader == null) {
+                    this.resourceBundle = ResourceBundle.getBundle(
+                            this.bundleName, this.usedLocale);
                 } else {
-                    resourceBundle = ResourceBundle.getBundle(bundleName,
-                                                              usedLocale,
-                                                              classLoader);
+                    this.resourceBundle = ResourceBundle.getBundle(
+                            this.bundleName, this.usedLocale, this.classLoader);
                 }
             }
         }
 
-        return resourceBundle;
+        return this.resourceBundle;
     }
 }

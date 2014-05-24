@@ -24,44 +24,48 @@ import java.awt.Shape;
 import java.awt.image.RenderedImage;
 
 /**
- * This provides a number of extra methods that enable a system to
- * better analyse the dependencies between nodes in a render graph.
+ * This provides a number of extra methods that enable a system to better
+ * analyse the dependencies between nodes in a render graph.
  *
  * @version $Id: CachableRed.java 1345683 2012-06-03 14:50:33Z gadams $
  *
- * Originally authored by Thomas DeWeese.
-*/
+ *          Originally authored by Thomas DeWeese.
+ */
 public interface CachableRed extends RenderedImage {
 
     /**
-     * Returns the bounds of the current image.
-     * This should be 'in sync' with getMinX, getMinY, getWidth, getHeight
+     * Returns the bounds of the current image. This should be 'in sync' with
+     * getMinX, getMinY, getWidth, getHeight
      */
     Rectangle getBounds();
 
     /**
-     * Returns the region of input data is is required to generate
-     * outputRgn.
-     * @param srcIndex  The source to do the dependency calculation for.
-     * @param outputRgn The region of output you are interested in
-     * generating dependencies for.  The is given in the output pixel
-     * coordiate system for this node.
-     * @return The region of input required.  This is in the output pixel
-     * coordinate system for the source indicated by srcIndex.
+     * Returns the region of input data is is required to generate outputRgn.
+     * 
+     * @param srcIndex
+     *            The source to do the dependency calculation for.
+     * @param outputRgn
+     *            The region of output you are interested in generating
+     *            dependencies for. The is given in the output pixel coordiate
+     *            system for this node.
+     * @return The region of input required. This is in the output pixel
+     *         coordinate system for the source indicated by srcIndex.
      */
-    Shape getDependencyRegion(int srcIndex, Rectangle outputRgn);
+    Shape getDependencyRegion(final int srcIndex, final Rectangle outputRgn);
 
     /**
-     * This calculates the region of output that is affected by a change
-     * in a region of input.
-     * @param srcIndex The input that inputRgn reflects changes in.
-     * @param inputRgn the region of input that has changed, used to
-     *  calculate the returned shape.  This is given in the pixel
-     *  coordinate system of the source indicated by srcIndex.
-     * @return The region of output that would be invalid given
-     *  a change to inputRgn of the source selected by srcIndex.
-     *  this is in the output pixel coordinate system of this node.
+     * This calculates the region of output that is affected by a change in a
+     * region of input.
+     * 
+     * @param srcIndex
+     *            The input that inputRgn reflects changes in.
+     * @param inputRgn
+     *            the region of input that has changed, used to calculate the
+     *            returned shape. This is given in the pixel coordinate system
+     *            of the source indicated by srcIndex.
+     * @return The region of output that would be invalid given a change to
+     *         inputRgn of the source selected by srcIndex. this is in the
+     *         output pixel coordinate system of this node.
      */
-    Shape getDirtyRegion(int srcIndex, Rectangle inputRgn);
+    Shape getDirtyRegion(final int srcIndex, final Rectangle inputRgn);
 }
-

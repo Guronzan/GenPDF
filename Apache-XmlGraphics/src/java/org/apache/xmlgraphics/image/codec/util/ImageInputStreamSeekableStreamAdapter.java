@@ -24,52 +24,60 @@ import java.io.IOException;
 import javax.imageio.stream.ImageInputStream;
 
 /**
- * A subclass of <code>SeekableStream</code> that may be used to wrap
- * a regular <code>ImageInputStream</code>.
+ * A subclass of <code>SeekableStream</code> that may be used to wrap a regular
+ * <code>ImageInputStream</code>.
  */
 public final class ImageInputStreamSeekableStreamAdapter extends SeekableStream {
 
     /** The source stream. */
-    private ImageInputStream stream;
+    private final ImageInputStream stream;
 
     /**
-     * Constructs a <code>SeekableStream</code> that takes
-     * its source data from a regular <code>ImageInputStream</code>.
-     * @param stream the underlying ImageInputStream to use
+     * Constructs a <code>SeekableStream</code> that takes its source data from
+     * a regular <code>ImageInputStream</code>.
+     *
+     * @param stream
+     *            the underlying ImageInputStream to use
      */
-    public ImageInputStreamSeekableStreamAdapter(ImageInputStream stream)
-        throws IOException {
+    public ImageInputStreamSeekableStreamAdapter(final ImageInputStream stream) {
         this.stream = stream;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean canSeekBackwards() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public long getFilePointer() throws IOException {
-        return stream.getStreamPosition();
+        return this.stream.getStreamPosition();
     }
 
     /** {@inheritDoc} */
-    public void seek(long pos) throws IOException {
-        stream.seek(pos);
+    @Override
+    public void seek(final long pos) throws IOException {
+        this.stream.seek(pos);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int read() throws IOException {
-        return stream.read();
+        return this.stream.read();
     }
 
     /** {@inheritDoc} */
-    public int read(byte[] b, int off, int len) throws IOException {
-        return stream.read(b, off, len);
+    @Override
+    public int read(final byte[] b, final int off, final int len)
+            throws IOException {
+        return this.stream.read(b, off, len);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void close() throws IOException {
         super.close();
-        stream.close();
+        this.stream.close();
     }
 }

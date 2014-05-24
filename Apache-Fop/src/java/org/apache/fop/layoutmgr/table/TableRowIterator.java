@@ -30,9 +30,11 @@ import org.apache.fop.fo.flow.table.Table;
 import org.apache.fop.fo.flow.table.TableBody;
 
 /**
- * Iterator that lets the table layout manager step over all the rows of a part of the
- * table (table-header, table-footer or table-body).
- * <p>Note: This class is not thread-safe.</p>
+ * Iterator that lets the table layout manager step over all the rows of a part
+ * of the table (table-header, table-footer or table-body).
+ * <p>
+ * Note: This class is not thread-safe.
+ * </p>
  */
 public class TableRowIterator {
 
@@ -47,7 +49,7 @@ public class TableRowIterator {
     protected Table table;
 
     /** Part of the table over which to iterate. One of BODY, HEADER or FOOTER. */
-    private int tablePart;
+    private final int tablePart;
 
     private Iterator rowGroupsIter;
 
@@ -55,50 +57,61 @@ public class TableRowIterator {
 
     /**
      * Creates a new TableRowIterator.
-     * @param table the table to iterate over
-     * @param tablePart indicates what part of the table to iterate over (HEADER, FOOTER, BODY)
+     * 
+     * @param table
+     *            the table to iterate over
+     * @param tablePart
+     *            indicates what part of the table to iterate over (HEADER,
+     *            FOOTER, BODY)
      */
-    public TableRowIterator(Table table, int tablePart) {
+    public TableRowIterator(final Table table, final int tablePart) {
         this.table = table;
         this.tablePart = tablePart;
-        switch(tablePart) {
-            case HEADER:
-                rowGroupsIter = table.getTableHeader().getRowGroups().iterator();
-                break;
-            case FOOTER:
-                rowGroupsIter = table.getTableFooter().getRowGroups().iterator();
-                break;
-            case BODY:
-                List rowGroupsList = new LinkedList();
-                // TODO this is ugly
-                for (FONodeIterator iter = table.getChildNodes(); iter.hasNext();) {
-                    FONode node = iter.nextNode();
-                    if (node instanceof TableBody) {
-                        rowGroupsList.addAll(((TableBody) node).getRowGroups());
-                    }
+        switch (tablePart) {
+        case HEADER:
+            this.rowGroupsIter = table.getTableHeader().getRowGroups()
+                    .iterator();
+            break;
+        case FOOTER:
+            this.rowGroupsIter = table.getTableFooter().getRowGroups()
+                    .iterator();
+            break;
+        case BODY:
+            final List rowGroupsList = new LinkedList();
+            // TODO this is ugly
+            for (final FONodeIterator iter = table.getChildNodes(); iter
+                    .hasNext();) {
+                final FONode node = iter.nextNode();
+                if (node instanceof TableBody) {
+                    rowGroupsList.addAll(((TableBody) node).getRowGroups());
                 }
-                rowGroupsIter = rowGroupsList.iterator();
-                break;
-            default:
-                throw new IllegalArgumentException("Unrecognised TablePart: " + tablePart);
+            }
+            this.rowGroupsIter = rowGroupsList.iterator();
+            break;
+        default:
+            throw new IllegalArgumentException("Unrecognised TablePart: "
+                    + tablePart);
         }
     }
 
     /**
-     * Returns the next row group if any. A row group in this context is the minimum number of
-     * consecutive rows which contains all spanned grid units of its cells.
+     * Returns the next row group if any. A row group in this context is the
+     * minimum number of consecutive rows which contains all spanned grid units
+     * of its cells.
+     * 
      * @return the next row group, or null
      */
     EffRow[] getNextRowGroup() {
-        if (!rowGroupsIter.hasNext()) {
+        if (!this.rowGroupsIter.hasNext()) {
             return null;
         }
-        List rowGroup = (List) rowGroupsIter.next();
-        EffRow[] effRowGroup = new EffRow[rowGroup.size()];
+        final List rowGroup = (List) this.rowGroupsIter.next();
+        final EffRow[] effRowGroup = new EffRow[rowGroup.size()];
         int i = 0;
-        for (Iterator rowIter = rowGroup.iterator(); rowIter.hasNext();) {
-            List gridUnits = (List) rowIter.next();
-            effRowGroup[i++] = new EffRow(rowIndex++, tablePart, gridUnits);
+        for (final Iterator rowIter = rowGroup.iterator(); rowIter.hasNext();) {
+            final List gridUnits = (List) rowIter.next();
+            effRowGroup[i++] = new EffRow(this.rowIndex++, this.tablePart,
+                    gridUnits);
         }
         return effRowGroup;
     }

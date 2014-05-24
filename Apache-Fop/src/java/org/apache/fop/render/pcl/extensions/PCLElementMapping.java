@@ -21,9 +21,8 @@ package org.apache.fop.render.pcl.extensions;
 
 import java.util.HashMap;
 
-import org.apache.xmlgraphics.util.QName;
-
 import org.apache.fop.fo.ElementMapping;
+import org.apache.xmlgraphics.util.QName;
 
 /**
  * PCL-specific extensions for Apache FOP.
@@ -37,16 +36,16 @@ public class PCLElementMapping extends ElementMapping {
     public static final String NAMESPACE_PREFIX = "pcl";
 
     /** The extension attribute for the PCL paper source */
-    public static final QName PCL_PAPER_SOURCE
-        = new QName(PCLElementMapping.NAMESPACE, null, "paper-source");
+    public static final QName PCL_PAPER_SOURCE = new QName(
+            PCLElementMapping.NAMESPACE, null, "paper-source");
 
     /** The extension attribute for the PCL output bin */
-    public static final QName PCL_OUTPUT_BIN
-        = new QName(PCLElementMapping.NAMESPACE, null, "output-bin");
+    public static final QName PCL_OUTPUT_BIN = new QName(
+            PCLElementMapping.NAMESPACE, null, "output-bin");
 
     /** The extension attribute for the PCL duplex mode */
-    public static final QName PCL_DUPLEX_MODE
-        = new QName(PCLElementMapping.NAMESPACE, null, "duplex-mode");
+    public static final QName PCL_DUPLEX_MODE = new QName(
+            PCLElementMapping.NAMESPACE, null, "duplex-mode");
 
     /** Main constructor */
     public PCLElementMapping() {
@@ -54,11 +53,12 @@ public class PCLElementMapping extends ElementMapping {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void initialize() {
 
-        if (foObjs == null) {
-            foObjs = new HashMap<String, Maker>();
-            //No extension elements, yet, only attributes
+        if (this.foObjs == null) {
+            this.foObjs = new HashMap<String, Maker>();
+            // No extension elements, yet, only attributes
         }
 
     }

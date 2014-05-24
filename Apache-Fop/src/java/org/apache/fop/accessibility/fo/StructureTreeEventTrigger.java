@@ -21,9 +21,6 @@ package org.apache.fop.accessibility.fo;
 
 import java.util.Locale;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.fop.accessibility.StructureTreeElement;
 import org.apache.fop.accessibility.StructureTreeEventHandler;
 import org.apache.fop.fo.FOEventHandler;
@@ -58,16 +55,20 @@ import org.apache.fop.fo.pagination.Flow;
 import org.apache.fop.fo.pagination.PageSequence;
 import org.apache.fop.fo.pagination.StaticContent;
 import org.apache.fop.fo.properties.CommonAccessibilityHolder;
-import org.apache.fop.util.XMLUtil;
+import org.apache.fop.util.XMLConstants;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * A bridge between {@link FOEventHandler} and {@link StructureTreeEventHandler}.
+ * A bridge between {@link FOEventHandler} and {@link StructureTreeEventHandler}
+ * .
  */
 class StructureTreeEventTrigger extends FOEventHandler {
 
-    private StructureTreeEventHandler structureTreeEventHandler;
+    private final StructureTreeEventHandler structureTreeEventHandler;
 
-    public StructureTreeEventTrigger(StructureTreeEventHandler structureTreeEventHandler) {
+    public StructureTreeEventTrigger(
+            final StructureTreeEventHandler structureTreeEventHandler) {
         this.structureTreeEventHandler = structureTreeEventHandler;
     }
 
@@ -80,7 +81,7 @@ class StructureTreeEventTrigger extends FOEventHandler {
     }
 
     @Override
-    public void startPageSequence(PageSequence pageSeq) {
+    public void startPageSequence(final PageSequence pageSeq) {
         Locale locale = null;
         if (pageSeq.getLanguage() != null) {
             if (pageSeq.getCountry() != null) {
@@ -89,139 +90,140 @@ class StructureTreeEventTrigger extends FOEventHandler {
                 locale = new Locale(pageSeq.getLanguage());
             }
         }
-        String role = pageSeq.getCommonAccessibility().getRole();
-        structureTreeEventHandler.startPageSequence(locale, role);
+        final String role = pageSeq.getCommonAccessibility().getRole();
+        this.structureTreeEventHandler.startPageSequence(locale, role);
     }
 
     @Override
-    public void endPageSequence(PageSequence pageSeq) {
-        structureTreeEventHandler.endPageSequence();
+    public void endPageSequence(final PageSequence pageSeq) {
+        this.structureTreeEventHandler.endPageSequence();
     }
 
     @Override
-    public void startPageNumber(PageNumber pagenum) {
+    public void startPageNumber(final PageNumber pagenum) {
         startElementWithID(pagenum);
     }
 
     @Override
-    public void endPageNumber(PageNumber pagenum) {
+    public void endPageNumber(final PageNumber pagenum) {
         endElement(pagenum);
     }
 
     @Override
-    public void startPageNumberCitation(PageNumberCitation pageCite) {
+    public void startPageNumberCitation(final PageNumberCitation pageCite) {
         startElementWithID(pageCite);
     }
 
     @Override
-    public void endPageNumberCitation(PageNumberCitation pageCite) {
+    public void endPageNumberCitation(final PageNumberCitation pageCite) {
         endElement(pageCite);
     }
 
     @Override
-    public void startPageNumberCitationLast(PageNumberCitationLast pageLast) {
+    public void startPageNumberCitationLast(
+            final PageNumberCitationLast pageLast) {
         startElementWithID(pageLast);
     }
 
     @Override
-    public void endPageNumberCitationLast(PageNumberCitationLast pageLast) {
+    public void endPageNumberCitationLast(final PageNumberCitationLast pageLast) {
         endElement(pageLast);
     }
 
     @Override
-    public void startFlow(Flow fl) {
+    public void startFlow(final Flow fl) {
         startElement(fl);
     }
 
     @Override
-    public void endFlow(Flow fl) {
+    public void endFlow(final Flow fl) {
         endElement(fl);
     }
 
     @Override
-    public void startBlock(Block bl) {
+    public void startBlock(final Block bl) {
         startElement(bl);
     }
 
     @Override
-    public void endBlock(Block bl) {
+    public void endBlock(final Block bl) {
         endElement(bl);
     }
 
     @Override
-    public void startBlockContainer(BlockContainer blc) {
+    public void startBlockContainer(final BlockContainer blc) {
         startElement(blc);
     }
 
     @Override
-    public void endBlockContainer(BlockContainer blc) {
+    public void endBlockContainer(final BlockContainer blc) {
         endElement(blc);
     }
 
     @Override
-    public void startInline(Inline inl) {
+    public void startInline(final Inline inl) {
         startElement(inl);
     }
 
     @Override
-    public void endInline(Inline inl) {
+    public void endInline(final Inline inl) {
         endElement(inl);
     }
 
     @Override
-    public void startTable(Table tbl) {
+    public void startTable(final Table tbl) {
         startElement(tbl);
     }
 
     @Override
-    public void endTable(Table tbl) {
+    public void endTable(final Table tbl) {
         endElement(tbl);
     }
 
     @Override
-    public void startHeader(TableHeader header) {
+    public void startHeader(final TableHeader header) {
         startElement(header);
     }
 
     @Override
-    public void endHeader(TableHeader header) {
+    public void endHeader(final TableHeader header) {
         endElement(header);
     }
 
     @Override
-    public void startFooter(TableFooter footer) {
+    public void startFooter(final TableFooter footer) {
         startElement(footer);
     }
 
     @Override
-    public void endFooter(TableFooter footer) {
+    public void endFooter(final TableFooter footer) {
         endElement(footer);
     }
 
     @Override
-    public void startBody(TableBody body) {
+    public void startBody(final TableBody body) {
         startElement(body);
     }
 
     @Override
-    public void endBody(TableBody body) {
+    public void endBody(final TableBody body) {
         endElement(body);
     }
 
     @Override
-    public void startRow(TableRow tr) {
+    public void startRow(final TableRow tr) {
         startElement(tr);
     }
 
     @Override
-    public void endRow(TableRow tr) {
+    public void endRow(final TableRow tr) {
         endElement(tr);
     }
 
     @Override
-    public void startCell(TableCell tc) {
-        AttributesImpl attributes = new AttributesImpl();
-        int colSpan = tc.getNumberColumnsSpanned();
+    public void startCell(final TableCell tc) {
+        final AttributesImpl attributes = new AttributesImpl();
+        final int colSpan = tc.getNumberColumnsSpanned();
         if (colSpan > 1) {
             addNoNamespaceAttribute(attributes, "number-columns-spanned",
                     Integer.toString(colSpan));
@@ -230,182 +232,186 @@ class StructureTreeEventTrigger extends FOEventHandler {
     }
 
     @Override
-    public void endCell(TableCell tc) {
+    public void endCell(final TableCell tc) {
         endElement(tc);
     }
 
     @Override
-    public void startList(ListBlock lb) {
+    public void startList(final ListBlock lb) {
         startElement(lb);
     }
 
     @Override
-    public void endList(ListBlock lb) {
+    public void endList(final ListBlock lb) {
         endElement(lb);
     }
 
     @Override
-    public void startListItem(ListItem li) {
+    public void startListItem(final ListItem li) {
         startElement(li);
     }
 
     @Override
-    public void endListItem(ListItem li) {
+    public void endListItem(final ListItem li) {
         endElement(li);
     }
 
     @Override
-    public void startListLabel(ListItemLabel listItemLabel) {
+    public void startListLabel(final ListItemLabel listItemLabel) {
         startElement(listItemLabel);
     }
 
     @Override
-    public void endListLabel(ListItemLabel listItemLabel) {
+    public void endListLabel(final ListItemLabel listItemLabel) {
         endElement(listItemLabel);
     }
 
     @Override
-    public void startListBody(ListItemBody listItemBody) {
+    public void startListBody(final ListItemBody listItemBody) {
         startElement(listItemBody);
     }
 
     @Override
-    public void endListBody(ListItemBody listItemBody) {
+    public void endListBody(final ListItemBody listItemBody) {
         endElement(listItemBody);
     }
 
     @Override
-    public void startStatic(StaticContent staticContent) {
+    public void startStatic(final StaticContent staticContent) {
         startElement(staticContent);
     }
 
     @Override
-    public void endStatic(StaticContent statisContent) {
+    public void endStatic(final StaticContent statisContent) {
         endElement(statisContent);
     }
 
     @Override
-    public void startLink(BasicLink basicLink) {
+    public void startLink(final BasicLink basicLink) {
         startElementWithID(basicLink);
     }
 
     @Override
-    public void endLink(BasicLink basicLink) {
+    public void endLink(final BasicLink basicLink) {
         endElement(basicLink);
     }
 
     @Override
-    public void image(ExternalGraphic eg) {
+    public void image(final ExternalGraphic eg) {
         startElementWithIDAndAltText(eg);
         endElement(eg);
     }
 
     @Override
-    public void startInstreamForeignObject(InstreamForeignObject ifo) {
+    public void startInstreamForeignObject(final InstreamForeignObject ifo) {
         startElementWithIDAndAltText(ifo);
     }
 
     @Override
-    public void endInstreamForeignObject(InstreamForeignObject ifo) {
+    public void endInstreamForeignObject(final InstreamForeignObject ifo) {
         endElement(ifo);
     }
 
     @Override
-    public void startFootnote(Footnote footnote) {
+    public void startFootnote(final Footnote footnote) {
         startElement(footnote);
     }
 
     @Override
-    public void endFootnote(Footnote footnote) {
+    public void endFootnote(final Footnote footnote) {
         endElement(footnote);
     }
 
     @Override
-    public void startFootnoteBody(FootnoteBody body) {
+    public void startFootnoteBody(final FootnoteBody body) {
         startElement(body);
     }
 
     @Override
-    public void endFootnoteBody(FootnoteBody body) {
+    public void endFootnoteBody(final FootnoteBody body) {
         endElement(body);
     }
 
     @Override
-    public void startWrapper(Wrapper wrapper) {
+    public void startWrapper(final Wrapper wrapper) {
         startElement(wrapper);
     }
 
     @Override
-    public void endWrapper(Wrapper wrapper) {
+    public void endWrapper(final Wrapper wrapper) {
         endElement(wrapper);
     }
 
     @Override
-    public void character(Character c) {
+    public void character(final Character c) {
         startElementWithID(c);
         endElement(c);
     }
 
     @Override
-    public void characters(FOText foText) {
+    public void characters(final FOText foText) {
         startElementWithID(foText);
         endElement(foText);
     }
 
-
-    private void startElement(FONode node) {
+    private void startElement(final FONode node) {
         startElement(node, new AttributesImpl());
     }
 
-    private void startElementWithID(FONode node) {
-        AttributesImpl attributes = new AttributesImpl();
-        String localName = node.getLocalName();
+    private void startElementWithID(final FONode node) {
+        final AttributesImpl attributes = new AttributesImpl();
+        final String localName = node.getLocalName();
         if (node instanceof CommonAccessibilityHolder) {
             addRole((CommonAccessibilityHolder) node, attributes);
         }
-        node.setStructureTreeElement(
-                structureTreeEventHandler.startReferencedNode(localName, attributes));
+        node.setStructureTreeElement(this.structureTreeEventHandler
+                .startReferencedNode(localName, attributes));
     }
 
-    private void startElementWithIDAndAltText(AbstractGraphics node) {
-        AttributesImpl attributes = new AttributesImpl();
-        String localName = node.getLocalName();
+    private void startElementWithIDAndAltText(final AbstractGraphics node) {
+        final AttributesImpl attributes = new AttributesImpl();
+        final String localName = node.getLocalName();
         addRole(node, attributes);
         addAttribute(attributes, ExtensionElementMapping.URI, "alt-text",
                 ExtensionElementMapping.STANDARD_PREFIX, node.getAltText());
-        node.setStructureTreeElement(
-                structureTreeEventHandler.startImageNode(localName, attributes));
+        node.setStructureTreeElement(this.structureTreeEventHandler
+                .startImageNode(localName, attributes));
     }
 
-    private StructureTreeElement startElement(FONode node, AttributesImpl attributes) {
-        String localName = node.getLocalName();
+    private StructureTreeElement startElement(final FONode node,
+            final AttributesImpl attributes) {
+        final String localName = node.getLocalName();
         if (node instanceof CommonAccessibilityHolder) {
             addRole((CommonAccessibilityHolder) node, attributes);
         }
-        return structureTreeEventHandler.startNode(localName, attributes);
+        return this.structureTreeEventHandler.startNode(localName, attributes);
     }
 
-    private void addNoNamespaceAttribute(AttributesImpl attributes, String name, String value) {
-        attributes.addAttribute("", name, name, XMLUtil.CDATA, value);
+    private void addNoNamespaceAttribute(final AttributesImpl attributes,
+            final String name, final String value) {
+        attributes.addAttribute("", name, name, XMLConstants.CDATA, value);
     }
 
-    private void addAttribute(AttributesImpl attributes,
-            String namespace, String localName, String prefix, String value) {
+    private void addAttribute(final AttributesImpl attributes,
+            final String namespace, final String localName,
+            final String prefix, final String value) {
         assert namespace.length() > 0 && prefix.length() > 0;
-        String qualifiedName = prefix + ":" + localName;
-        attributes.addAttribute(namespace, localName, qualifiedName, XMLUtil.CDATA, value);
+        final String qualifiedName = prefix + ":" + localName;
+        attributes.addAttribute(namespace, localName, qualifiedName,
+                XMLConstants.CDATA, value);
     }
 
-    private void addRole(CommonAccessibilityHolder node, AttributesImpl attributes) {
-        String role = node.getCommonAccessibility().getRole();
+    private void addRole(final CommonAccessibilityHolder node,
+            final AttributesImpl attributes) {
+        final String role = node.getCommonAccessibility().getRole();
         if (role != null) {
             addNoNamespaceAttribute(attributes, "role", role);
         }
     }
 
-    private void endElement(FONode node) {
-        String localName = node.getLocalName();
-        structureTreeEventHandler.endNode(localName);
+    private void endElement(final FONode node) {
+        final String localName = node.getLocalName();
+        this.structureTreeEventHandler.endNode(localName);
     }
 
 }

@@ -30,15 +30,17 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * This class tests TTFSubSetFile
- * TODO: Test with more than just a single font
+ * This class tests TTFSubSetFile TODO: Test with more than just a single font
  */
 public class TTFSubSetFileTestCase extends TTFFileTestCase {
     private TTFSubSetFile ttfSubset;
     private byte[] subset;
+
     /**
      * Constructor
-     * @throws IOException exception
+     * 
+     * @throws IOException
+     *             exception
      */
     public TTFSubSetFileTestCase() throws IOException {
         super();
@@ -46,31 +48,39 @@ public class TTFSubSetFileTestCase extends TTFFileTestCase {
 
     /**
      * setUp()
-     * @exception IOException file read error
+     * 
+     * @exception IOException
+     *                file read error
      */
     @Before
     public void setUp() throws IOException {
-        ttfSubset = new TTFSubSetFile();
-        Map<Integer, Integer> glyphs = new HashMap<Integer, Integer>();
+        this.ttfSubset = new TTFSubSetFile();
+        final Map<Integer, Integer> glyphs = new HashMap<Integer, Integer>();
         for (int i = 0; i < 255; i++) {
             glyphs.put(i, i);
         }
-        ttfSubset.readFont(dejavuReader, "DejaVu", glyphs);
-        subset = ttfSubset.getFontSubset();
+        this.ttfSubset.readFont(this.dejavuReader, "DejaVu", glyphs);
+        this.subset = this.ttfSubset.getFontSubset();
     }
+
     /**
-     * Test readFont(FontFileReader, String, Map) - Reads the font and tests the output by injecting
-     * it into a TTFFile object to check the validity of the file as a font. This currently doesn't
-     * create a cmap table, and so the font doesn't contain ALL of the mandatory tables.
-     * @throws IOException exception
+     * Test readFont(FontFileReader, String, Map) - Reads the font and tests the
+     * output by injecting it into a TTFFile object to check the validity of the
+     * file as a font. This currently doesn't create a cmap table, and so the
+     * font doesn't contain ALL of the mandatory tables.
+     * 
+     * @throws IOException
+     *             exception
      */
     @Test
     public void testReadFont3Args() throws IOException {
 
-        ByteArrayInputStream byteArray = new ByteArrayInputStream(subset);
-        dejavuTTFFile.readFont(new FontFileReader(byteArray));
+        final ByteArrayInputStream byteArray = new ByteArrayInputStream(
+                this.subset);
+        this.dejavuTTFFile.readFont(new FontFileReader(byteArray));
         // Test a couple arbitrary values
-        assertEquals(dejavuTTFFile.convertTTFUnit2PDFUnit(-1576), dejavuTTFFile.getFontBBox()[0]);
-        assertEquals(dejavuTTFFile.getFullName(), "DejaVu LGC Serif");
+        assertEquals(this.dejavuTTFFile.convertTTFUnit2PDFUnit(-1576),
+                this.dejavuTTFFile.getFontBBox()[0]);
+        assertEquals(this.dejavuTTFFile.getFullName(), "DejaVu LGC Serif");
     }
 }

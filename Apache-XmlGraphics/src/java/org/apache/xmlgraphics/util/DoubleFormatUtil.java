@@ -20,22 +20,24 @@
 package org.apache.xmlgraphics.util;
 
 /**
- * This class implements fast, thread-safe format of a double value
- * with a given number of decimal digits.
+ * This class implements fast, thread-safe format of a double value with a given
+ * number of decimal digits.
  * <p>
- * The contract for the format methods is this one:
- * if the source is greater than or equal to 1 (in absolute value),
- * use the decimals parameter to define the number of decimal digits; else,
- * use the precision parameter to define the number of decimal digits.
+ * The contract for the format methods is this one: if the source is greater
+ * than or equal to 1 (in absolute value), use the decimals parameter to define
+ * the number of decimal digits; else, use the precision parameter to define the
+ * number of decimal digits.
  * <p>
  * A few examples (consider decimals being 4 and precision being 8):
  * <ul>
  * <li>0.0 should be rendered as "0"
  * <li>0.1 should be rendered as "0.1"
  * <li>1234.1 should be rendered as "1234.1"
- * <li>1234.1234567 should be rendered as "1234.1235" (note the trailing 5! Rounding!)
+ * <li>1234.1234567 should be rendered as "1234.1235" (note the trailing 5!
+ * Rounding!)
  * <li>1234.00001 should be rendered as "1234"
- * <li>0.00001 should be rendered as "0.00001" (here you see the effect of the "precision" parameter)
+ * <li>0.00001 should be rendered as "0.00001" (here you see the effect of the
+ * "precision" parameter)
  * <li>0.00000001 should be rendered as "0.00000001"
  * <li>0.000000001 should be rendered as "0"
  * </ul>
@@ -48,16 +50,21 @@ public final class DoubleFormatUtil {
     }
 
     /**
-     * Rounds the given source value at the given precision
-     * and writes the rounded value into the given target
+     * Rounds the given source value at the given precision and writes the
+     * rounded value into the given target
      *
-     * @param source the source value to round
-     * @param decimals the decimals to round at (use if abs(source) &ge; 1.0)
-     * @param precision the precision to round at (use if abs(source) &lt; 1.0)
-     * @param target the buffer to write to
+     * @param source
+     *            the source value to round
+     * @param decimals
+     *            the decimals to round at (use if abs(source) &ge; 1.0)
+     * @param precision
+     *            the precision to round at (use if abs(source) &lt; 1.0)
+     * @param target
+     *            the buffer to write to
      */
-    public static void formatDouble(double source, int decimals, int precision, StringBuffer target) {
-        int scale = (Math.abs(source) >= 1.0) ? decimals : precision;
+    public static void formatDouble(final double source, final int decimals,
+            final int precision, final StringBuffer target) {
+        final int scale = Math.abs(source) >= 1.0 ? decimals : precision;
         if (tooManyDigitsUsed(source, scale) || tooCloseToRound(source, scale)) {
             formatDoublePrecise(source, decimals, precision, target);
         } else {
@@ -66,18 +73,23 @@ public final class DoubleFormatUtil {
     }
 
     /**
-     * Rounds the given source value at the given precision
-     * and writes the rounded value into the given target
+     * Rounds the given source value at the given precision and writes the
+     * rounded value into the given target
      * <p>
-     * This method internally uses the String representation of the source value,
-     * in order to avoid any double precision computation error.
+     * This method internally uses the String representation of the source
+     * value, in order to avoid any double precision computation error.
      *
-     * @param source the source value to round
-     * @param decimals the decimals to round at (use if abs(source) &ge; 1.0)
-     * @param precision the precision to round at (use if abs(source) &lt; 1.0)
-     * @param target the buffer to write to
+     * @param source
+     *            the source value to round
+     * @param decimals
+     *            the decimals to round at (use if abs(source) &ge; 1.0)
+     * @param precision
+     *            the precision to round at (use if abs(source) &lt; 1.0)
+     * @param target
+     *            the buffer to write to
      */
-    public static void formatDoublePrecise(double source, int decimals, int precision, StringBuffer target) {
+    public static void formatDoublePrecise(double source, final int decimals,
+            final int precision, final StringBuffer target) {
         if (isRoundedToZero(source, decimals, precision)) {
             // Will always be rounded to 0
             target.append('0');
@@ -88,20 +100,21 @@ public final class DoubleFormatUtil {
             return;
         }
 
-        boolean negative = source < 0.0;
+        final boolean negative = source < 0.0;
         if (negative) {
             source = -source;
             // Done once and for all
             target.append('-');
         }
-        int scale = (source >= 1.0) ? decimals : precision;
+        final int scale = source >= 1.0 ? decimals : precision;
 
         // The only way to format precisely the double is to use the String
-        // representation of the double, and then to do mathematical integer operation on it.
-        String s = Double.toString(source);
+        // representation of the double, and then to do mathematical integer
+        // operation on it.
+        final String s = Double.toString(source);
         if (source >= 1e-3 && source < 1e7) {
             // Plain representation of double: "intPart.decimalPart"
-            int dot = s.indexOf('.');
+            final int dot = s.indexOf('.');
             String decS = s.substring(dot + 1);
             int decLength = decS.length();
             if (scale >= decLength) {
@@ -111,7 +124,8 @@ public final class DoubleFormatUtil {
                 } else {
                     target.append(s);
                     // Remove trailing zeroes
-                    for (int l = target.length() - 1; l >= 0 && target.charAt(l) == '0'; l--) {
+                    for (int l = target.length() - 1; l >= 0
+                            && target.charAt(l) == '0'; l--) {
                         target.setLength(l);
                     }
                 }
@@ -121,21 +135,21 @@ public final class DoubleFormatUtil {
                 decLength = scale + 1;
                 decS = decS.substring(0, decLength);
             }
-            long intP = Long.parseLong(s.substring(0, dot));
-            long decP = Long.parseLong(decS);
+            final long intP = Long.parseLong(s.substring(0, dot));
+            final long decP = Long.parseLong(decS);
             format(target, scale, intP, decP);
         } else {
             // Scientific representation of double: "x.xxxxxEyyy"
-            int dot = s.indexOf('.');
+            final int dot = s.indexOf('.');
             assert dot >= 0;
-            int exp = s.indexOf('E');
+            final int exp = s.indexOf('E');
             assert exp >= 0;
             int exposant = Integer.parseInt(s.substring(exp + 1));
-            String intS = s.substring(0, dot);
-            String decS = s.substring(dot + 1, exp);
-            int decLength = decS.length();
+            final String intS = s.substring(0, dot);
+            final String decS = s.substring(dot + 1, exp);
+            final int decLength = decS.length();
             if (exposant >= 0) {
-                int digits = decLength - exposant;
+                final int digits = decLength - exposant;
                 if (digits <= 0) {
                     // no decimal part,
                     // no rounding involved
@@ -154,25 +168,30 @@ public final class DoubleFormatUtil {
                 } else {
                     // decimalDigits > scale,
                     // Rounding involved
-                    long intP = Long.parseLong(intS) * tenPow(exposant) + Long.parseLong(decS.substring(0, exposant));
-                    long decP = Long.parseLong(decS.substring(exposant, exposant + scale + 1));
+                    final long intP = Long.parseLong(intS) * tenPow(exposant)
+                            + Long.parseLong(decS.substring(0, exposant));
+                    final long decP = Long.parseLong(decS.substring(exposant,
+                            exposant + scale + 1));
                     format(target, scale, intP, decP);
                 }
             } else {
                 // Only a decimal part is supplied
                 exposant = -exposant;
-                int digits = scale - exposant + 1;
+                final int digits = scale - exposant + 1;
                 if (digits < 0) {
                     target.append('0');
                 } else if (digits == 0) {
-                    long decP = Long.parseLong(intS);
+                    final long decP = Long.parseLong(intS);
                     format(target, scale, 0L, decP);
                 } else if (decLength < digits) {
-                    long decP = Long.parseLong(intS) * tenPow(decLength + 1) + Long.parseLong(decS) * 10;
+                    final long decP = Long.parseLong(intS)
+                            * tenPow(decLength + 1) + Long.parseLong(decS) * 10;
                     format(target, exposant + decLength, 0L, decP);
                 } else {
-                    long subDecP = Long.parseLong(decS.substring(0, digits));
-                    long decP = Long.parseLong(intS) * tenPow(digits) + subDecP;
+                    final long subDecP = Long.parseLong(decS.substring(0,
+                            digits));
+                    final long decP = Long.parseLong(intS) * tenPow(digits)
+                            + subDecP;
                     format(target, scale, 0L, decP);
                 }
             }
@@ -182,14 +201,21 @@ public final class DoubleFormatUtil {
     /**
      * Returns true if the given source value will be rounded to zero
      *
-     * @param source the source value to round
-     * @param decimals the decimals to round at (use if abs(source) &ge; 1.0)
-     * @param precision the precision to round at (use if abs(source) &lt; 1.0)
+     * @param source
+     *            the source value to round
+     * @param decimals
+     *            the decimals to round at (use if abs(source) &ge; 1.0)
+     * @param precision
+     *            the precision to round at (use if abs(source) &lt; 1.0)
      * @return true if the source value will be rounded to zero
      */
-    private static boolean isRoundedToZero(double source, int decimals, int precision) {
-        // Use 4.999999999999999 instead of 5 since in some cases, 5.0 / 1eN > 5e-N (e.g. for N = 37, 42, 45, 66, ...)
-        return source == 0.0 || Math.abs(source) < 4.999999999999999 / tenPowDouble(Math.max(decimals, precision) + 1);
+    private static boolean isRoundedToZero(final double source,
+            final int decimals, final int precision) {
+        // Use 4.999999999999999 instead of 5 since in some cases, 5.0 / 1eN >
+        // 5e-N (e.g. for N = 37, 42, 45, 66, ...)
+        return source == 0.0
+                || Math.abs(source) < 4.999999999999999 / tenPowDouble(Math
+                        .max(decimals, precision) + 1);
     }
 
     /**
@@ -210,28 +236,36 @@ public final class DoubleFormatUtil {
     /**
      * Returns ten to the power of n
      *
-     * @param n the nth power of ten to get
+     * @param n
+     *            the nth power of ten to get
      * @return ten to the power of n
      */
-    public static long tenPow(int n) {
+    public static long tenPow(final int n) {
         assert n >= 0;
-        return n < POWERS_OF_TEN_LONG.length ? POWERS_OF_TEN_LONG[n] : (long) Math.pow(10, n);
+        return n < POWERS_OF_TEN_LONG.length ? POWERS_OF_TEN_LONG[n]
+                : (long) Math.pow(10, n);
     }
 
-    private static double tenPowDouble(int n) {
+    private static double tenPowDouble(final int n) {
         assert n >= 0;
-        return n < POWERS_OF_TEN_DOUBLE.length ? POWERS_OF_TEN_DOUBLE[n] : Math.pow(10, n);
+        return n < POWERS_OF_TEN_DOUBLE.length ? POWERS_OF_TEN_DOUBLE[n] : Math
+                .pow(10, n);
     }
 
     /**
      * Helper method to do the custom rounding used within formatDoublePrecise
      *
-     * @param target the buffer to write to
-     * @param scale the expected rounding scale
-     * @param intP the source integer part
-     * @param decP the source decimal part, truncated to scale + 1 digit
+     * @param target
+     *            the buffer to write to
+     * @param scale
+     *            the expected rounding scale
+     * @param intP
+     *            the source integer part
+     * @param decP
+     *            the source decimal part, truncated to scale + 1 digit
      */
-    private static void format(StringBuffer target, int scale, long intP, long decP) {
+    private static void format(final StringBuffer target, int scale, long intP,
+            long decP) {
         if (decP != 0L) {
             // decP is the decimal part of source, truncated to scale + 1 digit.
             // Custom rounding: add 5
@@ -256,7 +290,9 @@ public final class DoubleFormatUtil {
             // since the casting of decP to double may cause some imprecisions:
             // E.g. for decP = 9999999999999999L and scale = 17,
             // decP < tenPow(16) while (double) decP == tenPowDouble(16)
-            while (scale > 0 && (scale > 18 ? decP < tenPowDouble(--scale) : decP < tenPow(--scale))) {
+            while (scale > 0
+                    && (scale > 18 ? decP < tenPowDouble(--scale)
+                            : decP < tenPow(--scale))) {
                 // Insert leading zeroes
                 target.append('0');
             }
@@ -265,18 +301,23 @@ public final class DoubleFormatUtil {
     }
 
     /**
-     * Rounds the given source value at the given precision
-     * and writes the rounded value into the given target
+     * Rounds the given source value at the given precision and writes the
+     * rounded value into the given target
      * <p>
-     * This method internally uses double precision computation and rounding,
-     * so the result may not be accurate (see formatDouble method for conditions).
+     * This method internally uses double precision computation and rounding, so
+     * the result may not be accurate (see formatDouble method for conditions).
      *
-     * @param source the source value to round
-     * @param decimals the decimals to round at (use if abs(source) &ge; 1.0)
-     * @param precision the precision to round at (use if abs(source) &lt; 1.0)
-     * @param target the buffer to write to
+     * @param source
+     *            the source value to round
+     * @param decimals
+     *            the decimals to round at (use if abs(source) &ge; 1.0)
+     * @param precision
+     *            the precision to round at (use if abs(source) &lt; 1.0)
+     * @param target
+     *            the buffer to write to
      */
-    public static void formatDoubleFast(double source, int decimals, int precision, StringBuffer target) {
+    public static void formatDoubleFast(double source, final int decimals,
+            final int precision, final StringBuffer target) {
         if (isRoundedToZero(source, decimals, precision)) {
             // Will always be rounded to 0
             target.append('0');
@@ -287,13 +328,13 @@ public final class DoubleFormatUtil {
             return;
         }
 
-        boolean isPositive = source >= 0.0;
+        final boolean isPositive = source >= 0.0;
         source = Math.abs(source);
-        int scale = (source >= 1.0) ? decimals : precision;
+        int scale = source >= 1.0 ? decimals : precision;
 
         long intPart = (long) Math.floor(source);
-        double tenScale = tenPowDouble(scale);
-        double fracUnroundedPart = (source - intPart) * tenScale;
+        final double tenScale = tenPowDouble(scale);
+        final double fracUnroundedPart = (source - intPart) * tenScale;
         long fracPart = Math.round(fracUnroundedPart);
         if (fracPart >= tenScale) {
             intPart++;
@@ -332,47 +373,55 @@ public final class DoubleFormatUtil {
     /**
      * Returns the exponent of the given value
      *
-     * @param value the value to get the exponent from
+     * @param value
+     *            the value to get the exponent from
      * @return the value's exponent
      */
-    public static int getExponant(double value) {
+    public static int getExponant(final double value) {
         // See Double.doubleToRawLongBits javadoc or IEEE-754 spec
         // to have this algorithm
         long exp = Double.doubleToRawLongBits(value) & 0x7ff0000000000000L;
         exp = exp >> 52;
-        return (int) (exp - 1023L);
+                return (int) (exp - 1023L);
     }
 
     /**
-     * Returns true if the rounding is considered to use too many digits
-     * of the double for a fast rounding
+     * Returns true if the rounding is considered to use too many digits of the
+     * double for a fast rounding
      *
-     * @param source the source to round
-     * @param scale the scale to round at
+     * @param source
+     *            the source to round
+     * @param scale
+     *            the scale to round at
      * @return true if the rounding will potentially use too many digits
      */
-    private static boolean tooManyDigitsUsed(double source, int scale) {
+    private static boolean tooManyDigitsUsed(final double source,
+            final int scale) {
         // if scale >= 308, 10^308 ~= Infinity
-        double decExp = Math.log10(source);
+        final double decExp = Math.log10(source);
         return scale >= 308 || decExp + scale >= 14.5;
     }
 
     /**
-     * Returns true if the given source is considered to be too close
-     * of a rounding value for the given scale.
+     * Returns true if the given source is considered to be too close of a
+     * rounding value for the given scale.
      *
-     * @param source the source to round
-     * @param scale the scale to round at
+     * @param source
+     *            the source to round
+     * @param scale
+     *            the scale to round at
      * @return true if the source will be potentially rounded at the scale
      */
-    private static boolean tooCloseToRound(double source, int scale) {
+    private static boolean tooCloseToRound(double source, final int scale) {
         source = Math.abs(source);
-        long intPart = (long) Math.floor(source);
-        double fracPart = (source - intPart) * tenPowDouble(scale);
-        double decExp = Math.log10(source);
-        double range = decExp + scale >= 12 ? .1 : .001;
-        double distanceToRound1 = Math.abs(fracPart - Math.floor(fracPart));
-        double distanceToRound2 = Math.abs(fracPart - Math.floor(fracPart) - 0.5);
+        final long intPart = (long) Math.floor(source);
+        final double fracPart = (source - intPart) * tenPowDouble(scale);
+        final double decExp = Math.log10(source);
+        final double range = decExp + scale >= 12 ? .1 : .001;
+        final double distanceToRound1 = Math.abs(fracPart
+                - Math.floor(fracPart));
+        final double distanceToRound2 = Math.abs(fracPart
+                - Math.floor(fracPart) - 0.5);
         return distanceToRound1 <= range || distanceToRound2 <= range;
         // .001 range: Totally arbitrary range,
         // I never had a failure in 10e7 random tests with this value

@@ -24,8 +24,7 @@ import java.nio.charset.CharacterCodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.afp.AFPConstants;
 import org.apache.fop.afp.AFPEventProducer;
@@ -34,26 +33,23 @@ import org.apache.fop.afp.util.ResourceAccessor;
 import org.apache.fop.afp.util.StringUtils;
 
 /**
- * The IBM Font Object Content Architecture (FOCA) supports presentation
- * of character shapes by defining their characteristics, which include
- * font description information for identifying the characters, font metric
+ * The IBM Font Object Content Architecture (FOCA) supports presentation of
+ * character shapes by defining their characteristics, which include font
+ * description information for identifying the characters, font metric
  * information for positioning the characters, and character shape information
  * for presenting the character images.
  * <p/>
- * Presenting a graphic character on a presentation surface requires
- * information on the rotation and position of character on the physical
- * or logical page.
+ * Presenting a graphic character on a presentation surface requires information
+ * on the rotation and position of character on the physical or logical page.
  * <p/>
- * This class proivdes font metric information for a particular font
- * as identified by the character set name. This information is obtained
- * directly from the AFP font files which must be installed in the path
- * specified in the afp-fonts xml definition file.
+ * This class proivdes font metric information for a particular font as
+ * identified by the character set name. This information is obtained directly
+ * from the AFP font files which must be installed in the path specified in the
+ * afp-fonts xml definition file.
  * <p/>
  */
+@Slf4j
 public class CharacterSet {
-
-    /** Static logging instance */
-    protected static final Log LOG = LogFactory.getLog(CharacterSet.class.getName());
 
     /** default codepage */
     public static final String DEFAULT_CODEPAGE = "T1V10500";
@@ -62,7 +58,6 @@ public class CharacterSet {
     public static final String DEFAULT_ENCODING = "Cp500";
 
     private static final int MAX_NAME_LEN = 8;
-
 
     /** The code page to which the character set relates */
     protected final String codePage;
@@ -85,25 +80,36 @@ public class CharacterSet {
     /** The collection of objects for each orientation */
     private final Map<String, CharacterSetOrientation> characterSetOrientations;
 
-    /** The nominal vertical size (in millipoints) for bitmap fonts. 0 for outline fonts. */
+    /**
+     * The nominal vertical size (in millipoints) for bitmap fonts. 0 for
+     * outline fonts.
+     */
     private int nominalVerticalSize;
 
     /**
-     * Constructor for the CharacterSetMetric object, the character set is used to load the font
-     * information from the actual AFP font.
+     * Constructor for the CharacterSetMetric object, the character set is used
+     * to load the font information from the actual AFP font.
      *
-     * @param codePage the code page identifier
-     * @param encoding the encoding of the font
-     * @param charsetType the type of the characterset
-     * @param name the character set name
-     * @param accessor the resource accessor to load resource with
-     * @param eventProducer for handling AFP related events
+     * @param codePage
+     *            the code page identifier
+     * @param encoding
+     *            the encoding of the font
+     * @param charsetType
+     *            the type of the characterset
+     * @param name
+     *            the character set name
+     * @param accessor
+     *            the resource accessor to load resource with
+     * @param eventProducer
+     *            for handling AFP related events
      */
-    CharacterSet(String codePage, String encoding, CharacterSetType charsetType, String name,
-            ResourceAccessor accessor, AFPEventProducer eventProducer) {
+    CharacterSet(final String codePage, final String encoding,
+            final CharacterSetType charsetType, final String name,
+            final ResourceAccessor accessor,
+            final AFPEventProducer eventProducer) {
         if (name.length() > MAX_NAME_LEN) {
-            String msg = "Character set name '" + name + "' must be a maximum of "
-                + MAX_NAME_LEN + " characters";
+            final String msg = "Character set name '" + name
+                    + "' must be a maximum of " + MAX_NAME_LEN + " characters";
             eventProducer.characterSetNameInvalid(this, msg);
             throw new IllegalArgumentException(msg);
         }
@@ -118,45 +124,53 @@ public class CharacterSet {
         this.encoder = CharactersetEncoder.newInstance(encoding, charsetType);
         this.accessor = accessor;
 
-        this.characterSetOrientations = new HashMap<String, CharacterSetOrientation>(4);
+        this.characterSetOrientations = new HashMap<String, CharacterSetOrientation>(
+                4);
     }
 
     /**
      * Add character set metric information for the different orientations
      *
-     * @param cso the metrics for the orientation
+     * @param cso
+     *            the metrics for the orientation
      */
-    public void addCharacterSetOrientation(CharacterSetOrientation cso) {
-        characterSetOrientations.put(String.valueOf(cso.getOrientation()), cso);
+    public void addCharacterSetOrientation(final CharacterSetOrientation cso) {
+        this.characterSetOrientations.put(String.valueOf(cso.getOrientation()),
+                cso);
     }
 
     /**
      * Sets the nominal vertical size of the font in the case of bitmap fonts.
-     * @param nominalVerticalSize the nominal vertical size (in millipoints)
+     *
+     * @param nominalVerticalSize
+     *            the nominal vertical size (in millipoints)
      */
-    public void setNominalVerticalSize(int nominalVerticalSize) {
+    public void setNominalVerticalSize(final int nominalVerticalSize) {
         this.nominalVerticalSize = nominalVerticalSize;
     }
 
     /**
-     * Returns the nominal vertical size of the font in the case of bitmap fonts. For outline fonts,
-     * zero is returned, because these are scalable fonts.
-     * @return the nominal vertical size (in millipoints) for bitmap fonts, or 0 for outline fonts.
+     * Returns the nominal vertical size of the font in the case of bitmap
+     * fonts. For outline fonts, zero is returned, because these are scalable
+     * fonts.
+     *
+     * @return the nominal vertical size (in millipoints) for bitmap fonts, or 0
+     *         for outline fonts.
      */
     public int getNominalVerticalSize() {
         return this.nominalVerticalSize;
     }
 
     /**
-     * Ascender height is the distance from the character baseline to the
-     * top of the character box. A negative ascender height signifies that
-     * all of the graphic character is below the character baseline. For
-     * a character rotation other than 0, ascender height loses its
-     * meaning when the character is lying on its side or is upside down
-     * with respect to normal viewing orientation. For the general case,
-     * Ascender Height is the characters most positive y-axis value.
-     * For bounded character boxes, for a given character having an
-     * ascender, ascender height and baseline offset are equal.
+     * Ascender height is the distance from the character baseline to the top of
+     * the character box. A negative ascender height signifies that all of the
+     * graphic character is below the character baseline. For a character
+     * rotation other than 0, ascender height loses its meaning when the
+     * character is lying on its side or is upside down with respect to normal
+     * viewing orientation. For the general case, Ascender Height is the
+     * characters most positive y-axis value. For bounded character boxes, for a
+     * given character having an ascender, ascender height and baseline offset
+     * are equal.
      *
      * @return the ascender value in millipoints
      */
@@ -166,9 +180,9 @@ public class CharacterSet {
     }
 
     /**
-     * Cap height is the average height of the uppercase characters in
-     * a font. This value is specified by the designer of a font and is
-     * usually the height of the uppercase M.
+     * Cap height is the average height of the uppercase characters in a font.
+     * This value is specified by the designer of a font and is usually the
+     * height of the uppercase M.
      *
      * @return the cap height value in millipoints
      */
@@ -178,9 +192,9 @@ public class CharacterSet {
     }
 
     /**
-     * Descender depth is the distance from the character baseline to
-     * the bottom of a character box. A negative descender depth signifies
-     * that all of the graphic character is above the character baseline.
+     * Descender depth is the distance from the character baseline to the bottom
+     * of a character box. A negative descender depth signifies that all of the
+     * graphic character is above the character baseline.
      *
      * @return the descender value in millipoints
      */
@@ -209,6 +223,7 @@ public class CharacterSet {
 
     /**
      * Returns the resource accessor to load the font resources with.
+     *
      * @return the resource accessor to load the font resources with
      */
     public ResourceAccessor getResourceAccessor() {
@@ -226,7 +241,8 @@ public class CharacterSet {
     }
 
     /**
-     * XHeight refers to the height of the lower case letters above the baseline.
+     * XHeight refers to the height of the lower case letters above the
+     * baseline.
      *
      * @return the typical height of characters
      */
@@ -236,17 +252,16 @@ public class CharacterSet {
     }
 
     /**
-     * Get the width (in 1/1000ths of a point size) of the character
-     * identified by the parameter passed.
+     * Get the width (in 1/1000ths of a point size) of the character identified
+     * by the parameter passed.
      *
-     * @param character the Unicode character from which the width will be calculated
+     * @param character
+     *            the Unicode character from which the width will be calculated
      * @return the width of the character
      */
-    public int getWidth(char character) {
+    public int getWidth(final char character) {
         return getCharacterSetOrientation().getWidth(character);
     }
-
-
 
     /**
      * Returns the AFP character set identifier
@@ -254,7 +269,7 @@ public class CharacterSet {
      * @return the AFP character set identifier
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -265,11 +280,11 @@ public class CharacterSet {
     public byte[] getNameBytes() {
         byte[] nameBytes = null;
         try {
-            nameBytes = name.getBytes(AFPConstants.EBCIDIC_ENCODING);
-        } catch (UnsupportedEncodingException usee) {
-            nameBytes = name.getBytes();
-            LOG.warn(
-                "UnsupportedEncodingException translating the name " + name);
+            nameBytes = this.name.getBytes(AFPConstants.EBCIDIC_ENCODING);
+        } catch (final UnsupportedEncodingException usee) {
+            nameBytes = this.name.getBytes();
+            log.warn("UnsupportedEncodingException translating the name "
+                    + this.name);
         }
         return nameBytes;
     }
@@ -280,7 +295,7 @@ public class CharacterSet {
      * @return the AFP code page identifier
      */
     public String getCodePage() {
-        return codePage;
+        return this.codePage;
     }
 
     /**
@@ -289,66 +304,73 @@ public class CharacterSet {
      * @return the AFP code page encoding
      */
     public String getEncoding() {
-        return encoding;
+        return this.encoding;
     }
 
     /**
-     * Helper method to return the current CharacterSetOrientation, note
-     * that FOP does not yet implement the "reference-orientation"
-     * attribute therefore we always use the orientation zero degrees,
-     * Other orientation information is captured for use by a future
-     * implementation (whenever FOP implement the mechanism). This is also
-     * the case for landscape prints which use an orientation of 270 degrees,
-     * in 99.9% of cases the font metrics will be the same as the 0 degrees
-     * therefore the implementation currently will always use 0 degrees.
+     * Helper method to return the current CharacterSetOrientation, note that
+     * FOP does not yet implement the "reference-orientation" attribute
+     * therefore we always use the orientation zero degrees, Other orientation
+     * information is captured for use by a future implementation (whenever FOP
+     * implement the mechanism). This is also the case for landscape prints
+     * which use an orientation of 270 degrees, in 99.9% of cases the font
+     * metrics will be the same as the 0 degrees therefore the implementation
+     * currently will always use 0 degrees.
      *
      * @return characterSetOrentation The current orientation metrics.
      */
     private CharacterSetOrientation getCharacterSetOrientation() {
-        CharacterSetOrientation c
-            = characterSetOrientations.get(currentOrientation);
+        final CharacterSetOrientation c = this.characterSetOrientations
+                .get(this.currentOrientation);
         return c;
     }
 
     /**
      * Indicates whether the given char in the character set.
-     * @param c the character to check
+     *
+     * @param c
+     *            the character to check
      * @return true if the character is in the character set
      */
-    public boolean hasChar(char c) {
-        if (encoder != null) {
-            return encoder.canEncode(c);
+    public boolean hasChar(final char c) {
+        if (this.encoder != null) {
+            return this.encoder.canEncode(c);
         } else {
-            //Sun Java 1.4.2 compatibility
+            // Sun Java 1.4.2 compatibility
             return true;
         }
     }
 
     /**
      * Encodes a character sequence to a byte array.
-     * @param chars the characters
+     *
+     * @param chars
+     *            the characters
      * @return the encoded characters
-     * @throws CharacterCodingException if the encoding operation fails
+     * @throws CharacterCodingException
+     *             if the encoding operation fails
      */
-    public EncodedChars encodeChars(CharSequence chars) throws CharacterCodingException {
-        return encoder.encode(chars);
+    public EncodedChars encodeChars(final CharSequence chars)
+            throws CharacterCodingException {
+        return this.encoder.encode(chars);
     }
 
     /**
-     * Map a Unicode character to a code point in the font.
-     * The code tables are already converted to Unicode therefore
-     * we can use the identity mapping.
+     * Map a Unicode character to a code point in the font. The code tables are
+     * already converted to Unicode therefore we can use the identity mapping.
      *
-     * @param c the Unicode character to map
+     * @param c
+     *            the Unicode character to map
      * @return the mapped character
      */
-    public char mapChar(char c) {
-        //TODO This is not strictly correct but we'll let it be for the moment
+    public char mapChar(final char c) {
+        // TODO This is not strictly correct but we'll let it be for the moment
         return c;
     }
 
     /**
      * Returns the increment for an space.
+     *
      * @return the space increment
      */
     public int getSpaceIncrement() {
@@ -357,6 +379,7 @@ public class CharacterSet {
 
     /**
      * Returns the increment for an em space.
+     *
      * @return the em space increment
      */
     public int getEmSpaceIncrement() {

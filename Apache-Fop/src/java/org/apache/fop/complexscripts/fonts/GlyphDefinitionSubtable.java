@@ -23,51 +23,68 @@ package org.apache.fop.complexscripts.fonts;
 // CSOFF: InnerAssignmentCheck
 
 /**
- * <p>The <code>GlyphDefinitionSubtable</code> implements an abstract base of a glyph definition subtable,
- * providing a default implementation of the <code>GlyphDefinition</code> interface.</p>
+ * <p>
+ * The <code>GlyphDefinitionSubtable</code> implements an abstract base of a
+ * glyph definition subtable, providing a default implementation of the
+ * <code>GlyphDefinition</code> interface.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
-public abstract class GlyphDefinitionSubtable extends GlyphSubtable implements GlyphDefinition {
+public abstract class GlyphDefinitionSubtable extends GlyphSubtable implements
+        GlyphDefinition {
 
     /**
      * Instantiate a <code>GlyphDefinitionSubtable</code>.
-     * @param id subtable identifier
-     * @param sequence subtable sequence
-     * @param flags subtable flags
-     * @param format subtable format
-     * @param mapping subtable coverage table
+     * 
+     * @param id
+     *            subtable identifier
+     * @param sequence
+     *            subtable sequence
+     * @param flags
+     *            subtable flags
+     * @param format
+     *            subtable format
+     * @param mapping
+     *            subtable coverage table
      */
-    protected GlyphDefinitionSubtable ( String id, int sequence, int flags, int format, GlyphMappingTable mapping ) {
-        super ( id, sequence, flags, format, mapping );
+    protected GlyphDefinitionSubtable(final String id, final int sequence,
+            final int flags, final int format, final GlyphMappingTable mapping) {
+        super(id, sequence, flags, format, mapping);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getTableType() {
         return GlyphTable.GLYPH_TABLE_TYPE_DEFINITION;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getTypeName() {
-        return GlyphDefinitionTable.getLookupTypeName ( getType() );
+        return GlyphDefinitionTable.getLookupTypeName(getType());
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean usesReverseScan() {
         return false;
     }
 
     /** {@inheritDoc} */
-    public boolean hasDefinition ( int gi ) {
+    @Override
+    public boolean hasDefinition(final int gi) {
         GlyphCoverageMapping cvm;
-        if ( ( cvm = getCoverage() ) != null ) {
-            if ( cvm.getCoverageIndex ( gi ) >= 0 ) {
+        if ((cvm = getCoverage()) != null) {
+            if (cvm.getCoverageIndex(gi) >= 0) {
                 return true;
             }
         }
         GlyphClassMapping clm;
-        if ( ( clm = getClasses() ) != null ) {
-            if ( clm.getClassIndex ( gi, 0 ) >= 0 ) {
+        if ((clm = getClasses()) != null) {
+            if (clm.getClassIndex(gi, 0) >= 0) {
                 return true;
             }
         }

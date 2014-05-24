@@ -28,32 +28,36 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.expr.PropertyException;
 
 /**
- * A maker which calculates the line-height property.
- * This property maker is special because line-height inherits the specified
- * value, instead of the computed value.
- * So when a line-height is create based on an attribute, the specified value
- * is stored in the property and in compute() the stored specified value of
- * the nearest specified is used to recalculate the line-height.
+ * A maker which calculates the line-height property. This property maker is
+ * special because line-height inherits the specified value, instead of the
+ * computed value. So when a line-height is create based on an attribute, the
+ * specified value is stored in the property and in compute() the stored
+ * specified value of the nearest specified is used to recalculate the
+ * line-height.
  */
 
 public class LineHeightPropertyMaker extends SpaceProperty.Maker {
     /**
      * Create a maker for line-height.
-     * @param propId the is for linehight.
+     * 
+     * @param propId
+     *            the is for linehight.
      */
-    public LineHeightPropertyMaker(int propId) {
+    public LineHeightPropertyMaker(final int propId) {
         super(propId);
     }
 
     /**
      * {@inheritDoc}
      */
-    public Property make(PropertyList propertyList, String value, FObj fo)
-            throws PropertyException {
-        /* if value was specified as a number/length/percentage then
+    @Override
+    public Property make(final PropertyList propertyList, final String value,
+            final FObj fo) throws PropertyException {
+        /*
+         * if value was specified as a number/length/percentage then
          * conditionality and precedence components are overridden
          */
-        Property p = super.make(propertyList, value, fo);
+        final Property p = super.make(propertyList, value, fo);
         p.getSpace().setConditionality(
                 EnumProperty.getInstance(Constants.EN_RETAIN, "RETAIN"), true);
         p.getSpace().setPrecedence(
@@ -62,19 +66,19 @@ public class LineHeightPropertyMaker extends SpaceProperty.Maker {
     }
 
     /**
-     * Recalculate the line-height value based on the nearest specified
-     * value.
+     * Recalculate the line-height value based on the nearest specified value.
      * {@inheritDoc}
      */
-    protected Property compute(PropertyList propertyList) throws PropertyException {
+    @Override
+    protected Property compute(final PropertyList propertyList)
+            throws PropertyException {
         // recalculate based on last specified value
         // Climb up propertylist and find last spec'd value
-        Property specProp = propertyList.getNearestSpecified(propId);
+        final Property specProp = propertyList.getNearestSpecified(this.propId);
         if (specProp != null) {
-            String specVal = specProp.getSpecifiedValue();
+            final String specVal = specProp.getSpecifiedValue();
             if (specVal != null) {
-                return make(propertyList, specVal,
-                            propertyList.getParentFObj());
+                return make(propertyList, specVal, propertyList.getParentFObj());
             }
         }
         return null;
@@ -83,23 +87,27 @@ public class LineHeightPropertyMaker extends SpaceProperty.Maker {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Property convertProperty(Property p,
-            PropertyList propertyList,
-            FObj fo) throws PropertyException {
-        Numeric numval = p.getNumeric();
+            final PropertyList propertyList, final FObj fo)
+            throws PropertyException {
+        final Numeric numval = p.getNumeric();
         if (numval != null && numval.getDimension() == 0) {
             if (getPercentBase(propertyList) instanceof LengthBase) {
-                Length base = ((LengthBase)getPercentBase(propertyList)).getBaseLength();
+                final Length base = ((LengthBase) getPercentBase(propertyList))
+                        .getBaseLength();
                 if (base != null && base.isAbsolute()) {
-                    p = FixedLength.getInstance(
-                            numval.getNumericValue() * base.getNumericValue());
+                    p = FixedLength.getInstance(numval.getNumericValue()
+                            * base.getNumericValue());
                 } else {
-                    p = new PercentLength(
-                            numval.getNumericValue(), getPercentBase(propertyList));
+                    p = new PercentLength(numval.getNumericValue(),
+                            getPercentBase(propertyList));
                 }
             }
-            Property spaceProp = super.convertProperty(p, propertyList, fo);
-            spaceProp.setSpecifiedValue(String.valueOf(numval.getNumericValue()));
+            final Property spaceProp = super.convertProperty(p, propertyList,
+                    fo);
+            spaceProp
+                    .setSpecifiedValue(String.valueOf(numval.getNumericValue()));
             return spaceProp;
         }
         return super.convertProperty(p, propertyList, fo);

@@ -38,48 +38,53 @@ public class GraphicsFullArc extends AbstractGraphicsCoord {
     /**
      * Constructor
      *
-     * @param x the x coordinate of the center of the circle/ellipse
-     * @param y the y coordinate of the center of the circle/ellipse
-     * @param mh the integer portion of the multiplier
-     * @param mhr the fractional portion of the multiplier
+     * @param x
+     *            the x coordinate of the center of the circle/ellipse
+     * @param y
+     *            the y coordinate of the center of the circle/ellipse
+     * @param mh
+     *            the integer portion of the multiplier
+     * @param mhr
+     *            the fractional portion of the multiplier
      */
-    public GraphicsFullArc(int x, int y, int mh, int mhr) {
+    public GraphicsFullArc(final int x, final int y, final int mh, final int mhr) {
         super(x, y);
         this.mh = mh;
         this.mhr = mhr;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 8;
     }
 
     /** {@inheritDoc} */
+    @Override
     byte getOrderCode() {
-        return (byte)0xC7;
+        return (byte) 0xC7;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = getData();
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = getData();
 
         // integer portion of multiplier
-        data[6] = BinaryUtils.convert(mh, 1)[0];
+        data[6] = BinaryUtils.convert(this.mh, 1)[0];
 
         // fractional portion of multiplier
-        data[7] = BinaryUtils.convert(mhr, 1)[0];
+        data[7] = BinaryUtils.convert(this.mhr, 1)[0];
 
         os.write(data);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "GraphicsFullArc{"
-             + ", centerx=" + coords[0]
-             + ", centery=" + coords[1]
-             + ", mh=" + mh
-             + ", mhr=" + mhr
-         + "}";
+        return "GraphicsFullArc{" + ", centerx=" + this.coords[0]
+                + ", centery=" + this.coords[1] + ", mh=" + this.mh + ", mhr="
+                + this.mhr + "}";
     }
 
 }

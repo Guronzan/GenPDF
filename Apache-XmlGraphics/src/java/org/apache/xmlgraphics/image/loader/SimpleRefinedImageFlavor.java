@@ -20,17 +20,21 @@
 package org.apache.xmlgraphics.image.loader;
 
 /**
- * Simple refined image flavor implementation that just differs flavors by name but allows to
- * specify a parent flavor.
+ * Simple refined image flavor implementation that just differs flavors by name
+ * but allows to specify a parent flavor.
  */
 public class SimpleRefinedImageFlavor extends RefinedImageFlavor {
 
     /**
      * Main constructor.
-     * @param parentFlavor the parent image flavor
-     * @param name the name of the image flavor
+     * 
+     * @param parentFlavor
+     *            the parent image flavor
+     * @param name
+     *            the name of the image flavor
      */
-    public SimpleRefinedImageFlavor(ImageFlavor parentFlavor, String name) {
+    public SimpleRefinedImageFlavor(final ImageFlavor parentFlavor,
+            final String name) {
         super(name, parentFlavor);
     }
 

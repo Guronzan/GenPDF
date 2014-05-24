@@ -29,11 +29,15 @@ public interface Renderable {
 
     /**
      * Renders the pre-setup document.
-     * @param userAgent the user agent
-     * @param outputFormat the output format to generate (MIME type, see MimeConstants)
-     * @exception FOPException if the FO processing fails
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param outputFormat
+     *            the output format to generate (MIME type, see MimeConstants)
+     * @exception FOPException
+     *                if the FO processing fails
      */
-    void renderTo(FOUserAgent userAgent, String outputFormat)
+    void renderTo(final FOUserAgent userAgent, final String outputFormat)
             throws FOPException;
 
 }

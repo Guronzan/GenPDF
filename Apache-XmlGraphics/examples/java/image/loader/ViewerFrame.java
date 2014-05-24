@@ -38,9 +38,13 @@ import org.apache.xmlgraphics.java2d.Graphics2DImagePainter;
  */
 public class ViewerFrame extends Frame {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = -7064735685968228232L;
     public static final String TITLE = "Very Simple Image Viewer";
 
-    public ViewerFrame(ImageGraphics2D g2dImage) {
+    public ViewerFrame(final ImageGraphics2D g2dImage) {
         super(TITLE);
         addWindowListener(new WindowHandler());
         buildGUI(g2dImage);
@@ -48,32 +52,37 @@ public class ViewerFrame extends Frame {
     }
 
     private void buildGUI(final ImageGraphics2D g2dImage) {
-        JPanel imagePanel = new JPanel() {
-            /** {@inheritDoc} */
-            protected void paintComponent(Graphics graphics) {
-                super.paintComponent(graphics);
-                Graphics2D g2d = (Graphics2D)graphics.create();
-                try {
-                    Rectangle paintRect = new Rectangle(
-                            30, 30,
-                            getWidth() - 60, getHeight() - 60);
-                    //g2d.translate(paintRect.getX(), paintRect.getY());
+        final JPanel imagePanel = new JPanel() {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 1177906795501430241L;
 
-                    Graphics2DImagePainter painter = g2dImage.getGraphics2DImagePainter();
-                    Dimension dim = painter.getImageSize();
-                    double sx = paintRect.getWidth() / dim.getWidth();
-                    double sy = paintRect.getHeight() / dim.getHeight();
-                    //g2d.scale(sx, sy);
+            /** {@inheritDoc} */
+            @Override
+            protected void paintComponent(final Graphics graphics) {
+                super.paintComponent(graphics);
+                final Graphics2D g2d = (Graphics2D) graphics.create();
+                try {
+                    final Rectangle paintRect = new Rectangle(30, 30,
+                            getWidth() - 60, getHeight() - 60);
+                    // g2d.translate(paintRect.getX(), paintRect.getY());
+
+                    final Graphics2DImagePainter painter = g2dImage
+                            .getGraphics2DImagePainter();
+                    final Dimension dim = painter.getImageSize();
+                    final double sx = paintRect.getWidth() / dim.getWidth();
+                    final double sy = paintRect.getHeight() / dim.getHeight();
+                    // g2d.scale(sx, sy);
 
                     /*
-                    Rectangle2D targetRect = new Rectangle2D.Double(
-                            paintRect.x * sx, paintRect.y * sy,
-                            dim.width, dim.height);
-                            */
-                    Rectangle2D targetRect = new Rectangle2D.Double(
-                            paintRect.x, paintRect.y,
-                            paintRect.width, paintRect.height);
-
+                     * Rectangle2D targetRect = new Rectangle2D.Double(
+                     * paintRect.x * sx, paintRect.y * sy, dim.width,
+                     * dim.height);
+                     */
+                    final Rectangle2D targetRect = new Rectangle2D.Double(
+                            paintRect.x, paintRect.y, paintRect.width,
+                            paintRect.height);
 
                     g2d.draw(targetRect);
                     painter.paint(g2d, targetRect);
@@ -86,7 +95,8 @@ public class ViewerFrame extends Frame {
     }
 
     private class WindowHandler extends WindowAdapter {
-        public void windowClosing(WindowEvent we) {
+        @Override
+        public void windowClosing(final WindowEvent we) {
             System.exit(0);
         }
     }

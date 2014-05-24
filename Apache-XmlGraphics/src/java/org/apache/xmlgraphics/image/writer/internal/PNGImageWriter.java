@@ -28,27 +28,30 @@ import org.apache.xmlgraphics.image.writer.AbstractImageWriter;
 import org.apache.xmlgraphics.image.writer.ImageWriterParams;
 
 /**
- * ImageWriter implementation that uses the internal PNG codec to
- * write PNG files.
+ * ImageWriter implementation that uses the internal PNG codec to write PNG
+ * files.
  *
  * @version $Id: PNGImageWriter.java 1345751 2012-06-03 19:47:56Z gadams $
  */
 public class PNGImageWriter extends AbstractImageWriter {
 
     /** {@inheritDoc} */
-    public void writeImage(RenderedImage image, OutputStream out)
+    @Override
+    public void writeImage(final RenderedImage image, final OutputStream out)
             throws IOException {
         writeImage(image, out, null);
     }
 
     /** {@inheritDoc} */
-    public void writeImage(RenderedImage image, OutputStream out,
-            ImageWriterParams params) throws IOException {
-        PNGImageEncoder encoder = new PNGImageEncoder(out, null);
+    @Override
+    public void writeImage(final RenderedImage image, final OutputStream out,
+            final ImageWriterParams params) throws IOException {
+        final PNGImageEncoder encoder = new PNGImageEncoder(out, null);
         encoder.encode(image);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMIMEType() {
         return "image/png";
     }

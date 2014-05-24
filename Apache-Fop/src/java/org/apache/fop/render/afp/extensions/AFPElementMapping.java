@@ -22,13 +22,12 @@ package org.apache.fop.render.afp.extensions;
 import org.apache.fop.fo.ElementMapping;
 import org.apache.fop.fo.FONode;
 
-
 /**
- * AFPElementMapping object provides the ability to extract information
- * from the formatted object that reside in the afp namespace. This is used
- * for custom AFP extensions not supported by the FO schema. Examples include
- * adding overlays or indexing a document using the tag logical element
- * structured field.
+ * AFPElementMapping object provides the ability to extract information from the
+ * formatted object that reside in the afp namespace. This is used for custom
+ * AFP extensions not supported by the FO schema. Examples include adding
+ * overlays or indexing a document using the tag logical element structured
+ * field.
  * <p/>
  */
 public class AFPElementMapping extends ElementMapping {
@@ -70,63 +69,61 @@ public class AFPElementMapping extends ElementMapping {
      * Private static synchronized method to set up the element and attribute
      * HashMaps, this defines what elements and attributes are extracted.
      */
+    @Override
     protected void initialize() {
 
-        if (foObjs == null) {
+        if (this.foObjs == null) {
             super.foObjs = new java.util.HashMap<String, Maker>();
-            foObjs.put(
-                TAG_LOGICAL_ELEMENT,
-                new AFPTagLogicalElementMaker());
-            foObjs.put(
-                INCLUDE_PAGE_SEGMENT,
-                new AFPIncludePageSegmentMaker());
-            foObjs.put(
-                INCLUDE_PAGE_OVERLAY,
-                new AFPIncludePageOverlayMaker());
-            foObjs.put(
-                INCLUDE_FORM_MAP,
-                new AFPIncludeFormMapMaker());
-            foObjs.put(
-                NO_OPERATION,
-                new AFPNoOperationMaker());
-            foObjs.put(
-                INVOKE_MEDIUM_MAP,
-                new AFPInvokeMediumMapMaker());
+            this.foObjs.put(TAG_LOGICAL_ELEMENT,
+                    new AFPTagLogicalElementMaker());
+            this.foObjs.put(INCLUDE_PAGE_SEGMENT,
+                    new AFPIncludePageSegmentMaker());
+            this.foObjs.put(INCLUDE_PAGE_OVERLAY,
+                    new AFPIncludePageOverlayMaker());
+            this.foObjs.put(INCLUDE_FORM_MAP, new AFPIncludeFormMapMaker());
+            this.foObjs.put(NO_OPERATION, new AFPNoOperationMaker());
+            this.foObjs.put(INVOKE_MEDIUM_MAP, new AFPInvokeMediumMapMaker());
         }
     }
 
     static class AFPIncludePageOverlayMaker extends ElementMapping.Maker {
-        public FONode make(FONode parent) {
+        @Override
+        public FONode make(final FONode parent) {
             return new AFPPageOverlayElement(parent, INCLUDE_PAGE_OVERLAY);
         }
     }
 
     static class AFPIncludePageSegmentMaker extends ElementMapping.Maker {
-        public FONode make(FONode parent) {
+        @Override
+        public FONode make(final FONode parent) {
             return new AFPPageSegmentElement(parent, INCLUDE_PAGE_SEGMENT);
         }
     }
 
     static class AFPIncludeFormMapMaker extends ElementMapping.Maker {
-        public FONode make(FONode parent) {
+        @Override
+        public FONode make(final FONode parent) {
             return new AFPIncludeFormMapElement(parent, INCLUDE_FORM_MAP);
         }
     }
 
     static class AFPTagLogicalElementMaker extends ElementMapping.Maker {
-        public FONode make(FONode parent) {
+        @Override
+        public FONode make(final FONode parent) {
             return new AFPPageSetupElement(parent, TAG_LOGICAL_ELEMENT);
         }
     }
 
     static class AFPNoOperationMaker extends ElementMapping.Maker {
-        public FONode make(FONode parent) {
+        @Override
+        public FONode make(final FONode parent) {
             return new AFPPageSetupElement(parent, NO_OPERATION);
         }
     }
 
     static class AFPInvokeMediumMapMaker extends ElementMapping.Maker {
-        public FONode make(FONode parent) {
+        @Override
+        public FONode make(final FONode parent) {
             return new AFPInvokeMediumMapElement(parent);
         }
     }

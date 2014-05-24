@@ -30,44 +30,53 @@ import org.apache.xmlgraphics.image.codec.util.SeekableStream;
  */
 public class SeekableStreamAdapter extends SeekableStream {
 
-    private ImageInputStream iin;
+    private final ImageInputStream iin;
 
     /**
      * Main constructor
-     * @param iin the ImageInputStream to operate on
+     * 
+     * @param iin
+     *            the ImageInputStream to operate on
      */
-    public SeekableStreamAdapter(ImageInputStream iin) {
+    public SeekableStreamAdapter(final ImageInputStream iin) {
         this.iin = iin;
     }
 
     /** {@inheritDoc} */
+    @Override
     public long getFilePointer() throws IOException {
-        return iin.getStreamPosition();
+        return this.iin.getStreamPosition();
     }
 
     /** {@inheritDoc} */
+    @Override
     public int read() throws IOException {
-        return iin.read();
+        return this.iin.read();
     }
 
     /** {@inheritDoc} */
-    public int read(byte[] b, int off, int len) throws IOException {
-        return iin.read(b, off, len);
+    @Override
+    public int read(final byte[] b, final int off, final int len)
+            throws IOException {
+        return this.iin.read(b, off, len);
     }
 
     /** {@inheritDoc} */
-    public void seek(long pos) throws IOException {
-        iin.seek(pos);
+    @Override
+    public void seek(final long pos) throws IOException {
+        this.iin.seek(pos);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean canSeekBackwards() {
         return true;
     }
 
     /** {@inheritDoc} */
-    public int skipBytes(int n) throws IOException {
-        return iin.skipBytes(n);
+    @Override
+    public int skipBytes(final int n) throws IOException {
+        return this.iin.skipBytes(n);
     }
 
 }

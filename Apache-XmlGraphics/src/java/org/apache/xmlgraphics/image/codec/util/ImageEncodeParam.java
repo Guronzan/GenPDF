@@ -19,7 +19,6 @@
 
 package org.apache.xmlgraphics.image.codec.util;
 
-
 /**
  * An empty (marker) interface to be implemented by all image encoder parameter
  * classes.

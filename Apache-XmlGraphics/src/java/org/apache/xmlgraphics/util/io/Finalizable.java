@@ -20,12 +20,12 @@
 package org.apache.xmlgraphics.util.io;
 
 /**
- * This interface is used for special FilteredOutputStream classes that won't
- * be closed (since this causes the target OutputStream to be closed, too) but
+ * This interface is used for special FilteredOutputStream classes that won't be
+ * closed (since this causes the target OutputStream to be closed, too) but
  * where flush() is not enough, for example because a final marker has to be
  * written to the target stream.
  *
- * @version   $Id: Finalizable.java 750418 2009-03-05 11:03:54Z vhennebert $
+ * @version $Id: Finalizable.java 750418 2009-03-05 11:03:54Z vhennebert $
  */
 public interface Finalizable {
 
@@ -34,9 +34,9 @@ public interface Finalizable {
      * FilteredOutputStream when a final marker has to be written to the target
      * stream, but close() cannot be called.
      *
-     * @exception java.io.IOException  In case of an IO problem
+     * @exception java.io.IOException
+     *                In case of an IO problem
      */
-    void finalizeStream()
-        throws java.io.IOException;
+    void finalizeStream() throws java.io.IOException;
 
 }

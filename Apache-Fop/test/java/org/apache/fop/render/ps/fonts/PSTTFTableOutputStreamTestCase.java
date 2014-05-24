@@ -37,51 +37,59 @@ public class PSTTFTableOutputStreamTestCase {
 
     @Before
     public void setUp() {
-        mockGen = mock(PSTTFGenerator.class);
-        tableOut = new PSTTFTableOutputStream(mockGen);
+        this.mockGen = mock(PSTTFGenerator.class);
+        this.tableOut = new PSTTFTableOutputStream(this.mockGen);
     }
 
     /**
      * Test streamTable() - several paths to test (2. and 3. test corner cases):
-     * 1) that a table of length < PSTTFGenerator.MAX_BUFFER_SIZE invokes the correct methods in
-     * PSTTFGenerator.
-     * 2) that a table of length > PSTTFGenerator.MAX_BUFFER_SIZE and
-     * length == n * PSTTFGenerator.MAX_BUFFER_SIZE is split up and the methods in PSTTFGenerator
-     * are invoked.
-     * 3) that a table of length > PSTTFGenerator.MAX_BUFFER_SIZE but
-     * length != n * PSTTFGenerator.MAX_BUFFER_SIZE is split up and the methods in PSTTFGenerator
-     * are invoked.
-     * @throws IOException file write error.
+     * 1) that a table of length < PSTTFGenerator.MAX_BUFFER_SIZE invokes the
+     * correct methods in PSTTFGenerator. 2) that a table of length >
+     * PSTTFGenerator.MAX_BUFFER_SIZE and length == n *
+     * PSTTFGenerator.MAX_BUFFER_SIZE is split up and the methods in
+     * PSTTFGenerator are invoked. 3) that a table of length >
+     * PSTTFGenerator.MAX_BUFFER_SIZE but length != n *
+     * PSTTFGenerator.MAX_BUFFER_SIZE is split up and the methods in
+     * PSTTFGenerator are invoked.
+     * 
+     * @throws IOException
+     *             file write error.
      */
     @Test
     public void testStreamTable() throws IOException {
-        byte[] byteArray = new byte[PSTTFGenerator.MAX_BUFFER_SIZE * 3];
-        tableOut.streamTable(byteArray, 0, 10);
-        InOrder inOrder = inOrder(mockGen);
-        inOrder.verify(mockGen).startString();
-        inOrder.verify(mockGen).streamBytes(byteArray, 0, 10);
-        inOrder.verify(mockGen).endString();
+        final byte[] byteArray = new byte[PSTTFGenerator.MAX_BUFFER_SIZE * 3];
+        this.tableOut.streamTable(byteArray, 0, 10);
+        InOrder inOrder = inOrder(this.mockGen);
+        inOrder.verify(this.mockGen).startString();
+        inOrder.verify(this.mockGen).streamBytes(byteArray, 0, 10);
+        inOrder.verify(this.mockGen).endString();
 
         setUp(); // reset all all the method calls
-        /* We're going to run this 3 times to ensure the proper method calls are invoked and all
-         * the bytes are streamed */
-        tableOut.streamTable(byteArray, 0, byteArray.length);
-        inOrder = inOrder(mockGen);
+        /*
+         * We're going to run this 3 times to ensure the proper method calls are
+         * invoked and all the bytes are streamed
+         */
+        this.tableOut.streamTable(byteArray, 0, byteArray.length);
+        inOrder = inOrder(this.mockGen);
         for (int i = 0; i < 3; i++) {
-            int offset = PSTTFGenerator.MAX_BUFFER_SIZE * i;
-            inOrder.verify(mockGen).startString();
-            inOrder.verify(mockGen).streamBytes(byteArray, offset, PSTTFGenerator.MAX_BUFFER_SIZE);
-            inOrder.verify(mockGen).endString();
+            final int offset = PSTTFGenerator.MAX_BUFFER_SIZE * i;
+            inOrder.verify(this.mockGen).startString();
+            inOrder.verify(this.mockGen).streamBytes(byteArray, offset,
+                    PSTTFGenerator.MAX_BUFFER_SIZE);
+            inOrder.verify(this.mockGen).endString();
         }
 
         setUp(); // reset all the method calls
-        tableOut.streamTable(byteArray, 0, PSTTFGenerator.MAX_BUFFER_SIZE + 1);
-        inOrder = inOrder(mockGen);
-        inOrder.verify(mockGen).startString();
-        inOrder.verify(mockGen).streamBytes(byteArray, 0, PSTTFGenerator.MAX_BUFFER_SIZE);
-        inOrder.verify(mockGen).endString();
-        inOrder.verify(mockGen).startString();
-        inOrder.verify(mockGen).streamBytes(byteArray, PSTTFGenerator.MAX_BUFFER_SIZE, 1);
-        inOrder.verify(mockGen).endString();
+        this.tableOut.streamTable(byteArray, 0,
+                PSTTFGenerator.MAX_BUFFER_SIZE + 1);
+        inOrder = inOrder(this.mockGen);
+        inOrder.verify(this.mockGen).startString();
+        inOrder.verify(this.mockGen).streamBytes(byteArray, 0,
+                PSTTFGenerator.MAX_BUFFER_SIZE);
+        inOrder.verify(this.mockGen).endString();
+        inOrder.verify(this.mockGen).startString();
+        inOrder.verify(this.mockGen).streamBytes(byteArray,
+                PSTTFGenerator.MAX_BUFFER_SIZE, 1);
+        inOrder.verify(this.mockGen).endString();
     }
 }

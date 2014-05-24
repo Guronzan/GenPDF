@@ -29,20 +29,22 @@ import org.apache.fop.render.Renderer;
  */
 public class SVGRendererMaker extends AbstractRendererMaker {
 
-    private static final String[] MIMES = new String[] {MimeConstants.MIME_SVG};
-
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_SVG };
 
     /** {@inheritDoc} */
-    public Renderer makeRenderer(FOUserAgent ua) {
+    @Override
+    public Renderer makeRenderer(final FOUserAgent ua) {
         return new SVGRenderer(ua);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

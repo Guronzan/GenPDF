@@ -19,9 +19,6 @@
 
 package org.apache.fop.image.loader.batik;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.io.IOException;
 
 import javax.xml.transform.Source;
@@ -32,7 +29,6 @@ import javax.xml.transform.dom.DOMSource;
 import org.apache.batik.dom.svg.SVGDOMImplementation;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FopFactory;
-import org.apache.fop.apps.MimeConstants;
 import org.apache.xmlgraphics.image.loader.ImageException;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
 import org.apache.xmlgraphics.image.loader.ImageManager;
@@ -41,90 +37,105 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 /**
  * Tests for bundled image preloader implementations.
  */
 public class ImagePreloaderTestCase {
 
-    private FopFactory fopFactory;
+    private final FopFactory fopFactory;
 
     public ImagePreloaderTestCase() {
-        fopFactory = FopFactory.newInstance();
-        fopFactory.setSourceResolution(72);
-        fopFactory.setTargetResolution(300);
+        this.fopFactory = FopFactory.newInstance();
+        this.fopFactory.setSourceResolution(72);
+        this.fopFactory.setTargetResolution(300);
     }
 
     @Test
     public void testSVG() throws Exception {
-        String uri = "test/resources/images/img-w-size.svg";
+        final String uri = "test/resources/images/img-w-size.svg";
 
         checkSVGFile(uri);
     }
 
     @Test
     public void testSVGZ() throws Exception {
-        String uri = "test/resources/images/img-w-size.svgz";
+        final String uri = "test/resources/images/img-w-size.svgz";
 
         checkSVGFile(uri);
     }
 
-    private void checkSVGFile(String uri) throws ImageException, IOException {
-        FOUserAgent userAgent = fopFactory.newFOUserAgent();
+    private void checkSVGFile(final String uri) throws ImageException,
+            IOException {
+        final FOUserAgent userAgent = this.fopFactory.newFOUserAgent();
 
-        ImageManager manager = fopFactory.getImageManager();
-        ImageInfo info = manager.preloadImage(uri, userAgent.getImageSessionContext());
+        final ImageManager manager = this.fopFactory.getImageManager();
+        final ImageInfo info = manager.preloadImage(uri,
+                userAgent.getImageSessionContext());
         assertNotNull("ImageInfo must not be null", info);
-        assertEquals(MimeConstants.MIME_SVG, info.getMimeType());
+        assertEquals(org.apache.xmlgraphics.util.MimeConstants.MIME_SVG,
+                info.getMimeType());
         assertEquals(uri, info.getOriginalURI());
         assertEquals(16, info.getSize().getWidthPx());
         assertEquals(16, info.getSize().getHeightPx());
-        assertEquals(userAgent.getSourceResolution(), info.getSize().getDpiHorizontal(), 0.1);
+        assertEquals(userAgent.getSourceResolution(), info.getSize()
+                .getDpiHorizontal(), 0.1);
         assertEquals(16000, info.getSize().getWidthMpt());
         assertEquals(16000, info.getSize().getHeightMpt());
     }
 
     @Test
     public void testSVGNoSize() throws Exception {
-        String uri = "test/resources/images/img.svg";
-        FOUserAgent userAgent = fopFactory.newFOUserAgent();
+        final String uri = "test/resources/images/img.svg";
+        final FOUserAgent userAgent = this.fopFactory.newFOUserAgent();
 
-        ImageManager manager = fopFactory.getImageManager();
-        ImageInfo info = manager.preloadImage(uri, userAgent.getImageSessionContext());
+        final ImageManager manager = this.fopFactory.getImageManager();
+        final ImageInfo info = manager.preloadImage(uri,
+                userAgent.getImageSessionContext());
         assertNotNull("ImageInfo must not be null", info);
-        assertEquals(MimeConstants.MIME_SVG, info.getMimeType());
+        assertEquals(org.apache.xmlgraphics.util.MimeConstants.MIME_SVG,
+                info.getMimeType());
         assertEquals(uri, info.getOriginalURI());
-        assertEquals(100, info.getSize().getWidthPx()); //100 = default viewport size
+        assertEquals(100, info.getSize().getWidthPx()); // 100 = default
+                                                        // viewport size
         assertEquals(100, info.getSize().getHeightPx());
-        assertEquals(userAgent.getSourceResolution(), info.getSize().getDpiHorizontal(), 0.1);
+        assertEquals(userAgent.getSourceResolution(), info.getSize()
+                .getDpiHorizontal(), 0.1);
         assertEquals(100000, info.getSize().getWidthMpt());
         assertEquals(100000, info.getSize().getHeightMpt());
     }
 
     @Test
     public void testSVGWithDOM() throws Exception {
-        String uri = "my:SVGImage";
-        FOUserAgent userAgent = fopFactory.newFOUserAgent();
+        final String uri = "my:SVGImage";
+        final FOUserAgent userAgent = this.fopFactory.newFOUserAgent();
 
         userAgent.setURIResolver(new URIResolver() {
 
-            public Source resolve(String href, String base) throws TransformerException {
+            @Override
+            public Source resolve(final String href, final String base)
+                    throws TransformerException {
                 if (href.startsWith("my:")) {
-                    DOMImplementation impl = SVGDOMImplementation.getDOMImplementation();
-                    String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
-                    Document doc = impl.createDocument(svgNS, "svg", null);
-                    Element element = doc.getDocumentElement();
+                    final DOMImplementation impl = SVGDOMImplementation
+                            .getDOMImplementation();
+                    final String svgNS = SVGDOMImplementation.SVG_NAMESPACE_URI;
+                    final Document doc = impl
+                            .createDocument(svgNS, "svg", null);
+                    final Element element = doc.getDocumentElement();
                     element.setAttribute("viewBox", "0 0 20 20");
                     element.setAttribute("width", "20pt");
                     element.setAttribute("height", "20pt");
 
-                    Element rect = doc.createElementNS(svgNS, "rect");
+                    final Element rect = doc.createElementNS(svgNS, "rect");
                     rect.setAttribute("x", "5");
                     rect.setAttribute("y", "5");
                     rect.setAttribute("width", "10");
                     rect.setAttribute("height", "10");
                     element.appendChild(rect);
 
-                    DOMSource src = new DOMSource(doc);
+                    final DOMSource src = new DOMSource(doc);
                     return src;
                 } else {
                     return null;
@@ -133,26 +144,31 @@ public class ImagePreloaderTestCase {
 
         });
 
-        ImageManager manager = fopFactory.getImageManager();
-        ImageInfo info = manager.preloadImage(uri, userAgent.getImageSessionContext());
+        final ImageManager manager = this.fopFactory.getImageManager();
+        final ImageInfo info = manager.preloadImage(uri,
+                userAgent.getImageSessionContext());
         assertNotNull("ImageInfo must not be null", info);
-        assertEquals(MimeConstants.MIME_SVG, info.getMimeType());
+        assertEquals(org.apache.xmlgraphics.util.MimeConstants.MIME_SVG,
+                info.getMimeType());
         assertEquals(uri, info.getOriginalURI());
-        assertEquals(20, info.getSize().getWidthPx()); //100 = default viewport size
+        assertEquals(20, info.getSize().getWidthPx()); // 100 = default viewport
+                                                       // size
         assertEquals(20, info.getSize().getHeightPx());
-        assertEquals(userAgent.getSourceResolution(), info.getSize().getDpiHorizontal(), 0.1);
+        assertEquals(userAgent.getSourceResolution(), info.getSize()
+                .getDpiHorizontal(), 0.1);
         assertEquals(20000, info.getSize().getWidthMpt());
         assertEquals(20000, info.getSize().getHeightMpt());
     }
 
     @Test
     public void testWMF() throws Exception {
-        String uri = "test/resources/images/testChart.wmf";
+        final String uri = "test/resources/images/testChart.wmf";
 
-        FOUserAgent userAgent = fopFactory.newFOUserAgent();
+        final FOUserAgent userAgent = this.fopFactory.newFOUserAgent();
 
-        ImageManager manager = fopFactory.getImageManager();
-        ImageInfo info = manager.preloadImage(uri, userAgent.getImageSessionContext());
+        final ImageManager manager = this.fopFactory.getImageManager();
+        final ImageInfo info = manager.preloadImage(uri,
+                userAgent.getImageSessionContext());
         assertNotNull("ImageInfo must not be null", info);
         assertEquals(ImageWMF.MIME_WMF, info.getMimeType());
         assertEquals(uri, info.getOriginalURI());

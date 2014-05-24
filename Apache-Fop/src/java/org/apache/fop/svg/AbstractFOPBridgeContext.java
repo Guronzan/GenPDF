@@ -26,11 +26,9 @@ import org.apache.batik.bridge.Bridge;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.UserAgent;
-
+import org.apache.fop.fonts.FontInfo;
 import org.apache.xmlgraphics.image.loader.ImageManager;
 import org.apache.xmlgraphics.image.loader.ImageSessionContext;
-
-import org.apache.fop.fonts.FontInfo;
 
 /**
  * A FOP base implementation of a Batik BridgeContext.
@@ -48,21 +46,26 @@ public abstract class AbstractFOPBridgeContext extends BridgeContext {
 
     /**
      * Constructs a new bridge context.
-     * @param userAgent the user agent
-     * @param loader the Document Loader to use for referenced documents.
-     * @param fontInfo the font list for the text painter, may be null
-     *                 in which case text is painted as shapes
-     * @param imageManager an image manager
-     * @param imageSessionContext an image session context
-     * @param linkTransform AffineTransform to properly place links,
-     *                      may be null
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param loader
+     *            the Document Loader to use for referenced documents.
+     * @param fontInfo
+     *            the font list for the text painter, may be null in which case
+     *            text is painted as shapes
+     * @param imageManager
+     *            an image manager
+     * @param imageSessionContext
+     *            an image session context
+     * @param linkTransform
+     *            AffineTransform to properly place links, may be null
      */
-    public AbstractFOPBridgeContext(UserAgent userAgent,
-                            DocumentLoader loader,
-                            FontInfo fontInfo,
-                            ImageManager imageManager,
-                            ImageSessionContext imageSessionContext,
-                            AffineTransform linkTransform) {
+    public AbstractFOPBridgeContext(final UserAgent userAgent,
+            final DocumentLoader loader, final FontInfo fontInfo,
+            final ImageManager imageManager,
+            final ImageSessionContext imageSessionContext,
+            final AffineTransform linkTransform) {
         super(userAgent, loader);
         this.fontInfo = fontInfo;
         this.imageManager = imageManager;
@@ -72,19 +75,23 @@ public abstract class AbstractFOPBridgeContext extends BridgeContext {
 
     /**
      * Constructs a new bridge context.
-     * @param userAgent the user agent
-     * @param fontInfo the font list for the text painter, may be null
-     *                 in which case text is painted as shapes
-     * @param imageManager an image manager
-     * @param imageSessionContext an image session context
-     * @param linkTransform AffineTransform to properly place links,
-     *                      may be null
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param fontInfo
+     *            the font list for the text painter, may be null in which case
+     *            text is painted as shapes
+     * @param imageManager
+     *            an image manager
+     * @param imageSessionContext
+     *            an image session context
+     * @param linkTransform
+     *            AffineTransform to properly place links, may be null
      */
-    public AbstractFOPBridgeContext(UserAgent userAgent,
-                            FontInfo fontInfo,
-                            ImageManager imageManager,
-                            ImageSessionContext imageSessionContext,
-                            AffineTransform linkTransform) {
+    public AbstractFOPBridgeContext(final UserAgent userAgent,
+            final FontInfo fontInfo, final ImageManager imageManager,
+            final ImageSessionContext imageSessionContext,
+            final AffineTransform linkTransform) {
         super(userAgent);
         this.fontInfo = fontInfo;
         this.imageManager = imageManager;
@@ -94,21 +101,26 @@ public abstract class AbstractFOPBridgeContext extends BridgeContext {
 
     /**
      * Constructs a new bridge context.
-     * @param userAgent the user agent
-     * @param fontInfo the font list for the text painter, may be null
-     *                 in which case text is painted as shapes
-     * @param imageManager an image manager
-     * @param imageSessionContext an image session context
+     * 
+     * @param userAgent
+     *            the user agent
+     * @param fontInfo
+     *            the font list for the text painter, may be null in which case
+     *            text is painted as shapes
+     * @param imageManager
+     *            an image manager
+     * @param imageSessionContext
+     *            an image session context
      */
-    public AbstractFOPBridgeContext(UserAgent userAgent,
-                            FontInfo fontInfo,
-                            ImageManager imageManager,
-                            ImageSessionContext imageSessionContext) {
+    public AbstractFOPBridgeContext(final UserAgent userAgent,
+            final FontInfo fontInfo, final ImageManager imageManager,
+            final ImageSessionContext imageSessionContext) {
         this(userAgent, fontInfo, imageManager, imageSessionContext, null);
     }
 
     /**
      * Returns the ImageManager to be used by the ImageElementBridge.
+     * 
      * @return the image manager
      */
     public ImageManager getImageManager() {
@@ -117,6 +129,7 @@ public abstract class AbstractFOPBridgeContext extends BridgeContext {
 
     /**
      * Returns the ImageSessionContext to be used by the ImageElementBridge.
+     * 
      * @return the image session context
      */
     public ImageSessionContext getImageSessionContext() {
@@ -124,24 +137,30 @@ public abstract class AbstractFOPBridgeContext extends BridgeContext {
     }
 
     /**
-     * @param className name of bridge class to load and construct
-     * @param testFor class name to test for presence
+     * @param className
+     *            name of bridge class to load and construct
+     * @param testFor
+     *            class name to test for presence
      */
-    protected void putElementBridgeConditional(String className, String testFor) {
+    protected void putElementBridgeConditional(final String className,
+            final String testFor) {
         try {
             Class.forName(testFor);
-            //if we get here the test class is available
+            // if we get here the test class is available
 
-            Class clazz = Class.forName(className);
-            Constructor constructor = clazz.getConstructor(new Class[] {FontInfo.class});
-            putBridge((Bridge)constructor.newInstance(new Object[] {fontInfo}));
-        } catch (Throwable t) {
-            //simply ignore (bridges instantiated over this method are optional)
+            final Class clazz = Class.forName(className);
+            final Constructor constructor = clazz
+                    .getConstructor(new Class[] { FontInfo.class });
+            putBridge((Bridge) constructor
+                    .newInstance(new Object[] { this.fontInfo }));
+        } catch (final Throwable t) {
+            // simply ignore (bridges instantiated over this method are
+            // optional)
         }
     }
 
     // Make sure any 'sub bridge contexts' also have our bridges.
-    //TODO There's no matching method in the super-class here
+    // TODO There's no matching method in the super-class here
     /** @return new bridge context */
     public abstract BridgeContext createBridgeContext();
 

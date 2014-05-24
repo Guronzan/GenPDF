@@ -24,32 +24,37 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.expr.PropertyException;
 
 /**
- * The "role" and "source-document" properties, see Section 7.5 of the XSL-FO 1.1
- * Recommendation.
+ * The "role" and "source-document" properties, see Section 7.5 of the XSL-FO
+ * 1.1 Recommendation.
  */
 public final class CommonAccessibility {
 
-    private static final CommonAccessibility DEFAULT_INSTANCE = new CommonAccessibility(null, null);
+    private static final CommonAccessibility DEFAULT_INSTANCE = new CommonAccessibility(
+            null, null);
 
     private final String sourceDocument;
 
     private final String role;
 
-    private CommonAccessibility(String sourceDocument, String role) {
+    private CommonAccessibility(final String sourceDocument, final String role) {
         this.sourceDocument = sourceDocument;
         this.role = role;
     }
 
     /**
-     * Returns an instance that matches the values (if any) in the given property list.
+     * Returns an instance that matches the values (if any) in the given
+     * property list.
      *
-     * @param propertyList a list from which to retrieve the accessibility properties
+     * @param propertyList
+     *            a list from which to retrieve the accessibility properties
      * @return the corresponding instance
-     * @throws PropertyException if a problem occurs while retrieving the properties
+     * @throws PropertyException
+     *             if a problem occurs while retrieving the properties
      */
-    public static CommonAccessibility getInstance(PropertyList propertyList)
-            throws PropertyException {
-        String sourceDocument = propertyList.get(Constants.PR_SOURCE_DOCUMENT).getString();
+    public static CommonAccessibility getInstance(
+            final PropertyList propertyList) throws PropertyException {
+        String sourceDocument = propertyList.get(Constants.PR_SOURCE_DOCUMENT)
+                .getString();
         if ("none".equals(sourceDocument)) {
             sourceDocument = null;
         }
@@ -70,7 +75,7 @@ public final class CommonAccessibility {
      * @return the source document, or null if the property was set to "none"
      */
     public String getSourceDocument() {
-        return sourceDocument;
+        return this.sourceDocument;
     }
 
     /**
@@ -79,7 +84,7 @@ public final class CommonAccessibility {
      * @return the role, or null if the property was set to "none"
      */
     public String getRole() {
-        return role;
+        return this.role;
     }
 
 }

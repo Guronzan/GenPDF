@@ -30,28 +30,30 @@ import org.apache.xmlgraphics.util.MimeConstants;
  */
 public class ImageLoaderFactorySVG extends AbstractImageLoaderFactory {
 
-    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {
-        XMLNamespaceEnabledImageFlavor.SVG_DOM};
+    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] { XMLNamespaceEnabledImageFlavor.SVG_DOM };
 
-    private static final String[] MIMES = new String[] {
-        MimeConstants.MIME_SVG};
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_SVG };
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMIMETypes() {
         return MIMES;
     }
 
     /** {@inheritDoc} */
-    public ImageFlavor[] getSupportedFlavors(String mime) {
+    @Override
+    public ImageFlavor[] getSupportedFlavors(final String mime) {
         return FLAVORS;
     }
 
     /** {@inheritDoc} */
-    public ImageLoader newImageLoader(ImageFlavor targetFlavor) {
+    @Override
+    public ImageLoader newImageLoader(final ImageFlavor targetFlavor) {
         return new ImageLoaderSVG(targetFlavor);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isAvailable() {
         return BatikUtil.isBatikAvailable();
     }

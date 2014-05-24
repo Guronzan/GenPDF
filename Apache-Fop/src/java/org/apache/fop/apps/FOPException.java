@@ -37,7 +37,7 @@ public class FOPException extends SAXException {
 
     /**
      * Constructs a new FOP exception with the specified detail message.
-     * 
+     *
      * @param message
      *            the detail message.
      */
@@ -48,7 +48,7 @@ public class FOPException extends SAXException {
     /**
      * Constructs a new FOP exception with the specified detail message and
      * location.
-     * 
+     *
      * @param message
      *            the detail message
      * @param systemId
@@ -72,7 +72,7 @@ public class FOPException extends SAXException {
     /**
      * Constructs a new FOP exception with the specified detail message and
      * location.
-     * 
+     *
      * @param message
      *            the detail message.
      * @param locator
@@ -85,7 +85,7 @@ public class FOPException extends SAXException {
 
     /**
      * Constructs a new FOP exception with the specified cause.
-     * 
+     *
      * @param cause
      *            the cause.
      */
@@ -95,7 +95,7 @@ public class FOPException extends SAXException {
 
     /**
      * Constructs a new exception with the specified detail message and cause.
-     * 
+     *
      * @param message
      *            the detail message
      * @param cause
@@ -107,7 +107,7 @@ public class FOPException extends SAXException {
 
     /**
      * Set a location associated with the exception.
-     * 
+     *
      * @param locator
      *            the locator holding the location.
      */
@@ -121,7 +121,7 @@ public class FOPException extends SAXException {
 
     /**
      * Set a location associated with the exception.
-     * 
+     *
      * @param systemId
      *            the system id of the FO document which is associated with the
      *            exception; may be null.
@@ -141,7 +141,7 @@ public class FOPException extends SAXException {
 
     /**
      * Indicate whether a location was set.
-     * 
+     *
      * @return whether a location was set
      */
     public boolean isLocationSet() {
@@ -154,13 +154,13 @@ public class FOPException extends SAXException {
     /**
      * Returns the detail message string of this FOP exception. If a location
      * was set, the message is prepended with it in the form
-     * 
+     *
      * <pre>
      *  SystemId:LL:CC: &amp;the message&amp;
      * </pre>
-     * 
+     *
      * (the format used by most GNU tools)
-     * 
+     *
      * @return the detail message string of this FOP exception
      */
     @Override
@@ -175,7 +175,7 @@ public class FOPException extends SAXException {
 
     /**
      * Attempts to recast the exception as other Throwable types.
-     * 
+     *
      * @return the exception recast as another type if possible, otherwise null.
      */
     protected Throwable getRootException() {
@@ -215,7 +215,7 @@ public class FOPException extends SAXException {
     /**
      * Prints this FOP exception and its backtrace to the specified print
      * stream.
-     * 
+     *
      * @param stream
      *            PrintStream to use for output
      */
@@ -237,7 +237,7 @@ public class FOPException extends SAXException {
     /**
      * Prints this FOP exception and its backtrace to the specified print
      * writer.
-     * 
+     *
      * @param writer
      *            PrintWriter to use for output
      */
@@ -258,7 +258,7 @@ public class FOPException extends SAXException {
 
     /**
      * Sets the localized message for this exception.
-     * 
+     *
      * @param msg
      *            the localized message
      */

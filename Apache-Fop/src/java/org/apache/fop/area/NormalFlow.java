@@ -20,9 +20,9 @@
 package org.apache.fop.area;
 
 /**
- * The normal-flow-reference-area class.
- * Each span-reference-area contains one or more of these objects
- * See fo:region-body definition in the XSL Rec for more information.
+ * The normal-flow-reference-area class. Each span-reference-area contains one
+ * or more of these objects See fo:region-body definition in the XSL Rec for
+ * more information.
  */
 public class NormalFlow extends BlockParent {
 
@@ -30,19 +30,21 @@ public class NormalFlow extends BlockParent {
 
     /**
      * Constructor.
-     * @param ipd of Normal flow object
+     * 
+     * @param ipd
+     *            of Normal flow object
      */
-    public NormalFlow(int ipd) {
+    public NormalFlow(final int ipd) {
         addTrait(Trait.IS_REFERENCE_AREA, Boolean.TRUE);
         setIPD(ipd);
     }
 
     /** {@inheritDoc} */
-    public void addBlock(Block block) {
+    @Override
+    public void addBlock(final Block block) {
         super.addBlock(block);
         if (block.isStacked()) {
-            bpd += block.getAllocBPD();
+            this.bpd += block.getAllocBPD();
         }
     }
 }
-

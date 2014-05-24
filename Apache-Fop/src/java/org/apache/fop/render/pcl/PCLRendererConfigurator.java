@@ -46,7 +46,7 @@ public class PCLRendererConfigurator extends PrintRendererConfigurator {
 
     /**
      * Default constructor
-     * 
+     *
      * @param userAgent
      *            user agent
      */

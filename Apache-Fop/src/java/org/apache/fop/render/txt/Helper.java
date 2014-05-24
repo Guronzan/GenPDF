@@ -27,32 +27,37 @@ public final class Helper {
     /**
      * Don't let anyone instantiate this class.
      */
-    private Helper() { }
+    private Helper() {
+    }
 
     /**
      * Returns nearest integer to <code>x</code>, divisible by
      * <code>quantum</code>.
      *
-     * @param x integer for quantization
-     * @param quantum integer, representing quantization
+     * @param x
+     *            integer for quantization
+     * @param quantum
+     *            integer, representing quantization
      * @return computed nearest integer
      */
-    public static int round(int x, int quantum) {
-        int ceil = ceil(x, quantum);
-        int floor = floor(x, quantum);
-        return (ceil - x < x - floor) ? ceil : floor;
+    public static int round(final int x, final int quantum) {
+        final int ceil = ceil(x, quantum);
+        final int floor = floor(x, quantum);
+        return ceil - x < x - floor ? ceil : floor;
     }
 
     /**
-     * Returns minimal possible integer, greater or equal than
-     * <code>x</code>, divisible by <code>quantum</code>.
+     * Returns minimal possible integer, greater or equal than <code>x</code>,
+     * divisible by <code>quantum</code>.
      *
-     * @param x integer for quantization
-     * @param quantum integer, representing quantization
+     * @param x
+     *            integer for quantization
+     * @param quantum
+     *            integer, representing quantization
      * @return computed nearest integer
      */
-    public static int ceil(int x, int quantum) {
-        int dx = (x < 0) || (x % quantum == 0) ? 0 : 1;
+    public static int ceil(final int x, final int quantum) {
+        final int dx = x < 0 || x % quantum == 0 ? 0 : 1;
         return (x / quantum + dx) * quantum;
     }
 
@@ -60,59 +65,65 @@ public final class Helper {
      * Returns maximum possible integer, less or equal than
      * <code>oldValue</code>, divisible by <code>quantum</code>.
      *
-     * @param x integer for quantization
-     * @param quantum integer, representing quantization
+     * @param x
+     *            integer for quantization
+     * @param quantum
+     *            integer, representing quantization
      * @return computed nearest integer
      */
-    public static int floor(int x, int quantum) {
-        int dx = (x > 0) || (x % quantum == 0) ? 0 : -1;
+    public static int floor(final int x, final int quantum) {
+        final int dx = x > 0 || x % quantum == 0 ? 0 : -1;
         return (x / quantum + dx) * quantum;
     }
 
     /**
-     * Returns the closest integer to <code>x/y</code> fraction.
-     * It's possible to consider this methos as a analog of Math.round(x/y),
-     * without having deal with non-integer.
+     * Returns the closest integer to <code>x/y</code> fraction. It's possible
+     * to consider this methos as a analog of Math.round(x/y), without having
+     * deal with non-integer.
      *
-     * @param x integer, fraction numerator
-     * @param y  integer, fraction denominator
+     * @param x
+     *            integer, fraction numerator
+     * @param y
+     *            integer, fraction denominator
      * @return the value of the fraction rounded to the nearest
      * @see java.lang.Math#round(double)
      */
-    public static int roundPosition(int x, int y) {
+    public static int roundPosition(final int x, final int y) {
         return round(x, y) / y;
     }
 
     /**
      * Returns the smallest integer that is greater than or equal to the
-     * <code>x/y</code> fraction.
-     * It's possible to consider this function as a analog of Math.ceil(x/y),
-     * without having deal with non-integer.
+     * <code>x/y</code> fraction. It's possible to consider this function as a
+     * analog of Math.ceil(x/y), without having deal with non-integer.
      *
-     * @param x integer, fraction numerator
-     * @param y  integer, fraction denominator
+     * @param x
+     *            integer, fraction numerator
+     * @param y
+     *            integer, fraction denominator
      * @return the smallest integer that is greater than or equal to
      *         <code>x/y</code> fraction
      * @see java.lang.Math#ceil(double)
      */
-    public static int ceilPosition(int x, int y) {
+    public static int ceilPosition(final int x, final int y) {
         return ceil(x, y) / y;
     }
 
-
     /**
-     * Returns the largest integer that is less than or equal to the
-     * argument and is equal to <code>x/y</code> fraction.
-     * It's possible to consider this function as a analog of Math.floor(x/y),
-     * without having deal with non-integer.
+     * Returns the largest integer that is less than or equal to the argument
+     * and is equal to <code>x/y</code> fraction. It's possible to consider this
+     * function as a analog of Math.floor(x/y), without having deal with
+     * non-integer.
      *
-     * @param x integer, fraction numerator
-     * @param y integer, fraction denominator
-     * @return the largest integer that is less than or equal to
-     *            the argument and is equal to <code>x/y</code> fraction
+     * @param x
+     *            integer, fraction numerator
+     * @param y
+     *            integer, fraction denominator
+     * @return the largest integer that is less than or equal to the argument
+     *         and is equal to <code>x/y</code> fraction
      * @see java.lang.Math#floor(double)
      */
-    public static int floorPosition(int x, int y) {
+    public static int floorPosition(final int x, final int y) {
         return floor(x, y) / y;
     }
 }

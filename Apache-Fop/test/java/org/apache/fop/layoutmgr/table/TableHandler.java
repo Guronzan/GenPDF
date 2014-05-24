@@ -29,17 +29,18 @@ import org.apache.fop.fo.flow.table.Table;
 public class TableHandler extends FOEventHandler {
 
     /** All the tables encountered in the FO file. List of Table objects. */
-    private List tables = new LinkedList();
+    private final List tables = new LinkedList();
 
-    TableHandler(FOUserAgent foUserAgent) {
+    TableHandler(final FOUserAgent foUserAgent) {
         super(foUserAgent);
     }
 
-    public void endTable(Table tbl) {
-        tables.add(tbl);
+    @Override
+    public void endTable(final Table tbl) {
+        this.tables.add(tbl);
     }
 
     List getTables() {
-        return tables;
+        return this.tables;
     }
 }

@@ -24,16 +24,19 @@ package org.apache.fop.fonts.substitute;
  */
 public class FontSubstitution {
 
-    private FontQualifier fromQualifier;
-    private FontQualifier toQualifier;
+    private final FontQualifier fromQualifier;
+    private final FontQualifier toQualifier;
 
     /**
      * Main constructor
      *
-     * @param fromQualifier the substitution from qualifier
-     * @param toQualifier the substitution to qualifier
+     * @param fromQualifier
+     *            the substitution from qualifier
+     * @param toQualifier
+     *            the substitution to qualifier
      */
-    public FontSubstitution(FontQualifier fromQualifier, FontQualifier toQualifier) {
+    public FontSubstitution(final FontQualifier fromQualifier,
+            final FontQualifier toQualifier) {
         this.fromQualifier = fromQualifier;
         this.toQualifier = toQualifier;
     }
@@ -42,20 +45,21 @@ public class FontSubstitution {
      * @return the substitution from qualifier
      */
     public FontQualifier getFromQualifier() {
-        return fromQualifier;
+        return this.fromQualifier;
     }
 
     /**
      * @return the substitution to qualifier
      */
     public FontQualifier getToQualifier() {
-        return toQualifier;
+        return this.toQualifier;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public String toString() {
-        return "from=" + fromQualifier + ", to=" + toQualifier;
+        return "from=" + this.fromQualifier + ", to=" + this.toQualifier;
     }
 }

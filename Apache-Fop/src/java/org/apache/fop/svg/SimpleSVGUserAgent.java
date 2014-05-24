@@ -28,9 +28,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.apache.batik.bridge.UserAgentAdapter;
 
 /**
- * A simple SVG user agent.
- * This is an implementation of the Batik SVG user agent. It ignores any message output sent
- * by Batik.
+ * A simple SVG user agent. This is an implementation of the Batik SVG user
+ * agent. It ignores any message output sent by Batik.
  */
 public class SimpleSVGUserAgent extends UserAgentAdapter {
 
@@ -39,88 +38,108 @@ public class SimpleSVGUserAgent extends UserAgentAdapter {
 
     /**
      * Creates a new user agent.
-     * @param pixelUnitToMM the pixel to millimeter conversion factor currently in effect
-     * @param at the current transform
+     * 
+     * @param pixelUnitToMM
+     *            the pixel to millimeter conversion factor currently in effect
+     * @param at
+     *            the current transform
      */
-    public SimpleSVGUserAgent(float pixelUnitToMM, AffineTransform at) {
-        pixelUnitToMillimeter = pixelUnitToMM;
-        currentTransform = at;
+    public SimpleSVGUserAgent(final float pixelUnitToMM,
+            final AffineTransform at) {
+        this.pixelUnitToMillimeter = pixelUnitToMM;
+        this.currentTransform = at;
     }
 
     /**
      * Returns a customized the pixel to mm factor.
+     * 
      * @return the pixel unit to millimeter conversion factor
      */
+    @Override
     public float getPixelUnitToMillimeter() {
-        return pixelUnitToMillimeter;
+        return this.pixelUnitToMillimeter;
     }
 
     /**
      * Returns the language settings.
+     * 
      * @return the languages supported
      */
+    @Override
     public String getLanguages() {
         return "en"; // userLanguages;
     }
 
     /**
      * Returns the media type for this rendering.
+     * 
      * @return the media for FO documents is "print"
      */
+    @Override
     public String getMedia() {
         return "print";
     }
 
     /**
      * Returns the user stylesheet URI.
+     * 
      * @return null if no user style sheet was specified.
      */
+    @Override
     public String getUserStyleSheetURI() {
         return null; // userStyleSheetURI;
     }
 
     /**
      * Returns the class name of the XML parser.
+     * 
      * @return the XML parser class name
      */
+    @Override
     public String getXMLParserClassName() {
         try {
-            SAXParserFactory factory = SAXParserFactory.newInstance();
+            final SAXParserFactory factory = SAXParserFactory.newInstance();
             return factory.newSAXParser().getXMLReader().getClass().getName();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return null;
         }
     }
 
     /**
      * Is the XML parser validating.
+     * 
      * @return true if the XML parser is validating
      */
+    @Override
     public boolean isXMLParserValidating() {
         return false;
     }
 
     /**
      * Get the transform of the SVG document.
+     * 
      * @return the transform
      */
+    @Override
     public AffineTransform getTransform() {
-        return currentTransform;
+        return this.currentTransform;
     }
 
     /** {@inheritDoc} */
-    public void setTransform(AffineTransform at) {
+    @Override
+    public void setTransform(final AffineTransform at) {
         this.currentTransform = at;
     }
 
     /**
-     * Get the default viewport size for an SVG document.
-     * This returns a default value of 100x100.
+     * Get the default viewport size for an SVG document. This returns a default
+     * value of 100x100.
+     * 
      * @return the default viewport size
      */
+    @Override
     public Dimension2D getViewportSize() {
         return new Dimension(100, 100);
     }
 
 }
-

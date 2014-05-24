@@ -20,33 +20,41 @@
 package org.apache.xmlgraphics.image.loader;
 
 /**
- * Special image flavor subclass which enables the refinement to specific (sub-)flavors but
- * maintaining compatibility to a parent (i.e. more general) flavor.
+ * Special image flavor subclass which enables the refinement to specific
+ * (sub-)flavors but maintaining compatibility to a parent (i.e. more general)
+ * flavor.
  */
 public abstract class RefinedImageFlavor extends ImageFlavor {
 
-    private ImageFlavor parentFlavor;
+    private final ImageFlavor parentFlavor;
 
     /**
      * Constructs a new image flavor.
-     * @param parentFlavor the parent image flavor
+     * 
+     * @param parentFlavor
+     *            the parent image flavor
      */
-    protected RefinedImageFlavor(ImageFlavor parentFlavor) {
+    protected RefinedImageFlavor(final ImageFlavor parentFlavor) {
         this(parentFlavor.getName(), parentFlavor);
     }
 
     /**
      * Constructs a new image flavor.
-     * @param parentFlavor the parent image flavor
-     * @param name the name of the flavor (must be unique)
+     * 
+     * @param parentFlavor
+     *            the parent image flavor
+     * @param name
+     *            the name of the flavor (must be unique)
      */
-    protected RefinedImageFlavor(String name, ImageFlavor parentFlavor) {
+    protected RefinedImageFlavor(final String name,
+            final ImageFlavor parentFlavor) {
         super(name);
         this.parentFlavor = parentFlavor;
     }
 
     /**
      * Returns the associated parent image flavor.
+     * 
      * @return the parent image flavor
      */
     public ImageFlavor getParentFlavor() {
@@ -54,19 +62,22 @@ public abstract class RefinedImageFlavor extends ImageFlavor {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return this.parentFlavor.getMimeType();
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNamespace() {
         return this.parentFlavor.getNamespace();
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible(ImageFlavor flavor) {
+    @Override
+    public boolean isCompatible(final ImageFlavor flavor) {
         return getParentFlavor().isCompatible(flavor)
-            || super.isCompatible(flavor);
+                || super.isCompatible(flavor);
     }
 
 }

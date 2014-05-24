@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
@@ -38,17 +39,21 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * <p>A SAX document handler to read and parse hyphenation patterns
- * from a XML file.</p>
+ * <p>
+ * A SAX document handler to read and parse hyphenation patterns from a XML
+ * file.
+ * </p>
  *
- * <p>This work was authored by Carlos Villegas (cav@uniscope.co.jp).</p>
+ * <p>
+ * This work was authored by Carlos Villegas (cav@uniscope.co.jp).
+ * </p>
  */
 public class PatternParser extends DefaultHandler implements PatternConsumer {
 
     private XMLReader parser;
     private int currElement;
     private PatternConsumer consumer;
-    private StringBuffer token;
+    private final StringBuffer token;
     private ArrayList exception;
     private char hyphenChar;
     private String errMsg;
@@ -61,83 +66,102 @@ public class PatternParser extends DefaultHandler implements PatternConsumer {
 
     /**
      * Construct a pattern parser.
-     * @throws HyphenationException if a hyphenation exception is raised
+     *
+     * @throws HyphenationException
+     *             if a hyphenation exception is raised
      */
     public PatternParser() throws HyphenationException {
         this.consumer = this;
-        token = new StringBuffer();
-        parser = createParser();
-        parser.setContentHandler(this);
-        parser.setErrorHandler(this);
-        hyphenChar = '-';    // default
+        this.token = new StringBuffer();
+        this.parser = createParser();
+        this.parser.setContentHandler(this);
+        this.parser.setErrorHandler(this);
+        this.hyphenChar = '-'; // default
     }
 
     /**
      * Construct a pattern parser.
-     * @param consumer a pattern consumer
-     * @throws HyphenationException if a hyphenation exception is raised
+     *
+     * @param consumer
+     *            a pattern consumer
+     * @throws HyphenationException
+     *             if a hyphenation exception is raised
      */
-    public PatternParser(PatternConsumer consumer) throws HyphenationException {
+    public PatternParser(final PatternConsumer consumer)
+            throws HyphenationException {
         this();
         this.consumer = consumer;
     }
 
     /**
      * Parses a hyphenation pattern file.
-     * @param filename the filename
-     * @throws HyphenationException In case of an exception while parsing
+     *
+     * @param filename
+     *            the filename
+     * @throws HyphenationException
+     *             In case of an exception while parsing
      */
-    public void parse(String filename) throws HyphenationException {
+    public void parse(final String filename) throws HyphenationException {
         parse(new File(filename));
     }
 
     /**
      * Parses a hyphenation pattern file.
-     * @param file the pattern file
-     * @throws HyphenationException In case of an exception while parsing
+     *
+     * @param file
+     *            the pattern file
+     * @throws HyphenationException
+     *             In case of an exception while parsing
      */
-    public void parse(File file) throws HyphenationException {
+    public void parse(final File file) throws HyphenationException {
         try {
-            InputSource src = new InputSource(file.toURI().toURL().toExternalForm());
+            final InputSource src = new InputSource(file.toURI().toURL()
+                    .toExternalForm());
             parse(src);
-        } catch (MalformedURLException e) {
-            throw new HyphenationException("Error converting the File '" + file + "' to a URL: "
-                    + e.getMessage());
+        } catch (final MalformedURLException e) {
+            throw new HyphenationException("Error converting the File '" + file
+                    + "' to a URL: " + e.getMessage());
         }
     }
 
     /**
      * Parses a hyphenation pattern file.
-     * @param source the InputSource for the file
-     * @throws HyphenationException In case of an exception while parsing
+     *
+     * @param source
+     *            the InputSource for the file
+     * @throws HyphenationException
+     *             In case of an exception while parsing
      */
-    public void parse(InputSource source) throws HyphenationException {
+    public void parse(final InputSource source) throws HyphenationException {
         try {
-            parser.parse(source);
-        } catch (FileNotFoundException fnfe) {
-            throw new HyphenationException("File not found: " + fnfe.getMessage());
-        } catch (IOException ioe) {
+            this.parser.parse(source);
+        } catch (final FileNotFoundException fnfe) {
+            throw new HyphenationException("File not found: "
+                    + fnfe.getMessage());
+        } catch (final IOException ioe) {
             throw new HyphenationException(ioe.getMessage());
-        } catch (SAXException e) {
-            throw new HyphenationException(errMsg);
+        } catch (final SAXException e) {
+            throw new HyphenationException(this.errMsg);
         }
     }
 
     /**
      * Creates a SAX parser using JAXP
+     *
      * @return the created SAX parser
      */
     static XMLReader createParser() {
         try {
-            SAXParserFactory factory = SAXParserFactory.newInstance();
+            final SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setNamespaceAware(true);
             return factory.newSAXParser().getXMLReader();
-        } catch (Exception e) {
-            throw new RuntimeException("Couldn't create XMLReader: " + e.getMessage());
+        } catch (final Exception e) {
+            throw new RuntimeException("Couldn't create XMLReader: "
+                    + e.getMessage());
         }
     }
 
-    private String readToken(StringBuffer chars) {
+    private String readToken(final StringBuffer chars) {
         String word;
         boolean space = false;
         int i;
@@ -154,9 +178,9 @@ public class PatternParser extends DefaultHandler implements PatternConsumer {
                 chars.setCharAt(countr - i, chars.charAt(countr));
             }
             chars.setLength(chars.length() - i);
-            if (token.length() > 0) {
-                word = token.toString();
-                token.setLength(0);
+            if (this.token.length() > 0) {
+                word = this.token.toString();
+                this.token.setLength(0);
                 return word;
             }
         }
@@ -167,24 +191,24 @@ public class PatternParser extends DefaultHandler implements PatternConsumer {
                 break;
             }
         }
-        token.append(chars.toString().substring(0, i));
+        this.token.append(chars.toString().substring(0, i));
         // chars.delete(0,i);
         for (int countr = i; countr < chars.length(); countr++) {
             chars.setCharAt(countr - i, chars.charAt(countr));
         }
         chars.setLength(chars.length() - i);
         if (space) {
-            word = token.toString();
-            token.setLength(0);
+            word = this.token.toString();
+            this.token.setLength(0);
             return word;
         }
-        token.append(chars);
+        this.token.append(chars);
         return null;
     }
 
-    private static String getPattern(String word) {
-        StringBuffer pat = new StringBuffer();
-        int len = word.length();
+    private static String getPattern(final String word) {
+        final StringBuffer pat = new StringBuffer();
+        final int len = word.length();
         for (int i = 0; i < len; i++) {
             if (!Character.isDigit(word.charAt(i))) {
                 pat.append(word.charAt(i));
@@ -193,22 +217,22 @@ public class PatternParser extends DefaultHandler implements PatternConsumer {
         return pat.toString();
     }
 
-    private ArrayList normalizeException(ArrayList ex) {
-        ArrayList res = new ArrayList();
+    private ArrayList normalizeException(final ArrayList ex) {
+        final ArrayList res = new ArrayList();
         for (int i = 0; i < ex.size(); i++) {
-            Object item = ex.get(i);
+            final Object item = ex.get(i);
             if (item instanceof String) {
-                String str = (String)item;
-                StringBuffer buf = new StringBuffer();
+                final String str = (String) item;
+                final StringBuffer buf = new StringBuffer();
                 for (int j = 0; j < str.length(); j++) {
-                    char c = str.charAt(j);
-                    if (c != hyphenChar) {
+                    final char c = str.charAt(j);
+                    if (c != this.hyphenChar) {
                         buf.append(c);
                     } else {
                         res.add(buf.toString());
                         buf.setLength(0);
-                        char[] h = new char[1];
-                        h[0] = hyphenChar;
+                        final char[] h = new char[1];
+                        h[0] = this.hyphenChar;
                         // we use here hyphenChar which is not necessarily
                         // the one to be printed
                         res.add(new Hyphen(new String(h), null, null));
@@ -224,27 +248,27 @@ public class PatternParser extends DefaultHandler implements PatternConsumer {
         return res;
     }
 
-    private String getExceptionWord(ArrayList ex) {
-        StringBuffer res = new StringBuffer();
+    private String getExceptionWord(final ArrayList ex) {
+        final StringBuffer res = new StringBuffer();
         for (int i = 0; i < ex.size(); i++) {
-            Object item = ex.get(i);
+            final Object item = ex.get(i);
             if (item instanceof String) {
-                res.append((String)item);
+                res.append((String) item);
             } else {
-                if (((Hyphen)item).noBreak != null) {
-                    res.append(((Hyphen)item).noBreak);
+                if (((Hyphen) item).noBreak != null) {
+                    res.append(((Hyphen) item).noBreak);
                 }
             }
         }
         return res.toString();
     }
 
-    private static String getInterletterValues(String pat) {
-        StringBuffer il = new StringBuffer();
-        String word = pat + "a";    // add dummy letter to serve as sentinel
-        int len = word.length();
+    private static String getInterletterValues(final String pat) {
+        final StringBuffer il = new StringBuffer();
+        final String word = pat + "a"; // add dummy letter to serve as sentinel
+        final int len = word.length();
         for (int i = 0; i < len; i++) {
-            char c = word.charAt(i);
+            final char c = word.charAt(i);
             if (Character.isDigit(c)) {
                 il.append(c);
                 i++;
@@ -255,20 +279,24 @@ public class PatternParser extends DefaultHandler implements PatternConsumer {
         return il.toString();
     }
 
-    /** @throws SAXException if not caught */
+    /**
+     * @throws SAXException
+     *             if not caught
+     */
     protected void getExternalClasses() throws SAXException {
-        XMLReader mainParser = parser;
-        parser = createParser();
-        parser.setContentHandler(this);
-        parser.setErrorHandler(this);
-        InputStream stream = this.getClass().getResourceAsStream("classes.xml");
-        InputSource source = new InputSource(stream);
+        final XMLReader mainParser = this.parser;
+        this.parser = createParser();
+        this.parser.setContentHandler(this);
+        this.parser.setErrorHandler(this);
+        final InputStream stream = this.getClass().getResourceAsStream(
+                "classes.xml");
+        final InputSource source = new InputSource(stream);
         try {
-            parser.parse(source);
-        } catch (IOException ioe) {
+            this.parser.parse(source);
+        } catch (final IOException ioe) {
             throw new SAXException(ioe.getMessage());
         } finally {
-            parser = mainParser;
+            this.parser = mainParser;
         }
     }
 
@@ -278,60 +306,63 @@ public class PatternParser extends DefaultHandler implements PatternConsumer {
 
     /**
      * {@inheritDoc}
+     *
      * @throws SAXException
      */
-    public void startElement(String uri, String local, String raw,
-                             Attributes attrs) throws SAXException {
+    @Override
+    public void startElement(final String uri, final String local,
+            final String raw, final Attributes attrs) throws SAXException {
         if (local.equals("hyphen-char")) {
-            String h = attrs.getValue("value");
+            final String h = attrs.getValue("value");
             if (h != null && h.length() == 1) {
-                hyphenChar = h.charAt(0);
+                this.hyphenChar = h.charAt(0);
             }
         } else if (local.equals("classes")) {
-            currElement = ELEM_CLASSES;
+            this.currElement = ELEM_CLASSES;
         } else if (local.equals("patterns")) {
-            if (!hasClasses) {
+            if (!this.hasClasses) {
                 getExternalClasses();
             }
-            currElement = ELEM_PATTERNS;
+            this.currElement = ELEM_PATTERNS;
         } else if (local.equals("exceptions")) {
-            if (!hasClasses) {
+            if (!this.hasClasses) {
                 getExternalClasses();
             }
-            currElement = ELEM_EXCEPTIONS;
-            exception = new ArrayList();
+            this.currElement = ELEM_EXCEPTIONS;
+            this.exception = new ArrayList();
         } else if (local.equals("hyphen")) {
-            if (token.length() > 0) {
-                exception.add(token.toString());
+            if (this.token.length() > 0) {
+                this.exception.add(this.token.toString());
             }
-            exception.add(new Hyphen(attrs.getValue("pre"),
-                                            attrs.getValue("no"),
-                                            attrs.getValue("post")));
-            currElement = ELEM_HYPHEN;
+            this.exception.add(new Hyphen(attrs.getValue("pre"), attrs
+                    .getValue("no"), attrs.getValue("post")));
+            this.currElement = ELEM_HYPHEN;
         }
-        token.setLength(0);
+        this.token.setLength(0);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void endElement(String uri, String local, String raw) {
+    @Override
+    public void endElement(final String uri, final String local,
+            final String raw) {
 
-        if (token.length() > 0) {
-            String word = token.toString();
-            switch (currElement) {
+        if (this.token.length() > 0) {
+            final String word = this.token.toString();
+            switch (this.currElement) {
             case ELEM_CLASSES:
-                consumer.addClass(word);
+                this.consumer.addClass(word);
                 break;
             case ELEM_EXCEPTIONS:
-                exception.add(word);
-                exception = normalizeException(exception);
-                consumer.addException(getExceptionWord(exception),
-                                      (ArrayList)exception.clone());
+                this.exception.add(word);
+                this.exception = normalizeException(this.exception);
+                this.consumer.addException(getExceptionWord(this.exception),
+                        (ArrayList) this.exception.clone());
                 break;
             case ELEM_PATTERNS:
-                consumer.addPattern(getPattern(word),
-                                    getInterletterValues(word));
+                this.consumer.addPattern(getPattern(word),
+                        getInterletterValues(word));
                 break;
             case ELEM_HYPHEN:
                 // nothing to do
@@ -339,17 +370,17 @@ public class PatternParser extends DefaultHandler implements PatternConsumer {
             default:
                 break;
             }
-            if (currElement != ELEM_HYPHEN) {
-                token.setLength(0);
+            if (this.currElement != ELEM_HYPHEN) {
+                this.token.setLength(0);
             }
         }
-        if (currElement == ELEM_CLASSES) {
-            hasClasses = true;
+        if (this.currElement == ELEM_CLASSES) {
+            this.hasClasses = true;
         }
-        if (currElement == ELEM_HYPHEN) {
-            currElement = ELEM_EXCEPTIONS;
+        if (this.currElement == ELEM_HYPHEN) {
+            this.currElement = ELEM_EXCEPTIONS;
         } else {
-            currElement = 0;
+            this.currElement = 0;
         }
 
     }
@@ -357,26 +388,27 @@ public class PatternParser extends DefaultHandler implements PatternConsumer {
     /**
      * {@inheritDoc}
      */
-    public void characters(char[] ch, int start, int length) {
-        StringBuffer chars = new StringBuffer(length);
+    @Override
+    public void characters(final char[] ch, final int start, final int length) {
+        final StringBuffer chars = new StringBuffer(length);
         chars.append(ch, start, length);
         String word = readToken(chars);
         while (word != null) {
-            // System.out.println("\"" + word + "\"");
-            switch (currElement) {
+            // log.info("\"" + word + "\"");
+            switch (this.currElement) {
             case ELEM_CLASSES:
-                consumer.addClass(word);
+                this.consumer.addClass(word);
                 break;
             case ELEM_EXCEPTIONS:
-                exception.add(word);
-                exception = normalizeException(exception);
-                consumer.addException(getExceptionWord(exception),
-                                      (ArrayList)exception.clone());
-                exception.clear();
+                this.exception.add(word);
+                this.exception = normalizeException(this.exception);
+                this.consumer.addException(getExceptionWord(this.exception),
+                        (ArrayList) this.exception.clone());
+                this.exception.clear();
                 break;
             case ELEM_PATTERNS:
-                consumer.addPattern(getPattern(word),
-                                    getInterletterValues(word));
+                this.consumer.addPattern(getPattern(word),
+                        getInterletterValues(word));
                 break;
             default:
                 break;
@@ -393,36 +425,40 @@ public class PatternParser extends DefaultHandler implements PatternConsumer {
     /**
      * {@inheritDoc}
      */
-    public void warning(SAXParseException ex) {
-        errMsg = "[Warning] " + getLocationString(ex) + ": "
-                 + ex.getMessage();
+    @Override
+    public void warning(final SAXParseException ex) {
+        this.errMsg = "[Warning] " + getLocationString(ex) + ": "
+                + ex.getMessage();
     }
 
     /**
      * {@inheritDoc}
      */
-    public void error(SAXParseException ex) {
-        errMsg = "[Error] " + getLocationString(ex) + ": " + ex.getMessage();
+    @Override
+    public void error(final SAXParseException ex) {
+        this.errMsg = "[Error] " + getLocationString(ex) + ": "
+                + ex.getMessage();
     }
 
     /**
      * {@inheritDoc}
      */
-    public void fatalError(SAXParseException ex) throws SAXException {
-        errMsg = "[Fatal Error] " + getLocationString(ex) + ": "
-                 + ex.getMessage();
+    @Override
+    public void fatalError(final SAXParseException ex) throws SAXException {
+        this.errMsg = "[Fatal Error] " + getLocationString(ex) + ": "
+                + ex.getMessage();
         throw ex;
     }
 
     /**
      * Returns a string of the location.
      */
-    private String getLocationString(SAXParseException ex) {
-        StringBuffer str = new StringBuffer();
+    private String getLocationString(final SAXParseException ex) {
+        final StringBuffer str = new StringBuffer();
 
         String systemId = ex.getSystemId();
         if (systemId != null) {
-            int index = systemId.lastIndexOf('/');
+            final int index = systemId.lastIndexOf('/');
             if (index != -1) {
                 systemId = systemId.substring(index + 1);
             }
@@ -435,40 +471,41 @@ public class PatternParser extends DefaultHandler implements PatternConsumer {
 
         return str.toString();
 
-    }    // getLocationString(SAXParseException):String
-
+    } // getLocationString(SAXParseException):String
 
     /**
-     * For testing purposes only.
-     * {@inheritDoc}
+     * For testing purposes only. {@inheritDoc}
      */
-    public void addClass(String c) {
-        testOut.println("class: " + c);
+    @Override
+    public void addClass(final String c) {
+        this.testOut.println("class: " + c);
     }
 
     /**
-     * For testing purposes only.
-     * {@inheritDoc}
+     * For testing purposes only. {@inheritDoc}
      */
-    public void addException(String w, ArrayList e) {
-        testOut.println("exception: " + w + " : " + e.toString());
+    @Override
+    public void addException(final String w, final ArrayList e) {
+        this.testOut.println("exception: " + w + " : " + e.toString());
     }
 
     /**
-     * For testing purposes only.
-     * {@inheritDoc}
+     * For testing purposes only. {@inheritDoc}
      */
-    public void addPattern(String p, String v) {
-        testOut.println("pattern: " + p + " : " + v);
+    @Override
+    public void addPattern(final String p, final String v) {
+        this.testOut.println("pattern: " + p + " : " + v);
     }
 
     private PrintStream testOut = System.out;
 
     /**
      * Set test out stream.
-     * @param testOut the testOut to set
+     *
+     * @param testOut
+     *            the testOut to set
      */
-    public void setTestOut(PrintStream testOut) {
+    public void setTestOut(final PrintStream testOut) {
         this.testOut = testOut;
     }
 
@@ -476,21 +513,27 @@ public class PatternParser extends DefaultHandler implements PatternConsumer {
      * Close test out file.
      */
     public void closeTestOut() {
-        testOut.flush();
-        testOut.close();
+        this.testOut.flush();
+        this.testOut.close();
     }
 
     /**
      * Main entry point when used as an application.
-     * @param args array of command line arguments
-     * @throws Exception in case of uncaught exception
+     *
+     * @param args
+     *            array of command line arguments
+     * @throws FileNotFoundException
+     * @throws HyphenationException
+     * @throws UnsupportedEncodingException
+     * @in case of uncaught exception
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws FileNotFoundException,
+    HyphenationException, UnsupportedEncodingException {
         if (args.length > 0) {
-            PatternParser pp = new PatternParser();
+            final PatternParser pp = new PatternParser();
             PrintStream p = null;
             if (args.length > 1) {
-                FileOutputStream f = new FileOutputStream(args[1]);
+                final FileOutputStream f = new FileOutputStream(args[1]);
                 p = new PrintStream(f, false, "utf-8");
                 pp.setTestOut(p);
             }
@@ -500,6 +543,5 @@ public class PatternParser extends DefaultHandler implements PatternConsumer {
             }
         }
     }
-
 
 }

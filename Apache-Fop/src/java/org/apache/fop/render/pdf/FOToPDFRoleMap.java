@@ -28,18 +28,18 @@ import org.apache.fop.pdf.PDFObject;
 import org.apache.fop.pdf.PDFStructElem;
 
 /**
- * This class provides the standard mappings from Formatting Objects to PDF structure types.
+ * This class provides the standard mappings from Formatting Objects to PDF
+ * structure types.
  */
 final class FOToPDFRoleMap {
 
     /**
-     * Standard structure types defined by the PDF Reference, Fourth Edition (PDF 1.5).
+     * Standard structure types defined by the PDF Reference, Fourth Edition
+     * (PDF 1.5).
      */
-    private static final Map<String, PDFName> STANDARD_STRUCTURE_TYPES
-            = new HashMap<String, PDFName>();
+    private static final Map<String, PDFName> STANDARD_STRUCTURE_TYPES = new HashMap<String, PDFName>();
 
-    private static final Map<String, Mapper> DEFAULT_MAPPINGS
-            = new java.util.HashMap<String, Mapper>();
+    private static final Map<String, Mapper> DEFAULT_MAPPINGS = new java.util.HashMap<String, Mapper>();
 
     private static final PDFName THEAD;
     private static final PDFName NON_STRUCT;
@@ -110,71 +110,77 @@ final class FOToPDFRoleMap {
 
         // Create the standard mappings
         // Declarations and Pagination and Layout Formatting Objects
-        addMapping("root",                      "Document");
-        addMapping("page-sequence",             "Part");
-        addMapping("flow",                      "Sect");
-        addMapping("static-content",            "Sect");
+        addMapping("root", "Document");
+        addMapping("page-sequence", "Part");
+        addMapping("flow", "Sect");
+        addMapping("static-content", "Sect");
         // Block-level Formatting Objects
-        addMapping("block",                     "P");
-        addMapping("block-container",           "Div");
+        addMapping("block", "P");
+        addMapping("block-container", "Div");
         // Inline-level Formatting Objects
-        addMapping("character",                 "Span");
-        addMapping("external-graphic",          "Figure");
-        addMapping("instream-foreign-object",   "Figure");
-        addMapping("inline",                    "Span");
-        addMapping("inline-container",          "Div");
-        addMapping("page-number",               "Quote");
-        addMapping("page-number-citation",      "Quote");
+        addMapping("character", "Span");
+        addMapping("external-graphic", "Figure");
+        addMapping("instream-foreign-object", "Figure");
+        addMapping("inline", "Span");
+        addMapping("inline-container", "Div");
+        addMapping("page-number", "Quote");
+        addMapping("page-number-citation", "Quote");
         addMapping("page-number-citation-last", "Quote");
         // Formatting Objects for Tables
-        addMapping("table-and-caption",         "Div");
-        addMapping("table",                     "Table");
-        addMapping("table-caption",             "Caption");
-        addMapping("table-header",              "THead");
-        addMapping("table-footer",              "TFoot");
-        addMapping("table-body",                "TBody");
-        addMapping("table-row",                 "TR");
-        addMapping("table-cell",                new TableCellMapper());
+        addMapping("table-and-caption", "Div");
+        addMapping("table", "Table");
+        addMapping("table-caption", "Caption");
+        addMapping("table-header", "THead");
+        addMapping("table-footer", "TFoot");
+        addMapping("table-body", "TBody");
+        addMapping("table-row", "TR");
+        addMapping("table-cell", new TableCellMapper());
         // Formatting Objects for Lists
-        addMapping("list-block",                "L");
-        addMapping("list-item",                 "LI");
-        addMapping("list-item-body",            "LBody");
-        addMapping("list-item-label",           "Lbl");
+        addMapping("list-block", "L");
+        addMapping("list-item", "LI");
+        addMapping("list-item-body", "LBody");
+        addMapping("list-item-label", "Lbl");
         // Dynamic Effects: Link and Multi Formatting Objects
-        addMapping("basic-link",                "Link");
+        addMapping("basic-link", "Link");
         // Out-of-Line Formatting Objects
-        addMapping("float",                     "Div");
-        addMapping("footnote",                  "Note");
-        addMapping("footnote-body",             "Sect");
-        addMapping("wrapper",                   "Span");
-        addMapping("marker",                    "Private");
+        addMapping("float", "Div");
+        addMapping("footnote", "Note");
+        addMapping("footnote-body", "Sect");
+        addMapping("wrapper", "Span");
+        addMapping("marker", "Private");
     }
 
-    private static void addStructureType(String structureType) {
+    private static void addStructureType(final String structureType) {
         STANDARD_STRUCTURE_TYPES.put(structureType, new PDFName(structureType));
     }
 
-    private static void addMapping(String fo, String structureType) {
-        PDFName type = STANDARD_STRUCTURE_TYPES.get(structureType);
+    private static void addMapping(final String fo, final String structureType) {
+        final PDFName type = STANDARD_STRUCTURE_TYPES.get(structureType);
         assert type != null;
         addMapping(fo, new SimpleMapper(type));
     }
 
-    private static void addMapping(String fo, Mapper mapper) {
+    private static void addMapping(final String fo, final Mapper mapper) {
         DEFAULT_MAPPINGS.put(fo, mapper);
     }
 
-
     /**
-     * Maps a Formatting Object to a PDFName representing the associated structure type.
-     * @param fo the formatting object's local name
-     * @param role the value of the formatting object's role property
-     * @param parent the parent of the structure element to be mapped
-     * @param eventBroadcaster the event broadcaster
+     * Maps a Formatting Object to a PDFName representing the associated
+     * structure type.
+     * 
+     * @param fo
+     *            the formatting object's local name
+     * @param role
+     *            the value of the formatting object's role property
+     * @param parent
+     *            the parent of the structure element to be mapped
+     * @param eventBroadcaster
+     *            the event broadcaster
      * @return the structure type or null if no match could be found
      */
-    public static PDFName mapFormattingObject(String fo, String role,
-            PDFObject parent, EventBroadcaster eventBroadcaster) {
+    public static PDFName mapFormattingObject(final String fo,
+            final String role, final PDFObject parent,
+            final EventBroadcaster eventBroadcaster) {
         PDFName type = null;
         if (role == null) {
             type = getDefaultMappingFor(fo, parent);
@@ -182,8 +188,9 @@ final class FOToPDFRoleMap {
             type = STANDARD_STRUCTURE_TYPES.get(role);
             if (type == null) {
                 type = getDefaultMappingFor(fo, parent);
-                PDFEventProducer.Provider.get(eventBroadcaster).nonStandardStructureType(fo,
-                        fo, role, type.toString().substring(1));
+                PDFEventProducer.Provider.get(eventBroadcaster)
+                        .nonStandardStructureType(fo, fo, role,
+                                type.toString().substring(1));
             }
         }
         assert type != null;
@@ -191,13 +198,18 @@ final class FOToPDFRoleMap {
     }
 
     /**
-     * Maps a Formatting Object to a PDFName representing the associated structure type.
-     * @param fo the formatting object's local name
-     * @param parent the parent of the structure element to be mapped
+     * Maps a Formatting Object to a PDFName representing the associated
+     * structure type.
+     * 
+     * @param fo
+     *            the formatting object's local name
+     * @param parent
+     *            the parent of the structure element to be mapped
      * @return the structure type or NonStruct if no match could be found
      */
-    private static PDFName getDefaultMappingFor(String fo, PDFObject parent) {
-        Mapper mapper = DEFAULT_MAPPINGS.get(fo);
+    private static PDFName getDefaultMappingFor(final String fo,
+            final PDFObject parent) {
+        final Mapper mapper = DEFAULT_MAPPINGS.get(fo);
         if (mapper != null) {
             return mapper.getStructureType(parent);
         } else {
@@ -206,31 +218,35 @@ final class FOToPDFRoleMap {
     }
 
     private interface Mapper {
-        PDFName getStructureType(PDFObject parent);
+        PDFName getStructureType(final PDFObject parent);
     }
 
     private static class SimpleMapper implements Mapper {
 
-        private PDFName structureType;
+        private final PDFName structureType;
 
-        public SimpleMapper(PDFName structureType) {
+        public SimpleMapper(final PDFName structureType) {
             this.structureType = structureType;
         }
 
-        public PDFName getStructureType(PDFObject parent) {
-            return structureType;
+        @Override
+        public PDFName getStructureType(final PDFObject parent) {
+            return this.structureType;
         }
 
     }
 
     private static class TableCellMapper implements Mapper {
 
-        public PDFName getStructureType(PDFObject parent) {
-            PDFStructElem grandParent = ((PDFStructElem) parent).getParentStructElem();
-            //TODO What to do with cells from table-footer? Currently they are mapped on TD.
+        @Override
+        public PDFName getStructureType(final PDFObject parent) {
+            final PDFStructElem grandParent = ((PDFStructElem) parent)
+                    .getParentStructElem();
+            // TODO What to do with cells from table-footer? Currently they are
+            // mapped on TD.
             PDFName type;
             if (THEAD.equals(grandParent.getStructureType())) {
-               type = STANDARD_STRUCTURE_TYPES.get("TH");
+                type = STANDARD_STRUCTURE_TYPES.get("TH");
             } else {
                 type = STANDARD_STRUCTURE_TYPES.get("TD");
             }
@@ -240,5 +256,6 @@ final class FOToPDFRoleMap {
 
     }
 
-    private FOToPDFRoleMap() { }
+    private FOToPDFRoleMap() {
+    }
 }

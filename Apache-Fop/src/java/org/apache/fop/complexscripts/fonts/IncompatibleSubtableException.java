@@ -20,10 +20,15 @@
 package org.apache.fop.complexscripts.fonts;
 
 /**
- * <p>Exception thrown during when attempting to map glyphs to associated characters
- * in the case that the associated characters do not represent a compact interval.</p>
+ * <p>
+ * Exception thrown during when attempting to map glyphs to associated
+ * characters in the case that the associated characters do not represent a
+ * compact interval.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 public class IncompatibleSubtableException extends RuntimeException {
     /**
@@ -32,11 +37,14 @@ public class IncompatibleSubtableException extends RuntimeException {
     public IncompatibleSubtableException() {
         super();
     }
+
     /**
      * Instantiate incompatible subtable exception
-     * @param message a message string
+     * 
+     * @param message
+     *            a message string
      */
-    public IncompatibleSubtableException(String message) {
+    public IncompatibleSubtableException(final String message) {
         super(message);
     }
 }

@@ -20,7 +20,6 @@
 package org.apache.fop.render.java2d;
 
 import org.apache.avalon.framework.configuration.Configuration;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.render.PrintRendererConfigurator;
@@ -33,25 +32,33 @@ public class Java2DRendererConfigurator extends PrintRendererConfigurator {
 
     /**
      * Default constructor
-     * @param userAgent user agent
+     * 
+     * @param userAgent
+     *            user agent
      */
-    public Java2DRendererConfigurator(FOUserAgent userAgent) {
+    public Java2DRendererConfigurator(final FOUserAgent userAgent) {
         super(userAgent);
     }
 
     /**
      * Configure the Java 2D renderer.
-     * @param renderer java 2d renderer
-     * @throws FOPException fop exception
+     * 
+     * @param renderer
+     *            java 2d renderer
+     * @throws FOPException
+     *             fop exception
      */
-    public void configure(Renderer renderer) throws FOPException {
-        Configuration cfg = super.getRendererConfig(renderer);
+    @Override
+    public void configure(final Renderer renderer) throws FOPException {
+        final Configuration cfg = super.getRendererConfig(renderer);
         if (cfg != null) {
-            Java2DRenderer java2dRenderer = (Java2DRenderer)renderer;
-            String value = cfg.getChild(
-                    Java2DRenderer.JAVA2D_TRANSPARENT_PAGE_BACKGROUND, true).getValue(null);
+            final Java2DRenderer java2dRenderer = (Java2DRenderer) renderer;
+            final String value = cfg.getChild(
+                    Java2DRenderer.JAVA2D_TRANSPARENT_PAGE_BACKGROUND, true)
+                    .getValue(null);
             if (value != null) {
-                java2dRenderer.setTransparentPageBackground("true".equalsIgnoreCase(value));
+                java2dRenderer.setTransparentPageBackground("true"
+                        .equalsIgnoreCase(value));
             }
         }
         super.configure(renderer);

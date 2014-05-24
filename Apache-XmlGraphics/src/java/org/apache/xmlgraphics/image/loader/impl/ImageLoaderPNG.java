@@ -44,31 +44,40 @@ public class ImageLoaderPNG extends AbstractImageLoader {
     }
 
     /** {@inheritDoc} */
-    public Image loadImage(ImageInfo info, Map hints, ImageSessionContext session) throws ImageException,
-            IOException {
+    @Override
+    public Image loadImage(final ImageInfo info, final Map hints,
+            final ImageSessionContext session) throws ImageException,
+    IOException {
 
-        Source src = session.needSource(info.getOriginalURI());
-        ImageInputStream imgStream = ImageUtil.needImageInputStream(src);
+        final Source src = session.needSource(info.getOriginalURI());
+        final ImageInputStream imgStream = ImageUtil.needImageInputStream(src);
 
-        SeekableStream seekStream = new ImageInputStreamSeekableStreamAdapter(imgStream);
+        final SeekableStream seekStream = new ImageInputStreamSeekableStreamAdapter(
+                imgStream);
 
-        PNGImageDecoder decoder = new PNGImageDecoder(seekStream, new PNGDecodeParam());
-        RenderedImage image = decoder.decodeAsRenderedImage();
+        final PNGImageDecoder decoder = new PNGImageDecoder(seekStream,
+                new PNGDecodeParam());
+        final RenderedImage image = decoder.decodeAsRenderedImage();
 
         // need transparency here?
         return new ImageRendered(info, image, null);
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getTargetFlavor() {
         return ImageFlavor.RENDERED_IMAGE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getUsagePenalty() {
-        // since this image loader does not provide any benefits over the default sun.imageio one we add
-        // some penalty to it so that it is not chosen by default; instead users need to give it a negative
-        // penalty in fop.xconf so that it is used; this image loader is mostly for testing purposes for now.
+        // since this image loader does not provide any benefits over the
+        // default sun.imageio one we add
+        // some penalty to it so that it is not chosen by default; instead users
+        // need to give it a negative
+        // penalty in fop.xconf so that it is used; this image loader is mostly
+        // for testing purposes for now.
         return 1000;
     }
 

@@ -21,8 +21,8 @@ package org.apache.fop.afp;
 
 import java.awt.Point;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.afp.fonts.AFPPageFonts;
 import org.apache.fop.util.AbstractPaintingState;
 import org.apache.xmlgraphics.java2d.color.ColorConverter;
@@ -32,11 +32,10 @@ import org.apache.xmlgraphics.java2d.color.DefaultColorConverter;
  * This keeps information about the current painting state when writing to an
  * AFP datastream.
  */
+@Slf4j
 public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState {
 
     private static final long serialVersionUID = 8206711712452344473L;
-
-    private static Log log = LogFactory.getLog("org.apache.xmlgraphics.afp");
 
     /** the portrait rotation */
     private int portraitRotation = 0;
@@ -286,7 +285,7 @@ public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState 
     /**
      * Gets the dithering quality setting to use when converting images to
      * monochrome images.
-     * 
+     *
      * @return the dithering quality (a value between 0.0f and 1.0f)
      */
     public float getDitheringQuality() {
@@ -296,7 +295,7 @@ public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState 
     /**
      * Sets the dithering quality setting to use when converting images to
      * monochrome images.
-     * 
+     *
      * @param quality
      *            Defines the desired quality level for the conversion. Valid
      *            values: a value between 0.0f (fastest) and 1.0f (best)
@@ -310,7 +309,7 @@ public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState 
     /**
      * Gets the image encoding quality setting to use when encoding bitmap
      * images.
-     * 
+     *
      * @return the encoding quality (a value between 0.0f and 1.0f, 1.0 meaning
      *         loss-less)
      */
@@ -321,7 +320,7 @@ public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState 
     /**
      * Sets the image encoding quality setting to use when encoding bitmap
      * images.
-     * 
+     *
      * @param quality
      *            Defines the desired quality level for the conversion. Valid
      *            values: a value between 0.0f (lowest) and 1.0f (best,
@@ -370,7 +369,7 @@ public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState 
 
     /**
      * Returns the line width correction.
-     * 
+     *
      * @return the correction
      */
     public float getLineWidthCorrection() {
@@ -379,7 +378,7 @@ public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState 
 
     /**
      * Controls whether GOCA is enabled or disabled.
-     * 
+     *
      * @param enabled
      *            true if GOCA is enabled, false if it is disabled
      */
@@ -389,7 +388,7 @@ public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState 
 
     /**
      * Indicates whether GOCA is enabled or disabled.
-     * 
+     *
      * @return true if GOCA is enabled, false if GOCA is disabled
      */
     public boolean isGOCAEnabled() {
@@ -399,7 +398,7 @@ public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState 
     /**
      * Controls whether to stroke text in GOCA mode or to use text operators
      * where possible.
-     * 
+     *
      * @param stroke
      *            true to stroke, false to paint with text operators where
      *            possible
@@ -411,7 +410,7 @@ public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState 
     /**
      * Indicates whether to stroke text in GOCA mode or to use text operators
      * where possible.
-     * 
+     *
      * @return true to stroke, false to paint with text operators where possible
      */
     public boolean isStrokeGOCAText() {
@@ -421,7 +420,7 @@ public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState 
     /**
      * Whether FS11 and SF45 non-inline images should be wrapped in a page
      * segment
-     * 
+     *
      * @return true iff images should be wrapped
      */
     public boolean getWrapPSeg() {
@@ -431,7 +430,7 @@ public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState 
     /**
      * Sets whether FS11 and FS45 non-inline images should be wrapped in a page
      * segment
-     * 
+     *
      * @param pSeg
      *            true iff images should be wrapped
      */
@@ -441,7 +440,7 @@ public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState 
 
     /**
      * gets whether images should be FS45
-     * 
+     *
      * @return true iff images should be FS45
      */
     public boolean getFS45() {
@@ -450,7 +449,7 @@ public class AFPPaintingState extends org.apache.fop.util.AbstractPaintingState 
 
     /**
      * sets whether images should be FS45
-     * 
+     *
      * @param fs45
      *            true iff images should be FS45
      */

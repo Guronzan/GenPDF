@@ -19,10 +19,6 @@
 
 package org.apache.fop;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
 import org.apache.fop.afp.fonts.CharactersetEncoderTestCase;
 import org.apache.fop.afp.parser.MODCAParserTestCase;
 import org.apache.fop.area.ViewportTestSuite;
@@ -46,40 +42,28 @@ import org.apache.fop.render.pdf.RenderPDFTestSuite;
 import org.apache.fop.render.ps.PSTestSuite;
 import org.apache.fop.render.rtf.RichTextFormatTestSuite;
 import org.apache.fop.traits.MinOptMaxTestCase;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Test suite for basic functionality of FOP.
  */
 @RunWith(Suite.class)
-@SuiteClasses({
-        BasicDriverTestSuite.class,
-        UtilityCodeTestSuite.class,
-        PDFAConformanceTestCase.class,
-        PDFEncodingTestCase.class,
-        PDFCMapTestCase.class,
-        PDFsRGBSettingsTestCase.class,
-        DejaVuLGCSerifTestCase.class,
-        RichTextFormatTestSuite.class,
-        ImageLoaderTestCase.class,
-        ImagePreloaderTestCase.class,
-        IFMimickingTestCase.class,
-        PageSequenceLayoutManagerTestCase.class,
-        PageBoundariesTestCase.class,
-        PageScaleTestCase.class,
-        org.apache.fop.afp.AFPTestSuite.class,
-        GlyfTableTestCase.class,
-        ViewportTestSuite.class,
-        RenderPDFTestSuite.class,
-        MODCAParserTestCase.class,
-        CharactersetEncoderTestCase.class,
-        org.apache.fop.render.afp.AFPTestSuite.class,
-        PDFLibraryTestSuite.class,
-        PSTestSuite.class,
-        MinOptMaxTestCase.class,
-        AdobeStandardEncodingTestCase.class,
-        AFMParserTestCase.class,
-        FontEventProcessingTestCase.class,
-        org.apache.fop.render.intermediate.IFStructureTreeBuilderTestCase.class
-})
+@SuiteClasses({ BasicDriverTestSuite.class, UtilityCodeTestSuite.class,
+    PDFAConformanceTestCase.class, PDFEncodingTestCase.class,
+    PDFCMapTestCase.class, PDFsRGBSettingsTestCase.class,
+    DejaVuLGCSerifTestCase.class, RichTextFormatTestSuite.class,
+    ImageLoaderTestCase.class, ImagePreloaderTestCase.class,
+    IFMimickingTestCase.class, PageSequenceLayoutManagerTestCase.class,
+    PageBoundariesTestCase.class, PageScaleTestCase.class,
+    org.apache.fop.afp.AFPTestSuite.class, GlyfTableTestCase.class,
+    ViewportTestSuite.class, RenderPDFTestSuite.class,
+    MODCAParserTestCase.class, CharactersetEncoderTestCase.class,
+    org.apache.fop.render.afp.AFPTestSuite.class,
+    PDFLibraryTestSuite.class, PSTestSuite.class, MinOptMaxTestCase.class,
+    AdobeStandardEncodingTestCase.class, AFMParserTestCase.class,
+    FontEventProcessingTestCase.class,
+    org.apache.fop.render.intermediate.IFStructureTreeBuilderTestCase.class })
 public class StandardTestSuite {
 }

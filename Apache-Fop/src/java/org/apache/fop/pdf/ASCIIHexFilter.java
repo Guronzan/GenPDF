@@ -25,8 +25,8 @@ import java.io.OutputStream;
 import org.apache.xmlgraphics.util.io.ASCIIHexOutputStream;
 
 /**
- * ASCII Hex filter for PDF streams.
- * This filter converts a pdf stream to ASCII hex data.
+ * ASCII Hex filter for PDF streams. This filter converts a pdf stream to ASCII
+ * hex data.
  */
 public class ASCIIHexFilter extends PDFFilter {
 
@@ -35,6 +35,7 @@ public class ASCIIHexFilter extends PDFFilter {
      *
      * @return the name of this filter for pdf
      */
+    @Override
     public String getName() {
         return "/ASCIIHexDecode";
     }
@@ -42,6 +43,7 @@ public class ASCIIHexFilter extends PDFFilter {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isASCIIFilter() {
         return true;
     }
@@ -51,6 +53,7 @@ public class ASCIIHexFilter extends PDFFilter {
      *
      * @return always null
      */
+    @Override
     public PDFObject getDecodeParms() {
         return null;
     }
@@ -58,7 +61,8 @@ public class ASCIIHexFilter extends PDFFilter {
     /**
      * {@inheritDoc}
      */
-    public OutputStream applyFilter(OutputStream out) throws IOException {
+    @Override
+    public OutputStream applyFilter(final OutputStream out) throws IOException {
         if (isApplied()) {
             return out;
         } else {

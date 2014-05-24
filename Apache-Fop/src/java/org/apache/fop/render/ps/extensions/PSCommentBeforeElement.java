@@ -32,9 +32,11 @@ public class PSCommentBeforeElement extends AbstractPSCommentElement {
 
     /**
      * Main constructor
-     * @param parent parent node
+     * 
+     * @param parent
+     *            parent node
      */
-    public PSCommentBeforeElement(FONode parent) {
+    public PSCommentBeforeElement(final FONode parent) {
         super(parent);
     }
 
@@ -42,6 +44,7 @@ public class PSCommentBeforeElement extends AbstractPSCommentElement {
      * @return local name
      * @see org.apache.fop.fo.FONode#getLocalName()
      */
+    @Override
     public String getLocalName() {
         return PSCommentBefore.ELEMENT;
     }
@@ -49,6 +52,7 @@ public class PSCommentBeforeElement extends AbstractPSCommentElement {
     /**
      * @return instance of its extension attachment object
      */
+    @Override
     protected ExtensionAttachment instantiateExtensionAttachment() {
         return new PSCommentBefore();
     }

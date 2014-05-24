@@ -23,26 +23,26 @@ import java.util.List;
 
 public class GroupInfo {
 
-    private String name;
-    private List actions = new java.util.ArrayList();
+    private final String name;
+    private final List actions = new java.util.ArrayList();
 
-    public GroupInfo(String n) {
-        name = n;
+    public GroupInfo(final String n) {
+        this.name = n;
     }
 
-    public void addActionInfo(ActionInfo ai) {
-        actions.add(ai);
+    public void addActionInfo(final ActionInfo ai) {
+        this.actions.add(ai);
     }
 
     public int getSize() {
-        return actions.size();
+        return this.actions.size();
     }
 
-    public ActionInfo getActionInfo(int c) {
-        return (ActionInfo) actions.get(c);
+    public ActionInfo getActionInfo(final int c) {
+        return (ActionInfo) this.actions.get(c);
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 }

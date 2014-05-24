@@ -19,9 +19,6 @@
 
 package org.apache.fop.render.pdf;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -30,54 +27,61 @@ import org.apache.fop.apps.FOUserAgent;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /** Test that characters are correctly encoded in a generated PDF file */
 public class PDFEncodingTestCase extends BasePDFTest {
-    private File foBaseDir = new File("test/xml/pdf-encoding");
-    private final boolean dumpPDF = Boolean.getBoolean("PDFEncodingTestCase.dumpPDF");
+    private final File foBaseDir = new File("test/xml/pdf-encoding");
+    private final boolean dumpPDF = Boolean
+            .getBoolean("PDFEncodingTestCase.dumpPDF");
     static final String INPUT_FILE = "test/xml/pdf-encoding/pdf-encoding-test.xconf";
     static final String TEST_MARKER = "PDFE_TEST_MARK_";
 
-
     /**
      * create an FOUserAgent for our tests
+     * 
      * @return an initialized FOUserAgent
      */
     protected FOUserAgent getUserAgent() {
-        final FOUserAgent a = fopFactory.newFOUserAgent();
+        final FOUserAgent a = this.fopFactory.newFOUserAgent();
         return a;
     }
 
     /** @return our specific config */
+    @Override
     protected File getUserConfigFile() {
         return new File(INPUT_FILE);
     }
 
     /**
      * Test using a standard FOP font
-     * @throws Exception checkstyle wants a comment here, even a silly one
+     * 
+     * @throws Exception
+     *             checkstyle wants a comment here, even a silly one
      */
     @Test
     public void testPDFEncodingWithStandardFont() throws Exception {
 
-        /*  If the PDF encoding is correct, a text dump of the generated PDF file contains this (excerpts)
-         *     ...Tm [(PDFE_TEST_MARK_2:) ( ) (This) ( ) (is) ...(acute:) ( ) (XX_\351_XX) ] TJ
-         *     ...Tm [(PDFE_TEST_MARK_3:) ( ) (This) ( ) (is) ...(letter:) ( ) (XX_\342\352\356\364\373_XX) ] TJ
-         *  The following array is used to look for these patterns
+        /*
+         * If the PDF encoding is correct, a text dump of the generated PDF file
+         * contains this (excerpts) ...Tm [(PDFE_TEST_MARK_2:) ( ) (This) ( )
+         * (is) ...(acute:) ( ) (XX_\351_XX) ] TJ ...Tm [(PDFE_TEST_MARK_3:) ( )
+         * (This) ( ) (is) ...(letter:) ( ) (XX_\342\352\356\364\373_XX) ] TJ
+         * The following array is used to look for these patterns
          */
-        final String[] testPatterns = {
-                TEST_MARKER + "1", "Standard",
-                TEST_MARKER + "2", "XX_\\351_XX",
-                TEST_MARKER + "3", "XX_\\342\\352\\356\\364\\373_XX"
-              };
+        final String[] testPatterns = { TEST_MARKER + "1", "Standard",
+                TEST_MARKER + "2", "XX_\\351_XX", TEST_MARKER + "3",
+                "XX_\\342\\352\\356\\364\\373_XX" };
 
         runTest("test-standard-font.fo", testPatterns);
     }
 
     /**
      * TODO test disabled for now, fails due (probably) do different PDF
-     * encoding when custom font is used.
-     * TODO This should be tested using PDFBox. If PDFBox can extract the text correctly,
-     * everything is fine. The tests here are too unstable.
+     * encoding when custom font is used. TODO This should be tested using
+     * PDFBox. If PDFBox can extract the text correctly, everything is fine. The
+     * tests here are too unstable.
      *
      * @throws Exception
      *             checkstyle wants a comment here, even a silly one
@@ -87,25 +91,25 @@ public class PDFEncodingTestCase extends BasePDFTest {
     @Test
     public void testPDFEncodingWithCustomFont() throws Exception {
 
-        /*  If the PDF encoding is correct, a text dump of the generated PDF file contains this (excerpts)
-         *     ...Tm [(PDFE_TEST_MARK_2:) ( ) (This) ( ) (is) ...(acute:) ( ) (XX_\351_XX) ] TJ
-         *     ...Tm [(PDFE_TEST_MARK_3:) ( ) (This) ( ) (is) ...(letter:) ( ) (XX_\342\352\356\364\373_XX) ] TJ
-         *  The following array is used to look for these patterns
+        /*
+         * If the PDF encoding is correct, a text dump of the generated PDF file
+         * contains this (excerpts) ...Tm [(PDFE_TEST_MARK_2:) ( ) (This) ( )
+         * (is) ...(acute:) ( ) (XX_\351_XX) ] TJ ...Tm [(PDFE_TEST_MARK_3:) ( )
+         * (This) ( ) (is) ...(letter:) ( ) (XX_\342\352\356\364\373_XX) ] TJ
+         * The following array is used to look for these patterns
          */
-        final String[] testPatterns = {
-          TEST_MARKER + "1", "(Gladiator)",
-          TEST_MARKER + "2", "XX_\\351_XX",
-          TEST_MARKER + "3", "XX_\\342\\352\\356\\364\\373_XX"
-        };
+        final String[] testPatterns = { TEST_MARKER + "1", "(Gladiator)",
+                TEST_MARKER + "2", "XX_\\351_XX", TEST_MARKER + "3",
+                "XX_\\342\\352\\356\\364\\373_XX" };
 
         runTest("test-custom-font.fo", testPatterns);
     }
 
     /** Test encoding using specified input file and test patterns array */
-    private void runTest(String inputFile, String[] testPatterns)
+    private void runTest(final String inputFile, final String[] testPatterns)
             throws Exception {
-        File foFile = new File(foBaseDir, inputFile);
-        byte[] pdfData = convertFO(foFile, getUserAgent(), dumpPDF);
+        final File foFile = new File(this.foBaseDir, inputFile);
+        final byte[] pdfData = convertFO(foFile, getUserAgent(), this.dumpPDF);
         checkEncoding(pdfData, testPatterns);
     }
 
@@ -115,7 +119,7 @@ public class PDFEncodingTestCase extends BasePDFTest {
      *
      * @throws IOException
      */
-    private void checkEncoding(byte[] pdf, String[] testPattern)
+    private void checkEncoding(final byte[] pdf, final String[] testPattern)
             throws IOException {
 
         int markersFound = 0;

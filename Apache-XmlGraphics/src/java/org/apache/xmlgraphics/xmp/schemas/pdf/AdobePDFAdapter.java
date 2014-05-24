@@ -34,9 +34,11 @@ public class AdobePDFAdapter extends XMPSchemaAdapter {
 
     /**
      * Constructs a new adapter for Adobe PDF around the given metadata object.
-     * @param meta the underlying metadata
+     * 
+     * @param meta
+     *            the underlying metadata
      */
-    public AdobePDFAdapter(Metadata meta, String namespace) {
+    public AdobePDFAdapter(final Metadata meta, final String namespace) {
         super(meta, XMPSchemaRegistry.getInstance().getSchema(namespace));
     }
 
@@ -47,9 +49,11 @@ public class AdobePDFAdapter extends XMPSchemaAdapter {
 
     /**
      * Sets the keywords.
-     * @param value the keywords
+     * 
+     * @param value
+     *            the keywords
      */
-    public void setKeywords(String value) {
+    public void setKeywords(final String value) {
         setValue(KEYWORDS, value);
     }
 
@@ -60,9 +64,11 @@ public class AdobePDFAdapter extends XMPSchemaAdapter {
 
     /**
      * Sets the PDF version
-     * @param value the PDF version (ex. "1.4")
+     * 
+     * @param value
+     *            the PDF version (ex. "1.4")
      */
-    public void setPDFVersion(String value) {
+    public void setPDFVersion(final String value) {
         setValue(PDFVERSION, value);
     }
 
@@ -73,9 +79,11 @@ public class AdobePDFAdapter extends XMPSchemaAdapter {
 
     /**
      * Sets the name of the tool that produced the PDF document
-     * @param value the producer
+     * 
+     * @param value
+     *            the producer
      */
-    public void setProducer(String value) {
+    public void setProducer(final String value) {
         setValue(PRODUCER, value);
     }
 

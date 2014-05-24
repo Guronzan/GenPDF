@@ -22,39 +22,43 @@ package org.apache.fop.area;
 import java.util.List;
 
 import org.apache.fop.fo.extensions.destination.Destination;
+
 /**
  * An instance of this class is named destination from fox:destination
  */
-public class DestinationData extends AbstractOffDocumentItem implements Resolvable {
+public class DestinationData extends AbstractOffDocumentItem implements
+        Resolvable {
 
     // ID Reference for this bookmark
-    private String idRef;
+    private final String idRef;
 
     // String Array to satisfy getIDRefs method
-    private String[] idRefs;
+    private final String[] idRefs;
 
     // PageViewport that the idRef item refers to
     private PageViewport pageRef = null;
 
     /**
-     * Create a new pdf destination data object.
-     * This is used by the destination to create a data object
-     * with a idref.  During processing, this idref will be
-     * subsequently resolved to a particular PageViewport.
+     * Create a new pdf destination data object. This is used by the destination
+     * to create a data object with a idref. During processing, this idref will
+     * be subsequently resolved to a particular PageViewport.
      *
-     * @param destination the fo:bookmark object
+     * @param destination
+     *            the fo:bookmark object
      */
-    public DestinationData(Destination destination) {
+    public DestinationData(final Destination destination) {
         this(destination.getInternalDestination());
     }
 
     /**
      * Create a new named destination.
-     * @param idRef the id reference of the destination
+     * 
+     * @param idRef
+     *            the id reference of the destination
      */
-    public DestinationData(String idRef) {
+    public DestinationData(final String idRef) {
         this.idRef = idRef;
-        this.idRefs = new String[] {idRef};
+        this.idRefs = new String[] { idRef };
     }
 
     /**
@@ -63,12 +67,13 @@ public class DestinationData extends AbstractOffDocumentItem implements Resolvab
      * @return the idref for the destination
      */
     public String getIDRef() {
-        return idRef;
+        return this.idRef;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getIDRefs() {
-        return idRefs;
+        return this.idRefs;
     }
 
     /**
@@ -77,37 +82,38 @@ public class DestinationData extends AbstractOffDocumentItem implements Resolvab
      * @return the PageViewport that this destination points to
      */
     public PageViewport getPageViewport() {
-        return pageRef;
+        return this.pageRef;
     }
 
     /**
-     * Check if this resolvable object has been resolved.
-     * For now, just return true.
-     * To do: Find a way to determine whether the destination has been resolved.
+     * Check if this resolvable object has been resolved. For now, just return
+     * true. To do: Find a way to determine whether the destination has been
+     * resolved.
      *
      * @return true if this object has been resolved
      */
+    @Override
     public boolean isResolved() {
         return true;
     }
 
     /**
-     * Resolves the idref of this object by getting the PageViewport
-     * object that corresponds to the IDRef
+     * Resolves the idref of this object by getting the PageViewport object that
+     * corresponds to the IDRef
      *
-     * {@inheritDoc}
-     * TODO check to make sure it works if multiple bookmark-items
+     * {@inheritDoc} TODO check to make sure it works if multiple bookmark-items
      * have the same idref
      */
-    public void resolveIDRef(String id, List<PageViewport> pages) {
-        pageRef = pages.get(0);
+    @Override
+    public void resolveIDRef(final String id, final List<PageViewport> pages) {
+        this.pageRef = pages.get(0);
         // TODO get rect area of id on page
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return "Destination";
     }
 
 }
-

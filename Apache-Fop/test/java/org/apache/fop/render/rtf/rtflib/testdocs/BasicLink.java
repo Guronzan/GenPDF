@@ -17,7 +17,6 @@
 
 /* $Id: BasicLink.java 679326 2008-07-24 09:35:34Z vhennebert $ */
 
-
 /*
  * This file is part of the RTF library of the FOP project, which was originally
  * created by Bertrand Delacretaz <bdelacretaz@codeconsult.ch> and by other
@@ -27,12 +26,12 @@
 
 package org.apache.fop.render.rtf.rtflib.testdocs;
 
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfDocumentArea;
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfParagraph;
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfHyperLink;
-
 import java.io.IOException;
+
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfDocumentArea;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfHyperLink;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfParagraph;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
 
 /**
  * Class <code>BasicLink</code> here.
@@ -41,9 +40,9 @@ import java.io.IOException;
  */
 
 public class BasicLink extends TestDocument {
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
     // @@ Construction
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
 
     /**
      * Default constructor.
@@ -51,28 +50,36 @@ public class BasicLink extends TestDocument {
     public BasicLink() {
     }
 
-    /** generate the body of the test document
-     * @param rda RtfDocumentArea
-     * @param sect RtfSection
-     * @throws IOException for I/O Errors
+    /**
+     * generate the body of the test document
+     * 
+     * @param rda
+     *            RtfDocumentArea
+     * @param sect
+     *            RtfSection
+     * @throws IOException
+     *             for I/O Errors
      */
-    protected void generateDocument(RtfDocumentArea rda, RtfSection sect) throws IOException {
-        RtfParagraph p = sect.newParagraph ();
+    @Override
+    protected void generateDocument(final RtfDocumentArea rda,
+            final RtfSection sect) throws IOException {
+        RtfParagraph p = sect.newParagraph();
         p.newLineBreak();
         p.newLineBreak();
         p.newLineBreak();
-        p.newText ("external link: ");
-        RtfHyperLink link = p.newHyperLink ("click here to go to the hompage", null);
-        link.setExternalURL ("http://www.skynamics.com");
+        p.newText("external link: ");
+        RtfHyperLink link = p.newHyperLink("click here to go to the hompage",
+                null);
+        link.setExternalURL("http://www.skynamics.com");
         p.close();
 
-        p = sect.newParagraph ();
+        p = sect.newParagraph();
         p.newLineBreak();
-        p.newText ("here we will demonstrate internal link to a bookmark");
+        p.newText("here we will demonstrate internal link to a bookmark");
         p.newLineBreak();
-        p.newText ("internal link: ");
-        link = p.newHyperLink ("click here to go to the bookmark", null);
-        link.setInternalURL ("testBookmark");
+        p.newText("internal link: ");
+        link = p.newHyperLink("click here to go to the bookmark", null);
+        link.setInternalURL("testBookmark");
         p.close();
 
         p = sect.newParagraph();

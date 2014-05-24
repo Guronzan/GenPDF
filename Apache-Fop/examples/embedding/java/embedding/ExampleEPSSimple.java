@@ -23,30 +23,30 @@ import java.awt.Font;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
+import org.apache.fop.render.ps.NativeTextHandler;
 import org.apache.xmlgraphics.java2d.GraphicContext;
 import org.apache.xmlgraphics.java2d.ps.EPSDocumentGraphics2D;
 
-import org.apache.fop.render.ps.NativeTextHandler;
-
 public class ExampleEPSSimple {
 
-  /**
-   * @param args
-   */
-  public static void main(String[] args) {
-    try {
-      OutputStream out = new FileOutputStream("example_eps_simple.eps");
-      EPSDocumentGraphics2D g2d = new EPSDocumentGraphics2D(false);
-      g2d.setGraphicContext(new GraphicContext());
-      g2d.setCustomTextHandler(new NativeTextHandler(g2d, null));
-      g2d.setupDocument(out, 200, 100);
-      g2d.setFont(new Font("Helvetica", Font.PLAIN, 12));
-      g2d.drawString("Hi there Helvetica", 50, 50);
-      g2d.finish();
-      out.close();
-    } catch (Exception e) {
-      e.printStackTrace();
+    /**
+     * @param args
+     */
+    public static void main(final String[] args) {
+        try {
+            final OutputStream out = new FileOutputStream(
+                    "example_eps_simple.eps");
+            final EPSDocumentGraphics2D g2d = new EPSDocumentGraphics2D(false);
+            g2d.setGraphicContext(new GraphicContext());
+            g2d.setCustomTextHandler(new NativeTextHandler(g2d, null));
+            g2d.setupDocument(out, 200, 100);
+            g2d.setFont(new Font("Helvetica", Font.PLAIN, 12));
+            g2d.drawString("Hi there Helvetica", 50, 50);
+            g2d.finish();
+            out.close();
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
     }
-  }
 
 }

@@ -32,6 +32,8 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.avalon.framework.CascadingRuntimeException;
 import org.apache.avalon.framework.activity.Executable;
 import org.apache.avalon.framework.activity.Initializable;
@@ -49,6 +51,7 @@ import org.apache.commons.io.output.NullOutputStream;
  * task a number of times in a configurable number of threads to easily
  * reproduce multi-threading issues.
  */
+@Slf4j
 public class FOPTestbed extends AbstractLogEnabled implements Configurable,
         Initializable {
 
@@ -136,30 +139,28 @@ public class FOPTestbed extends AbstractLogEnabled implements Configurable,
         final int count = this.results.size();
         int failures = 0;
         long bytesWritten = 0;
-        System.out.println("Report on " + count + " tasks:");
+        log.info("Report on " + count + " tasks:");
         final Iterator iter = this.results.iterator();
         while (iter.hasNext()) {
             final Result res = (Result) iter.next();
             if (res.failure != null) {
-                System.out.println("FAIL: " + (res.end - res.start) + " "
-                        + res.task);
-                System.out.println("  -> " + res.failure.getMessage());
+                log.info("FAIL: " + (res.end - res.start) + " " + res.task);
+                log.info("  -> " + res.failure.getMessage());
                 failures++;
             } else {
-                System.out.println("good: " + (res.end - res.start) + " "
-                        + res.filesize + " " + res.task);
+                log.info("good: " + (res.end - res.start) + " " + res.filesize
+                        + " " + res.task);
                 bytesWritten += res.filesize;
             }
         }
-        System.out.println("Stress test duration: " + duration + "ms");
+        log.info("Stress test duration: " + duration + "ms");
         if (failures > 0) {
-            System.out.println(failures + " failures of " + count
-                    + " documents!!!");
+            log.info(failures + " failures of " + count + " documents!!!");
         } else {
             final float mb = 1024f * 1024f;
-            System.out.println("Bytes written: " + bytesWritten / mb + " MB, "
+            log.info("Bytes written: " + bytesWritten / mb + " MB, "
                     + bytesWritten * 1000 / duration + " bytes / sec");
-            System.out.println("NO failures with " + count + " documents.");
+            log.info("NO failures with " + count + " documents.");
         }
     }
 
@@ -188,7 +189,7 @@ public class FOPTestbed extends AbstractLogEnabled implements Configurable,
 
     /**
      * Creates a new FOProcessor.
-     * 
+     *
      * @return the newly created instance
      */
     public Processor createFOProcessor() {

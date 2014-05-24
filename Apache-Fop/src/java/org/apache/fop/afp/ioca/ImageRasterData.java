@@ -28,22 +28,20 @@ import org.apache.fop.afp.util.BinaryUtils;
 /**
  * Contains the image points that define the IM image raster pattern.
  *
- * A raster pattern is the array of presentation device pels that forms
- * the image. The image data is uncompressed. Bits are grouped into
- * bytes and are ordered from left to right within each byte. Each bit
- * in the image data represents an image point and is mapped to
- * presentation device pels as specified in the IOC structured field.
- * A bit with value B'1' indicates a significant image point; a bit
- * with value B'0' indicates an insignificant image point.
- * Image points are recorded from left to right in rows that represents
- * scan lines (X direction), and rows representing scan lines are
- * recorded from top to bottom (Y direction). When the image is
- * presented, all image points in a row are presented before any
- * image points in the next sequential row are presented, and all rows
- * have the same number of image points. If the total number of image
- * points is not a multiple of 8, the last byte of the image data is
- * padded to a byte boundary. The padding bits do not represent image
- * points and are ignored by presentation devices.
+ * A raster pattern is the array of presentation device pels that forms the
+ * image. The image data is uncompressed. Bits are grouped into bytes and are
+ * ordered from left to right within each byte. Each bit in the image data
+ * represents an image point and is mapped to presentation device pels as
+ * specified in the IOC structured field. A bit with value B'1' indicates a
+ * significant image point; a bit with value B'0' indicates an insignificant
+ * image point. Image points are recorded from left to right in rows that
+ * represents scan lines (X direction), and rows representing scan lines are
+ * recorded from top to bottom (Y direction). When the image is presented, all
+ * image points in a row are presented before any image points in the next
+ * sequential row are presented, and all rows have the same number of image
+ * points. If the total number of image points is not a multiple of 8, the last
+ * byte of the image data is padded to a byte boundary. The padding bits do not
+ * represent image points and are ignored by presentation devices.
  */
 public class ImageRasterData extends AbstractAFPObject {
 
@@ -53,22 +51,24 @@ public class ImageRasterData extends AbstractAFPObject {
     /**
      * Constructor for the image raster data object
      *
-     * @param data The raster image data
+     * @param data
+     *            The raster image data
      */
-    public ImageRasterData(byte[] data) {
+    public ImageRasterData(final byte[] data) {
         this.rasterData = data;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[9];
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[9];
         copySF(data, Type.DATA, Category.IM_IMAGE);
         // The size of the structured field
-        byte[] len = BinaryUtils.convert(rasterData.length + 8, 2);
+        final byte[] len = BinaryUtils.convert(this.rasterData.length + 8, 2);
         data[1] = len[0];
         data[2] = len[1];
         os.write(data);
 
-        os.write(rasterData);
+        os.write(this.rasterData);
     }
 }

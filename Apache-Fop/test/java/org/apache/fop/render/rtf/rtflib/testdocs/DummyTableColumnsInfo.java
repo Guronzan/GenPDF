@@ -17,7 +17,6 @@
 
 /* $Id: DummyTableColumnsInfo.java 1297404 2012-03-06 10:17:54Z vhennebert $ */
 
-
 /*
  * This file is part of the RTF library of the FOP project, which was originally
  * created by Bertrand Delacretaz <bdelacretaz@codeconsult.ch> and by other
@@ -29,37 +28,48 @@ package org.apache.fop.render.rtf.rtflib.testdocs;
 
 import org.apache.fop.render.rtf.rtflib.rtfdoc.ITableColumnsInfo;
 
-/** ITableColumnsInfo that does nothing, used in testodcs package
- *  to create documents without worrying about nested tables handling.
- *  Might need to be replaced by more complete version in some sample
- *  documents created by this package.
+/**
+ * ITableColumnsInfo that does nothing, used in testodcs package to create
+ * documents without worrying about nested tables handling. Might need to be
+ * replaced by more complete version in some sample documents created by this
+ * package.
  *
- *  @author bdelacretaz@codeconsult.ch
+ * @author bdelacretaz@codeconsult.ch
  */
 
 class DummyTableColumnsInfo implements ITableColumnsInfo {
 
+    @Override
     public float getColumnWidth() {
         return INVALID_COLUMN_WIDTH;
     }
 
+    @Override
     public void selectFirstColumn() {
     }
 
+    @Override
     public int getNumberOfColumns() {
         return 0;
     }
 
+    @Override
     public int getColumnIndex() {
         return 0;
     }
 
+    @Override
     public void selectNextColumn() {
     }
 
-    /* (non-Javadoc)
-     * @see org.apache.fop.render.rtf.rtflib.rtfdoc.ITableColumnsInfo#getFirstSpanningCol()
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.apache.fop.render.rtf.rtflib.rtfdoc.ITableColumnsInfo#getFirstSpanningCol
+     * ()
      */
+    @Override
     public boolean getFirstSpanningCol() {
         // TODO Auto-generated method stub
         return false;

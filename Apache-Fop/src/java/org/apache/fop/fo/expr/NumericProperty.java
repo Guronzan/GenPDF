@@ -21,6 +21,8 @@ package org.apache.fop.fo.expr;
 
 import java.awt.Color;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.datatypes.Length;
 import org.apache.fop.datatypes.Numeric;
@@ -33,6 +35,7 @@ import org.apache.fop.util.CompareUtil;
  * A numeric property which hold the final absolute result of an expression
  * calculations.
  */
+@Slf4j
 public class NumericProperty extends Property implements Length {
     private final double value;
     private final int dim;
@@ -40,7 +43,7 @@ public class NumericProperty extends Property implements Length {
     /**
      * Construct a Numeric object by specifying one or more components,
      * including absolute length, percent length, table units.
-     * 
+     *
      * @param value
      *            The value of the numeric.
      * @param dim

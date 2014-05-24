@@ -19,25 +19,20 @@
 
 package org.apache.fop.render.ps;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
 import org.apache.fop.render.ps.fonts.PSTTFGeneratorTestCase;
 import org.apache.fop.render.ps.fonts.PSTTFGlyphOutputStreamTestCase;
 import org.apache.fop.render.ps.fonts.PSTTFOutputStreamTestCase;
 import org.apache.fop.render.ps.fonts.PSTTFTableOutputStreamTestCase;
-
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * A test Suite for org.apache.fop.render.ps.*
  */
 @RunWith(Suite.class)
-@SuiteClasses({
-        PSTTFGeneratorTestCase.class,
-        PSTTFOutputStreamTestCase.class,
-        PSTTFGlyphOutputStreamTestCase.class,
-        PSTTFTableOutputStreamTestCase.class
-})
+@SuiteClasses({ PSTTFGeneratorTestCase.class, PSTTFOutputStreamTestCase.class,
+    PSTTFGlyphOutputStreamTestCase.class,
+    PSTTFTableOutputStreamTestCase.class })
 public final class RenderPSTestSuite {
 }

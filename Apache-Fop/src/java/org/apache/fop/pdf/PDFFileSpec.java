@@ -27,9 +27,10 @@ public class PDFFileSpec extends PDFDictionary {
     /**
      * create a /FileSpec object.
      *
-     * @param filename the filename represented by this object
+     * @param filename
+     *            the filename represented by this object
      */
-    public PDFFileSpec(String filename) {
+    public PDFFileSpec(final String filename) {
 
         /* generic creation of object */
         super();
@@ -38,28 +39,34 @@ public class PDFFileSpec extends PDFDictionary {
     }
 
     private String getFilename() {
-        return (String)get("F");
+        return (String) get("F");
     }
 
     /**
-     * Associates an dictionary with pointers to embedded file streams with this file spec.
-     * @param embeddedFileDict the dictionary with pointers to embedded file streams
+     * Associates an dictionary with pointers to embedded file streams with this
+     * file spec.
+     * 
+     * @param embeddedFileDict
+     *            the dictionary with pointers to embedded file streams
      */
-    public void setEmbeddedFile(PDFDictionary embeddedFileDict) {
+    public void setEmbeddedFile(final PDFDictionary embeddedFileDict) {
         put("EF", embeddedFileDict);
     }
 
     /**
      * Sets a description for the file spec.
-     * @param description the description
+     * 
+     * @param description
+     *            the description
      * @since PDF 1.6
      */
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         put("Desc", description);
     }
 
     /** {@inheritDoc} */
-    protected boolean contentEquals(PDFObject obj) {
+    @Override
+    protected boolean contentEquals(final PDFObject obj) {
         if (this == obj) {
             return true;
         }
@@ -68,7 +75,7 @@ public class PDFFileSpec extends PDFDictionary {
             return false;
         }
 
-        PDFFileSpec spec = (PDFFileSpec)obj;
+        final PDFFileSpec spec = (PDFFileSpec) obj;
 
         if (!spec.getFilename().equals(getFilename())) {
             return false;
@@ -77,4 +84,3 @@ public class PDFFileSpec extends PDFDictionary {
         return true;
     }
 }
-

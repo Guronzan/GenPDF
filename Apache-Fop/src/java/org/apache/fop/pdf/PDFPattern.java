@@ -26,9 +26,9 @@ import java.util.List;
 /**
  * class representing a PDF Function.
  *
- * PDF Functions represent parameterized mathematical formulas and sampled representations with
- * arbitrary resolution. Functions are used in two areas: device-dependent
- * rasterization information for halftoning and transfer
+ * PDF Functions represent parameterized mathematical formulas and sampled
+ * representations with arbitrary resolution. Functions are used in two areas:
+ * device-dependent rasterization information for halftoning and transfer
  * functions, and color specification for smooth shading (a PDF 1.3 feature).
  *
  * All PDF Functions have a FunctionType (0,2,3, or 4), a Domain, and a Range.
@@ -43,7 +43,7 @@ public class PDFPattern extends PDFPathPaint {
     /**
      * Either one (1) for tiling, or two (2) for shading.
      */
-    protected int patternType = 2;      // Default
+    protected int patternType = 2; // Default
 
     /**
      * The name of the pattern such as "Pa1" or "Pattern1"
@@ -86,8 +86,7 @@ public class PDFPattern extends PDFPathPaint {
     protected List xUID = null;
 
     /**
-     * TODO use PDFGState
-     * String representing the extended Graphics state.
+     * TODO use PDFGState String representing the extended Graphics state.
      * Probably will never be used like this.
      */
     protected StringBuffer extGState = null;
@@ -105,29 +104,41 @@ public class PDFPattern extends PDFPathPaint {
     /**
      * Create a tiling pattern (type 1).
      *
-     * @param theResources the resources associated with this pattern
-     * @param thePatternType the type of pattern, which is 1 for tiling.
-     * @param thePaintType 1 or 2, colored or uncolored.
-     * @param theTilingType 1, 2, or 3, constant spacing, no distortion, or faster tiling
-     * @param theBBox List of Doubles: The pattern cell bounding box
-     * @param theXStep horizontal spacing
-     * @param theYStep vertical spacing
-     * @param theMatrix Optional List of Doubles transformation matrix
-     * @param theXUID Optional vector of Integers that uniquely identify the pattern
-     * @param thePatternDataStream The stream of pattern data to be tiled.
+     * @param theResources
+     *            the resources associated with this pattern
+     * @param thePatternType
+     *            the type of pattern, which is 1 for tiling.
+     * @param thePaintType
+     *            1 or 2, colored or uncolored.
+     * @param theTilingType
+     *            1, 2, or 3, constant spacing, no distortion, or faster tiling
+     * @param theBBox
+     *            List of Doubles: The pattern cell bounding box
+     * @param theXStep
+     *            horizontal spacing
+     * @param theYStep
+     *            vertical spacing
+     * @param theMatrix
+     *            Optional List of Doubles transformation matrix
+     * @param theXUID
+     *            Optional vector of Integers that uniquely identify the pattern
+     * @param thePatternDataStream
+     *            The stream of pattern data to be tiled.
      */
-    public PDFPattern(                                           // CSOK: ParameterNumber
-            PDFResources theResources, int thePatternType,    // 1
-            int thePaintType, int theTilingType, List theBBox,
-            double theXStep, double theYStep,
-            List theMatrix, List theXUID,
-            StringBuffer thePatternDataStream) {
+    public PDFPattern(
+            // CSOK: ParameterNumber
+            final PDFResources theResources,
+            final int thePatternType, // 1
+            final int thePaintType, final int theTilingType,
+            final List theBBox, final double theXStep, final double theYStep,
+            final List theMatrix, final List theXUID,
+            final StringBuffer thePatternDataStream) {
         super();
         this.resources = theResources;
         // This next parameter is implicit to all constructors, and is
         // not directly passed.
 
-        this.patternType = 1;    // thePatternType;
+        this.patternType = 1; // thePatternType;
         this.paintType = thePaintType;
         this.tilingType = theTilingType;
         this.bBox = theBBox;
@@ -141,23 +152,29 @@ public class PDFPattern extends PDFPathPaint {
     /**
      * Create a type 2 pattern (smooth shading)
      *
-     * @param thePatternType the type of the pattern, which is 2, smooth shading
-     * @param theShading the PDF Shading object that comprises this pattern
-     * @param theXUID optional:the extended unique Identifier if used.
-     * @param theExtGState optional: the extended graphics state, if used.
-     * @param theMatrix Optional:List of Doubles that specify the matrix.
+     * @param thePatternType
+     *            the type of the pattern, which is 2, smooth shading
+     * @param theShading
+     *            the PDF Shading object that comprises this pattern
+     * @param theXUID
+     *            optional:the extended unique Identifier if used.
+     * @param theExtGState
+     *            optional: the extended graphics state, if used.
+     * @param theMatrix
+     *            Optional:List of Doubles that specify the matrix.
      */
-    public PDFPattern(int thePatternType, PDFShading theShading,
-                      List theXUID, StringBuffer theExtGState,
-                      List theMatrix) {
+    public PDFPattern(final int thePatternType, final PDFShading theShading,
+            final List theXUID, final StringBuffer theExtGState,
+            final List theMatrix) {
         super();
 
-        this.patternType = 2;             // thePatternType;
+        this.patternType = 2; // thePatternType;
         this.shading = theShading;
         this.xUID = theXUID;
         // this isn't really implemented, so it should always be null.
-        // I just don't want to have to add a new parameter once it is implemented.
-        this.extGState = theExtGState;    // always null
+        // I just don't want to have to add a new parameter once it is
+        // implemented.
+        this.extGState = theExtGState; // always null
         this.matrix = theMatrix;
     }
 
@@ -167,15 +184,17 @@ public class PDFPattern extends PDFPathPaint {
      * @return String representing the name of the pattern.
      */
     public String getName() {
-        return (this.patternName);
+        return this.patternName;
     }
 
     /**
      * Sets the name of the pattern.
-     * @param name the name of the pattern. Can be anything
-     * without spaces. "Pattern1" or "Pa1" are good examples.
+     *
+     * @param name
+     *            the name of the pattern. Can be anything without spaces.
+     *            "Pattern1" or "Pa1" are good examples.
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         if (name.indexOf(" ") >= 0) {
             throw new IllegalArgumentException(
                     "Pattern name must not contain any spaces");
@@ -186,36 +205,40 @@ public class PDFPattern extends PDFPathPaint {
     /**
      * Get the PDF command for setting to this pattern.
      *
-     * @param fillNotStroke if true fill otherwise stroke
+     * @param fillNotStroke
+     *            if true fill otherwise stroke
      * @return the PDF string for setting the pattern
      */
-    public String getColorSpaceOut(boolean fillNotStroke) {
-        if (fillNotStroke) {    // fill but no stroke
-            return ("/Pattern cs /" + this.getName() + " scn \n");
-        } else {                // stroke (or border)
-            return ("/Pattern CS /" + this.getName() + " SCN \n");
+    @Override
+    public String getColorSpaceOut(final boolean fillNotStroke) {
+        if (fillNotStroke) { // fill but no stroke
+            return "/Pattern cs /" + getName() + " scn \n";
+        } else { // stroke (or border)
+            return "/Pattern CS /" + getName() + " SCN \n";
         }
     }
 
     /**
      * represent as PDF. Whatever the FunctionType is, the correct
-     * representation spits out. The sets of required and optional
-     * attributes are different for each type, but if a required
-     * attribute's object was constructed as null, then no error
-     * is raised. Instead, the malformed PDF that was requested
-     * by the construction is dutifully output.
-     * This policy should be reviewed.
+     * representation spits out. The sets of required and optional attributes
+     * are different for each type, but if a required attribute's object was
+     * constructed as null, then no error is raised. Instead, the malformed PDF
+     * that was requested by the construction is dutifully output. This policy
+     * should be reviewed.
      *
-     * @param stream the stream to write to
-     * @throws IOException if there is an error writing to the stream
+     * @param stream
+     *            the stream to write to
+     * @throws IOException
+     *             if there is an error writing to the stream
      * @return the PDF string.
      */
-    public int output(OutputStream stream) throws IOException {
+    @Override
+    public int output(final OutputStream stream) throws IOException {
 
         int vectorSize = 0;
         int tempInt = 0;
         byte[] buffer;
-        StringBuffer p = new StringBuffer(64);
+        final StringBuffer p = new StringBuffer(64);
         p.append("<< \n/Type /Pattern \n");
 
         if (this.resources != null) {
@@ -235,22 +258,24 @@ public class PDFPattern extends PDFPathPaint {
                 vectorSize = this.bBox.size();
                 p.append("/BBox [ ");
                 for (tempInt = 0; tempInt < vectorSize; tempInt++) {
-                    p.append(PDFNumber.doubleOut((Double)this.bBox.get(tempInt)));
+                    p.append(PDFNumber.doubleOut((Double) this.bBox
+                            .get(tempInt)));
                     p.append(" ");
                 }
                 p.append("] \n");
             }
             p.append("/XStep " + PDFNumber.doubleOut(new Double(this.xStep))
-                     + " \n");
+                    + " \n");
             p.append("/YStep " + PDFNumber.doubleOut(new Double(this.yStep))
-                     + " \n");
+                    + " \n");
 
             if (this.matrix != null) {
                 vectorSize = this.matrix.size();
                 p.append("/Matrix [ ");
                 for (tempInt = 0; tempInt < vectorSize; tempInt++) {
                     p.append(PDFNumber.doubleOut(
-                            ((Double)this.matrix.get(tempInt)).doubleValue(), 8));
+                            ((Double) this.matrix.get(tempInt)).doubleValue(),
+                            8));
                     p.append(" ");
                 }
                 p.append("] \n");
@@ -260,7 +285,7 @@ public class PDFPattern extends PDFPathPaint {
                 vectorSize = this.xUID.size();
                 p.append("/XUID [ ");
                 for (tempInt = 0; tempInt < vectorSize; tempInt++) {
-                    p.append(((Integer)this.xUID.get(tempInt)) + " ");
+                    p.append(this.xUID.get(tempInt) + " ");
                 }
                 p.append("] \n");
             }
@@ -275,8 +300,7 @@ public class PDFPattern extends PDFPathPaint {
                         PDFFilterList.CONTENT_FILTER);
                 encodedStream = pdfStream.encodeStream();
                 p.append(pdfStream.getFilterList().buildFilterDictEntries());
-                p.append("/Length " + (encodedStream.getSize() + 1)
-                         + " \n");
+                p.append("/Length " + (encodedStream.getSize() + 1) + " \n");
             }
 
         } else {
@@ -290,7 +314,7 @@ public class PDFPattern extends PDFPathPaint {
                 vectorSize = this.xUID.size();
                 p.append("/XUID [ ");
                 for (tempInt = 0; tempInt < vectorSize; tempInt++) {
-                    p.append(((Integer)this.xUID.get(tempInt)) + " ");
+                    p.append(this.xUID.get(tempInt) + " ");
                 }
                 p.append("] \n");
             }
@@ -304,12 +328,13 @@ public class PDFPattern extends PDFPathPaint {
                 p.append("/Matrix [ ");
                 for (tempInt = 0; tempInt < vectorSize; tempInt++) {
                     p.append(PDFNumber.doubleOut(
-                            ((Double)this.matrix.get(tempInt)).doubleValue(), 8));
+                            ((Double) this.matrix.get(tempInt)).doubleValue(),
+                            8));
                     p.append(" ");
                 }
                 p.append("] \n");
             }
-        }         // end of if patterntype =1...else 2.
+        } // end of if patterntype =1...else 2.
 
         p.append(">> \n");
 
@@ -327,12 +352,17 @@ public class PDFPattern extends PDFPathPaint {
 
     /**
      * Output PDF bytes, not used.
+     *
      * @return returns null
      */
-    public byte[] toPDF() { return null; }
+    @Override
+    public byte[] toPDF() {
+        return null;
+    }
 
     /** {@inheritDoc} */
-    protected boolean contentEquals(PDFObject obj) {
+    @Override
+    protected boolean contentEquals(final PDFObject obj) {
         if (obj == null) {
             return false;
         }
@@ -342,73 +372,73 @@ public class PDFPattern extends PDFPathPaint {
         if (!(obj instanceof PDFPattern)) {
             return false;
         }
-        PDFPattern patt = (PDFPattern)obj;
-        if (patternType != patt.patternType) {
+        final PDFPattern patt = (PDFPattern) obj;
+        if (this.patternType != patt.patternType) {
             return false;
         }
-        if (paintType != patt.paintType) {
+        if (this.paintType != patt.paintType) {
             return false;
         }
-        if (tilingType != patt.tilingType) {
+        if (this.tilingType != patt.tilingType) {
             return false;
         }
-        if (xStep != patt.xStep) {
+        if (this.xStep != patt.xStep) {
             return false;
         }
-        if (yStep != patt.yStep) {
+        if (this.yStep != patt.yStep) {
             return false;
         }
-        if (bBox != null) {
-            if (!bBox.equals(patt.bBox)) {
+        if (this.bBox != null) {
+            if (!this.bBox.equals(patt.bBox)) {
                 return false;
             }
         } else if (patt.bBox != null) {
             return false;
         }
-        if (bBox != null) {
-            if (!bBox.equals(patt.bBox)) {
+        if (this.bBox != null) {
+            if (!this.bBox.equals(patt.bBox)) {
                 return false;
             }
         } else if (patt.bBox != null) {
             return false;
         }
-        if (xUID != null) {
-            if (!xUID.equals(patt.xUID)) {
+        if (this.xUID != null) {
+            if (!this.xUID.equals(patt.xUID)) {
                 return false;
             }
         } else if (patt.xUID != null) {
             return false;
         }
-        if (extGState != null) {
-            if (!extGState.equals(patt.extGState)) {
+        if (this.extGState != null) {
+            if (!this.extGState.equals(patt.extGState)) {
                 return false;
             }
         } else if (patt.extGState != null) {
             return false;
         }
-        if (matrix != null) {
-            if (!matrix.equals(patt.matrix)) {
+        if (this.matrix != null) {
+            if (!this.matrix.equals(patt.matrix)) {
                 return false;
             }
         } else if (patt.matrix != null) {
             return false;
         }
-        if (resources != null) {
-            if (!resources.equals(patt.resources)) {
+        if (this.resources != null) {
+            if (!this.resources.equals(patt.resources)) {
                 return false;
             }
         } else if (patt.resources != null) {
             return false;
         }
-        if (shading != null) {
-            if (!shading.equals(patt.shading)) {
+        if (this.shading != null) {
+            if (!this.shading.equals(patt.shading)) {
                 return false;
             }
         } else if (patt.shading != null) {
             return false;
         }
-        if (patternDataStream != null) {
-            if (!patternDataStream.equals(patt.patternDataStream)) {
+        if (this.patternDataStream != null) {
+            if (!this.patternDataStream.equals(patt.patternDataStream)) {
                 return false;
             }
         } else if (patt.patternDataStream != null) {

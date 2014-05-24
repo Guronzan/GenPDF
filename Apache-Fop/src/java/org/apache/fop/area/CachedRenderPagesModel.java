@@ -32,75 +32,88 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.xml.sax.SAXException;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.fop.ResourceEventProducer;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.fonts.FontInfo;
+import org.xml.sax.SAXException;
 
 /**
- * A simple cached render pages model.
- * If the page is prepared for later rendering then this saves
- * the page contents to a file and once the page is resolved
- * the contents are reloaded.
+ * A simple cached render pages model. If the page is prepared for later
+ * rendering then this saves the page contents to a file and once the page is
+ * resolved the contents are reloaded.
  */
+@Slf4j
 public class CachedRenderPagesModel extends RenderPagesModel {
 
-    private Map<PageViewport, String> pageMap = new HashMap<PageViewport, String>();
+    private final Map<PageViewport, String> pageMap = new HashMap<PageViewport, String>();
 
-    /** Base directory to save temporary file in, typically points to the user's temp dir. */
+    /**
+     * Base directory to save temporary file in, typically points to the user's
+     * temp dir.
+     */
     protected File baseDir;
 
     /**
      * Main Constructor
-     * @param userAgent FOUserAgent object for process
-     * @param outputFormat the MIME type of the output format to use (ex. "application/pdf").
-     * @param fontInfo FontInfo object
-     * @param stream OutputStream
-     * @throws FOPException if the renderer cannot be properly initialized
+     *
+     * @param userAgent
+     *            FOUserAgent object for process
+     * @param outputFormat
+     *            the MIME type of the output format to use (ex.
+     *            "application/pdf").
+     * @param fontInfo
+     *            FontInfo object
+     * @param stream
+     *            OutputStream
+     * @throws FOPException
+     *             if the renderer cannot be properly initialized
      */
-    public CachedRenderPagesModel (FOUserAgent userAgent, String outputFormat,
-            FontInfo fontInfo, OutputStream stream) throws FOPException {
+    public CachedRenderPagesModel(final FOUserAgent userAgent,
+            final String outputFormat, final FontInfo fontInfo,
+            final OutputStream stream) throws FOPException {
         super(userAgent, outputFormat, fontInfo, stream);
-        //TODO: Avoid System.getProperty()?
+        // TODO: Avoid System.getProperty()?
         this.baseDir = new File(System.getProperty("java.io.tmpdir"));
     }
 
     /** {@inheritDoc} */
     @Override
-    protected boolean checkPreparedPages(PageViewport newpage, boolean renderUnresolved) {
-        for (Iterator iter = prepared.iterator(); iter.hasNext();) {
-            PageViewport pageViewport = (PageViewport)iter.next();
+    protected boolean checkPreparedPages(final PageViewport newpage,
+            final boolean renderUnresolved) {
+        for (final Iterator iter = this.prepared.iterator(); iter.hasNext();) {
+            final PageViewport pageViewport = (PageViewport) iter.next();
             if (pageViewport.isResolved() || renderUnresolved) {
                 if (pageViewport != newpage) {
                     try {
                         // load page from cache
-                        String name = pageMap.get(pageViewport);
-                        File tempFile = new File(baseDir, name);
+                        final String name = this.pageMap.get(pageViewport);
+                        final File tempFile = new File(this.baseDir, name);
                         log.debug("Loading page from: " + tempFile);
-                        ObjectInputStream in = new ObjectInputStream(
-                                             new BufferedInputStream(
-                                               new FileInputStream(tempFile)));
+                        final ObjectInputStream in = new ObjectInputStream(
+                                new BufferedInputStream(new FileInputStream(
+                                        tempFile)));
                         try {
                             pageViewport.loadPage(in);
                         } finally {
                             IOUtils.closeQuietly(in);
                         }
                         if (!tempFile.delete()) {
-                            ResourceEventProducer eventProducer
-                                = ResourceEventProducer.Provider.get(
-                                        renderer.getUserAgent().getEventBroadcaster());
+                            final ResourceEventProducer eventProducer = ResourceEventProducer.Provider
+                                    .get(this.renderer.getUserAgent()
+                                            .getEventBroadcaster());
                             eventProducer.cannotDeleteTempFile(this, tempFile);
                         }
-                        pageMap.remove(pageViewport);
-                    } catch (Exception e) {
-                        AreaEventProducer eventProducer
-                            = AreaEventProducer.Provider.get(
-                                renderer.getUserAgent().getEventBroadcaster());
-                        eventProducer.pageLoadError(this, pageViewport.getPageNumberString(), e);
+                        this.pageMap.remove(pageViewport);
+                    } catch (final Exception e) {
+                        final AreaEventProducer eventProducer = AreaEventProducer.Provider
+                                .get(this.renderer.getUserAgent()
+                                        .getEventBroadcaster());
+                        eventProducer.pageLoadError(this,
+                                pageViewport.getPageNumberString(), e);
                     }
                 }
 
@@ -108,7 +121,7 @@ public class CachedRenderPagesModel extends RenderPagesModel {
                 pageViewport.clear();
                 iter.remove();
             } else {
-                if (!renderer.supportsOutOfOrder()) {
+                if (!this.renderer.supportsOutOfOrder()) {
                     break;
                 }
             }
@@ -117,37 +130,36 @@ public class CachedRenderPagesModel extends RenderPagesModel {
             savePage(newpage);
             newpage.clear();
         }
-        return renderer.supportsOutOfOrder() || prepared.isEmpty();
+        return this.renderer.supportsOutOfOrder() || this.prepared.isEmpty();
     }
 
     /**
-     * Save a page.
-     * It saves the contents of the page to a file.
+     * Save a page. It saves the contents of the page to a file.
      *
-     * @param page the page to prepare
+     * @param page
+     *            the page to prepare
      */
-    protected void savePage(PageViewport page) {
+    protected void savePage(final PageViewport page) {
         try {
             // save page to cache
             ObjectOutputStream tempstream;
-            String fname = "fop-page-" + page.getPageIndex() + ".ser";
-            File tempFile = new File(baseDir, fname);
+            final String fname = "fop-page-" + page.getPageIndex() + ".ser";
+            final File tempFile = new File(this.baseDir, fname);
             tempFile.deleteOnExit();
             tempstream = new ObjectOutputStream(new BufferedOutputStream(
-                                                new FileOutputStream(tempFile)));
+                    new FileOutputStream(tempFile)));
             try {
                 page.savePage(tempstream);
             } finally {
                 IOUtils.closeQuietly(tempstream);
             }
-            pageMap.put(page, fname);
+            this.pageMap.put(page, fname);
             if (log.isDebugEnabled()) {
                 log.debug("Page saved to temporary file: " + tempFile);
             }
-        } catch (IOException ioe) {
-            AreaEventProducer eventProducer
-                = AreaEventProducer.Provider.get(
-                    renderer.getUserAgent().getEventBroadcaster());
+        } catch (final IOException ioe) {
+            final AreaEventProducer eventProducer = AreaEventProducer.Provider
+                    .get(this.renderer.getUserAgent().getEventBroadcaster());
             eventProducer.pageSaveError(this, page.getPageNumberString(), ioe);
         }
     }
@@ -158,4 +170,3 @@ public class CachedRenderPagesModel extends RenderPagesModel {
         super.endDocument();
     }
 }
-

@@ -34,37 +34,42 @@ public class ToBeImplementedProperty extends Property {
 
         /**
          * Instantiate a to be implemented property maker instance.
-         * @param propId a property id
+         * 
+         * @param propId
+         *            a property id
          */
-        public Maker(int propId) {
+        public Maker(final int propId) {
             super(propId);
         }
 
         @Override
-        public Property convertProperty(Property p,
-                                        PropertyList propertyList, FObj fo) {
+        public Property convertProperty(final Property p,
+                final PropertyList propertyList, final FObj fo) {
             if (p instanceof ToBeImplementedProperty) {
                 return p;
             }
 
-            ToBeImplementedProperty val = new ToBeImplementedProperty(getPropId());
+            final ToBeImplementedProperty val = new ToBeImplementedProperty(
+                    getPropId());
             return val;
         }
     }
 
     /**
      * Constructor
-     * @param propId id of Property
+     * 
+     * @param propId
+     *            id of Property
      */
-    public ToBeImplementedProperty(int propId) {
+    public ToBeImplementedProperty(final int propId) {
 
-        //XXX: (mjg@recalldesign.com) This is a bit of a kluge, perhaps an
-        //UnimplementedPropertyException or something similar should
-        //get thrown here instead.
+        // XXX: (mjg@recalldesign.com) This is a bit of a kluge, perhaps an
+        // UnimplementedPropertyException or something similar should
+        // get thrown here instead.
 
-//         Log log = Hierarchy.getDefaultHierarchy().getLoggerFor("fop");
-//         log.warn("property - \"" + propName
-//                                + "\" is not implemented yet.");
+        // Log log = Hierarchy.getDefaultHierarchy().getLoggerFor("fop");
+        // log.warn("property - \"" + propName
+        // + "\" is not implemented yet.");
     }
 
     @Override
@@ -73,12 +78,12 @@ public class ToBeImplementedProperty extends Property {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return true;
         /*
-         * Since a PropertyCache is not used here, returning true helps the PropertyCache when a non
-         * implemented property is part of an implemented one.
+         * Since a PropertyCache is not used here, returning true helps the
+         * PropertyCache when a non implemented property is part of an
+         * implemented one.
          */
     }
 }
-

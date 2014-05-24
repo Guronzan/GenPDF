@@ -25,8 +25,7 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.fonts.NamedCharacter;
 import org.apache.fop.fonts.type1.AFMParser.ValueHandler;
@@ -34,26 +33,26 @@ import org.apache.fop.fonts.type1.AFMParser.ValueHandler;
 /**
  * A handler that parses the various types of character metrics in an AFM file.
  */
+@Slf4j
 abstract class CharMetricsHandler {
-
-    private static final Log LOG = LogFactory.getLog(CharMetricsHandler.class);
 
     private static final String WHITE_SPACE = "\\s*";
     private static final String OPERATOR = "([A-Z0-9]{1,3})";
     private static final String OPERANDS = "(.*)";
 
-    private static final Pattern METRICS_REGEX = Pattern.compile(
-             WHITE_SPACE + OPERATOR + WHITE_SPACE + OPERANDS + WHITE_SPACE);
-    private static final Pattern SPLIT_REGEX = Pattern.compile(WHITE_SPACE + ";" + WHITE_SPACE);
+    private static final Pattern METRICS_REGEX = Pattern.compile(WHITE_SPACE
+            + OPERATOR + WHITE_SPACE + OPERANDS + WHITE_SPACE);
+    private static final Pattern SPLIT_REGEX = Pattern.compile(WHITE_SPACE
+            + ";" + WHITE_SPACE);
 
     private CharMetricsHandler() {
     }
 
-    abstract AFMCharMetrics parse(String line, Stack<Object> stack, String afmFileName)
-            throws IOException;
+    abstract AFMCharMetrics parse(final String line, final Stack<Object> stack,
+            final String afmFileName) throws IOException;
 
-    static CharMetricsHandler getHandler(Map<String, ValueHandler> valueParsers,
-            String line) {
+    static CharMetricsHandler getHandler(
+            final Map<String, ValueHandler> valueParsers, final String line) {
         if (line != null && line.contains(AdobeStandardEncoding.NAME)) {
             return new AdobeStandardCharMetricsHandler(valueParsers);
         } else {
@@ -61,25 +60,28 @@ abstract class CharMetricsHandler {
         }
     }
 
-    private static final class DefaultCharMetricsHandler extends CharMetricsHandler {
+    private static final class DefaultCharMetricsHandler extends
+    CharMetricsHandler {
         private final Map<String, ValueHandler> valueParsers;
 
-
-        private DefaultCharMetricsHandler(Map<String, ValueHandler> valueParsers) {
+        private DefaultCharMetricsHandler(
+                final Map<String, ValueHandler> valueParsers) {
             this.valueParsers = valueParsers;
         }
 
-        AFMCharMetrics parse(String line, Stack<Object> stack, String afmFileName)
-                throws IOException {
-            AFMCharMetrics chm = new AFMCharMetrics();
+        @Override
+        AFMCharMetrics parse(final String line, final Stack<Object> stack,
+                final String afmFileName) throws IOException {
+            final AFMCharMetrics chm = new AFMCharMetrics();
             stack.push(chm);
-            String[] metrics = SPLIT_REGEX.split(line);
-            for (String metric : metrics) {
-                Matcher matcher = METRICS_REGEX.matcher(metric);
+            final String[] metrics = SPLIT_REGEX.split(line);
+            for (final String metric : metrics) {
+                final Matcher matcher = METRICS_REGEX.matcher(metric);
                 if (matcher.matches()) {
-                    String operator = matcher.group(1);
-                    String operands = matcher.group(2);
-                    ValueHandler handler = valueParsers.get(operator);
+                    final String operator = matcher.group(1);
+                    final String operands = matcher.group(2);
+                    final ValueHandler handler = this.valueParsers
+                            .get(operator);
                     if (handler != null) {
                         handler.parse(operands, 0, stack);
                     }
@@ -90,23 +92,29 @@ abstract class CharMetricsHandler {
         }
     }
 
-    private static final class AdobeStandardCharMetricsHandler extends CharMetricsHandler {
+    private static final class AdobeStandardCharMetricsHandler extends
+    CharMetricsHandler {
         private final DefaultCharMetricsHandler defaultHandler;
 
-        private AdobeStandardCharMetricsHandler(Map<String, ValueHandler> valueParsers) {
-            defaultHandler = new DefaultCharMetricsHandler(valueParsers);
+        private AdobeStandardCharMetricsHandler(
+                final Map<String, ValueHandler> valueParsers) {
+            this.defaultHandler = new DefaultCharMetricsHandler(valueParsers);
         }
 
-        AFMCharMetrics parse(String line, Stack<Object> stack, String afmFileName)
-                throws IOException {
-            AFMCharMetrics chm = defaultHandler.parse(line, stack, afmFileName);
-            NamedCharacter namedChar = chm.getCharacter();
+        @Override
+        AFMCharMetrics parse(final String line, final Stack<Object> stack,
+                final String afmFileName) throws IOException {
+            final AFMCharMetrics chm = this.defaultHandler.parse(line, stack,
+                    afmFileName);
+            final NamedCharacter namedChar = chm.getCharacter();
             if (namedChar != null) {
-                int codePoint = AdobeStandardEncoding.getAdobeCodePoint(namedChar.getName());
+                final int codePoint = AdobeStandardEncoding
+                        .getAdobeCodePoint(namedChar.getName());
                 if (chm.getCharCode() != codePoint) {
-                    LOG.info(afmFileName + ": named character '" + namedChar.getName() + "'"
-                            + " has an incorrect code point: " + chm.getCharCode()
-                            + ". Changed to " + codePoint);
+                    log.info(afmFileName + ": named character '"
+                            + namedChar.getName() + "'"
+                            + " has an incorrect code point: "
+                            + chm.getCharCode() + ". Changed to " + codePoint);
                     chm.setCharCode(codePoint);
                 }
             }

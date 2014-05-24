@@ -46,22 +46,22 @@ import org.apache.xmlgraphics.ps.dsc.tools.DSCTools;
  * to act as a push parser through the DSCHandler interface.
  */
 @Slf4j
- public class DSCParser implements DSCParserConstants {
+public class DSCParser implements DSCParserConstants {
 
-     private InputStream in;
-     private BufferedReader reader;
-     private boolean eofFound = false;
-     private boolean checkEOF = true;
-     private DSCEvent currentEvent;
-     private DSCEvent nextEvent;
-     private DSCListener nestedDocumentHandler;
-     private DSCListener filterListener;
-     private List listeners;
-     private boolean listenersDisabled = false;
+    private InputStream in;
+    private BufferedReader reader;
+    private boolean eofFound = false;
+    private boolean checkEOF = true;
+    private DSCEvent currentEvent;
+    private DSCEvent nextEvent;
+    private DSCListener nestedDocumentHandler;
+    private DSCListener filterListener;
+    private List listeners;
+    private boolean listenersDisabled = false;
 
-     /**
-      * Creates a new DSC parser.
-      * 
+    /**
+     * Creates a new DSC parser.
+     *
      * @param in
      *            InputStream to read the PostScript file from (the stream is
      *            not closed by this class, the caller is responsible for that)
@@ -69,307 +69,307 @@ import org.apache.xmlgraphics.ps.dsc.tools.DSCTools;
      *             In case of an I/O error
      * @throws DSCException
      *             In case of a violation of the DSC spec
-      */
-     public DSCParser(final InputStream in) throws IOException, DSCException {
-         if (in.markSupported()) {
-             this.in = in;
-         } else {
-             // Decorate for better performance
-             this.in = new java.io.BufferedInputStream(this.in);
-         }
-         final String encoding = "US-ASCII";
-         try {
-             this.reader = new java.io.BufferedReader(
-                     new java.io.InputStreamReader(this.in, encoding));
-         } catch (final UnsupportedEncodingException e) {
-             throw new RuntimeException("Incompatible VM! " + e.getMessage());
-         }
-         parseNext();
-     }
+     */
+    public DSCParser(final InputStream in) throws IOException, DSCException {
+        if (in.markSupported()) {
+            this.in = in;
+        } else {
+            // Decorate for better performance
+            this.in = new java.io.BufferedInputStream(this.in);
+        }
+        final String encoding = "US-ASCII";
+        try {
+            this.reader = new java.io.BufferedReader(
+                    new java.io.InputStreamReader(this.in, encoding));
+        } catch (final UnsupportedEncodingException e) {
+            throw new RuntimeException("Incompatible VM! " + e.getMessage());
+        }
+        parseNext();
+    }
 
-     /**
-      * Returns the InputStream the PostScript code is read from.
-      * 
+    /**
+     * Returns the InputStream the PostScript code is read from.
+     *
      * @return the InputStream the PostScript code is read from
-      */
-     public InputStream getInputStream() {
-         return this.in;
-     }
+     */
+    public InputStream getInputStream() {
+        return this.in;
+    }
 
-     /**
-      * This method is used to write out warning messages for the parsing
+    /**
+     * This method is used to write out warning messages for the parsing
      * process. Subclass to override this method. The default implementation
      * writes to logger.
-     * 
+     *
      * @param msg
      *            the warning message
-      */
-     protected void warn(final String msg) {
-         log.warn(msg);
-     }
+     */
+    protected void warn(final String msg) {
+        log.warn(msg);
+    }
 
-     /**
-      * Reads one line from the input file
-      * 
+    /**
+     * Reads one line from the input file
+     *
      * @return the line or null if there are no more lines
-      * @throws IOException
+     * @throws IOException
      *             In case of an I/O error
      * @throws DSCException
      *             In case of a violation of the DSC spec
-      */
-     protected String readLine() throws IOException, DSCException {
-         String line;
-         line = this.reader.readLine();
-         checkLine(line);
+     */
+    protected String readLine() throws IOException, DSCException {
+        String line;
+        line = this.reader.readLine();
+        checkLine(line);
 
-         return line;
-     }
+        return line;
+    }
 
-     private void checkLine(final String line) throws DSCException {
-         if (line == null) {
-             if (!this.eofFound) {
-                 throw new DSCException(
+    private void checkLine(final String line) throws DSCException {
+        if (line == null) {
+            if (!this.eofFound) {
+                throw new DSCException(
                         "%%EOF not found. File is not well-formed.");
-             }
-         } else if (line.length() > 255) {
-             warn("Line longer than 255 characters. This file is not fully PostScript conforming.");
-         }
-     }
+            }
+        } else if (line.length() > 255) {
+            warn("Line longer than 255 characters. This file is not fully PostScript conforming.");
+        }
+    }
 
-     private boolean isWhitespace(final char c) {
-         return c == ' ' || c == '\t';
-     }
+    private boolean isWhitespace(final char c) {
+        return c == ' ' || c == '\t';
+    }
 
-     private DSCComment parseDSCLine(final String line) throws IOException,
-            DSCException {
-         final int colon = line.indexOf(':');
-         String name;
-         String value = "";
-         if (colon > 0) {
-             name = line.substring(2, colon);
-             int startOfValue = colon + 1;
-             if (startOfValue < line.length()) {
-                 if (isWhitespace(line.charAt(startOfValue))) {
-                     startOfValue++;
-                 }
-                 value = line.substring(startOfValue).trim();
-                 if (value.equals(DSCConstants.ATEND.toString())) {
-                     return new DSCAtend(name);
-                 }
-             }
-             String nextLine;
-             while (true) {
-                 this.reader.mark(512);
-                 nextLine = readLine();
-                 if (nextLine == null) {
-                     break;
-                 } else if (!nextLine.startsWith("%%+")) {
-                     break;
-                 }
-                 value = value + nextLine.substring(3);
-             }
-             this.reader.reset();
-         } else {
-             name = line.substring(2);
-             value = null;
-         }
-         return parseDSCComment(name, value);
-     }
+    private DSCComment parseDSCLine(final String line) throws IOException,
+    DSCException {
+        final int colon = line.indexOf(':');
+        String name;
+        String value = "";
+        if (colon > 0) {
+            name = line.substring(2, colon);
+            int startOfValue = colon + 1;
+            if (startOfValue < line.length()) {
+                if (isWhitespace(line.charAt(startOfValue))) {
+                    startOfValue++;
+                }
+                value = line.substring(startOfValue).trim();
+                if (value.equals(DSCConstants.ATEND.toString())) {
+                    return new DSCAtend(name);
+                }
+            }
+            String nextLine;
+            while (true) {
+                this.reader.mark(512);
+                nextLine = readLine();
+                if (nextLine == null) {
+                    break;
+                } else if (!nextLine.startsWith("%%+")) {
+                    break;
+                }
+                value = value + nextLine.substring(3);
+            }
+            this.reader.reset();
+        } else {
+            name = line.substring(2);
+            value = null;
+        }
+        return parseDSCComment(name, value);
+    }
 
-     private DSCComment parseDSCComment(final String name, final String value) {
-         final DSCComment parsed = DSCCommentFactory.createDSCCommentFor(name);
-         if (parsed != null) {
-             try {
-                 parsed.parseValue(value);
-                 return parsed;
-             } catch (final Exception e) {
-                 // ignore and fall back to unparsed DSC comment
-             }
-         }
-         final UnparsedDSCComment unparsed = new UnparsedDSCComment(name);
-         unparsed.parseValue(value);
-         return unparsed;
-     }
+    private DSCComment parseDSCComment(final String name, final String value) {
+        final DSCComment parsed = DSCCommentFactory.createDSCCommentFor(name);
+        if (parsed != null) {
+            try {
+                parsed.parseValue(value);
+                return parsed;
+            } catch (final Exception e) {
+                // ignore and fall back to unparsed DSC comment
+            }
+        }
+        final UnparsedDSCComment unparsed = new UnparsedDSCComment(name);
+        unparsed.parseValue(value);
+        return unparsed;
+    }
 
-     /**
-      * Starts the parser in push parsing mode sending events to the DSCHandler
+    /**
+     * Starts the parser in push parsing mode sending events to the DSCHandler
      * instance.
-     * 
+     *
      * @param handler
      *            the DSCHandler instance to send the events to
      * @throws IOException
      *             In case of an I/O error
      * @throws DSCException
      *             In case of a violation of the DSC spec
-      */
-     public void parse(final DSCHandler handler) throws IOException,
-            DSCException {
-         final DSCHeaderComment header = DSCTools.checkAndSkipDSC30Header(this);
-         handler.startDocument("%!" + header.getComment());
-         DSCEvent event;
-         while (hasNext()) {
-             event = nextEvent();
-             switch (event.getEventType()) {
-             case HEADER_COMMENT:
-                 handler.startDocument("%!"
+     */
+    public void parse(final DSCHandler handler) throws IOException,
+    DSCException {
+        final DSCHeaderComment header = DSCTools.checkAndSkipDSC30Header(this);
+        handler.startDocument("%!" + header.getComment());
+        DSCEvent event;
+        while (hasNext()) {
+            event = nextEvent();
+            switch (event.getEventType()) {
+            case HEADER_COMMENT:
+                handler.startDocument("%!"
                         + ((DSCHeaderComment) event).getComment());
-                 break;
-             case DSC_COMMENT:
-                 handler.handleDSCComment(event.asDSCComment());
-                 break;
-             case COMMENT:
-                 handler.comment(((PostScriptComment) event).getComment());
-                 break;
-             case LINE:
-                 handler.line(getLine());
-                 break;
-             case EOF:
-                 if (isCheckEOF()) {
-                     this.eofFound = true;
-                 }
-                 handler.endDocument();
-                 break;
-             default:
-                 throw new IllegalStateException("Illegal event type: "
+                break;
+            case DSC_COMMENT:
+                handler.handleDSCComment(event.asDSCComment());
+                break;
+            case COMMENT:
+                handler.comment(((PostScriptComment) event).getComment());
+                break;
+            case LINE:
+                handler.line(getLine());
+                break;
+            case EOF:
+                if (isCheckEOF()) {
+                    this.eofFound = true;
+                }
+                handler.endDocument();
+                break;
+            default:
+                throw new IllegalStateException("Illegal event type: "
                         + event.getEventType());
-             }
-         }
-     }
+            }
+        }
+    }
 
-     /**
-      * Indicates whether there are additional items.
-      * 
+    /**
+     * Indicates whether there are additional items.
+     *
      * @return true if there are additonal items, false if the end of the file
      *         has been reached
-      */
-     public boolean hasNext() {
-         return this.nextEvent != null;
-     }
+     */
+    public boolean hasNext() {
+        return this.nextEvent != null;
+    }
 
-     /**
-      * Steps to the next item indicating the type of event.
-      * 
+    /**
+     * Steps to the next item indicating the type of event.
+     *
      * @return the type of event (See {@link DSCParserConstants})
-      * @throws IOException
+     * @throws IOException
      *             In case of an I/O error
      * @throws DSCException
      *             In case of a violation of the DSC spec
      * @throws NoSuchElementException
      *             If an attempt was made to advance beyond the end of the file
-      */
-     public int next() throws IOException, DSCException {
-         if (hasNext()) {
-             this.currentEvent = this.nextEvent;
-             parseNext();
+     */
+    public int next() throws IOException, DSCException {
+        if (hasNext()) {
+            this.currentEvent = this.nextEvent;
+            parseNext();
 
-             processListeners();
+            processListeners();
 
-             return this.currentEvent.getEventType();
-         } else {
-             throw new NoSuchElementException("There are no more events");
-         }
-     }
+            return this.currentEvent.getEventType();
+        } else {
+            throw new NoSuchElementException("There are no more events");
+        }
+    }
 
-     private void processListeners() throws IOException, DSCException {
-         if (isListenersDisabled()) {
-             return;
-         }
-         if (this.filterListener != null) {
-             // Filter always comes first
-             this.filterListener.processEvent(this.currentEvent, this);
-         }
-         if (this.listeners != null) {
-             final Iterator iter = this.listeners.iterator();
-             while (iter.hasNext()) {
-                 ((DSCListener) iter.next()).processEvent(this.currentEvent,
+    private void processListeners() throws IOException, DSCException {
+        if (isListenersDisabled()) {
+            return;
+        }
+        if (this.filterListener != null) {
+            // Filter always comes first
+            this.filterListener.processEvent(this.currentEvent, this);
+        }
+        if (this.listeners != null) {
+            final Iterator iter = this.listeners.iterator();
+            while (iter.hasNext()) {
+                ((DSCListener) iter.next()).processEvent(this.currentEvent,
                         this);
-             }
-         }
-     }
+            }
+        }
+    }
 
-     /**
-      * Steps to the next item returning the new event.
-      * 
+    /**
+     * Steps to the next item returning the new event.
+     *
      * @return the new event
-      * @throws IOException
-     *             In case of an I/O error
-     * @throws DSCException
-     *             In case of a violation of the DSC spec
-      */
-     public DSCEvent nextEvent() throws IOException, DSCException {
-         next();
-         return getCurrentEvent();
-     }
-
-     /**
-      * Returns the current event.
-      * 
-     * @return the current event
-      */
-     public DSCEvent getCurrentEvent() {
-         return this.currentEvent;
-     }
-
-     /**
-      * Returns the next event without moving the cursor to the next event.
-      * 
-     * @return the next event
-      */
-     public DSCEvent peek() {
-         return this.nextEvent;
-     }
-
-     /**
-      * Parses the next event.
-      * 
      * @throws IOException
      *             In case of an I/O error
      * @throws DSCException
      *             In case of a violation of the DSC spec
-      */
-     protected void parseNext() throws IOException, DSCException {
-         final String line = readLine();
-         if (line != null) {
-             if (this.eofFound && line.length() > 0) {
-                 throw new DSCException("Content found after EOF");
-             }
-             if (line.startsWith("%%")) {
-                 final DSCComment comment = parseDSCLine(line);
-                 if (comment.getEventType() == EOF && isCheckEOF()) {
-                     this.eofFound = true;
-                 }
-                 this.nextEvent = comment;
-             } else if (line.startsWith("%!")) {
-                 this.nextEvent = new DSCHeaderComment(line.substring(2));
-             } else if (line.startsWith("%")) {
-                 this.nextEvent = new PostScriptComment(line.substring(1));
-             } else {
-                 this.nextEvent = new PostScriptLine(line);
-             }
-         } else {
-             this.nextEvent = null;
-         }
-     }
+     */
+    public DSCEvent nextEvent() throws IOException, DSCException {
+        next();
+        return getCurrentEvent();
+    }
 
-     /**
-      * Returns the current PostScript line.
-      * 
+    /**
+     * Returns the current event.
+     *
+     * @return the current event
+     */
+    public DSCEvent getCurrentEvent() {
+        return this.currentEvent;
+    }
+
+    /**
+     * Returns the next event without moving the cursor to the next event.
+     *
+     * @return the next event
+     */
+    public DSCEvent peek() {
+        return this.nextEvent;
+    }
+
+    /**
+     * Parses the next event.
+     *
+     * @throws IOException
+     *             In case of an I/O error
+     * @throws DSCException
+     *             In case of a violation of the DSC spec
+     */
+    protected void parseNext() throws IOException, DSCException {
+        final String line = readLine();
+        if (line != null) {
+            if (this.eofFound && line.length() > 0) {
+                throw new DSCException("Content found after EOF");
+            }
+            if (line.startsWith("%%")) {
+                final DSCComment comment = parseDSCLine(line);
+                if (comment.getEventType() == EOF && isCheckEOF()) {
+                    this.eofFound = true;
+                }
+                this.nextEvent = comment;
+            } else if (line.startsWith("%!")) {
+                this.nextEvent = new DSCHeaderComment(line.substring(2));
+            } else if (line.startsWith("%")) {
+                this.nextEvent = new PostScriptComment(line.substring(1));
+            } else {
+                this.nextEvent = new PostScriptLine(line);
+            }
+        } else {
+            this.nextEvent = null;
+        }
+    }
+
+    /**
+     * Returns the current PostScript line.
+     *
      * @return the current PostScript line
-      * @throws IllegalStateException
+     * @throws IllegalStateException
      *             if the current event is not a normal PostScript line
-      */
-     public String getLine() {
-         if (this.currentEvent.getEventType() == LINE) {
-             return ((PostScriptLine) this.currentEvent).getLine();
-         } else {
-             throw new IllegalStateException(
+     */
+    public String getLine() {
+        if (this.currentEvent.getEventType() == LINE) {
+            return ((PostScriptLine) this.currentEvent).getLine();
+        } else {
+            throw new IllegalStateException(
                     "Current event is not a PostScript line");
-         }
-     }
+        }
+    }
 
-     /**
-      * Advances to the next DSC comment with the given name.
-      * 
+    /**
+     * Advances to the next DSC comment with the given name.
+     *
      * @param name
      *            the name of the DSC comment
      * @return the requested DSC comment or null if the end of the file is
@@ -378,15 +378,15 @@ import org.apache.xmlgraphics.ps.dsc.tools.DSCTools;
      *             In case of an I/O error
      * @throws DSCException
      *             In case of a violation of the DSC spec
-      */
-     public DSCComment nextDSCComment(final String name) throws IOException,
-            DSCException {
-         return nextDSCComment(name, null);
-     }
+     */
+    public DSCComment nextDSCComment(final String name) throws IOException,
+    DSCException {
+        return nextDSCComment(name, null);
+    }
 
-     /**
-      * Advances to the next DSC comment with the given name.
-      * 
+    /**
+     * Advances to the next DSC comment with the given name.
+     *
      * @param name
      *            the name of the DSC comment
      * @param gen
@@ -397,31 +397,31 @@ import org.apache.xmlgraphics.ps.dsc.tools.DSCTools;
      *             In case of an I/O error
      * @throws DSCException
      *             In case of a violation of the DSC spec
-      */
-     public DSCComment nextDSCComment(final String name, final PSGenerator gen)
+     */
+    public DSCComment nextDSCComment(final String name, final PSGenerator gen)
             throws IOException, DSCException {
-         while (hasNext()) {
-             final DSCEvent event = nextEvent();
-             if (event.isDSCComment()) {
-                 final DSCComment comment = event.asDSCComment();
-                 if (name.equals(comment.getName())) {
-                     return comment;
-                 }
-             }
-             if (gen != null) {
-                 event.generate(gen); // Pipe through to PSGenerator
-             }
-         }
-         return null;
-     }
+        while (hasNext()) {
+            final DSCEvent event = nextEvent();
+            if (event.isDSCComment()) {
+                final DSCComment comment = event.asDSCComment();
+                if (name.equals(comment.getName())) {
+                    return comment;
+                }
+            }
+            if (gen != null) {
+                event.generate(gen); // Pipe through to PSGenerator
+            }
+        }
+        return null;
+    }
 
-     /**
-      * Advances to the next PostScript comment with the given prefix. This is
+    /**
+     * Advances to the next PostScript comment with the given prefix. This is
      * used to find comments following the DSC extension mechanism.
      * <p>
      * Example: To find FOP's custom comments, pass in "FOP" as a prefix. This
      * will find comments like "%FOPFontSetup".
-     * 
+     *
      * @param prefix
      *            the prefix of the extension comment
      * @param gen
@@ -432,8 +432,8 @@ import org.apache.xmlgraphics.ps.dsc.tools.DSCTools;
      *             In case of an I/O error
      * @throws DSCException
      *             In case of a violation of the DSC spec
-      */
-     public PostScriptComment nextPSComment(final String prefix,
+     */
+    public PostScriptComment nextPSComment(final String prefix,
             final PSGenerator gen) throws IOException, DSCException {
         while (hasNext()) {
             final DSCEvent event = nextEvent();
@@ -448,117 +448,117 @@ import org.apache.xmlgraphics.ps.dsc.tools.DSCTools;
             }
         }
         return null;
-     }
+    }
 
-     /**
-      * Sets a filter for DSC events.
-      * 
+    /**
+     * Sets a filter for DSC events.
+     *
      * @param filter
      *            the filter to use or null to disable filtering
-      */
-     public void setFilter(final DSCFilter filter) {
-         if (filter != null) {
-             this.filterListener = new FilteringEventListener(filter);
-         } else {
-             this.filterListener = null;
-         }
-     }
+     */
+    public void setFilter(final DSCFilter filter) {
+        if (filter != null) {
+            this.filterListener = new FilteringEventListener(filter);
+        } else {
+            this.filterListener = null;
+        }
+    }
 
-     /**
-      * Adds a DSC event listener.
-      * 
+    /**
+     * Adds a DSC event listener.
+     *
      * @param listener
      *            the listener
-      */
-     public void addListener(final DSCListener listener) {
-         if (listener == null) {
-             throw new NullPointerException("listener must not be null");
-         }
-         if (this.listeners == null) {
-             this.listeners = new java.util.ArrayList();
-         }
-         this.listeners.add(listener);
-     }
+     */
+    public void addListener(final DSCListener listener) {
+        if (listener == null) {
+            throw new NullPointerException("listener must not be null");
+        }
+        if (this.listeners == null) {
+            this.listeners = new java.util.ArrayList();
+        }
+        this.listeners.add(listener);
+    }
 
-     /**
-      * Removes a DSC event listener.
-      * 
+    /**
+     * Removes a DSC event listener.
+     *
      * @param listener
      *            the listener to remove
-      */
-     public void removeListener(final DSCListener listener) {
-         if (this.listeners != null) {
-             this.listeners.remove(listener);
-         }
-     }
+     */
+    public void removeListener(final DSCListener listener) {
+        if (this.listeners != null) {
+            this.listeners.remove(listener);
+        }
+    }
 
-     /**
-      * Allows to disable all listeners. This can be used to disable any
+    /**
+     * Allows to disable all listeners. This can be used to disable any
      * filtering, for example in nested documents.
-     * 
+     *
      * @param value
      *            true to disable all listeners, false to re-enable them
-      */
-     public void setListenersDisabled(final boolean value) {
-         this.listenersDisabled = value;
-     }
+     */
+    public void setListenersDisabled(final boolean value) {
+        this.listenersDisabled = value;
+    }
 
-     /**
-      * Indicates whether the listeners are currently disabled.
-      * 
+    /**
+     * Indicates whether the listeners are currently disabled.
+     *
      * @return true if they are disabled
-      */
-     public boolean isListenersDisabled() {
-         return this.listenersDisabled;
-     }
+     */
+    public boolean isListenersDisabled() {
+        return this.listenersDisabled;
+    }
 
-     /**
-      * Sets a NestedDocumentHandler which is used to skip nested documents like
+    /**
+     * Sets a NestedDocumentHandler which is used to skip nested documents like
      * embedded EPS files. You can also process those parts in a special way.
      * <p>
      * It is suggested to use the more generally usable
      * {@link #addListener(DSCListener)} and
-      * {@link #removeListener(DSCListener)} instead. NestedDocumentHandler is
+     * {@link #removeListener(DSCListener)} instead. NestedDocumentHandler is
      * internally mapped onto a {@link DSCListener}.
-      * 
+     *
      * @param handler
      *            the NestedDocumentHandler instance or null to disable the
      *            feature
-      */
-     public void setNestedDocumentHandler(final NestedDocumentHandler handler) {
-         if (handler == null) {
-             removeListener(this.nestedDocumentHandler);
-         } else {
-             addListener(new DSCListener() {
-                 @Override
-                 public void processEvent(final DSCEvent event,
+     */
+    public void setNestedDocumentHandler(final NestedDocumentHandler handler) {
+        if (handler == null) {
+            removeListener(this.nestedDocumentHandler);
+        } else {
+            addListener(new DSCListener() {
+                @Override
+                public void processEvent(final DSCEvent event,
                         final DSCParser parser) throws IOException,
-                 DSCException {
-                     handler.handle(event, parser);
-                 }
-             });
-         }
-     }
+                        DSCException {
+                    handler.handle(event, parser);
+                }
+            });
+        }
+    }
 
-     /**
-      * Tells the parser whether to check for content after the EOF comment. This
+    /**
+     * Tells the parser whether to check for content after the EOF comment. This
      * can be disabled to skip nested documents.
-     * 
+     *
      * @param value
      *            true if the check is enabled
-      */
-     public void setCheckEOF(final boolean value) {
-         this.checkEOF = value;
-     }
+     */
+    public void setCheckEOF(final boolean value) {
+        this.checkEOF = value;
+    }
 
-     /**
-      * Indicates whether the parser is configured to check for content after the
+    /**
+     * Indicates whether the parser is configured to check for content after the
      * EOF comment.
-     * 
+     *
      * @return true if the check is enabled.
-      */
-     public boolean isCheckEOF() {
-         return this.checkEOF;
-     }
+     */
+    public boolean isCheckEOF() {
+        return this.checkEOF;
+    }
 
- }
+}

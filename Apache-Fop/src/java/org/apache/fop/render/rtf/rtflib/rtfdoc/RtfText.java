@@ -32,9 +32,13 @@ import java.io.Writer;
 import org.apache.fop.apps.FOPException;
 
 /**
- * <p>Model of a text run (a piece of text with attributes) in an RTF document.</p>
+ * <p>
+ * Model of a text run (a piece of text with attributes) in an RTF document.
+ * </p>
  *
- * <p>This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch).</p>
+ * <p>
+ * This work was authored by Bertrand Delacretaz (bdelacretaz@codeconsult.ch).
+ * </p>
  */
 
 public class RtfText extends RtfElement {
@@ -42,11 +46,12 @@ public class RtfText extends RtfElement {
     private static final int CHAR_NBSP = 160;
     private static final int CHAR_TAB = 137;
     private static final int CHAR_NEW_LINE = 141;
-    /* these next two variables are used to encode bold formating in the
-     * raw xml text. Usefull when specific words or phrases are to be bolded
-     * but their placement and length change.  Thus the bold formatting becomes
-     * part of the data.  The same method can be used for implementing other types
-     * of raw text formatting.
+    /*
+     * these next two variables are used to encode bold formating in the raw xml
+     * text. Usefull when specific words or phrases are to be bolded but their
+     * placement and length change. Thus the bold formatting becomes part of the
+     * data. The same method can be used for implementing other types of raw
+     * text formatting.
      */
     private static final int CHAR_BOLD_START = 130;
     private static final int CHAR_BOLD_END = 131;
@@ -55,9 +60,10 @@ public class RtfText extends RtfElement {
     private String text;
     private final RtfAttributes attr;
 
-
-    /** RtfText attributes: attribute names are RTF control word names to avoid
-     *  additional mapping */
+    /**
+     * RtfText attributes: attribute names are RTF control word names to avoid
+     * additional mapping
+     */
     /** constant for bold */
     public static final String ATTR_BOLD = "b";
     /** constant for italic */
@@ -73,7 +79,9 @@ public class RtfText extends RtfElement {
     /** constant for font color */
     public static final String ATTR_FONT_COLOR = "cf";
     /** constant for background color */
-    public static final String ATTR_BACKGROUND_COLOR = "chcbpat"; // Added by Boris on 06/25//02
+    public static final String ATTR_BACKGROUND_COLOR = "chcbpat"; // Added by
+                                                                  // Boris on
+                                                                  // 06/25//02
     /** constant for superscript */
     public static final String ATTR_SUPERSCRIPT = "super";
     /** constant for subscript */
@@ -100,7 +108,7 @@ public class RtfText extends RtfElement {
     public static final String ALIGN_DISTRIBUTED = "qd";
 
     /** RtfText attributes: border attributes */
-    //added by Chris Scott
+    // added by Chris Scott
     /** constant for bottom single border */
     public static final String BDR_BOTTOM_SINGLE = "brdrb\\brsp40\\brdrs";
     /** constant for bottom double border */
@@ -113,9 +121,9 @@ public class RtfText extends RtfElement {
     public static final String BDR_BOTTOM_DASH = "brdrb\\brsp40\\brdrdash";
 
     /** RtfText attributes: fields */
-    //must be carefull of group markings and star control
-    //ie page field:
-    //  "{\field {\*\fldinst {PAGE}} {\fldrslt}}"
+    // must be carefull of group markings and star control
+    // ie page field:
+    // "{\field {\*\fldinst {PAGE}} {\fldrslt}}"
     /** constant for field */
     public static final String RTF_FIELD = "field";
     /** constant for field page */
@@ -123,8 +131,8 @@ public class RtfText extends RtfElement {
     /** constant for field result */
     public static final String RTF_FIELD_RESULT = "fldrslt";
 
-    /**RtfText attributes: indentation attributes */
-    //added by Chris Scott
+    /** RtfText attributes: indentation attributes */
+    // added by Chris Scott
     /** constant for left indent body */
     public static final String LEFT_INDENT_BODY = "li";
     /** constant for left indent first */
@@ -148,92 +156,85 @@ public class RtfText extends RtfElement {
     public static final String TAB_LEADER_EQUALS = "tleq";
 
     /** Space before/after a paragraph */
-    //these lines were added by Boris Pouderous
+    // these lines were added by Boris Pouderous
     public static final String SPACE_BEFORE = "sb";
     /** Space after a paragraph */
     public static final String SPACE_AFTER = "sa";
 
     /** RtfText attributes: this must contain all allignment attributes names */
-    public static final String[] ALIGNMENT = new String []
-    {
-        ALIGN_CENTER, ALIGN_LEFT, ALIGN_RIGHT, ALIGN_JUSTIFIED, ALIGN_DISTRIBUTED
-    };
+    public static final String[] ALIGNMENT = new String[] { ALIGN_CENTER,
+            ALIGN_LEFT, ALIGN_RIGHT, ALIGN_JUSTIFIED, ALIGN_DISTRIBUTED };
 
-    /** RtfText attributes:: this must contain all border attribute names*/
-    //this line added by Chris Scott, Westinghouse
-    public static final String[] BORDER = new String []
-    {
-        BDR_BOTTOM_SINGLE, BDR_BOTTOM_DOUBLE, BDR_BOTTOM_EMBOSS, BDR_BOTTOM_DOTTED,
-        BDR_BOTTOM_DASH
-    };
+    /** RtfText attributes:: this must contain all border attribute names */
+    // this line added by Chris Scott, Westinghouse
+    public static final String[] BORDER = new String[] { BDR_BOTTOM_SINGLE,
+            BDR_BOTTOM_DOUBLE, BDR_BOTTOM_EMBOSS, BDR_BOTTOM_DOTTED,
+            BDR_BOTTOM_DASH };
 
     /** String array of indent constants */
-    public static final String[] INDENT = new String []
-    {
-        LEFT_INDENT_BODY, LEFT_INDENT_FIRST
-    };
+    public static final String[] INDENT = new String[] { LEFT_INDENT_BODY,
+            LEFT_INDENT_FIRST };
 
     /** String array of tab constants */
-    public static final String[] TABS = new String []
-    {
-        TAB_CENTER, TAB_RIGHT, TAB_LEADER_DOTS, TAB_LEADER_HYPHEN, TAB_LEADER_UNDER,
-        TAB_LEADER_THICK, TAB_LEADER_EQUALS
-    };
-
+    public static final String[] TABS = new String[] { TAB_CENTER, TAB_RIGHT,
+            TAB_LEADER_DOTS, TAB_LEADER_HYPHEN, TAB_LEADER_UNDER,
+            TAB_LEADER_THICK, TAB_LEADER_EQUALS };
 
     /** RtfText attributes: this must contain all attribute names */
-    public static final String [] ATTR_NAMES = {
-        ATTR_BOLD,
-        ATTR_ITALIC,
-        ATTR_UNDERLINE,
-        ATTR_FONT_SIZE,
-        ATTR_FONT_FAMILY,
-        ATTR_FONT_COLOR,
-        ATTR_BACKGROUND_COLOR
-    };
+    public static final String[] ATTR_NAMES = { ATTR_BOLD, ATTR_ITALIC,
+            ATTR_UNDERLINE, ATTR_FONT_SIZE, ATTR_FONT_FAMILY, ATTR_FONT_COLOR,
+            ATTR_BACKGROUND_COLOR };
 
-    /** Create an RtfText in given IRtfTextContainer.
-     *  @param str optional initial text content
+    /**
+     * Create an RtfText in given IRtfTextContainer.
+     * 
+     * @param str
+     *            optional initial text content
      */
-    RtfText(IRtfTextContainer parent, Writer w, String str, RtfAttributes attr)
-           throws IOException {
-        super((RtfContainer)parent, w);
+    RtfText(final IRtfTextContainer parent, final Writer w, final String str,
+            final RtfAttributes attr) throws IOException {
+        super((RtfContainer) parent, w);
         this.text = str;
         this.attr = attr;
     }
 
     /**
      * Write our text to the RTF stream
-     * @throws IOException for I/O problems
+     * 
+     * @throws IOException
+     *             for I/O problems
      */
+    @Override
     public void writeRtfContent() throws IOException {
         writeChars: {
 
-            //these lines were added by Boris Pouderous
-            if (attr != null) {
-                writeAttributes(attr, new String[] {RtfText.SPACE_BEFORE});
-                writeAttributes(attr, new String[] {RtfText.SPACE_AFTER});
-            }
-
-            if (isTab()) {
-                writeControlWord("tab");
-            } else if (isNewLine()) {
-                break writeChars;
-            } else if (isBold(true)) {
-                writeControlWord("b");
-            } else if (isBold(false)) {
-                writeControlWord("b0");
-            // TODO not optimal, consecutive RtfText with same attributes
-            // could be written without group marks
-            } else {
-                writeGroupMark(true);
-                if (attr != null && mustWriteAttributes()) {
-                    writeAttributes(attr, RtfText.ATTR_NAMES);
-                }
-                RtfStringConverter.getInstance().writeRtfString(writer, text);
-                writeGroupMark(false);
-            }
+        // these lines were added by Boris Pouderous
+        if (this.attr != null) {
+            writeAttributes(this.attr,
+                        new String[] { RtfText.SPACE_BEFORE });
+            writeAttributes(this.attr, new String[] { RtfText.SPACE_AFTER });
         }
+
+        if (isTab()) {
+            writeControlWord("tab");
+        } else if (isNewLine()) {
+            break writeChars;
+        } else if (isBold(true)) {
+            writeControlWord("b");
+        } else if (isBold(false)) {
+            writeControlWord("b0");
+                // TODO not optimal, consecutive RtfText with same attributes
+                // could be written without group marks
+        } else {
+            writeGroupMark(true);
+            if (this.attr != null && mustWriteAttributes()) {
+                writeAttributes(this.attr, RtfText.ATTR_NAMES);
+            }
+            RtfStringConverter.getInstance().writeRtfString(this.writer,
+                        this.text);
+            writeGroupMark(false);
+        }
+    }
     }
 
     /** true if our text attributes must be written */
@@ -241,52 +242,55 @@ public class RtfText extends RtfElement {
         return !isEmpty() && !isNbsp();
     }
 
-    /** IRtfTextContainer requirement:
+    /**
+     * IRtfTextContainer requirement:
+     * 
      * @return a copy of our attributes
-     * @throws FOPException if attributes cannot be cloned
+     * @throws FOPException
+     *             if attributes cannot be cloned
      */
     public RtfAttributes getTextContainerAttributes() throws FOPException {
-        if (attrib == null) {
+        if (this.attrib == null) {
             return null;
         }
         try {
-            return (RtfAttributes)this.attrib.clone();
-        } catch (CloneNotSupportedException e) {
+            return (RtfAttributes) this.attrib.clone();
+        } catch (final CloneNotSupportedException e) {
             throw new FOPException(e);
         }
     }
 
     /** direct access to our text */
     String getText() {
-        return text;
+        return this.text;
     }
 
     /** direct access to our text */
-    void setText(String str) {
-        text = str;
+    void setText(final String str) {
+        this.text = str;
     }
 
     /**
      * Checks whether the text is empty.
      *
-     * @return true    If m_text is null\n
-     *         false   m_text is set
+     * @return true If m_text is null\n false m_text is set
      */
-    public boolean isEmpty () {
-        return text == null || text.trim().length() == 0;
+    @Override
+    public boolean isEmpty() {
+        return this.text == null || this.text.trim().length() == 0;
     }
 
     /**
-     *  True if text contains a single non-breaking space (#160).
-     *  TODO make this more general and/or merge with isEmpty? -- what happen
-     *       with empty paragraphs, if they will be removed, than NO, else ok
+     * True if text contains a single non-breaking space (#160). TODO make this
+     * more general and/or merge with isEmpty? -- what happen with empty
+     * paragraphs, if they will be removed, than NO, else ok
      *
-     * @return true    If m_text is character 160\n
-     *         false   m_text is not a nbsp
+     * @return true If m_text is character 160\n false m_text is not a nbsp
      */
-    public boolean isNbsp () {
-        if (!isEmpty ()) {
-            if (text.trim ().length () == 1 && text.charAt (0) == CHAR_NBSP) {
+    public boolean isNbsp() {
+        if (!isEmpty()) {
+            if (this.text.trim().length() == 1
+                    && this.text.charAt(0) == CHAR_NBSP) {
                 return true;
             }
         }
@@ -297,30 +301,35 @@ public class RtfText extends RtfElement {
      * @return true if the text is a tab character
      */
     public boolean isTab() {
-        return (text.trim().length() == 1 && text.charAt(0) == CHAR_TAB);
+        return this.text.trim().length() == 1
+                && this.text.charAt(0) == CHAR_TAB;
     }
 
     /**
      * @return true if text is a newline character
      */
     public boolean isNewLine() {
-        return (text.trim().length() == 1 && text.charAt(0) == CHAR_NEW_LINE);
+        return this.text.trim().length() == 1
+                && this.text.charAt(0) == CHAR_NEW_LINE;
     }
 
     /**
-     * @param isStart set to true if processing the start of the text (??)
+     * @param isStart
+     *            set to true if processing the start of the text (??)
      * @return true if text is bold
      */
-    public boolean isBold(boolean isStart) {
+    public boolean isBold(final boolean isStart) {
         if (isStart) {
-            return (text.trim().length() == 1 && text.charAt(0) == CHAR_BOLD_START);
+            return this.text.trim().length() == 1
+                    && this.text.charAt(0) == CHAR_BOLD_START;
         } else {
-            return (text.trim().length() == 1 && text.charAt(0) == CHAR_BOLD_END);
+            return this.text.trim().length() == 1
+                    && this.text.charAt(0) == CHAR_BOLD_END;
         }
     }
 
     /** @return the attributes of our text */
     public RtfAttributes getTextAttributes() {
-        return attr;
+        return this.attr;
     }
 }

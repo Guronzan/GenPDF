@@ -29,13 +29,15 @@ import org.apache.commons.io.output.CountingOutputStream;
  */
 public class PDFName extends PDFObject {
 
-    private String name;
+    private final String name;
 
     /**
      * Creates a new PDF name object.
-     * @param name the name value
+     * 
+     * @param name
+     *            the name value
      */
-    public PDFName(String name) {
+    public PDFName(final String name) {
         super();
         this.name = escapeName(name);
     }
@@ -43,19 +45,23 @@ public class PDFName extends PDFObject {
     private static final String ESCAPED_NAME_CHARS = "/()<>[]%#";
 
     /**
-     * Escapes a PDF name. It adds the leading slash and escapes characters as necessary.
-     * @param name the name
+     * Escapes a PDF name. It adds the leading slash and escapes characters as
+     * necessary.
+     * 
+     * @param name
+     *            the name
      * @return the escaped name
      */
-    static String escapeName(String name) {
-        StringBuilder sb = new StringBuilder(Math.min(16, name.length() + 4));
+    static String escapeName(final String name) {
+        final StringBuilder sb = new StringBuilder(Math.min(16,
+                name.length() + 4));
         boolean skipFirst = false;
         sb.append('/');
         if (name.startsWith("/")) {
             skipFirst = true;
         }
-        for (int i = (skipFirst ? 1 : 0), c = name.length(); i < c; i++) {
-            char ch = name.charAt(i);
+        for (int i = skipFirst ? 1 : 0, c = name.length(); i < c; i++) {
+            final char ch = name.charAt(i);
 
             if (ch < 33 || ch > 126 || ESCAPED_NAME_CHARS.indexOf(ch) >= 0) {
                 sb.append('#');
@@ -67,11 +73,10 @@ public class PDFName extends PDFObject {
         return sb.toString();
     }
 
-    private static final char[] DIGITS
-        = {'0', '1', '2', '3', '4', '5', '6', '7',
-           '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    private static final char[] DIGITS = { '0', '1', '2', '3', '4', '5', '6',
+            '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
-    private static void toHex(char ch, StringBuilder sb) {
+    private static void toHex(final char ch, final StringBuilder sb) {
         if (ch >= 256) {
             throw new IllegalArgumentException(
                     "Only 8-bit characters allowed by this implementation");
@@ -88,6 +93,7 @@ public class PDFName extends PDFObject {
 
     /**
      * Returns the name without the leading slash.
+     * 
      * @return the name without the leading slash
      */
     public String getName() {
@@ -95,30 +101,33 @@ public class PDFName extends PDFObject {
     }
 
     /** {@inheritDoc} */
-    public boolean equals(Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
         if (!(obj instanceof PDFName)) {
             return false;
         }
-        PDFName other = (PDFName)obj;
+        final PDFName other = (PDFName) obj;
         return this.name.equals(other.name);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int hashCode() {
-        return name.hashCode();
+        return this.name.hashCode();
     }
 
     @Override
-    public int output(OutputStream stream) throws IOException {
-        CountingOutputStream cout = new CountingOutputStream(stream);
-        StringBuilder textBuffer = new StringBuilder(64);
+    public int output(final OutputStream stream) throws IOException {
+        final CountingOutputStream cout = new CountingOutputStream(stream);
+        final StringBuilder textBuffer = new StringBuilder(64);
         textBuffer.append(toString());
         PDFDocument.flushTextBuffer(textBuffer, cout);
         return cout.getCount();
     }
 
     @Override
-    public void outputInline(OutputStream out, StringBuilder textBuffer) throws IOException {
+    public void outputInline(final OutputStream out,
+            final StringBuilder textBuffer) throws IOException {
         if (hasObjectNumber()) {
             textBuffer.append(referencePDF());
         } else {

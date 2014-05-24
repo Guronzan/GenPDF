@@ -25,28 +25,33 @@ import java.io.OutputStream;
 import org.apache.fop.afp.util.BinaryUtils;
 
 /**
- * The Page Descriptor structured field specifies the size and attributes of
- * a page or overlay presentation space.
+ * The Page Descriptor structured field specifies the size and attributes of a
+ * page or overlay presentation space.
  *
  */
 public class PageDescriptor extends AbstractDescriptor {
 
     /**
-     * Construct a page descriptor for the specified page width
-     * and page height.
+     * Construct a page descriptor for the specified page width and page height.
      *
-     * @param width The page width.
-     * @param height The page height.
-     * @param widthRes The page width resolution
-     * @param heightRes The page height resolution
+     * @param width
+     *            The page width.
+     * @param height
+     *            The page height.
+     * @param widthRes
+     *            The page width resolution
+     * @param heightRes
+     *            The page height resolution
      */
-    public PageDescriptor(int width, int height, int widthRes, int heightRes) {
+    public PageDescriptor(final int width, final int height,
+            final int widthRes, final int heightRes) {
         super(width, height, widthRes, heightRes);
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[24];
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[24];
         copySF(data, Type.DESCRIPTOR, Category.PAGE);
         data[2] = 0x17;
 
@@ -57,23 +62,23 @@ public class PageDescriptor extends AbstractDescriptor {
         data[10] = 0x00; // YpgBase = 10 inches
 
         // XpgUnits
-        byte[] xdpi = BinaryUtils.convert(widthRes * 10, 2);
+        final byte[] xdpi = BinaryUtils.convert(this.widthRes * 10, 2);
         data[11] = xdpi[0];
         data[12] = xdpi[1];
 
         // YpgUnits
-        byte[] ydpi = BinaryUtils.convert(heightRes * 10, 2);
+        final byte[] ydpi = BinaryUtils.convert(this.heightRes * 10, 2);
         data[13] = ydpi[0];
         data[14] = ydpi[1];
 
         // XpgSize
-        byte[] x = BinaryUtils.convert(width, 3);
+        final byte[] x = BinaryUtils.convert(this.width, 3);
         data[15] = x[0];
         data[16] = x[1];
         data[17] = x[2];
 
         // YpgSize
-        byte[] y = BinaryUtils.convert(height, 3);
+        final byte[] y = BinaryUtils.convert(this.height, 3);
         data[18] = y[0];
         data[19] = y[1];
         data[20] = y[2];

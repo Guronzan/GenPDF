@@ -24,7 +24,9 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.expr.PropertyException;
 
 /**
- * <p>Dimensioned property maker.</p>
+ * <p>
+ * Dimensioned property maker.
+ * </p>
  */
 public class DimensionPropertyMaker extends CorrespondingPropertyMaker {
 
@@ -32,24 +34,29 @@ public class DimensionPropertyMaker extends CorrespondingPropertyMaker {
 
     /**
      * Instantiate a dimension property maker.
-     * @param baseMaker the base property maker
+     * 
+     * @param baseMaker
+     *            the base property maker
      */
-    public DimensionPropertyMaker(PropertyMaker baseMaker) {
+    public DimensionPropertyMaker(final PropertyMaker baseMaker) {
         super(baseMaker);
     }
 
     /**
      * Set extra correspondences.
-     * @param extraCorresponding an array of four element integer arrays
+     * 
+     * @param extraCorresponding
+     *            an array of four element integer arrays
      */
-    public void setExtraCorresponding(int[][] extraCorresponding) {
-        if ( extraCorresponding == null ) {
+    public void setExtraCorresponding(final int[][] extraCorresponding) {
+        if (extraCorresponding == null) {
             throw new NullPointerException();
         }
-        for ( int i = 0; i < extraCorresponding.length; i++ ) {
-            int[] eca = extraCorresponding[i];
-            if ( ( eca == null ) || ( eca.length != 4 ) ) {
-                throw new IllegalArgumentException ( "bad sub-array @ [" + i + "]" );
+        for (int i = 0; i < extraCorresponding.length; i++) {
+            final int[] eca = extraCorresponding[i];
+            if (eca == null || eca.length != 4) {
+                throw new IllegalArgumentException("bad sub-array @ [" + i
+                        + "]");
             }
         }
         this.extraCorresponding = extraCorresponding;
@@ -57,15 +64,18 @@ public class DimensionPropertyMaker extends CorrespondingPropertyMaker {
 
     /**
      * Determine if corresponding property is forced.
-     * @param propertyList the property list to use
+     * 
+     * @param propertyList
+     *            the property list to use
      * @return true if it is forced
      */
-    public boolean isCorrespondingForced(PropertyList propertyList) {
+    @Override
+    public boolean isCorrespondingForced(final PropertyList propertyList) {
         if (super.isCorrespondingForced(propertyList)) {
             return true;
         }
-        for (int i = 0; i < extraCorresponding.length; i++) {
-            int wmcorr = extraCorresponding[i][0]; //propertyList.getWritingMode()];
+        for (int i = 0; i < this.extraCorresponding.length; i++) {
+            final int wmcorr = this.extraCorresponding[i][0]; // propertyList.getWritingMode()];
             if (propertyList.getExplicit(wmcorr) != null) {
                 return true;
             }
@@ -74,32 +84,32 @@ public class DimensionPropertyMaker extends CorrespondingPropertyMaker {
     }
 
     /** {@inheritDoc} */
-    public Property compute(PropertyList propertyList) throws PropertyException {
+    @Override
+    public Property compute(final PropertyList propertyList)
+            throws PropertyException {
         // Based on [width|height]
         Property p = super.compute(propertyList);
         if (p == null) {
-            p = baseMaker.make(propertyList);
+            p = this.baseMaker.make(propertyList);
         }
 
         // Based on min-[width|height]
-        int wmcorr = propertyList.selectFromWritingMode(extraCorresponding[0][0],
-                                        extraCorresponding[0][1],
-                                        extraCorresponding[0][2],
-                                        extraCorresponding[0][3]);
+        int wmcorr = propertyList.selectFromWritingMode(
+                this.extraCorresponding[0][0], this.extraCorresponding[0][1],
+                this.extraCorresponding[0][2], this.extraCorresponding[0][3]);
         Property subprop = propertyList.getExplicitOrShorthand(wmcorr);
         if (subprop != null) {
-            baseMaker.setSubprop(p, Constants.CP_MINIMUM, subprop);
+            this.baseMaker.setSubprop(p, Constants.CP_MINIMUM, subprop);
         }
 
         // Based on max-[width|height]
-        wmcorr = propertyList.selectFromWritingMode(extraCorresponding[1][0],
-                                    extraCorresponding[1][1],
-                                    extraCorresponding[1][2],
-                                    extraCorresponding[1][3]);
+        wmcorr = propertyList.selectFromWritingMode(
+                this.extraCorresponding[1][0], this.extraCorresponding[1][1],
+                this.extraCorresponding[1][2], this.extraCorresponding[1][3]);
         subprop = propertyList.getExplicitOrShorthand(wmcorr);
         // TODO: Don't set when NONE.
         if (subprop != null) {
-            baseMaker.setSubprop(p, Constants.CP_MAXIMUM, subprop);
+            this.baseMaker.setSubprop(p, Constants.CP_MAXIMUM, subprop);
         }
 
         return p;

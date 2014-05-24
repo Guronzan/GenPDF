@@ -22,21 +22,19 @@ package org.apache.fop.fo.flow.table;
 import java.util.BitSet;
 import java.util.List;
 
-
-
 /**
- * Helper class maintaining a record of occupied columns and an index to the next
- * non-occupied column.
+ * Helper class maintaining a record of occupied columns and an index to the
+ * next non-occupied column.
  */
 public class ColumnNumberManager {
 
     private int columnNumber = 1;
 
     /**
-     * We use the term "index" instead of "number" because, unlike column numbers, it's
-     * 0-based.
+     * We use the term "index" instead of "number" because, unlike column
+     * numbers, it's 0-based.
      */
-    private BitSet usedColumnIndices = new BitSet();
+    private final BitSet usedColumnIndices = new BitSet();
 
     /**
      * Returns the number of the column that shall receive the next parsed cell.
@@ -44,62 +42,67 @@ public class ColumnNumberManager {
      * @return a column number, 1-based
      */
     int getCurrentColumnNumber() {
-        return columnNumber;
+        return this.columnNumber;
     }
 
     /**
-     * Flags columns <code>start</code> to <code>end</code> as occupied,
-     * and updates the number of the next available column.
+     * Flags columns <code>start</code> to <code>end</code> as occupied, and
+     * updates the number of the next available column.
      *
-     * @param start start number, inclusive, 1-based
-     * @param end   end number, inclusive
+     * @param start
+     *            start number, inclusive, 1-based
+     * @param end
+     *            end number, inclusive
      */
-    void signalUsedColumnNumbers(int start, int end) {
+    void signalUsedColumnNumbers(final int start, final int end) {
         for (int i = start - 1; i < end; i++) {
-            usedColumnIndices.set(i);
+            this.usedColumnIndices.set(i);
         }
 
-        columnNumber = end + 1;
-        while (usedColumnIndices.get(columnNumber - 1)) {
-            columnNumber++;
+        this.columnNumber = end + 1;
+        while (this.usedColumnIndices.get(this.columnNumber - 1)) {
+            this.columnNumber++;
         }
     }
 
     /**
-     * Resets the record of occupied columns, taking into account columns already occupied
-     * by previous spanning cells, and computes the number of the first free column.
+     * Resets the record of occupied columns, taking into account columns
+     * already occupied by previous spanning cells, and computes the number of
+     * the first free column.
      *
-     * @param pendingSpans List&lt;PendingSpan&gt; of possible spans over the next row
+     * @param pendingSpans
+     *            List&lt;PendingSpan&gt; of possible spans over the next row
      */
-    void prepareForNextRow(List pendingSpans) {
-        usedColumnIndices.clear();
+    void prepareForNextRow(final List pendingSpans) {
+        this.usedColumnIndices.clear();
         PendingSpan pSpan;
         for (int i = 0; i < pendingSpans.size(); i++) {
             pSpan = (PendingSpan) pendingSpans.get(i);
             if (pSpan != null) {
-                if ( pSpan.decrRowsLeft() == 0 ) {
+                if (pSpan.decrRowsLeft() == 0) {
                     pendingSpans.set(i, null);
                 } else {
-                    usedColumnIndices.set(i);
+                    this.usedColumnIndices.set(i);
                 }
             }
         }
         // Set columnNumber to the first available column
-        columnNumber = 1;
-        while (usedColumnIndices.get(columnNumber - 1)) {
-            columnNumber++;
+        this.columnNumber = 1;
+        while (this.usedColumnIndices.get(this.columnNumber - 1)) {
+            this.columnNumber++;
         }
-}
+    }
 
     /**
-     * Checks whether a given column-number is already in use
-     * for the current row.
+     * Checks whether a given column-number is already in use for the current
+     * row.
      *
-     * @param colNr the column-number to check
+     * @param colNr
+     *            the column-number to check
      * @return true if column-number is already occupied
      */
-    public boolean isColumnNumberUsed(int colNr) {
-        return usedColumnIndices.get(colNr - 1);
+    public boolean isColumnNumberUsed(final int colNr) {
+        return this.usedColumnIndices.get(colNr - 1);
     }
 
 }

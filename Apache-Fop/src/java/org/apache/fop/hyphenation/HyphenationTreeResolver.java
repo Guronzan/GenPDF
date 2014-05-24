@@ -22,17 +22,22 @@ package org.apache.fop.hyphenation;
 import javax.xml.transform.Source;
 
 /**
- * <p>This interface is used to resolve relative URIs pointing to hyphenation tree files.</p>
+ * <p>
+ * This interface is used to resolve relative URIs pointing to hyphenation tree
+ * files.
+ * </p>
  */
 public interface HyphenationTreeResolver {
 
     /**
-     * Called to resolve an URI to a Source instance. The base URI needed by the URIResolver's
-     * resolve() method is defined to be implicitely available in this case. If the URI cannot
-     * be resolved, null is returned.
-     * @param href An href attribute, which may be relative or absolute.
+     * Called to resolve an URI to a Source instance. The base URI needed by the
+     * URIResolver's resolve() method is defined to be implicitely available in
+     * this case. If the URI cannot be resolved, null is returned.
+     * 
+     * @param href
+     *            An href attribute, which may be relative or absolute.
      * @return A Source object, or null if the href could not resolved.
      */
-    Source resolve(String href);
+    Source resolve(final String href);
 
 }

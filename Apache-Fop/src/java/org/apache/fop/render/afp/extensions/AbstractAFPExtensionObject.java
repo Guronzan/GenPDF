@@ -20,14 +20,13 @@
 package org.apache.fop.render.afp.extensions;
 
 // FOP
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.ValidationException;
 import org.apache.fop.fo.extensions.ExtensionAttachment;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 /**
  * Base class for the AFP-specific extension elements.
@@ -46,66 +45,76 @@ public abstract class AbstractAFPExtensionObject extends FONode {
 
     /**
      * @see org.apache.fop.fo.FONode#FONode(FONode)
-     * @param parent the parent formatting object
-     * @param name the name of the afp element
+     * @param parent
+     *            the parent formatting object
+     * @param name
+     *            the name of the afp element
      */
-    public AbstractAFPExtensionObject(FONode parent, String name) {
+    public AbstractAFPExtensionObject(final FONode parent, final String name) {
         super(parent);
         this.name = name;
     }
 
     /** {@inheritDoc} */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-                throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             invalidChildError(loc, nsURI, localName);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNamespaceURI() {
         return AFPElementMapping.NAMESPACE;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNormalNamespacePrefix() {
         return AFPElementMapping.NAMESPACE_PREFIX;
     }
 
     /** {@inheritDoc} */
-    public void processNode(String elementName, Locator locator,
-                            Attributes attlist, PropertyList propertyList)
-                                throws FOPException {
+    @Override
+    public void processNode(final String elementName, final Locator locator,
+            final Attributes attlist, final PropertyList propertyList)
+            throws FOPException {
         getExtensionAttachment();
-        String attr = attlist.getValue("name");
+        final String attr = attlist.getValue("name");
         if (attr != null && attr.length() > 0) {
-            extensionAttachment.setName(attr);
+            this.extensionAttachment.setName(attr);
         } else {
             throw new FOPException(elementName + " must have a name attribute.");
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
         super.endOfNode();
     }
 
     /**
      * Instantiates extension attachment object
+     * 
      * @return extension attachment
      */
     protected abstract ExtensionAttachment instantiateExtensionAttachment();
 
     /** {@inheritDoc} */
+    @Override
     public ExtensionAttachment getExtensionAttachment() {
-        if (extensionAttachment == null) {
-            this.extensionAttachment = (AFPExtensionAttachment)instantiateExtensionAttachment();
+        if (this.extensionAttachment == null) {
+            this.extensionAttachment = (AFPExtensionAttachment) instantiateExtensionAttachment();
         }
         return this.extensionAttachment;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
-        return name;
+        return this.name;
     }
 }

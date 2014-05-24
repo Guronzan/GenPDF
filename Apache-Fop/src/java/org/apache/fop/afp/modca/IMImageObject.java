@@ -28,16 +28,16 @@ import org.apache.fop.afp.ioca.ImageOutputControl;
 import org.apache.fop.afp.ioca.ImageRasterData;
 
 /**
- * An IM image data object specifies the contents of a raster image and
- * its placement on a page, overlay, or page segment. An IM image can be
- * either simple or complex. A simple image is composed of one or more Image
- * Raster Data (IRD) structured fields that define the raster pattern for the
- * entire image. A complex image is divided into regions called image cells.
- * Each image cell is composed of one or more IRD structured fields that define
- * the raster pattern for the image cell, and one Image Cell Position (ICP)
- * structured field that defines the position of the image cell relative to
- * the origin of the entire image. Each ICP also specifies the size of the
- * image cell and a fill rectangle into which the cell is replicated.
+ * An IM image data object specifies the contents of a raster image and its
+ * placement on a page, overlay, or page segment. An IM image can be either
+ * simple or complex. A simple image is composed of one or more Image Raster
+ * Data (IRD) structured fields that define the raster pattern for the entire
+ * image. A complex image is divided into regions called image cells. Each image
+ * cell is composed of one or more IRD structured fields that define the raster
+ * pattern for the image cell, and one Image Cell Position (ICP) structured
+ * field that defines the position of the image cell relative to the origin of
+ * the entire image. Each ICP also specifies the size of the image cell and a
+ * fill rectangle into which the cell is replicated.
  * <p/>
  */
 public class IMImageObject extends AbstractNamedAFPObject {
@@ -63,78 +63,88 @@ public class IMImageObject extends AbstractNamedAFPObject {
     private ImageRasterData imageRasterData = null;
 
     /**
-     * Constructor for the image object with the specified name,
-     * the name must be a fixed length of eight characters.
+     * Constructor for the image object with the specified name, the name must
+     * be a fixed length of eight characters.
      *
-     * @param name The name of the image.
+     * @param name
+     *            The name of the image.
      */
-    public IMImageObject(String name) {
+    public IMImageObject(final String name) {
         super(name);
     }
 
     /**
      * Sets the ImageOutputControl.
      *
-     * @param imageOutputControl The imageOutputControl to set
+     * @param imageOutputControl
+     *            The imageOutputControl to set
      */
-    public void setImageOutputControl(ImageOutputControl imageOutputControl) {
+    public void setImageOutputControl(
+            final ImageOutputControl imageOutputControl) {
         this.imageOutputControl = imageOutputControl;
     }
 
     /**
      * Sets the ImageCellPosition.
      *
-     * @param imageCellPosition The imageCellPosition to set
+     * @param imageCellPosition
+     *            The imageCellPosition to set
      */
-    public void setImageCellPosition(ImageCellPosition imageCellPosition) {
+    public void setImageCellPosition(final ImageCellPosition imageCellPosition) {
         this.imageCellPosition = imageCellPosition;
     }
 
     /**
      * Sets the ImageInputDescriptor.
      *
-     * @param imageInputDescriptor The imageInputDescriptor to set
+     * @param imageInputDescriptor
+     *            The imageInputDescriptor to set
      */
-    public void setImageInputDescriptor(ImageInputDescriptor imageInputDescriptor) {
+    public void setImageInputDescriptor(
+            final ImageInputDescriptor imageInputDescriptor) {
         this.imageInputDescriptor = imageInputDescriptor;
     }
 
     /**
      * Sets the ImageRastorData.
      *
-     * @param imageRasterData The imageRasterData to set
+     * @param imageRasterData
+     *            The imageRasterData to set
      */
-    public void setImageRasterData(ImageRasterData imageRasterData) {
+    public void setImageRasterData(final ImageRasterData imageRasterData) {
         this.imageRasterData = imageRasterData;
     }
 
     /** {@inheritDoc} */
-    protected void writeContent(OutputStream os) throws IOException {
+    @Override
+    protected void writeContent(final OutputStream os) throws IOException {
         super.writeContent(os);
-        if (imageOutputControl != null) {
-            imageOutputControl.writeToStream(os);
+        if (this.imageOutputControl != null) {
+            this.imageOutputControl.writeToStream(os);
         }
-        if (imageInputDescriptor != null) {
-            imageInputDescriptor.writeToStream(os);
+        if (this.imageInputDescriptor != null) {
+            this.imageInputDescriptor.writeToStream(os);
         }
-        if (imageCellPosition != null) {
-            imageCellPosition.writeToStream(os);
+        if (this.imageCellPosition != null) {
+            this.imageCellPosition.writeToStream(os);
         }
-        if (imageRasterData != null) {
-            imageRasterData.writeToStream(os);
+        if (this.imageRasterData != null) {
+            this.imageRasterData.writeToStream(os);
         }
     }
 
     /** {@inheritDoc} */
-    protected void writeStart(OutputStream os) throws IOException {
-        byte[] data = new byte[17];
+    @Override
+    protected void writeStart(final OutputStream os) throws IOException {
+        final byte[] data = new byte[17];
         copySF(data, Type.BEGIN, Category.IM_IMAGE);
         os.write(data);
     }
 
     /** {@inheritDoc} */
-    protected void writeEnd(OutputStream os) throws IOException {
-        byte[] data = new byte[17];
+    @Override
+    protected void writeEnd(final OutputStream os) throws IOException {
+        final byte[] data = new byte[17];
         copySF(data, Type.END, Category.IM_IMAGE);
         os.write(data);
     }

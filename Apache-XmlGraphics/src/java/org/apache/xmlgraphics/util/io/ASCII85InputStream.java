@@ -34,86 +34,86 @@ import java.io.InputStream;
  *
  * @version $Id: ASCII85InputStream.java 1345683 2012-06-03 14:50:33Z gadams $
  */
-public class ASCII85InputStream extends InputStream
-            implements ASCII85Constants {
+public class ASCII85InputStream extends InputStream implements ASCII85Constants {
 
-    private InputStream in;
+    private final InputStream in;
     private boolean eodReached = false;
-    private int[] b = new int[4]; //decoded
+    private final int[] b = new int[4]; // decoded
     private int bSize = 0;
     private int bIndex = 0;
 
     /** @see java.io.FilterInputStream **/
-    public ASCII85InputStream(InputStream in) {
+    public ASCII85InputStream(final InputStream in) {
         super();
         this.in = in;
     }
 
     /** @see java.io.FilterInputStream **/
+    @Override
     public int read() throws IOException {
-        //Check if we need to read the next tuple
-        if (bIndex >= bSize) {
-            if (eodReached) {
+        // Check if we need to read the next tuple
+        if (this.bIndex >= this.bSize) {
+            if (this.eodReached) {
                 return -1;
             }
             readNextTuple();
-            if (bSize == 0) {
-                if (!eodReached) {
+            if (this.bSize == 0) {
+                if (!this.eodReached) {
                     throw new IllegalStateException("Internal error");
                 }
                 return -1;
             }
         }
-        int result = b[bIndex];
-        result = (result < 0 ? 256 + result : result);
-        bIndex++;
+        int result = this.b[this.bIndex];
+        result = result < 0 ? 256 + result : result;
+        this.bIndex++;
         return result;
     }
 
     private int filteredRead() throws IOException {
         int buf;
         while (true) {
-            buf = in.read();
+            buf = this.in.read();
             switch (buf) {
-                case 0: //null
-                case 9: //tab
-                case 10: //LF
-                case 12: //FF
-                case 13: //CR
-                case 32: //space
-                    continue; //ignore
-                case ZERO:
-                case 126: //= EOD[0] = '~'
+            case 0: // null
+            case 9: // tab
+            case 10: // LF
+            case 12: // FF
+            case 13: // CR
+            case 32: // space
+                continue; // ignore
+            case ZERO:
+            case 126: // = EOD[0] = '~'
+                return buf;
+            default:
+                if (buf >= START && buf <= END) {
                     return buf;
-                default:
-                    if ((buf >= START) && (buf <= END)) {
-                        return buf;
-                    } else {
-                        throw new IOException("Illegal character detected: " + buf);
-                    }
+                } else {
+                    throw new IOException("Illegal character detected: " + buf);
+                }
             }
         }
     }
 
     private void handleEOD() throws IOException {
-        final int buf = in.read();
+        final int buf = this.in.read();
         if (buf != EOD[1]) {
             throw new IOException("'>' expected after '~' (EOD)");
         }
-        eodReached = true;
-        bSize = 0;
-        bIndex = 0;
+        this.eodReached = true;
+        this.bSize = 0;
+        this.bIndex = 0;
     }
 
     private void readNextTuple() throws IOException {
         int buf;
         long tuple = 0;
-        //Read ahead and check for special "z"
+        // Read ahead and check for special "z"
         buf = filteredRead();
         if (buf == ZERO) {
-            java.util.Arrays.fill(b, 0);
-            bSize = 4;
-            bIndex = 0;
+            java.util.Arrays.fill(this.b, 0);
+            this.bSize = 4;
+            this.bIndex = 0;
         } else if (buf == EOD[0]) {
             handleEOD();
         } else {
@@ -126,37 +126,35 @@ public class ASCII85InputStream extends InputStream
                     handleEOD();
                     break;
                 } else if (buf == ZERO) {
-                    //Violation 2
+                    // Violation 2
                     throw new IOException("Illegal 'z' within tuple");
                 } else {
                     tuple += (buf - START) * POW85[cIndex];
                     cIndex++;
                 }
             }
-            int cSize = cIndex;
+            final int cSize = cIndex;
             if (cSize == 1) {
-                //Violation 3
+                // Violation 3
                 throw new IOException("Only one character in tuple");
             }
-            //Handle optional, trailing, incomplete tuple
+            // Handle optional, trailing, incomplete tuple
             while (cIndex < 5) {
                 tuple += POW85[cIndex - 1];
                 cIndex++;
             }
             if (tuple > (2L << 31) - 1) {
-                //Violation 1
+                // Violation 1
                 throw new IOException("Illegal tuple (> 2^32 - 1)");
             }
-            //Convert tuple
-            b[0] = (byte)((tuple >> 24) & 0xFF);
-            b[1] = (byte)((tuple >> 16) & 0xFF);
-            b[2] = (byte)((tuple >> 8) & 0xFF);
-            b[3] = (byte)((tuple) & 0xFF);
-            bSize = cSize - 1;
-            bIndex = 0;
+            // Convert tuple
+            this.b[0] = (byte) (tuple >> 24 & 0xFF);
+            this.b[1] = (byte) (tuple >> 16 & 0xFF);
+            this.b[2] = (byte) (tuple >> 8 & 0xFF);
+            this.b[3] = (byte) (tuple & 0xFF);
+            this.bSize = cSize - 1;
+            this.bIndex = 0;
         }
     }
 
 }
-
-

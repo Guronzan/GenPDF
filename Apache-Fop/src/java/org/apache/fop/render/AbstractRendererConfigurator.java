@@ -20,12 +20,12 @@
 package org.apache.fop.render;
 
 import org.apache.avalon.framework.configuration.Configuration;
-
 import org.apache.fop.apps.FOUserAgent;
 
 /**
- * Abstract base classes for renderer-related configurator classes. This class basically just
- * provides an accessor to the specific renderer configuration object.
+ * Abstract base classes for renderer-related configurator classes. This class
+ * basically just provides an accessor to the specific renderer configuration
+ * object.
  */
 public abstract class AbstractRendererConfigurator extends AbstractConfigurator {
 
@@ -33,33 +33,42 @@ public abstract class AbstractRendererConfigurator extends AbstractConfigurator 
 
     /**
      * Default constructor
-     * @param userAgent user agent
+     * 
+     * @param userAgent
+     *            user agent
      */
-    public AbstractRendererConfigurator(FOUserAgent userAgent) {
+    public AbstractRendererConfigurator(final FOUserAgent userAgent) {
         super(userAgent);
     }
 
     /**
      * Returns the configuration subtree for a specific renderer.
-     * @param renderer the renderer
-     * @return the requested configuration subtree, null if there's no configuration
+     * 
+     * @param renderer
+     *            the renderer
+     * @return the requested configuration subtree, null if there's no
+     *         configuration
      */
-    protected Configuration getRendererConfig(Renderer renderer) {
+    protected Configuration getRendererConfig(final Renderer renderer) {
         return super.getConfig(renderer.getMimeType());
     }
 
     /**
      * Returns the configuration subtree for a specific renderer.
-     * @param mimeType the MIME type of the renderer
-     * @return the requested configuration subtree, null if there's no configuration
+     * 
+     * @param mimeType
+     *            the MIME type of the renderer
+     * @return the requested configuration subtree, null if there's no
+     *         configuration
      */
-    protected Configuration getRendererConfig(String mimeType) {
+    protected Configuration getRendererConfig(final String mimeType) {
         return super.getConfig(mimeType);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getType() {
         return TYPE;
     }

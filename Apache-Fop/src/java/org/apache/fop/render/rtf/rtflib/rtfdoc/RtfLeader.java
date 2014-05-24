@@ -29,9 +29,9 @@ import java.util.Iterator;
 public class RtfLeader extends RtfContainer {
 
     /*
-     * Format : \tqr \style \tx## { \pard \format \tab }
-     *  ## represents the width \style represents the style (tldot, tlth, ...)
-     * \format represents standard formats (color, fontsize, ...)
+     * Format : \tqr \style \tx## { \pard \format \tab } ## represents the width
+     * \style represents the style (tldot, tlth, ...) \format represents
+     * standard formats (color, fontsize, ...)
      *
      *
      * \pard \zwnj {\fsxx <format> } \zwnj
@@ -103,7 +103,8 @@ public class RtfLeader extends RtfContainer {
     public static final String LEADER_IGNORE_STYLE = "pard";
 
     /** Font size determines rule thickness */
-    public static final String LEADER_RULE_THICKNESS = "fs"; // thickness = fontsize
+    public static final String LEADER_RULE_THICKNESS = "fs"; // thickness =
+    // fontsize
 
     /** Expansion or compression of the space between characters in twips */
     public static final String LEADER_PATTERN_WIDTH = "expndtw";
@@ -119,7 +120,7 @@ public class RtfLeader extends RtfContainer {
 
     /** Negative expansion */
     public static final String LEADER_EXPAND = "expnd-2"; // negative value
-                                                            // for compression
+    // for compression
 
     /** Tab */
     public static final String LEADER_TAB_VALUE = "tab";
@@ -130,42 +131,44 @@ public class RtfLeader extends RtfContainer {
     /** Tab width */
     public static final String LEADER_TAB_WIDTH = "tx";
 
-    RtfLeader(RtfContainer parent, Writer w, RtfAttributes attrs) throws IOException {
+    RtfLeader(final RtfContainer parent, final Writer w,
+            final RtfAttributes attrs) throws IOException {
         super(parent, w);
         this.attrs = attrs;
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void writeRtfContent() throws IOException {
 
         int thickness = LEADER_STANDARD_WIDTH;
         String tablead = null;
         String tabwidth = null;
-        for (Iterator it = attrs.nameIterator(); it.hasNext();) {
-            final String name = (String)it.next();
-            if (attrs.isSet(name)) {
+        for (final Iterator it = this.attrs.nameIterator(); it.hasNext();) {
+            final String name = (String) it.next();
+            if (this.attrs.isSet(name)) {
                 if (name.equals(LEADER_TABLEAD)) {
-                    tablead = attrs.getValue(LEADER_TABLEAD).toString();
+                    tablead = this.attrs.getValue(LEADER_TABLEAD).toString();
                 } else if (name.equals(LEADER_WIDTH)) {
-                    tabwidth = attrs.getValue(LEADER_WIDTH).toString();
+                    tabwidth = this.attrs.getValue(LEADER_WIDTH).toString();
                 }
             }
         }
 
-        if (attrs.getValue(LEADER_RULE_THICKNESS) != null) {
-            thickness += Integer.parseInt(attrs.getValue(LEADER_RULE_THICKNESS).toString())
-                            / 1000 * 2;
-            attrs.unset(LEADER_RULE_THICKNESS);
+        if (this.attrs.getValue(LEADER_RULE_THICKNESS) != null) {
+            thickness += Integer.parseInt(this.attrs.getValue(
+                    LEADER_RULE_THICKNESS).toString()) / 1000 * 2;
+            this.attrs.unset(LEADER_RULE_THICKNESS);
         }
 
-        //Remove private attributes
-        attrs.unset(LEADER_WIDTH);
-        attrs.unset(LEADER_TABLEAD);
+        // Remove private attributes
+        this.attrs.unset(LEADER_WIDTH);
+        this.attrs.unset(LEADER_TABLEAD);
 
         // If leader is 100% we use a tabulator, because its more
         // comfortable, specially for the table of content
-        if (attrs.getValue(LEADER_USETAB) != null) {
-            attrs.unset(LEADER_USETAB);
+        if (this.attrs.getValue(LEADER_USETAB) != null) {
+            this.attrs.unset(LEADER_USETAB);
             writeControlWord(LEADER_TAB_RIGHT);
 
             if (tablead != null) {
@@ -176,7 +179,7 @@ public class RtfLeader extends RtfContainer {
             writeGroupMark(true);
 
             writeControlWord(LEADER_IGNORE_STYLE);
-            writeAttributes(attrs, null);
+            writeAttributes(this.attrs, null);
             writeControlWord(LEADER_EXPAND);
             writeControlWord(LEADER_TAB_VALUE);
 
@@ -191,7 +194,7 @@ public class RtfLeader extends RtfContainer {
 
             writeControlWord(LEADER_UP);
 
-            super.writeAttributes(attrs, null);
+            super.writeAttributes(this.attrs, null);
             if (tablead != null) {
                 writeControlWord(tablead);
             }
@@ -200,8 +203,9 @@ public class RtfLeader extends RtfContainer {
             // Depending on font-size 15 -> 1cm = 7,5 spaces
             // TODO for rule-thickness this has to be done better
 
-            for (double d = (Integer.parseInt(tabwidth) / 560) * 7.5; d >= 1; d--) {
-                RtfStringConverter.getInstance().writeRtfString(writer, " ");
+            for (double d = Integer.parseInt(tabwidth) / 560 * 7.5; d >= 1; d--) {
+                RtfStringConverter.getInstance().writeRtfString(this.writer,
+                        " ");
             }
 
             writeGroupMark(false);
@@ -210,6 +214,7 @@ public class RtfLeader extends RtfContainer {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isEmpty() {
         return false;
     }

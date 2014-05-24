@@ -21,53 +21,58 @@ package org.apache.fop.util.text;
 
 import java.util.Map;
 
-import org.apache.xmlgraphics.fonts.Glyphs;
-
 import org.apache.fop.util.text.AdvancedMessageFormat.Part;
 import org.apache.fop.util.text.AdvancedMessageFormat.PartFactory;
+import org.apache.xmlgraphics.fonts.Glyphs;
 
 /**
  * Function formatting a character to a glyph name.
  */
 public class GlyphNameFieldPart implements Part {
 
-    private String fieldName;
+    private final String fieldName;
 
     /**
      * Creates a new glyph name field part
-     * @param fieldName the field name
+     * 
+     * @param fieldName
+     *            the field name
      */
-    public GlyphNameFieldPart(String fieldName) {
+    public GlyphNameFieldPart(final String fieldName) {
         this.fieldName = fieldName;
     }
 
     /** {@inheritDoc} */
-    public boolean isGenerated(Map params) {
-        Object obj = params.get(fieldName);
+    @Override
+    public boolean isGenerated(final Map params) {
+        final Object obj = params.get(this.fieldName);
         return obj != null && getGlyphName(obj).length() > 0;
     }
 
-    private String getGlyphName(Object obj) {
+    private String getGlyphName(final Object obj) {
         if (obj instanceof Character) {
-            return Glyphs.charToGlyphName(((Character)obj).charValue());
+            return Glyphs.charToGlyphName(((Character) obj).charValue());
         } else {
             throw new IllegalArgumentException(
                     "Value for glyph name part must be a Character but was: "
-                        + obj.getClass().getName());
+                            + obj.getClass().getName());
         }
     }
 
     /** {@inheritDoc} */
-    public void write(StringBuffer sb, Map params) {
-        if (!params.containsKey(fieldName)) {
+    @Override
+    public void write(final StringBuffer sb, final Map params) {
+        if (!params.containsKey(this.fieldName)) {
             throw new IllegalArgumentException(
-                    "Message pattern contains unsupported field name: " + fieldName);
+                    "Message pattern contains unsupported field name: "
+                            + this.fieldName);
         }
-        Object obj = params.get(fieldName);
+        final Object obj = params.get(this.fieldName);
         sb.append(getGlyphName(obj));
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "{" + this.fieldName + ",glyph-name}";
     }
@@ -76,11 +81,13 @@ public class GlyphNameFieldPart implements Part {
     public static class Factory implements PartFactory {
 
         /** {@inheritDoc} */
-        public Part newPart(String fieldName, String values) {
+        @Override
+        public Part newPart(final String fieldName, final String values) {
             return new GlyphNameFieldPart(fieldName);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String getFormat() {
             return "glyph-name";
         }

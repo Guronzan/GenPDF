@@ -24,17 +24,14 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.apache.batik.dom.svg.SVGDOMImplementation;
+import org.apache.fop.util.ContentHandlerFactory;
+import org.apache.fop.util.DelegatingContentHandler;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-
-import org.apache.batik.dom.svg.SVGDOMImplementation;
-
-import org.apache.fop.util.ContentHandlerFactory;
-import org.apache.fop.util.DelegatingContentHandler;
 
 /**
  * ContentHandlerFactory which constructs ContentHandlers that build SVG DOM
@@ -42,8 +39,8 @@ import org.apache.fop.util.DelegatingContentHandler;
  */
 public class SVGDOMContentHandlerFactory implements ContentHandlerFactory {
 
-    private static SAXTransformerFactory tFactory
-        = (SAXTransformerFactory)SAXTransformerFactory.newInstance();
+    private static SAXTransformerFactory tFactory = (SAXTransformerFactory) SAXTransformerFactory
+            .newInstance();
 
     /**
      * Default Constructor.
@@ -53,17 +50,19 @@ public class SVGDOMContentHandlerFactory implements ContentHandlerFactory {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedNamespaces() {
-        return new String[] {SVGDOMImplementation.SVG_NAMESPACE_URI};
+        return new String[] { SVGDOMImplementation.SVG_NAMESPACE_URI };
     }
 
     /** {@inheritDoc} */
+    @Override
     public ContentHandler createContentHandler() throws SAXException {
         return new Handler();
     }
 
     private static class Handler extends DelegatingContentHandler implements
-            ContentHandlerFactory.ObjectSource {
+    ContentHandlerFactory.ObjectSource {
 
         private Document doc;
         private ObjectBuiltListener obListener;
@@ -77,36 +76,41 @@ public class SVGDOMContentHandlerFactory implements ContentHandlerFactory {
         }
 
         /** {@inheritDoc} */
+        @Override
         public Object getObject() {
             return getDocument();
         }
 
         /** {@inheritDoc} */
-        public void setObjectBuiltListener(ObjectBuiltListener listener) {
+        @Override
+        public void setObjectBuiltListener(final ObjectBuiltListener listener) {
             this.obListener = listener;
         }
 
         /** {@inheritDoc} */
+        @Override
         public void startDocument() throws SAXException {
             // Suppress startDocument() call if doc has not been set, yet. It
             // will be done later.
-            if (doc != null) {
+            if (this.doc != null) {
                 super.startDocument();
             }
         }
 
-        private DOMImplementation getDOMImplementation(String ver) {
-            //TODO It would be great if Batik provided this method as static helper method.
-            if (ver == null || ver.length() == 0
-                    || ver.equals("1.0") || ver.equals("1.1")) {
+        private DOMImplementation getDOMImplementation(final String ver) {
+            // TODO It would be great if Batik provided this method as static
+            // helper method.
+            if (ver == null || ver.length() == 0 || ver.equals("1.0")
+                    || ver.equals("1.1")) {
                 return SVGDOMImplementation.getDOMImplementation();
             } else if (ver.equals("1.2")) {
                 try {
-                    Class clazz = Class.forName(
-                            "org.apache.batik.dom.svg12.SVG12DOMImplementation");
-                    return (DOMImplementation)clazz.getMethod(
-                            "getDOMImplementation", (Class[])null).invoke(null, (Object[])null);
-                } catch (Exception e) {
+                    final Class clazz = Class
+                            .forName("org.apache.batik.dom.svg12.SVG12DOMImplementation");
+                    return (DOMImplementation) clazz.getMethod(
+                            "getDOMImplementation", (Class[]) null).invoke(
+                            null, (Object[]) null);
+                } catch (final Exception e) {
                     return SVGDOMImplementation.getDOMImplementation();
                 }
             }
@@ -114,22 +118,24 @@ public class SVGDOMContentHandlerFactory implements ContentHandlerFactory {
         }
 
         /** {@inheritDoc} */
-        public void startElement(String uri, String localName, String qName, Attributes atts)
-                throws SAXException {
-            if (doc == null) {
+        @Override
+        public void startElement(final String uri, final String localName,
+                final String qName, final Attributes atts) throws SAXException {
+            if (this.doc == null) {
                 TransformerHandler handler;
                 try {
                     handler = tFactory.newTransformerHandler();
-                } catch (TransformerConfigurationException e) {
-                    throw new SAXException("Error creating a new TransformerHandler", e);
+                } catch (final TransformerConfigurationException e) {
+                    throw new SAXException(
+                            "Error creating a new TransformerHandler", e);
                 }
-                String version = atts.getValue("version");
-                DOMImplementation domImplementation = getDOMImplementation(version);
-                doc = domImplementation.createDocument(uri, qName, null);
+                final String version = atts.getValue("version");
+                final DOMImplementation domImplementation = getDOMImplementation(version);
+                this.doc = domImplementation.createDocument(uri, qName, null);
                 // It's easier to work with an empty document, so remove the
                 // root element
-                doc.removeChild(doc.getDocumentElement());
-                handler.setResult(new DOMResult(doc));
+                this.doc.removeChild(this.doc.getDocumentElement());
+                handler.setResult(new DOMResult(this.doc));
                 setDelegateContentHandler(handler);
                 setDelegateLexicalHandler(handler);
                 setDelegateDTDHandler(handler);
@@ -139,10 +145,11 @@ public class SVGDOMContentHandlerFactory implements ContentHandlerFactory {
         }
 
         /** {@inheritDoc} */
+        @Override
         public void endDocument() throws SAXException {
             super.endDocument();
-            if (obListener != null) {
-                obListener.notifyObjectBuilt(getObject());
+            if (this.obListener != null) {
+                this.obListener.notifyObjectBuilt(getObject());
             }
         }
 

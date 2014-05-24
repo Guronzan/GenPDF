@@ -24,30 +24,37 @@ import java.io.Serializable;
 /**
  * Represents a qualified name of an XML element or an XML attribute.
  * <p>
- * Note: This class allows to carry a namespace prefix but it is not used in the equals() and
- * hashCode() methods.
+ * Note: This class allows to carry a namespace prefix but it is not used in the
+ * equals() and hashCode() methods.
  */
 public class QName implements Serializable {
 
     private static final long serialVersionUID = -5225376740044770690L;
 
-    private String namespaceURI;
+    private final String namespaceURI;
     private String localName;
     private String prefix;
-    private int hashCode;
+    private final int hashCode;
 
     /**
      * Main constructor.
-     * @param namespaceURI the namespace URI
-     * @param prefix the namespace prefix, may be null
-     * @param localName the local name
+     * 
+     * @param namespaceURI
+     *            the namespace URI
+     * @param prefix
+     *            the namespace prefix, may be null
+     * @param localName
+     *            the local name
      */
-    public QName(String namespaceURI, String prefix, String localName) {
+    public QName(final String namespaceURI, final String prefix,
+            final String localName) {
         if (localName == null) {
-            throw new NullPointerException("Parameter localName must not be null");
+            throw new NullPointerException(
+                    "Parameter localName must not be null");
         }
         if (localName.length() == 0) {
-            throw new IllegalArgumentException("Parameter localName must not be empty");
+            throw new IllegalArgumentException(
+                    "Parameter localName must not be empty");
         }
         this.namespaceURI = namespaceURI;
         this.prefix = prefix;
@@ -57,18 +64,23 @@ public class QName implements Serializable {
 
     /**
      * Main constructor.
-     * @param namespaceURI the namespace URI
-     * @param qName the qualified name
+     * 
+     * @param namespaceURI
+     *            the namespace URI
+     * @param qName
+     *            the qualified name
      */
-    public QName(String namespaceURI, String qName) {
+    public QName(final String namespaceURI, final String qName) {
         if (qName == null) {
-            throw new NullPointerException("Parameter localName must not be null");
+            throw new NullPointerException(
+                    "Parameter localName must not be null");
         }
         if (qName.length() == 0) {
-            throw new IllegalArgumentException("Parameter localName must not be empty");
+            throw new IllegalArgumentException(
+                    "Parameter localName must not be empty");
         }
         this.namespaceURI = namespaceURI;
-        int p = qName.indexOf(':');
+        final int p = qName.indexOf(':');
         if (p > 0) {
             this.prefix = qName.substring(0, p);
             this.localName = qName.substring(p + 1);
@@ -96,24 +108,28 @@ public class QName implements Serializable {
 
     /** @return the fully qualified name */
     public String getQName() {
-        return getPrefix() != null ? getPrefix() + ':' + getLocalName() : getLocalName();
+        return getPrefix() != null ? getPrefix() + ':' + getLocalName()
+                : getLocalName();
     }
 
     /** @see java.lang.Object#hashCode() */
+    @Override
     public int hashCode() {
         return this.hashCode;
     }
 
     /** @see java.lang.Object#equals(java.lang.Object) */
-    public boolean equals(Object obj) {
+    @Override
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         } else if (obj == this) {
             return true;
         } else {
             if (obj instanceof QName) {
-                QName other = (QName)obj;
-                if ((getNamespaceURI() == null && other.getNamespaceURI() == null)
+                final QName other = (QName) obj;
+                if (getNamespaceURI() == null
+                        && other.getNamespaceURI() == null
                         || getNamespaceURI().equals(other.getNamespaceURI())) {
                     return getLocalName().equals(other.getLocalName());
                 }
@@ -123,16 +139,15 @@ public class QName implements Serializable {
     }
 
     /** @see java.lang.Object#toString() */
+    @Override
     public String toString() {
-        return prefix != null
-                ? (prefix + ":" + localName)
-                : toHashString();
+        return this.prefix != null ? this.prefix + ":" + this.localName
+                        : toHashString();
     }
 
     private String toHashString() {
-        return (namespaceURI != null
-                ? ("{" + namespaceURI + "}" + localName)
-                : localName);
+        return this.namespaceURI != null ? "{" + this.namespaceURI + "}"
+                + this.localName : this.localName;
     }
 
 }

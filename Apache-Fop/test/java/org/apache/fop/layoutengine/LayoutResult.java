@@ -27,18 +27,23 @@ import org.w3c.dom.Document;
  */
 public class LayoutResult {
 
-    private Document areaTree;
-    private ElementListCollector elCollector;
-    private FormattingResults results;
+    private final Document areaTree;
+    private final ElementListCollector elCollector;
+    private final FormattingResults results;
 
     /**
      * Creates a new LayoutResult instance.
-     * @param areaTree the area tree DOM
-     * @param elCollector the element list collector
-     * @param results the formatting results
+     * 
+     * @param areaTree
+     *            the area tree DOM
+     * @param elCollector
+     *            the element list collector
+     * @param results
+     *            the formatting results
      */
-    public LayoutResult(Document areaTree, ElementListCollector elCollector,
-                        FormattingResults results) {
+    public LayoutResult(final Document areaTree,
+            final ElementListCollector elCollector,
+            final FormattingResults results) {
         this.areaTree = areaTree;
         this.elCollector = elCollector;
         this.results = results;
@@ -58,7 +63,7 @@ public class LayoutResult {
      * @return Returns the results.
      */
     public FormattingResults getResults() {
-        return results;
+        return this.results;
     }
 
 }

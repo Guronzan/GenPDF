@@ -37,32 +37,35 @@ public class GraphicsAreaBegin extends AbstractGraphicsDrawingOrder {
     /**
      * Sets whether boundary lines are drawn
      *
-     * @param drawBoundaryLines whether boundary lines are drawn
+     * @param drawBoundaryLines
+     *            whether boundary lines are drawn
      */
-    public void setDrawBoundaryLines(boolean drawBoundaryLines) {
+    public void setDrawBoundaryLines(final boolean drawBoundaryLines) {
         this.drawBoundary = drawBoundaryLines;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[] {
-            getOrderCode(), // GBAR order code
-            (byte)(RES1 + (drawBoundary ? BOUNDARY : NO_BOUNDARY))
-        };
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[] { getOrderCode(), // GBAR order code
+                (byte) (RES1 + (this.drawBoundary ? BOUNDARY : NO_BOUNDARY)) };
         os.write(data);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 2;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "GraphicsAreaBegin{drawBoundary=" + drawBoundary + "}";
+        return "GraphicsAreaBegin{drawBoundary=" + this.drawBoundary + "}";
     }
 
     /** {@inheritDoc} */
+    @Override
     byte getOrderCode() {
         return 0x68;
     }

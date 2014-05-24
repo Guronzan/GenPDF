@@ -25,59 +25,64 @@ import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 
+import org.apache.fop.render.ImageHandler;
+import org.apache.fop.render.RenderingContext;
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
 import org.apache.xmlgraphics.image.loader.impl.ImageGraphics2D;
 
-import org.apache.fop.render.ImageHandler;
-import org.apache.fop.render.RenderingContext;
-
 /**
- * Image handler implementation that paints {@link Graphics2D} image on another {@link Graphics2D}
- * target.
+ * Image handler implementation that paints {@link Graphics2D} image on another
+ * {@link Graphics2D} target.
  */
 public class Java2DImageHandlerGraphics2D implements ImageHandler {
 
     /** {@inheritDoc} */
+    @Override
     public int getPriority() {
         return 200;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class getSupportedImageClass() {
         return ImageGraphics2D.class;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor[] getSupportedImageFlavors() {
-        return new ImageFlavor[] {
-            ImageFlavor.GRAPHICS2D
-        };
+        return new ImageFlavor[] { ImageFlavor.GRAPHICS2D };
     }
 
     /** {@inheritDoc} */
-    public void handleImage(RenderingContext context, Image image, Rectangle pos)
-            throws IOException {
-        Java2DRenderingContext java2dContext = (Java2DRenderingContext)context;
-        ImageInfo info = image.getInfo();
-        ImageGraphics2D imageG2D = (ImageGraphics2D)image;
+    @Override
+    public void handleImage(final RenderingContext context, final Image image,
+            final Rectangle pos) throws IOException {
+        final Java2DRenderingContext java2dContext = (Java2DRenderingContext) context;
+        final ImageInfo info = image.getInfo();
+        final ImageGraphics2D imageG2D = (ImageGraphics2D) image;
 
-        Dimension dim = info.getSize().getDimensionMpt();
+        final Dimension dim = info.getSize().getDimensionMpt();
 
-        Graphics2D g2d = (Graphics2D)java2dContext.getGraphics2D().create();
+        final Graphics2D g2d = (Graphics2D) java2dContext.getGraphics2D()
+                .create();
         g2d.translate(pos.x, pos.y);
-        double sx = pos.width / dim.getWidth();
-        double sy = pos.height / dim.getHeight();
+        final double sx = pos.width / dim.getWidth();
+        final double sy = pos.height / dim.getHeight();
         g2d.scale(sx, sy);
 
-        Rectangle2D area = new Rectangle2D.Double(0.0, 0.0, dim.getWidth(), dim.getHeight());
+        final Rectangle2D area = new Rectangle2D.Double(0.0, 0.0,
+                dim.getWidth(), dim.getHeight());
         imageG2D.getGraphics2DImagePainter().paint(g2d, area);
         g2d.dispose();
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible(RenderingContext targetContext, Image image) {
+    @Override
+    public boolean isCompatible(final RenderingContext targetContext,
+            final Image image) {
         return (image == null || image instanceof ImageGraphics2D)
                 && targetContext instanceof Java2DRenderingContext;
     }

@@ -33,6 +33,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.TransformerHandler;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.MimeConstants;
@@ -53,95 +55,111 @@ import org.w3c.dom.Document;
  * Tests the area tree parser.
  */
 @RunWith(Parameterized.class)
+@Slf4j
 public class AreaTreeParserTestCase extends AbstractIntermediateTest {
 
     /**
      * Creates the parameters for this test.
      *
      * @return the list of file arrays populated with test files
-     * @throws IOException if an I/O error occurs while reading the test file
+     * @throws IOException
+     *             if an I/O error occurs while reading the test file
      */
     @Parameters
     public static Collection<File[]> getParameters() throws IOException {
         return LayoutEngineTestUtils.getLayoutTestFiles();
     }
+
     /**
      * Constructor for the test suite that is used for each test file.
-     * @param testFile the test file to run
+     *
+     * @param testFile
+     *            the test file to run
      * @throws IOException
-     * @throws IOException if an I/O error occurs while loading the test case
+     * @throws IOException
+     *             if an I/O error occurs while loading the test case
      */
-    public AreaTreeParserTestCase(File testFile) throws IOException {
+    public AreaTreeParserTestCase(final File testFile) throws IOException {
         super(testFile);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected String getIntermediateFileExtension() {
         return ".at.xml";
     }
 
     /** {@inheritDoc} */
-    protected Document buildIntermediateDocument(Templates templates)
-                throws Exception {
-        Transformer transformer = templates.newTransformer();
+    @Override
+    protected Document buildIntermediateDocument(final Templates templates)
+            throws Exception {
+        final Transformer transformer = templates.newTransformer();
         setErrorListener(transformer);
 
-        //Set up XMLRenderer to render to a DOM
-        TransformerHandler handler = testAssistant.getTransformerFactory().newTransformerHandler();
-        DOMResult domResult = new DOMResult();
+        // Set up XMLRenderer to render to a DOM
+        final TransformerHandler handler = testAssistant
+                .getTransformerFactory().newTransformerHandler();
+        final DOMResult domResult = new DOMResult();
         handler.setResult(domResult);
 
-        FOUserAgent userAgent = createUserAgent();
+        final FOUserAgent userAgent = createUserAgent();
 
-        //Create an instance of the target renderer so the XMLRenderer can use its font setup
-        Renderer targetRenderer = userAgent.getRendererFactory().createRenderer(
-                userAgent, getTargetMIME());
+        // Create an instance of the target renderer so the XMLRenderer can use
+        // its font setup
+        final Renderer targetRenderer = userAgent.getRendererFactory()
+                .createRenderer(userAgent, getTargetMIME());
 
-        XMLRenderer renderer = new XMLRenderer(userAgent);
+        final XMLRenderer renderer = new XMLRenderer(userAgent);
         renderer.mimicRenderer(targetRenderer);
         renderer.setContentHandler(handler);
 
         userAgent.setRendererOverride(renderer);
 
-        Fop fop = fopFactory.newFop(MimeConstants.MIME_FOP_AREA_TREE, userAgent);
-        Result res = new SAXResult(fop.getDefaultHandler());
-        transformer.transform(new DOMSource(testDoc), res);
+        final Fop fop = this.fopFactory.newFop(
+                MimeConstants.MIME_FOP_AREA_TREE, userAgent);
+        final Result res = new SAXResult(fop.getDefaultHandler());
+        transformer.transform(new DOMSource(this.testDoc), res);
 
-        return (Document)domResult.getNode();
+        return (Document) domResult.getNode();
     }
 
     /** {@inheritDoc} */
-    protected void parseAndRender(Source src, OutputStream out) throws Exception {
-        AreaTreeParser parser = new AreaTreeParser();
+    @Override
+    protected void parseAndRender(final Source src, final OutputStream out)
+            throws Exception {
+        final AreaTreeParser parser = new AreaTreeParser();
 
-        FOUserAgent userAgent = createUserAgent();
-        FontInfo fontInfo = new FontInfo();
-        AreaTreeModel treeModel = new RenderPagesModel(userAgent,
+        final FOUserAgent userAgent = createUserAgent();
+        final FontInfo fontInfo = new FontInfo();
+        final AreaTreeModel treeModel = new RenderPagesModel(userAgent,
                 getTargetMIME(), fontInfo, out);
         parser.parse(src, treeModel, userAgent);
         treeModel.endDocument();
     }
 
     /** {@inheritDoc} */
-    protected Document parseAndRenderToIntermediateFormat(Source src) throws Exception {
-        AreaTreeParser parser = new AreaTreeParser();
+    @Override
+    protected Document parseAndRenderToIntermediateFormat(final Source src)
+            throws Exception {
+        final AreaTreeParser parser = new AreaTreeParser();
 
-        //Set up XMLRenderer to render to a DOM
-        TransformerHandler handler = testAssistant.getTransformerFactory().newTransformerHandler();
-        DOMResult domResult = new DOMResult();
+        // Set up XMLRenderer to render to a DOM
+        final TransformerHandler handler = testAssistant
+                .getTransformerFactory().newTransformerHandler();
+        final DOMResult domResult = new DOMResult();
         handler.setResult(domResult);
-        FOUserAgent userAgent = createUserAgent();
-        XMLRenderer renderer = new XMLRenderer(userAgent);
+        final FOUserAgent userAgent = createUserAgent();
+        final XMLRenderer renderer = new XMLRenderer(userAgent);
         userAgent.setRendererOverride(renderer);
         renderer.setContentHandler(handler);
 
-        FontInfo fontInfo = new FontInfo();
-        AreaTreeModel treeModel = new RenderPagesModel(userAgent,
+        final FontInfo fontInfo = new FontInfo();
+        final AreaTreeModel treeModel = new RenderPagesModel(userAgent,
                 MimeConstants.MIME_FOP_AREA_TREE, fontInfo, null);
         parser.parse(src, treeModel, userAgent);
         treeModel.endDocument();
 
-        return (Document)domResult.getNode();
+        return (Document) domResult.getNode();
     }
 
     @Override
@@ -150,9 +168,8 @@ public class AreaTreeParserTestCase extends AbstractIntermediateTest {
         try {
             testParserToIntermediateFormat();
             testParserToPDF();
-        } catch (Exception e) {
-            org.apache.commons.logging.LogFactory.getLog(this.getClass()).error(
-                    "Error on " + testFile.getName());
+        } catch (final Exception e) {
+            log.error("Error on " + this.testFile.getName());
             throw e;
         }
     }

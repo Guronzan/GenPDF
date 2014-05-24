@@ -30,51 +30,51 @@ import lombok.extern.slf4j.Slf4j;
  * or not.
  */
 @Slf4j
- public class ObservableInputStream extends FilterInputStream implements
-        ObservableStream {
+public class ObservableInputStream extends FilterInputStream implements
+ObservableStream {
 
     private boolean closed;
-     private final String systemID;
+    private final String systemID;
 
-     /**
-      * Main constructor.
-      * 
+    /**
+     * Main constructor.
+     *
      * @param in
      *            the underlying input stream
      * @param systemID
      *            the system ID for the input stream for reference
-      */
-     public ObservableInputStream(final InputStream in, final String systemID) {
-         super(in);
-         this.systemID = systemID;
-     }
+     */
+    public ObservableInputStream(final InputStream in, final String systemID) {
+        super(in);
+        this.systemID = systemID;
+    }
 
-     /** {@inheritDoc} */
-     @Override
-     public void close() throws IOException {
-         if (!this.closed) {
-             log.debug("Stream is being closed: " + getSystemID());
-             try {
-                 this.in.close();
-             } catch (final IOException ioe) {
-                 log.error("Error while closing underlying stream: ", ioe);
-             }
-             this.closed = true;
-         } else {
-             throw new IllegalStateException("Stream is already closed!");
-         }
-     }
+    /** {@inheritDoc} */
+    @Override
+    public void close() throws IOException {
+        if (!this.closed) {
+            log.debug("Stream is being closed: " + getSystemID());
+            try {
+                this.in.close();
+            } catch (final IOException ioe) {
+                log.error("Error while closing underlying stream: ", ioe);
+            }
+            this.closed = true;
+        } else {
+            throw new IllegalStateException("Stream is already closed!");
+        }
+    }
 
-     /** {@inheritDoc} */
-     @Override
-     public boolean isClosed() {
-         return this.closed;
-     }
+    /** {@inheritDoc} */
+    @Override
+    public boolean isClosed() {
+        return this.closed;
+    }
 
-     /** {@inheritDoc} */
-     @Override
-     public String getSystemID() {
-         return this.systemID;
-     }
+    /** {@inheritDoc} */
+    @Override
+    public String getSystemID() {
+        return this.systemID;
+    }
 
- }
+}

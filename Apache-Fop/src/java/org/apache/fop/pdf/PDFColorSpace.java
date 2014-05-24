@@ -26,6 +26,7 @@ public interface PDFColorSpace {
 
     /**
      * Get the number of color components for this colorspace
+     * 
      * @return the number of components
      */
     int getNumComponents();
@@ -34,15 +35,17 @@ public interface PDFColorSpace {
     String getName();
 
     /**
-     * @return true if the color space is a device-dependent color space (like DeviceRGB,
-     *         DeviceCMYK and DeviceGray)
+     * @return true if the color space is a device-dependent color space (like
+     *         DeviceRGB, DeviceCMYK and DeviceGray)
      */
     boolean isDeviceColorSpace();
 
     /** @return true if the color space is an RGB color space */
     boolean isRGBColorSpace();
+
     /** @return true if the color space is an CMYK color space */
     boolean isCMYKColorSpace();
+
     /** @return true if the color space is an Gray color space */
     boolean isGrayColorSpace();
 

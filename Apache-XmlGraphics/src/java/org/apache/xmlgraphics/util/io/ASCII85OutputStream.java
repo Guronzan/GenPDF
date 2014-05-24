@@ -23,13 +23,16 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * This class applies a ASCII85 encoding to the stream.
  *
  * @version $Id: ASCII85OutputStream.java 1345683 2012-06-03 14:50:33Z gadams $
  */
-public class ASCII85OutputStream extends FilterOutputStream
-            implements ASCII85Constants, Finalizable {
+@Slf4j
+public class ASCII85OutputStream extends FilterOutputStream implements
+ASCII85Constants, Finalizable {
 
     private static final boolean DEBUG = false;
 
@@ -39,81 +42,82 @@ public class ASCII85OutputStream extends FilterOutputStream
     private int bw = 0;
 
     /** @see java.io.FilterOutputStream **/
-    public ASCII85OutputStream(OutputStream out) {
+    public ASCII85OutputStream(final OutputStream out) {
         super(out);
     }
 
     /** @see java.io.FilterOutputStream **/
-    public void write(int b) throws IOException {
-        if (pos == 0) {
-            buffer += (b << 24) & 0xff000000L;
-        } else if (pos == 1) {
-            buffer += (b << 16) & 0xff0000L;
-        } else if (pos == 2) {
-            buffer += (b << 8) & 0xff00L;
+    @Override
+    public void write(final int b) throws IOException {
+        if (this.pos == 0) {
+            this.buffer += b << 24 & 0xff000000L;
+        } else if (this.pos == 1) {
+            this.buffer += b << 16 & 0xff0000L;
+        } else if (this.pos == 2) {
+            this.buffer += b << 8 & 0xff00L;
         } else {
-            buffer += b & 0xffL;
+            this.buffer += b & 0xffL;
         }
-        pos++;
+        this.pos++;
 
-        if (pos > 3) {
-            checkedWrite(convertWord(buffer));
-            buffer = 0;
-            pos = 0;
+        if (this.pos > 3) {
+            checkedWrite(convertWord(this.buffer));
+            this.buffer = 0;
+            this.pos = 0;
         }
     }
 
-    /* UNUSED ATM
-    private void checkedWrite(int b) throws IOException {
-        if (posinline == 80) {
-            out.write(EOL); bw++;
-            posinline = 0;
-        }
-        checkedWrite(b);
-        posinline++;
-        bw++;
-    }*/
+    /*
+     * UNUSED ATM private void checkedWrite(int b) throws IOException { if
+     * (posinline == 80) { out.write(EOL); bw++; posinline = 0; }
+     * checkedWrite(b); posinline++; bw++; }
+     */
 
-    private void checkedWrite(byte[] buf) throws IOException {
+    private void checkedWrite(final byte[] buf) throws IOException {
         checkedWrite(buf, buf.length, false);
     }
 
-    private void checkedWrite(byte[] buf, boolean nosplit) throws IOException {
+    private void checkedWrite(final byte[] buf, final boolean nosplit)
+            throws IOException {
         checkedWrite(buf, buf.length, nosplit);
     }
 
-    private void checkedWrite(byte[] buf , int len) throws IOException {
+    private void checkedWrite(final byte[] buf, final int len)
+            throws IOException {
         checkedWrite(buf, len, false);
     }
 
-    private void checkedWrite(byte[] buf , int len, boolean nosplit) throws IOException {
-        if (posinline + len > 80) {
-            int firstpart = (nosplit ? 0 : len - (posinline + len - 80));
+    private void checkedWrite(final byte[] buf, final int len,
+            final boolean nosplit) throws IOException {
+        if (this.posinline + len > 80) {
+            final int firstpart = nosplit ? 0 : len
+                    - (this.posinline + len - 80);
             if (firstpart > 0) {
-                out.write(buf, 0, firstpart);
+                this.out.write(buf, 0, firstpart);
             }
-            out.write(EOL);
-            bw++;
-            int rest = len - firstpart;
+            this.out.write(EOL);
+            this.bw++;
+            final int rest = len - firstpart;
             if (rest > 0) {
-                out.write(buf, firstpart, rest);
+                this.out.write(buf, firstpart, rest);
             }
-            posinline = rest;
+            this.posinline = rest;
         } else {
-            out.write(buf, 0, len);
-            posinline += len;
+            this.out.write(buf, 0, len);
+            this.posinline += len;
         }
-        bw += len;
+        this.bw += len;
     }
 
     /**
-     * This converts a 32 bit value (4 bytes) into 5 bytes using base 85.
-     * each byte in the result starts with zero at the '!' character so
-     * the resulting base85 number fits into printable ascii chars
+     * This converts a 32 bit value (4 bytes) into 5 bytes using base 85. each
+     * byte in the result starts with zero at the '!' character so the resulting
+     * base85 number fits into printable ascii chars
      *
-     * @param word the 32 bit unsigned (hence the long datatype) word
-     * @return 5 bytes (or a single byte of the 'z' character for word
-     * values of 0)
+     * @param word
+     *            the 32 bit unsigned (hence the long datatype) word
+     * @return 5 bytes (or a single byte of the 'z' character for word values of
+     *         0)
      */
     private byte[] convertWord(long word) {
         word = word & 0xffffffff;
@@ -124,39 +128,24 @@ public class ASCII85OutputStream extends FilterOutputStream
             if (word < 0) {
                 word = -word;
             }
-            byte c1 =
-                (byte)((word
-                        / POW85[0]) & 0xFF);
-            byte c2 =
-                (byte)(((word - (c1 * POW85[0]))
-                        / POW85[1]) & 0xFF);
-            byte c3 =
-                (byte)(((word - (c1 * POW85[0])
-                              - (c2 * POW85[1]))
-                        / POW85[2]) & 0xFF);
-            byte c4 =
-                (byte)(((word - (c1 * POW85[0])
-                              - (c2 * POW85[1])
-                              - (c3 * POW85[2]))
-                        / POW85[3]) & 0xFF);
-            byte c5 =
-                (byte)(((word - (c1 * POW85[0])
-                              - (c2 * POW85[1])
-                              - (c3 * POW85[2])
-                              - (c4 * POW85[3])))
-                        & 0xFF);
+            final byte c1 = (byte) (word / POW85[0] & 0xFF);
+            final byte c2 = (byte) ((word - c1 * POW85[0]) / POW85[1] & 0xFF);
+            final byte c3 = (byte) ((word - c1 * POW85[0] - c2 * POW85[1])
+                    / POW85[2] & 0xFF);
+            final byte c4 = (byte) ((word - c1 * POW85[0] - c2 * POW85[1] - c3
+                    * POW85[2])
+                    / POW85[3] & 0xFF);
+            final byte c5 = (byte) (word - c1 * POW85[0] - c2 * POW85[1] - c3
+                    * POW85[2] - c4 * POW85[3] & 0xFF);
 
-            byte[] ret = {
-                (byte)(c1 + START), (byte)(c2 + START),
-                (byte)(c3 + START), (byte)(c4 + START),
-                (byte)(c5 + START)
-            };
+            final byte[] ret = { (byte) (c1 + START), (byte) (c2 + START),
+                    (byte) (c3 + START), (byte) (c4 + START),
+                    (byte) (c5 + START) };
 
             if (DEBUG) {
-                for (int i = 0; i < ret.length; i++) {
-                    if (ret[i] < 33 || ret[i] > 117) {
-                        System.out.println("Illegal char value "
-                                        + new Integer(ret[i]));
+                for (final byte element : ret) {
+                    if (element < 33 || element > 117) {
+                        log.info("Illegal char value " + new Integer(element));
                     }
                 }
             }
@@ -165,38 +154,32 @@ public class ASCII85OutputStream extends FilterOutputStream
     }
 
     /** @see Finalizable **/
+    @Override
     public void finalizeStream() throws IOException {
         // now take care of the trailing few bytes.
         // with n leftover bytes, we append 0 bytes to make a full group of 4
         // then convert like normal (except not applying the special zero rule)
         // and write out the first n+1 bytes from the result
-        if (pos > 0) {
-            int rest = pos;
+        if (this.pos > 0) {
+            final int rest = this.pos;
             /*
-            byte[] lastdata = new byte[4];
-            int i = 0;
-            for (int j = 0; j < 4; j++) {
-                if (j < rest) {
-                    lastdata[j] = data[i++];
-                } else {
-                    lastdata[j] = 0;
-                }
-            }
-
-            long val = ((lastdata[0] << 24) & 0xff000000L)
-                       + ((lastdata[1] << 16) & 0xff0000L)
-                       + ((lastdata[2] << 8) & 0xff00L)
-                       + (lastdata[3] & 0xffL);
-            */
+             * byte[] lastdata = new byte[4]; int i = 0; for (int j = 0; j < 4;
+             * j++) { if (j < rest) { lastdata[j] = data[i++]; } else {
+             * lastdata[j] = 0; } }
+             *
+             * long val = ((lastdata[0] << 24) & 0xff000000L) + ((lastdata[1] <<
+             * 16) & 0xff0000L) + ((lastdata[2] << 8) & 0xff00L) + (lastdata[3]
+             * & 0xffL);
+             */
 
             byte[] conv;
             // special rule for handling zeros at the end
-            if (buffer != 0) {
-                conv = convertWord(buffer);
+            if (this.buffer != 0) {
+                conv = convertWord(this.buffer);
             } else {
                 conv = new byte[5];
                 for (int j = 0; j < 5; j++) {
-                    conv[j] = (byte)'!';
+                    conv[j] = (byte) '!';
                 }
             }
             // assert rest+1 <= 5
@@ -206,17 +189,16 @@ public class ASCII85OutputStream extends FilterOutputStream
         checkedWrite(EOD, true);
 
         flush();
-        if (out instanceof Finalizable) {
-            ((Finalizable)out).finalizeStream();
+        if (this.out instanceof Finalizable) {
+            ((Finalizable) this.out).finalizeStream();
         }
     }
 
     /** @see java.io.FilterOutputStream **/
+    @Override
     public void close() throws IOException {
         finalizeStream();
         super.close();
     }
 
 }
-
-

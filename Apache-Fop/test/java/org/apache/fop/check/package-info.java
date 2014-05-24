@@ -23,3 +23,4 @@
  * as XML elements.
  */
 package org.apache.fop.check;
+

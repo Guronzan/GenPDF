@@ -22,7 +22,8 @@ package org.apache.xmlgraphics.image.writer.imageio;
 /**
  * ImageWriter that encodes PNG images using Image I/O.
  *
- * @version $Id: ImageIOPNGImageWriter.java 750418 2009-03-05 11:03:54Z vhennebert $
+ * @version $Id: ImageIOPNGImageWriter.java 750418 2009-03-05 11:03:54Z
+ *          vhennebert $
  */
 public class ImageIOPNGImageWriter extends ImageIOImageWriter {
 

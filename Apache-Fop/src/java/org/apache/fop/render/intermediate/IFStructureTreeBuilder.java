@@ -23,17 +23,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.fop.accessibility.StructureTree2SAXEventAdapter;
+import org.apache.fop.accessibility.StructureTreeElement;
+import org.apache.fop.accessibility.StructureTreeEventHandler;
+import org.apache.fop.fo.extensions.InternalElementMapping;
+import org.apache.fop.util.XMLConstants;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
-
-import org.apache.fop.accessibility.StructureTree2SAXEventAdapter;
-import org.apache.fop.accessibility.StructureTreeElement;
-import org.apache.fop.accessibility.StructureTreeEventHandler;
-import org.apache.fop.fo.extensions.InternalElementMapping;
-import org.apache.fop.util.XMLUtil;
 
 /**
  * Saves structure tree events as SAX events in order to replay them when it's
@@ -49,12 +48,12 @@ final class IFStructureTreeBuilder implements StructureTreeEventHandler {
             this.id = null;
         }
 
-        IFStructureTreeElement(String id) {
+        IFStructureTreeElement(final String id) {
             this.id = id;
         }
 
         public String getId() {
-            return id;
+            return this.id;
         }
     }
 
@@ -64,7 +63,8 @@ final class IFStructureTreeBuilder implements StructureTreeEventHandler {
         private final List<SAXEventRecorder.Event> events = new ArrayList<SAXEventRecorder.Event>();
 
         private abstract static class Event {
-            abstract void replay(ContentHandler handler) throws SAXException;
+            abstract void replay(final ContentHandler handler)
+                    throws SAXException;
         }
 
         private abstract static class Element extends SAXEventRecorder.Event {
@@ -73,99 +73,110 @@ final class IFStructureTreeBuilder implements StructureTreeEventHandler {
             protected final String localName;
             protected final String qName;
 
-            private Element(String uri, String localName, String qName) {
+            private Element(final String uri, final String localName,
+                    final String qName) {
                 this.uri = uri;
                 this.localName = localName;
                 this.qName = qName;
             }
         }
 
-        private static final class StartElement extends SAXEventRecorder.Element {
+        private static final class StartElement extends
+                SAXEventRecorder.Element {
 
             private final Attributes attributes;
 
-            private StartElement(String uri, String localName, String qName,
-                    Attributes attributes) {
+            private StartElement(final String uri, final String localName,
+                    final String qName, final Attributes attributes) {
                 super(uri, localName, qName);
                 this.attributes = attributes;
             }
 
             @Override
-            void replay(ContentHandler handler) throws SAXException {
-                handler.startElement(uri, localName, qName, attributes);
+            void replay(final ContentHandler handler) throws SAXException {
+                handler.startElement(this.uri, this.localName, this.qName,
+                        this.attributes);
             }
         }
 
         private static final class EndElement extends SAXEventRecorder.Element {
 
-            private EndElement(String uri, String localName, String qName) {
+            private EndElement(final String uri, final String localName,
+                    final String qName) {
                 super(uri, localName, qName);
             }
 
             @Override
-            void replay(ContentHandler handler) throws SAXException {
-                handler.endElement(uri, localName, qName);
+            void replay(final ContentHandler handler) throws SAXException {
+                handler.endElement(this.uri, this.localName, this.qName);
             }
         }
 
-        private static final class StartPrefixMapping extends SAXEventRecorder.Event {
+        private static final class StartPrefixMapping extends
+                SAXEventRecorder.Event {
 
             private final String prefix;
             private final String uri;
 
-            private StartPrefixMapping(String prefix, String uri) {
+            private StartPrefixMapping(final String prefix, final String uri) {
                 this.prefix = prefix;
                 this.uri = uri;
             }
 
             @Override
-            void replay(ContentHandler handler) throws SAXException {
-                handler.startPrefixMapping(prefix, uri);
+            void replay(final ContentHandler handler) throws SAXException {
+                handler.startPrefixMapping(this.prefix, this.uri);
             }
         }
 
-        private static final class EndPrefixMapping extends SAXEventRecorder.Event {
+        private static final class EndPrefixMapping extends
+                SAXEventRecorder.Event {
 
             private final String prefix;
 
-            private EndPrefixMapping(String prefix) {
+            private EndPrefixMapping(final String prefix) {
                 this.prefix = prefix;
             }
 
             @Override
-            void replay(ContentHandler handler) throws SAXException {
-                handler.endPrefixMapping(prefix);
+            void replay(final ContentHandler handler) throws SAXException {
+                handler.endPrefixMapping(this.prefix);
             }
         }
 
         @Override
-        public void startElement(String uri, String localName, String qName,
-                Attributes attributes) throws SAXException {
-            events.add(new StartElement(uri, localName, qName, attributes));
+        public void startElement(final String uri, final String localName,
+                final String qName, final Attributes attributes)
+                throws SAXException {
+            this.events
+                    .add(new StartElement(uri, localName, qName, attributes));
         }
 
         @Override
-        public void endElement(String uri, String localName, String qName) throws SAXException {
-            events.add(new EndElement(uri, localName, qName));
+        public void endElement(final String uri, final String localName,
+                final String qName) throws SAXException {
+            this.events.add(new EndElement(uri, localName, qName));
         }
 
         @Override
-        public void startPrefixMapping(String prefix, String uri) throws SAXException {
-            events.add(new StartPrefixMapping(prefix, uri));
+        public void startPrefixMapping(final String prefix, final String uri)
+                throws SAXException {
+            this.events.add(new StartPrefixMapping(prefix, uri));
         }
 
         @Override
-        public void endPrefixMapping(String prefix) throws SAXException {
-            events.add(new EndPrefixMapping(prefix));
+        public void endPrefixMapping(final String prefix) throws SAXException {
+            this.events.add(new EndPrefixMapping(prefix));
         }
 
         /**
          * Replays the recorded events.
          *
-         * @param handler {@code ContentHandler} to replay events on
+         * @param handler
+         *            {@code ContentHandler} to replay events on
          */
-        public void replay(ContentHandler handler) throws SAXException {
-            for (SAXEventRecorder.Event e : events) {
+        public void replay(final ContentHandler handler) throws SAXException {
+            for (final SAXEventRecorder.Event e : this.events) {
                 e.replay(handler);
             }
         }
@@ -173,66 +184,79 @@ final class IFStructureTreeBuilder implements StructureTreeEventHandler {
 
     private StructureTreeEventHandler delegate;
 
-    private final List<SAXEventRecorder> pageSequenceEventRecorders
-            = new ArrayList<SAXEventRecorder>();
+    private final List<SAXEventRecorder> pageSequenceEventRecorders = new ArrayList<SAXEventRecorder>();
 
     private int idCounter;
 
     /**
      * Replay SAX events for a page sequence.
-     * @param handler The handler that receives SAX events
-     * @param pageSequenceIndex The index of the page sequence
+     * 
+     * @param handler
+     *            The handler that receives SAX events
+     * @param pageSequenceIndex
+     *            The index of the page sequence
      * @throws SAXException
      */
-    public void replayEventsForPageSequence(ContentHandler handler,
-            int pageSequenceIndex) throws SAXException {
-        pageSequenceEventRecorders.get(pageSequenceIndex).replay(handler);
+    public void replayEventsForPageSequence(final ContentHandler handler,
+            final int pageSequenceIndex) throws SAXException {
+        this.pageSequenceEventRecorders.get(pageSequenceIndex).replay(handler);
     }
 
-    public void startPageSequence(Locale locale, String role) {
-        SAXEventRecorder eventRecorder = new SAXEventRecorder();
-        pageSequenceEventRecorders.add(eventRecorder);
-        delegate = StructureTree2SAXEventAdapter.newInstance(eventRecorder);
-        delegate.startPageSequence(locale, role);
+    @Override
+    public void startPageSequence(final Locale locale, final String role) {
+        final SAXEventRecorder eventRecorder = new SAXEventRecorder();
+        this.pageSequenceEventRecorders.add(eventRecorder);
+        this.delegate = StructureTree2SAXEventAdapter
+                .newInstance(eventRecorder);
+        this.delegate.startPageSequence(locale, role);
     }
 
+    @Override
     public void endPageSequence() {
-         delegate.endPageSequence();
+        this.delegate.endPageSequence();
     }
 
-    public StructureTreeElement startNode(String name, Attributes attributes) {
-        delegate.startNode(name, attributes);
+    @Override
+    public StructureTreeElement startNode(final String name,
+            final Attributes attributes) {
+        this.delegate.startNode(name, attributes);
         return new IFStructureTreeElement();
     }
 
-    public void endNode(String name) {
-        delegate.endNode(name);
+    @Override
+    public void endNode(final String name) {
+        this.delegate.endNode(name);
     }
 
-    public StructureTreeElement startImageNode(String name, Attributes attributes) {
-        String id = getNextID();
-        AttributesImpl atts = addIDAttribute(attributes, id);
-        delegate.startImageNode(name, atts);
+    @Override
+    public StructureTreeElement startImageNode(final String name,
+            final Attributes attributes) {
+        final String id = getNextID();
+        final AttributesImpl atts = addIDAttribute(attributes, id);
+        this.delegate.startImageNode(name, atts);
         return new IFStructureTreeElement(id);
     }
 
-    public StructureTreeElement startReferencedNode(String name, Attributes attributes) {
-        String id = getNextID();
-        AttributesImpl atts = addIDAttribute(attributes, id);
-        delegate.startReferencedNode(name, atts);
+    @Override
+    public StructureTreeElement startReferencedNode(final String name,
+            final Attributes attributes) {
+        final String id = getNextID();
+        final AttributesImpl atts = addIDAttribute(attributes, id);
+        this.delegate.startReferencedNode(name, atts);
         return new IFStructureTreeElement(id);
     }
 
     private String getNextID() {
-        return Integer.toHexString(idCounter++);
+        return Integer.toHexString(this.idCounter++);
     }
 
-    private AttributesImpl addIDAttribute(Attributes attributes, String id) {
-        AttributesImpl atts = new AttributesImpl(attributes);
+    private AttributesImpl addIDAttribute(final Attributes attributes,
+            final String id) {
+        final AttributesImpl atts = new AttributesImpl(attributes);
         atts.addAttribute(InternalElementMapping.URI,
                 InternalElementMapping.STRUCT_ID,
-                InternalElementMapping.STANDARD_PREFIX + ":" + InternalElementMapping.STRUCT_ID,
-                XMLUtil.CDATA,
+                InternalElementMapping.STANDARD_PREFIX + ":"
+                        + InternalElementMapping.STRUCT_ID, XMLConstants.CDATA,
                 id);
         return atts;
     }

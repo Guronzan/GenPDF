@@ -42,19 +42,26 @@ public class DSCCommentBeginResource extends AbstractResourceDSCComment {
 
     /**
      * Creates a new instance for a given PSResource instance
-     * @param resource the resource
+     * 
+     * @param resource
+     *            the resource
      */
-    public DSCCommentBeginResource(PSResource resource) {
+    public DSCCommentBeginResource(final PSResource resource) {
         super(resource);
     }
 
     /**
      * Creates a new instance for a given PSResource instance
-     * @param resource the resource
-     * @param min Minimum VM used by the resource
-     * @param max Maximum VM used by the resource
+     * 
+     * @param resource
+     *            the resource
+     * @param min
+     *            Minimum VM used by the resource
+     * @param max
+     *            Maximum VM used by the resource
      */
-    public DSCCommentBeginResource(PSResource resource, int min, int max) {
+    public DSCCommentBeginResource(final PSResource resource, final int min,
+            final int max) {
         super(resource);
         this.min = new Integer(min);
         this.max = new Integer(max);
@@ -62,6 +69,7 @@ public class DSCCommentBeginResource extends AbstractResourceDSCComment {
 
     /**
      * Returns the minimum VM used by the resource.
+     * 
      * @return the minimum VM used by the resource
      */
     public Integer getMin() {
@@ -70,6 +78,7 @@ public class DSCCommentBeginResource extends AbstractResourceDSCComment {
 
     /**
      * Returns the maximum VM used by the resource.
+     * 
      * @return the maximum VM used by the resource
      */
     public Integer getMax() {
@@ -77,14 +86,17 @@ public class DSCCommentBeginResource extends AbstractResourceDSCComment {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getName() {
         return DSCConstants.BEGIN_RESOURCE;
     }
 
     /** {@inheritDoc} */
-    public void generate(PSGenerator gen) throws IOException {
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
         if (getMin() != null) {
-            Object[] params = new Object[] {getResource(), getMin(), getMax()};
+            final Object[] params = new Object[] { getResource(), getMin(),
+                    getMax() };
             gen.writeDSCComment(getName(), params);
         } else {
             super.generate(gen);

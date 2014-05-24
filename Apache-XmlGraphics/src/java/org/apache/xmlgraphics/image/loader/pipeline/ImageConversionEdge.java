@@ -25,22 +25,27 @@ import org.apache.xmlgraphics.util.dijkstra.Edge;
 import org.apache.xmlgraphics.util.dijkstra.Vertex;
 
 /**
- * Represents an image conversion. The class basically wraps an ImageConverter so it can be
- * used with Dijkstra's shortest route algorithm to build image conversion pipelines.
+ * Represents an image conversion. The class basically wraps an ImageConverter
+ * so it can be used with Dijkstra's shortest route algorithm to build image
+ * conversion pipelines.
  */
 class ImageConversionEdge implements Edge {
 
-    private ImageRepresentation source;
-    private ImageRepresentation target;
-    private ImageConverter converter;
-    private int penalty;
+    private final ImageRepresentation source;
+    private final ImageRepresentation target;
+    private final ImageConverter converter;
+    private final int penalty;
 
     /**
      * Main constructor.
-     * @param converter the image converter
-     * @param penalty the penalty for this edge
+     * 
+     * @param converter
+     *            the image converter
+     * @param penalty
+     *            the penalty for this edge
      */
-    public ImageConversionEdge(ImageConverter converter, Penalty penalty) {
+    public ImageConversionEdge(final ImageConverter converter,
+            final Penalty penalty) {
         this.converter = converter;
         this.source = new ImageRepresentation(converter.getSourceFlavor());
         this.target = new ImageRepresentation(converter.getTargetFlavor());
@@ -49,6 +54,7 @@ class ImageConversionEdge implements Edge {
 
     /**
      * Returns the wrapped ImageConverter.
+     * 
      * @return the ImageConverter
      */
     public ImageConverter getImageConverter() {
@@ -56,16 +62,19 @@ class ImageConversionEdge implements Edge {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getPenalty() {
         return this.penalty;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Vertex getStart() {
         return this.source;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Vertex getEnd() {
         return this.target;
     }

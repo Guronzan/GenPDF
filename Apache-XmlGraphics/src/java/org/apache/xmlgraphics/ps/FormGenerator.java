@@ -29,17 +29,22 @@ import java.io.IOException;
  */
 public abstract class FormGenerator {
 
-    private String formName;
-    private String title;
-    private Dimension2D dimensions;
+    private final String formName;
+    private final String title;
+    private final Dimension2D dimensions;
 
     /**
      * Main constructor.
-     * @param formName the form's name
-     * @param title the form's title or null
-     * @param dimensions the form's dimensions
+     * 
+     * @param formName
+     *            the form's name
+     * @param title
+     *            the form's title or null
+     * @param dimensions
+     *            the form's dimensions
      */
-    public FormGenerator(String formName, String title, Dimension2D dimensions) {
+    public FormGenerator(final String formName, final String title,
+            final Dimension2D dimensions) {
         this.formName = formName;
         this.title = title;
         this.dimensions = dimensions;
@@ -47,6 +52,7 @@ public abstract class FormGenerator {
 
     /**
      * Returns the form's name.
+     * 
      * @return the form's name
      */
     public String getFormName() {
@@ -55,6 +61,7 @@ public abstract class FormGenerator {
 
     /**
      * Returns the form's title.
+     * 
      * @return the form's title or null if there's no title
      */
     public String getTitle() {
@@ -63,6 +70,7 @@ public abstract class FormGenerator {
 
     /**
      * returns the form's dimensions.
+     * 
      * @return the form's dimensions
      */
     public Dimension2D getDimensions() {
@@ -71,23 +79,32 @@ public abstract class FormGenerator {
 
     /**
      * Generates the PostScript code for the PaintProc of the form.
-     * @param gen the PostScript generator
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param gen
+     *            the PostScript generator
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    protected abstract void generatePaintProc(PSGenerator gen) throws IOException;
+    protected abstract void generatePaintProc(final PSGenerator gen)
+            throws IOException;
 
     /**
-     * Generates some PostScript code right after the form definition (used primarily for
-     * bitmap data).
-     * @param gen the PostScript generator
-     * @throws IOException if an I/O error occurs
+     * Generates some PostScript code right after the form definition (used
+     * primarily for bitmap data).
+     * 
+     * @param gen
+     *            the PostScript generator
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    protected void generateAdditionalDataStream(PSGenerator gen) throws IOException {
-        //nop
+    protected void generateAdditionalDataStream(final PSGenerator gen)
+            throws IOException {
+        // nop
     }
 
     /**
      * Returns the matrix for use in the form.
+     * 
      * @return the matrix
      */
     protected AffineTransform getMatrix() {
@@ -96,29 +113,34 @@ public abstract class FormGenerator {
 
     /**
      * Returns the form's bounding box.
+     * 
      * @return the form's bounding box
      */
     protected Rectangle2D getBBox() {
-        return new Rectangle2D.Double(0, 0, dimensions.getWidth(), dimensions.getHeight());
+        return new Rectangle2D.Double(0, 0, this.dimensions.getWidth(),
+                this.dimensions.getHeight());
     }
 
     /**
      * Generates the PostScript form.
-     * @param gen the PostScript generator
+     * 
+     * @param gen
+     *            the PostScript generator
      * @return a PSResource instance representing the form
-     * @throws IOException if an I/O error occurs
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public PSResource generate(PSGenerator gen) throws IOException {
+    public PSResource generate(final PSGenerator gen) throws IOException {
         if (gen.getPSLevel() < 2) {
             throw new UnsupportedOperationException(
                     "Forms require at least Level 2 PostScript");
         }
-        gen.writeDSCComment(DSCConstants.BEGIN_RESOURCE,
-                new Object[] {PSResource.TYPE_FORM, getFormName()});
-        if (title != null) {
-            gen.writeDSCComment(DSCConstants.TITLE, title);
+        gen.writeDSCComment(DSCConstants.BEGIN_RESOURCE, new Object[] {
+                PSResource.TYPE_FORM, getFormName() });
+        if (this.title != null) {
+            gen.writeDSCComment(DSCConstants.TITLE, this.title);
         }
-        gen.writeln("/" + formName);
+        gen.writeln("/" + this.formName);
         gen.writeln("<< /FormType 1");
         gen.writeln("  /BBox " + gen.formatRectangleToArray(getBBox()));
         gen.writeln("  /Matrix " + gen.formatMatrix(getMatrix()));
@@ -131,7 +153,8 @@ public abstract class FormGenerator {
         gen.writeln(">> def");
         generateAdditionalDataStream(gen);
         gen.writeDSCComment(DSCConstants.END_RESOURCE);
-        PSResource res = new PSResource(PSResource.TYPE_FORM, formName);
+        final PSResource res = new PSResource(PSResource.TYPE_FORM,
+                this.formName);
         gen.getResourceTracker().registerSuppliedResource(res);
         return res;
     }

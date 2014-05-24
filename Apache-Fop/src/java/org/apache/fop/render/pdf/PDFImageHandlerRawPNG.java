@@ -21,43 +21,47 @@
 
 package org.apache.fop.render.pdf;
 
+import org.apache.fop.pdf.PDFImage;
+import org.apache.fop.render.RenderingContext;
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.impl.ImageRawPNG;
 
-import org.apache.fop.pdf.PDFImage;
-import org.apache.fop.render.RenderingContext;
-
 /**
- * Image handler implementation which handles CCITT encoded images (CCITT fax group 3/4)
- * for PDF output.
+ * Image handler implementation which handles CCITT encoded images (CCITT fax
+ * group 3/4) for PDF output.
  */
 public class PDFImageHandlerRawPNG extends AbstractPDFImageHandler {
 
-    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {ImageFlavor.RAW_PNG};
+    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] { ImageFlavor.RAW_PNG };
 
     @Override
-    PDFImage createPDFImage(Image image, String xobjectKey) {
+    PDFImage createPDFImage(final Image image, final String xobjectKey) {
         return new ImageRawPNGAdapter((ImageRawPNG) image, xobjectKey);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getPriority() {
         return 100;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class<ImageRawPNG> getSupportedImageClass() {
         return ImageRawPNG.class;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor[] getSupportedImageFlavors() {
         return FLAVORS;
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible(RenderingContext targetContext, Image image) {
+    @Override
+    public boolean isCompatible(final RenderingContext targetContext,
+            final Image image) {
         return (image == null || image instanceof ImageRawPNG)
                 && targetContext instanceof PDFRenderingContext;
     }

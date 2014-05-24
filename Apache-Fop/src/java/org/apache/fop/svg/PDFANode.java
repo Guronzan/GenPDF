@@ -28,9 +28,13 @@ import java.util.StringTokenizer;
 import org.apache.batik.gvt.CompositeGraphicsNode;
 
 /**
- * <p>A graphics node that represents an image described as a graphics node.</p>
+ * <p>
+ * A graphics node that represents an image described as a graphics node.
+ * </p>
  *
- * <p>This work was authored by Keiron Liddle (keiron@aftexsw.com).</p>
+ * <p>
+ * This work was authored by Keiron Liddle (keiron@aftexsw.com).
+ * </p>
  */
 public class PDFANode extends CompositeGraphicsNode {
     private String destination;
@@ -44,82 +48,94 @@ public class PDFANode extends CompositeGraphicsNode {
 
     /**
      * Set the destination String.
-     * @param dest the target destination
+     * 
+     * @param dest
+     *            the target destination
      */
-    public void setDestination(String dest) {
-        destination = dest;
+    public void setDestination(final String dest) {
+        this.destination = dest;
     }
 
     /**
      * Set the current transform of this node.
-     * @param tf the transform
+     * 
+     * @param tf
+     *            the transform
      */
-    public void setTransform(AffineTransform tf) {
-        transform = tf;
+    @Override
+    public void setTransform(final AffineTransform tf) {
+        this.transform = tf;
     }
 
     /**
      * Paints this node if visible.
      *
-     * @param g2d the Graphics2D to use
+     * @param g2d
+     *            the Graphics2D to use
      */
-    public void paint(Graphics2D g2d) {
-        if (isVisible) {
+    @Override
+    public void paint(final Graphics2D g2d) {
+        if (this.isVisible) {
             super.paint(g2d);
             if (g2d instanceof PDFGraphics2D) {
-                PDFGraphics2D pdfg = (PDFGraphics2D)g2d;
+                final PDFGraphics2D pdfg = (PDFGraphics2D) g2d;
                 int type = org.apache.fop.pdf.PDFLink.EXTERNAL;
-                Shape outline = getOutline();
-                if (destination.startsWith("#svgView(viewBox(")) {
+                final Shape outline = getOutline();
+                if (this.destination.startsWith("#svgView(viewBox(")) {
                     type = org.apache.fop.pdf.PDFLink.INTERNAL;
-                    String nums = destination.substring(17, destination.length() - 2);
+                    final String nums = this.destination.substring(17,
+                            this.destination.length() - 2);
                     float x = 0;
                     float y = 0;
                     float width = 0;
                     float height = 0;
                     int count = 0;
                     try {
-                        StringTokenizer st = new StringTokenizer(nums, ",");
+                        final StringTokenizer st = new StringTokenizer(nums,
+                                ",");
                         while (st.hasMoreTokens()) {
-                            String tok = st.nextToken();
+                            final String tok = st.nextToken();
                             count++;
-                            switch(count) {
+                            switch (count) {
                             case 1:
                                 x = Float.parseFloat(tok);
-                            break;
+                                break;
                             case 2:
                                 y = Float.parseFloat(tok);
-                            break;
+                                break;
                             case 3:
                                 width = Float.parseFloat(tok);
-                            break;
+                                break;
                             case 4:
                                 height = Float.parseFloat(tok);
-                            break;
+                                break;
                             default:
-                            break;
+                                break;
                             }
                         }
-                    } catch (Exception e) {
-                        //TODO Move this to setDestination() and throw an IllegalArgumentException
+                    } catch (final Exception e) {
+                        // TODO Move this to setDestination() and throw an
+                        // IllegalArgumentException
                         e.printStackTrace();
                     }
-                    Rectangle2D destRect = new Rectangle2D.Float(x, y, width, height);
-                    destRect = transform.createTransformedShape(destRect).getBounds();
+                    Rectangle2D destRect = new Rectangle2D.Float(x, y, width,
+                            height);
+                    destRect = this.transform.createTransformedShape(destRect)
+                            .getBounds();
                     // these numbers need conversion to current
                     // svg position and scaled for the page
-                    x = (float)destRect.getX();
-                    y = (float)destRect.getY();
-                    width = (float)destRect.getWidth();
-                    height = (float)destRect.getHeight();
+                    x = (float) destRect.getX();
+                    y = (float) destRect.getY();
+                    width = (float) destRect.getWidth();
+                    height = (float) destRect.getHeight();
 
-                    destination = "" + x + " " + y + " "
-                                  + (x + width) + " " + (y + height);
+                    this.destination = "" + x + " " + y + " " + (x + width)
+                            + " " + (y + height);
                 }
-                pdfg.addLink(getBounds(), transform, destination, type);
+                pdfg.addLink(getBounds(), this.transform, this.destination,
+                        type);
             }
         }
     }
 
 }
-

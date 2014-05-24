@@ -57,12 +57,17 @@ public class IncludePageOverlay extends AbstractNamedAFPObject {
     /**
      * Constructor for the Include Page Overlay
      *
-     * @param overlayName Name of the page segment
-     * @param x The x position
-     * @param y The y position
-     * @param orientation The orientation
+     * @param overlayName
+     *            Name of the page segment
+     * @param x
+     *            The x position
+     * @param y
+     *            The y position
+     * @param orientation
+     *            The orientation
      */
-    public IncludePageOverlay(String overlayName, int x, int y, int orientation) {
+    public IncludePageOverlay(final String overlayName, final int x,
+            final int y, final int orientation) {
         super(overlayName);
 
         this.x = x;
@@ -76,53 +81,54 @@ public class IncludePageOverlay extends AbstractNamedAFPObject {
      * @param orientation
      *            The orientation (0,90, 180, 270)
      */
-    public void setOrientation(int orientation) {
+    public void setOrientation(final int orientation) {
         if (orientation == 0 || orientation == 90 || orientation == 180
-            || orientation == 270) {
+                || orientation == 270) {
             this.orientation = orientation;
         } else {
             throw new IllegalArgumentException(
-                "The orientation must be one of the values 0, 90, 180, 270");
+                    "The orientation must be one of the values 0, 90, 180, 270");
         }
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[25]; //(9 +16)
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[25]; // (9 +16)
         copySF(data, Type.INCLUDE, Category.PAGE_OVERLAY);
 
         // Set the total record length
-        byte[] len = BinaryUtils.convert(24, 2); //Ignore first byte
+        final byte[] len = BinaryUtils.convert(24, 2); // Ignore first byte
         data[1] = len[0];
         data[2] = len[1];
 
-        byte[] xPos = BinaryUtils.convert(x, 3);
+        final byte[] xPos = BinaryUtils.convert(this.x, 3);
         data[17] = xPos[0]; // x coordinate
         data[18] = xPos[1];
         data[19] = xPos[2];
 
-        byte[] yPos = BinaryUtils.convert(y, 3);
+        final byte[] yPos = BinaryUtils.convert(this.y, 3);
         data[20] = yPos[0]; // y coordinate
         data[21] = yPos[1];
         data[22] = yPos[2];
 
-        switch (orientation) {
-            case 90:
-                data[23] = 0x2D;
-                data[24] = 0x00;
-                break;
-            case 180:
-                data[23] = 0x5A;
-                data[24] = 0x00;
-                break;
-            case 270:
-                data[23] = (byte) 0x87;
-                data[24] = 0x00;
-                break;
-            default:
-                data[23] = 0x00;
-                data[24] = 0x00;
-                break;
+        switch (this.orientation) {
+        case 90:
+            data[23] = 0x2D;
+            data[24] = 0x00;
+            break;
+        case 180:
+            data[23] = 0x5A;
+            data[24] = 0x00;
+            break;
+        case 270:
+            data[23] = (byte) 0x87;
+            data[24] = 0x00;
+            break;
+        default:
+            data[23] = 0x00;
+            data[24] = 0x00;
+            break;
         }
         os.write(data);
     }

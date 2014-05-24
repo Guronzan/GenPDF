@@ -35,8 +35,10 @@ public interface IRtfExternalGraphicContainer {
 
     /**
      * Creates a new image on external graphic base.
+     * 
      * @return RtfExternalGraphic for the new image
-     * @exception IOException On error
+     * @exception IOException
+     *                On error
      */
-    RtfExternalGraphic newImage () throws IOException;
+    RtfExternalGraphic newImage() throws IOException;
 }

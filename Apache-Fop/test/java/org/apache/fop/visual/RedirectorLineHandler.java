@@ -20,7 +20,8 @@
 package org.apache.fop.visual;
 
 /**
- * This interface is used to redirect output from an external application elsewhere.
+ * This interface is used to redirect output from an external application
+ * elsewhere.
  */
 public interface RedirectorLineHandler {
 
@@ -31,9 +32,11 @@ public interface RedirectorLineHandler {
 
     /**
      * Called for each line of output to be processed.
-     * @param line a line of application output
+     * 
+     * @param line
+     *            a line of application output
      */
-    void handleLine(String line);
+    void handleLine(final String line);
 
     /**
      * Called after the last handleLine() call.

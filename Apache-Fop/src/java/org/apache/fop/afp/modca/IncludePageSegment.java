@@ -26,18 +26,18 @@ import org.apache.fop.afp.util.BinaryUtils;
 
 /**
  * The Include Page Segment structured field references a page segment resource
- * object that is to be presented on the page or overlay presentation space. The IPS
- * specifies a reference point on the including page or overlay coordinate system that
- * may be used to position objects contained in the page segment. A page segment
- * can be referenced at any time during page or overlay state, but not during an
- * object state. The page segment inherits the active environment group definition of
- * the including page or overlay.
+ * object that is to be presented on the page or overlay presentation space. The
+ * IPS specifies a reference point on the including page or overlay coordinate
+ * system that may be used to position objects contained in the page segment. A
+ * page segment can be referenced at any time during page or overlay state, but
+ * not during an object state. The page segment inherits the active environment
+ * group definition of the including page or overlay.
  *
  * Note : No use for Triplets.
  *
- * A 'real' example for where this will be used is for
- * the dynamic placing of overlay objects, such as signatures
- * that may have to be placed at different positions on a document.
+ * A 'real' example for where this will be used is for the dynamic placing of
+ * overlay objects, such as signatures that may have to be placed at different
+ * positions on a document.
  *
  */
 public class IncludePageSegment extends AbstractNamedAFPObject {
@@ -45,21 +45,24 @@ public class IncludePageSegment extends AbstractNamedAFPObject {
     /**
      * The x position where we need to put this object on the page
      */
-    private int x;
+    private final int x;
 
     /**
      * The y position where we need to put this object on the page
      */
-    private int y;
+    private final int y;
 
     /**
      * Constructor for the Include Page Segment
      *
-     * @param name Name of the page segment
-     * @param x The x position
-     * @param y The y position
+     * @param name
+     *            Name of the page segment
+     * @param x
+     *            The x position
+     * @param y
+     *            The y position
      */
-    public IncludePageSegment(String name, int x, int y) {
+    public IncludePageSegment(final String name, final int x, final int y) {
         super(name);
 
         this.x = x;
@@ -67,21 +70,22 @@ public class IncludePageSegment extends AbstractNamedAFPObject {
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = new byte[23]; //(9 +14)
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = new byte[23]; // (9 +14)
         copySF(data, Type.INCLUDE, Category.PAGE_SEGMENT);
 
         // Set the total record length
-        byte[] len = BinaryUtils.convert(22, 2); //Ignore first byte
+        final byte[] len = BinaryUtils.convert(22, 2); // Ignore first byte
         data[1] = len[0];
         data[2] = len[1];
 
-        byte[] xPos = BinaryUtils.convert(x, 3);
+        final byte[] xPos = BinaryUtils.convert(this.x, 3);
         data[17] = xPos[0]; // x coordinate
         data[18] = xPos[1];
         data[19] = xPos[2];
 
-        byte[] yPos = BinaryUtils.convert(y, 3);
+        final byte[] yPos = BinaryUtils.convert(this.y, 3);
         data[20] = yPos[0]; // y coordinate
         data[21] = yPos[1];
         data[22] = yPos[2];

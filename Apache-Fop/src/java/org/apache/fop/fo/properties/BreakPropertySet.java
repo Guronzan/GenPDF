@@ -20,7 +20,8 @@
 package org.apache.fop.fo.properties;
 
 /**
- * Defines property access methods for the break-before and break-after properties.
+ * Defines property access methods for the break-before and break-after
+ * properties.
  */
 public interface BreakPropertySet {
 

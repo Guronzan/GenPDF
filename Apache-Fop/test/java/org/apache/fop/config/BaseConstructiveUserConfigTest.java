@@ -19,9 +19,9 @@
 
 package org.apache.fop.config;
 
-import static org.junit.Assert.fail;
-
 import org.junit.Test;
+
+import static org.junit.Assert.fail;
 
 /**
  * Super class of several user config cases.
@@ -30,14 +30,16 @@ public abstract class BaseConstructiveUserConfigTest extends BaseUserConfigTest 
 
     /**
      * Test using a standard FOP font
-     * @throws Exception checkstyle wants a comment here, even a silly one
+     * 
+     * @throws Exception
+     *             checkstyle wants a comment here, even a silly one
      */
     @Test
     public void testUserConfig() throws Exception {
         try {
             initConfig();
             convertFO();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             // this should *not* happen!
             e.printStackTrace();
             fail(e.getMessage());

@@ -18,79 +18,94 @@
 /* $Id: FontStretchPropertyMaker.java 679326 2008-07-24 09:35:34Z vhennebert $ */
 
 package org.apache.fop.fo.properties;
+
 import org.apache.fop.fo.Constants;
 import org.apache.fop.fo.FObj;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.expr.PropertyException;
 
 /**
- * This subclass of EnumProperty.Maker handles the special treatment of
- * relative font stretch values described in 7.8.5.
+ * This subclass of EnumProperty.Maker handles the special treatment of relative
+ * font stretch values described in 7.8.5.
  */
-public class FontStretchPropertyMaker
-    extends EnumProperty.Maker implements Constants {
+public class FontStretchPropertyMaker extends EnumProperty.Maker implements
+        Constants {
 
-    /* Ordered list of absolute font stretch properties so we can easily find the next /
-     * previous one */
+    /*
+     * Ordered list of absolute font stretch properties so we can easily find
+     * the next / previous one
+     */
     private Property[] orderedFontStretchValues = null;
 
     /**
      * Create an enum property which can handle relative font stretches
-     * @param propId the font size property id.
+     * 
+     * @param propId
+     *            the font size property id.
      */
-    public FontStretchPropertyMaker(int propId) {
+    public FontStretchPropertyMaker(final int propId) {
         super(propId);
     }
 
     /**
-     * {@inheritDoc}
-     * Implements the parts of 7.8.5 relevant to relative font stretches
+     * {@inheritDoc} Implements the parts of 7.8.5 relevant to relative font
+     * stretches
      */
-    public Property convertProperty(Property p,
-                                    PropertyList propertyList,
-                                    FObj fo) throws PropertyException {
-        // if it is a relative font stretch value get current parent value and step
+    @Override
+    public Property convertProperty(final Property p,
+            final PropertyList propertyList, final FObj fo)
+            throws PropertyException {
+        // if it is a relative font stretch value get current parent value and
+        // step
         // up or down accordingly
         if (p.getEnum() == EN_NARROWER) {
-            return computeNextAbsoluteFontStretch(propertyList.getFromParent(this.getPropId()), -1);
+            return computeNextAbsoluteFontStretch(
+                    propertyList.getFromParent(getPropId()), -1);
         } else if (p.getEnum() == EN_WIDER) {
-            return computeNextAbsoluteFontStretch(propertyList.getFromParent(this.getPropId()), 1);
+            return computeNextAbsoluteFontStretch(
+                    propertyList.getFromParent(getPropId()), 1);
         }
         return super.convertProperty(p, propertyList, fo);
     }
 
     /**
-     * Calculates the nearest absolute font stretch property to the given
-     * font stretch
-     * @param baseProperty the font stretch property as set on the parent fo
-     * @param direction should be -1 to get the next narrower value or +1 for the next wider value
+     * Calculates the nearest absolute font stretch property to the given font
+     * stretch
+     * 
+     * @param baseProperty
+     *            the font stretch property as set on the parent fo
+     * @param direction
+     *            should be -1 to get the next narrower value or +1 for the next
+     *            wider value
      */
-    private Property computeNextAbsoluteFontStretch(Property baseProperty, int direction) {
+    private Property computeNextAbsoluteFontStretch(
+            final Property baseProperty, final int direction) {
         // Create the table entries the first time around
         // @todo is this thread safe, do we need to worry about this here?
-        if (orderedFontStretchValues == null) {
-            orderedFontStretchValues = new Property[] {
-                checkEnumValues("ultra-condensed"),
-                checkEnumValues("extra-condensed"),
-                checkEnumValues("condensed"),
-                checkEnumValues("semi-condensed"),
-                checkEnumValues("normal"),
-                checkEnumValues("semi-expanded"),
-                checkEnumValues("expanded"),
-                checkEnumValues("extra-expanded"),
-                checkEnumValues("ultra-expanded")
-            };
+        if (this.orderedFontStretchValues == null) {
+            this.orderedFontStretchValues = new Property[] {
+                    checkEnumValues("ultra-condensed"),
+                    checkEnumValues("extra-condensed"),
+                    checkEnumValues("condensed"),
+                    checkEnumValues("semi-condensed"),
+                    checkEnumValues("normal"),
+                    checkEnumValues("semi-expanded"),
+                    checkEnumValues("expanded"),
+                    checkEnumValues("extra-expanded"),
+                    checkEnumValues("ultra-expanded") };
         }
-        int baseValue = baseProperty.getEnum();
-        for (int i = 0; i < orderedFontStretchValues.length; i++) {
-            if (baseValue == orderedFontStretchValues[i].getEnum()) {
-                // increment/decrement the index and make sure its within the array bounds
-                i = Math.min(Math.max(0, i + direction), orderedFontStretchValues.length - 1);
-                return orderedFontStretchValues[i];
+        final int baseValue = baseProperty.getEnum();
+        for (int i = 0; i < this.orderedFontStretchValues.length; i++) {
+            if (baseValue == this.orderedFontStretchValues[i].getEnum()) {
+                // increment/decrement the index and make sure its within the
+                // array bounds
+                i = Math.min(Math.max(0, i + direction),
+                        this.orderedFontStretchValues.length - 1);
+                return this.orderedFontStretchValues[i];
             }
         }
         // return the normal value
-        return orderedFontStretchValues[4];
+        return this.orderedFontStretchValues[4];
     }
 
 }

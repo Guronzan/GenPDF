@@ -21,34 +21,35 @@ package org.apache.fop.layoutengine;
 
 import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
+import org.apache.fop.intermediate.IFCheck;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
-
-import org.apache.fop.intermediate.IFCheck;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
  * Simple check that requires an XPath expression to evaluate to true.
  */
 public class EvalCheck implements LayoutEngineCheck, IFCheck {
 
-    private String expected;
-    private String xpath;
+    private final String expected;
+    private final String xpath;
     private double tolerance;
-    private PrefixResolver prefixResolver;
+    private final PrefixResolver prefixResolver;
 
     /**
      * Creates a new instance from a DOM node.
-     * @param node DOM node that defines this check
+     * 
+     * @param node
+     *            DOM node that defines this check
      */
-    public EvalCheck(Node node) {
-        this.expected = node.getAttributes().getNamedItem("expected").getNodeValue();
+    public EvalCheck(final Node node) {
+        this.expected = node.getAttributes().getNamedItem("expected")
+                .getNodeValue();
         this.xpath = node.getAttributes().getNamedItem("xpath").getNodeValue();
-        Node nd = node.getAttributes().getNamedItem("tolerance");
+        final Node nd = node.getAttributes().getNamedItem("tolerance");
         if (nd != null) {
             this.tolerance = Double.parseDouble(nd.getNodeValue());
         }
@@ -56,43 +57,49 @@ public class EvalCheck implements LayoutEngineCheck, IFCheck {
     }
 
     /** {@inheritDoc} */
-    public void check(LayoutResult result) {
+    @Override
+    public void check(final LayoutResult result) {
         doCheck(result.getAreaTree());
     }
 
     /** {@inheritDoc} */
-    public void check(Document intermediate) {
+    @Override
+    public void check(final Document intermediate) {
         doCheck(intermediate);
     }
 
-    private void doCheck(Document doc) {
+    private void doCheck(final Document doc) {
         XObject res;
         try {
-            res = XPathAPI.eval(doc, xpath, prefixResolver);
-        } catch (TransformerException e) {
-            throw new RuntimeException("XPath evaluation failed: " + e.getMessage());
+            res = XPathAPI.eval(doc, this.xpath, this.prefixResolver);
+        } catch (final TransformerException e) {
+            throw new RuntimeException("XPath evaluation failed: "
+                    + e.getMessage());
         }
-        String actual = res.str(); //Second str() seems to fail. D'oh!
-        if (tolerance != 0) {
-            double v1 = Double.parseDouble(expected);
-            double v2 = Double.parseDouble(actual);
-            if (Math.abs(v1 - v2) > tolerance) {
+        final String actual = res.str(); // Second str() seems to fail. D'oh!
+        if (this.tolerance != 0) {
+            final double v1 = Double.parseDouble(this.expected);
+            final double v2 = Double.parseDouble(actual);
+            if (Math.abs(v1 - v2) > this.tolerance) {
                 throw new RuntimeException(
-                        "Expected XPath expression to evaluate to '" + expected + "', but got '"
-                        + actual + "' (" + this + ", outside tolerance)");
+                        "Expected XPath expression to evaluate to '"
+                                + this.expected + "', but got '" + actual
+                                + "' (" + this + ", outside tolerance)");
             }
         } else {
-            if (!expected.equals(actual)) {
+            if (!this.expected.equals(actual)) {
                 throw new RuntimeException(
-                        "Expected XPath expression to evaluate to '" + expected + "', but got '"
-                        + actual + "' (" + this + ")");
+                        "Expected XPath expression to evaluate to '"
+                                + this.expected + "', but got '" + actual
+                                + "' (" + this + ")");
             }
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "XPath: " + xpath;
+        return "XPath: " + this.xpath;
     }
 
 }

@@ -23,27 +23,26 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.ValidationException;
 import org.apache.fop.fo.properties.CommonBorderPaddingBackground;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 /**
- * An abstract base class modelling a TablePart
- * (i.e. fo:table-header, fo:table-footer and fo:table-body).
+ * An abstract base class modelling a TablePart (i.e. fo:table-header,
+ * fo:table-footer and fo:table-body).
  */
 public abstract class TablePart extends TableCellContainer {
     // The value of properties relevant for fo:table-body.
     private CommonBorderPaddingBackground commonBorderPaddingBackground;
     // Unused but valid items, commented out for performance:
-    //     private CommonAccessibility commonAccessibility;
-    //     private CommonAural commonAural;
-    //     private CommonRelativePosition commonRelativePosition;
-    //    private int visibility;
+    // private CommonAccessibility commonAccessibility;
+    // private CommonAural commonAural;
+    // private CommonRelativePosition commonRelativePosition;
+    // private int visibility;
     // End of property values
 
     /** table rows found */
@@ -60,56 +59,62 @@ public abstract class TablePart extends TableCellContainer {
     private List rowGroups = new LinkedList();
 
     /**
-     * Create a TablePart instance with the given {@link FONode}
-     * as parent.
-     * @param parent FONode that is the parent of the object
+     * Create a TablePart instance with the given {@link FONode} as parent.
+     * 
+     * @param parent
+     *            FONode that is the parent of the object
      */
-    public TablePart(FONode parent) {
+    public TablePart(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected Object clone() {
-        TablePart clone = (TablePart) super.clone();
-        clone.rowGroups = new LinkedList(rowGroups);
+        final TablePart clone = (TablePart) super.clone();
+        clone.rowGroups = new LinkedList(this.rowGroups);
         return clone;
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
-        commonBorderPaddingBackground = pList.getBorderPaddingBackgroundProps();
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
+        this.commonBorderPaddingBackground = pList
+                .getBorderPaddingBackgroundProps();
         super.bind(pList);
     }
 
     /** {@inheritDoc} */
-    public void processNode(String elementName, Locator locator,
-                            Attributes attlist, PropertyList pList)
-                    throws FOPException {
+    @Override
+    public void processNode(final String elementName, final Locator locator,
+            final Attributes attlist, final PropertyList pList)
+            throws FOPException {
 
         super.processNode(elementName, locator, attlist, pList);
         if (!inMarker()) {
-            Table t = getTable();
+            final Table t = getTable();
             if (t.hasExplicitColumns()) {
-                int size = t.getNumberOfColumns();
-                pendingSpans = new ArrayList(size);
+                final int size = t.getNumberOfColumns();
+                this.pendingSpans = new ArrayList(size);
                 for (int i = 0; i < size; i++) {
-                    pendingSpans.add(null);
+                    this.pendingSpans.add(null);
                 }
             } else {
-                pendingSpans = new ArrayList();
+                this.pendingSpans = new ArrayList();
             }
-            columnNumberManager = new ColumnNumberManager();
+            this.columnNumberManager = new ColumnNumberManager();
         }
 
     }
 
     /** {@inheritDoc} */
+    @Override
     public void finalizeNode() throws FOPException {
         if (!inMarker()) {
-            pendingSpans = null;
-            columnNumberManager = null;
+            this.pendingSpans = null;
+            this.columnNumberManager = null;
         }
-        if (!(tableRowsFound || tableCellsFound)) {
+        if (!(this.tableRowsFound || this.tableCellsFound)) {
             missingChildElementError("marker* (table-row+|table-cell+)", true);
             getParent().removeChild(this);
         } else {
@@ -119,55 +124,63 @@ public abstract class TablePart extends TableCellContainer {
     }
 
     /** {@inheritDoc} */
+    @Override
     TablePart getTablePart() {
         return this;
     }
 
     /**
      * Finish last row group.
-     * @throws ValidationException if content validation exception
+     * 
+     * @throws ValidationException
+     *             if content validation exception
      */
     protected void finishLastRowGroup() throws ValidationException {
         if (!inMarker()) {
-            RowGroupBuilder rowGroupBuilder = getTable().getRowGroupBuilder();
-            if (tableRowsFound) {
+            final RowGroupBuilder rowGroupBuilder = getTable()
+                    .getRowGroupBuilder();
+            if (this.tableRowsFound) {
                 rowGroupBuilder.endTableRow();
-            } else if (!lastCellEndsRow) {
+            } else if (!this.lastCellEndsRow) {
                 rowGroupBuilder.endRow(this);
             }
             try {
                 rowGroupBuilder.endTablePart();
-            } catch (ValidationException e) {
-                e.setLocator(locator);
+            } catch (final ValidationException e) {
+                e.setLocator(this.locator);
                 throw e;
             }
         }
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL Content Model: marker* (table-row+|table-cell+)
+     * {@inheritDoc} <br>
+     * XSL Content Model: marker* (table-row+|table-cell+)
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-        throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             if (localName.equals("marker")) {
-                if (tableRowsFound || tableCellsFound) {
-                   nodesOutOfOrderError(loc, "fo:marker", "(table-row+|table-cell+)");
+                if (this.tableRowsFound || this.tableCellsFound) {
+                    nodesOutOfOrderError(loc, "fo:marker",
+                            "(table-row+|table-cell+)");
                 }
             } else if (localName.equals("table-row")) {
-                tableRowsFound = true;
-                if (tableCellsFound) {
-                    TableEventProducer eventProducer = TableEventProducer.Provider.get(
-                            getUserAgent().getEventBroadcaster());
-                    eventProducer.noMixRowsAndCells(this, getName(), getLocator());
+                this.tableRowsFound = true;
+                if (this.tableCellsFound) {
+                    final TableEventProducer eventProducer = TableEventProducer.Provider
+                            .get(getUserAgent().getEventBroadcaster());
+                    eventProducer.noMixRowsAndCells(this, getName(),
+                            getLocator());
                 }
             } else if (localName.equals("table-cell")) {
-                tableCellsFound = true;
-                if (tableRowsFound) {
-                    TableEventProducer eventProducer = TableEventProducer.Provider.get(
-                            getUserAgent().getEventBroadcaster());
-                    eventProducer.noMixRowsAndCells(this, getName(), getLocator());
+                this.tableCellsFound = true;
+                if (this.tableRowsFound) {
+                    final TableEventProducer eventProducer = TableEventProducer.Provider
+                            .get(getUserAgent().getEventBroadcaster());
+                    eventProducer.noMixRowsAndCells(this, getName(),
+                            getLocator());
                 }
             } else {
                 invalidChildError(loc, nsURI, localName);
@@ -176,75 +189,80 @@ public abstract class TablePart extends TableCellContainer {
     }
 
     /** {@inheritDoc} */
-    protected void addChildNode(FONode child) throws FOPException {
+    @Override
+    protected void addChildNode(final FONode child) throws FOPException {
         if (!inMarker()) {
             switch (child.getNameId()) {
             case FO_TABLE_ROW:
-                if (!rowsStarted) {
+                if (!this.rowsStarted) {
                     getTable().getRowGroupBuilder().startTablePart(this);
                 } else {
-                    columnNumberManager.prepareForNextRow(pendingSpans);
+                    this.columnNumberManager
+                            .prepareForNextRow(this.pendingSpans);
                     getTable().getRowGroupBuilder().endTableRow();
                 }
-                rowsStarted = true;
-                getTable().getRowGroupBuilder().startTableRow((TableRow)child);
+                this.rowsStarted = true;
+                getTable().getRowGroupBuilder().startTableRow((TableRow) child);
                 break;
             case FO_TABLE_CELL:
-                if (!rowsStarted) {
+                if (!this.rowsStarted) {
                     getTable().getRowGroupBuilder().startTablePart(this);
                 }
-                rowsStarted = true;
-                TableCell cell = (TableCell) child;
-                addTableCellChild(cell, firstRow);
-                lastCellEndsRow = cell.endsRow();
-                if (lastCellEndsRow) {
-                    firstRow = false;
-                    columnNumberManager.prepareForNextRow(pendingSpans);
+                this.rowsStarted = true;
+                final TableCell cell = (TableCell) child;
+                addTableCellChild(cell, this.firstRow);
+                this.lastCellEndsRow = cell.endsRow();
+                if (this.lastCellEndsRow) {
+                    this.firstRow = false;
+                    this.columnNumberManager
+                            .prepareForNextRow(this.pendingSpans);
                     getTable().getRowGroupBuilder().endRow(this);
                 }
                 break;
             default:
-                //nop
+                // nop
             }
         }
-        //TODO: possible performance problems in case of large tables...
-        //If the number of children grows significantly large, the default
-        //implementation in FObj will get slower and slower...
+        // TODO: possible performance problems in case of large tables...
+        // If the number of children grows significantly large, the default
+        // implementation in FObj will get slower and slower...
         super.addChildNode(child);
     }
 
-    void addRowGroup(List rowGroup) {
-        rowGroups.add(rowGroup);
+    void addRowGroup(final List rowGroup) {
+        this.rowGroups.add(rowGroup);
     }
 
     /** @return list of row groups */
     public List getRowGroups() {
-        return rowGroups;
+        return this.rowGroups;
     }
 
     /**
-     * Get the {@link CommonBorderPaddingBackground} instance attached
-     * to this TableBody.
+     * Get the {@link CommonBorderPaddingBackground} instance attached to this
+     * TableBody.
+     * 
      * @return the {@link CommonBorderPaddingBackground} instance.
      */
+    @Override
     public CommonBorderPaddingBackground getCommonBorderPaddingBackground() {
-        return commonBorderPaddingBackground;
+        return this.commonBorderPaddingBackground;
     }
 
     /**
-     * @param obj table row in question
+     * @param obj
+     *            table row in question
      * @return true if the given table row is the first row of this body.
      */
-    public boolean isFirst(TableRow obj) {
-        return (firstChild == null
-                || firstChild == obj);
+    public boolean isFirst(final TableRow obj) {
+        return this.firstChild == null || this.firstChild == obj;
     }
 
     void signalNewRow() {
-        if (rowsStarted) {
-            firstRow = false;
-            if (!lastCellEndsRow) {
-                columnNumberManager.prepareForNextRow(pendingSpans);
+        if (this.rowsStarted) {
+            this.firstRow = false;
+            if (!this.lastCellEndsRow) {
+                this.columnNumberManager.prepareForNextRow(this.pendingSpans);
                 getTable().getRowGroupBuilder().endRow(this);
             }
         }

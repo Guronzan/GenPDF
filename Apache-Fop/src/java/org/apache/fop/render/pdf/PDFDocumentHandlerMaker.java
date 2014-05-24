@@ -30,24 +30,28 @@ import org.apache.fop.render.intermediate.IFDocumentHandler;
  */
 public class PDFDocumentHandlerMaker extends AbstractIFDocumentHandlerMaker {
 
-    private static final String[] MIMES = new String[] {MimeConstants.MIME_PDF};
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_PDF };
 
     /** {@inheritDoc} */
-    public IFDocumentHandler makeIFDocumentHandler(FOUserAgent ua) {
-        PDFDocumentHandler handler = new PDFDocumentHandler();
+    @Override
+    public IFDocumentHandler makeIFDocumentHandler(final FOUserAgent ua) {
+        final PDFDocumentHandler handler = new PDFDocumentHandler();
         handler.setContext(new IFContext(ua));
         if (ua.isAccessibilityEnabled()) {
-            ua.setStructureTreeEventHandler(handler.getStructureTreeEventHandler());
+            ua.setStructureTreeEventHandler(handler
+                    .getStructureTreeEventHandler());
         }
         return handler;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

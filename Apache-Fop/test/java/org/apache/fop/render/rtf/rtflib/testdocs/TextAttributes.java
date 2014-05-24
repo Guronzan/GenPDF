@@ -17,7 +17,6 @@
 
 /* $Id: TextAttributes.java 1297404 2012-03-06 10:17:54Z vhennebert $ */
 
-
 /*
  * This file is part of the RTF library of the FOP project, which was originally
  * created by Bertrand Delacretaz <bdelacretaz@codeconsult.ch> and by other
@@ -29,33 +28,40 @@ package org.apache.fop.render.rtf.rtflib.testdocs;
 
 import java.io.IOException;
 
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfDocumentArea;
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfParagraph;
-import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfText;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfAttributes;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfDocumentArea;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfParagraph;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
+import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfText;
 
-/**  Generates a simple RTF test document for the jfor rtflib package.
- *  @author Bertrand Delacretaz bdelacretaz@codeconsult.ch
+/**
+ * Generates a simple RTF test document for the jfor rtflib package.
+ * 
+ * @author Bertrand Delacretaz bdelacretaz@codeconsult.ch
  */
 
 class TextAttributes extends TestDocument {
     /** generate the body of the test document */
-    protected void generateDocument(RtfDocumentArea rda, RtfSection sect)
-    throws IOException {
+    @Override
+    protected void generateDocument(final RtfDocumentArea rda,
+            final RtfSection sect) throws IOException {
         final RtfParagraph para = sect.newParagraph();
         para.newText("This is normal\n");
-        para.newText("This is bold\n", new RtfAttributes().set(RtfText.ATTR_BOLD));
-        para.newText("This is italic\n", new RtfAttributes().set(RtfText.ATTR_ITALIC));
-        para.newText("This is underline\n", new RtfAttributes().set(RtfText.ATTR_UNDERLINE));
+        para.newText("This is bold\n",
+                new RtfAttributes().set(RtfText.ATTR_BOLD));
+        para.newText("This is italic\n",
+                new RtfAttributes().set(RtfText.ATTR_ITALIC));
+        para.newText("This is underline\n",
+                new RtfAttributes().set(RtfText.ATTR_UNDERLINE));
 
         // RTF font sizes are in half-points
-        para.newText("This is size 48\n", new RtfAttributes().set(RtfText.ATTR_FONT_SIZE, 96));
+        para.newText("This is size 48\n",
+                new RtfAttributes().set(RtfText.ATTR_FONT_SIZE, 96));
 
         para.newText(
-            "This is bold and italic\n",
-            new RtfAttributes().set(RtfText.ATTR_BOLD).set(RtfText.ATTR_ITALIC)
-          );
+                "This is bold and italic\n",
+                new RtfAttributes().set(RtfText.ATTR_BOLD).set(
+                        RtfText.ATTR_ITALIC));
 
         final RtfAttributes attr = new RtfAttributes();
         attr.set(RtfText.ATTR_BOLD).set(RtfText.ATTR_ITALIC);

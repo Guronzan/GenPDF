@@ -25,9 +25,9 @@ import java.awt.color.ColorSpace;
 import org.apache.xmlgraphics.java2d.color.ColorWithAlternatives;
 
 /**
- * This class is a {@link Color} subclass adding a fallback color that FOP uses to re-serialize
- * color specifications as textual functions. The fallback is otherwise not used in producing
- * output formats.
+ * This class is a {@link Color} subclass adding a fallback color that FOP uses
+ * to re-serialize color specifications as textual functions. The fallback is
+ * otherwise not used in producing output formats.
  */
 public class ColorWithFallback extends ColorWithAlternatives {
 
@@ -37,36 +37,46 @@ public class ColorWithFallback extends ColorWithAlternatives {
 
     /**
      * Creates a new color
-     * @param cspace the color space of the primary color
-     * @param components the color components
-     * @param alpha the alpha component
-     * @param alternativeColors the array of alternative colors if applicable (may be null)
-     * @param fallback the fallback color (usually an sRGB color)
+     * 
+     * @param cspace
+     *            the color space of the primary color
+     * @param components
+     *            the color components
+     * @param alpha
+     *            the alpha component
+     * @param alternativeColors
+     *            the array of alternative colors if applicable (may be null)
+     * @param fallback
+     *            the fallback color (usually an sRGB color)
      */
-    public ColorWithFallback(ColorSpace cspace, float[] components, float alpha,
-            Color[] alternativeColors, Color fallback) {
+    public ColorWithFallback(final ColorSpace cspace, final float[] components,
+            final float alpha, final Color[] alternativeColors,
+            final Color fallback) {
         super(cspace, components, alpha, alternativeColors);
         this.fallback = fallback;
     }
 
     /**
      * Copy constructor adding a fallback color.
-     * @param color the color to be duplicated
-     * @param fallback the fallback color (usually an sRGB color)
+     * 
+     * @param color
+     *            the color to be duplicated
+     * @param fallback
+     *            the fallback color (usually an sRGB color)
      */
-    public ColorWithFallback(Color color, Color fallback) {
+    public ColorWithFallback(final Color color, final Color fallback) {
         this(color.getColorSpace(), color.getColorComponents(null),
                 getAlphaFloat(color), getAlternativeColors(color), fallback);
     }
 
-    private static float getAlphaFloat(Color color) {
-        float[] comps = color.getComponents(null);
-        return comps[comps.length - 1]; //Alpha is on last component
+    private static float getAlphaFloat(final Color color) {
+        final float[] comps = color.getComponents(null);
+        return comps[comps.length - 1]; // Alpha is on last component
     }
 
-    private static Color[] getAlternativeColors(Color color) {
+    private static Color[] getAlternativeColors(final Color color) {
         if (color instanceof ColorWithAlternatives) {
-            ColorWithAlternatives cwa = (ColorWithAlternatives)color;
+            final ColorWithAlternatives cwa = (ColorWithAlternatives) color;
             if (cwa.hasAlternativeColors()) {
                 return cwa.getAlternativeColors();
             }
@@ -76,6 +86,7 @@ public class ColorWithFallback extends ColorWithAlternatives {
 
     /**
      * Returns the fallback color.
+     * 
      * @return the fallback color
      */
     public Color getFallbackColor() {

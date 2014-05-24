@@ -30,6 +30,7 @@ public class NullCharIterator extends CharIterator {
 
     /**
      * Obtain the singleton instance of the null character iterator.
+     * 
      * @return the char iterator
      */
     public static CharIterator getInstance() {
@@ -43,18 +44,19 @@ public class NullCharIterator extends CharIterator {
      * Constructor
      */
     public NullCharIterator() {
-        //nop
+        // nop
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean hasNext() {
         return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public char nextChar() throws NoSuchElementException {
         throw new NoSuchElementException();
     }
 
 }
-

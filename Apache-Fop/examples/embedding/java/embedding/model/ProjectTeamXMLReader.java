@@ -20,8 +20,8 @@
 package embedding.model;
 
 //Java
-import java.util.Iterator;
 import java.io.IOException;
+import java.util.Iterator;
 
 //SAX
 import org.xml.sax.InputSource;
@@ -38,81 +38,94 @@ public class ProjectTeamXMLReader extends AbstractObjectReader {
     /**
      * @see org.xml.sax.XMLReader#parse(InputSource)
      */
-    public void parse(InputSource input) throws IOException, SAXException {
+    @Override
+    public void parse(final InputSource input) throws IOException, SAXException {
         if (input instanceof ProjectTeamInputSource) {
-            parse(((ProjectTeamInputSource)input).getProjectTeam());
+            parse(((ProjectTeamInputSource) input).getProjectTeam());
         } else {
             throw new SAXException("Unsupported InputSource specified. "
                     + "Must be a ProjectTeamInputSource");
         }
     }
 
-
     /**
      * Starts parsing the ProjectTeam object.
-     * @param projectTeam The object to parse
-     * @throws SAXException In case of a problem during SAX event generation
+     * 
+     * @param projectTeam
+     *            The object to parse
+     * @throws SAXException
+     *             In case of a problem during SAX event generation
      */
-    public void parse(ProjectTeam projectTeam) throws SAXException {
+    public void parse(final ProjectTeam projectTeam) throws SAXException {
         if (projectTeam == null) {
-            throw new NullPointerException("Parameter projectTeam must not be null");
+            throw new NullPointerException(
+                    "Parameter projectTeam must not be null");
         }
-        if (handler == null) {
+        if (this.handler == null) {
             throw new IllegalStateException("ContentHandler not set");
         }
 
-        //Start the document
-        handler.startDocument();
+        // Start the document
+        this.handler.startDocument();
 
-        //Generate SAX events for the ProjectTeam
+        // Generate SAX events for the ProjectTeam
         generateFor(projectTeam);
 
-        //End the document
-        handler.endDocument();
+        // End the document
+        this.handler.endDocument();
     }
-
 
     /**
      * Generates SAX events for a ProjectTeam object.
-     * @param projectTeam ProjectTeam object to use
-     * @throws SAXException In case of a problem during SAX event generation
+     * 
+     * @param projectTeam
+     *            ProjectTeam object to use
+     * @throws SAXException
+     *             In case of a problem during SAX event generation
      */
-    protected void generateFor(ProjectTeam projectTeam) throws SAXException {
+    protected void generateFor(final ProjectTeam projectTeam)
+            throws SAXException {
         if (projectTeam == null) {
-            throw new NullPointerException("Parameter projectTeam must not be null");
+            throw new NullPointerException(
+                    "Parameter projectTeam must not be null");
         }
-        if (handler == null) {
+        if (this.handler == null) {
             throw new IllegalStateException("ContentHandler not set");
         }
 
-        handler.startElement("projectteam");
-        handler.element("projectname", projectTeam.getProjectName());
-        Iterator i = projectTeam.getMembers().iterator();
+        this.handler.startElement("projectteam");
+        this.handler.element("projectname", projectTeam.getProjectName());
+        final Iterator i = projectTeam.getMembers().iterator();
         while (i.hasNext()) {
-            ProjectMember member = (ProjectMember)i.next();
+            final ProjectMember member = (ProjectMember) i.next();
             generateFor(member);
         }
-        handler.endElement("projectteam");
+        this.handler.endElement("projectteam");
     }
 
     /**
      * Generates SAX events for a ProjectMember object.
-     * @param projectMember ProjectMember object to use
-     * @throws SAXException In case of a problem during SAX event generation
+     * 
+     * @param projectMember
+     *            ProjectMember object to use
+     * @throws SAXException
+     *             In case of a problem during SAX event generation
      */
-    protected void generateFor(ProjectMember projectMember) throws SAXException {
+    protected void generateFor(final ProjectMember projectMember)
+            throws SAXException {
         if (projectMember == null) {
-            throw new NullPointerException("Parameter projectMember must not be null");
+            throw new NullPointerException(
+                    "Parameter projectMember must not be null");
         }
-        if (handler == null) {
+        if (this.handler == null) {
             throw new IllegalStateException("ContentHandler not set");
         }
 
-        handler.startElement("member");
-        handler.element("name", projectMember.getName());
-        handler.element("function", projectMember.getFunction());
-        handler.element("email", projectMember.getEmail());
-        handler.endElement("member");
+        this.handler.startElement("member");
+        this.handler.element("name", projectMember.getName());
+        this.handler.element("function", projectMember.getFunction());
+        this.handler.element("email", projectMember.getEmail());
+        this.handler.endElement("member");
     }
 
 }

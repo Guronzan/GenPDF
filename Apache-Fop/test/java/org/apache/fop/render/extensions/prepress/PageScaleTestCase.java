@@ -19,13 +19,13 @@
 
 package org.apache.fop.render.extensions.prepress;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
 import java.awt.geom.Point2D;
 
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 /**
  * Tests for the fox:scale extension property.
@@ -35,7 +35,7 @@ public class PageScaleTestCase {
     /** 1 value is used for both x and y. */
     @Test
     public void testScale1() {
-        Point2D res = PageScale.getScale(".5");
+        final Point2D res = PageScale.getScale(".5");
         assertEquals(0.5, res.getX(), 0.0);
         assertEquals(0.5, res.getY(), 0.0);
     }
@@ -43,7 +43,7 @@ public class PageScaleTestCase {
     /** Two values, used resp. for x and y. */
     @Test
     public void testScale2() {
-        Point2D res = PageScale.getScale("1. \t \n 1.2");
+        final Point2D res = PageScale.getScale("1. \t \n 1.2");
         assertEquals(1.0, res.getX(), 0.0);
         assertEquals(1.2, res.getY(), 0.0);
     }
@@ -54,7 +54,7 @@ public class PageScaleTestCase {
         try {
             PageScale.getScale("0.5mm 0.5cm");
             fail("Expected IllegalArgumentException. Scale shouldn't contain units");
-        } catch (IllegalArgumentException iae) {
+        } catch (final IllegalArgumentException iae) {
             // Good!
         }
     }

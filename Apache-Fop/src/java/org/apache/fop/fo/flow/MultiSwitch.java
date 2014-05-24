@@ -20,13 +20,12 @@
 package org.apache.fop.fo.flow;
 
 // XML
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.FObj;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.ValidationException;
+import org.xml.sax.Locator;
 
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_multi-switch">
@@ -36,7 +35,7 @@ public class MultiSwitch extends FObj {
     // The value of properties relevant for fo:multi-switch.
     // private ToBeImplementedProperty autoRestore;
     // Unused but valid items, commented out for performance:
-    //     private CommonAccessibility commonAccessibility;
+    // private CommonAccessibility commonAccessibility;
     // End of property values
 
     private static boolean notImplementedWarningGiven = false;
@@ -44,38 +43,41 @@ public class MultiSwitch extends FObj {
     /**
      * Base constructor
      *
-     * @param parent {@link FONode} that is the parent of this object
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public MultiSwitch(FONode parent) {
+    public MultiSwitch(final FONode parent) {
         super(parent);
 
         if (!notImplementedWarningGiven) {
-            getFOValidationEventProducer().unimplementedFeature(this, getName(),
-                    getName(), getLocator());
+            getFOValidationEventProducer().unimplementedFeature(this,
+                    getName(), getName(), getLocator());
             notImplementedWarningGiven = true;
         }
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
         // autoRestore = pList.get(PR_AUTO_RESTORE);
     }
 
-
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
-        if (firstChild == null) {
+        if (this.firstChild == null) {
             missingChildElementError("(multi-case+)");
         }
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL Content Model: (multi-case+)
+     * {@inheritDoc} <br>
+     * XSL Content Model: (multi-case+)
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-                throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             if (!localName.equals("multi-case")) {
                 invalidChildError(loc, nsURI, localName);
@@ -84,14 +86,17 @@ public class MultiSwitch extends FObj {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "multi-switch";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_MULTI_SWITCH}
      */
+    @Override
     public int getNameId() {
         return FO_MULTI_SWITCH;
     }

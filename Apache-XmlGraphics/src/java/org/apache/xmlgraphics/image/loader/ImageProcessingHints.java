@@ -20,67 +20,78 @@
 package org.apache.xmlgraphics.image.loader;
 
 /**
- * This interface defines some standard hints to be used for image processing in this package.
- * They are provided for convenience. You can define your own hints as you like.
- * Generally, consumers should not rely on the presence of any hint!
+ * This interface defines some standard hints to be used for image processing in
+ * this package. They are provided for convenience. You can define your own
+ * hints as you like. Generally, consumers should not rely on the presence of
+ * any hint!
  */
 public interface ImageProcessingHints {
 
-    /** Used to send a hint about the source resolution for pixel to unit conversions. */
-    Object SOURCE_RESOLUTION = "SOURCE_RESOLUTION"; //Value: Number (unit dpi)
-    /** Used to send a hint about the target resolution (of the final output format). */
-    Object TARGET_RESOLUTION = "TARGET_RESOLUTION"; //Value: Number (unit dpi)
+    /**
+     * Used to send a hint about the source resolution for pixel to unit
+     * conversions.
+     */
+    Object SOURCE_RESOLUTION = "SOURCE_RESOLUTION"; // Value: Number (unit dpi)
+    /**
+     * Used to send a hint about the target resolution (of the final output
+     * format).
+     */
+    Object TARGET_RESOLUTION = "TARGET_RESOLUTION"; // Value: Number (unit dpi)
 
     /**
-     * Used to pass in the {@link ImageSessionContext}. A consumer can use this to load embedded
-     * images over the same mechanism as the main image (ex. JPEG images referenced in an
-     * SVG image).
+     * Used to pass in the {@link ImageSessionContext}. A consumer can use this
+     * to load embedded images over the same mechanism as the main image (ex.
+     * JPEG images referenced in an SVG image).
+     * 
      * @since 1.4
      */
-    Object IMAGE_SESSION_CONTEXT = "IMAGE_SESSION_CONTEXT"; //Value: ImageSessionContext instance
+    Object IMAGE_SESSION_CONTEXT = "IMAGE_SESSION_CONTEXT"; // Value:
+                                                            // ImageSessionContext
+                                                            // instance
 
     /**
-     * Used to pass in the {@link ImageManager}. A consumer can use this to load embedded
-     * images over the same mechanism as the main image (ex. JPEG images referenced in an
-     * SVG image).
+     * Used to pass in the {@link ImageManager}. A consumer can use this to load
+     * embedded images over the same mechanism as the main image (ex. JPEG
+     * images referenced in an SVG image).
+     * 
      * @since 1.4
      */
-    Object IMAGE_MANAGER = "IMAGE_MANAGER"; //Value: ImageManager instance
+    Object IMAGE_MANAGER = "IMAGE_MANAGER"; // Value: ImageManager instance
 
     /** Used to tell the image loader to ignore any color profile in the image. */
-    Object IGNORE_COLOR_PROFILE = "IGNORE_COLOR_PROFILE"; //Value: Boolean
+    Object IGNORE_COLOR_PROFILE = "IGNORE_COLOR_PROFILE"; // Value: Boolean
 
     /** Used to tell a bitmap producer to generate a certain type of bitmap. */
     Object BITMAP_TYPE_INTENT = "BITMAP_TYPE_INTENT";
 
     /**
-     * Used with BITMAP_TYPE_INTENT to indicate that the generated bitmap should be a
-     * grayscale image.
+     * Used with BITMAP_TYPE_INTENT to indicate that the generated bitmap should
+     * be a grayscale image.
      */
     String BITMAP_TYPE_INTENT_GRAY = "gray";
 
     /**
-     * Used with BITMAP_TYPE_INTENT to indicate that the generated bitmap should be a
-     * 1 bit black and white image.
+     * Used with BITMAP_TYPE_INTENT to indicate that the generated bitmap should
+     * be a 1 bit black and white image.
      */
     String BITMAP_TYPE_INTENT_MONO = "mono";
 
     /**
-     * Used to indicate how existing transparency information (for example, an alpha channel)
-     * shall be treated. */
+     * Used to indicate how existing transparency information (for example, an
+     * alpha channel) shall be treated.
+     */
     Object TRANSPARENCY_INTENT = "TRANSPARENCY_INTENT";
 
     /**
-     * Used with TRANSPARENCY_INTENT to indicate that any transparency information shall be
-     * preserved (the default).
+     * Used with TRANSPARENCY_INTENT to indicate that any transparency
+     * information shall be preserved (the default).
      */
     String TRANSPARENCY_INTENT_PRESERVE = "preserve";
 
     /**
-     * Used with TRANSPARENCY_INTENT to indicate that any transparency information shall be
-     * ignored.
+     * Used with TRANSPARENCY_INTENT to indicate that any transparency
+     * information shall be ignored.
      */
     String TRANSPARENCY_INTENT_IGNORE = "ignore";
-
 
 }

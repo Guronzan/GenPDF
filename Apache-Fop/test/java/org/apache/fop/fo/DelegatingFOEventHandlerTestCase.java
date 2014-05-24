@@ -19,8 +19,6 @@
 
 package org.apache.fop.fo;
 
-import static org.junit.Assert.assertArrayEquals;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -35,12 +33,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.fo.FODocumentParser.FOEventHandlerFactory;
@@ -73,11 +66,20 @@ import org.apache.fop.fo.pagination.Flow;
 import org.apache.fop.fo.pagination.PageSequence;
 import org.apache.fop.fo.pagination.Root;
 import org.apache.fop.fo.pagination.StaticContent;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import static org.junit.Assert.assertArrayEquals;
 
 /**
- * Tests that {@link DelegatingFOEventHandler} does forward every event to its delegate
- * event handler.
+ * Tests that {@link DelegatingFOEventHandler} does forward every event to its
+ * delegate event handler.
  */
+@Slf4j
 public class DelegatingFOEventHandlerTestCase {
 
     private InputStream document;
@@ -90,7 +92,7 @@ public class DelegatingFOEventHandlerTestCase {
 
     private class DelegatingFOEventHandlerTester extends FOEventHandler {
 
-        DelegatingFOEventHandlerTester(FOUserAgent foUserAgent) {
+        DelegatingFOEventHandlerTester(final FOUserAgent foUserAgent) {
             super(foUserAgent);
         }
 
@@ -98,318 +100,323 @@ public class DelegatingFOEventHandlerTestCase {
 
         @Override
         public void startDocument() throws SAXException {
-            actualEvents.add("start document");
+            DelegatingFOEventHandlerTestCase.this.actualEvents
+            .add("start document");
         }
 
         @Override
         public void endDocument() throws SAXException {
-            actualEvents.add("end   document");
+            DelegatingFOEventHandlerTestCase.this.actualEvents
+            .add("end   document");
         }
 
         @Override
-        public void startRoot(Root root) {
+        public void startRoot(final Root root) {
             startElement(root);
         }
 
         @Override
-        public void endRoot(Root root) {
+        public void endRoot(final Root root) {
             endElement(root);
         }
 
         @Override
-        public void startPageSequence(PageSequence pageSeq) {
+        public void startPageSequence(final PageSequence pageSeq) {
             startElement(pageSeq);
         }
 
         @Override
-        public void endPageSequence(PageSequence pageSeq) {
+        public void endPageSequence(final PageSequence pageSeq) {
             endElement(pageSeq);
         }
 
         @Override
-        public void startPageNumber(PageNumber pagenum) {
+        public void startPageNumber(final PageNumber pagenum) {
             startElement(pagenum);
         }
 
         @Override
-        public void endPageNumber(PageNumber pagenum) {
+        public void endPageNumber(final PageNumber pagenum) {
             endElement(pagenum);
         }
 
         @Override
-        public void startPageNumberCitation(PageNumberCitation pageCite) {
+        public void startPageNumberCitation(final PageNumberCitation pageCite) {
             startElement(pageCite);
         }
 
         @Override
-        public void endPageNumberCitation(PageNumberCitation pageCite) {
+        public void endPageNumberCitation(final PageNumberCitation pageCite) {
             endElement(pageCite);
         }
 
         @Override
-        public void startPageNumberCitationLast(PageNumberCitationLast pageLast) {
+        public void startPageNumberCitationLast(
+                final PageNumberCitationLast pageLast) {
             startElement(pageLast);
         }
 
         @Override
-        public void endPageNumberCitationLast(PageNumberCitationLast pageLast) {
+        public void endPageNumberCitationLast(
+                final PageNumberCitationLast pageLast) {
             endElement(pageLast);
         }
 
         @Override
-        public void startFlow(Flow fl) {
+        public void startFlow(final Flow fl) {
             startElement(fl);
         }
 
         @Override
-        public void endFlow(Flow fl) {
+        public void endFlow(final Flow fl) {
             endElement(fl);
         }
 
         @Override
-        public void startBlock(Block bl) {
+        public void startBlock(final Block bl) {
             startElement(bl);
         }
 
         @Override
-        public void endBlock(Block bl) {
+        public void endBlock(final Block bl) {
             endElement(bl);
         }
 
         @Override
-        public void startBlockContainer(BlockContainer blc) {
+        public void startBlockContainer(final BlockContainer blc) {
             startElement(blc);
         }
 
         @Override
-        public void endBlockContainer(BlockContainer blc) {
+        public void endBlockContainer(final BlockContainer blc) {
             endElement(blc);
         }
 
         @Override
-        public void startInline(Inline inl) {
+        public void startInline(final Inline inl) {
             startElement(inl);
         }
 
         @Override
-        public void endInline(Inline inl) {
+        public void endInline(final Inline inl) {
             endElement(inl);
         }
 
         @Override
-        public void startTable(Table tbl) {
+        public void startTable(final Table tbl) {
             startElement(tbl);
         }
 
         @Override
-        public void endTable(Table tbl) {
+        public void endTable(final Table tbl) {
             endElement(tbl);
         }
 
         @Override
-        public void startColumn(TableColumn tc) {
+        public void startColumn(final TableColumn tc) {
             startElement(tc);
         }
 
         @Override
-        public void endColumn(TableColumn tc) {
+        public void endColumn(final TableColumn tc) {
             endElement(tc);
         }
 
         @Override
-        public void startHeader(TableHeader header) {
+        public void startHeader(final TableHeader header) {
             startElement(header);
         }
 
         @Override
-        public void endHeader(TableHeader header) {
+        public void endHeader(final TableHeader header) {
             endElement(header);
         }
 
         @Override
-        public void startFooter(TableFooter footer) {
+        public void startFooter(final TableFooter footer) {
             startElement(footer);
         }
 
         @Override
-        public void endFooter(TableFooter footer) {
+        public void endFooter(final TableFooter footer) {
             endElement(footer);
         }
 
         @Override
-        public void startBody(TableBody body) {
+        public void startBody(final TableBody body) {
             startElement(body);
         }
 
         @Override
-        public void endBody(TableBody body) {
+        public void endBody(final TableBody body) {
             endElement(body);
         }
 
         @Override
-        public void startRow(TableRow tr) {
+        public void startRow(final TableRow tr) {
             startElement(tr);
         }
 
         @Override
-        public void endRow(TableRow tr) {
+        public void endRow(final TableRow tr) {
             endElement(tr);
         }
 
         @Override
-        public void startCell(TableCell tc) {
+        public void startCell(final TableCell tc) {
             startElement(tc);
         }
 
         @Override
-        public void endCell(TableCell tc) {
+        public void endCell(final TableCell tc) {
             endElement(tc);
         }
 
         @Override
-        public void startList(ListBlock lb) {
+        public void startList(final ListBlock lb) {
             startElement(lb);
         }
 
         @Override
-        public void endList(ListBlock lb) {
+        public void endList(final ListBlock lb) {
             endElement(lb);
         }
 
         @Override
-        public void startListItem(ListItem li) {
+        public void startListItem(final ListItem li) {
             startElement(li);
         }
 
         @Override
-        public void endListItem(ListItem li) {
+        public void endListItem(final ListItem li) {
             endElement(li);
         }
 
         @Override
-        public void startListLabel(ListItemLabel listItemLabel) {
+        public void startListLabel(final ListItemLabel listItemLabel) {
             startElement(listItemLabel);
         }
 
         @Override
-        public void endListLabel(ListItemLabel listItemLabel) {
+        public void endListLabel(final ListItemLabel listItemLabel) {
             endElement(listItemLabel);
         }
 
         @Override
-        public void startListBody(ListItemBody listItemBody) {
+        public void startListBody(final ListItemBody listItemBody) {
             startElement(listItemBody);
         }
 
         @Override
-        public void endListBody(ListItemBody listItemBody) {
+        public void endListBody(final ListItemBody listItemBody) {
             endElement(listItemBody);
         }
 
         @Override
-        public void startStatic(StaticContent staticContent) {
+        public void startStatic(final StaticContent staticContent) {
             startElement(staticContent);
         }
 
         @Override
-        public void endStatic(StaticContent statisContent) {
+        public void endStatic(final StaticContent statisContent) {
             endElement(statisContent);
         }
 
         @Override
-        public void startLink(BasicLink basicLink) {
+        public void startLink(final BasicLink basicLink) {
             startElement(basicLink);
         }
 
         @Override
-        public void endLink(BasicLink basicLink) {
+        public void endLink(final BasicLink basicLink) {
             endElement(basicLink);
         }
 
         @Override
-        public void image(ExternalGraphic eg) {
+        public void image(final ExternalGraphic eg) {
             startElement(eg);
             endElement(eg);
         }
 
         @Override
-        public void startInstreamForeignObject(InstreamForeignObject ifo) {
+        public void startInstreamForeignObject(final InstreamForeignObject ifo) {
             startElement(ifo);
         }
 
         @Override
-        public void endInstreamForeignObject(InstreamForeignObject ifo) {
+        public void endInstreamForeignObject(final InstreamForeignObject ifo) {
             endElement(ifo);
         }
 
         @Override
-        public void startFootnote(Footnote footnote) {
+        public void startFootnote(final Footnote footnote) {
             startElement(footnote);
         }
 
         @Override
-        public void endFootnote(Footnote footnote) {
+        public void endFootnote(final Footnote footnote) {
             endElement(footnote);
         }
 
         @Override
-        public void startFootnoteBody(FootnoteBody body) {
+        public void startFootnoteBody(final FootnoteBody body) {
             startElement(body);
         }
 
         @Override
-        public void endFootnoteBody(FootnoteBody body) {
+        public void endFootnoteBody(final FootnoteBody body) {
             endElement(body);
         }
 
         @Override
-        public void startLeader(Leader l) {
+        public void startLeader(final Leader l) {
             startElement(l);
         }
 
         @Override
-        public void endLeader(Leader l) {
+        public void endLeader(final Leader l) {
             endElement(l);
         }
 
         @Override
-        public void startWrapper(Wrapper wrapper) {
+        public void startWrapper(final Wrapper wrapper) {
             startElement(wrapper);
         }
 
         @Override
-        public void endWrapper(Wrapper wrapper) {
+        public void endWrapper(final Wrapper wrapper) {
             endElement(wrapper);
         }
 
         @Override
-        public void character(Character c) {
+        public void character(final Character c) {
             startElement(c);
             endElement(c);
         }
 
-        private void startElement(FObj node) {
+        private void startElement(final FObj node) {
             addEvent("start ", node);
         }
 
-        private void endElement(FObj node) {
+        private void endElement(final FObj node) {
             addEvent("end   ", node);
         }
 
-        private void addEvent(String event, FObj node) {
-            eventBuilder.append(event);
-            eventBuilder.append(node.getLocalName());
+        private void addEvent(final String event, final FObj node) {
+            this.eventBuilder.append(event);
+            this.eventBuilder.append(node.getLocalName());
             addID(node);
-            actualEvents.add(eventBuilder.toString());
-            eventBuilder.setLength(0);
+            DelegatingFOEventHandlerTestCase.this.actualEvents
+            .add(this.eventBuilder.toString());
+            this.eventBuilder.setLength(0);
         }
 
-        private void addID(FObj node) {
-            String id = node.getId();
+        private void addID(final FObj node) {
+            final String id = node.getId();
             if (id != null && id.length() > 0) {
-                eventBuilder.append(" id=\"");
-                eventBuilder.append(id);
-                eventBuilder.append("\"");
+                this.eventBuilder.append(" id=\"");
+                this.eventBuilder.append(id);
+                this.eventBuilder.append("\"");
             }
         }
     }
@@ -424,40 +431,42 @@ public class DelegatingFOEventHandlerTestCase {
     private void setUpEvents() throws IOException {
         loadDocument();
         loadExpectedEvents();
-        actualEvents = new ArrayList<String>(expectedEvents.size());
+        this.actualEvents = new ArrayList<String>(this.expectedEvents.size());
     }
 
     private void loadDocument() {
-        document = getClass().getResourceAsStream("complete_document.fo");
+        this.document = getClass().getResourceAsStream("complete_document.fo");
     }
 
     private void loadExpectedEvents() throws IOException {
-        expectedEvents = new ArrayList<String>();
-        InputStream xslt = getClass().getResourceAsStream("extract-events.xsl");
+        this.expectedEvents = new ArrayList<String>();
+        final InputStream xslt = getClass().getResourceAsStream(
+                "extract-events.xsl");
         try {
             runXSLT(xslt);
         } finally {
             closeStream(xslt);
-            closeStream(document);
+            closeStream(this.document);
         }
     }
 
-    private void runXSLT(InputStream xslt) {
-        Transformer transformer = createTransformer(xslt);
-        Source fo = new StreamSource(document);
-        Result result = createTransformOutputHandler();
+    private void runXSLT(final InputStream xslt) {
+        final Transformer transformer = createTransformer(xslt);
+        final Source fo = new StreamSource(this.document);
+        final Result result = createTransformOutputHandler();
         try {
             transformer.transform(fo, result);
-        } catch (TransformerException e) {
+        } catch (final TransformerException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private Transformer createTransformer(InputStream xslt) {
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+    private Transformer createTransformer(final InputStream xslt) {
+        final TransformerFactory transformerFactory = TransformerFactory
+                .newInstance();
         try {
             return transformerFactory.newTransformer(new StreamSource(xslt));
-        } catch (TransformerConfigurationException e) {
+        } catch (final TransformerConfigurationException e) {
             throw new RuntimeException(e);
         }
     }
@@ -468,63 +477,72 @@ public class DelegatingFOEventHandlerTestCase {
             private final StringBuilder event = new StringBuilder();
 
             @Override
-            public void startElement(String uri, String localName, String qName,
-                    Attributes attributes) throws SAXException {
-                event.setLength(0);
+            public void startElement(final String uri, final String localName,
+                    final String qName, final Attributes attributes)
+                            throws SAXException {
+                this.event.setLength(0);
             }
 
             @Override
-            public void characters(char[] ch, int start, int length) throws SAXException {
-                event.append(ch, start, length);
+            public void characters(final char[] ch, final int start,
+                    final int length) throws SAXException {
+                this.event.append(ch, start, length);
             }
 
             @Override
-            public void endElement(String uri, String localName, String qName) throws SAXException {
-                expectedEvents.add(event.toString());
+            public void endElement(final String uri, final String localName,
+                    final String qName) throws SAXException {
+                DelegatingFOEventHandlerTestCase.this.expectedEvents
+                .add(this.event.toString());
             }
 
         });
     }
 
-    private void closeStream(InputStream stream) {
+    private void closeStream(final InputStream stream) {
         try {
             stream.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void createDocumentParser() {
-        documentParser = FODocumentParser.newInstance(new FOEventHandlerFactory() {
+        this.documentParser = FODocumentParser
+                .newInstance(new FOEventHandlerFactory() {
 
-            public FOEventHandler newFOEventHandler(FOUserAgent foUserAgent) {
-                return new DelegatingFOEventHandler(
-                        new DelegatingFOEventHandlerTester(foUserAgent)) {
-                };
-            }
-        });
+                    @Override
+                    public FOEventHandler newFOEventHandler(
+                            final FOUserAgent foUserAgent) {
+                        return new DelegatingFOEventHandler(
+                                new DelegatingFOEventHandlerTester(foUserAgent)) {
+                        };
+                    }
+                });
     }
 
     @Test
     public void testFOEventHandler() throws Exception {
-        documentParser.parse(document);
-        assertArrayEquals(expectedEvents.toArray(), actualEvents.toArray());
+        this.documentParser.parse(this.document);
+        assertArrayEquals(this.expectedEvents.toArray(),
+                this.actualEvents.toArray());
     }
 
     @After
     public void unloadDocument() throws IOException {
-        document.close();
+        this.document.close();
     }
 
     /**
-     * Prints the given list to {@code System.out}, each element on a new line. For
-     * debugging purpose.
+     * Prints the given list to {@code System.out}, each element on a new line.
+     * For debugging purpose.
      *
-     * @param list a list
+     * @param list
+     *            a list
      */
-    public void printList(List<?> list) {
-        for (Object element : list) {
-            System.out.println(element);
+    public void printList(final List<?> list) {
+        for (final Object element : list) {
+            log.info(element.toString());
         }
     }
 

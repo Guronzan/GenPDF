@@ -19,9 +19,8 @@
 
 package org.apache.fop.fo;
 
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
+import org.xml.sax.Locator;
 
 /**
  * Exception thrown during FO tree validation.
@@ -29,19 +28,29 @@ import org.apache.fop.apps.FOPException;
 public class ValidationException extends FOPException {
 
     /**
-     * Construct a validation exception instance.
-     * @param message a message
+     *
      */
-    public ValidationException(String message) {
+    private static final long serialVersionUID = 1837390066992007730L;
+
+    /**
+     * Construct a validation exception instance.
+     *
+     * @param message
+     *            a message
+     */
+    public ValidationException(final String message) {
         super(message);
     }
 
     /**
      * Construct a validation exception instance.
-     * @param message a message
-     * @param locator a locator
+     *
+     * @param message
+     *            a message
+     * @param locator
+     *            a locator
      */
-    public ValidationException(String message, Locator locator) {
+    public ValidationException(final String message, final Locator locator) {
         super(message, locator);
     }
 }

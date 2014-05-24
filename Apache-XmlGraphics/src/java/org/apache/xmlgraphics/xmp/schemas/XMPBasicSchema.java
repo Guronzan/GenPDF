@@ -41,7 +41,8 @@ public class XMPBasicSchema extends XMPSchema {
     public static final String QUALIFIER_NAMESPACE = "http://ns.adobe.com/xmp/Identifier/qual/1.0/";
 
     /** The qualified name for the qualifier for xmp:Identifier */
-    public static final QName SCHEME_QUALIFIER = new QName(QUALIFIER_NAMESPACE, "xmpidq:Scheme");
+    public static final QName SCHEME_QUALIFIER = new QName(QUALIFIER_NAMESPACE,
+            "xmpidq:Scheme");
 
     private static MergeRuleSet mergeRuleSet = new MergeRuleSet();
 
@@ -51,20 +52,25 @@ public class XMPBasicSchema extends XMPSchema {
     }
 
     static {
-        //CreateDate shall be preserved if it exists
-        mergeRuleSet.addRule(new QName(NAMESPACE, "CreateDate"), new NoReplacePropertyMerger());
+        // CreateDate shall be preserved if it exists
+        mergeRuleSet.addRule(new QName(NAMESPACE, "CreateDate"),
+                new NoReplacePropertyMerger());
     }
 
     /**
-     * Creates and returns an adapter for this schema around the given metadata object.
-     * @param meta the metadata object
+     * Creates and returns an adapter for this schema around the given metadata
+     * object.
+     * 
+     * @param meta
+     *            the metadata object
      * @return the newly instantiated adapter
      */
-    public static XMPBasicAdapter getAdapter(Metadata meta) {
+    public static XMPBasicAdapter getAdapter(final Metadata meta) {
         return new XMPBasicAdapter(meta, NAMESPACE);
     }
 
     /** @see org.apache.xmlgraphics.xmp.XMPSchema#getDefaultMergeRuleSet() */
+    @Override
     public MergeRuleSet getDefaultMergeRuleSet() {
         return mergeRuleSet;
     }

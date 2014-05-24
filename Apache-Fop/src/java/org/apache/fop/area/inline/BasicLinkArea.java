@@ -23,12 +23,15 @@ import org.apache.fop.area.Area;
 import org.apache.fop.area.LinkResolver;
 
 /**
- * An inline area produced by an fo:basic-link element. This class implements a different
- * behavior to what is prescribed by the XSL-FO 1.1 Recommendation. With the standard
- * behavior, there is no easy way to make a link cover e.g. a whole image.
+ * An inline area produced by an fo:basic-link element. This class implements a
+ * different behavior to what is prescribed by the XSL-FO 1.1 Recommendation.
+ * With the standard behavior, there is no easy way to make a link cover e.g. a
+ * whole image.
  *
- * <p>See following bug report at W3C's:
- * http://www.w3.org/Bugs/Public/show_bug.cgi?id=11672</p>
+ * <p>
+ * See following bug report at W3C's:
+ * http://www.w3.org/Bugs/Public/show_bug.cgi?id=11672
+ * </p>
  */
 public class BasicLinkArea extends InlineParent {
 
@@ -37,34 +40,41 @@ public class BasicLinkArea extends InlineParent {
     private LinkResolver resolver;
 
     @Override
-    public void setParentArea(Area parentArea) {
+    public void setParentArea(final Area parentArea) {
         super.setParentArea(parentArea);
         /*
-         * Perform necessary modifications to make this area encompass all of its children
-         * elements, so as to have a useful active area. We assume that this method is
-         * called after all of the children areas have been added to this area.
+         * Perform necessary modifications to make this area encompass all of
+         * its children elements, so as to have a useful active area. We assume
+         * that this method is called after all of the children areas have been
+         * added to this area.
          */
         /* Make this area start at its beforest child. */
-        setBlockProgressionOffset(getBlockProgressionOffset() + minChildOffset);
+        setBlockProgressionOffset(getBlockProgressionOffset()
+                + this.minChildOffset);
         /* Update children offsets accordingly. */
-        for (InlineArea inline : inlines) {
-            inline.setBlockProgressionOffset(inline.getBlockProgressionOffset() - minChildOffset);
+        for (final InlineArea inline : this.inlines) {
+            inline.setBlockProgressionOffset(inline.getBlockProgressionOffset()
+                    - this.minChildOffset);
         }
         setBPD(getVirtualBPD());
     }
 
     /**
      * Establish (or remove) back-pointer to link resolver.
-     * @param resolver the link resolver that will resolve this basic link or null
+     * 
+     * @param resolver
+     *            the link resolver that will resolve this basic link or null
      */
-    public void setResolver(LinkResolver resolver) {
-        assert ( resolver == null ) || ( this.resolver == null );
+    public void setResolver(final LinkResolver resolver) {
+        assert resolver == null || this.resolver == null;
         this.resolver = resolver;
     }
 
     /**
      * Obtain back-pointer to link resolver.
-     * @return resolver the link resolver that will resolve this basic link or null
+     * 
+     * @return resolver the link resolver that will resolve this basic link or
+     *         null
      */
     public LinkResolver getResolver() {
         return this.resolver;

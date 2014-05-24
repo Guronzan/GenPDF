@@ -25,12 +25,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import org.junit.Test;
-
+import org.apache.fop.render.RawPNGTestUtil;
 import org.apache.xmlgraphics.image.loader.ImageSize;
 import org.apache.xmlgraphics.image.loader.impl.ImageRawPNG;
-
-import org.apache.fop.render.RawPNGTestUtil;
+import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -60,24 +58,27 @@ public class ImageEncoderPNGTestCase {
         testWriteToWithGRGBAPNG(128, -1, -1, -1, 128);
     }
 
-    private void testWriteToWithGRGBAPNG(int gray, int red, int green, int blue, int alpha)
+    private void testWriteToWithGRGBAPNG(final int gray, final int red,
+            final int green, final int blue, final int alpha)
             throws IOException {
-        int numComponents = (gray > -1 ? 1 : 3) + (alpha > -1 ? 1 : 0);
-        ImageSize is = RawPNGTestUtil.getImageSize();
-        ComponentColorModel cm = mock(ComponentColorModel.class);
+        final int numComponents = (gray > -1 ? 1 : 3) + (alpha > -1 ? 1 : 0);
+        final ImageSize is = RawPNGTestUtil.getImageSize();
+        final ComponentColorModel cm = mock(ComponentColorModel.class);
         when(cm.getNumComponents()).thenReturn(numComponents);
-        ImageRawPNG irpng = mock(ImageRawPNG.class);
+        final ImageRawPNG irpng = mock(ImageRawPNG.class);
         when(irpng.getColorModel()).thenReturn(cm);
         when(irpng.getSize()).thenReturn(is);
-        ImageEncoderPNG iepng = new ImageEncoderPNG(irpng);
+        final ImageEncoderPNG iepng = new ImageEncoderPNG(irpng);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] data = RawPNGTestUtil.buildGRGBAData(gray, red, green, blue, alpha);
-        ByteArrayInputStream bais = new ByteArrayInputStream(data);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final byte[] data = RawPNGTestUtil.buildGRGBAData(gray, red, green,
+                blue, alpha);
+        final ByteArrayInputStream bais = new ByteArrayInputStream(data);
         when(irpng.createInputStream()).thenReturn(bais);
         iepng.writeTo(baos);
         if (alpha > -1) {
-            byte[] expected = RawPNGTestUtil.buildGRGBAData(gray, red, green, blue, -1);
+            final byte[] expected = RawPNGTestUtil.buildGRGBAData(gray, red,
+                    green, blue, -1);
             assertArrayEquals(expected, baos.toByteArray());
         } else {
             assertArrayEquals(data, baos.toByteArray());
@@ -86,16 +87,16 @@ public class ImageEncoderPNGTestCase {
 
     @Test
     public void testWriteToWithPalettePNG() throws IOException {
-        ImageSize is = RawPNGTestUtil.getImageSize();
-        IndexColorModel cm = mock(IndexColorModel.class);
-        ImageRawPNG irpng = mock(ImageRawPNG.class);
+        final ImageSize is = RawPNGTestUtil.getImageSize();
+        final IndexColorModel cm = mock(IndexColorModel.class);
+        final ImageRawPNG irpng = mock(ImageRawPNG.class);
         when(irpng.getColorModel()).thenReturn(cm);
         when(irpng.getSize()).thenReturn(is);
-        ImageEncoderPNG iepng = new ImageEncoderPNG(irpng);
+        final ImageEncoderPNG iepng = new ImageEncoderPNG(irpng);
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] data = RawPNGTestUtil.buildGRGBAData(128, -1, -1, -1, -1);
-        ByteArrayInputStream bais = new ByteArrayInputStream(data);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final byte[] data = RawPNGTestUtil.buildGRGBAData(128, -1, -1, -1, -1);
+        final ByteArrayInputStream bais = new ByteArrayInputStream(data);
         when(irpng.createInputStream()).thenReturn(bais);
         iepng.writeTo(baos);
         assertArrayEquals(data, baos.toByteArray());
@@ -103,30 +104,30 @@ public class ImageEncoderPNGTestCase {
 
     @Test
     public void testGetImplicitFilterWithIndexColorModel() {
-        ImageSize is = RawPNGTestUtil.getImageSize();
-        IndexColorModel cm = mock(IndexColorModel.class);
-        ImageRawPNG irpng = mock(ImageRawPNG.class);
+        final ImageSize is = RawPNGTestUtil.getImageSize();
+        final IndexColorModel cm = mock(IndexColorModel.class);
+        final ImageRawPNG irpng = mock(ImageRawPNG.class);
         when(irpng.getColorModel()).thenReturn(cm);
         when(irpng.getBitDepth()).thenReturn(8);
         when(irpng.getSize()).thenReturn(is);
-        ImageEncoderPNG iepng = new ImageEncoderPNG(irpng);
+        final ImageEncoderPNG iepng = new ImageEncoderPNG(irpng);
 
-        String expectedFilter = "<< /Predictor 15 /Columns 32 /Colors 1 /BitsPerComponent 8 >> /FlateDecode";
+        final String expectedFilter = "<< /Predictor 15 /Columns 32 /Colors 1 /BitsPerComponent 8 >> /FlateDecode";
         assertEquals(expectedFilter, iepng.getImplicitFilter());
     }
 
     @Test
     public void testGetImplicitFilterWithComponentColorModel() {
-        ImageSize is = RawPNGTestUtil.getImageSize();
-        ComponentColorModel cm = mock(ComponentColorModel.class);
+        final ImageSize is = RawPNGTestUtil.getImageSize();
+        final ComponentColorModel cm = mock(ComponentColorModel.class);
         when(cm.getNumComponents()).thenReturn(3);
-        ImageRawPNG irpng = mock(ImageRawPNG.class);
+        final ImageRawPNG irpng = mock(ImageRawPNG.class);
         when(irpng.getColorModel()).thenReturn(cm);
         when(irpng.getBitDepth()).thenReturn(8);
         when(irpng.getSize()).thenReturn(is);
-        ImageEncoderPNG iepng = new ImageEncoderPNG(irpng);
+        final ImageEncoderPNG iepng = new ImageEncoderPNG(irpng);
 
-        String expectedFilter = "<< /Predictor 15 /Columns 32 /Colors 3 /BitsPerComponent 8 >> /FlateDecode";
+        final String expectedFilter = "<< /Predictor 15 /Columns 32 /Colors 3 /BitsPerComponent 8 >> /FlateDecode";
         assertEquals(expectedFilter, iepng.getImplicitFilter());
     }
 

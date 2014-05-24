@@ -136,7 +136,7 @@ public class SolidAndDoubleBorderElement extends AbstractBorderElement {
         MAP[LEFT3 + DOWN3 + RIGHT3] = LIGHT_DOWN_AND_HORIZONTAL;
         MAP[UP3 + LEFT3 + RIGHT3] = LIGHT_UP_AND_HORIZONTAL;
         MAP[UP3 + LEFT3 + DOWN3 + RIGHT3] = LIGHT_VERTICAL_AND_HORIZONTAL;
-        //DOUBLE
+        // DOUBLE
         MAP[2 * UP3] = DOUBLE_VERTICAL;
         MAP[2 * DOWN3] = DOUBLE_VERTICAL;
         MAP[2 * RIGHT3] = DOUBLE_HORIZONTAL;
@@ -152,7 +152,7 @@ public class SolidAndDoubleBorderElement extends AbstractBorderElement {
         MAP[2 * DOWN3 + 2 * RIGHT3 + 2 * LEFT3] = DOUBLE_DOWN_AND_HORIZONTAL;
         MAP[2 * UP3 + 2 * RIGHT3 + 2 * LEFT3] = DOUBLE_UP_AND_HORIZONTAL;
         MAP[2 * UP3 + 2 * DOWN3 + 2 * RIGHT3 + 2 * LEFT3] = DOUBLE_VERTICAL_AND_HORIZONTAL;
-        //DOUBLE&SINGLE
+        // DOUBLE&SINGLE
         MAP[DOWN3 + 2 * RIGHT3] = DOWN_SINGLE_AND_RIGHT_DOUBLE;
         MAP[2 * DOWN3 + RIGHT3] = DOWN_DOUBLE_AND_RIGHT_SINGLE;
         MAP[DOWN3 + 2 * LEFT3] = DOWN_SINGLE_AND_LEFT_DOUBLE;
@@ -187,30 +187,36 @@ public class SolidAndDoubleBorderElement extends AbstractBorderElement {
      * <code>data[side]</code> by 2 for every side to distinguish EN_SOLID and
      * EN_DOUBLE.
      *
-     * @param style integer, representing border style.
-     * @param type binary representation of type gives <code>data</code>
+     * @param style
+     *            integer, representing border style.
+     * @param type
+     *            binary representation of type gives <code>data</code>
      */
-    public SolidAndDoubleBorderElement(int style, int type) {
+    public SolidAndDoubleBorderElement(final int style, final int type) {
         super(type);
         if (style == EN_DOUBLE) {
             for (int i = 0; i < 4; i++) {
-                data[i] *= 2;
+                this.data[i] *= 2;
             }
         }
     }
 
     /**
      * Merges with <code>sde</code>.
-     * @param sde instance of SolidAndDoubleBorderElement
+     * 
+     * @param sde
+     *            instance of SolidAndDoubleBorderElement
      * @return instance of AbstractBorderElement
      */
-    public AbstractBorderElement mergeSolid(SolidAndDoubleBorderElement sde) {
-        AbstractBorderElement e = new SolidAndDoubleBorderElement(EN_SOLID, 0);
+    public AbstractBorderElement mergeSolid(
+            final SolidAndDoubleBorderElement sde) {
+        final AbstractBorderElement e = new SolidAndDoubleBorderElement(
+                EN_SOLID, 0);
         for (int i = 0; i < 4; i++) {
             if (sde.getData(i) != 0) {
                 e.setData(i, sde.getData(i));
             } else {
-                e.setData(i, data[i]);
+                e.setData(i, this.data[i]);
             }
         }
         return e;
@@ -218,10 +224,13 @@ public class SolidAndDoubleBorderElement extends AbstractBorderElement {
 
     /**
      * Merges with e.
-     * @param e instance of AbstractBorderElement
+     * 
+     * @param e
+     *            instance of AbstractBorderElement
      * @return instance of AbstractBorderElement
      */
-    public AbstractBorderElement merge(AbstractBorderElement e) {
+    @Override
+    public AbstractBorderElement merge(final AbstractBorderElement e) {
         AbstractBorderElement abe = this;
         if (e instanceof SolidAndDoubleBorderElement) {
             abe = mergeSolid((SolidAndDoubleBorderElement) e);
@@ -235,14 +244,15 @@ public class SolidAndDoubleBorderElement extends AbstractBorderElement {
 
     /**
      * Maps to char.
+     * 
      * @return resulting mapping char
      */
     private char map2Char() {
         int key = 0;
-        key += data[UP] * UP3;
-        key += data[LEFT] * LEFT3;
-        key += data[DOWN] * DOWN3;
-        key += data[RIGHT] * RIGHT3;
+        key += this.data[UP] * UP3;
+        key += this.data[LEFT] * LEFT3;
+        key += this.data[DOWN] * DOWN3;
+        key += this.data[RIGHT] * RIGHT3;
         return MAP[key];
     }
 
@@ -253,19 +263,20 @@ public class SolidAndDoubleBorderElement extends AbstractBorderElement {
         int c1 = 0;
         int c2 = 0;
         for (int i = 0; i < 4; i++) {
-            c1 += (data[i] == 1) ? 1 : 0;
-            c2 += (data[i] == 2) ? 1 : 0;
+            c1 += this.data[i] == 1 ? 1 : 0;
+            c2 += this.data[i] == 2 ? 1 : 0;
         }
-        int m = c1 > c2 ? 1 : 0;
-        int[] p = {0, m, 2 * (1 - m)};
+        final int m = c1 > c2 ? 1 : 0;
+        final int[] p = { 0, m, 2 * (1 - m) };
         for (int i = 0; i < 4; i++) {
-            data[i] = p[data[i]];
+            this.data[i] = p[this.data[i]];
         }
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public char convert2Char() {
         char ch = map2Char();
         if (ch == UNDEFINED) {

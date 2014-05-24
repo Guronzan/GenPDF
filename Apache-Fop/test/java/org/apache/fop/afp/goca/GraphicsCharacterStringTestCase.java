@@ -16,8 +16,6 @@
  */
 package org.apache.fop.afp.goca;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -27,46 +25,53 @@ import org.apache.fop.fonts.Typeface;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class GraphicsCharacterStringTestCase {
     private GraphicsCharacterString gcsCp500;
     private GraphicsCharacterString gcsCp1146;
     // consider the EBCDIC code page variants Cp500 and Cp1146
-    // the <A3> (pound sign) corresponds to byte 5B (position 91) in the CCSID 285 and CCSID 1146
+    // the <A3> (pound sign) corresponds to byte 5B (position 91) in the CCSID
+    // 285 and CCSID 1146
     // the $ corresponds to byte 5B (position 91) in the CCSID 500
     private final String poundsText = "\u00A3\u00A3\u00A3\u00A3";
     private final String dollarsText = "$$$$";
-    private final byte[] bytesToCheck = {(byte) 0x5b, (byte) 0x5b, (byte) 0x5b, (byte) 0x5b};
+    private final byte[] bytesToCheck = { (byte) 0x5b, (byte) 0x5b,
+            (byte) 0x5b, (byte) 0x5b };
 
     @Before
     public void setUp() throws Exception {
-        CharacterSetBuilder csb = CharacterSetBuilder.getSingleByteInstance();
-        CharacterSet cs1146 = csb.build("C0H200B0", "T1V10500", "Cp1146",
-                Class.forName("org.apache.fop.fonts.base14.Helvetica").asSubclass(Typeface.class)
-                .newInstance(), null);
-        gcsCp1146 = new GraphicsCharacterString(poundsText, 0, 0, cs1146);
-        CharacterSet cs500 = csb.build("C0H200B0", "T1V10500", "Cp500",
-                Class.forName("org.apache.fop.fonts.base14.Helvetica").asSubclass(Typeface.class)
-                .newInstance(), null);
-        gcsCp500 = new GraphicsCharacterString(dollarsText, 0, 0, cs500);
+        final CharacterSetBuilder csb = CharacterSetBuilder
+                .getSingleByteInstance();
+        final CharacterSet cs1146 = csb.build("C0H200B0", "T1V10500", "Cp1146",
+                Class.forName("org.apache.fop.fonts.base14.Helvetica")
+                .asSubclass(Typeface.class).newInstance(), null);
+        this.gcsCp1146 = new GraphicsCharacterString(this.poundsText, 0, 0,
+                cs1146);
+        final CharacterSet cs500 = csb.build("C0H200B0", "T1V10500", "Cp500",
+                Class.forName("org.apache.fop.fonts.base14.Helvetica")
+                .asSubclass(Typeface.class).newInstance(), null);
+        this.gcsCp500 = new GraphicsCharacterString(this.dollarsText, 0, 0,
+                cs500);
     }
 
     @Test
     public void testWriteToStream() throws IOException {
         // check pounds
-        ByteArrayOutputStream baos1146 = new ByteArrayOutputStream();
-        gcsCp1146.writeToStream(baos1146);
-        byte[] bytes1146 = baos1146.toByteArray();
-        for (int i = 0; i < bytesToCheck.length; i++) {
-            assertEquals(bytesToCheck[i], bytes1146[6 + i]);
+        final ByteArrayOutputStream baos1146 = new ByteArrayOutputStream();
+        this.gcsCp1146.writeToStream(baos1146);
+        final byte[] bytes1146 = baos1146.toByteArray();
+        for (int i = 0; i < this.bytesToCheck.length; i++) {
+            assertEquals(this.bytesToCheck[i], bytes1146[6 + i]);
         }
-        assertEquals(bytesToCheck.length + 6, bytes1146.length);
+        assertEquals(this.bytesToCheck.length + 6, bytes1146.length);
         // check dollars
-        ByteArrayOutputStream baos500 = new ByteArrayOutputStream();
-        gcsCp500.writeToStream(baos500);
-        byte[] bytes500 = baos500.toByteArray();
-        for (int i = 0; i < bytesToCheck.length; i++) {
-            assertEquals(bytesToCheck[i], bytes500[6 + i]);
+        final ByteArrayOutputStream baos500 = new ByteArrayOutputStream();
+        this.gcsCp500.writeToStream(baos500);
+        final byte[] bytes500 = baos500.toByteArray();
+        for (int i = 0; i < this.bytesToCheck.length; i++) {
+            assertEquals(this.bytesToCheck[i], bytes500[6 + i]);
         }
-        assertEquals(bytesToCheck.length + 6, bytes500.length);
+        assertEquals(this.bytesToCheck.length + 6, bytes500.length);
     }
 }

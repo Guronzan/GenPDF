@@ -19,44 +19,46 @@
 
 package org.apache.fop.render.pdf;
 
+import org.apache.fop.pdf.PDFImage;
+import org.apache.fop.render.RenderingContext;
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.impl.ImageRawJPEG;
-
-import org.apache.fop.pdf.PDFImage;
-import org.apache.fop.render.RenderingContext;
 
 /**
  * Image handler implementation which handles raw JPEG images for PDF output.
  */
 public class PDFImageHandlerRawJPEG extends AbstractPDFImageHandler {
 
-    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {
-        ImageFlavor.RAW_JPEG,
-    };
+    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] { ImageFlavor.RAW_JPEG, };
 
     /** {@inheritDoc} */
+    @Override
     public int getPriority() {
         return 100;
     }
 
     @Override
-    PDFImage createPDFImage(Image image, String xobjectKey) {
+    PDFImage createPDFImage(final Image image, final String xobjectKey) {
         return new ImageRawJPEGAdapter((ImageRawJPEG) image, xobjectKey);
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class getSupportedImageClass() {
         return ImageRawJPEG.class;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor[] getSupportedImageFlavors() {
         return FLAVORS;
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible(RenderingContext targetContext, Image image) {
+    @Override
+    public boolean isCompatible(final RenderingContext targetContext,
+            final Image image) {
         return (image == null || image instanceof ImageRawJPEG)
                 && targetContext instanceof PDFRenderingContext;
     }

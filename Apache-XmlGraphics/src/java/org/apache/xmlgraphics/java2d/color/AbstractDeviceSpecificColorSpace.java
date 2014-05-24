@@ -30,10 +30,14 @@ public abstract class AbstractDeviceSpecificColorSpace extends ColorSpace {
 
     /**
      * Creates a new instance.
-     * @param type the color space type ({@link ColorSpace}.TYPE_*)
-     * @param numcomponents the number of color components applicable to the color space
+     * 
+     * @param type
+     *            the color space type ({@link ColorSpace}.TYPE_*)
+     * @param numcomponents
+     *            the number of color components applicable to the color space
      */
-    protected AbstractDeviceSpecificColorSpace(int type, int numcomponents) {
+    protected AbstractDeviceSpecificColorSpace(final int type,
+            final int numcomponents) {
         super(type, numcomponents);
     }
 

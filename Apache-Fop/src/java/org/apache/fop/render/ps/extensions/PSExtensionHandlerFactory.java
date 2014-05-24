@@ -19,23 +19,24 @@
 
 package org.apache.fop.render.ps.extensions;
 
-import org.xml.sax.ContentHandler;
-
 import org.apache.fop.util.ContentHandlerFactory;
+import org.xml.sax.ContentHandler;
 
 /**
  * Factory for the ContentHandler that handles serialized PSSetupCode instances.
  */
 public class PSExtensionHandlerFactory implements ContentHandlerFactory {
 
-    private static final String[] NAMESPACES = new String[] {PSSetupCode.CATEGORY};
+    private static final String[] NAMESPACES = new String[] { PSSetupCode.CATEGORY };
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedNamespaces() {
         return NAMESPACES;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ContentHandler createContentHandler() {
         return new PSExtensionHandler();
     }

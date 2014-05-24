@@ -38,7 +38,8 @@ public class EncodingModeTestCase {
     @Test
     public void testGetValue() {
         assertEquals(EncodingMode.AUTO, EncodingMode.getValue("auto"));
-        assertEquals(EncodingMode.SINGLE_BYTE, EncodingMode.getValue("single-byte"));
+        assertEquals(EncodingMode.SINGLE_BYTE,
+                EncodingMode.getValue("single-byte"));
         assertEquals(EncodingMode.CID, EncodingMode.getValue("cid"));
     }
 

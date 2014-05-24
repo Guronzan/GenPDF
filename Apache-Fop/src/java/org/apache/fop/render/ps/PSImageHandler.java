@@ -21,29 +21,32 @@ package org.apache.fop.render.ps;
 
 import java.io.IOException;
 
-import org.apache.xmlgraphics.image.loader.Image;
-
 import org.apache.fop.render.ImageHandler;
 import org.apache.fop.render.RenderingContext;
+import org.apache.xmlgraphics.image.loader.Image;
 
 /**
- * Specialized image handler interface for PostScript output. Implementations can optionally
- * support creating PostScript forms. The implementation shall check the rendering context
- * to see if forms functionality is enabled in the
- * {@link #isCompatible(org.apache.fop.render.RenderingContext,
- * org.apache.xmlgraphics.image.loader.Image)}
+ * Specialized image handler interface for PostScript output. Implementations
+ * can optionally support creating PostScript forms. The implementation shall
+ * check the rendering context to see if forms functionality is enabled in the
+ * {@link #isCompatible(org.apache.fop.render.RenderingContext, org.apache.xmlgraphics.image.loader.Image)}
  * method.
  */
 public interface PSImageHandler extends ImageHandler {
 
     /**
      * Generates a PostScript form for the given {@link Image} instance.
-     * @param context the rendering context
-     * @param image the image to be handled
-     * @param form the associated form resource
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param context
+     *            the rendering context
+     * @param image
+     *            the image to be handled
+     * @param form
+     *            the associated form resource
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    void generateForm(RenderingContext context, Image image, PSImageFormResource form)
-        throws IOException;
+    void generateForm(final RenderingContext context, final Image image,
+            final PSImageFormResource form) throws IOException;
 
 }

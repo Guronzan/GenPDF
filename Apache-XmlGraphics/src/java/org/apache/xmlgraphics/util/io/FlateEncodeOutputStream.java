@@ -27,29 +27,29 @@ import java.io.OutputStream;
  * normal DeflaterOutputStream except now also implementing the Finalizable
  * interface.
  *
- * @version $Id: FlateEncodeOutputStream.java 784710 2009-06-15 09:59:48Z vhennebert $
+ * @version $Id: FlateEncodeOutputStream.java 784710 2009-06-15 09:59:48Z
+ *          vhennebert $
  */
 public class FlateEncodeOutputStream extends java.util.zip.DeflaterOutputStream
-            implements Finalizable {
+        implements Finalizable {
 
     /** @see java.util.zip.DeflaterOutputStream **/
-    public FlateEncodeOutputStream(OutputStream out) {
+    public FlateEncodeOutputStream(final OutputStream out) {
         super(out);
     }
 
     /** @see Finalizable **/
+    @Override
     public void finalizeStream() throws IOException {
         finish();
         flush();
 
         // ensure that Deflater resources are released
-        def.end();
+        this.def.end();
 
-        if (out instanceof Finalizable) {
-            ((Finalizable)out).finalizeStream();
+        if (this.out instanceof Finalizable) {
+            ((Finalizable) this.out).finalizeStream();
         }
     }
 
 }
-
-

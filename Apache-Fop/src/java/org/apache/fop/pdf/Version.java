@@ -43,30 +43,33 @@ public enum Version {
 
     private String version;
 
-    private Version(String version) {
+    private Version(final String version) {
         this.version = version;
     }
 
     /**
-     * Given the PDF version as a String, returns the corresponding enumerated type. The
-     * String should be in the format "1.x" for PDF v1.x.
+     * Given the PDF version as a String, returns the corresponding enumerated
+     * type. The String should be in the format "1.x" for PDF v1.x.
      *
-     * @param version a version number
+     * @param version
+     *            a version number
      * @return the corresponding Version instance
-     * @throws IllegalArgumentException if the argument does not correspond to any
-     * existing PDF version
+     * @throws IllegalArgumentException
+     *             if the argument does not correspond to any existing PDF
+     *             version
      */
-    public static Version getValueOf(String version) {
-        for (Version pdfVersion : Version.values()) {
+    public static Version getValueOf(final String version) {
+        for (final Version pdfVersion : Version.values()) {
             if (pdfVersion.toString().equals(version)) {
                 return pdfVersion;
             }
         }
-        throw new IllegalArgumentException("Invalid PDF version given: " + version);
+        throw new IllegalArgumentException("Invalid PDF version given: "
+                + version);
     }
 
     @Override
     public String toString() {
-        return version;
+        return this.version;
     }
 }

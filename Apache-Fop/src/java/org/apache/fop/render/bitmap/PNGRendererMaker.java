@@ -31,25 +31,28 @@ import org.apache.fop.render.java2d.Java2DRendererConfigurator;
  */
 public class PNGRendererMaker extends AbstractRendererMaker {
 
-    private static final String[] MIMES = new String[] {MimeConstants.MIME_PNG};
-
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_PNG };
 
     /** {@inheritDoc} */
-    public Renderer makeRenderer(FOUserAgent ua) {
+    @Override
+    public Renderer makeRenderer(final FOUserAgent ua) {
         return new PNGRenderer(ua);
     }
 
     /** {@inheritDoc} */
-    public RendererConfigurator getConfigurator(FOUserAgent userAgent) {
+    @Override
+    public RendererConfigurator getConfigurator(final FOUserAgent userAgent) {
         return new Java2DRendererConfigurator(userAgent);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean needsOutputStream() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMimeTypes() {
         return MIMES;
     }

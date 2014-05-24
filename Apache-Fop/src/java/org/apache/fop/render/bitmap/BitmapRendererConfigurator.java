@@ -48,7 +48,7 @@ public class BitmapRendererConfigurator extends Java2DRendererConfigurator {
 
     /**
      * Default constructor
-     * 
+     *
      * @param userAgent
      *            user agent
      */

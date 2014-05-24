@@ -26,10 +26,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * This is an implementation of Dijkstra's algorithm to find the shortest path for a directed
- * graph with non-negative edge weights.
- * @see <a href="http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">WikiPedia on Dijkstra's
- *      Algorithm</a>
+ * This is an implementation of Dijkstra's algorithm to find the shortest path
+ * for a directed graph with non-negative edge weights.
+ * 
+ * @see <a href="http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">WikiPedia
+ *      on Dijkstra's Algorithm</a>
  */
 public class DijkstraAlgorithm {
 
@@ -38,13 +39,14 @@ public class DijkstraAlgorithm {
 
     /** Compares penalties between two possible destinations. */
     private final Comparator penaltyComparator = new Comparator() {
-        public int compare(Object left, Object right) {
-            int leftPenalty = getLowestPenalty((Vertex)left);
-            int rightPenalty = getLowestPenalty((Vertex)right);
+        @Override
+        public int compare(final Object left, final Object right) {
+            final int leftPenalty = getLowestPenalty((Vertex) left);
+            final int rightPenalty = getLowestPenalty((Vertex) right);
             if (leftPenalty < rightPenalty) {
                 return -1;
             } else if (leftPenalty == rightPenalty) {
-                return ((Comparable)left).compareTo(right);
+                return ((Comparable) left).compareTo(right);
             } else {
                 return 1;
             }
@@ -52,109 +54,126 @@ public class DijkstraAlgorithm {
     };
 
     /** The directory of edges */
-    private EdgeDirectory edgeDirectory;
+    private final EdgeDirectory edgeDirectory;
 
-    /** The priority queue for all vertices under inspection, ordered by penalties/distances. */
-    private TreeSet priorityQueue = new TreeSet(penaltyComparator);
-    //Set<Vertex>
+    /**
+     * The priority queue for all vertices under inspection, ordered by
+     * penalties/distances.
+     */
+    private final TreeSet priorityQueue = new TreeSet(this.penaltyComparator);
+    // Set<Vertex>
 
     /** The set of vertices for which the lowest penalty has been found. */
-    private Set finishedVertices = new java.util.HashSet();
-    //Set<Vertex>
+    private final Set finishedVertices = new java.util.HashSet();
+    // Set<Vertex>
 
     /** The currently known lowest penalties for all vertices. */
-    private Map lowestPenalties = new java.util.HashMap();
-    //Map<Vertex,Integer>
+    private final Map lowestPenalties = new java.util.HashMap();
+    // Map<Vertex,Integer>
 
     /** Map of all predecessors in the spanning tree of best routes. */
-    private Map predecessors = new java.util.HashMap();
-    //Map<Vertex,Vertex>
+    private final Map predecessors = new java.util.HashMap();
+
+    // Map<Vertex,Vertex>
 
     /**
      * Main Constructor.
-     * @param edgeDirectory the edge directory this instance should work on
+     * 
+     * @param edgeDirectory
+     *            the edge directory this instance should work on
      */
-    public DijkstraAlgorithm(EdgeDirectory edgeDirectory) {
+    public DijkstraAlgorithm(final EdgeDirectory edgeDirectory) {
         this.edgeDirectory = edgeDirectory;
     }
 
     /**
      * Returns the penalty between two vertices.
-     * @param start the start vertex
-     * @param end the end vertex
-     * @return the penalty between two vertices, or 0 if no single edge between the two vertices
-     *                  exists.
+     * 
+     * @param start
+     *            the start vertex
+     * @param end
+     *            the end vertex
+     * @return the penalty between two vertices, or 0 if no single edge between
+     *         the two vertices exists.
      */
-    protected int getPenalty(Vertex start, Vertex end) {
+    protected int getPenalty(final Vertex start, final Vertex end) {
         return this.edgeDirectory.getPenalty(start, end);
     }
 
     /**
      * Returns an iterator over all valid destinations for a given vertex.
-     * @param origin the origin from which to search for destinations
+     * 
+     * @param origin
+     *            the origin from which to search for destinations
      * @return the iterator over all valid destinations for a given vertex
      */
-    protected Iterator getDestinations(Vertex origin) {
+    protected Iterator getDestinations(final Vertex origin) {
         return this.edgeDirectory.getDestinations(origin);
     }
 
     private void reset() {
-        finishedVertices.clear();
-        priorityQueue.clear();
+        this.finishedVertices.clear();
+        this.priorityQueue.clear();
 
-        lowestPenalties.clear();
-        predecessors.clear();
+        this.lowestPenalties.clear();
+        this.predecessors.clear();
     }
 
     /**
-     * Run Dijkstra's shortest path algorithm. After this method is finished you can use
-     * {@link #getPredecessor(Vertex)} to reconstruct the best/shortest path starting from the
-     * destination backwards.
-     * @param start the starting vertex
-     * @param destination the destination vertex.
+     * Run Dijkstra's shortest path algorithm. After this method is finished you
+     * can use {@link #getPredecessor(Vertex)} to reconstruct the best/shortest
+     * path starting from the destination backwards.
+     * 
+     * @param start
+     *            the starting vertex
+     * @param destination
+     *            the destination vertex.
      */
-    public void execute(Vertex start, Vertex destination) {
+    public void execute(final Vertex start, final Vertex destination) {
         if (start == null || destination == null) {
-            throw new NullPointerException("start and destination may not be null");
+            throw new NullPointerException(
+                    "start and destination may not be null");
         }
 
         reset();
         setShortestDistance(start, 0);
-        priorityQueue.add(start);
+        this.priorityQueue.add(start);
 
         // the current node
         Vertex u;
 
         // extract the vertex with the shortest distance
-        while (priorityQueue.size() > 0) {
-            u = (Vertex)priorityQueue.first();
-            priorityQueue.remove(u);
+        while (this.priorityQueue.size() > 0) {
+            u = (Vertex) this.priorityQueue.first();
+            this.priorityQueue.remove(u);
 
             if (destination.equals(u)) {
-                //Destination reached
+                // Destination reached
                 break;
             }
 
-            finishedVertices.add(u);
+            this.finishedVertices.add(u);
             relax(u);
         }
     }
 
     /**
-     * Compute new lowest penalties for neighboring vertices. Update the lowest penalties and the
-     * predecessor map if a better solution is found.
-     * @param u the vertex to process
+     * Compute new lowest penalties for neighboring vertices. Update the lowest
+     * penalties and the predecessor map if a better solution is found.
+     * 
+     * @param u
+     *            the vertex to process
      */
-    private void relax(Vertex u) {
-        Iterator iter = getDestinations(u);
+    private void relax(final Vertex u) {
+        final Iterator iter = getDestinations(u);
         while (iter.hasNext()) {
-            Vertex v = (Vertex)iter.next();
+            final Vertex v = (Vertex) iter.next();
             // skip node already settled
             if (isFinished(v)) {
                 continue;
             }
 
-            int shortDist = getLowestPenalty(u) + getPenalty(u, v);
+            final int shortDist = getLowestPenalty(u) + getPenalty(u, v);
 
             if (shortDist < getLowestPenalty(v)) {
                 // assign new shortest distance and mark unsettled
@@ -166,50 +185,58 @@ public class DijkstraAlgorithm {
         }
     }
 
-    private void setPredecessor(Vertex a, Vertex b) {
-        predecessors.put(a, b);
+    private void setPredecessor(final Vertex a, final Vertex b) {
+        this.predecessors.put(a, b);
     }
 
     /**
      * Indicates whether a shortest route to a vertex has been found.
-     * @param v the vertex
+     * 
+     * @param v
+     *            the vertex
      * @return true if the shortest route to this vertex has been found.
      */
-    private boolean isFinished(Vertex v) {
-        return finishedVertices.contains(v);
+    private boolean isFinished(final Vertex v) {
+        return this.finishedVertices.contains(v);
     }
 
-    private void setShortestDistance(Vertex vertex, int distance) {
-        //Remove so it is inserted at the right position after the lowest penalty changes for this
-        //vertex.
-        priorityQueue.remove(vertex);
+    private void setShortestDistance(final Vertex vertex, final int distance) {
+        // Remove so it is inserted at the right position after the lowest
+        // penalty changes for this
+        // vertex.
+        this.priorityQueue.remove(vertex);
 
-        //Update the lowest penalty.
-        lowestPenalties.put(vertex, new Integer(distance));
+        // Update the lowest penalty.
+        this.lowestPenalties.put(vertex, new Integer(distance));
 
-        //Insert the vertex again at the new position based on the lowest penalty
-        priorityQueue.add(vertex);
+        // Insert the vertex again at the new position based on the lowest
+        // penalty
+        this.priorityQueue.add(vertex);
     }
 
     /**
      * Returns the lowest penalty from the start point to a given vertex.
-     * @param vertex the vertex
-     * @return the lowest penalty or {@link DijkstraAlgorithm#INFINITE} if there is no route to
-     *         the destination.
+     * 
+     * @param vertex
+     *            the vertex
+     * @return the lowest penalty or {@link DijkstraAlgorithm#INFINITE} if there
+     *         is no route to the destination.
      */
-    public int getLowestPenalty(Vertex vertex) {
-        Integer d = ((Integer)lowestPenalties.get(vertex));
-        return (d == null) ? INFINITE : d.intValue();
+    public int getLowestPenalty(final Vertex vertex) {
+        final Integer d = (Integer) this.lowestPenalties.get(vertex);
+        return d == null ? INFINITE : d.intValue();
     }
 
     /**
      * Returns the vertex's predecessor on the shortest path.
-     * @param vertex the vertex for which to find the predecessor
+     * 
+     * @param vertex
+     *            the vertex for which to find the predecessor
      * @return the vertex's predecessor on the shortest path, or
      *         <code>null</code> if there is no route to the destination.
      */
-    public Vertex getPredecessor(Vertex vertex) {
-        return (Vertex)predecessors.get(vertex);
+    public Vertex getPredecessor(final Vertex vertex) {
+        return (Vertex) this.predecessors.get(vertex);
     }
 
 }

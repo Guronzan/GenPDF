@@ -20,7 +20,8 @@
 package org.apache.fop.afp;
 
 /**
- * An AFP object which is able to know its own data length prior to writeToStream()
+ * An AFP object which is able to know its own data length prior to
+ * writeToStream()
  */
 public interface StructuredData {
 

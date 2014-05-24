@@ -23,21 +23,25 @@ import org.apache.xmlgraphics.util.QName;
 import org.apache.xmlgraphics.xmp.merge.MergeRuleSet;
 
 /**
- * Base class for schema implementations that provide user-friendly access to XMP values.
+ * Base class for schema implementations that provide user-friendly access to
+ * XMP values.
  */
 public class XMPSchema {
 
     private static MergeRuleSet defaultMergeRuleSet = new MergeRuleSet();
 
-    private String namespace;
-    private String prefix;
+    private final String namespace;
+    private final String prefix;
 
     /**
      * Constructs a new XMP schema object.
-     * @param namespace the namespace URI for the schema
-     * @param preferredPrefix the preferred prefix for the schema
+     * 
+     * @param namespace
+     *            the namespace URI for the schema
+     * @param preferredPrefix
+     *            the preferred prefix for the schema
      */
-    public XMPSchema(String namespace, String preferredPrefix) {
+    public XMPSchema(final String namespace, final String preferredPrefix) {
         this.namespace = namespace;
         this.prefix = preferredPrefix;
     }
@@ -54,10 +58,12 @@ public class XMPSchema {
 
     /**
      * Returns the QName for a property of this schema.
-     * @param propName the property name
+     * 
+     * @param propName
+     *            the property name
      * @return the QName for the property
      */
-    protected QName getQName(String propName) {
+    protected QName getQName(final String propName) {
         return new QName(getNamespace(), propName);
     }
 

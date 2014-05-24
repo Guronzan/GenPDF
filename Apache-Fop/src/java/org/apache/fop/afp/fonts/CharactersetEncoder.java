@@ -29,14 +29,14 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
 
 /**
- * An abstraction that wraps the encoding mechanism for encoding a Unicode character sequence into a
- * specified format.
+ * An abstraction that wraps the encoding mechanism for encoding a Unicode
+ * character sequence into a specified format.
  */
 public abstract class CharactersetEncoder {
 
     private final CharsetEncoder encoder;
 
-    private CharactersetEncoder(String encoding) {
+    private CharactersetEncoder(final String encoding) {
         this.encoder = Charset.forName(encoding).newEncoder();
         this.encoder.onUnmappableCharacter(CodingErrorAction.REPLACE);
     }
@@ -44,65 +44,79 @@ public abstract class CharactersetEncoder {
     /**
      * Tells whether or not this encoder can encode the given character.
      *
-     * @param c the character
+     * @param c
+     *            the character
      * @return true if, and only if, this encoder can encode the given character
-     * @throws IllegalStateException - If an encoding operation is already in progress
+     * @throws IllegalStateException
+     *             - If an encoding operation is already in progress
      */
-    final boolean canEncode(char c) {
-        return encoder.canEncode(c);
+    final boolean canEncode(final char c) {
+        return this.encoder.canEncode(c);
     }
 
     /**
      * Encodes a character sequence to a byte array.
      *
-     * @param chars the character sequence
+     * @param chars
+     *            the character sequence
      * @return the encoded character sequence
-     * @throws CharacterCodingException if the encoding operation fails
+     * @throws CharacterCodingException
+     *             if the encoding operation fails
      */
-    final EncodedChars encode(CharSequence chars) throws CharacterCodingException {
+    final EncodedChars encode(final CharSequence chars)
+            throws CharacterCodingException {
         ByteBuffer bb;
         // encode method is not thread safe
-        synchronized (encoder) {
-            bb = encoder.encode(CharBuffer.wrap(chars));
+        synchronized (this.encoder) {
+            bb = this.encoder.encode(CharBuffer.wrap(chars));
         }
         if (bb.hasArray()) {
             return getEncodedChars(bb.array(), bb.limit());
         } else {
             bb.rewind();
-            byte[] bytes = new byte[bb.remaining()];
+            final byte[] bytes = new byte[bb.remaining()];
             bb.get(bytes);
             return getEncodedChars(bytes, bytes.length);
         }
     }
 
-    abstract EncodedChars getEncodedChars(byte[] byteArray, int length);
+    abstract EncodedChars getEncodedChars(final byte[] byteArray,
+            final int length);
 
     /**
-     * Encodes <code>chars</code> into a format specified by <code>encoding</code>.
+     * Encodes <code>chars</code> into a format specified by
+     * <code>encoding</code>.
      *
-     * @param chars the character sequence
-     * @param encoding the encoding type
+     * @param chars
+     *            the character sequence
+     * @param encoding
+     *            the encoding type
      * @return encoded data
-     * @throws CharacterCodingException if encoding fails
+     * @throws CharacterCodingException
+     *             if encoding fails
      */
-    public static EncodedChars encodeSBCS(CharSequence chars, String encoding)
-            throws CharacterCodingException {
-        CharactersetEncoder encoder = newInstance(encoding, CharacterSetType.SINGLE_BYTE);
+    public static EncodedChars encodeSBCS(final CharSequence chars,
+            final String encoding) throws CharacterCodingException {
+        final CharactersetEncoder encoder = newInstance(encoding,
+                CharacterSetType.SINGLE_BYTE);
         return encoder.encode(chars);
     }
 
     /**
-     * The EBCDIC double byte encoder is used for encoding IBM format DBCS (double byte character
-     * sets) with an EBCDIC code-page. Given a double byte EBCDIC code page and a Unicode character
-     * sequence it will return its EBCDIC code-point, however, the "Shift In - Shift Out" operators
-     * are removed from the sequence of bytes. These are only used in Line Data.
+     * The EBCDIC double byte encoder is used for encoding IBM format DBCS
+     * (double byte character sets) with an EBCDIC code-page. Given a double
+     * byte EBCDIC code page and a Unicode character sequence it will return its
+     * EBCDIC code-point, however, the "Shift In - Shift Out" operators are
+     * removed from the sequence of bytes. These are only used in Line Data.
      */
-    private static final class EbcdicDoubleByteLineDataEncoder extends CharactersetEncoder {
-        private EbcdicDoubleByteLineDataEncoder(String encoding) {
+    private static final class EbcdicDoubleByteLineDataEncoder extends
+            CharactersetEncoder {
+        private EbcdicDoubleByteLineDataEncoder(final String encoding) {
             super(encoding);
         }
+
         @Override
-        EncodedChars getEncodedChars(byte[] byteArray, int length) {
+        EncodedChars getEncodedChars(final byte[] byteArray, final int length) {
             if (byteArray[0] == 0x0E && byteArray[length - 1] == 0x0F) {
                 return new EncodedChars(byteArray, 1, length - 2, true);
             }
@@ -111,32 +125,35 @@ public abstract class CharactersetEncoder {
     }
 
     /**
-     * The default encoder is used for encoding IBM format SBCS (single byte character sets), this
-     * the primary format for most Latin character sets. This can also be used for Unicode double-
-     * byte character sets (DBCS).
+     * The default encoder is used for encoding IBM format SBCS (single byte
+     * character sets), this the primary format for most Latin character sets.
+     * This can also be used for Unicode double- byte character sets (DBCS).
      */
     private static final class DefaultEncoder extends CharactersetEncoder {
         private final boolean isDBCS;
 
-        private DefaultEncoder(String encoding, boolean isDBCS) {
+        private DefaultEncoder(final String encoding, final boolean isDBCS) {
             super(encoding);
             this.isDBCS = isDBCS;
         }
 
         @Override
-        EncodedChars getEncodedChars(byte[] byteArray, int length) {
-            return new EncodedChars(byteArray, isDBCS);
+        EncodedChars getEncodedChars(final byte[] byteArray, final int length) {
+            return new EncodedChars(byteArray, this.isDBCS);
         }
     }
 
     /**
      * Returns an new instance of a {@link CharactersetEncoder}.
      *
-     * @param encoding the encoding for the underlying character encoder
-     * @param isEbcdicDBCS whether or not this wraps a double-byte EBCDIC code page.
+     * @param encoding
+     *            the encoding for the underlying character encoder
+     * @param isEbcdicDBCS
+     *            whether or not this wraps a double-byte EBCDIC code page.
      * @return the CharactersetEncoder
      */
-    static CharactersetEncoder newInstance(String encoding, CharacterSetType charsetType) {
+    static CharactersetEncoder newInstance(final String encoding,
+            final CharacterSetType charsetType) {
         switch (charsetType) {
         case DOUBLE_BYTE_LINE_DATA:
             return new EbcdicDoubleByteLineDataEncoder(encoding);
@@ -150,7 +167,8 @@ public abstract class CharactersetEncoder {
     /**
      * A container for encoded character bytes
      */
-    // CSOFF: FinalClass - disabling "final" modifier so that this class can be mocked
+    // CSOFF: FinalClass - disabling "final" modifier so that this class can be
+    // mocked
     public static class EncodedChars {
 
         private final byte[] bytes;
@@ -158,7 +176,8 @@ public abstract class CharactersetEncoder {
         private final int length;
         private final boolean isDBCS;
 
-        private EncodedChars(byte[] bytes, int offset, int length, boolean isDBCS) {
+        private EncodedChars(final byte[] bytes, final int offset,
+                final int length, final boolean isDBCS) {
             if (offset < 0 || length < 0 || offset + length > bytes.length) {
                 throw new IllegalArgumentException();
             }
@@ -168,23 +187,29 @@ public abstract class CharactersetEncoder {
             this.isDBCS = isDBCS;
         }
 
-        private EncodedChars(byte[] bytes, boolean isDBCS) {
+        private EncodedChars(final byte[] bytes, final boolean isDBCS) {
             this(bytes, 0, bytes.length, isDBCS);
         }
 
         /**
-         * write <code>length</code> bytes from <code>offset</code> to the output stream
+         * write <code>length</code> bytes from <code>offset</code> to the
+         * output stream
          *
-         * @param out output to write the bytes to
-         * @param offset the offset where to write
-         * @param length the length to write
-         * @throws IOException if an I/O error occurs
+         * @param out
+         *            output to write the bytes to
+         * @param offset
+         *            the offset where to write
+         * @param length
+         *            the length to write
+         * @throws IOException
+         *             if an I/O error occurs
          */
-        public void writeTo(OutputStream out, int offset, int length) throws IOException {
-            if (offset < 0 || length < 0 || offset + length > bytes.length) {
+        public void writeTo(final OutputStream out, final int offset,
+                final int length) throws IOException {
+            if (offset < 0 || length < 0 || offset + length > this.bytes.length) {
                 throw new IllegalArgumentException();
             }
-            out.write(bytes, this.offset + offset, length);
+            out.write(this.bytes, this.offset + offset, length);
         }
 
         /**
@@ -193,16 +218,17 @@ public abstract class CharactersetEncoder {
          * @return the length
          */
         public int getLength() {
-            return length;
+            return this.length;
         }
 
         /**
-         * Indicates whether or not the EncodedChars object wraps double byte characters.
+         * Indicates whether or not the EncodedChars object wraps double byte
+         * characters.
          *
          * @return true if the wrapped characters are double byte (DBCSs)
          */
         public boolean isDBCS() {
-            return isDBCS;
+            return this.isDBCS;
         }
 
         /**
@@ -212,8 +238,8 @@ public abstract class CharactersetEncoder {
          */
         public byte[] getBytes() {
             // return copy just in case
-            byte[] copy = new byte[bytes.length];
-            System.arraycopy(bytes, 0, copy, 0, bytes.length);
+            final byte[] copy = new byte[this.bytes.length];
+            System.arraycopy(this.bytes, 0, copy, 0, this.bytes.length);
             return copy;
         }
     }

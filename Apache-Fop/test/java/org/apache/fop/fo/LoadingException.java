@@ -20,14 +20,14 @@
 package org.apache.fop.fo;
 
 /**
- * This class specifies an exceptional condition that occurred while an XSL-FO document
- * was being parsed.
+ * This class specifies an exceptional condition that occurred while an XSL-FO
+ * document was being parsed.
  */
 public class LoadingException extends Exception {
 
     private static final long serialVersionUID = 7529029475875542916L;
 
-    LoadingException(Throwable cause) {
+    LoadingException(final Throwable cause) {
         super(cause);
     }
 

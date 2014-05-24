@@ -25,8 +25,8 @@ import java.io.OutputStream;
 import org.apache.fop.afp.util.BinaryUtils;
 
 /**
- * The Measurement Units triplet is used to specify the units of measure
- * for a presentation space
+ * The Measurement Units triplet is used to specify the units of measure for a
+ * presentation space
  */
 public class MeasurementUnitsTriplet extends AbstractTriplet {
 
@@ -38,32 +38,36 @@ public class MeasurementUnitsTriplet extends AbstractTriplet {
     /**
      * Main constructor
      *
-     * @param xRes units per base on the x-axis
-     * @param yRes units per base on the y-axis
+     * @param xRes
+     *            units per base on the x-axis
+     * @param yRes
+     *            units per base on the y-axis
      */
-    public MeasurementUnitsTriplet(int xRes, int yRes) {
+    public MeasurementUnitsTriplet(final int xRes, final int yRes) {
         super(MEASUREMENT_UNITS);
         this.xRes = xRes;
         this.yRes = yRes;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 8;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = getData();
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = getData();
 
         data[2] = TEN_INCHES; // XoaBase
         data[3] = TEN_INCHES; // YoaBase
 
-        byte[] xUnits = BinaryUtils.convert(xRes * 10, 2);
+        final byte[] xUnits = BinaryUtils.convert(this.xRes * 10, 2);
         data[4] = xUnits[0]; // XoaUnits (x units per unit base)
         data[5] = xUnits[1];
 
-        byte[] yUnits = BinaryUtils.convert(yRes * 10, 2);
+        final byte[] yUnits = BinaryUtils.convert(this.yRes * 10, 2);
         data[6] = yUnits[0]; // YoaUnits (y units per unit base)
         data[7] = yUnits[1];
 

@@ -25,8 +25,9 @@ import org.apache.fop.util.text.AdvancedMessageFormat.Part;
 import org.apache.fop.util.text.AdvancedMessageFormat.PartFactory;
 
 /**
- * Defines an "equals" field part that can compare a field's string value against another string.
- * It returns either of two possible values attached as additional part parameters. Example:
+ * Defines an "equals" field part that can compare a field's string value
+ * against another string. It returns either of two possible values attached as
+ * additional part parameters. Example:
  * <code>{field,equals,new,This is new!,This is old!}</code>
  */
 public class EqualsFieldPart extends IfFieldPart {
@@ -35,32 +36,38 @@ public class EqualsFieldPart extends IfFieldPart {
 
     /**
      * Creates a new "equals" field part.
-     * @param fieldName the field name
-     * @param values the unparsed parameter values
+     * 
+     * @param fieldName
+     *            the field name
+     * @param values
+     *            the unparsed parameter values
      */
-    public EqualsFieldPart(String fieldName, String values) {
+    public EqualsFieldPart(final String fieldName, final String values) {
         super(fieldName, values);
     }
 
     /** {@inheritDoc} */
-    protected void parseValues(String values) {
-        String[] parts = AdvancedMessageFormat.COMMA_SEPARATOR_REGEX.split(values, 3);
+    @Override
+    protected void parseValues(final String values) {
+        final String[] parts = AdvancedMessageFormat.COMMA_SEPARATOR_REGEX
+                .split(values, 3);
         this.equalsValue = parts[0];
         if (parts.length == 1) {
             throw new IllegalArgumentException(
                     "'equals' format must have at least 2 parameters");
         }
         if (parts.length == 3) {
-            ifValue = AdvancedMessageFormat.unescapeComma(parts[1]);
-            elseValue = AdvancedMessageFormat.unescapeComma(parts[2]);
+            this.ifValue = AdvancedMessageFormat.unescapeComma(parts[1]);
+            this.elseValue = AdvancedMessageFormat.unescapeComma(parts[2]);
         } else {
-            ifValue = AdvancedMessageFormat.unescapeComma(parts[1]);
+            this.ifValue = AdvancedMessageFormat.unescapeComma(parts[1]);
         }
     }
 
     /** {@inheritDoc} */
-    protected boolean isTrue(Map params) {
-        Object obj = params.get(fieldName);
+    @Override
+    protected boolean isTrue(final Map params) {
+        final Object obj = params.get(this.fieldName);
         if (obj != null) {
             return String.valueOf(obj).equals(this.equalsValue);
         } else {
@@ -69,6 +76,7 @@ public class EqualsFieldPart extends IfFieldPart {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "{" + this.fieldName + ", equals " + this.equalsValue + "}";
     }
@@ -79,11 +87,13 @@ public class EqualsFieldPart extends IfFieldPart {
     public static class Factory implements PartFactory {
 
         /** {@inheritDoc} */
-        public Part newPart(String fieldName, String values) {
+        @Override
+        public Part newPart(final String fieldName, final String values) {
             return new EqualsFieldPart(fieldName, values);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String getFormat() {
             return "equals";
         }

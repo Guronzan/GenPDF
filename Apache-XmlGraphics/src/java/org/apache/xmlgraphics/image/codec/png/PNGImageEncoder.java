@@ -38,6 +38,8 @@ import java.util.TimeZone;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.xmlgraphics.image.codec.util.ImageEncoderImpl;
 import org.apache.xmlgraphics.image.codec.util.PropertyUtil;
 
@@ -61,7 +63,7 @@ final class CRC {
             int c = n;
             for (int k = 0; k < 8; k++) {
                 if ((c & 1) == 1) {
-                    c = 0xedb88320 ^ (c >>> 1);
+                    c = 0xedb88320 ^ c >>> 1;
                 } else {
                     c >>>= 1;
                 }
@@ -71,102 +73,114 @@ final class CRC {
         }
     }
 
-    public static int updateCRC(int crc, byte[] data, int off, int len) {
+    public static int updateCRC(final int crc, final byte[] data,
+            final int off, final int len) {
         int c = crc;
 
         for (int n = 0; n < len; n++) {
-             c = crcTable[(c ^ data[off + n]) & 0xff] ^ (c >>> 8);
+            c = crcTable[(c ^ data[off + n]) & 0xff] ^ c >>> 8;
         }
 
         return c;
     }
 }
 
-
 class ChunkStream extends OutputStream implements DataOutput {
 
-    private String type;
+    private final String type;
     private ByteArrayOutputStream baos;
     private DataOutputStream dos;
 
-    ChunkStream(String type) throws IOException {
+    ChunkStream(final String type) {
         this.type = type;
 
         this.baos = new ByteArrayOutputStream();
-        this.dos = new DataOutputStream(baos);
+        this.dos = new DataOutputStream(this.baos);
     }
 
     @Override
-    public void write(byte[] b) throws IOException {
-        dos.write(b);
+    public void write(final byte[] b) throws IOException {
+        this.dos.write(b);
     }
 
     @Override
-    public void write(byte[] b, int off, int len) throws IOException {
-        dos.write(b, off, len);
+    public void write(final byte[] b, final int off, final int len)
+            throws IOException {
+        this.dos.write(b, off, len);
     }
 
     @Override
-    public void write(int b) throws IOException {
-        dos.write(b);
+    public void write(final int b) throws IOException {
+        this.dos.write(b);
     }
 
-    public void writeBoolean(boolean v) throws IOException {
-        dos.writeBoolean(v);
+    @Override
+    public void writeBoolean(final boolean v) throws IOException {
+        this.dos.writeBoolean(v);
     }
 
-    public void writeByte(int v) throws IOException {
-        dos.writeByte(v);
+    @Override
+    public void writeByte(final int v) throws IOException {
+        this.dos.writeByte(v);
     }
 
-    public void writeBytes(String s) throws IOException {
-        dos.writeBytes(s);
+    @Override
+    public void writeBytes(final String s) throws IOException {
+        this.dos.writeBytes(s);
     }
 
-    public void writeChar(int v) throws IOException {
-        dos.writeChar(v);
+    @Override
+    public void writeChar(final int v) throws IOException {
+        this.dos.writeChar(v);
     }
 
-    public void writeChars(String s) throws IOException {
-        dos.writeChars(s);
+    @Override
+    public void writeChars(final String s) throws IOException {
+        this.dos.writeChars(s);
     }
 
-    public void writeDouble(double v) throws IOException {
-        dos.writeDouble(v);
+    @Override
+    public void writeDouble(final double v) throws IOException {
+        this.dos.writeDouble(v);
     }
 
-    public void writeFloat(float v) throws IOException {
-        dos.writeFloat(v);
+    @Override
+    public void writeFloat(final float v) throws IOException {
+        this.dos.writeFloat(v);
     }
 
-    public void writeInt(int v) throws IOException {
-        dos.writeInt(v);
+    @Override
+    public void writeInt(final int v) throws IOException {
+        this.dos.writeInt(v);
     }
 
-    public void writeLong(long v) throws IOException {
-        dos.writeLong(v);
+    @Override
+    public void writeLong(final long v) throws IOException {
+        this.dos.writeLong(v);
     }
 
-    public void writeShort(int v) throws IOException {
-        dos.writeShort(v);
+    @Override
+    public void writeShort(final int v) throws IOException {
+        this.dos.writeShort(v);
     }
 
-    public void writeUTF(String str) throws IOException {
-        dos.writeUTF(str);
+    @Override
+    public void writeUTF(final String str) throws IOException {
+        this.dos.writeUTF(str);
     }
 
-    public void writeToStream(DataOutputStream output) throws IOException {
-        byte[] typeSignature = new byte[4];
-        typeSignature[0] = (byte)type.charAt(0);
-        typeSignature[1] = (byte)type.charAt(1);
-        typeSignature[2] = (byte)type.charAt(2);
-        typeSignature[3] = (byte)type.charAt(3);
+    public void writeToStream(final DataOutputStream output) throws IOException {
+        final byte[] typeSignature = new byte[4];
+        typeSignature[0] = (byte) this.type.charAt(0);
+        typeSignature[1] = (byte) this.type.charAt(1);
+        typeSignature[2] = (byte) this.type.charAt(2);
+        typeSignature[3] = (byte) this.type.charAt(3);
 
-        dos.flush();
-        baos.flush();
+        this.dos.flush();
+        this.baos.flush();
 
-        byte[] data = baos.toByteArray();
-        int len = data.length;
+        final byte[] data = this.baos.toByteArray();
+        final int len = data.length;
 
         output.writeInt(len);
         output.write(typeSignature);
@@ -182,29 +196,27 @@ class ChunkStream extends OutputStream implements DataOutput {
     @Override
     public void close() throws IOException {
 
-        if ( baos != null ) {
-            baos.close();
-            baos = null;
+        if (this.baos != null) {
+            this.baos.close();
+            this.baos = null;
         }
-        if (dos != null) {
-            dos.close();
-            dos = null;
+        if (this.dos != null) {
+            this.dos.close();
+            this.dos = null;
         }
     }
 }
 
-
 class IDATOutputStream extends FilterOutputStream {
 
-    private static final byte[] typeSignature
-         = {(byte)'I', (byte)'D', (byte)'A', (byte)'T'};
+    private static final byte[] typeSignature = { (byte) 'I', (byte) 'D',
+            (byte) 'A', (byte) 'T' };
 
     private int bytesWritten = 0;
-    private int segmentLength;
-    private byte[] buffer;
+    private final int segmentLength;
+    private final byte[] buffer;
 
-    public IDATOutputStream(OutputStream output,
-                            int segmentLength) {
+    public IDATOutputStream(final OutputStream output, final int segmentLength) {
         super(output);
         this.segmentLength = segmentLength;
         this.buffer = new byte[segmentLength];
@@ -215,61 +227,62 @@ class IDATOutputStream extends FilterOutputStream {
         flush();
     }
 
-    private void writeInt(int x) throws IOException {
-        out.write(x >> 24);
-        out.write((x >> 16) & 0xff);
-        out.write((x >> 8) & 0xff);
-        out.write(x & 0xff);
+    private void writeInt(final int x) throws IOException {
+        this.out.write(x >> 24);
+        this.out.write(x >> 16 & 0xff);
+        this.out.write(x >> 8 & 0xff);
+        this.out.write(x & 0xff);
     }
 
     @Override
     public void flush() throws IOException {
-        if (bytesWritten == 0) {
+        if (this.bytesWritten == 0) {
             return;
         }
 
         // Length
-        writeInt(bytesWritten);
+        writeInt(this.bytesWritten);
         // 'IDAT' signature
-        out.write(typeSignature);
+        this.out.write(typeSignature);
         // Data
-        out.write(buffer, 0, bytesWritten);
+        this.out.write(this.buffer, 0, this.bytesWritten);
 
         int crc = 0xffffffff;
         crc = CRC.updateCRC(crc, typeSignature, 0, 4);
-        crc = CRC.updateCRC(crc, buffer, 0, bytesWritten);
+        crc = CRC.updateCRC(crc, this.buffer, 0, this.bytesWritten);
 
         // CRC
         writeInt(crc ^ 0xffffffff);
 
         // Reset buffer
-        bytesWritten = 0;
+        this.bytesWritten = 0;
     }
 
     @Override
-    public void write(byte[] b) throws IOException {
+    public void write(final byte[] b) throws IOException {
         this.write(b, 0, b.length);
     }
 
     @Override
-    public void write(byte[] b, int off, int len) throws IOException {
+    public void write(final byte[] b, int off, int len) throws IOException {
         while (len > 0) {
-            int bytes = Math.min(segmentLength - bytesWritten, len);
-            System.arraycopy(b, off, buffer, bytesWritten, bytes);
+            final int bytes = Math.min(this.segmentLength - this.bytesWritten,
+                    len);
+            System.arraycopy(b, off, this.buffer, this.bytesWritten, bytes);
             off += bytes;
             len -= bytes;
-            bytesWritten += bytes;
+            this.bytesWritten += bytes;
 
-            if (bytesWritten == segmentLength) {
+            if (this.bytesWritten == this.segmentLength) {
                 flush();
             }
         }
     }
 
     @Override
-    public void write(int b) throws IOException {
-        buffer[bytesWritten++] = (byte)b;
-        if (bytesWritten == segmentLength) {
+    public void write(final int b) throws IOException {
+        this.buffer[this.bytesWritten++] = (byte) b;
+        if (this.bytesWritten == this.segmentLength) {
             flush();
         }
     }
@@ -280,6 +293,7 @@ class IDATOutputStream extends FilterOutputStream {
  *
  * @since EA4
  */
+@Slf4j
 public class PNGImageEncoder extends ImageEncoderImpl {
 
     private static final int PNG_COLOR_GRAY = 0;
@@ -288,10 +302,8 @@ public class PNGImageEncoder extends ImageEncoderImpl {
     private static final int PNG_COLOR_GRAY_ALPHA = 4;
     private static final int PNG_COLOR_RGB_ALPHA = 6;
 
-    private static final byte[] magic = {
-        (byte)137, (byte) 80, (byte) 78, (byte) 71,
-        (byte) 13, (byte) 10, (byte) 26, (byte) 10
-    };
+    private static final byte[] magic = { (byte) 137, (byte) 80, (byte) 78,
+            (byte) 71, (byte) 13, (byte) 10, (byte) 26, (byte) 10 };
 
     private PNGEncodeParam param;
 
@@ -315,10 +327,9 @@ public class PNGImageEncoder extends ImageEncoderImpl {
     private byte[] bluePalette = null;
     private byte[] alphaPalette = null;
 
-    private DataOutputStream dataOutput;
+    private final DataOutputStream dataOutput;
 
-    public PNGImageEncoder(OutputStream output,
-                           PNGEncodeParam param) {
+    public PNGImageEncoder(final OutputStream output, final PNGEncodeParam param) {
         super(output, param);
 
         if (param != null) {
@@ -328,20 +339,20 @@ public class PNGImageEncoder extends ImageEncoderImpl {
     }
 
     private void writeMagic() throws IOException {
-        dataOutput.write(magic);
+        this.dataOutput.write(magic);
     }
 
     private void writeIHDR() throws IOException {
-        ChunkStream cs = new ChunkStream("IHDR");
-        cs.writeInt(width);
-        cs.writeInt(height);
-        cs.writeByte((byte)bitDepth);
-        cs.writeByte((byte)colorType);
-        cs.writeByte((byte)0);
-        cs.writeByte((byte)0);
-        cs.writeByte(interlace ? (byte)1 : (byte)0);
+        final ChunkStream cs = new ChunkStream("IHDR");
+        cs.writeInt(this.width);
+        cs.writeInt(this.height);
+        cs.writeByte((byte) this.bitDepth);
+        cs.writeByte((byte) this.colorType);
+        cs.writeByte((byte) 0);
+        cs.writeByte((byte) 0);
+        cs.writeByte(this.interlace ? (byte) 1 : (byte) 0);
 
-        cs.writeToStream(dataOutput);
+        cs.writeToStream(this.dataOutput);
         cs.close();
     }
 
@@ -350,32 +361,31 @@ public class PNGImageEncoder extends ImageEncoderImpl {
 
     private byte[][] filteredRows = null;
 
-    private static int clamp(int val, int maxValue) {
-        return (val > maxValue) ? maxValue : val;
+    private static int clamp(final int val, final int maxValue) {
+        return val > maxValue ? maxValue : val;
     }
 
-    private void encodePass(OutputStream os, Raster ras,
-                            int xOffset,     int yOffset,
-                            int xSkip,       int ySkip)
-        throws IOException {
-        int minX   = ras.getMinX();
-        int minY   = ras.getMinY();
-        int width  = ras.getWidth();
-        int height = ras.getHeight();
+    private void encodePass(final OutputStream os, final Raster ras,
+            int xOffset, final int yOffset, int xSkip, final int ySkip)
+            throws IOException {
+        final int minX = ras.getMinX();
+        final int minY = ras.getMinY();
+        final int width = ras.getWidth();
+        final int height = ras.getHeight();
 
-        xOffset *= numBands;
-        xSkip   *= numBands;
+        xOffset *= this.numBands;
+        xSkip *= this.numBands;
 
-        int samplesPerByte = 8/bitDepth;
+        final int samplesPerByte = 8 / this.bitDepth;
 
-        int numSamples = width*numBands;
-        int[] samples = new int[numSamples];
+        final int numSamples = width * this.numBands;
+        final int[] samples = new int[numSamples];
 
-        int pixels = (numSamples - xOffset + xSkip - 1)/xSkip;
-        int bytesPerRow = pixels*numBands;
-        if (bitDepth < 8) {
-            bytesPerRow = (bytesPerRow + samplesPerByte - 1)/samplesPerByte;
-        } else if (bitDepth == 16) {
+        final int pixels = (numSamples - xOffset + xSkip - 1) / xSkip;
+        int bytesPerRow = pixels * this.numBands;
+        if (this.bitDepth < 8) {
+            bytesPerRow = (bytesPerRow + samplesPerByte - 1) / samplesPerByte;
+        } else if (this.bitDepth == 16) {
             bytesPerRow *= 2;
         }
 
@@ -383,38 +393,40 @@ public class PNGImageEncoder extends ImageEncoderImpl {
             return;
         }
 
-        currRow = new byte[bytesPerRow + bpp];
-        prevRow = new byte[bytesPerRow + bpp];
+        this.currRow = new byte[bytesPerRow + this.bpp];
+        this.prevRow = new byte[bytesPerRow + this.bpp];
 
-        filteredRows = new byte[5][bytesPerRow + bpp];
+        this.filteredRows = new byte[5][bytesPerRow + this.bpp];
 
-        int maxValue = (1 << bitDepth) - 1;
+        final int maxValue = (1 << this.bitDepth) - 1;
 
         for (int row = minY + yOffset; row < minY + height; row += ySkip) {
             ras.getPixels(minX, row, width, 1, samples);
 
-            if (compressGray) {
-                int shift = 8 - bitDepth;
+            if (this.compressGray) {
+                final int shift = 8 - this.bitDepth;
                 for (int i = 0; i < width; i++) {
                     samples[i] >>= shift;
                 }
             }
 
-            int count = bpp; // leave first 'bpp' bytes zero
+            int count = this.bpp; // leave first 'bpp' bytes zero
             int pos = 0;
             int tmp = 0;
 
-            switch (bitDepth) {
-            case 1: case 2: case 4:
+            switch (this.bitDepth) {
+            case 1:
+            case 2:
+            case 4:
                 // Image can only have a single band
 
-                int mask = samplesPerByte - 1;
+                final int mask = samplesPerByte - 1;
                 for (int s = xOffset; s < numSamples; s += xSkip) {
-                    int val = clamp(samples[s] >> bitShift, maxValue);
-                    tmp = (tmp << bitDepth) | val;
+                    final int val = clamp(samples[s] >> this.bitShift, maxValue);
+                    tmp = tmp << this.bitDepth | val;
 
-                    if (pos++  == mask) {
-                        currRow[count++] = (byte)tmp;
+                    if (pos++ == mask) {
+                        this.currRow[count++] = (byte) tmp;
                         tmp = 0;
                         pos = 0;
                     }
@@ -422,50 +434,50 @@ public class PNGImageEncoder extends ImageEncoderImpl {
 
                 // Left shift the last byte
                 if (pos != 0) {
-                    tmp <<= (samplesPerByte - pos)*bitDepth;
-                    currRow[count++] = (byte)tmp;
+                    tmp <<= (samplesPerByte - pos) * this.bitDepth;
+                    this.currRow[count++] = (byte) tmp;
                 }
                 break;
 
             case 8:
                 for (int s = xOffset; s < numSamples; s += xSkip) {
-                    for (int b = 0; b < numBands; b++) {
-                        currRow[count++] =
-                            (byte)clamp(samples[s + b] >> bitShift, maxValue);
+                    for (int b = 0; b < this.numBands; b++) {
+                        this.currRow[count++] = (byte) clamp(
+                                samples[s + b] >> this.bitShift, maxValue);
                     }
                 }
                 break;
 
             case 16:
                 for (int s = xOffset; s < numSamples; s += xSkip) {
-                    for (int b = 0; b < numBands; b++) {
-                        int val = clamp(samples[s + b] >> bitShift, maxValue);
-                        currRow[count++] = (byte)(val >> 8);
-                        currRow[count++] = (byte)(val & 0xff);
+                    for (int b = 0; b < this.numBands; b++) {
+                        final int val = clamp(samples[s + b] >> this.bitShift,
+                                maxValue);
+                        this.currRow[count++] = (byte) (val >> 8);
+                        this.currRow[count++] = (byte) (val & 0xff);
                     }
                 }
                 break;
             }
 
             // Perform filtering
-            int filterType = param.filterRow(currRow, prevRow,
-                                             filteredRows,
-                                             bytesPerRow, bpp);
+            final int filterType = this.param.filterRow(this.currRow,
+                    this.prevRow, this.filteredRows, bytesPerRow, this.bpp);
 
             os.write(filterType);
-            os.write(filteredRows[filterType], bpp, bytesPerRow);
+            os.write(this.filteredRows[filterType], this.bpp, bytesPerRow);
 
             // Swap current and previous rows
-            byte[] swap = currRow;
-            currRow = prevRow;
-            prevRow = swap;
+            final byte[] swap = this.currRow;
+            this.currRow = this.prevRow;
+            this.prevRow = swap;
         }
     }
 
     private void writeIDAT() throws IOException {
-        IDATOutputStream ios = new IDATOutputStream(dataOutput, 8192);
-        DeflaterOutputStream dos =
-            new DeflaterOutputStream(ios, new Deflater(9));
+        final IDATOutputStream ios = new IDATOutputStream(this.dataOutput, 8192);
+        final DeflaterOutputStream dos = new DeflaterOutputStream(ios,
+                new Deflater(9));
 
         // Future work - don't convert entire image to a Raster It
         // might seem that you could just call image.getData() but
@@ -474,34 +486,31 @@ public class PNGImageEncoder extends ImageEncoderImpl {
         // you get back here appears larger than it should.
         // This solves that problem by bounding the raster to the
         // image's bounds...
-        Raster ras = image.getData(new Rectangle(image.getMinX(),
-                                                 image.getMinY(),
-                                                 image.getWidth(),
-                                                 image.getHeight()));
-        // System.out.println("Image: [" +
-        //                    image.getMinY()  + ", " +
-        //                    image.getMinX()  + ", " +
-        //                    image.getWidth()  + ", " +
-        //                    image.getHeight() + "]");
-        // System.out.println("Ras: [" +
-        //                    ras.getMinX()  + ", " +
-        //                    ras.getMinY()  + ", " +
-        //                    ras.getWidth()  + ", " +
-        //                    ras.getHeight() + "]");
+        Raster ras = this.image.getData(new Rectangle(this.image.getMinX(),
+                this.image.getMinY(), this.image.getWidth(), this.image
+                        .getHeight()));
+        // log.info("Image: [" +
+        // image.getMinY() + ", " +
+        // image.getMinX() + ", " +
+        // image.getWidth() + ", " +
+        // image.getHeight() + "]");
+        // log.info("Ras: [" +
+        // ras.getMinX() + ", " +
+        // ras.getMinY() + ", " +
+        // ras.getWidth() + ", " +
+        // ras.getHeight() + "]");
 
-        if (skipAlpha) {
-            int numBands = ras.getNumBands() - 1;
-            int[] bandList = new int[numBands];
+        if (this.skipAlpha) {
+            final int numBands = ras.getNumBands() - 1;
+            final int[] bandList = new int[numBands];
             for (int i = 0; i < numBands; i++) {
                 bandList[i] = i;
             }
-            ras = ras.createChild(0, 0,
-                                  ras.getWidth(), ras.getHeight(),
-                                  0, 0,
-                                  bandList);
+            ras = ras.createChild(0, 0, ras.getWidth(), ras.getHeight(), 0, 0,
+                    bandList);
         }
 
-        if (interlace) {
+        if (this.interlace) {
             // Interlacing pass 1
             encodePass(dos, ras, 0, 0, 8, 8);
             // Interlacing pass 2
@@ -527,232 +536,235 @@ public class PNGImageEncoder extends ImageEncoderImpl {
     }
 
     private void writeIEND() throws IOException {
-        ChunkStream cs = new ChunkStream("IEND");
-        cs.writeToStream(dataOutput);
+        final ChunkStream cs = new ChunkStream("IEND");
+        cs.writeToStream(this.dataOutput);
         cs.close();
     }
 
-    private static final float[] srgbChroma = {
-        0.31270F, 0.329F, 0.64F, 0.33F, 0.3F, 0.6F, 0.15F, 0.06F
-    };
+    private static final float[] srgbChroma = { 0.31270F, 0.329F, 0.64F, 0.33F,
+            0.3F, 0.6F, 0.15F, 0.06F };
 
     private void writeCHRM() throws IOException {
-        if (param.isChromaticitySet() || param.isSRGBIntentSet()) {
-            ChunkStream cs = new ChunkStream("cHRM");
+        if (this.param.isChromaticitySet() || this.param.isSRGBIntentSet()) {
+            final ChunkStream cs = new ChunkStream("cHRM");
 
             float[] chroma;
-            if (!param.isSRGBIntentSet()) {
-                chroma = param.getChromaticity();
+            if (!this.param.isSRGBIntentSet()) {
+                chroma = this.param.getChromaticity();
             } else {
                 chroma = srgbChroma; // SRGB chromaticities
             }
 
             for (int i = 0; i < 8; i++) {
-                cs.writeInt((int)(chroma[i]*100000));
+                cs.writeInt((int) (chroma[i] * 100000));
             }
-            cs.writeToStream(dataOutput);
+            cs.writeToStream(this.dataOutput);
             cs.close();
         }
     }
 
     private void writeGAMA() throws IOException {
-        if (param.isGammaSet() || param.isSRGBIntentSet()) {
-            ChunkStream cs = new ChunkStream("gAMA");
+        if (this.param.isGammaSet() || this.param.isSRGBIntentSet()) {
+            final ChunkStream cs = new ChunkStream("gAMA");
 
             float gamma;
-            if (!param.isSRGBIntentSet()) {
-                gamma = param.getGamma();
+            if (!this.param.isSRGBIntentSet()) {
+                gamma = this.param.getGamma();
             } else {
-                gamma = 1.0F/2.2F; // SRGB gamma
+                gamma = 1.0F / 2.2F; // SRGB gamma
             }
             // TD should include the .5 but causes regard to say
             // everything is different.
-            cs.writeInt((int)(gamma*100000/*+0.5*/));
-            cs.writeToStream(dataOutput);
+            cs.writeInt((int) (gamma * 100000/* +0.5 */));
+            cs.writeToStream(this.dataOutput);
             cs.close();
         }
     }
 
     private void writeICCP() throws IOException {
-        if (param.isICCProfileDataSet()) {
-            ChunkStream cs = new ChunkStream("iCCP");
-            byte[] ICCProfileData = param.getICCProfileData();
+        if (this.param.isICCProfileDataSet()) {
+            final ChunkStream cs = new ChunkStream("iCCP");
+            final byte[] ICCProfileData = this.param.getICCProfileData();
             cs.write(ICCProfileData);
-            cs.writeToStream(dataOutput);
+            cs.writeToStream(this.dataOutput);
             cs.close();
         }
     }
 
     private void writeSBIT() throws IOException {
-        if (param.isSignificantBitsSet()) {
-            ChunkStream cs = new ChunkStream("sBIT");
-            int[] significantBits = param.getSignificantBits();
-            int len = significantBits.length;
+        if (this.param.isSignificantBitsSet()) {
+            final ChunkStream cs = new ChunkStream("sBIT");
+            final int[] significantBits = this.param.getSignificantBits();
+            final int len = significantBits.length;
             for (int i = 0; i < len; i++) {
                 cs.writeByte(significantBits[i]);
             }
-            cs.writeToStream(dataOutput);
+            cs.writeToStream(this.dataOutput);
             cs.close();
         }
     }
 
     private void writeSRGB() throws IOException {
-        if (param.isSRGBIntentSet()) {
-            ChunkStream cs = new ChunkStream("sRGB");
+        if (this.param.isSRGBIntentSet()) {
+            final ChunkStream cs = new ChunkStream("sRGB");
 
-            int intent = param.getSRGBIntent();
+            final int intent = this.param.getSRGBIntent();
             cs.write(intent);
-            cs.writeToStream(dataOutput);
+            cs.writeToStream(this.dataOutput);
             cs.close();
         }
     }
 
     private void writePLTE() throws IOException {
-        if (redPalette == null) {
+        if (this.redPalette == null) {
             return;
         }
 
-        ChunkStream cs = new ChunkStream("PLTE");
-        for (int i = 0; i < redPalette.length; i++) {
-            cs.writeByte(redPalette[i]);
-            cs.writeByte(greenPalette[i]);
-            cs.writeByte(bluePalette[i]);
+        final ChunkStream cs = new ChunkStream("PLTE");
+        for (int i = 0; i < this.redPalette.length; i++) {
+            cs.writeByte(this.redPalette[i]);
+            cs.writeByte(this.greenPalette[i]);
+            cs.writeByte(this.bluePalette[i]);
         }
 
-        cs.writeToStream(dataOutput);
+        cs.writeToStream(this.dataOutput);
         cs.close();
     }
 
     private void writeBKGD() throws IOException {
-        if (param.isBackgroundSet()) {
-            ChunkStream cs = new ChunkStream("bKGD");
+        if (this.param.isBackgroundSet()) {
+            final ChunkStream cs = new ChunkStream("bKGD");
 
-            switch (colorType) {
+            switch (this.colorType) {
             case PNG_COLOR_GRAY:
             case PNG_COLOR_GRAY_ALPHA:
-                int gray = ((PNGEncodeParam.Gray)param).getBackgroundGray();
+                final int gray = ((PNGEncodeParam.Gray) this.param)
+                        .getBackgroundGray();
                 cs.writeShort(gray);
                 break;
 
             case PNG_COLOR_PALETTE:
-                int index =
-                   ((PNGEncodeParam.Palette)param).getBackgroundPaletteIndex();
+                final int index = ((PNGEncodeParam.Palette) this.param)
+                        .getBackgroundPaletteIndex();
                 cs.writeByte(index);
                 break;
 
             case PNG_COLOR_RGB:
             case PNG_COLOR_RGB_ALPHA:
-                int[] rgb = ((PNGEncodeParam.RGB)param).getBackgroundRGB();
+                final int[] rgb = ((PNGEncodeParam.RGB) this.param)
+                        .getBackgroundRGB();
                 cs.writeShort(rgb[0]);
                 cs.writeShort(rgb[1]);
                 cs.writeShort(rgb[2]);
                 break;
             }
 
-            cs.writeToStream(dataOutput);
+            cs.writeToStream(this.dataOutput);
             cs.close();
         }
     }
 
     private void writeHIST() throws IOException {
-        if (param.isPaletteHistogramSet()) {
-            ChunkStream cs = new ChunkStream("hIST");
+        if (this.param.isPaletteHistogramSet()) {
+            final ChunkStream cs = new ChunkStream("hIST");
 
-            int[] hist = param.getPaletteHistogram();
-            for (int i = 0; i < hist.length; i++) {
-                cs.writeShort(hist[i]);
+            final int[] hist = this.param.getPaletteHistogram();
+            for (final int element : hist) {
+                cs.writeShort(element);
             }
 
-            cs.writeToStream(dataOutput);
+            cs.writeToStream(this.dataOutput);
             cs.close();
         }
     }
 
     private void writeTRNS() throws IOException {
-        if (param.isTransparencySet() &&
-            (colorType != PNG_COLOR_GRAY_ALPHA) &&
-            (colorType != PNG_COLOR_RGB_ALPHA)) {
-            ChunkStream cs = new ChunkStream("tRNS");
+        if (this.param.isTransparencySet()
+                && this.colorType != PNG_COLOR_GRAY_ALPHA
+                && this.colorType != PNG_COLOR_RGB_ALPHA) {
+            final ChunkStream cs = new ChunkStream("tRNS");
 
-            if (param instanceof PNGEncodeParam.Palette) {
-                byte[] t =
-                    ((PNGEncodeParam.Palette)param).getPaletteTransparency();
-                for (int i = 0; i < t.length; i++) {
-                    cs.writeByte(t[i]);
+            if (this.param instanceof PNGEncodeParam.Palette) {
+                final byte[] t = ((PNGEncodeParam.Palette) this.param)
+                        .getPaletteTransparency();
+                for (final byte element : t) {
+                    cs.writeByte(element);
                 }
-            } else if (param instanceof PNGEncodeParam.Gray) {
-                int t = ((PNGEncodeParam.Gray)param).getTransparentGray();
+            } else if (this.param instanceof PNGEncodeParam.Gray) {
+                final int t = ((PNGEncodeParam.Gray) this.param)
+                        .getTransparentGray();
                 cs.writeShort(t);
-            } else if (param instanceof PNGEncodeParam.RGB) {
-                int[] t = ((PNGEncodeParam.RGB)param).getTransparentRGB();
+            } else if (this.param instanceof PNGEncodeParam.RGB) {
+                final int[] t = ((PNGEncodeParam.RGB) this.param)
+                        .getTransparentRGB();
                 cs.writeShort(t[0]);
                 cs.writeShort(t[1]);
                 cs.writeShort(t[2]);
             }
 
-            cs.writeToStream(dataOutput);
+            cs.writeToStream(this.dataOutput);
             cs.close();
-        } else if (colorType == PNG_COLOR_PALETTE) {
-            int lastEntry = Math.min(255, alphaPalette.length - 1);
+        } else if (this.colorType == PNG_COLOR_PALETTE) {
+            final int lastEntry = Math.min(255, this.alphaPalette.length - 1);
             int nonOpaque;
             for (nonOpaque = lastEntry; nonOpaque >= 0; nonOpaque--) {
-                if (alphaPalette[nonOpaque] != (byte)255) {
+                if (this.alphaPalette[nonOpaque] != (byte) 255) {
                     break;
                 }
             }
 
             if (nonOpaque >= 0) {
-                ChunkStream cs = new ChunkStream("tRNS");
+                final ChunkStream cs = new ChunkStream("tRNS");
                 for (int i = 0; i <= nonOpaque; i++) {
-                    cs.writeByte(alphaPalette[i]);
+                    cs.writeByte(this.alphaPalette[i]);
                 }
-                cs.writeToStream(dataOutput);
+                cs.writeToStream(this.dataOutput);
                 cs.close();
             }
         }
     }
 
     private void writePHYS() throws IOException {
-        if (param.isPhysicalDimensionSet()) {
-            ChunkStream cs = new ChunkStream("pHYs");
+        if (this.param.isPhysicalDimensionSet()) {
+            final ChunkStream cs = new ChunkStream("pHYs");
 
-            int[] dims = param.getPhysicalDimension();
+            final int[] dims = this.param.getPhysicalDimension();
             cs.writeInt(dims[0]);
             cs.writeInt(dims[1]);
-            cs.writeByte((byte)dims[2]);
+            cs.writeByte((byte) dims[2]);
 
-            cs.writeToStream(dataOutput);
+            cs.writeToStream(this.dataOutput);
             cs.close();
         }
     }
 
     private void writeSPLT() throws IOException {
-        if (param.isSuggestedPaletteSet()) {
-            ChunkStream cs = new ChunkStream("sPLT");
+        if (this.param.isSuggestedPaletteSet()) {
+            final ChunkStream cs = new ChunkStream("sPLT");
 
-            System.out.println("sPLT not supported yet.");
+            log.info("sPLT not supported yet.");
 
-            cs.writeToStream(dataOutput);
+            cs.writeToStream(this.dataOutput);
             cs.close();
         }
     }
 
     private void writeTIME() throws IOException {
-        if (param.isModificationTimeSet()) {
-            ChunkStream cs = new ChunkStream("tIME");
+        if (this.param.isModificationTimeSet()) {
+            final ChunkStream cs = new ChunkStream("tIME");
 
-            Date date = param.getModificationTime();
-            TimeZone gmt = TimeZone.getTimeZone("GMT");
+            final Date date = this.param.getModificationTime();
+            final TimeZone gmt = TimeZone.getTimeZone("GMT");
 
-            GregorianCalendar cal = new GregorianCalendar(gmt);
+            final GregorianCalendar cal = new GregorianCalendar(gmt);
             cal.setTime(date);
 
-            int year = cal.get(Calendar.YEAR);
-            int month = cal.get(Calendar.MONTH);
-            int day = cal.get(Calendar.DAY_OF_MONTH);
-            int hour = cal.get(Calendar.HOUR_OF_DAY);
-            int minute = cal.get(Calendar.MINUTE);
-            int second = cal.get(Calendar.SECOND);
+            final int year = cal.get(Calendar.YEAR);
+            final int month = cal.get(Calendar.MONTH);
+            final int day = cal.get(Calendar.DAY_OF_MONTH);
+            final int hour = cal.get(Calendar.HOUR_OF_DAY);
+            final int minute = cal.get(Calendar.MINUTE);
+            final int second = cal.get(Calendar.SECOND);
 
             cs.writeShort(year);
             cs.writeByte(month + 1);
@@ -761,104 +773,101 @@ public class PNGImageEncoder extends ImageEncoderImpl {
             cs.writeByte(minute);
             cs.writeByte(second);
 
-            cs.writeToStream(dataOutput);
+            cs.writeToStream(this.dataOutput);
             cs.close();
         }
     }
 
     private void writeTEXT() throws IOException {
-        if (param.isTextSet()) {
-            String[] text = param.getText();
+        if (this.param.isTextSet()) {
+            final String[] text = this.param.getText();
 
-            for (int i = 0; i < text.length/2; i++) {
-                byte[] keyword = text[2*i].getBytes();
-                byte[] value = text[2*i + 1].getBytes();
+            for (int i = 0; i < text.length / 2; i++) {
+                final byte[] keyword = text[2 * i].getBytes();
+                final byte[] value = text[2 * i + 1].getBytes();
 
-                ChunkStream cs = new ChunkStream("tEXt");
+                final ChunkStream cs = new ChunkStream("tEXt");
 
                 cs.write(keyword, 0, Math.min(keyword.length, 79));
                 cs.write(0);
                 cs.write(value);
 
-                cs.writeToStream(dataOutput);
+                cs.writeToStream(this.dataOutput);
                 cs.close();
             }
         }
     }
 
     private void writeZTXT() throws IOException {
-        if (param.isCompressedTextSet()) {
-            String[] text = param.getCompressedText();
+        if (this.param.isCompressedTextSet()) {
+            final String[] text = this.param.getCompressedText();
 
-            for (int i = 0; i < text.length/2; i++) {
-                byte[] keyword = text[2*i].getBytes();
-                byte[] value = text[2*i + 1].getBytes();
+            for (int i = 0; i < text.length / 2; i++) {
+                final byte[] keyword = text[2 * i].getBytes();
+                final byte[] value = text[2 * i + 1].getBytes();
 
-                ChunkStream cs = new ChunkStream("zTXt");
+                final ChunkStream cs = new ChunkStream("zTXt");
 
                 cs.write(keyword, 0, Math.min(keyword.length, 79));
                 cs.write(0);
                 cs.write(0);
 
-                DeflaterOutputStream dos = new DeflaterOutputStream(cs);
+                final DeflaterOutputStream dos = new DeflaterOutputStream(cs);
                 dos.write(value);
                 dos.finish();
                 dos.close();
 
-                cs.writeToStream(dataOutput);
+                cs.writeToStream(this.dataOutput);
                 cs.close();
             }
         }
     }
 
     private void writePrivateChunks() throws IOException {
-        int numChunks = param.getNumPrivateChunks();
+        final int numChunks = this.param.getNumPrivateChunks();
         for (int i = 0; i < numChunks; i++) {
-            String type = param.getPrivateChunkType(i);
-            byte[] data = param.getPrivateChunkData(i);
+            final String type = this.param.getPrivateChunkType(i);
+            final byte[] data = this.param.getPrivateChunkData(i);
 
-            ChunkStream cs = new ChunkStream(type);
+            final ChunkStream cs = new ChunkStream(type);
             cs.write(data);
-            cs.writeToStream(dataOutput);
+            cs.writeToStream(this.dataOutput);
             cs.close();
         }
     }
 
     /**
-     * Analyzes a set of palettes and determines if it can be expressed
-     * as a standard set of gray values, with zero or one values being
-     * fully transparent and the rest being fully opaque.  If it
-     * is possible to express the data thusly, the method returns
-     * a suitable instance of PNGEncodeParam.Gray; otherwise it
-     * returns null.
+     * Analyzes a set of palettes and determines if it can be expressed as a
+     * standard set of gray values, with zero or one values being fully
+     * transparent and the rest being fully opaque. If it is possible to express
+     * the data thusly, the method returns a suitable instance of
+     * PNGEncodeParam.Gray; otherwise it returns null.
      */
-    private PNGEncodeParam.Gray createGrayParam(byte[] redPalette,
-                                                byte[] greenPalette,
-                                                byte[] bluePalette,
-                                                byte[] alphaPalette) {
-        PNGEncodeParam.Gray param = new PNGEncodeParam.Gray();
+    private PNGEncodeParam.Gray createGrayParam(final byte[] redPalette,
+            final byte[] greenPalette, final byte[] bluePalette,
+            final byte[] alphaPalette) {
+        final PNGEncodeParam.Gray param = new PNGEncodeParam.Gray();
         int numTransparent = 0;
 
-        int grayFactor = 255/((1 << bitDepth) - 1);
-        int entries = 1 << bitDepth;
+        final int grayFactor = 255 / ((1 << this.bitDepth) - 1);
+        final int entries = 1 << this.bitDepth;
         for (int i = 0; i < entries; i++) {
-            byte red = redPalette[i];
-            if ((red != i*grayFactor) ||
-                (red != greenPalette[i]) ||
-                (red != bluePalette[i])) {
+            final byte red = redPalette[i];
+            if (red != i * grayFactor || red != greenPalette[i]
+                    || red != bluePalette[i]) {
                 return null;
             }
 
             // All alphas must be 255 except at most 1 can be 0
-            byte alpha = alphaPalette[i];
-            if (alpha == (byte)0) {
+            final byte alpha = alphaPalette[i];
+            if (alpha == (byte) 0) {
                 param.setTransparentGray(i);
 
                 ++numTransparent;
                 if (numTransparent > 1) {
                     return null;
                 }
-            } else if (alpha != (byte)255) {
+            } else if (alpha != (byte) 255) {
                 return null;
             }
         }
@@ -867,28 +876,27 @@ public class PNGImageEncoder extends ImageEncoderImpl {
     }
 
     /**
-     * This method encodes a <code>RenderedImage</code> into PNG.
-     * The stream into which the PNG is dumped is not closed at
-     * the end of the operation, this should be done if needed
-     * by the caller of this method.
+     * This method encodes a <code>RenderedImage</code> into PNG. The stream
+     * into which the PNG is dumped is not closed at the end of the operation,
+     * this should be done if needed by the caller of this method.
      */
     @Override
-    public void encode(RenderedImage im) throws IOException {
+    public void encode(final RenderedImage im) throws IOException {
         this.image = im;
-        this.width = image.getWidth();
-        this.height = image.getHeight();
+        this.width = this.image.getWidth();
+        this.height = this.image.getHeight();
 
-        SampleModel sampleModel = image.getSampleModel();
+        final SampleModel sampleModel = this.image.getSampleModel();
 
-        int[] sampleSize = sampleModel.getSampleSize();
+        final int[] sampleSize = sampleModel.getSampleSize();
 
         // Set bitDepth to a sentinel value
         this.bitDepth = -1;
         this.bitShift = 0;
 
         // Allow user to override the bit depth of gray images
-        if (param instanceof PNGEncodeParam.Gray) {
-            PNGEncodeParam.Gray paramg = (PNGEncodeParam.Gray)param;
+        if (this.param instanceof PNGEncodeParam.Gray) {
+            final PNGEncodeParam.Gray paramg = (PNGEncodeParam.Gray) this.param;
             if (paramg.isBitDepthSet()) {
                 this.bitDepth = paramg.getBitDepth();
             }
@@ -905,101 +913,104 @@ public class PNGImageEncoder extends ImageEncoderImpl {
             this.bitDepth = sampleSize[0];
             // Ensure all channels have the same bit depth
             for (int i = 1; i < sampleSize.length; i++) {
-                if (sampleSize[i] != bitDepth) {
-                    throw new RuntimeException(PropertyUtil.getString("PNGImageEncoder0"));
+                if (sampleSize[i] != this.bitDepth) {
+                    throw new RuntimeException(
+                            PropertyUtil.getString("PNGImageEncoder0"));
                 }
             }
 
             // Round bit depth up to a power of 2
-            if (bitDepth > 2 && bitDepth < 4) {
-                bitDepth = 4;
-            } else if (bitDepth > 4 && bitDepth < 8) {
-                bitDepth = 8;
-            } else if (bitDepth > 8 && bitDepth < 16) {
-                bitDepth = 16;
-            } else if (bitDepth > 16) {
-                throw new RuntimeException(PropertyUtil.getString("PNGImageEncoder1"));
+            if (this.bitDepth > 2 && this.bitDepth < 4) {
+                this.bitDepth = 4;
+            } else if (this.bitDepth > 4 && this.bitDepth < 8) {
+                this.bitDepth = 8;
+            } else if (this.bitDepth > 8 && this.bitDepth < 16) {
+                this.bitDepth = 16;
+            } else if (this.bitDepth > 16) {
+                throw new RuntimeException(
+                        PropertyUtil.getString("PNGImageEncoder1"));
             }
         }
 
         this.numBands = sampleModel.getNumBands();
-        this.bpp = numBands*((bitDepth == 16) ? 2 : 1);
+        this.bpp = this.numBands * (this.bitDepth == 16 ? 2 : 1);
 
-        ColorModel colorModel = image.getColorModel();
+        final ColorModel colorModel = this.image.getColorModel();
         if (colorModel instanceof IndexColorModel) {
-            if (bitDepth < 1 || bitDepth > 8) {
-                throw new RuntimeException(PropertyUtil.getString("PNGImageEncoder2"));
+            if (this.bitDepth < 1 || this.bitDepth > 8) {
+                throw new RuntimeException(
+                        PropertyUtil.getString("PNGImageEncoder2"));
             }
             if (sampleModel.getNumBands() != 1) {
-                throw new RuntimeException(PropertyUtil.getString("PNGImageEncoder3"));
+                throw new RuntimeException(
+                        PropertyUtil.getString("PNGImageEncoder3"));
             }
 
-            IndexColorModel icm = (IndexColorModel)colorModel;
+            final IndexColorModel icm = (IndexColorModel) colorModel;
             int size = icm.getMapSize();
 
-            redPalette = new byte[size];
-            greenPalette = new byte[size];
-            bluePalette = new byte[size];
-            alphaPalette = new byte[size];
+            this.redPalette = new byte[size];
+            this.greenPalette = new byte[size];
+            this.bluePalette = new byte[size];
+            this.alphaPalette = new byte[size];
 
-            icm.getReds(redPalette);
-            icm.getGreens(greenPalette);
-            icm.getBlues(bluePalette);
-            icm.getAlphas(alphaPalette);
+            icm.getReds(this.redPalette);
+            icm.getGreens(this.greenPalette);
+            icm.getBlues(this.bluePalette);
+            icm.getAlphas(this.alphaPalette);
 
             this.bpp = 1;
 
-            if (param == null) {
-                param = createGrayParam(redPalette,
-                                        greenPalette,
-                                        bluePalette,
-                                        alphaPalette);
+            if (this.param == null) {
+                this.param = createGrayParam(this.redPalette,
+                        this.greenPalette, this.bluePalette, this.alphaPalette);
             }
 
             // If param is still null, it can't be expressed as gray
-            if (param == null) {
-                param = new PNGEncodeParam.Palette();
+            if (this.param == null) {
+                this.param = new PNGEncodeParam.Palette();
             }
 
-            if (param instanceof PNGEncodeParam.Palette) {
+            if (this.param instanceof PNGEncodeParam.Palette) {
                 // If palette not set in param, create one from the ColorModel.
-                PNGEncodeParam.Palette parami = (PNGEncodeParam.Palette)param;
+                final PNGEncodeParam.Palette parami = (PNGEncodeParam.Palette) this.param;
                 if (parami.isPaletteSet()) {
-                    int[] palette = parami.getPalette();
-                    size = palette.length/3;
+                    final int[] palette = parami.getPalette();
+                    size = palette.length / 3;
 
                     int index = 0;
                     for (int i = 0; i < size; i++) {
-                        redPalette[i] = (byte)palette[index++];
-                        greenPalette[i] = (byte)palette[index++];
-                        bluePalette[i] = (byte)palette[index++];
-                        alphaPalette[i] = (byte)255;
+                        this.redPalette[i] = (byte) palette[index++];
+                        this.greenPalette[i] = (byte) palette[index++];
+                        this.bluePalette[i] = (byte) palette[index++];
+                        this.alphaPalette[i] = (byte) 255;
                     }
                 }
                 this.colorType = PNG_COLOR_PALETTE;
-            } else if (param instanceof PNGEncodeParam.Gray) {
-                redPalette = greenPalette = bluePalette = alphaPalette = null;
+            } else if (this.param instanceof PNGEncodeParam.Gray) {
+                this.redPalette = this.greenPalette = this.bluePalette = this.alphaPalette = null;
                 this.colorType = PNG_COLOR_GRAY;
             } else {
-                throw new RuntimeException(PropertyUtil.getString("PNGImageEncoder4"));
+                throw new RuntimeException(
+                        PropertyUtil.getString("PNGImageEncoder4"));
             }
-        } else if (numBands == 1) {
-            if (param == null) {
-                param = new PNGEncodeParam.Gray();
+        } else if (this.numBands == 1) {
+            if (this.param == null) {
+                this.param = new PNGEncodeParam.Gray();
             }
             this.colorType = PNG_COLOR_GRAY;
-        } else if (numBands == 2) {
-            if (param == null) {
-                param = new PNGEncodeParam.Gray();
+        } else if (this.numBands == 2) {
+            if (this.param == null) {
+                this.param = new PNGEncodeParam.Gray();
             }
 
-            if (param.isTransparencySet()) {
-                skipAlpha = true;
-                numBands = 1;
-                if ((sampleSize[0] == 8) && (bitDepth < 8)) {
-                    compressGray = true;
+            if (this.param.isTransparencySet()) {
+                this.skipAlpha = true;
+                this.numBands = 1;
+                if (sampleSize[0] == 8 && this.bitDepth < 8) {
+                    this.compressGray = true;
                 }
-                bpp = (bitDepth == 16) ? 2 : 1;
+                this.bpp = this.bitDepth == 16 ? 2 : 1;
                 this.colorType = PNG_COLOR_GRAY;
             } else {
                 if (this.bitDepth < 8) {
@@ -1007,26 +1018,26 @@ public class PNGImageEncoder extends ImageEncoderImpl {
                 }
                 this.colorType = PNG_COLOR_GRAY_ALPHA;
             }
-        } else if (numBands == 3) {
-            if (param == null) {
-                param = new PNGEncodeParam.RGB();
+        } else if (this.numBands == 3) {
+            if (this.param == null) {
+                this.param = new PNGEncodeParam.RGB();
             }
             this.colorType = PNG_COLOR_RGB;
-        } else if (numBands == 4) {
-            if (param == null) {
-                param = new PNGEncodeParam.RGB();
+        } else if (this.numBands == 4) {
+            if (this.param == null) {
+                this.param = new PNGEncodeParam.RGB();
             }
-            if (param.isTransparencySet()) {
-                skipAlpha = true;
-                numBands = 3;
-                bpp = (bitDepth == 16) ? 6 : 3;
+            if (this.param.isTransparencySet()) {
+                this.skipAlpha = true;
+                this.numBands = 3;
+                this.bpp = this.bitDepth == 16 ? 6 : 3;
                 this.colorType = PNG_COLOR_RGB;
             } else {
                 this.colorType = PNG_COLOR_RGB_ALPHA;
             }
         }
 
-        interlace = param.getInterlacing();
+        this.interlace = this.param.getInterlacing();
 
         writeMagic();
 
@@ -1056,7 +1067,7 @@ public class PNGImageEncoder extends ImageEncoderImpl {
 
         writeIEND();
 
-        dataOutput.flush();
-        dataOutput.close();
+        this.dataOutput.flush();
+        this.dataOutput.close();
     }
 }

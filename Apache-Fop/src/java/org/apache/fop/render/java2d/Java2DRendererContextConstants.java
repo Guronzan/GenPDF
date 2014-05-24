@@ -22,10 +22,11 @@ package org.apache.fop.render.java2d;
 import org.apache.fop.render.RendererContextConstants;
 
 /**
- * Defines a number of standard constants (keys) for use by the RendererContext class.
+ * Defines a number of standard constants (keys) for use by the RendererContext
+ * class.
  */
 public interface Java2DRendererContextConstants extends
-        RendererContextConstants {
+RendererContextConstants {
 
     /** The current Java2DGraphicsState. */
     String JAVA2D_STATE = "state";

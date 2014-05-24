@@ -19,21 +19,20 @@
 
 package org.apache.fop.render.afp.extensions;
 
+import org.apache.fop.apps.FOPException;
+import org.apache.fop.fo.FONode;
+import org.apache.fop.fo.PropertyList;
+import org.apache.fop.fo.extensions.ExtensionAttachment;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-import org.apache.fop.apps.FOPException;
-import org.apache.fop.fo.FONode;
-import org.apache.fop.fo.PropertyList;
-import org.apache.fop.fo.extensions.ExtensionAttachment;
-
 /**
  * This class extends the org.apache.fop.extensions.ExtensionObj class. The
- * object faciliates extraction of elements from formatted objects based on
- * the static list as defined in the AFPElementMapping implementation.
+ * object faciliates extraction of elements from formatted objects based on the
+ * static list as defined in the AFPElementMapping implementation.
  * <p/>
  */
 public class AFPPageSegmentElement extends AFPPageSetupElement {
@@ -43,29 +42,29 @@ public class AFPPageSegmentElement extends AFPPageSetupElement {
     /**
      * Constructs an AFP object (called by Maker).
      *
-     * @param parent the parent formatting object
-     * @param name the name of the afp element
+     * @param parent
+     *            the parent formatting object
+     * @param name
+     *            the name of the afp element
      */
-    public AFPPageSegmentElement(FONode parent, String name) {
+    public AFPPageSegmentElement(final FONode parent, final String name) {
         super(parent, name);
     }
 
-
     private AFPPageSegmentSetup getPageSetupAttachment() {
-        return (AFPPageSegmentSetup)getExtensionAttachment();
+        return (AFPPageSegmentSetup) getExtensionAttachment();
     }
 
-
     /** {@inheritDoc} */
-    public void processNode(String elementName, Locator locator,
-                            Attributes attlist, PropertyList propertyList)
-                                throws FOPException {
+    @Override
+    public void processNode(final String elementName, final Locator locator,
+            final Attributes attlist, final PropertyList propertyList)
+            throws FOPException {
 
-        AFPPageSegmentSetup pageSetup = getPageSetupAttachment();
+        final AFPPageSegmentSetup pageSetup = getPageSetupAttachment();
         super.processNode(elementName, locator, attlist, propertyList);
 
-
-        String attr = attlist.getValue(ATT_RESOURCE_SRC);
+        final String attr = attlist.getValue(ATT_RESOURCE_SRC);
 
         if (attr != null && attr.length() > 0) {
             pageSetup.setResourceSrc(attr);
@@ -74,6 +73,7 @@ public class AFPPageSegmentElement extends AFPPageSetupElement {
     }
 
     /** {@inheritDoc} */
+    @Override
     protected ExtensionAttachment instantiateExtensionAttachment() {
         return new AFPPageSegmentSetup(getLocalName());
     }
@@ -90,60 +90,66 @@ public class AFPPageSegmentElement extends AFPPageSetupElement {
         /**
          * Default constructor.
          *
-         * @param elementName the name of the setup code object, may be null
+         * @param elementName
+         *            the name of the setup code object, may be null
          */
-        public AFPPageSegmentSetup(String elementName) {
+        public AFPPageSegmentSetup(final String elementName) {
             super(elementName);
         }
 
         /**
          * Returns the source URI for the page segment.
+         * 
          * @return the source URI
          */
         public String getResourceSrc() {
-            return resourceSrc;
+            return this.resourceSrc;
         }
 
         /**
          * Sets the source URI for the page segment.
-         * @param resourceSrc the source URI
+         * 
+         * @param resourceSrc
+         *            the source URI
          */
-        public void setResourceSrc(String resourceSrc) {
+        public void setResourceSrc(final String resourceSrc) {
             this.resourceSrc = resourceSrc.trim();
         }
 
-
         /** {@inheritDoc} */
-        public void toSAX(ContentHandler handler) throws SAXException {
-            AttributesImpl atts = new AttributesImpl();
-            if (name != null && name.length() > 0) {
-                atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", name);
+        @Override
+        public void toSAX(final ContentHandler handler) throws SAXException {
+            final AttributesImpl atts = new AttributesImpl();
+            if (this.name != null && this.name.length() > 0) {
+                atts.addAttribute(null, ATT_NAME, ATT_NAME, "CDATA", this.name);
             }
-            if (value != null && value.length() > 0) {
-                atts.addAttribute(null, ATT_VALUE, ATT_VALUE, "CDATA", value);
-            }
-
-            if (resourceSrc != null && resourceSrc.length() > 0) {
-                atts.addAttribute(null, ATT_RESOURCE_SRC, ATT_RESOURCE_SRC, "CDATA", resourceSrc);
+            if (this.value != null && this.value.length() > 0) {
+                atts.addAttribute(null, ATT_VALUE, ATT_VALUE, "CDATA",
+                        this.value);
             }
 
-            handler.startElement(CATEGORY, elementName, elementName, atts);
-            if (content != null && content.length() > 0) {
-                char[] chars = content.toCharArray();
+            if (this.resourceSrc != null && this.resourceSrc.length() > 0) {
+                atts.addAttribute(null, ATT_RESOURCE_SRC, ATT_RESOURCE_SRC,
+                        "CDATA", this.resourceSrc);
+            }
+
+            handler.startElement(CATEGORY, this.elementName, this.elementName,
+                    atts);
+            if (this.content != null && this.content.length() > 0) {
+                final char[] chars = this.content.toCharArray();
                 handler.characters(chars, 0, chars.length);
             }
-            handler.endElement(CATEGORY, elementName, elementName);
+            handler.endElement(CATEGORY, this.elementName, this.elementName);
         }
 
         /** {@inheritDoc} */
+        @Override
         public String toString() {
             return "AFPPageSegmentSetup(element-name=" + getElementName()
-                + " name=" + getName()
-                + " value=" + getValue()
-                + " resource=" + getResourceSrc() + ")";
+                    + " name=" + getName() + " value=" + getValue()
+                    + " resource=" + getResourceSrc() + ")";
         }
 
     }
-
 
 }

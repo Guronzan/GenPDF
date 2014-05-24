@@ -43,11 +43,15 @@ public class PageGroup extends AbstractResourceEnvironmentGroupContainer {
     /**
      * Constructor for the PageGroup.
      *
-     * @param factory the resource manager
-     * @param name the name of the page group
-     * @param tleSequence current start tle sequence number within stream
+     * @param factory
+     *            the resource manager
+     * @param name
+     *            the name of the page group
+     * @param tleSequence
+     *            current start tle sequence number within stream
      */
-    public PageGroup(Factory factory, String name, int tleSequence) {
+    public PageGroup(final Factory factory, final String name,
+            final int tleSequence) {
         super(factory, name);
         this.tleSequence = tleSequence;
     }
@@ -60,11 +64,12 @@ public class PageGroup extends AbstractResourceEnvironmentGroupContainer {
      * @param value
      *            the value of the tag
      */
-    public void createTagLogicalElement(String name, String value) {
-        TagLogicalElement tle = factory.createTagLogicalElement(name, value, tleSequence);
+    public void createTagLogicalElement(final String name, final String value) {
+        final TagLogicalElement tle = this.factory.createTagLogicalElement(
+                name, value, this.tleSequence);
         if (!getTagLogicalElements().contains(tle)) {
             getTagLogicalElements().add(tle);
-            tleSequence++;
+            this.tleSequence++;
         }
     }
 
@@ -72,30 +77,33 @@ public class PageGroup extends AbstractResourceEnvironmentGroupContainer {
      * Method to mark the end of the page group.
      */
     public void endPageGroup() {
-        complete = true;
+        this.complete = true;
     }
 
     /** {@inheritDoc} */
-    protected void writeStart(OutputStream os) throws IOException {
-        byte[] data = new byte[17];
+    @Override
+    protected void writeStart(final OutputStream os) throws IOException {
+        final byte[] data = new byte[17];
         copySF(data, Type.BEGIN, Category.PAGE_GROUP);
         os.write(data);
     }
 
     /** {@inheritDoc} */
-    protected void writeEnd(OutputStream os) throws IOException {
-        byte[] data = new byte[17];
+    @Override
+    protected void writeEnd(final OutputStream os) throws IOException {
+        final byte[] data = new byte[17];
         copySF(data, Type.END, Category.PAGE_GROUP);
         os.write(data);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return this.getName();
+        return getName();
     }
 
     /** @return the TLE sequence number */
     public int getTleSequence() {
-        return tleSequence;
+        return this.tleSequence;
     }
 }

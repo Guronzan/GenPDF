@@ -22,17 +22,19 @@ package org.apache.fop.fo.expr;
 import org.apache.fop.fo.properties.NumberProperty;
 import org.apache.fop.fo.properties.Property;
 
-
 class FloorFunction extends FunctionBase {
 
     /** {@inheritDoc} */
+    @Override
     public int getRequiredArgsCount() {
         return 1;
     }
 
     /** {@inheritDoc} */
-    public Property eval(Property[] args, PropertyInfo pInfo) throws PropertyException {
-        Number dbl = args[0].getNumber();
+    @Override
+    public Property eval(final Property[] args, final PropertyInfo pInfo)
+            throws PropertyException {
+        final Number dbl = args[0].getNumber();
         if (dbl == null) {
             throw new PropertyException("Non number operand to floor function");
         }
@@ -40,4 +42,3 @@ class FloorFunction extends FunctionBase {
     }
 
 }
-

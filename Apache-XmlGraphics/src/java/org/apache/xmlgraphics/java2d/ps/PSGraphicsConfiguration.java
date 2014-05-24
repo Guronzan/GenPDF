@@ -29,48 +29,47 @@ import java.awt.image.ColorModel;
 import java.awt.image.VolatileImage;
 
 /**
- * Our implementation of the class that returns information about
- * roughly what we can handle and want to see (alpha for example).
+ * Our implementation of the class that returns information about roughly what
+ * we can handle and want to see (alpha for example).
  */
 class PSGraphicsConfiguration extends GraphicsConfiguration {
 
     // We use this to get a good colormodel..
-    private static final BufferedImage BI_WITH_ALPHA
-        = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+    private static final BufferedImage BI_WITH_ALPHA = new BufferedImage(1, 1,
+            BufferedImage.TYPE_INT_ARGB);
     // We use this to get a good colormodel..
-    private static final BufferedImage BI_WITHOUT_ALPHA
-        = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+    private static final BufferedImage BI_WITHOUT_ALPHA = new BufferedImage(1,
+            1, BufferedImage.TYPE_INT_RGB);
 
     /** {@inheritDoc} */
     @Override
-    public BufferedImage createCompatibleImage(int width, int height,
-            int transparency) {
+    public BufferedImage createCompatibleImage(final int width,
+            final int height, final int transparency) {
         if (transparency == Transparency.OPAQUE) {
-            return new BufferedImage(width, height,
-                                     BufferedImage.TYPE_INT_RGB);
+            return new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         } else {
-            return new BufferedImage(width, height,
-                                     BufferedImage.TYPE_INT_ARGB);
+            return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public BufferedImage createCompatibleImage(int width, int height) {
-        return new BufferedImage(width, height,
-                                 BufferedImage.TYPE_INT_ARGB);
+    public BufferedImage createCompatibleImage(final int width, final int height) {
+        return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
     }
 
     /** {@inheritDoc} */
     @Override
-    public VolatileImage createCompatibleVolatileImage(int width, int height) {
+    public VolatileImage createCompatibleVolatileImage(final int width,
+            final int height) {
         throw new UnsupportedOperationException(
                 "Creation of VolatileImage instances is not supported");
     }
 
     /** {@inheritDoc} */
     @Override
-    public VolatileImage createCompatibleVolatileImage(int width, int height, int transparency) {
+    public VolatileImage createCompatibleVolatileImage(final int width,
+            final int height, final int transparency) {
         throw new UnsupportedOperationException(
                 "Creation of VolatileImage instances is not supported");
     }
@@ -78,7 +77,8 @@ class PSGraphicsConfiguration extends GraphicsConfiguration {
     /** {@inheritDoc} */
     @Override
     public Rectangle getBounds() {
-        //Not applicable to vector graphic devices. Up to date, it works like this.
+        // Not applicable to vector graphic devices. Up to date, it works like
+        // this.
         return null;
     }
 
@@ -90,7 +90,7 @@ class PSGraphicsConfiguration extends GraphicsConfiguration {
 
     /** {@inheritDoc} */
     @Override
-    public ColorModel getColorModel(int transparency) {
+    public ColorModel getColorModel(final int transparency) {
         if (transparency == Transparency.OPAQUE) {
             return BI_WITHOUT_ALPHA.getColorModel();
         } else {

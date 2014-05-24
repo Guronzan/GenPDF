@@ -35,25 +35,29 @@ import org.apache.xmlgraphics.util.UnitConv;
 /**
  * Image preloader for JPEG images.
  */
-public class PreloaderJPEG extends AbstractImagePreloader implements JPEGConstants {
+public class PreloaderJPEG extends AbstractImagePreloader implements
+JPEGConstants {
 
     private static final int JPG_SIG_LENGTH = 3;
 
-    /** {@inheritDoc}
-     * @throws ImageException */
-    public ImageInfo preloadImage(String uri, Source src, ImageContext context)
-                throws IOException, ImageException {
+    /**
+     * {@inheritDoc}
+     *
+     * @throws ImageException
+     */
+    @Override
+    public ImageInfo preloadImage(final String uri, final Source src,
+            final ImageContext context) throws IOException, ImageException {
         if (!ImageUtil.hasImageInputStream(src)) {
             return null;
         }
-        ImageInputStream in = ImageUtil.needImageInputStream(src);
-        byte[] header = getHeader(in, JPG_SIG_LENGTH);
-        boolean supported = ((header[0] == (byte)MARK)
-                && (header[1] == (byte)SOI)
-                && (header[2] == (byte)MARK));
+        final ImageInputStream in = ImageUtil.needImageInputStream(src);
+        final byte[] header = getHeader(in, JPG_SIG_LENGTH);
+        final boolean supported = header[0] == (byte) MARK
+                && header[1] == (byte) SOI && header[2] == (byte) MARK;
 
         if (supported) {
-            ImageInfo info = new ImageInfo(uri, MimeConstants.MIME_JPEG);
+            final ImageInfo info = new ImageInfo(uri, MimeConstants.MIME_JPEG);
             info.setSize(determineSize(in, context));
             return info;
         } else {
@@ -61,18 +65,18 @@ public class PreloaderJPEG extends AbstractImagePreloader implements JPEGConstan
         }
     }
 
-    private ImageSize determineSize(ImageInputStream in, ImageContext context)
-            throws IOException, ImageException {
+    private ImageSize determineSize(final ImageInputStream in,
+            final ImageContext context) throws IOException {
         in.mark();
         try {
-            ImageSize size = new ImageSize();
-            JPEGFile jpeg = new JPEGFile(in);
+            final ImageSize size = new ImageSize();
+            final JPEGFile jpeg = new JPEGFile(in);
 
-            //TODO Read resolution from EXIF if there's no APP0
-            //(for example with JPEGs from digicams)
+            // TODO Read resolution from EXIF if there's no APP0
+            // (for example with JPEGs from digicams)
             while (true) {
-                int segID = jpeg.readMarkerSegment();
-                //System.out.println("Segment: " + Integer.toHexString(segID));
+                final int segID = jpeg.readMarkerSegment();
+                // log.info("Segment: " + Integer.toHexString(segID));
                 switch (segID) {
                 case SOI:
                 case NULL:
@@ -80,19 +84,18 @@ public class PreloaderJPEG extends AbstractImagePreloader implements JPEGConstan
                 case APP0:
                     int reclen = jpeg.readSegmentLength();
                     in.skipBytes(7);
-                    int densityUnits = in.read();
-                    int xdensity = in.readUnsignedShort();
-                    int ydensity = in.readUnsignedShort();
+                    final int densityUnits = in.read();
+                    final int xdensity = in.readUnsignedShort();
+                    final int ydensity = in.readUnsignedShort();
                     if (densityUnits == 2) {
-                        //dots per centimeter
-                        size.setResolution(
-                                xdensity * UnitConv.IN2CM,
-                                ydensity * UnitConv.IN2CM);
+                        // dots per centimeter
+                        size.setResolution(xdensity * UnitConv.IN2CM, ydensity
+                                * UnitConv.IN2CM);
                     } else if (densityUnits == 1) {
-                        //dots per inch
+                        // dots per inch
                         size.setResolution(xdensity, ydensity);
                     } else {
-                        //resolution not specified
+                        // resolution not specified
                         size.setResolution(context.getSourceResolution());
                     }
                     if (size.getWidthPx() != 0) {
@@ -107,8 +110,8 @@ public class PreloaderJPEG extends AbstractImagePreloader implements JPEGConstan
                 case SOFA:
                     reclen = jpeg.readSegmentLength();
                     in.skipBytes(1);
-                    int height = in.readUnsignedShort();
-                    int width = in.readUnsignedShort();
+                    final int height = in.readUnsignedShort();
+                    final int width = in.readUnsignedShort();
                     size.setSizeInPixels(width, height);
                     if (size.getDpiHorizontal() != 0) {
                         size.calcSizeFromPixels();
@@ -118,7 +121,8 @@ public class PreloaderJPEG extends AbstractImagePreloader implements JPEGConstan
                     break;
                 case SOS:
                 case EOI:
-                    //Break as early as possible (we don't want to read the whole file here)
+                    // Break as early as possible (we don't want to read the
+                    // whole file here)
                     if (size.getDpiHorizontal() == 0) {
                         size.setResolution(context.getSourceResolution());
                         size.calcSizeFromPixels();

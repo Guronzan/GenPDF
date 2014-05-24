@@ -30,31 +30,36 @@ public final class GraphicsBox extends AbstractGraphicsCoord {
     /**
      * Constructor
      *
-     * @param coords the x/y coordinates for this object
+     * @param coords
+     *            the x/y coordinates for this object
      */
-    public GraphicsBox(int[] coords) {
+    public GraphicsBox(final int[] coords) {
         super(coords);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 12;
     }
 
     /** {@inheritDoc} */
+    @Override
     int getCoordinateDataStartIndex() {
         return 4;
     }
 
     /** {@inheritDoc} */
+    @Override
     byte getOrderCode() {
-        return (byte)0xC0;
+        return (byte) 0xC0;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = getData();
-        data[2] = (byte)0x20; // CONTROL draw control flags
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = getData();
+        data[2] = (byte) 0x20; // CONTROL draw control flags
         data[3] = 0x00; // reserved
 
         os.write(data);

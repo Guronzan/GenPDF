@@ -20,14 +20,15 @@
 package org.apache.xmlgraphics.image.loader;
 
 /**
- * The ImageContext interface provides session-independent information (mainly configuration
- * values).
+ * The ImageContext interface provides session-independent information (mainly
+ * configuration values).
  */
 public interface ImageContext {
 
     /**
-     * Returns the resolution (in dpi) that is to be used when interpreting pixel sizes where no
-     * resolution information is available.
+     * Returns the resolution (in dpi) that is to be used when interpreting
+     * pixel sizes where no resolution information is available.
+     * 
      * @return the source resolution (in dpi)
      */
     float getSourceResolution();

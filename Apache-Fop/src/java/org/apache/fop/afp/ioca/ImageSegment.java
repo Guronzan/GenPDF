@@ -47,7 +47,7 @@ public class ImageSegment extends AbstractNamedAFPObject {
     /**
      * Constructor for the image segment with the specified name, the name must
      * be a fixed length of eight characters.
-     * 
+     *
      * @param factory
      *            the object factory
      *
@@ -61,7 +61,7 @@ public class ImageSegment extends AbstractNamedAFPObject {
 
     /**
      * Returns the image content object associated with this image segment.
-     * 
+     *
      * @return the image content
      */
     public ImageContent getImageContent() {
@@ -153,10 +153,10 @@ public class ImageSegment extends AbstractNamedAFPObject {
         // byte[] nameBytes = getNameBytes();
         final byte[] data = new byte[] { 0x70, // ID
                 0x00, // Length
-        /*
-         * nameBytes[0], // Name byte 1 nameBytes[1], // Name byte 2
-         * nameBytes[2], // Name byte 3 nameBytes[3], // Name byte 4
-         */
+                /*
+                 * nameBytes[0], // Name byte 1 nameBytes[1], // Name byte 2
+                 * nameBytes[2], // Name byte 3 nameBytes[3], // Name byte 4
+                 */
         };
         os.write(data);
     }

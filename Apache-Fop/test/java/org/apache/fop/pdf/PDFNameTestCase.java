@@ -25,8 +25,9 @@ import java.io.IOException;
 import org.apache.commons.io.output.CountingOutputStream;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.fail;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Test class for {@link PDFName}.
@@ -37,17 +38,19 @@ public class PDFNameTestCase extends PDFObjectTestCase {
     /**
      * Sets up the local variables
      */
+    @Override
     @Before
     public void setUp() {
-        pdfName = new PDFName("TestName");
-        pdfName.setParent(parent);
-        pdfName.setDocument(doc);
+        this.pdfName = new PDFName("TestName");
+        this.pdfName.setParent(this.parent);
+        this.pdfName.setDocument(this.doc);
 
-        pdfObjectUnderTest = pdfName;
+        this.pdfObjectUnderTest = this.pdfName;
     }
 
     /**
-     * Tests escapeName() - tests that this method escapes the necessary characters.
+     * Tests escapeName() - tests that this method escapes the necessary
+     * characters.
      */
     @Test
     public void testEscapeName() {
@@ -55,12 +58,14 @@ public class PDFNameTestCase extends PDFObjectTestCase {
             // Test for null, this is a programming error thus the NPE
             PDFName.escapeName(null);
             fail("NPE not thrown when null object given to escapeName()");
-        } catch (NullPointerException e) {
+        } catch (final NullPointerException e) {
             // PASS
         }
-        // All names are prefixed by "/", check the PDF spec for further details.
+        // All names are prefixed by "/", check the PDF spec for further
+        // details.
         assertEquals("/Test", PDFName.escapeName("Test"));
-        // Check that if the name is already prefixed with "/" it doens't do it twice
+        // Check that if the name is already prefixed with "/" it doens't do it
+        // twice
         assertEquals("/Test", PDFName.escapeName("/Test"));
         // Test with a space in the middle
         assertEquals("/Test#20test", PDFName.escapeName("Test test"));
@@ -91,7 +96,7 @@ public class PDFNameTestCase extends PDFObjectTestCase {
         checkCharacterIsEscaped('>');
     }
 
-    private void checkCharacterIsEscaped(char c) {
+    private void checkCharacterIsEscaped(final char c) {
         String str = Integer.toHexString(c >>> 4 & 0x0f).toUpperCase();
         str += Integer.toHexString(c & 0x0f).toUpperCase();
         assertEquals("/#" + str, PDFName.escapeName(String.valueOf(c)));
@@ -104,65 +109,71 @@ public class PDFNameTestCase extends PDFObjectTestCase {
         charactersNotEscapedBetween('^', '~');
     }
 
-    private void charactersNotEscapedBetween(char c1, char c2) {
+    private void charactersNotEscapedBetween(final char c1, final char c2) {
         for (char i = c1; i <= c2; i++) {
-            String str = String.valueOf(i);
-            String expected = !str.equals("/") ? "/" + str : str;
+            final String str = String.valueOf(i);
+            final String expected = !str.equals("/") ? "/" + str : str;
             assertEquals(expected, PDFName.escapeName(str));
         }
     }
 
     /**
-     * Tests toString() - this has been overridden to return the String that PDFName wraps.
+     * Tests toString() - this has been overridden to return the String that
+     * PDFName wraps.
      */
     @Test
     public void testToString() {
-        // The escape characters have already been tested in testEscapeName() so this doesn't need
+        // The escape characters have already been tested in testEscapeName() so
+        // this doesn't need
         // to be done twice.
-        PDFName test1 = new PDFName("test1");
+        final PDFName test1 = new PDFName("test1");
         assertEquals("/test1", test1.toString());
-        PDFName test2 = new PDFName("another test");
+        final PDFName test2 = new PDFName("another test");
         assertEquals("/another#20test", test2.toString());
         try {
             new PDFName(null);
             fail("NPE not thrown when null passed to constructor");
-        } catch (NullPointerException e) {
+        } catch (final NullPointerException e) {
             // PASS
         }
     }
 
     /**
-     * Tests output() - check that this object can stream itself in the correct format.
-     * @throws IOException error caused by I/O
+     * Tests output() - check that this object can stream itself in the correct
+     * format.
+     * 
+     * @throws IOException
+     *             error caused by I/O
      */
     @Test
     public void testOutput() throws IOException {
-        testOutputStreams("/TestName", pdfName);
+        testOutputStreams("/TestName", this.pdfName);
         testOutputStreams("/test#20test", new PDFName("test test"));
     }
 
     /**
-     * Test outputInline() - this writes the object reference if it is a direct object (has an
-     * object number), or writes the String representation if there is no object number.
+     * Test outputInline() - this writes the object reference if it is a direct
+     * object (has an object number), or writes the String representation if
+     * there is no object number.
      */
     @Test
     public void testOutputInline() {
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        CountingOutputStream cout = new CountingOutputStream(outStream);
-        StringBuilder textBuffer = new StringBuilder();
+        final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        final CountingOutputStream cout = new CountingOutputStream(outStream);
+        final StringBuilder textBuffer = new StringBuilder();
         try {
             // test with no object number set.
-            pdfName.outputInline(outStream, textBuffer);
+            this.pdfName.outputInline(outStream, textBuffer);
             PDFDocument.flushTextBuffer(textBuffer, cout);
             assertEquals("/TestName", outStream.toString());
 
             outStream.reset();
             // test with object number set
-            pdfName.setObjectNumber(1);
-            pdfName.outputInline(outStream, textBuffer);
+            this.pdfName.setObjectNumber(1);
+            this.pdfName.outputInline(outStream, textBuffer);
             PDFDocument.flushTextBuffer(textBuffer, cout);
             assertEquals("1 0 R", outStream.toString());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             fail("IOException: " + e.getMessage());
         }
     }

@@ -33,22 +33,25 @@ public class ResourceObjectTypeTriplet extends AbstractTriplet {
     /**
      * Main constructor
      *
-     * @param objectType the resource object type
+     * @param objectType
+     *            the resource object type
      */
-    public ResourceObjectTypeTriplet(byte objectType) {
+    public ResourceObjectTypeTriplet(final byte objectType) {
         super(RESOURCE_OBJECT);
         this.objectType = objectType;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDataLength() {
         return 10;
     }
 
     /** {@inheritDoc} */
-    public void writeToStream(OutputStream os) throws IOException {
-        byte[] data = getData();
-        data[2] = objectType;
+    @Override
+    public void writeToStream(final OutputStream os) throws IOException {
+        final byte[] data = getData();
+        data[2] = this.objectType;
         os.write(data);
     }
 }

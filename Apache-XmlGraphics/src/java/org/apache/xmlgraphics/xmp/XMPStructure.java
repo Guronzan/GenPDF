@@ -22,18 +22,17 @@ package org.apache.xmlgraphics.xmp;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.xmlgraphics.util.QName;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
-
-import org.apache.xmlgraphics.util.QName;
 
 /**
  * Represents an XMP structure as defined by the XMP specification.
  */
 public class XMPStructure extends XMPComplexValue implements PropertyAccess {
 
-    private Map properties = new java.util.HashMap();
+    private final Map properties = new java.util.HashMap();
 
     /**
      * Main constructor
@@ -42,66 +41,76 @@ public class XMPStructure extends XMPComplexValue implements PropertyAccess {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Object getSimpleValue() {
         return null;
     }
 
     /** {@inheritDoc} */
-    public void setProperty(XMPProperty prop) {
-        properties.put(prop.getName(), prop);
+    @Override
+    public void setProperty(final XMPProperty prop) {
+        this.properties.put(prop.getName(), prop);
     }
 
     /** {@inheritDoc} */
-    public XMPProperty getProperty(String uri, String localName) {
+    @Override
+    public XMPProperty getProperty(final String uri, final String localName) {
         return getProperty(new QName(uri, localName));
     }
 
     /** {@inheritDoc} */
+    @Override
     public XMPProperty getValueProperty() {
         return getProperty(XMPConstants.RDF_VALUE);
     }
 
     /** {@inheritDoc} */
-    public XMPProperty getProperty(QName name) {
-        XMPProperty prop = (XMPProperty)properties.get(name);
+    @Override
+    public XMPProperty getProperty(final QName name) {
+        final XMPProperty prop = (XMPProperty) this.properties.get(name);
         return prop;
     }
 
     /** {@inheritDoc} */
-    public XMPProperty removeProperty(QName name) {
-        return (XMPProperty)properties.remove(name);
+    @Override
+    public XMPProperty removeProperty(final QName name) {
+        return (XMPProperty) this.properties.remove(name);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getPropertyCount() {
         return this.properties.size();
     }
 
     /** {@inheritDoc} */
+    @Override
     public Iterator iterator() {
         return this.properties.keySet().iterator();
     }
 
     /** {@inheritDoc} */
-    public void toSAX(ContentHandler handler) throws SAXException {
-        AttributesImpl atts = new AttributesImpl();
+    @Override
+    public void toSAX(final ContentHandler handler) throws SAXException {
+        final AttributesImpl atts = new AttributesImpl();
         atts.clear();
-        handler.startElement(XMPConstants.RDF_NAMESPACE, "RDF", "rdf:Description", atts);
+        handler.startElement(XMPConstants.RDF_NAMESPACE, "RDF",
+                "rdf:Description", atts);
 
-        Iterator props = properties.values().iterator();
+        final Iterator props = this.properties.values().iterator();
         while (props.hasNext()) {
-            XMPProperty prop = (XMPProperty)props.next();
-            //if (prop.getName().getNamespaceURI().equals(ns)) {
-                prop.toSAX(handler);
-            //}
+            final XMPProperty prop = (XMPProperty) props.next();
+            // if (prop.getName().getNamespaceURI().equals(ns)) {
+            prop.toSAX(handler);
+            // }
         }
         handler.endElement(XMPConstants.RDF_NAMESPACE, "RDF", "rdf:Description");
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return "XMP structure: " + getPropertyCount();
     }
-
 
 }

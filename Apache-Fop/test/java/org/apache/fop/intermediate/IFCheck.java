@@ -19,9 +19,8 @@
 
 package org.apache.fop.intermediate;
 
-import org.w3c.dom.Document;
-
 import org.apache.fop.check.Check;
+import org.w3c.dom.Document;
 
 /**
  * Check interface for intermediate format checks.
@@ -30,8 +29,10 @@ public interface IFCheck extends Check {
 
     /**
      * Called to perform the check.
-     * @param intermediate the intermediate format file as a DOM document
+     * 
+     * @param intermediate
+     *            the intermediate format file as a DOM document
      */
-    void check(Document intermediate);
+    void check(final Document intermediate);
 
 }

@@ -24,26 +24,31 @@ import java.io.IOException;
 import org.apache.xmlgraphics.ps.PSGenerator;
 
 /**
- * Represents a DSC comment that is not parsed into one of the concrete DSCComment subclasses.
- * It is used whenever a DSC comment is encountered that is unknown to the parser.
+ * Represents a DSC comment that is not parsed into one of the concrete
+ * DSCComment subclasses. It is used whenever a DSC comment is encountered that
+ * is unknown to the parser.
+ * 
  * @see org.apache.xmlgraphics.ps.dsc.DSCCommentFactory
  */
 public class UnparsedDSCComment extends AbstractEvent implements DSCComment {
 
-    private String name;
+    private final String name;
     private String value;
 
     /**
      * Creates a new instance.
-     * @param name the name of the DSC comment
+     * 
+     * @param name
+     *            the name of the DSC comment
      */
-    public UnparsedDSCComment(String name) {
+    public UnparsedDSCComment(final String name) {
         this.name = name;
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#getName()
      */
+    @Override
     public String getName() {
         return this.name;
     }
@@ -51,13 +56,15 @@ public class UnparsedDSCComment extends AbstractEvent implements DSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#hasValues()
      */
+    @Override
     public boolean hasValues() {
-        return value != null;
+        return this.value != null;
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#isAtend()
      */
+    @Override
     public boolean isAtend() {
         return false;
     }
@@ -65,20 +72,23 @@ public class UnparsedDSCComment extends AbstractEvent implements DSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCComment#parseValue(java.lang.String)
      */
-    public void parseValue(String value) {
+    @Override
+    public void parseValue(final String value) {
         this.value = value;
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#generate(org.apache.xmlgraphics.ps.PSGenerator)
      */
-    public void generate(PSGenerator gen) throws IOException {
-        gen.writeln("%%" + name + (hasValues() ? ": " + value : ""));
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
+        gen.writeln("%%" + this.name + (hasValues() ? ": " + this.value : ""));
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.AbstractEvent#isDSCComment()
      */
+    @Override
     public boolean isDSCComment() {
         return true;
     }
@@ -86,6 +96,7 @@ public class UnparsedDSCComment extends AbstractEvent implements DSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#getEventType()
      */
+    @Override
     public int getEventType() {
         return DSC_COMMENT;
     }
@@ -93,6 +104,7 @@ public class UnparsedDSCComment extends AbstractEvent implements DSCComment {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.AbstractEvent#asDSCComment()
      */
+    @Override
     public DSCComment asDSCComment() {
         return this;
     }

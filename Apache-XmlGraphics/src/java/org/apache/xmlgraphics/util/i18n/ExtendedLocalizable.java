@@ -23,18 +23,18 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * This interface provides much more control over internationalization
- * than the Localizable interface.
+ * This interface provides much more control over internationalization than the
+ * Localizable interface.
  *
  * @version $Id: ExtendedLocalizable.java 1345683 2012-06-03 14:50:33Z gadams $
  *
- * Originally authored by Stephane Hillion.
+ *          Originally authored by Stephane Hillion.
  */
 public interface ExtendedLocalizable extends Localizable {
     /**
      * Sets the group to which this object belongs.
      */
-    void setLocaleGroup(LocaleGroup lg);
+    void setLocaleGroup(final LocaleGroup lg);
 
     /**
      * Returns the group to which this object belongs.
@@ -42,10 +42,10 @@ public interface ExtendedLocalizable extends Localizable {
     LocaleGroup getLocaleGroup();
 
     /**
-     * Sets the default locale for all the instances of this class in
-     * the same LocaleGroup.
+     * Sets the default locale for all the instances of this class in the same
+     * LocaleGroup.
      */
-    void setDefaultLocale(Locale l);
+    void setDefaultLocale(final Locale l);
 
     /**
      * Gets the current default locale in the LocaleGroup.
@@ -53,8 +53,8 @@ public interface ExtendedLocalizable extends Localizable {
     Locale getDefaultLocale();
 
     /**
-     * Returns the current resource bundle. Getting this object gives access
-     * to the keys in the bundle, raw string resources, arrays of raw string
+     * Returns the current resource bundle. Getting this object gives access to
+     * the keys in the bundle, raw string resources, arrays of raw string
      * resources and object resources.
      */
     ResourceBundle getResourceBundle();

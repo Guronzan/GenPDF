@@ -25,47 +25,51 @@ import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.expr.PropertyException;
 
 /**
- * Store all common relative position properties.
- * See Sec 7.12 of the XSL-FO Standard.
- * Public "structure" allows direct member access.
+ * Store all common relative position properties. See Sec 7.12 of the XSL-FO
+ * Standard. Public "structure" allows direct member access.
  */
 public class CommonRelativePosition {
     /**
      * The "relative-position" property.
      */
-    public int relativePosition;                                // CSOK: VisibilityModifier
+    public int relativePosition; // CSOK: VisibilityModifier
 
     /**
      * The "top" property.
      */
-    public Length top;                                          // CSOK: VisibilityModifier
+    public Length top; // CSOK: VisibilityModifier
 
     /**
      * The "right" property.
      */
-    public Length right;                                        // CSOK: VisibilityModifier
+    public Length right; // CSOK: VisibilityModifier
 
     /**
      * The "bottom" property.
      */
-    public Length bottom;                                       // CSOK: VisibilityModifier
+    public Length bottom; // CSOK: VisibilityModifier
 
     /**
      * The "left" property.
      */
-    public Length left;                                         // CSOK: VisibilityModifier
+    public Length left; // CSOK: VisibilityModifier
 
     /**
      * Create a CommonRelativePosition object.
-     * @param pList The PropertyList with propery values.
-     * @throws PropertyException if a property exception occurs
+     * 
+     * @param pList
+     *            The PropertyList with propery values.
+     * @throws PropertyException
+     *             if a property exception occurs
      */
-    public CommonRelativePosition(PropertyList pList) throws PropertyException {
-        relativePosition = pList.get(Constants.PR_RELATIVE_POSITION).getEnum();
-        top = pList.get(Constants.PR_TOP).getLength();
-        bottom = pList.get(Constants.PR_BOTTOM).getLength();
-        left = pList.get(Constants.PR_LEFT).getLength();
-        right = pList.get(Constants.PR_RIGHT).getLength();
+    public CommonRelativePosition(final PropertyList pList)
+            throws PropertyException {
+        this.relativePosition = pList.get(Constants.PR_RELATIVE_POSITION)
+                .getEnum();
+        this.top = pList.get(Constants.PR_TOP).getLength();
+        this.bottom = pList.get(Constants.PR_BOTTOM).getLength();
+        this.left = pList.get(Constants.PR_LEFT).getLength();
+        this.right = pList.get(Constants.PR_RIGHT).getLength();
     }
 
 }

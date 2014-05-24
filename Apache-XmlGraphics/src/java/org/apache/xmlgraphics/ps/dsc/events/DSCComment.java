@@ -30,32 +30,37 @@ public interface DSCComment extends DSCEvent {
 
     /**
      * Returns the name of the DSC comment.
+     * 
      * @return the name of the DSC comment (without the "%%" prefix)
      */
     String getName();
 
     /**
      * Parses the value of the DSC comment.
-     * @param value the value
+     * 
+     * @param value
+     *            the value
      */
-    void parseValue(String value);
+    void parseValue(final String value);
 
     /**
      * Indicates whether this DSC comment has values.
+     * 
      * @return true if the DSC comment has values
      */
     boolean hasValues();
 
     /**
      * Indicates whether the DSC comment's value is "Atend".
+     * 
      * @return true if the value is "Atend"
      */
     boolean isAtend();
 
     /**
-     * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#generate(
-     *      org.apache.xmlgraphics.ps.PSGenerator)
+     * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#generate(org.apache.xmlgraphics.ps.PSGenerator)
      */
-    void generate(PSGenerator gen) throws IOException;
+    @Override
+    void generate(final PSGenerator gen) throws IOException;
 
 }

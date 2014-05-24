@@ -24,21 +24,26 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
 /**
- * This interface is used to paint vector graphic images. Components that can paint using
- * a Graphics2D instance (i.e. Java2D) can implement this interface to paint themselves.
+ * This interface is used to paint vector graphic images. Components that can
+ * paint using a Graphics2D instance (i.e. Java2D) can implement this interface
+ * to paint themselves.
  */
 public interface Graphics2DImagePainter {
 
     /**
      * Called to paint the image. Implementations should scale so the image is
      * painted fully inside the given area indicated by then Rectangle2D object.
-     * @param g2d the Graphics2D instance to paint on
-     * @param area the target area for the image (in target device units)
+     * 
+     * @param g2d
+     *            the Graphics2D instance to paint on
+     * @param area
+     *            the target area for the image (in target device units)
      */
-    void paint(Graphics2D g2d, Rectangle2D area);
+    void paint(final Graphics2D g2d, final Rectangle2D area);
 
     /**
-     * @return the dimensions (intrinsic size) of the image to be painted in millipoints
+     * @return the dimensions (intrinsic size) of the image to be painted in
+     *         millipoints
      */
     Dimension getImageSize();
 

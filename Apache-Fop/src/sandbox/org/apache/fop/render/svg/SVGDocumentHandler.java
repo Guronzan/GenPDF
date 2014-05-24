@@ -37,14 +37,7 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Document;
-
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
 import org.apache.commons.io.IOUtils;
-
 import org.apache.fop.render.bitmap.BitmapRendererEventProducer;
 import org.apache.fop.render.bitmap.MultiFileRenderingUtil;
 import org.apache.fop.render.intermediate.DelegatingFragmentContentHandler;
@@ -52,6 +45,10 @@ import org.apache.fop.render.intermediate.IFException;
 import org.apache.fop.render.intermediate.IFPainter;
 import org.apache.fop.util.GenerationHelperContentHandler;
 import org.apache.fop.util.XMLUtil;
+import org.w3c.dom.Document;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * {@link org.apache.fop.render.intermediate.IFDocumentHandler} implementation
@@ -74,91 +71,105 @@ public class SVGDocumentHandler extends AbstractSVGDocumentHandler {
      * Default constructor.
      */
     public SVGDocumentHandler() {
-        //nop
+        // nop
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean supportsPagesOutOfOrder() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getMimeType() {
         return MIME_TYPE;
     }
 
     /** {@inheritDoc} */
-    public void setResult(Result result) throws IFException {
+    @Override
+    public void setResult(final Result result) throws IFException {
         if (result instanceof StreamResult) {
-            multiFileUtil = new MultiFileRenderingUtil(FILE_EXTENSION_SVG,
+            this.multiFileUtil = new MultiFileRenderingUtil(FILE_EXTENSION_SVG,
                     getUserAgent().getOutputFile());
-            this.firstStream = (StreamResult)result;
+            this.firstStream = (StreamResult) result;
         } else {
             this.simpleResult = result;
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startDocument() throws IFException {
         super.startDocument();
-        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        final DocumentBuilderFactory builderFactory = DocumentBuilderFactory
+                .newInstance();
         builderFactory.setNamespaceAware(true);
         builderFactory.setValidating(false);
         try {
-            DocumentBuilder builder = builderFactory.newDocumentBuilder();
+            final DocumentBuilder builder = builderFactory.newDocumentBuilder();
             this.reusedParts = builder.newDocument();
-        } catch (ParserConfigurationException e) {
-            throw new IFException("Error while setting up a DOM for SVG generation", e);
+        } catch (final ParserConfigurationException e) {
+            throw new IFException(
+                    "Error while setting up a DOM for SVG generation", e);
         }
 
         try {
-            TransformerHandler toDOMHandler = tFactory.newTransformerHandler();
+            final TransformerHandler toDOMHandler = this.tFactory
+                    .newTransformerHandler();
             toDOMHandler.setResult(new DOMResult(this.reusedParts));
             this.handler = decorate(toDOMHandler);
             this.handler.startDocument();
-        } catch (SAXException se) {
+        } catch (final SAXException se) {
             throw new IFException("SAX error in startDocument()", se);
-        } catch (TransformerConfigurationException e) {
+        } catch (final TransformerConfigurationException e) {
             throw new IFException(
-                    "Error while setting up a TransformerHandler for SVG generation", e);
+                    "Error while setting up a TransformerHandler for SVG generation",
+                    e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endDocument() throws IFException {
-        //nop
+        // nop
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endDocumentHeader() throws IFException {
         super.endDocumentHeader();
         try {
-            //Stop recording parts reused for each page
+            // Stop recording parts reused for each page
             this.handler.endDocument();
             this.handler = null;
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endDocumentHeader()", e);
         }
     }
 
     /** {@inheritDoc} */
-    public void startPageSequence(String id) throws IFException {
-        //nop
+    @Override
+    public void startPageSequence(final String id) throws IFException {
+        // nop
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endPageSequence() throws IFException {
-        //nop
+        // nop
     }
 
     /** {@inheritDoc} */
-    public void startPage(int index, String name, String pageMasterName, Dimension size)
-                throws IFException {
+    @Override
+    public void startPage(final int index, final String name,
+            final String pageMasterName, final Dimension size)
+            throws IFException {
         if (this.multiFileUtil != null) {
             prepareHandlerWithOutputStream(index);
         } else {
             if (this.simpleResult == null) {
-                //Only one page is supported with this approach at the moment
+                // Only one page is supported with this approach at the moment
                 throw new IFException(
                         "Only one page is supported for output with the given Result instance!",
                         null);
@@ -168,42 +179,50 @@ public class SVGDocumentHandler extends AbstractSVGDocumentHandler {
         }
 
         try {
-            handler.startDocument();
-            handler.startPrefixMapping("", NAMESPACE);
-            handler.startPrefixMapping(XLINK_PREFIX, XLINK_NAMESPACE);
-            AttributesImpl atts = new AttributesImpl();
-            XMLUtil.addAttribute(atts, "version", "1.1"); //SVG 1.1
+            this.handler.startDocument();
+            this.handler.startPrefixMapping("", NAMESPACE);
+            this.handler.startPrefixMapping(XLINK_PREFIX, XLINK_NAMESPACE);
+            final AttributesImpl atts = new AttributesImpl();
+            XMLUtil.addAttribute(atts, "version", "1.1"); // SVG 1.1
             /*
-            XMLUtil.addAttribute(atts, "index", Integer.toString(index));
-            XMLUtil.addAttribute(atts, "name", name);
-            */
-            XMLUtil.addAttribute(atts, "width", SVGUtil.formatMptToPt(size.width) + "pt");
-            XMLUtil.addAttribute(atts, "height", SVGUtil.formatMptToPt(size.height) + "pt");
-            XMLUtil.addAttribute(atts, "viewBox",
-                    "0 0 " + SVGUtil.formatMptToPt(size.width)
-                    + " " + SVGUtil.formatMptToPt(size.height));
-            handler.startElement("svg", atts);
+             * XMLUtil.addAttribute(atts, "index", Integer.toString(index));
+             * XMLUtil.addAttribute(atts, "name", name);
+             */
+            XMLUtil.addAttribute(atts, "width",
+                    SVGUtil.formatMptToPt(size.width) + "pt");
+            XMLUtil.addAttribute(atts, "height",
+                    SVGUtil.formatMptToPt(size.height) + "pt");
+            XMLUtil.addAttribute(
+                    atts,
+                    "viewBox",
+                    "0 0 " + SVGUtil.formatMptToPt(size.width) + " "
+                            + SVGUtil.formatMptToPt(size.height));
+            this.handler.startElement("svg", atts);
 
             try {
-                Transformer transformer = tFactory.newTransformer();
-                Source src = new DOMSource(this.reusedParts.getDocumentElement());
-                Result res = new SAXResult(new DelegatingFragmentContentHandler(this.handler));
+                final Transformer transformer = this.tFactory.newTransformer();
+                final Source src = new DOMSource(
+                        this.reusedParts.getDocumentElement());
+                final Result res = new SAXResult(
+                        new DelegatingFragmentContentHandler(this.handler));
                 transformer.transform(src, res);
-            } catch (TransformerConfigurationException tce) {
+            } catch (final TransformerConfigurationException tce) {
                 throw new IFException("Error setting up a Transformer", tce);
-            } catch (TransformerException te) {
+            } catch (final TransformerException te) {
                 if (te.getCause() instanceof SAXException) {
-                    throw (SAXException)te.getCause();
+                    throw (SAXException) te.getCause();
                 } else {
-                    throw new IFException("Error while serializing reused parts", te);
+                    throw new IFException(
+                            "Error while serializing reused parts", te);
                 }
             }
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startPage()", e);
         }
     }
 
-    private void prepareHandlerWithOutputStream(int index) throws IFException {
+    private void prepareHandlerWithOutputStream(final int index)
+            throws IFException {
         OutputStream out;
         try {
             if (index == 0) {
@@ -211,14 +230,14 @@ public class SVGDocumentHandler extends AbstractSVGDocumentHandler {
             } else {
                 out = this.multiFileUtil.createOutputStream(index);
                 if (out == null) {
-                    BitmapRendererEventProducer eventProducer
-                        = BitmapRendererEventProducer.Provider.get(
-                                getUserAgent().getEventBroadcaster());
+                    final BitmapRendererEventProducer eventProducer = BitmapRendererEventProducer.Provider
+                            .get(getUserAgent().getEventBroadcaster());
                     eventProducer.stoppingAfterFirstPageNoFilename(this);
                 }
             }
-        } catch (IOException ioe) {
-            throw new IFException("I/O exception while setting up output file", ioe);
+        } catch (final IOException ioe) {
+            throw new IFException("I/O exception while setting up output file",
+                    ioe);
         }
         if (out == null) {
             this.handler = decorate(createContentHandler(this.firstStream));
@@ -228,45 +247,50 @@ public class SVGDocumentHandler extends AbstractSVGDocumentHandler {
         }
     }
 
-    private GenerationHelperContentHandler decorate(ContentHandler contentHandler) {
-        return new GenerationHelperContentHandler(contentHandler, getMainNamespace());
+    private GenerationHelperContentHandler decorate(
+            final ContentHandler contentHandler) {
+        return new GenerationHelperContentHandler(contentHandler,
+                getMainNamespace());
     }
 
     private void closeCurrentStream() {
         if (this.currentStream != null) {
-            IOUtils.closeQuietly(currentStream.getOutputStream());
-            currentStream.setOutputStream(null);
-            IOUtils.closeQuietly(currentStream.getWriter());
-            currentStream.setWriter(null);
+            IOUtils.closeQuietly(this.currentStream.getOutputStream());
+            this.currentStream.setOutputStream(null);
+            IOUtils.closeQuietly(this.currentStream.getWriter());
+            this.currentStream.setWriter(null);
             this.currentStream = null;
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public IFPainter startPageContent() throws IFException {
         try {
-            handler.startElement("g");
-        } catch (SAXException e) {
+            this.handler.startElement("g");
+        } catch (final SAXException e) {
             throw new IFException("SAX error in startPageContent()", e);
         }
-        return new SVGPainter(this, handler);
+        return new SVGPainter(this, this.handler);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endPageContent() throws IFException {
         try {
-            handler.endElement("g");
-        } catch (SAXException e) {
+            this.handler.endElement("g");
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endPageContent()", e);
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endPage() throws IFException {
         try {
-            handler.endElement("svg");
+            this.handler.endElement("svg");
             this.handler.endDocument();
-        } catch (SAXException e) {
+        } catch (final SAXException e) {
             throw new IFException("SAX error in endPage()", e);
         }
         closeCurrentStream();

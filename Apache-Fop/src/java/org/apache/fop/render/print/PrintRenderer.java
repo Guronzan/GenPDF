@@ -24,19 +24,21 @@ import java.awt.print.PrinterJob;
 import java.io.IOException;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.apps.FOUserAgent;
 
 /**
- * Renderer that prints through java.awt.PrintJob.
- * The actual printing is handled by Java2DRenderer
- * since both PrintRenderer and AWTRenderer need to
+ * Renderer that prints through java.awt.PrintJob. The actual printing is
+ * handled by Java2DRenderer since both PrintRenderer and AWTRenderer need to
  * support printing.
  */
+@Slf4j
 public class PrintRenderer extends PageableRenderer {
 
     /**
-     * Printing parameter: the preconfigured PrinterJob to use,
-     * datatype: java.awt.print.PrinterJob
+     * Printing parameter: the preconfigured PrinterJob to use, datatype:
+     * java.awt.print.PrinterJob
      */
     public static final String PRINTER_JOB = "printerjob";
 
@@ -46,52 +48,56 @@ public class PrintRenderer extends PageableRenderer {
      */
     public static final String COPIES = "copies";
 
-
     private int copies = 1;
 
     private PrinterJob printerJob;
 
     /**
-     * Creates a new PrintRenderer with the options set through the renderer options if a custom
-     * PrinterJob is not given in FOUserAgent's renderer options.
+     * Creates a new PrintRenderer with the options set through the renderer
+     * options if a custom PrinterJob is not given in FOUserAgent's renderer
+     * options.
      *
-     * @param userAgent the user agent that contains configuration details. This cannot be null.
+     * @param userAgent
+     *            the user agent that contains configuration details. This
+     *            cannot be null.
      */
-    public PrintRenderer(FOUserAgent userAgent) {
+    public PrintRenderer(final FOUserAgent userAgent) {
         super(userAgent);
         setRendererOptions();
     }
 
     private void initializePrinterJob() {
         if (this.printerJob == null) {
-            printerJob = PrinterJob.getPrinterJob();
-            printerJob.setJobName("FOP Document");
-            printerJob.setCopies(copies);
+            this.printerJob = PrinterJob.getPrinterJob();
+            this.printerJob.setJobName("FOP Document");
+            this.printerJob.setCopies(this.copies);
             if (System.getProperty("dialog") != null) {
-                if (!printerJob.printDialog()) {
-                    throw new RuntimeException(
-                            "Printing cancelled by operator");
+                if (!this.printerJob.printDialog()) {
+                    throw new RuntimeException("Printing cancelled by operator");
                 }
             }
-            printerJob.setPageable(this);
+            this.printerJob.setPageable(this);
         }
     }
 
     private void setRendererOptions() {
-        Map rendererOptions = getUserAgent().getRendererOptions();
+        final Map rendererOptions = getUserAgent().getRendererOptions();
 
-        Object printerJobO = rendererOptions.get(PrintRenderer.PRINTER_JOB);
+        final Object printerJobO = rendererOptions
+                .get(PrintRenderer.PRINTER_JOB);
         if (printerJobO != null) {
             if (!(printerJobO instanceof PrinterJob)) {
                 throw new IllegalArgumentException(
-                    "Renderer option " + PrintRenderer.PRINTER_JOB
-                    + " must be an instance of java.awt.print.PrinterJob, but an instance of "
-                    + printerJobO.getClass().getName() + " was given.");
+                        "Renderer option "
+                                + PrintRenderer.PRINTER_JOB
+                                + " must be an instance of java.awt.print.PrinterJob, but an instance of "
+                                + printerJobO.getClass().getName()
+                                + " was given.");
             }
-            printerJob = (PrinterJob)printerJobO;
-            printerJob.setPageable(this);
+            this.printerJob = (PrinterJob) printerJobO;
+            this.printerJob.setPageable(this);
         }
-        Object o = rendererOptions.get(PrintRenderer.COPIES);
+        final Object o = rendererOptions.get(PrintRenderer.COPIES);
         if (o != null) {
             this.copies = getPositiveInteger(o);
         }
@@ -105,38 +111,43 @@ public class PrintRenderer extends PageableRenderer {
 
     /** @return the ending page number */
     public int getEndNumber() {
-        return endNumber;
+        return this.endNumber;
     }
 
     /**
      * Sets the number of the last page to be printed.
-     * @param end The ending page number
+     *
+     * @param end
+     *            The ending page number
      */
-    public void setEndPage(int end) {
+    public void setEndPage(final int end) {
         this.endNumber = end;
     }
 
     /** @return the starting page number */
     public int getStartPage() {
-        return startNumber;
+        return this.startNumber;
     }
 
     /**
      * Sets the number of the first page to be printed.
-     * @param start The starting page number
+     *
+     * @param start
+     *            The starting page number
      */
-    public void setStartPage(int start) {
+    public void setStartPage(final int start) {
         this.startNumber = start;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stopRenderer() throws IOException {
         super.stopRenderer();
 
         try {
-            printerJob.print();
-        } catch (PrinterException e) {
-            log.error(e);
+            this.printerJob.print();
+        } catch (final PrinterException e) {
+            log.error(e.getMessage(), e);
             throw new IOException("Unable to print: " + e.getClass().getName()
                     + ": " + e.getMessage());
         }

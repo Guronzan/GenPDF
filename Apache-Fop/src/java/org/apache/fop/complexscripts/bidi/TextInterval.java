@@ -31,78 +31,100 @@ import org.apache.fop.fo.flow.Leader;
 // CSOFF: SimplifyBooleanReturnCheck
 
 /**
- * <p>The <code>TextInterval</code> class is a utility class, the instances of which are used
- * to record backpointers to associated nodes over sub-intervals of a delimited text range.</p>
+ * <p>
+ * The <code>TextInterval</code> class is a utility class, the instances of
+ * which are used to record backpointers to associated nodes over sub-intervals
+ * of a delimited text range.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 class TextInterval {
-    private FONode fn;              // associated node
-    private int textStart;          // starting index within delimited text range of associated node's text
-    private int start;              // starting index within delimited text range
-    private int end;                // ending index within delimited text range
-    private int level;              // resolved level or default (-1)
-    TextInterval ( FONode fn, int start, int end ) {
-        this ( fn, start, start, end, -1 );
+    private final FONode fn; // associated node
+    private final int textStart; // starting index within delimited text range
+                                 // of associated node's text
+    private final int start; // starting index within delimited text range
+    private final int end; // ending index within delimited text range
+    private int level; // resolved level or default (-1)
+
+    TextInterval(final FONode fn, final int start, final int end) {
+        this(fn, start, start, end, -1);
     }
-    TextInterval ( FONode fn, int textStart, int start, int end, int level ) {
+
+    TextInterval(final FONode fn, final int textStart, final int start,
+            final int end, final int level) {
         this.fn = fn;
         this.textStart = textStart;
         this.start = start;
         this.end = end;
         this.level = level;
     }
+
     FONode getNode() {
-        return fn;
+        return this.fn;
     }
+
     int getTextStart() {
-        return textStart;
+        return this.textStart;
     }
+
     int getStart() {
-        return start;
+        return this.start;
     }
+
     int getEnd() {
-        return end;
+        return this.end;
     }
+
     int getLevel() {
-        return level;
+        return this.level;
     }
-    void setLevel ( int level ) {
+
+    void setLevel(final int level) {
         this.level = level;
     }
+
     public int length() {
-        return end - start;
+        return this.end - this.start;
     }
+
     public String getText() {
-        if ( fn instanceof FOText ) {
-            return ( (FOText) fn ) .getCharSequence() .toString();
-        } else if ( fn instanceof Character ) {
-            return new String ( new char[] {( (Character) fn ) .getCharacter()} );
+        if (this.fn instanceof FOText) {
+            return ((FOText) this.fn).getCharSequence().toString();
+        } else if (this.fn instanceof Character) {
+            return new String(
+                    new char[] { ((Character) this.fn).getCharacter() });
         } else {
             return null;
         }
     }
+
     public void assignTextLevels() {
-        if ( fn instanceof FOText ) {
-            ( (FOText) fn ) .setBidiLevel ( level, start - textStart, end - textStart );
-        } else if ( fn instanceof Character ) {
-            ( (Character) fn ) .setBidiLevel ( level );
-        } else if ( fn instanceof AbstractPageNumberCitation ) {
-            ( (AbstractPageNumberCitation) fn ) .setBidiLevel ( level );
-        } else if ( fn instanceof AbstractGraphics ) {
-            ( (AbstractGraphics) fn ) .setBidiLevel ( level );
-        } else if ( fn instanceof Leader ) {
-            ( (Leader) fn ) .setBidiLevel ( level );
+        if (this.fn instanceof FOText) {
+            ((FOText) this.fn).setBidiLevel(this.level, this.start
+                    - this.textStart, this.end - this.textStart);
+        } else if (this.fn instanceof Character) {
+            ((Character) this.fn).setBidiLevel(this.level);
+        } else if (this.fn instanceof AbstractPageNumberCitation) {
+            ((AbstractPageNumberCitation) this.fn).setBidiLevel(this.level);
+        } else if (this.fn instanceof AbstractGraphics) {
+            ((AbstractGraphics) this.fn).setBidiLevel(this.level);
+        } else if (this.fn instanceof Leader) {
+            ((Leader) this.fn).setBidiLevel(this.level);
         }
     }
-    public boolean equals ( Object o ) {
-        if ( o instanceof TextInterval ) {
-            TextInterval ti = (TextInterval) o;
-            if ( ti.getNode() != fn ) {
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o instanceof TextInterval) {
+            final TextInterval ti = (TextInterval) o;
+            if (ti.getNode() != this.fn) {
                 return false;
-            } else if ( ti.getStart() != start ) {
+            } else if (ti.getStart() != this.start) {
                 return false;
-            } else if ( ti.getEnd() != end ) {
+            } else if (ti.getEnd() != this.end) {
                 return false;
             } else {
                 return true;
@@ -111,33 +133,37 @@ class TextInterval {
             return false;
         }
     }
+
+    @Override
     public int hashCode() {
-        int l = ( fn != null ) ? fn.hashCode() : 0;
-        l = ( l ^ start ) + ( l << 19 );
-        l = ( l ^ end )   + ( l << 11 );
+        int l = this.fn != null ? this.fn.hashCode() : 0;
+        l = (l ^ this.start) + (l << 19);
+        l = (l ^ this.end) + (l << 11);
         return l;
     }
+
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         char c;
-        if ( fn instanceof FOText ) {
+        if (this.fn instanceof FOText) {
             c = 'T';
-        } else if ( fn instanceof Character ) {
+        } else if (this.fn instanceof Character) {
             c = 'C';
-        } else if ( fn instanceof BidiOverride ) {
+        } else if (this.fn instanceof BidiOverride) {
             c = 'B';
-        } else if ( fn instanceof AbstractPageNumberCitation ) {
+        } else if (this.fn instanceof AbstractPageNumberCitation) {
             c = '#';
-        } else if ( fn instanceof AbstractGraphics ) {
+        } else if (this.fn instanceof AbstractGraphics) {
             c = 'G';
-        } else if ( fn instanceof Leader ) {
+        } else if (this.fn instanceof Leader) {
             c = 'L';
         } else {
             c = '?';
         }
-        sb.append ( c );
-        sb.append ( "[" + start + "," + end + "][" + textStart + "](" + level + ")" );
+        sb.append(c);
+        sb.append("[" + this.start + "," + this.end + "][" + this.textStart
+                + "](" + this.level + ")");
         return sb.toString();
     }
 }
-

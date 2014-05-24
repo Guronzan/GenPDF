@@ -21,17 +21,7 @@ package org.apache.fop.fo;
 
 import java.io.OutputStream;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.apache.xmlgraphics.util.QName;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.accessibility.fo.FO2StructureTreeConverter;
 import org.apache.fop.apps.FOPException;
@@ -43,17 +33,21 @@ import org.apache.fop.fo.pagination.Root;
 import org.apache.fop.util.ContentHandlerFactory;
 import org.apache.fop.util.ContentHandlerFactory.ObjectBuiltListener;
 import org.apache.fop.util.ContentHandlerFactory.ObjectSource;
+import org.apache.xmlgraphics.util.QName;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * SAX Handler that passes parsed data to the various
- * FO objects, where they can be used either to build
- * an FO Tree, or used by Structure Renderers to build
+ * SAX Handler that passes parsed data to the various FO objects, where they can
+ * be used either to build an FO Tree, or used by Structure Renderers to build
  * other data structures.
  */
+@Slf4j
 public class FOTreeBuilder extends DefaultHandler {
-
-    /** logging instance */
-    private static final Log LOG = LogFactory.getLog(FOTreeBuilder.class);
 
     /** The registry for ElementMapping instances */
     protected ElementMappingRegistry elementMappingRegistry;
@@ -87,37 +81,45 @@ public class FOTreeBuilder extends DefaultHandler {
     /**
      * <code>FOTreeBuilder</code> constructor
      *
-     * @param outputFormat the MIME type of the output format to use (ex. "application/pdf").
-     * @param foUserAgent   the {@link FOUserAgent} in effect for this process
-     * @param stream    the <code>OutputStream</code> to direct the results to
-     * @throws FOPException if the <code>FOTreeBuilder</code> cannot be properly created
+     * @param outputFormat
+     *            the MIME type of the output format to use (ex.
+     *            "application/pdf").
+     * @param foUserAgent
+     *            the {@link FOUserAgent} in effect for this process
+     * @param stream
+     *            the <code>OutputStream</code> to direct the results to
+     * @throws FOPException
+     *             if the <code>FOTreeBuilder</code> cannot be properly created
      */
-    public FOTreeBuilder(
-                String outputFormat,
-                FOUserAgent foUserAgent,
-                OutputStream stream)
+    public FOTreeBuilder(final String outputFormat,
+            final FOUserAgent foUserAgent, final OutputStream stream)
             throws FOPException {
 
         this.userAgent = foUserAgent;
-        this.elementMappingRegistry = userAgent.getFactory().getElementMappingRegistry();
-        //This creates either an AreaTreeHandler and ultimately a Renderer, or
-        //one of the RTF-, MIF- etc. Handlers.
-        foEventHandler = foUserAgent.getRendererFactory().createFOEventHandler(
-                foUserAgent, outputFormat, stream);
-        if (userAgent.isAccessibilityEnabled()) {
-            foEventHandler = new FO2StructureTreeConverter(
-                    foUserAgent.getStructureTreeEventHandler(), foEventHandler);
+        this.elementMappingRegistry = this.userAgent.getFactory()
+                .getElementMappingRegistry();
+        // This creates either an AreaTreeHandler and ultimately a Renderer, or
+        // one of the RTF-, MIF- etc. Handlers.
+        this.foEventHandler = foUserAgent.getRendererFactory()
+                .createFOEventHandler(foUserAgent, outputFormat, stream);
+        if (this.userAgent.isAccessibilityEnabled()) {
+            this.foEventHandler = new FO2StructureTreeConverter(
+                    foUserAgent.getStructureTreeEventHandler(),
+                    this.foEventHandler);
         }
-        builderContext = new FOTreeBuilderContext();
-        builderContext.setPropertyListMaker(new PropertyListMaker() {
-            public PropertyList make(FObj fobj, PropertyList parentPropertyList) {
+        this.builderContext = new FOTreeBuilderContext();
+        this.builderContext.setPropertyListMaker(new PropertyListMaker() {
+            @Override
+            public PropertyList make(final FObj fobj,
+                    final PropertyList parentPropertyList) {
                 return new StaticPropertyList(fobj, parentPropertyList);
             }
         });
     }
 
     /** {@inheritDoc} */
-    public void setDocumentLocator(Locator locator) {
+    @Override
+    public void setDocumentLocator(final Locator locator) {
         this.locator = locator;
     }
 
@@ -125,84 +127,93 @@ public class FOTreeBuilder extends DefaultHandler {
      * @return a {@link Locator} instance if it is available and not disabled
      */
     protected Locator getEffectiveLocator() {
-        return (userAgent.isLocatorEnabled() ? this.locator : null);
+        return this.userAgent.isLocatorEnabled() ? this.locator : null;
     }
 
     /** {@inheritDoc} */
-    public void characters(char[] data, int start, int length)
-                throws SAXException {
-        delegate.characters(data, start, length);
+    @Override
+    public void characters(final char[] data, final int start, final int length)
+            throws SAXException {
+        this.delegate.characters(data, start, length);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startDocument() throws SAXException {
-        if (used) {
-            throw new IllegalStateException("FOTreeBuilder (and the Fop class) cannot be reused."
-                    + " Please instantiate a new instance.");
+        if (this.used) {
+            throw new IllegalStateException(
+                    "FOTreeBuilder (and the Fop class) cannot be reused."
+                            + " Please instantiate a new instance.");
         }
 
-        used = true;
-        empty = true;
-        rootFObj = null;    // allows FOTreeBuilder to be reused
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Building formatting object tree");
+        this.used = true;
+        this.empty = true;
+        this.rootFObj = null; // allows FOTreeBuilder to be reused
+        if (log.isDebugEnabled()) {
+            log.debug("Building formatting object tree");
         }
-        foEventHandler.startDocument();
+        this.foEventHandler.startDocument();
         this.mainFOHandler = new MainFOHandler();
         this.mainFOHandler.startDocument();
         this.delegate = this.mainFOHandler;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endDocument() throws SAXException {
         this.delegate.endDocument();
-        if (this.rootFObj == null && empty) {
-            FOValidationEventProducer eventProducer
-                = FOValidationEventProducer.Provider.get(userAgent.getEventBroadcaster());
+        if (this.rootFObj == null && this.empty) {
+            final FOValidationEventProducer eventProducer = FOValidationEventProducer.Provider
+                    .get(this.userAgent.getEventBroadcaster());
             eventProducer.emptyDocument(this);
         }
-        rootFObj = null;
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Parsing of document complete");
+        this.rootFObj = null;
+        if (log.isDebugEnabled()) {
+            log.debug("Parsing of document complete");
         }
-        foEventHandler.endDocument();
+        this.foEventHandler.endDocument();
     }
 
     /** {@inheritDoc} */
-    public void startElement(String namespaceURI, String localName, String rawName,
-                             Attributes attlist) throws SAXException {
+    @Override
+    public void startElement(final String namespaceURI, final String localName,
+            final String rawName, final Attributes attlist) throws SAXException {
         this.depth++;
-        delegate.startElement(namespaceURI, localName, rawName, attlist);
+        this.delegate.startElement(namespaceURI, localName, rawName, attlist);
     }
 
     /** {@inheritDoc} */
-    public void endElement(String uri, String localName, String rawName)
-                throws SAXException {
+    @Override
+    public void endElement(final String uri, final String localName,
+            final String rawName) throws SAXException {
         this.delegate.endElement(uri, localName, rawName);
         this.depth--;
-        if (depth == 0) {
-            if (delegate != mainFOHandler) {
-                //Return from sub-handler back to main handler
-                delegate.endDocument();
-                delegate = mainFOHandler;
-                delegate.endElement(uri, localName, rawName);
+        if (this.depth == 0) {
+            if (this.delegate != this.mainFOHandler) {
+                // Return from sub-handler back to main handler
+                this.delegate.endDocument();
+                this.delegate = this.mainFOHandler;
+                this.delegate.endElement(uri, localName, rawName);
             }
         }
     }
 
     /** {@inheritDoc} */
-    public void warning(SAXParseException e) {
-        LOG.warn(e.getLocalizedMessage());
+    @Override
+    public void warning(final SAXParseException e) {
+        log.warn(e.getLocalizedMessage());
     }
 
     /** {@inheritDoc} */
-    public void error(SAXParseException e) {
-        LOG.error(e.toString());
+    @Override
+    public void error(final SAXParseException e) {
+        log.error(e.toString());
     }
 
     /** {@inheritDoc} */
-    public void fatalError(SAXParseException e) throws SAXException {
-        LOG.error(e.toString());
+    @Override
+    public void fatalError(final SAXParseException e) throws SAXException {
+        log.error(e.toString());
         throw e;
     }
 
@@ -212,12 +223,12 @@ public class FOTreeBuilder extends DefaultHandler {
      * @return the FOEventHandler object
      */
     public FOEventHandler getEventHandler() {
-        return foEventHandler;
+        return this.foEventHandler;
     }
 
     /**
-     * Returns the results of the rendering process. Information includes
-     * the total number of pages generated and the number of pages per
+     * Returns the results of the rendering process. Information includes the
+     * total number of pages generated and the number of pages per
      * page-sequence.
      *
      * @return the results of the rendering process.
@@ -241,170 +252,197 @@ public class FOTreeBuilder extends DefaultHandler {
         private int nestedMarkerDepth = 0;
 
         /** {@inheritDoc} */
-        public void startElement(String namespaceURI, String localName, String rawName,
-                                 Attributes attlist) throws SAXException {
+        @Override
+        public void startElement(final String namespaceURI,
+                final String localName, final String rawName,
+                final Attributes attlist) throws SAXException {
 
             /* the node found in the FO document */
             FONode foNode;
             PropertyList propertyList = null;
 
             // Check to ensure first node encountered is an fo:root
-            if (rootFObj == null) {
-                empty = false;
+            if (FOTreeBuilder.this.rootFObj == null) {
+                FOTreeBuilder.this.empty = false;
                 if (!namespaceURI.equals(FOElementMapping.URI)
                         || !localName.equals("root")) {
-                    FOValidationEventProducer eventProducer
-                        = FOValidationEventProducer.Provider.get(
-                                userAgent.getEventBroadcaster());
-                    eventProducer.invalidFORoot(this, FONode.getNodeString(namespaceURI, localName),
+                    final FOValidationEventProducer eventProducer = FOValidationEventProducer.Provider
+                            .get(FOTreeBuilder.this.userAgent
+                                    .getEventBroadcaster());
+                    eventProducer.invalidFORoot(this,
+                            FONode.getNodeString(namespaceURI, localName),
                             getEffectiveLocator());
                 }
             } else { // check that incoming node is valid for currentFObj
-                if (currentFObj.getNamespaceURI().equals(FOElementMapping.URI)
-                    || currentFObj.getNamespaceURI().equals(ExtensionElementMapping.URI)) {
-                    currentFObj.validateChildNode(locator, namespaceURI, localName);
+                if (this.currentFObj.getNamespaceURI().equals(
+                        FOElementMapping.URI)
+                        || this.currentFObj.getNamespaceURI().equals(
+                                ExtensionElementMapping.URI)) {
+                    this.currentFObj
+                    .validateChildNode(FOTreeBuilder.this.locator,
+                            namespaceURI, localName);
                 }
             }
 
-            ElementMapping.Maker fobjMaker = findFOMaker(namespaceURI, localName);
+            final ElementMapping.Maker fobjMaker = findFOMaker(namespaceURI,
+                    localName);
 
             try {
-                foNode = fobjMaker.make(currentFObj);
-                if (rootFObj == null) {
-                    rootFObj = (Root) foNode;
-                    rootFObj.setBuilderContext(builderContext);
-                    rootFObj.setFOEventHandler(foEventHandler);
+                foNode = fobjMaker.make(this.currentFObj);
+                if (FOTreeBuilder.this.rootFObj == null) {
+                    FOTreeBuilder.this.rootFObj = (Root) foNode;
+                    FOTreeBuilder.this.rootFObj
+                    .setBuilderContext(FOTreeBuilder.this.builderContext);
+                    FOTreeBuilder.this.rootFObj
+                    .setFOEventHandler(FOTreeBuilder.this.foEventHandler);
                 }
                 propertyList = foNode.createPropertyList(
-                                    currentPropertyList, foEventHandler);
-                foNode.processNode(localName, getEffectiveLocator(),
-                                    attlist, propertyList);
+                        this.currentPropertyList,
+                        FOTreeBuilder.this.foEventHandler);
+                foNode.processNode(localName, getEffectiveLocator(), attlist,
+                        propertyList);
                 if (foNode.getNameId() == Constants.FO_MARKER) {
-                    if (builderContext.inMarker()) {
-                        nestedMarkerDepth++;
+                    if (FOTreeBuilder.this.builderContext.inMarker()) {
+                        this.nestedMarkerDepth++;
                     } else {
-                        builderContext.switchMarkerContext(true);
+                        FOTreeBuilder.this.builderContext
+                        .switchMarkerContext(true);
                     }
                 }
                 if (foNode.getNameId() == Constants.FO_PAGE_SEQUENCE) {
-                    builderContext.getXMLWhiteSpaceHandler().reset();
+                    FOTreeBuilder.this.builderContext.getXMLWhiteSpaceHandler()
+                    .reset();
                 }
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 throw new SAXException(e);
             }
 
-            ContentHandlerFactory chFactory = foNode.getContentHandlerFactory();
+            final ContentHandlerFactory chFactory = foNode
+                    .getContentHandlerFactory();
             if (chFactory != null) {
-                ContentHandler subHandler = chFactory.createContentHandler();
+                final ContentHandler subHandler = chFactory
+                        .createContentHandler();
                 if (subHandler instanceof ObjectSource
                         && foNode instanceof ObjectBuiltListener) {
-                    ((ObjectSource) subHandler).setObjectBuiltListener(
-                            (ObjectBuiltListener) foNode);
+                    ((ObjectSource) subHandler)
+                    .setObjectBuiltListener((ObjectBuiltListener) foNode);
                 }
 
                 subHandler.startDocument();
-                subHandler.startElement(namespaceURI, localName,
-                        rawName, attlist);
-                depth = 1;
-                delegate = subHandler;
+                subHandler.startElement(namespaceURI, localName, rawName,
+                        attlist);
+                FOTreeBuilder.this.depth = 1;
+                FOTreeBuilder.this.delegate = subHandler;
             }
 
-            if (currentFObj != null) {
-                currentFObj.addChildNode(foNode);
+            if (this.currentFObj != null) {
+                this.currentFObj.addChildNode(foNode);
             }
 
-            currentFObj = foNode;
-            if (propertyList != null && !builderContext.inMarker()) {
-                currentPropertyList = propertyList;
+            this.currentFObj = foNode;
+            if (propertyList != null
+                    && !FOTreeBuilder.this.builderContext.inMarker()) {
+                this.currentPropertyList = propertyList;
             }
 
             // fo:characters can potentially be removed during
             // white-space handling.
             // Do not notify the FOEventHandler.
-            if (currentFObj.getNameId() != Constants.FO_CHARACTER) {
-                currentFObj.startOfNode();
+            if (this.currentFObj.getNameId() != Constants.FO_CHARACTER) {
+                this.currentFObj.startOfNode();
             }
         }
 
         /** {@inheritDoc} */
-        public void endElement(String uri, String localName, String rawName)
-                    throws SAXException {
-            if (currentFObj == null) {
-                throw new SAXException(
-                        "endElement() called for " + rawName
-                            + " where there is no current element.");
-            } else if (!currentFObj.getLocalName().equals(localName)
-                    || !currentFObj.getNamespaceURI().equals(uri)) {
-                throw new SAXException("Mismatch: " + currentFObj.getLocalName()
-                        + " (" + currentFObj.getNamespaceURI()
-                        + ") vs. " + localName + " (" + uri + ")");
+        @Override
+        public void endElement(final String uri, final String localName,
+                final String rawName) throws SAXException {
+            if (this.currentFObj == null) {
+                throw new SAXException("endElement() called for " + rawName
+                        + " where there is no current element.");
+            } else if (!this.currentFObj.getLocalName().equals(localName)
+                    || !this.currentFObj.getNamespaceURI().equals(uri)) {
+                throw new SAXException("Mismatch: "
+                        + this.currentFObj.getLocalName() + " ("
+                        + this.currentFObj.getNamespaceURI() + ") vs. "
+                        + localName + " (" + uri + ")");
             }
 
             // fo:characters can potentially be removed during
             // white-space handling.
             // Do not notify the FOEventHandler.
-            if (currentFObj.getNameId() != Constants.FO_CHARACTER) {
-                currentFObj.endOfNode();
+            if (this.currentFObj.getNameId() != Constants.FO_CHARACTER) {
+                this.currentFObj.endOfNode();
             }
 
-            if (currentPropertyList != null
-                    && currentPropertyList.getFObj() == currentFObj
-                    && !builderContext.inMarker()) {
-                currentPropertyList = currentPropertyList.getParentPropertyList();
+            if (this.currentPropertyList != null
+                    && this.currentPropertyList.getFObj() == this.currentFObj
+                    && !FOTreeBuilder.this.builderContext.inMarker()) {
+                this.currentPropertyList = this.currentPropertyList
+                        .getParentPropertyList();
             }
 
-            if (currentFObj.getNameId() == Constants.FO_MARKER) {
-                if (nestedMarkerDepth == 0) {
-                    builderContext.switchMarkerContext(false);
+            if (this.currentFObj.getNameId() == Constants.FO_MARKER) {
+                if (this.nestedMarkerDepth == 0) {
+                    FOTreeBuilder.this.builderContext
+                    .switchMarkerContext(false);
                 } else {
-                    nestedMarkerDepth--;
+                    this.nestedMarkerDepth--;
                 }
             }
 
-            if (currentFObj.getParent() == null) {
-                LOG.debug("endElement for top-level " + currentFObj.getName());
+            if (this.currentFObj.getParent() == null) {
+                log.debug("endElement for top-level "
+                        + this.currentFObj.getName());
             }
 
-            currentFObj = currentFObj.getParent();
+            this.currentFObj = this.currentFObj.getParent();
         }
 
         /** {@inheritDoc} */
-        public void characters(char[] data, int start, int length)
-            throws FOPException {
-            if (currentFObj != null) {
-                currentFObj.characters(data, start, length,
-                        currentPropertyList, getEffectiveLocator());
+        @Override
+        public void characters(final char[] data, final int start,
+                final int length) throws FOPException {
+            if (this.currentFObj != null) {
+                this.currentFObj.characters(data, start, length,
+                        this.currentPropertyList, getEffectiveLocator());
             }
         }
 
         /** {@inheritDoc} */
+        @Override
         public void endDocument() throws SAXException {
-            currentFObj = null;
+            this.currentFObj = null;
         }
 
         /**
-         * Finds the {@link Maker} used to create {@link FONode} objects of a particular type
+         * Finds the {@link Maker} used to create {@link FONode} objects of a
+         * particular type
          *
-         * @param namespaceURI URI for the namespace of the element
-         * @param localName name of the Element
-         * @return the ElementMapping.Maker that can create an FO object for this element
-         * @throws FOPException if a Maker could not be found for a bound namespace.
+         * @param namespaceURI
+         *            URI for the namespace of the element
+         * @param localName
+         *            name of the Element
+         * @return the ElementMapping.Maker that can create an FO object for
+         *         this element
+         * @throws FOPException
+         *             if a Maker could not be found for a bound namespace.
          */
-        private Maker findFOMaker(String namespaceURI, String localName) throws FOPException {
-            Maker maker = elementMappingRegistry.findFOMaker(namespaceURI, localName, locator);
+        private Maker findFOMaker(final String namespaceURI,
+                final String localName) throws FOPException {
+            final Maker maker = FOTreeBuilder.this.elementMappingRegistry
+                    .findFOMaker(namespaceURI, localName,
+                            FOTreeBuilder.this.locator);
             if (maker instanceof UnknownXMLObj.Maker) {
-                FOValidationEventProducer eventProducer
-                    = FOValidationEventProducer.Provider.get(
-                        userAgent.getEventBroadcaster());
-                String name = (currentFObj != null ? currentFObj.getName()
-                                                   : "{" + namespaceURI + "}" + localName);
-                eventProducer.unknownFormattingObject(this, name,
-                        new QName(namespaceURI, localName),
-                        getEffectiveLocator());
+                final FOValidationEventProducer eventProducer = FOValidationEventProducer.Provider
+                        .get(FOTreeBuilder.this.userAgent.getEventBroadcaster());
+                final String name = this.currentFObj != null ? this.currentFObj
+                        .getName() : "{" + namespaceURI + "}" + localName;
+                eventProducer.unknownFormattingObject(this, name, new QName(
+                                namespaceURI, localName), getEffectiveLocator());
             }
             return maker;
         }
 
     }
 }
-

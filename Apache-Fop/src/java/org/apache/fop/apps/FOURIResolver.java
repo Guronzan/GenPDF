@@ -34,9 +34,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.xmlgraphics.util.io.Base64EncodeStream;
 import org.apache.xmlgraphics.util.uri.CommonURIResolver;
 
@@ -46,10 +46,8 @@ import org.apache.xmlgraphics.util.uri.CommonURIResolver;
  *
  * @see javax.xml.transform.URIResolver
  */
+@Slf4j
 public class FOURIResolver implements javax.xml.transform.URIResolver {
-
-    // log
-    private final Log log = LogFactory.getLog("FOP");
 
     /** Common URIResolver */
     private final CommonURIResolver commonURIResolver = new CommonURIResolver();
@@ -62,7 +60,7 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
 
     /**
      * Checks if the given base URL is acceptable. It also normalizes the URL.
-     * 
+     *
      * @param base
      *            the base URL to check
      * @return the normalized URL
@@ -105,7 +103,7 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
                     if (this.throwExceptions) {
                         throw new MalformedURLException(message);
                     }
-                    this.log.error(message);
+                    FOURIResolver.log.error(message);
                 }
                 return baseURI.toASCIIString();
             } catch (final URISyntaxException e) {
@@ -148,7 +146,7 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
         if (strict) {
             throw new TransformerException(errorStr, e);
         }
-        this.log.error(e.getMessage());
+        FOURIResolver.log.error(e.getMessage());
     }
 
     /**
@@ -303,10 +301,10 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
                 } catch (final FileNotFoundException fnfe) {
                     // Note: This is on "debug" level since the caller is
                     // supposed to handle this
-                    this.log.debug("File not found: " + effURL);
+                    FOURIResolver.log.debug("File not found: " + effURL);
                 } catch (final java.io.IOException ioe) {
-                    this.log.error("Error with opening URL '" + effURL + "': "
-                            + ioe.getMessage());
+                    FOURIResolver.log.error("Error with opening URL '" + effURL
+                            + "': " + ioe.getMessage());
                 }
             }
         }

@@ -31,29 +31,32 @@ import static org.junit.Assert.assertTrue;
 public class GraphicsSetFractionalLineWidthTestCase {
 
     private final float multiplier = 5.25f;
-    private final GraphicsSetFractionalLineWidth gsflw = new GraphicsSetFractionalLineWidth(multiplier);
+    private final GraphicsSetFractionalLineWidth gsflw = new GraphicsSetFractionalLineWidth(
+            this.multiplier);
 
     @Test
     public void testGetDataLength() {
-        assertEquals(4, gsflw.getDataLength());
+        assertEquals(4, this.gsflw.getDataLength());
     }
 
     @Test
     public void testWriteToStream() throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        gsflw.writeToStream(baos);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        this.gsflw.writeToStream(baos);
         baos.close();
         // note: 0.25 = 64/256 and 64 = 4*16, so 0x40
-        // expected: 0x11 (order code), 0x02 (2 bytes next), 0x05 (integral multiplier), 0x40 (fractional
+        // expected: 0x11 (order code), 0x02 (2 bytes next), 0x05 (integral
+        // multiplier), 0x40 (fractional
         // multiplier)
-        byte[] expected = new byte[] {0x11, 0x02, 0x05, 0x40};
+        final byte[] expected = new byte[] { 0x11, 0x02, 0x05, 0x40 };
         assertTrue(Arrays.equals(expected, baos.toByteArray()));
     }
 
     @Test
     public void testToString() {
         // lets make sure we keep good coverage...
-        assertEquals("GraphicsSetFractionalLineWidth{multiplier=" + multiplier + "}", gsflw.toString());
+        assertEquals("GraphicsSetFractionalLineWidth{multiplier="
+                + this.multiplier + "}", this.gsflw.toString());
     }
 
 }

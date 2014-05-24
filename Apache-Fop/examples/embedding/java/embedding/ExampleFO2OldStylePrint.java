@@ -31,6 +31,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
@@ -40,78 +42,88 @@ import org.apache.fop.apps.MimeConstants;
 /**
  * This class demonstrates printing an FO file to a PrinterJob instance.
  */
+@Slf4j
 public class ExampleFO2OldStylePrint {
 
     // configure fopFactory as desired
-    private FopFactory fopFactory = FopFactory.newInstance();
+    private final FopFactory fopFactory = FopFactory.newInstance();
 
     /**
      * Prints an FO file using an old-style PrinterJob.
-     * @param fo the FO file
-     * @throws IOException In case of an I/O problem
-     * @throws FOPException In case of a FOP problem
+     *
+     * @param fo
+     *            the FO file
+     * @throws IOException
+     *             In case of an I/O problem
+     * @throws FOPException
+     *             In case of a FOP problem
      */
-    public void printFO(File fo) throws IOException, FOPException {
+    public void printFO(final File fo) throws IOException, FOPException {
 
-        //Set up PrinterJob instance
-        PrinterJob printerJob = PrinterJob.getPrinterJob();
+        // Set up PrinterJob instance
+        final PrinterJob printerJob = PrinterJob.getPrinterJob();
         printerJob.setJobName("FOP Printing Example");
 
         try {
-            //Set up a custom user agent so we can supply our own renderer instance
-            FOUserAgent userAgent = fopFactory.newFOUserAgent();
+            // Set up a custom user agent so we can supply our own renderer
+            // instance
+            final FOUserAgent userAgent = this.fopFactory.newFOUserAgent();
             userAgent.getRendererOptions().put("printerjob", printerJob);
 
             // Construct FOP with desired output format
-            Fop fop = fopFactory.newFop(MimeConstants.MIME_FOP_PRINT, userAgent);
+            final Fop fop = this.fopFactory.newFop(
+                    MimeConstants.MIME_FOP_PRINT, userAgent);
 
             // Setup JAXP using identity transformer
-            TransformerFactory factory = TransformerFactory.newInstance();
-            Transformer transformer = factory.newTransformer(); // identity transformer
+            final TransformerFactory factory = TransformerFactory.newInstance();
+            final Transformer transformer = factory.newTransformer(); // identity
+            // transformer
 
             // Setup input stream
-            Source src = new StreamSource(fo);
+            final Source src = new StreamSource(fo);
 
-            // Resulting SAX events (the generated FO) must be piped through to FOP
-            Result res = new SAXResult(fop.getDefaultHandler());
+            // Resulting SAX events (the generated FO) must be piped through to
+            // FOP
+            final Result res = new SAXResult(fop.getDefaultHandler());
 
             // Start XSLT transformation and FOP processing
             transformer.transform(src, res);
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace(System.err);
             System.exit(-1);
         }
     }
 
-
     /**
      * Main method.
-     * @param args command-line arguments
+     *
+     * @param args
+     *            command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
-            System.out.println("FOP ExampleFO2OldStylePrint\n");
-            System.out.println("Preparing...");
+            log.info("FOP ExampleFO2OldStylePrint\n");
+            log.info("Preparing...");
 
-            //Setup directories
-            File baseDir = new File(".");
-            File outDir = new File(baseDir, "out");
+            // Setup directories
+            final File baseDir = new File(".");
+            final File outDir = new File(baseDir, "out");
             outDir.mkdirs();
 
-            //Setup input and output files
-            File fofile = new File(baseDir, "xml/fo/helloworld.fo");
+            // Setup input and output files
+            final File fofile = new File(baseDir, "xml/fo/helloworld.fo");
 
-            System.out.println("Input: XSL-FO (" + fofile + ")");
-            System.out.println("Output: old-style printing using PrinterJob");
-            System.out.println();
-            System.out.println("Transforming...");
+            log.info("Input: XSL-FO (" + fofile + ")");
+            log.info("Output: old-style printing using PrinterJob");
+            log.info("");
+            log.info("Transforming...");
 
-            ExampleFO2OldStylePrint app = new ExampleFO2OldStylePrint();
+            final ExampleFO2OldStylePrint app = new ExampleFO2OldStylePrint();
             app.printFO(fofile);
 
-            System.out.println("Success!");
-        } catch (Exception e) {
+            log.info("Success!");
+        } catch (final Exception e) {
             e.printStackTrace(System.err);
             System.exit(-1);
         }

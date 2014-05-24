@@ -42,47 +42,57 @@ public class DOM2SAX {
     private static final String EMPTYSTRING = "";
     private static final String XMLNS_PREFIX = "xmlns";
 
-    private ContentHandler contentHandler;
+    private final ContentHandler contentHandler;
     private LexicalHandler lexicalHandler;
 
-    private Map prefixes = new java.util.HashMap();
+    private final Map prefixes = new java.util.HashMap();
 
     /**
      * Main constructor
-     * @param handler the ContentHandler to send SAX events to
+     * 
+     * @param handler
+     *            the ContentHandler to send SAX events to
      */
-    public DOM2SAX(ContentHandler handler) {
+    public DOM2SAX(final ContentHandler handler) {
         this.contentHandler = handler;
         if (handler instanceof LexicalHandler) {
-            this.lexicalHandler = (LexicalHandler)handler;
+            this.lexicalHandler = (LexicalHandler) handler;
         }
     }
 
     /**
      * Writes the given document using the given ContentHandler.
-     * @param doc DOM document
-     * @param fragment if false no startDocument() and endDocument() calls are issued.
-     * @throws SAXException In case of a problem while writing XML
+     * 
+     * @param doc
+     *            DOM document
+     * @param fragment
+     *            if false no startDocument() and endDocument() calls are
+     *            issued.
+     * @throws SAXException
+     *             In case of a problem while writing XML
      */
-    public void writeDocument(Document doc, boolean fragment) throws SAXException {
+    public void writeDocument(final Document doc, final boolean fragment)
+            throws SAXException {
         if (!fragment) {
-            contentHandler.startDocument();
+            this.contentHandler.startDocument();
         }
-        for (Node n = doc.getFirstChild(); n != null;
-                n = n.getNextSibling()) {
+        for (Node n = doc.getFirstChild(); n != null; n = n.getNextSibling()) {
             writeNode(n);
         }
         if (!fragment) {
-            contentHandler.endDocument();
+            this.contentHandler.endDocument();
         }
     }
 
     /**
      * Writes the given fragment using the given ContentHandler.
-     * @param node DOM node
-     * @throws SAXException In case of a problem while writing XML
+     * 
+     * @param node
+     *            DOM node
+     * @throws SAXException
+     *             In case of a problem while writing XML
      */
-    public void writeFragment(Node node) throws SAXException {
+    public void writeFragment(final Node node) throws SAXException {
         writeNode(node);
     }
 
@@ -90,28 +100,28 @@ public class DOM2SAX {
      * Begin the scope of namespace prefix. Forward the event to the SAX handler
      * only if the prefix is unknown or it is mapped to a different URI.
      */
-    private boolean startPrefixMapping(String prefix, String uri)
+    private boolean startPrefixMapping(final String prefix, final String uri)
             throws SAXException {
         boolean pushed = true;
-        Stack uriStack = (Stack)prefixes.get(prefix);
+        Stack uriStack = (Stack) this.prefixes.get(prefix);
 
         if (uriStack != null) {
             if (uriStack.isEmpty()) {
-                contentHandler.startPrefixMapping(prefix, uri);
+                this.contentHandler.startPrefixMapping(prefix, uri);
                 uriStack.push(uri);
             } else {
                 final String lastUri = (String) uriStack.peek();
                 if (!lastUri.equals(uri)) {
-                    contentHandler.startPrefixMapping(prefix, uri);
+                    this.contentHandler.startPrefixMapping(prefix, uri);
                     uriStack.push(uri);
                 } else {
                     pushed = false;
                 }
             }
         } else {
-            contentHandler.startPrefixMapping(prefix, uri);
+            this.contentHandler.startPrefixMapping(prefix, uri);
             uriStack = new Stack();
-            prefixes.put(prefix, uriStack);
+            this.prefixes.put(prefix, uriStack);
             uriStack.push(uri);
         }
         return pushed;
@@ -121,11 +131,11 @@ public class DOM2SAX {
      * End the scope of a name prefix by popping it from the stack and passing
      * the event to the SAX Handler.
      */
-    private void endPrefixMapping(String prefix) throws SAXException {
-        final Stack uriStack = (Stack)prefixes.get(prefix);
+    private void endPrefixMapping(final String prefix) throws SAXException {
+        final Stack uriStack = (Stack) this.prefixes.get(prefix);
 
         if (uriStack != null) {
-            contentHandler.endPrefixMapping(prefix);
+            this.contentHandler.endPrefixMapping(prefix);
             uriStack.pop();
         }
     }
@@ -135,24 +145,26 @@ public class DOM2SAX {
      * If so, get the local name from the qualified name before generating the
      * SAX event.
      */
-    private static String getLocalName(Node node) {
+    private static String getLocalName(final Node node) {
         final String localName = node.getLocalName();
 
         if (localName == null) {
             final String qname = node.getNodeName();
             final int col = qname.lastIndexOf(':');
-            return (col > 0) ? qname.substring(col + 1) : qname;
+            return col > 0 ? qname.substring(col + 1) : qname;
         }
         return localName;
     }
 
     /**
      * Writes a node using the given writer.
-     * @param node node to serialize
-     * @throws SAXException In case of a problem while writing XML
+     * 
+     * @param node
+     *            node to serialize
+     * @throws SAXException
+     *             In case of a problem while writing XML
      */
-    private void writeNode(Node node)
-                throws SAXException {
+    private void writeNode(final Node node) throws SAXException {
         if (node == null) {
             return;
         }
@@ -168,36 +180,39 @@ public class DOM2SAX {
             break;
         case Node.CDATA_SECTION_NODE:
             final String cdata = node.getNodeValue();
-            if (lexicalHandler != null) {
-                lexicalHandler.startCDATA();
-                contentHandler.characters(cdata.toCharArray(), 0, cdata.length());
-                lexicalHandler.endCDATA();
+            if (this.lexicalHandler != null) {
+                this.lexicalHandler.startCDATA();
+                this.contentHandler.characters(cdata.toCharArray(), 0,
+                        cdata.length());
+                this.lexicalHandler.endCDATA();
             } else {
                 // in the case where there is no lex handler, we still
                 // want the text of the cdate to make its way through.
-                contentHandler.characters(cdata.toCharArray(), 0, cdata.length());
+                this.contentHandler.characters(cdata.toCharArray(), 0,
+                        cdata.length());
             }
             break;
 
         case Node.COMMENT_NODE: // should be handled!!!
-            if (lexicalHandler != null) {
+            if (this.lexicalHandler != null) {
                 final String value = node.getNodeValue();
-                lexicalHandler.comment(value.toCharArray(), 0, value.length());
+                this.lexicalHandler.comment(value.toCharArray(), 0,
+                        value.length());
             }
             break;
         case Node.DOCUMENT_NODE:
-            contentHandler.startDocument();
+            this.contentHandler.startDocument();
             Node next = node.getFirstChild();
             while (next != null) {
                 writeNode(next);
                 next = next.getNextSibling();
             }
-            contentHandler.endDocument();
+            this.contentHandler.endDocument();
             break;
 
         case Node.ELEMENT_NODE:
             String prefix;
-            List pushedPrefixes = new java.util.ArrayList();
+            final List pushedPrefixes = new java.util.ArrayList();
             final AttributesImpl attrs = new AttributesImpl();
             final NamedNodeMap map = node.getAttributes();
             final int length = map.getLength();
@@ -211,7 +226,7 @@ public class DOM2SAX {
                 if (qnameAttr.startsWith(XMLNS_PREFIX)) {
                     final String uriAttr = attr.getNodeValue();
                     final int colon = qnameAttr.lastIndexOf(':');
-                    prefix = (colon > 0) ? qnameAttr.substring(colon + 1)
+                    prefix = colon > 0 ? qnameAttr.substring(colon + 1)
                             : EMPTYSTRING;
                     if (startPrefixMapping(prefix, uriAttr)) {
                         pushedPrefixes.add(prefix);
@@ -231,7 +246,7 @@ public class DOM2SAX {
                     // Uri may be implicitly declared
                     if (uriAttr != null) {
                         final int colon = qnameAttr.lastIndexOf(':');
-                        prefix = (colon > 0) ? qnameAttr.substring(0, colon)
+                        prefix = colon > 0 ? qnameAttr.substring(0, colon)
                                 : EMPTYSTRING;
                         if (startPrefixMapping(prefix, uriAttr)) {
                             pushedPrefixes.add(prefix);
@@ -240,8 +255,8 @@ public class DOM2SAX {
 
                     // Add attribute to list
                     attrs.addAttribute(attr.getNamespaceURI(),
-                            getLocalName(attr), qnameAttr, XMLUtil.CDATA, attr
-                                    .getNodeValue());
+                            getLocalName(attr), qnameAttr, XMLConstants.CDATA,
+                            attr.getNodeValue());
                 }
             }
 
@@ -253,14 +268,14 @@ public class DOM2SAX {
             // Uri may be implicitly declared
             if (uri != null) {
                 final int colon = qname.lastIndexOf(':');
-                prefix = (colon > 0) ? qname.substring(0, colon) : EMPTYSTRING;
+                prefix = colon > 0 ? qname.substring(0, colon) : EMPTYSTRING;
                 if (startPrefixMapping(prefix, uri)) {
                     pushedPrefixes.add(prefix);
                 }
             }
 
             // Generate SAX event to start element
-            contentHandler.startElement(uri, localName, qname, attrs);
+            this.contentHandler.startElement(uri, localName, qname, attrs);
 
             // Traverse all child nodes of the element (if any)
             next = node.getFirstChild();
@@ -270,27 +285,28 @@ public class DOM2SAX {
             }
 
             // Generate SAX event to close element
-            contentHandler.endElement(uri, localName, qname);
+            this.contentHandler.endElement(uri, localName, qname);
 
             // Generate endPrefixMapping() for all pushed prefixes
             final int nPushedPrefixes = pushedPrefixes.size();
             for (int i = 0; i < nPushedPrefixes; i++) {
-                endPrefixMapping((String)pushedPrefixes.get(i));
+                endPrefixMapping((String) pushedPrefixes.get(i));
             }
             break;
 
         case Node.PROCESSING_INSTRUCTION_NODE:
-            contentHandler.processingInstruction(node.getNodeName(), node.getNodeValue());
+            this.contentHandler.processingInstruction(node.getNodeName(),
+                    node.getNodeValue());
             break;
 
         case Node.TEXT_NODE:
             final String data = node.getNodeValue();
-            contentHandler.characters(data.toCharArray(), 0, data.length());
+            this.contentHandler
+                    .characters(data.toCharArray(), 0, data.length());
             break;
         default:
-            //nop
+            // nop
         }
     }
-
 
 }

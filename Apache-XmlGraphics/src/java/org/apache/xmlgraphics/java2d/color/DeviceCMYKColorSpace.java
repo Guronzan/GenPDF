@@ -25,7 +25,7 @@ import java.awt.Color;
  * This class represents an uncalibrated CMYK color space.
  */
 public class DeviceCMYKColorSpace extends AbstractDeviceSpecificColorSpace
-            implements ColorSpaceOrigin {
+        implements ColorSpaceOrigin {
 
     private static final long serialVersionUID = 2925508946083542974L;
 
@@ -35,6 +35,7 @@ public class DeviceCMYKColorSpace extends AbstractDeviceSpecificColorSpace
     /**
      * Constructs an uncalibrated CMYK ColorSpace object with
      * {@link java.awt.color.ColorSpace#TYPE_CMYK} and 4 components.
+     * 
      * @see java.awt.color.ColorSpace#ColorSpace(int, int)
      */
     public DeviceCMYKColorSpace() {
@@ -43,6 +44,7 @@ public class DeviceCMYKColorSpace extends AbstractDeviceSpecificColorSpace
 
     /**
      * Returns an instance of an uncalibrated CMYK color space.
+     * 
      * @return CMYKColorSpace the requested color space object
      * @deprecated Use {@link ColorSpaces#getDeviceCMYKColorSpace()} instead.
      */
@@ -53,65 +55,70 @@ public class DeviceCMYKColorSpace extends AbstractDeviceSpecificColorSpace
 
     /** {@inheritDoc} */
     @Override
-    public float[] toRGB(float[] colorvalue) {
-        return new float [] {
-            (1 - colorvalue[0]) * (1 - colorvalue[3]),
-            (1 - colorvalue[1]) * (1 - colorvalue[3]),
-            (1 - colorvalue[2]) * (1 - colorvalue[3])};
+    public float[] toRGB(final float[] colorvalue) {
+        return new float[] { (1 - colorvalue[0]) * (1 - colorvalue[3]),
+                (1 - colorvalue[1]) * (1 - colorvalue[3]),
+                (1 - colorvalue[2]) * (1 - colorvalue[3]) };
     }
 
     /** {@inheritDoc} */
     @Override
-    public float[] fromRGB(float[] rgbvalue) {
+    public float[] fromRGB(final float[] rgbvalue) {
         assert rgbvalue.length == 3;
-        //Note: this is an arbitrary conversion, not a color-managed one!
-        float r = rgbvalue[0];
-        float g = rgbvalue[1];
-        float b = rgbvalue[2];
+        // Note: this is an arbitrary conversion, not a color-managed one!
+        final float r = rgbvalue[0];
+        final float g = rgbvalue[1];
+        final float b = rgbvalue[2];
         if (r == g && r == b) {
-            return new float[] {0, 0, 0, 1 - r};
+            return new float[] { 0, 0, 0, 1 - r };
         } else {
-            float c = 1 - r;
-            float m = 1 - g;
-            float y = 1 - b;
-            float k = Math.min(c, Math.min(m, y));
-            return new float[] {c, m, y, k};
+            final float c = 1 - r;
+            final float m = 1 - g;
+            final float y = 1 - b;
+            final float k = Math.min(c, Math.min(m, y));
+            return new float[] { c, m, y, k };
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    public float[] toCIEXYZ(float[] colorvalue) {
+    public float[] toCIEXYZ(final float[] colorvalue) {
         throw new UnsupportedOperationException("NYI");
     }
 
     /** {@inheritDoc} */
     @Override
-    public float[] fromCIEXYZ(float[] colorvalue) {
+    public float[] fromCIEXYZ(final float[] colorvalue) {
         throw new UnsupportedOperationException("NYI");
     }
 
     /**
-     * Creates a color instance representing a device-specific CMYK color. An sRGB value
-     * is calculated from the CMYK colors but it may not correctly represent the given CMYK
-     * values.
-     * @param cmykComponents the CMYK components
+     * Creates a color instance representing a device-specific CMYK color. An
+     * sRGB value is calculated from the CMYK colors but it may not correctly
+     * represent the given CMYK values.
+     * 
+     * @param cmykComponents
+     *            the CMYK components
      * @return the device-specific color
      */
-    public static Color createCMYKColor(float[] cmykComponents) {
-        DeviceCMYKColorSpace cmykCs = ColorSpaces.getDeviceCMYKColorSpace();
-        Color cmykColor = new ColorWithAlternatives(cmykCs, cmykComponents, 1.0f, null);
+    public static Color createCMYKColor(final float[] cmykComponents) {
+        final DeviceCMYKColorSpace cmykCs = ColorSpaces
+                .getDeviceCMYKColorSpace();
+        final Color cmykColor = new ColorWithAlternatives(cmykCs,
+                cmykComponents, 1.0f, null);
         return cmykColor;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getProfileName() {
         return PSEUDO_PROFILE_NAME;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getProfileURI() {
-        return null; //No URI
+        return null; // No URI
     }
 
 }

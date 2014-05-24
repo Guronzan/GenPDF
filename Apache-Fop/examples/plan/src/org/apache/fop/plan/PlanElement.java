@@ -21,18 +21,19 @@ package org.apache.fop.plan;
 
 import java.awt.geom.Point2D;
 
-import org.w3c.dom.Document;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.Locator;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.PropertyList;
+import org.w3c.dom.Document;
+import org.xml.sax.Attributes;
+import org.xml.sax.Locator;
 
 /**
  * This class defines the plan element.
  */
+@Slf4j
 public class PlanElement extends PlanObj {
 
     private Document svgDoc = null;
@@ -43,14 +44,15 @@ public class PlanElement extends PlanObj {
     /**
      * @see org.apache.fop.fo.FONode#FONode(FONode)
      */
-    public PlanElement(FONode parent) {
+    public PlanElement(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void processNode(String elementName, Locator locator,
-                            Attributes attlist, PropertyList propertyList)
-        throws FOPException {
+    @Override
+    public void processNode(final String elementName, final Locator locator,
+            final Attributes attlist, final PropertyList propertyList)
+                    throws FOPException {
         super.processNode(elementName, locator, attlist, propertyList);
         createBasicDocument();
     }
@@ -60,42 +62,44 @@ public class PlanElement extends PlanObj {
      */
     public void convertToSVG() {
         try {
-            if (!converted) {
-                converted = true;
-                PlanRenderer pr = new PlanRenderer();
+            if (!this.converted) {
+                this.converted = true;
+                final PlanRenderer pr = new PlanRenderer();
                 pr.setFontInfo("Helvetica", 12);
-                svgDoc = pr.createSVGDocument(doc);
-                width = pr.getWidth();
-                height = pr.getHeight();
+                this.svgDoc = pr.createSVGDocument(this.doc);
+                this.width = pr.getWidth();
+                this.height = pr.getHeight();
 
-                doc = svgDoc;
+                this.doc = this.svgDoc;
             }
-        } catch (Throwable t) {
-            getLogger().error("Could not convert Plan to SVG", t);
-            width = 0;
-            height = 0;
+        } catch (final Throwable t) {
+            log.error("Could not convert Plan to SVG", t);
+            this.width = 0;
+            this.height = 0;
         }
 
     }
 
     /** {@inheritDoc} */
+    @Override
     public Document getDOMDocument() {
         convertToSVG();
-        return doc;
+        return this.doc;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getNamespaceURI() {
-        if (svgDoc == null) {
+        if (this.svgDoc == null) {
             return PlanElementMapping.NAMESPACE;
         }
         return "http://www.w3.org/2000/svg";
     }
 
     /** {@inheritDoc} */
-    public Point2D getDimension(Point2D view) {
+    @Override
+    public Point2D getDimension(final Point2D view) {
         convertToSVG();
-        return new Point2D.Float(width, height);
+        return new Point2D.Float(this.width, this.height);
     }
 }
-

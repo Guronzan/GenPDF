@@ -30,23 +30,26 @@ import org.apache.xmlgraphics.ps.dsc.events.DSCComment;
  */
 public class EventRecorder implements DSCHandler {
 
-    private List events = new java.util.ArrayList();
+    private final List events = new java.util.ArrayList();
 
     /**
      * Replays the recorded events to a specified DSCHandler instance.
-     * @param handler the DSCHandler to send the recorded events to
-     * @throws IOException In case of an I/O error
+     * 
+     * @param handler
+     *            the DSCHandler to send the recorded events to
+     * @throws IOException
+     *             In case of an I/O error
      */
-    public void replay(DSCHandler handler) throws IOException {
-        Iterator iter = events.iterator();
+    public void replay(final DSCHandler handler) throws IOException {
+        final Iterator iter = this.events.iterator();
         while (iter.hasNext()) {
-            Object obj = iter.next();
+            final Object obj = iter.next();
             if (obj instanceof PSLine) {
-                handler.line(((PSLine)obj).getLine());
+                handler.line(((PSLine) obj).getLine());
             } else if (obj instanceof PSComment) {
-                handler.comment(((PSComment)obj).getComment());
+                handler.comment(((PSComment) obj).getComment());
             } else if (obj instanceof DSCComment) {
-                handler.handleDSCComment((DSCComment)obj);
+                handler.handleDSCComment((DSCComment) obj);
             } else {
                 throw new IllegalStateException("Unsupported class type");
             }
@@ -56,46 +59,50 @@ public class EventRecorder implements DSCHandler {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.DSCHandler#comment(java.lang.String)
      */
-    public void comment(String comment) throws IOException {
-        events.add(new PSComment(comment));
+    @Override
+    public void comment(final String comment) throws IOException {
+        this.events.add(new PSComment(comment));
     }
 
     /**
-     * @see org.apache.xmlgraphics.ps.dsc.DSCHandler#handleDSCComment(
-     *          org.apache.xmlgraphics.ps.dsc.events.DSCComment)
+     * @see org.apache.xmlgraphics.ps.dsc.DSCHandler#handleDSCComment(org.apache.xmlgraphics.ps.dsc.events.DSCComment)
      */
-    public void handleDSCComment(DSCComment comment) throws IOException {
-        events.add(comment);
+    @Override
+    public void handleDSCComment(final DSCComment comment) throws IOException {
+        this.events.add(comment);
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.DSCHandler#line(java.lang.String)
      */
-    public void line(String line) throws IOException {
-        events.add(new PSLine(line));
+    @Override
+    public void line(final String line) throws IOException {
+        this.events.add(new PSLine(line));
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.DSCHandler#startDocument(java.lang.String)
      */
-    public void startDocument(String header) throws IOException {
-        throw new UnsupportedOperationException(
-                getClass().getName() + " is only used to handle parts of a document");
+    @Override
+    public void startDocument(final String header) throws IOException {
+        throw new UnsupportedOperationException(getClass().getName()
+                + " is only used to handle parts of a document");
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.DSCHandler#endDocument()
      */
+    @Override
     public void endDocument() throws IOException {
-        throw new UnsupportedOperationException(
-                getClass().getName() + " is only used to handle parts of a document");
+        throw new UnsupportedOperationException(getClass().getName()
+                + " is only used to handle parts of a document");
     }
 
     private static class PSComment {
 
-        private String comment;
+        private final String comment;
 
-        public PSComment(String comment) {
+        public PSComment(final String comment) {
             this.comment = comment;
         }
 
@@ -106,9 +113,9 @@ public class EventRecorder implements DSCHandler {
 
     private static class PSLine {
 
-        private String line;
+        private final String line;
 
-        public PSLine(String line) {
+        public PSLine(final String line) {
             this.line = line;
         }
 

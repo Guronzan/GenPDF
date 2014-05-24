@@ -54,85 +54,80 @@ public final class PDFEncryptionJCE extends PDFObject implements PDFEncryption {
 
         private int revision;
 
-        EncryptionInitializer(PDFEncryptionParams params) {
+        EncryptionInitializer(final PDFEncryptionParams params) {
             this.encryptionParams = new PDFEncryptionParams(params);
         }
 
         void init() {
-            encryptionLength = encryptionParams.getEncryptionLengthInBits();
+            this.encryptionLength = this.encryptionParams
+                    .getEncryptionLengthInBits();
             determineEncryptionAlgorithm();
-            int permissions = Permission.computePermissions(encryptionParams);
-            EncryptionSettings encryptionSettings = new EncryptionSettings(
-                    encryptionLength, permissions,
-                    encryptionParams.getUserPassword(), encryptionParams.getOwnerPassword());
-            InitializationEngine initializationEngine = (revision == 2)
-                    ? new Rev2Engine(encryptionSettings)
-                    : new Rev3Engine(encryptionSettings);
-            initializationEngine.run();
-            encryptionDictionary = createEncryptionDictionary(permissions,
-                    initializationEngine.oValue,
-                    initializationEngine.uValue);
+            final int permissions = Permission
+                    .computePermissions(this.encryptionParams);
+            final EncryptionSettings encryptionSettings = new EncryptionSettings(
+                    this.encryptionLength, permissions,
+                    this.encryptionParams.getUserPassword(),
+                    this.encryptionParams.getOwnerPassword());
+            final InitializationEngine initializationEngine = this.revision == 2 ? new Rev2Engine(
+                    encryptionSettings) : new Rev3Engine(encryptionSettings);
+                    initializationEngine.run();
+                    PDFEncryptionJCE.this.encryptionDictionary = createEncryptionDictionary(
+                    permissions, initializationEngine.oValue,
+                            initializationEngine.uValue);
         }
 
         private void determineEncryptionAlgorithm() {
             if (isVersion1Revision2Algorithm()) {
-                version = 1;
-                revision = 2;
+                this.version = 1;
+                this.revision = 2;
             } else {
-                version = 2;
-                revision = 3;
+                this.version = 2;
+                this.revision = 3;
             }
         }
 
         private boolean isVersion1Revision2Algorithm() {
-            return encryptionLength == 40
-                    && encryptionParams.isAllowFillInForms()
-                    && encryptionParams.isAllowAccessContent()
-                    && encryptionParams.isAllowAssembleDocument()
-                    && encryptionParams.isAllowPrintHq();
+            return this.encryptionLength == 40
+                    && this.encryptionParams.isAllowFillInForms()
+                    && this.encryptionParams.isAllowAccessContent()
+                    && this.encryptionParams.isAllowAssembleDocument()
+                    && this.encryptionParams.isAllowPrintHq();
         }
 
-        private String createEncryptionDictionary(final int permissions, final byte[] oValue,
-                final byte[] uValue) {
-            return "<< /Filter /Standard\n"
-                    + "/V " + version + "\n"
-                    + "/R " + revision + "\n"
-                    + "/Length " + encryptionLength + "\n"
-                    + "/P "  + permissions + "\n"
-                    + "/O " + PDFText.toHex(oValue) + "\n"
-                    + "/U " + PDFText.toHex(uValue) + "\n"
-                    + ">>";
+        private String createEncryptionDictionary(final int permissions,
+                final byte[] oValue, final byte[] uValue) {
+            return "<< /Filter /Standard\n" + "/V " + this.version + "\n"
+                    + "/R " + this.revision + "\n" + "/Length "
+                    + this.encryptionLength + "\n" + "/P " + permissions + "\n"
+                    + "/O " + PDFText.toHex(oValue) + "\n" + "/U "
+                    + PDFText.toHex(uValue) + "\n" + ">>";
         }
 
     }
 
     private static enum Permission {
 
-        PRINT(3),
-        EDIT_CONTENT(4),
-        COPY_CONTENT(5),
-        EDIT_ANNOTATIONS(6),
-        FILL_IN_FORMS(9),
-        ACCESS_CONTENT(10),
-        ASSEMBLE_DOCUMENT(11),
-        PRINT_HQ(12);
+        PRINT(3), EDIT_CONTENT(4), COPY_CONTENT(5), EDIT_ANNOTATIONS(6), FILL_IN_FORMS(
+                9), ACCESS_CONTENT(10), ASSEMBLE_DOCUMENT(11), PRINT_HQ(12);
 
         private final int mask;
 
         /**
          * Creates a new permission.
          *
-         * @param bit bit position for this permission, 1-based to match the PDF Reference
+         * @param bit
+         *            bit position for this permission, 1-based to match the PDF
+         *            Reference
          */
-        private Permission(int bit) {
-            mask = 1 << (bit - 1);
+        private Permission(final int bit) {
+            this.mask = 1 << bit - 1;
         }
 
-        private int removeFrom(int permissions) {
-            return permissions - mask;
+        private int removeFrom(final int permissions) {
+            return permissions - this.mask;
         }
 
-        static int computePermissions(PDFEncryptionParams encryptionParams) {
+        static int computePermissions(final PDFEncryptionParams encryptionParams) {
             int permissions = -4;
 
             if (!encryptionParams.isAllowPrint()) {
@@ -173,8 +168,8 @@ public final class PDFEncryptionJCE extends PDFObject implements PDFEncryption {
 
         final String ownerPassword; // CSOK: VisibilityModifier
 
-        EncryptionSettings(int encryptionLength, int permissions,
-                String userPassword, String ownerPassword) {
+        EncryptionSettings(final int encryptionLength, final int permissions,
+                final String userPassword, final String ownerPassword) {
             this.encryptionLength = encryptionLength;
             this.permissions = permissions;
             this.userPassword = userPassword;
@@ -186,15 +181,15 @@ public final class PDFEncryptionJCE extends PDFObject implements PDFEncryption {
     private abstract class InitializationEngine {
 
         /** Padding for passwords. */
-        protected final byte[] padding = new byte[] {
-                (byte) 0x28, (byte) 0xBF, (byte) 0x4E, (byte) 0x5E,
-                (byte) 0x4E, (byte) 0x75, (byte) 0x8A, (byte) 0x41,
-                (byte) 0x64, (byte) 0x00, (byte) 0x4E, (byte) 0x56,
-                (byte) 0xFF, (byte) 0xFA, (byte) 0x01, (byte) 0x08,
-                (byte) 0x2E, (byte) 0x2E, (byte) 0x00, (byte) 0xB6,
-                (byte) 0xD0, (byte) 0x68, (byte) 0x3E, (byte) 0x80,
-                (byte) 0x2F, (byte) 0x0C, (byte) 0xA9, (byte) 0xFE,
-                (byte) 0x64, (byte) 0x53, (byte) 0x69, (byte) 0x7A};
+        protected final byte[] padding = new byte[] { (byte) 0x28, (byte) 0xBF,
+                (byte) 0x4E, (byte) 0x5E, (byte) 0x4E, (byte) 0x75,
+                (byte) 0x8A, (byte) 0x41, (byte) 0x64, (byte) 0x00,
+                (byte) 0x4E, (byte) 0x56, (byte) 0xFF, (byte) 0xFA,
+                (byte) 0x01, (byte) 0x08, (byte) 0x2E, (byte) 0x2E,
+                (byte) 0x00, (byte) 0xB6, (byte) 0xD0, (byte) 0x68,
+                (byte) 0x3E, (byte) 0x80, (byte) 0x2F, (byte) 0x0C,
+                (byte) 0xA9, (byte) 0xFE, (byte) 0x64, (byte) 0x53,
+                (byte) 0x69, (byte) 0x7A };
 
         protected final int encryptionLengthInBytes;
 
@@ -208,7 +203,7 @@ public final class PDFEncryptionJCE extends PDFObject implements PDFEncryption {
 
         protected final String ownerPassword;
 
-        InitializationEngine(EncryptionSettings encryptionSettings) {
+        InitializationEngine(final EncryptionSettings encryptionSettings) {
             this.encryptionLengthInBytes = encryptionSettings.encryptionLength / 8;
             this.permissions = encryptionSettings.permissions;
             this.preparedUserPassword = preparePassword(encryptionSettings.userPassword);
@@ -216,9 +211,9 @@ public final class PDFEncryptionJCE extends PDFObject implements PDFEncryption {
         }
 
         void run() {
-            oValue = computeOValue();
+            this.oValue = computeOValue();
             createEncryptionKey();
-            uValue = computeUValue();
+            this.uValue = computeUValue();
         }
 
         /**
@@ -228,17 +223,18 @@ public final class PDFEncryptionJCE extends PDFObject implements PDFEncryption {
          */
         private byte[] computeOValue() {
             // Step 1
-            byte[] md5Input = prepareMD5Input();
+            final byte[] md5Input = prepareMD5Input();
             // Step 2
-            digest.reset();
-            byte[] hash = digest.digest(md5Input);
+            PDFEncryptionJCE.this.digest.reset();
+            byte[] hash = PDFEncryptionJCE.this.digest.digest(md5Input);
             // Step 3
             hash = computeOValueStep3(hash);
             // Step 4
-            byte[] key = new byte[encryptionLengthInBytes];
-            System.arraycopy(hash, 0, key, 0, encryptionLengthInBytes);
+            final byte[] key = new byte[this.encryptionLengthInBytes];
+            System.arraycopy(hash, 0, key, 0, this.encryptionLengthInBytes);
             // Steps 5, 6
-            byte[] encryptionResult = encryptWithKey(key, preparedUserPassword);
+            byte[] encryptionResult = encryptWithKey(key,
+                    this.preparedUserPassword);
             // Step 7
             encryptionResult = computeOValueStep7(key, encryptionResult);
             // Step 8
@@ -250,111 +246,125 @@ public final class PDFEncryptionJCE extends PDFObject implements PDFEncryption {
          */
         private void createEncryptionKey() {
             // Steps 1, 2
-            digest.reset();
-            digest.update(preparedUserPassword);
+            PDFEncryptionJCE.this.digest.reset();
+            PDFEncryptionJCE.this.digest.update(this.preparedUserPassword);
             // Step 3
-            digest.update(oValue);
+            PDFEncryptionJCE.this.digest.update(this.oValue);
             // Step 4
-            digest.update((byte) (permissions >>> 0));
-            digest.update((byte) (permissions >>> 8));
-            digest.update((byte) (permissions >>> 16));
-            digest.update((byte) (permissions >>> 24));
+            PDFEncryptionJCE.this.digest
+                    .update((byte) (this.permissions >>> 0));
+            PDFEncryptionJCE.this.digest
+                    .update((byte) (this.permissions >>> 8));
+            PDFEncryptionJCE.this.digest
+                    .update((byte) (this.permissions >>> 16));
+            PDFEncryptionJCE.this.digest
+                    .update((byte) (this.permissions >>> 24));
             // Step 5
-            digest.update(getDocumentSafely().getFileIDGenerator().getOriginalFileID());
-            byte[] hash = digest.digest();
+            PDFEncryptionJCE.this.digest.update(getDocumentSafely()
+                    .getFileIDGenerator().getOriginalFileID());
+            byte[] hash = PDFEncryptionJCE.this.digest.digest();
             // Step 6
             hash = createEncryptionKeyStep6(hash);
             // Step 7
-            encryptionKey = new byte[encryptionLengthInBytes];
-            System.arraycopy(hash, 0, encryptionKey, 0, encryptionLengthInBytes);
+            PDFEncryptionJCE.this.encryptionKey = new byte[this.encryptionLengthInBytes];
+            System.arraycopy(hash, 0, PDFEncryptionJCE.this.encryptionKey, 0,
+                    this.encryptionLengthInBytes);
         }
 
         protected abstract byte[] computeUValue();
 
         /**
-         * Adds padding to the password as directed in page 78 of the PDF 1.4 Reference.
+         * Adds padding to the password as directed in page 78 of the PDF 1.4
+         * Reference.
          *
-         * @param password the password
+         * @param password
+         *            the password
          * @return the password with additional padding if necessary
          */
-        private byte[] preparePassword(String password) {
-            int finalLength = 32;
-            byte[] preparedPassword = new byte[finalLength];
-            byte[] passwordBytes = password.getBytes();
-            System.arraycopy(passwordBytes, 0, preparedPassword, 0, passwordBytes.length);
-            System.arraycopy(padding, 0, preparedPassword, passwordBytes.length,
-                    finalLength - passwordBytes.length);
+        private byte[] preparePassword(final String password) {
+            final int finalLength = 32;
+            final byte[] preparedPassword = new byte[finalLength];
+            final byte[] passwordBytes = password.getBytes();
+            System.arraycopy(passwordBytes, 0, preparedPassword, 0,
+                    passwordBytes.length);
+            System.arraycopy(this.padding, 0, preparedPassword,
+                    passwordBytes.length, finalLength - passwordBytes.length);
             return preparedPassword;
         }
 
         private byte[] prepareMD5Input() {
-            if (ownerPassword.length() != 0) {
-                return preparePassword(ownerPassword);
+            if (this.ownerPassword.length() != 0) {
+                return preparePassword(this.ownerPassword);
             } else {
-                return preparedUserPassword;
+                return this.preparedUserPassword;
             }
         }
 
-        protected abstract byte[] computeOValueStep3(byte[] hash);
+        protected abstract byte[] computeOValueStep3(final byte[] hash);
 
-        protected abstract byte[] computeOValueStep7(byte[] key, byte[] encryptionResult);
+        protected abstract byte[] computeOValueStep7(final byte[] key,
+                final byte[] encryptionResult);
 
-        protected abstract byte[] createEncryptionKeyStep6(byte[] hash);
+        protected abstract byte[] createEncryptionKeyStep6(final byte[] hash);
 
     }
 
     private class Rev2Engine extends InitializationEngine {
 
-        Rev2Engine(EncryptionSettings encryptionSettings) {
+        Rev2Engine(final EncryptionSettings encryptionSettings) {
             super(encryptionSettings);
         }
 
         @Override
-        protected byte[] computeOValueStep3(byte[] hash) {
+        protected byte[] computeOValueStep3(final byte[] hash) {
             return hash;
         }
 
         @Override
-        protected byte[] computeOValueStep7(byte[] key, byte[] encryptionResult) {
+        protected byte[] computeOValueStep7(final byte[] key,
+                final byte[] encryptionResult) {
             return encryptionResult;
         }
 
         @Override
-        protected byte[] createEncryptionKeyStep6(byte[] hash) {
+        protected byte[] createEncryptionKeyStep6(final byte[] hash) {
             return hash;
         }
 
         @Override
         protected byte[] computeUValue() {
-            return encryptWithKey(encryptionKey, padding);
+            return encryptWithKey(PDFEncryptionJCE.this.encryptionKey,
+                    this.padding);
         }
 
     }
 
     private class Rev3Engine extends InitializationEngine {
 
-        Rev3Engine(EncryptionSettings encryptionSettings) {
+        Rev3Engine(final EncryptionSettings encryptionSettings) {
             super(encryptionSettings);
         }
 
         @Override
         protected byte[] computeOValueStep3(byte[] hash) {
             for (int i = 0; i < 50; i++) {
-                hash = digest.digest(hash);
+                hash = PDFEncryptionJCE.this.digest.digest(hash);
             }
             return hash;
         }
 
         @Override
-        protected byte[] computeOValueStep7(byte[] key, byte[] encryptionResult) {
+        protected byte[] computeOValueStep7(final byte[] key,
+                final byte[] encryptionResult) {
             return xorKeyAndEncrypt19Times(key, encryptionResult);
         }
 
         @Override
         protected byte[] createEncryptionKeyStep6(byte[] hash) {
             for (int i = 0; i < 50; i++) {
-                digest.update(hash, 0, encryptionLengthInBytes);
-                hash = digest.digest();
+                PDFEncryptionJCE.this.digest.update(hash, 0,
+                        this.encryptionLengthInBytes);
+                hash = PDFEncryptionJCE.this.digest.digest();
             }
             return hash;
         }
@@ -363,25 +373,30 @@ public final class PDFEncryptionJCE extends PDFObject implements PDFEncryption {
         protected byte[] computeUValue() {
             // Step 1 is encryptionKey
             // Step 2
-            digest.reset();
-            digest.update(padding);
+            PDFEncryptionJCE.this.digest.reset();
+            PDFEncryptionJCE.this.digest.update(this.padding);
             // Step 3
-            digest.update(getDocumentSafely().getFileIDGenerator().getOriginalFileID());
+            PDFEncryptionJCE.this.digest.update(getDocumentSafely()
+                    .getFileIDGenerator().getOriginalFileID());
             // Step 4
-            byte[] encryptionResult = encryptWithKey(encryptionKey, digest.digest());
+            byte[] encryptionResult = encryptWithKey(
+                    PDFEncryptionJCE.this.encryptionKey,
+                    PDFEncryptionJCE.this.digest.digest());
             // Step 5
-            encryptionResult = xorKeyAndEncrypt19Times(encryptionKey, encryptionResult);
+            encryptionResult = xorKeyAndEncrypt19Times(
+                    PDFEncryptionJCE.this.encryptionKey, encryptionResult);
             // Step 6
-            byte[] uValue = new byte[32];
+            final byte[] uValue = new byte[32];
             System.arraycopy(encryptionResult, 0, uValue, 0, 16);
             // Add the arbitrary padding
             Arrays.fill(uValue, 16, 32, (byte) 0);
             return uValue;
         }
 
-        private byte[] xorKeyAndEncrypt19Times(byte[] key, byte[] input) {
+        private byte[] xorKeyAndEncrypt19Times(final byte[] key,
+                final byte[] input) {
             byte[] result = input;
-            byte[] encryptionKey = new byte[key.length];
+            final byte[] encryptionKey = new byte[key.length];
             for (int i = 1; i <= 19; i++) {
                 for (int j = 0; j < key.length; j++) {
                     encryptionKey[j] = (byte) (key[j] ^ i);
@@ -395,12 +410,12 @@ public final class PDFEncryptionJCE extends PDFObject implements PDFEncryption {
 
     private class EncryptionFilter extends PDFFilter {
 
-        private int streamNumber;
+        private final int streamNumber;
 
-        private int streamGeneration;
+        private final int streamGeneration;
 
-        EncryptionFilter(int streamNumber, int streamGeneration) {
-            this.streamNumber  = streamNumber;
+        EncryptionFilter(final int streamNumber, final int streamGeneration) {
+            this.streamNumber = streamNumber;
             this.streamGeneration = streamGeneration;
         }
 
@@ -409,6 +424,7 @@ public final class PDFEncryptionJCE extends PDFObject implements PDFEncryption {
          *
          * @return the empty string
          */
+        @Override
         public String getName() {
             return "";
         }
@@ -418,100 +434,116 @@ public final class PDFEncryptionJCE extends PDFObject implements PDFEncryption {
          *
          * @return null, this filter has no parameters
          */
+        @Override
         public PDFObject getDecodeParms() {
             return null;
         }
 
         /** {@inheritDoc} */
-        public OutputStream applyFilter(OutputStream out) throws IOException {
-            byte[] key = createEncryptionKey(streamNumber, streamGeneration);
-            Cipher cipher = initCipher(key);
+        @Override
+        public OutputStream applyFilter(final OutputStream out)
+                throws IOException {
+            final byte[] key = createEncryptionKey(this.streamNumber,
+                    this.streamGeneration);
+            final Cipher cipher = initCipher(key);
             return new CipherOutputStream(out, cipher);
         }
 
     }
 
-    private PDFEncryptionJCE(int objectNumber, PDFEncryptionParams params, PDFDocument pdf) {
+    private PDFEncryptionJCE(final int objectNumber,
+            final PDFEncryptionParams params, final PDFDocument pdf) {
         setObjectNumber(objectNumber);
         try {
-            digest = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
+            this.digest = MessageDigest.getInstance("MD5");
+        } catch (final NoSuchAlgorithmException e) {
             throw new UnsupportedOperationException(e.getMessage());
         }
         setDocument(pdf);
-        EncryptionInitializer encryptionInitializer = new EncryptionInitializer(params);
+        final EncryptionInitializer encryptionInitializer = new EncryptionInitializer(
+                params);
         encryptionInitializer.init();
     }
 
     /**
      * Creates and returns an encryption object.
      *
-     * @param objectNumber the object number for the encryption dictionary
-     * @param params the encryption parameters
-     * @param pdf the PDF document to be encrypted
+     * @param objectNumber
+     *            the object number for the encryption dictionary
+     * @param params
+     *            the encryption parameters
+     * @param pdf
+     *            the PDF document to be encrypted
      * @return the newly created encryption object
      */
-    public static PDFEncryption make(
-            int objectNumber, PDFEncryptionParams params, PDFDocument pdf) {
+    public static PDFEncryption make(final int objectNumber,
+            final PDFEncryptionParams params, final PDFDocument pdf) {
         return new PDFEncryptionJCE(objectNumber, params, pdf);
     }
 
     /** {@inheritDoc} */
-    public byte[] encrypt(byte[] data, PDFObject refObj) {
+    @Override
+    public byte[] encrypt(final byte[] data, final PDFObject refObj) {
         PDFObject o = refObj;
         while (o != null && !o.hasObjectNumber()) {
             o = o.getParent();
         }
         if (o == null) {
-            throw new IllegalStateException("No object number could be obtained for a PDF object");
+            throw new IllegalStateException(
+                    "No object number could be obtained for a PDF object");
         }
-        byte[] key = createEncryptionKey(o.getObjectNumber(), o.getGeneration());
+        final byte[] key = createEncryptionKey(o.getObjectNumber(),
+                o.getGeneration());
         return encryptWithKey(key, data);
     }
 
     /** {@inheritDoc} */
-    public void applyFilter(AbstractPDFStream stream) {
+    @Override
+    public void applyFilter(final AbstractPDFStream stream) {
         stream.getFilterList().addFilter(
-                new EncryptionFilter(stream.getObjectNumber(), stream.getGeneration()));
+                new EncryptionFilter(stream.getObjectNumber(), stream
+                        .getGeneration()));
     }
 
     /**
-     *  Prepares the encryption dictionary for output to a PDF file.
+     * Prepares the encryption dictionary for output to a PDF file.
      *
-     *  @return the encryption dictionary as a byte array
+     * @return the encryption dictionary as a byte array
      */
+    @Override
     public byte[] toPDF() {
-        assert encryptionDictionary != null;
+        assert this.encryptionDictionary != null;
         return encode(this.encryptionDictionary);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getTrailerEntry() {
         return "/Encrypt " + getObjectNumber() + " " + getGeneration() + " R\n";
     }
 
-    private static byte[] encryptWithKey(byte[] key, byte[] data) {
+    private static byte[] encryptWithKey(final byte[] key, final byte[] data) {
         try {
             final Cipher c = initCipher(key);
             return c.doFinal(data);
-        } catch (IllegalBlockSizeException e) {
+        } catch (final IllegalBlockSizeException e) {
             throw new IllegalStateException(e.getMessage());
-        } catch (BadPaddingException e) {
+        } catch (final BadPaddingException e) {
             throw new IllegalStateException(e.getMessage());
         }
     }
 
-    private static Cipher initCipher(byte[] key) {
+    private static Cipher initCipher(final byte[] key) {
         try {
-            Cipher c = Cipher.getInstance("RC4");
-            SecretKeySpec keyspec = new SecretKeySpec(key, "RC4");
+            final Cipher c = Cipher.getInstance("RC4");
+            final SecretKeySpec keyspec = new SecretKeySpec(key, "RC4");
             c.init(Cipher.ENCRYPT_MODE, keyspec);
             return c;
-        } catch (InvalidKeyException e) {
+        } catch (final InvalidKeyException e) {
             throw new IllegalStateException(e);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             throw new UnsupportedOperationException(e);
-        } catch (NoSuchPaddingException e) {
+        } catch (final NoSuchPaddingException e) {
             throw new UnsupportedOperationException(e);
         }
     }
@@ -519,28 +551,33 @@ public final class PDFEncryptionJCE extends PDFObject implements PDFEncryption {
     /**
      * Applies Algorithm 3.1 from the PDF 1.4 Reference.
      *
-     * @param objectNumber the object number
-     * @param generationNumber the generation number
+     * @param objectNumber
+     *            the object number
+     * @param generationNumber
+     *            the generation number
      * @return the key to use for encryption
      */
-    private byte[] createEncryptionKey(int objectNumber, int generationNumber) {
+    private byte[] createEncryptionKey(final int objectNumber,
+            final int generationNumber) {
         // Step 1 passed in
         // Step 2
-        byte[] md5Input = prepareMD5Input(objectNumber, generationNumber);
+        final byte[] md5Input = prepareMD5Input(objectNumber, generationNumber);
         // Step 3
-        digest.reset();
-        byte[] hash = digest.digest(md5Input);
+        this.digest.reset();
+        final byte[] hash = this.digest.digest(md5Input);
         // Step 4
-        int keyLength = Math.min(16, md5Input.length);
-        byte[] key = new byte[keyLength];
+        final int keyLength = Math.min(16, md5Input.length);
+        final byte[] key = new byte[keyLength];
         System.arraycopy(hash, 0, key, 0, keyLength);
         return key;
     }
 
-    private byte[] prepareMD5Input(int objectNumber, int generationNumber) {
-        byte[] md5Input = new byte[encryptionKey.length + 5];
-        System.arraycopy(encryptionKey, 0, md5Input, 0, encryptionKey.length);
-        int i = encryptionKey.length;
+    private byte[] prepareMD5Input(final int objectNumber,
+            final int generationNumber) {
+        final byte[] md5Input = new byte[this.encryptionKey.length + 5];
+        System.arraycopy(this.encryptionKey, 0, md5Input, 0,
+                this.encryptionKey.length);
+        int i = this.encryptionKey.length;
         md5Input[i++] = (byte) (objectNumber >>> 0);
         md5Input[i++] = (byte) (objectNumber >>> 8);
         md5Input[i++] = (byte) (objectNumber >>> 16);

@@ -31,14 +31,14 @@ public abstract class TestObj extends FObj {
     /**
      * @see org.apache.fop.fo.FONode#FONode(FONode)
      */
-    public TestObj(FONode parent) {
+    public TestObj(final FONode parent) {
         super(parent);
     }
 
     /** @see org.apache.fop.fo.FONode#getNamespaceURI() */
+    @Override
     public String getNamespaceURI() {
         return TestElementMapping.NAMESPACE;
     }
 
 }
-

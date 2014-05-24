@@ -24,10 +24,9 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 
 /**
- * This implements the GraphicsDevice interface as appropriate for
- * a PDFGraphics2D.  This is quite simple since we only have one
- * GraphicsConfiguration for now (this might change in the future
- * I suppose).
+ * This implements the GraphicsDevice interface as appropriate for a
+ * PDFGraphics2D. This is quite simple since we only have one
+ * GraphicsConfiguration for now (this might change in the future I suppose).
  */
 class PDFGraphicsDevice extends GraphicsDevice {
 
@@ -39,21 +38,24 @@ class PDFGraphicsDevice extends GraphicsDevice {
     /**
      * Create a new PDF graphics device.
      *
-     * @param gc The graphics configuration we should reference
+     * @param gc
+     *            The graphics configuration we should reference
      */
-    PDFGraphicsDevice(PDFGraphicsConfiguration gc) {
+    PDFGraphicsDevice(final PDFGraphicsConfiguration gc) {
         this.gc = gc;
     }
 
     /**
      * Ignore template and return the only config we have
      *
-     * @param gct the template configuration
+     * @param gct
+     *            the template configuration
      * @return the best configuration which is the only one
      */
+    @Override
     public GraphicsConfiguration getBestConfiguration(
-      GraphicsConfigTemplate gct) {
-        return gc;
+            final GraphicsConfigTemplate gct) {
+        return this.gc;
     }
 
     /**
@@ -61,8 +63,9 @@ class PDFGraphicsDevice extends GraphicsDevice {
      *
      * @return an array containing the one graphics configuration
      */
+    @Override
     public GraphicsConfiguration[] getConfigurations() {
-        return new GraphicsConfiguration[] {gc};
+        return new GraphicsConfiguration[] { this.gc };
     }
 
     /**
@@ -70,8 +73,9 @@ class PDFGraphicsDevice extends GraphicsDevice {
      *
      * @return the graphics configuration that created this object
      */
+    @Override
     public GraphicsConfiguration getDefaultConfiguration() {
-        return gc;
+        return this.gc;
     }
 
     /**
@@ -79,6 +83,7 @@ class PDFGraphicsDevice extends GraphicsDevice {
      *
      * @return the ID string for this device, uses toString
      */
+    @Override
     public String getIDstring() {
         return toString();
     }
@@ -88,9 +93,9 @@ class PDFGraphicsDevice extends GraphicsDevice {
      *
      * @return the type which is always printer
      */
+    @Override
     public int getType() {
         return GraphicsDevice.TYPE_PRINTER;
     }
 
 }
-

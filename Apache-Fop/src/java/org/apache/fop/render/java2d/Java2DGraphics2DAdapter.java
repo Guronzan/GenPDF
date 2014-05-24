@@ -26,10 +26,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 
-import org.apache.xmlgraphics.java2d.Graphics2DImagePainter;
-
 import org.apache.fop.render.AbstractGraphics2DAdapter;
 import org.apache.fop.render.RendererContext;
+import org.apache.xmlgraphics.java2d.Graphics2DImagePainter;
 
 /**
  * Graphics2DAdapter implementation for Java2D.
@@ -37,43 +36,44 @@ import org.apache.fop.render.RendererContext;
 public class Java2DGraphics2DAdapter extends AbstractGraphics2DAdapter {
 
     /** {@inheritDoc} */
-    public void paintImage(Graphics2DImagePainter painter,
-            RendererContext context,
-            int x, int y, int width, int height) throws IOException {
+    @Override
+    public void paintImage(final Graphics2DImagePainter painter,
+            final RendererContext context, final int x, final int y,
+            final int width, final int height) throws IOException {
 
-        float fwidth = width / 1000f;
-        float fheight = height / 1000f;
-        float fx = x / 1000f;
-        float fy = y / 1000f;
+        final float fwidth = width / 1000f;
+        final float fheight = height / 1000f;
+        final float fx = x / 1000f;
+        final float fy = y / 1000f;
 
         // get the 'width' and 'height' attributes of the SVG document
-        Dimension dim = painter.getImageSize();
-        float imw = (float)dim.getWidth() / 1000f;
-        float imh = (float)dim.getHeight() / 1000f;
+        final Dimension dim = painter.getImageSize();
+        final float imw = (float) dim.getWidth() / 1000f;
+        final float imh = (float) dim.getHeight() / 1000f;
 
-        float sx = fwidth / (float)imw;
-        float sy = fheight / (float)imh;
+        final float sx = fwidth / imw;
+        final float sy = fheight / imh;
 
-        Java2DRenderer renderer = (Java2DRenderer)context.getRenderer();
-        Java2DGraphicsState state = renderer.state;
+        final Java2DRenderer renderer = (Java2DRenderer) context.getRenderer();
+        final Java2DGraphicsState state = renderer.state;
 
-        //Create copy and paint on that
-        Graphics2D g2d = (Graphics2D)state.getGraph().create();
+        // Create copy and paint on that
+        final Graphics2D g2d = (Graphics2D) state.getGraph().create();
         g2d.setColor(Color.black);
         g2d.setBackground(Color.black);
 
-        //TODO Clip to the image area.
+        // TODO Clip to the image area.
 
         // transform so that the coordinates (0,0) is from the top left
         // and positive is down and to the right. (0,0) is where the
         // viewBox puts it.
         g2d.translate(fx, fy);
-        AffineTransform at = AffineTransform.getScaleInstance(sx, sy);
+        final AffineTransform at = AffineTransform.getScaleInstance(sx, sy);
         if (!at.isIdentity()) {
             g2d.transform(at);
         }
 
-        Rectangle2D area = new Rectangle2D.Double(0.0, 0.0, imw, imh);
+        final Rectangle2D area = new Rectangle2D.Double(0.0, 0.0, imw, imh);
         painter.paint(g2d, area);
 
         g2d.dispose();

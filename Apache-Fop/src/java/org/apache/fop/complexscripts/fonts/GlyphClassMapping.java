@@ -22,28 +22,40 @@ package org.apache.fop.complexscripts.fonts;
 // CSOFF: LineLengthCheck
 
 /**
- * <p>The <code>GlyphClassMapping</code> interface provides glyph identifier to class
- * index mapping support.</p>
+ * <p>
+ * The <code>GlyphClassMapping</code> interface provides glyph identifier to
+ * class index mapping support.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 public interface GlyphClassMapping {
 
     /**
      * Obtain size of class table, i.e., ciMax + 1, where ciMax is the maximum
      * class index.
-     * @param set for coverage set based class mappings, indicates set index, otherwise ignored
+     * 
+     * @param set
+     *            for coverage set based class mappings, indicates set index,
+     *            otherwise ignored
      * @return size of class table
      */
-    int getClassSize ( int set );
+    int getClassSize(final int set);
 
     /**
-     * Map glyph identifier (code) to coverge index. Returns -1 if glyph identifier is not in the domain of
-     * the class table.
-     * @param gid glyph identifier (code)
-     * @param set for coverage set based class mappings, indicates set index, otherwise ignored
-     * @return non-negative glyph class index or -1 if glyph identifiers is not mapped by table
+     * Map glyph identifier (code) to coverge index. Returns -1 if glyph
+     * identifier is not in the domain of the class table.
+     * 
+     * @param gid
+     *            glyph identifier (code)
+     * @param set
+     *            for coverage set based class mappings, indicates set index,
+     *            otherwise ignored
+     * @return non-negative glyph class index or -1 if glyph identifiers is not
+     *         mapped by table
      */
-    int getClassIndex ( int gid, int set );
+    int getClassIndex(final int gid, final int set);
 
 }

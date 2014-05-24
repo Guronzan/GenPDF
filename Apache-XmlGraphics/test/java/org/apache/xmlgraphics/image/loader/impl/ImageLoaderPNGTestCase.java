@@ -21,8 +21,6 @@ package org.apache.xmlgraphics.image.loader.impl;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageContext;
 import org.apache.xmlgraphics.image.loader.ImageException;
@@ -32,31 +30,34 @@ import org.apache.xmlgraphics.image.loader.ImageSessionContext;
 import org.apache.xmlgraphics.image.loader.MockImageContext;
 import org.apache.xmlgraphics.image.loader.MockImageSessionContext;
 import org.apache.xmlgraphics.util.MimeConstants;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ImageLoaderPNGTestCase {
 
-    private ImageLoaderPNG ilpng = new ImageLoaderPNG();
+    private final ImageLoaderPNG ilpng = new ImageLoaderPNG();
 
     @Test
     public void testGetUsagePenalty() {
-        assertEquals(1000, ilpng.getUsagePenalty());
+        assertEquals(1000, this.ilpng.getUsagePenalty());
     }
 
     @Test
-    public void testLoadImageImageInfoMapImageSessionContext() throws ImageException, IOException {
-        ImageContext context = MockImageContext.newSafeInstance();
-        ImageSessionContext session = new MockImageSessionContext(context);
-        ImageInfo info = new ImageInfo("basn2c08.png", MimeConstants.MIME_PNG);
-        Image im = ilpng.loadImage(info, null, session);
+    public void testLoadImageImageInfoMapImageSessionContext()
+            throws ImageException, IOException {
+        final ImageContext context = MockImageContext.newSafeInstance();
+        final ImageSessionContext session = new MockImageSessionContext(context);
+        final ImageInfo info = new ImageInfo("basn2c08.png",
+                MimeConstants.MIME_PNG);
+        final Image im = this.ilpng.loadImage(info, null, session);
         assertTrue(im instanceof ImageRendered);
     }
 
     @Test
     public void testGetTargetFlavor() {
-        assertEquals(ImageFlavor.RENDERED_IMAGE, ilpng.getTargetFlavor());
+        assertEquals(ImageFlavor.RENDERED_IMAGE, this.ilpng.getTargetFlavor());
     }
 
 }

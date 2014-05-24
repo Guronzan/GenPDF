@@ -23,15 +23,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Represents a PDF object that may appear in an object stream. An object stream is a PDF
- * stream whose content is a sequence of PDF objects. See Section 3.4.6 of the PDF 1.5
- * Reference.
+ * Represents a PDF object that may appear in an object stream. An object stream
+ * is a PDF stream whose content is a sequence of PDF objects. See Section 3.4.6
+ * of the PDF 1.5 Reference.
  */
 interface CompressedObject {
 
     /**
-     * Returns the object number of this indirect object. Note that a compressed object
-     * must have a generation number of 0.
+     * Returns the object number of this indirect object. Note that a compressed
+     * object must have a generation number of 0.
      *
      * @return the object number.
      */
@@ -40,10 +40,12 @@ interface CompressedObject {
     /**
      * Outputs this object's content into the given stream.
      *
-     * @param outputStream a stream, likely to be provided by the containing object stream
+     * @param outputStream
+     *            a stream, likely to be provided by the containing object
+     *            stream
      * @return the number of bytes written to the stream
      * @throws IOException
      */
-    int output(OutputStream outputStream) throws IOException;
+    int output(final OutputStream outputStream) throws IOException;
 
 }

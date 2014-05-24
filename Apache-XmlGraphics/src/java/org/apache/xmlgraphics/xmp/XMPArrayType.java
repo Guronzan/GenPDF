@@ -29,13 +29,15 @@ public final class XMPArrayType {
     /** the alternative array */
     public static final XMPArrayType ALT = new XMPArrayType("Alt");
 
-    private String name;
+    private final String name;
 
     /**
      * Constructor to add a new named item.
-     * @param name Name of the item.
+     * 
+     * @param name
+     *            Name of the item.
      */
-    private XMPArrayType(String name) {
+    private XMPArrayType(final String name) {
         this.name = name;
     }
 
@@ -45,8 +47,9 @@ public final class XMPArrayType {
     }
 
     /** @see java.lang.Object#toString() */
+    @Override
     public String toString() {
-        return "rdf:" + name;
+        return "rdf:" + this.name;
     }
 
 }

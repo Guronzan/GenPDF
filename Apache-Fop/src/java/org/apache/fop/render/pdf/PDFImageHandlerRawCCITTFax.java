@@ -19,45 +19,47 @@
 
 package org.apache.fop.render.pdf;
 
+import org.apache.fop.pdf.PDFImage;
+import org.apache.fop.render.RenderingContext;
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.impl.ImageRawCCITTFax;
 
-import org.apache.fop.pdf.PDFImage;
-import org.apache.fop.render.RenderingContext;
-
 /**
- * Image handler implementation which handles CCITT encoded images (CCITT fax group 3/4)
- * for PDF output.
+ * Image handler implementation which handles CCITT encoded images (CCITT fax
+ * group 3/4) for PDF output.
  */
 public class PDFImageHandlerRawCCITTFax extends AbstractPDFImageHandler {
 
-    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {
-        ImageFlavor.RAW_CCITTFAX,
-    };
+    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] { ImageFlavor.RAW_CCITTFAX, };
 
     @Override
-    PDFImage createPDFImage(Image image, String xobjectKey) {
+    PDFImage createPDFImage(final Image image, final String xobjectKey) {
         return new ImageRawCCITTFaxAdapter((ImageRawCCITTFax) image, xobjectKey);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getPriority() {
         return 100;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class getSupportedImageClass() {
         return ImageRawCCITTFax.class;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor[] getSupportedImageFlavors() {
         return FLAVORS;
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible(RenderingContext targetContext, Image image) {
+    @Override
+    public boolean isCompatible(final RenderingContext targetContext,
+            final Image image) {
         return (image == null || image instanceof ImageRawCCITTFax)
                 && targetContext instanceof PDFRenderingContext;
     }

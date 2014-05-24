@@ -19,51 +19,55 @@
 
 package org.apache.fop.fo.pagination;
 
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 import org.apache.fop.fo.FObj;
 import org.apache.fop.fo.PropertyList;
 import org.apache.fop.fo.ValidationException;
+import org.xml.sax.Locator;
 
 /**
- * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_page-sequence-wrapper">
- * <code>fo:page-sequence-wrapper</code></a> object, first introduced
- * in the XSL 1.1 WD.
+ * Class modelling the <a
+ * href="http://www.w3.org/TR/xsl/#fo_page-sequence-wrapper">
+ * <code>fo:page-sequence-wrapper</code></a> object, first introduced in the XSL
+ * 1.1 WD.
  */
 public class PageSequenceWrapper extends FObj {
     // The value of properties relevant for this FO
     private String indexClass;
     private String indexKey;
+
     // End of property values
 
     /**
-     * Create a PageSequenceWrapper instance that is a child of
-     * the given parent {@link FONode}.
+     * Create a PageSequenceWrapper instance that is a child of the given parent
+     * {@link FONode}.
      *
-     * @param parent {@link FONode} that is the parent of this object
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public PageSequenceWrapper(FONode parent) {
+    public PageSequenceWrapper(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
         super.bind(pList);
-        indexClass = pList.get(PR_INDEX_CLASS).getString();
-        indexKey = pList.get(PR_INDEX_KEY).getString();
+        this.indexClass = pList.get(PR_INDEX_CLASS).getString();
+        this.indexKey = pList.get(PR_INDEX_KEY).getString();
     }
 
     /**
-     * {@inheritDoc}
-     *  <br>XSL/FOP: (bookmark+)
+     * {@inheritDoc} <br>
+     * XSL/FOP: (bookmark+)
      */
-    protected void validateChildNode(Locator loc, String nsURI, String localName)
-                throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
-            if (!(localName.equals("page-sequence")
-                    || localName.equals("page-sequence-wrapper"))) {
+            if (!(localName.equals("page-sequence") || localName
+                    .equals("page-sequence-wrapper"))) {
                 invalidChildError(loc, nsURI, localName);
             }
         }
@@ -71,31 +75,35 @@ public class PageSequenceWrapper extends FObj {
 
     /**
      * Get the value of the <code>index-class</code> property.
+     * 
      * @return the "index-class" property
      */
     public String getIndexClass() {
-        return indexClass;
+        return this.indexClass;
     }
 
     /**
      * Get the value of the <code>index-key</code> property.
+     * 
      * @return the "index-key" property
      */
     public String getIndexKey() {
-        return indexKey;
+        return this.indexKey;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "page-sequence-wrapper";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_PAGE_SEQUENCE_WRAPPER}
      */
+    @Override
     public int getNameId() {
         return FO_PAGE_SEQUENCE_WRAPPER;
     }
 }
-

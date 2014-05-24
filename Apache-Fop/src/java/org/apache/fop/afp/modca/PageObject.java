@@ -55,7 +55,8 @@ public class PageObject extends AbstractResourceGroupContainer {
      * Construct a new page object for the specified name argument, the page
      * name should be an 8 character identifier.
      *
-     * @param factory the resource manager
+     * @param factory
+     *            the resource manager
      *
      * @param name
      *            the name of the page.
@@ -70,9 +71,9 @@ public class PageObject extends AbstractResourceGroupContainer {
      * @param heightRes
      *            the height resolution of the page.
      */
-    public PageObject(Factory factory,
-            String name, int width, int height, int rotation,
-            int widthRes, int heightRes) {
+    public PageObject(final Factory factory, final String name,
+            final int width, final int height, final int rotation,
+            final int widthRes, final int heightRes) {
         super(factory, name, width, height, rotation, widthRes, heightRes);
     }
 
@@ -88,9 +89,11 @@ public class PageObject extends AbstractResourceGroupContainer {
      * @param orientation
      *            the orientation required for the overlay
      */
-    public void createIncludePageOverlay(String name, int x, int y, int orientation) {
+    public void createIncludePageOverlay(final String name, final int x,
+            final int y, final int orientation) {
         getActiveEnvironmentGroup().createOverlay(name);
-        IncludePageOverlay ipo = new IncludePageOverlay(name, x, y, orientation);
+        final IncludePageOverlay ipo = new IncludePageOverlay(name, x, y,
+                orientation);
         addObject(ipo);
     }
 
@@ -114,56 +117,60 @@ public class PageObject extends AbstractResourceGroupContainer {
      * @param blue
      *            the blue value
      */
-    public void createShading(int x, int y, int w, int h, int red, int green, int blue) {
+    public void createShading(final int x, final int y, final int w,
+            final int h, final int red, final int green, final int blue) {
         int xCoord = 0;
         int yCoord = 0;
         int areaWidth = 0;
         int areaHeight = 0;
-        switch (rotation) {
-            case 90:
-                xCoord = areaWidth - y - h;
-                yCoord = x;
-                areaWidth = h;
-                areaHeight = w;
-                break;
-            case 180:
-                xCoord = areaWidth - x - w;
-                yCoord = areaHeight - y - h;
-                areaWidth = w;
-                areaHeight = h;
-                break;
-            case 270:
-                xCoord = y;
-                yCoord = areaHeight - x - w;
-                areaWidth = h;
-                areaHeight = w;
-                break;
-            default:
-                xCoord = x;
-                yCoord = y;
-                areaWidth = w;
-                areaHeight = h;
-                break;
+        switch (this.rotation) {
+        case 90:
+            xCoord = areaWidth - y - h;
+            yCoord = x;
+            areaWidth = h;
+            areaHeight = w;
+            break;
+        case 180:
+            xCoord = areaWidth - x - w;
+            yCoord = areaHeight - y - h;
+            areaWidth = w;
+            areaHeight = h;
+            break;
+        case 270:
+            xCoord = y;
+            yCoord = areaHeight - x - w;
+            areaWidth = h;
+            areaHeight = w;
+            break;
+        default:
+            xCoord = x;
+            yCoord = y;
+            areaWidth = w;
+            areaHeight = h;
+            break;
         }
 
         // Convert the color to grey scale
-        float shade = (float) ((red * 0.3) + (green * 0.59) + (blue * 0.11));
+        final float shade = (float) (red * 0.3 + green * 0.59 + blue * 0.11);
 
-        int grayscale = Math.round((shade / 255) * 16);
+        final int grayscale = Math.round(shade / 255 * 16);
 
-        IMImageObject imImageObject = factory.createIMImageObject();
+        final IMImageObject imImageObject = this.factory.createIMImageObject();
 
-        ImageOutputControl imageOutputControl = new ImageOutputControl(0, 0);
-        ImageInputDescriptor imageInputDescriptor = new ImageInputDescriptor();
-        ImageCellPosition imageCellPosition = new ImageCellPosition(xCoord, yCoord);
+        final ImageOutputControl imageOutputControl = new ImageOutputControl(0,
+                0);
+        final ImageInputDescriptor imageInputDescriptor = new ImageInputDescriptor();
+        final ImageCellPosition imageCellPosition = new ImageCellPosition(
+                xCoord, yCoord);
         imageCellPosition.setXFillSize(areaWidth);
         imageCellPosition.setYFillSize(areaHeight);
         imageCellPosition.setXSize(64);
         imageCellPosition.setYSize(8);
 
-        //defining this as a resource
-        byte[] rasterData = ImageRasterPattern.getRasterData(grayscale);
-        ImageRasterData imageRasterData = factory.createImageRasterData(rasterData);
+        // defining this as a resource
+        final byte[] rasterData = ImageRasterPattern.getRasterData(grayscale);
+        final ImageRasterData imageRasterData = this.factory
+                .createImageRasterData(rasterData);
 
         imImageObject.setImageOutputControl(imageOutputControl);
         imImageObject.setImageInputDescriptor(imageInputDescriptor);
@@ -173,24 +180,27 @@ public class PageObject extends AbstractResourceGroupContainer {
     }
 
     /** {@inheritDoc} */
-    protected void writeStart(OutputStream os) throws IOException {
-        byte[] data = new byte[17];
+    @Override
+    protected void writeStart(final OutputStream os) throws IOException {
+        final byte[] data = new byte[17];
         copySF(data, Type.BEGIN, Category.PAGE);
         os.write(data);
     }
 
     /** {@inheritDoc} */
-    protected void writeContent(OutputStream os) throws IOException {
+    @Override
+    protected void writeContent(final OutputStream os) throws IOException {
         writeTriplets(os);
 
         getActiveEnvironmentGroup().writeToStream(os);
 
-        writeObjects(objects, os);
+        writeObjects(this.objects, os);
     }
 
     /** {@inheritDoc} */
-    protected void writeEnd(OutputStream os) throws IOException {
-        byte[] data = new byte[17];
+    @Override
+    protected void writeEnd(final OutputStream os) throws IOException {
+        final byte[] data = new byte[17];
         copySF(data, Type.END, Category.PAGE);
         os.write(data);
     }
@@ -198,20 +208,24 @@ public class PageObject extends AbstractResourceGroupContainer {
     /**
      * Adds an AFP object reference to this page
      *
-     * @param obj an AFP object
+     * @param obj
+     *            an AFP object
      */
-    public void addObject(Object obj) {
+    @Override
+    public void addObject(final Object obj) {
         endPresentationObject();
         super.addObject(obj);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return this.getName();
+        return getName();
     }
 
     /** {@inheritDoc} */
-    protected boolean canWrite(AbstractAFPObject ao) {
+    @Override
+    protected boolean canWrite(final AbstractAFPObject ao) {
         return true;
     }
 }

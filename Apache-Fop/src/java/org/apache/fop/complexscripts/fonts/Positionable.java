@@ -22,38 +22,60 @@ package org.apache.fop.complexscripts.fonts;
 // CSOFF: LineLengthCheck
 
 /**
- * <p>Optional interface which indicates that glyph positioning is supported and, if supported,
- * can perform positioning.</p>
+ * <p>
+ * Optional interface which indicates that glyph positioning is supported and,
+ * if supported, can perform positioning.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 public interface Positionable {
 
     /**
      * Determines if font performs glyph positioning.
+     * 
      * @return true if performs positioning
      */
     boolean performsPositioning();
 
     /**
      * Perform glyph positioning.
-     * @param cs character sequence to map to position offsets (advancement adjustments)
-     * @param script a script identifier
-     * @param language a language identifier
-     * @param fontSize font size
-     * @return array (sequence) of 4-tuples of placement [PX,PY] and advance [AX,AY] adjustments, in that order,
-     * with one 4-tuple for each element of glyph sequence, or null if no non-zero adjustment applies
+     * 
+     * @param cs
+     *            character sequence to map to position offsets (advancement
+     *            adjustments)
+     * @param script
+     *            a script identifier
+     * @param language
+     *            a language identifier
+     * @param fontSize
+     *            font size
+     * @return array (sequence) of 4-tuples of placement [PX,PY] and advance
+     *         [AX,AY] adjustments, in that order, with one 4-tuple for each
+     *         element of glyph sequence, or null if no non-zero adjustment
+     *         applies
      */
-    int[][] performPositioning ( CharSequence cs, String script, String language, int fontSize );
+    int[][] performPositioning(final CharSequence cs, final String script,
+            final String language, final int fontSize);
 
     /**
      * Perform glyph positioning using an implied font size.
-     * @param cs character sequence to map to position offsets (advancement adjustments)
-     * @param script a script identifier
-     * @param language a language identifier
-     * @return array (sequence) of 4-tuples of placement [PX,PY] and advance [AX,AY] adjustments, in that order,
-     * with one 4-tuple for each element of glyph sequence, or null if no non-zero adjustment applies
+     * 
+     * @param cs
+     *            character sequence to map to position offsets (advancement
+     *            adjustments)
+     * @param script
+     *            a script identifier
+     * @param language
+     *            a language identifier
+     * @return array (sequence) of 4-tuples of placement [PX,PY] and advance
+     *         [AX,AY] adjustments, in that order, with one 4-tuple for each
+     *         element of glyph sequence, or null if no non-zero adjustment
+     *         applies
      */
-    int[][] performPositioning ( CharSequence cs, String script, String language );
+    int[][] performPositioning(final CharSequence cs, final String script,
+            final String language);
 
 }

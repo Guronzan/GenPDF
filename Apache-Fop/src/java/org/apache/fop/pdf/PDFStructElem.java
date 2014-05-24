@@ -31,7 +31,8 @@ import org.apache.fop.util.LanguageTags;
 /**
  * Class representing a PDF Structure Element.
  */
-public class PDFStructElem extends PDFDictionary implements StructureTreeElement, CompressedObject {
+public class PDFStructElem extends PDFDictionary implements
+        StructureTreeElement, CompressedObject {
 
     private PDFStructElem parentElement;
 
@@ -43,12 +44,14 @@ public class PDFStructElem extends PDFDictionary implements StructureTreeElement
     /**
      * Creates a new structure element.
      *
-     * @param parent parent of this element
-     * @param structureType the structure type of this element
+     * @param parent
+     *            parent of this element
+     * @param structureType
+     *            the structure type of this element
      */
-    PDFStructElem(PDFObject parent, PDFName structureType) {
+    PDFStructElem(final PDFObject parent, final PDFName structureType) {
         if (parent instanceof PDFStructElem) {
-            parentElement = (PDFStructElem) parent;
+            this.parentElement = (PDFStructElem) parent;
         }
         put("S", structureType);
         setParent(parent);
@@ -58,16 +61,17 @@ public class PDFStructElem extends PDFDictionary implements StructureTreeElement
      * Returns the parent of this structure element.
      *
      * @return the parent, <code>null</code> if the parent is not a structure
-     * element (i.e., is the structure tree root)
+     *         element (i.e., is the structure tree root)
      */
     public PDFStructElem getParentStructElem() {
-        return parentElement;
+        return this.parentElement;
     }
 
     /** {@inheritDoc} */
-    public void setParent(PDFObject parent) {
+    @Override
+    public void setParent(final PDFObject parent) {
         if (parent != null && parent.hasObjectNumber()) {
-           put("P", new PDFReference(parent));
+            put("P", new PDFReference(parent));
         }
     }
 
@@ -76,13 +80,14 @@ public class PDFStructElem extends PDFDictionary implements StructureTreeElement
      * its parent structure element if it has not already, and so will the
      * parent, and so on.
      *
-     * @param kid element to be added
+     * @param kid
+     *            element to be added
      */
-    public void addKid(PDFObject kid) {
-        if (kids == null) {
-            kids = new ArrayList<PDFObject>();
+    public void addKid(final PDFObject kid) {
+        if (this.kids == null) {
+            this.kids = new ArrayList<PDFObject>();
         }
-        kids.add(kid);
+        this.kids.add(kid);
     }
 
     /**
@@ -90,19 +95,21 @@ public class PDFStructElem extends PDFDictionary implements StructureTreeElement
      * will then add itself to its parent structure element if it has not
      * already, and so will the parent, and so on.
      *
-     * @param mcid mcid of the marked-content sequence corresponding to this
-     * structure element's kid
+     * @param mcid
+     *            mcid of the marked-content sequence corresponding to this
+     *            structure element's kid
      */
-    public void setMCIDKid(int mcid) {
+    public void setMCIDKid(final int mcid) {
         put("K", mcid);
     }
 
     /**
      * Sets the page reference of this structure element.
      *
-     * @param page value for the Pg entry
+     * @param page
+     *            value for the Pg entry
      */
-    public void setPage(PDFPage page) {
+    public void setPage(final PDFPage page) {
         put("Pg", page);
     }
 
@@ -117,33 +124,38 @@ public class PDFStructElem extends PDFDictionary implements StructureTreeElement
 
     /**
      * Sets the language of this structure element.
-     * @param language the language (as defined in the section about
-     *                          "Natural Language Specification")
+     * 
+     * @param language
+     *            the language (as defined in the section about
+     *            "Natural Language Specification")
      */
-    private void setLanguage(String language) {
+    private void setLanguage(final String language) {
         put("Lang", language);
     }
 
     /**
      * Sets the language of this structure element.
      *
-     * @param language a value for the Lang entry
+     * @param language
+     *            a value for the Lang entry
      */
-    public void setLanguage(Locale language) {
+    public void setLanguage(final Locale language) {
         setLanguage(LanguageTags.toLanguageTag(language));
     }
 
     /**
      * Returns the language of this structure element.
      *
-     * @return the value of the Lang entry (<code>null</code> if no language was specified)
+     * @return the value of the Lang entry (<code>null</code> if no language was
+     *         specified)
      */
     public String getLanguage() {
         return (String) get("Lang");
     }
 
     @Override
-    protected void writeDictionary(OutputStream out, StringBuilder textBuffer) throws IOException {
+    protected void writeDictionary(final OutputStream out,
+            final StringBuilder textBuffer) throws IOException {
         attachKids();
         super.writeDictionary(out, textBuffer);
     }
@@ -154,10 +166,10 @@ public class PDFStructElem extends PDFDictionary implements StructureTreeElement
      * @return true iff 1+ kids were added to the kids array
      */
     protected boolean attachKids() {
-        List<PDFObject> validKids = new ArrayList<PDFObject>();
-        if (kids != null) {
-            for (PDFObject kid : kids) {
-                if (kid instanceof Placeholder)  {
+        final List<PDFObject> validKids = new ArrayList<PDFObject>();
+        if (this.kids != null) {
+            for (final PDFObject kid : this.kids) {
+                if (kid instanceof Placeholder) {
                     if (((Placeholder) kid).attachKids()) {
                         validKids.add(kid);
                     }
@@ -166,10 +178,10 @@ public class PDFStructElem extends PDFDictionary implements StructureTreeElement
                 }
             }
         }
-        boolean kidsAttached = !validKids.isEmpty();
+        final boolean kidsAttached = !validKids.isEmpty();
         if (kidsAttached) {
-            PDFArray array = new PDFArray();
-            for (PDFObject ob : validKids) {
+            final PDFArray array = new PDFArray();
+            for (final PDFObject ob : validKids) {
                 array.add(ob);
             }
             put("K", array);
@@ -183,14 +195,15 @@ public class PDFStructElem extends PDFDictionary implements StructureTreeElement
     public static class Placeholder extends PDFStructElem {
 
         @Override
-        public void outputInline(OutputStream out, StringBuilder textBuffer) throws IOException {
-            if (kids != null) {
-                assert kids.size() > 0;
-                for (int i = 0; i < kids.size(); i++) {
+        public void outputInline(final OutputStream out,
+                final StringBuilder textBuffer) throws IOException {
+            if (this.kids != null) {
+                assert this.kids.size() > 0;
+                for (int i = 0; i < this.kids.size(); i++) {
                     if (i > 0) {
                         textBuffer.append(' ');
                     }
-                    Object obj = kids.get(i);
+                    final Object obj = this.kids.get(i);
                     formatObject(obj, out, textBuffer);
                 }
             }
@@ -198,10 +211,13 @@ public class PDFStructElem extends PDFDictionary implements StructureTreeElement
 
         /**
          * Constructor
-         * @param parent -
-         * @param name -
+         * 
+         * @param parent
+         *            -
+         * @param name
+         *            -
          */
-        public Placeholder(PDFObject parent, String name) {
+        public Placeholder(final PDFObject parent, final String name) {
             super(parent, new PDFName(name));
         }
     }

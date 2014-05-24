@@ -29,31 +29,33 @@ import org.apache.fop.fo.expr.PropertyException;
 
 /**
  * Dedicated {@link org.apache.fop.fo.properties.PropertyMaker} for handling the
- * <a href="http://www.w3.org/TR/xsl/#text-decoration"><code>text-decoration</code></a>
- * property.
+ * <a href="http://www.w3.org/TR/xsl/#text-decoration">
+ * <code>text-decoration</code></a> property.
  */
 public class TextDecorationMaker extends ListProperty.Maker {
 
     /**
      * Create a maker for the given property id.
-     * @param propId id of the property for which a maker should be created
+     * 
+     * @param propId
+     *            id of the property for which a maker should be created
      */
-    public TextDecorationMaker(int propId) {
+    public TextDecorationMaker(final int propId) {
         super(propId);
     }
 
     /**
-     * {@inheritDoc}
-     * Add validation rules for the <code>text-decoration</code> property.
+     * {@inheritDoc} Add validation rules for the <code>text-decoration</code>
+     * property.
      */
     @Override
-    public Property convertProperty(Property p,
-                                    PropertyList propertyList,
-                                    FObj fo)
-                        throws PropertyException {
+    public Property convertProperty(final Property p,
+            final PropertyList propertyList, final FObj fo)
+            throws PropertyException {
 
-        ListProperty listProp = (ListProperty) super.convertProperty(p, propertyList, fo);
-        List lst = listProp.getList();
+        final ListProperty listProp = (ListProperty) super.convertProperty(p,
+                propertyList, fo);
+        final List lst = listProp.getList();
         boolean none = false;
         boolean under = false;
         boolean over = false;
@@ -61,7 +63,7 @@ public class TextDecorationMaker extends ListProperty.Maker {
         boolean blink = false;
         int enumValue = -1;
         for (int i = lst.size(); --i >= 0;) {
-            Property prop = (Property)lst.get(i);
+            Property prop = (Property) lst.get(i);
             if (prop instanceof NCnameProperty) {
                 prop = checkEnumValues(prop.getString());
                 lst.set(i, prop);
@@ -70,54 +72,54 @@ public class TextDecorationMaker extends ListProperty.Maker {
                 enumValue = prop.getEnum();
             }
             switch (enumValue) {
-                case Constants.EN_NONE:
-                    if (under | over | through | blink) {
-                        throw new PropertyException("Invalid combination of values");
-                    }
-                    none = true;
-                    break;
+            case Constants.EN_NONE:
+                if (under | over | through | blink) {
+                    throw new PropertyException("Invalid combination of values");
+                }
+                none = true;
+                break;
+            case Constants.EN_UNDERLINE:
+            case Constants.EN_NO_UNDERLINE:
+            case Constants.EN_OVERLINE:
+            case Constants.EN_NO_OVERLINE:
+            case Constants.EN_LINE_THROUGH:
+            case Constants.EN_NO_LINE_THROUGH:
+            case Constants.EN_BLINK:
+            case Constants.EN_NO_BLINK:
+                if (none) {
+                    throw new PropertyException(
+                            "'none' specified, no additional values allowed");
+                }
+                switch (enumValue) {
                 case Constants.EN_UNDERLINE:
                 case Constants.EN_NO_UNDERLINE:
+                    if (!under) {
+                        under = true;
+                        continue;
+                    }
                 case Constants.EN_OVERLINE:
                 case Constants.EN_NO_OVERLINE:
+                    if (!over) {
+                        over = true;
+                        continue;
+                    }
                 case Constants.EN_LINE_THROUGH:
                 case Constants.EN_NO_LINE_THROUGH:
+                    if (!through) {
+                        through = true;
+                        continue;
+                    }
                 case Constants.EN_BLINK:
                 case Constants.EN_NO_BLINK:
-                    if (none) {
-                        throw new PropertyException
-                                ("'none' specified, no additional values allowed");
-                    }
-                    switch (enumValue) {
-                        case Constants.EN_UNDERLINE:
-                        case Constants.EN_NO_UNDERLINE:
-                            if (!under) {
-                                under = true;
-                                continue;
-                            }
-                        case Constants.EN_OVERLINE:
-                        case Constants.EN_NO_OVERLINE:
-                            if (!over) {
-                                over = true;
-                                continue;
-                            }
-                        case Constants.EN_LINE_THROUGH:
-                        case Constants.EN_NO_LINE_THROUGH:
-                            if (!through) {
-                                through = true;
-                                continue;
-                            }
-                        case Constants.EN_BLINK:
-                        case Constants.EN_NO_BLINK:
-                            if (!blink) {
-                                blink = true;
-                                continue;
-                            }
-                        default:
-                            throw new PropertyException("Invalid combination of values");
+                    if (!blink) {
+                        blink = true;
+                        continue;
                     }
                 default:
-                    throw new PropertyException("Invalid value specified: " + p);
+                    throw new PropertyException("Invalid combination of values");
+                }
+            default:
+                throw new PropertyException("Invalid value specified: " + p);
             }
         }
         return listProp;

@@ -19,8 +19,6 @@
 
 package org.apache.fop.util;
 
-import static org.junit.Assert.assertEquals;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -39,6 +37,8 @@ import org.apache.xmlgraphics.util.WriterOutputStream;
 import org.apache.xmlgraphics.util.io.ASCIIHexOutputStream;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Tests {@link BitmapImageUtil}.
  */
@@ -49,15 +49,17 @@ public class BitmapImageUtilTestCase {
 
     /**
      * Tests the convertTo* methods.
-     * @throws Exception if an error occurs
+     * 
+     * @throws Exception
+     *             if an error occurs
      */
     @Test
     public void testConvertToMono() throws Exception {
-        BufferedImage testImage = createTestImage();
+        final BufferedImage testImage = createTestImage();
         saveAsPNG(testImage, "test-image");
 
         RenderedImage img;
-        Dimension scaled = new Dimension(320, 240);
+        final Dimension scaled = new Dimension(320, 240);
 
         img = BitmapImageUtil.convertToGrayscale(testImage, null);
         saveAsPNG(img, "out-gray");
@@ -98,63 +100,67 @@ public class BitmapImageUtilTestCase {
         }
     }
 
-    private void assertPixels(String expected, RenderedImage img, int x, int y, int w)
-                throws IOException {
+    private void assertPixels(final String expected, final RenderedImage img,
+            final int x, final int y, final int w) throws IOException {
         if (TEST_PIXELS) {
-            byte[] byteArray = (byte[])img.getData().getDataElements(x, y, w, 1, new byte[w]);
+            final byte[] byteArray = (byte[]) img.getData().getDataElements(x,
+                    y, w, 1, new byte[w]);
             assertEquals(expected, toHex(byteArray));
         }
     }
 
     private boolean isJAIAvailable() {
-        MonochromeBitmapConverter converter
-            = BitmapImageUtil.createDefaultMonochromeBitmapConverter();
+        final MonochromeBitmapConverter converter = BitmapImageUtil
+                .createDefaultMonochromeBitmapConverter();
         return converter.getClass().getName().contains("JAI");
     }
 
-    private void saveAsPNG(RenderedImage img, String name) throws IOException {
+    private void saveAsPNG(final RenderedImage img, final String name)
+            throws IOException {
         if (DEBUG) {
-            File baseDir = new File("./build/test-results/bitmap-conversion");
+            final File baseDir = new File(
+                    "./build/test-results/bitmap-conversion");
             baseDir.mkdirs();
             ImageWriterUtil.saveAsPNG(img, new File(baseDir, name + ".png"));
         }
     }
 
-    private String toHex(byte[] byteArray) throws IOException {
-        InputStream in = new java.io.ByteArrayInputStream(byteArray);
-        StringWriter writer = new StringWriter();
-        WriterOutputStream wo = new WriterOutputStream(writer, "US-ASCII");
-        ASCIIHexOutputStream hex = new ASCIIHexOutputStream(wo);
+    private String toHex(final byte[] byteArray) throws IOException {
+        final InputStream in = new java.io.ByteArrayInputStream(byteArray);
+        final StringWriter writer = new StringWriter();
+        final WriterOutputStream wo = new WriterOutputStream(writer, "US-ASCII");
+        final ASCIIHexOutputStream hex = new ASCIIHexOutputStream(wo);
         IOUtils.copyLarge(in, hex);
         return writer.toString();
     }
 
     private BufferedImage createTestImage() {
-        BufferedImage buf = new BufferedImage(640, 480, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = buf.createGraphics();
+        final BufferedImage buf = new BufferedImage(640, 480,
+                BufferedImage.TYPE_INT_RGB);
+        final Graphics2D g2d = buf.createGraphics();
         g2d.setBackground(Color.WHITE);
         g2d.clearRect(0, 0, buf.getWidth(), buf.getHeight());
 
-        //A few rectangles rotated and with different color
-        Graphics2D copy = (Graphics2D)g2d.create();
+        // A few rectangles rotated and with different color
+        Graphics2D copy = (Graphics2D) g2d.create();
         copy.translate(170, 170);
         int c = 12;
         for (int i = 0; i < c; i++) {
-            float f = ((i + 1) / (float)c);
-            Color col = new Color(0.0f, 1 - f, 0.0f);
+            final float f = (i + 1) / (float) c;
+            final Color col = new Color(0.0f, 1 - f, 0.0f);
             copy.setColor(col);
             copy.fillRect(0, 0, 120, 120);
             copy.rotate(-2 * Math.PI / c);
         }
         copy.dispose();
 
-        //the same in gray scales
-        copy = (Graphics2D)g2d.create();
+        // the same in gray scales
+        copy = (Graphics2D) g2d.create();
         copy.translate(470, 310);
         c = 12;
         for (int i = 0; i < c; i++) {
-            float f = ((i + 1) / (float)c);
-            Color col = new Color(f, f, f);
+            final float f = (i + 1) / (float) c;
+            final Color col = new Color(f, f, f);
             copy.setColor(col);
             copy.fillRect(0, 0, 120, 120);
             copy.rotate(-2 * Math.PI / c);

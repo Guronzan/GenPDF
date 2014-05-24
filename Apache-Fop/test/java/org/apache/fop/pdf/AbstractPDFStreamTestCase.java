@@ -23,9 +23,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for {@link AbstractPDFStream}.
@@ -34,59 +35,67 @@ public class AbstractPDFStreamTestCase extends PDFObjectTestCase {
 
     private AbstractPDFStream abstractStream;
 
-    private String textData = "This is an arbitrary string for testing.";
+    private final String textData = "This is an arbitrary string for testing.";
 
     private static byte[] encodedBytes;
     static {
-        int[] encoded = { 0x78, 0x9c, 0x0b, 0xc9, 0xc8, 0x2c, 0x56, 0x00, 0xa2, 0xc4, 0x3c, 0x85,
-                0xc4, 0xa2, 0xa4, 0xcc, 0x92, 0xa2, 0xc4, 0xa2, 0x4a, 0x85, 0xe2, 0x92, 0xa2, 0xcc,
-                0xbc, 0x74, 0x85, 0xb4, 0xfc, 0x22, 0x85, 0x92, 0xd4, 0xe2, 0x12, 0x20, 0x5b, 0x0f,
-                0x00, 0x2d, 0x2b, 0x0e, 0xde, 0x0a };
+        final int[] encoded = { 0x78, 0x9c, 0x0b, 0xc9, 0xc8, 0x2c, 0x56, 0x00,
+                0xa2, 0xc4, 0x3c, 0x85, 0xc4, 0xa2, 0xa4, 0xcc, 0x92, 0xa2,
+                0xc4, 0xa2, 0x4a, 0x85, 0xe2, 0x92, 0xa2, 0xcc, 0xbc, 0x74,
+                0x85, 0xb4, 0xfc, 0x22, 0x85, 0x92, 0xd4, 0xe2, 0x12, 0x20,
+                0x5b, 0x0f, 0x00, 0x2d, 0x2b, 0x0e, 0xde, 0x0a };
         encodedBytes = new byte[encoded.length];
         int i = 0;
-        for (int in : encoded) {
+        for (final int in : encoded) {
             encodedBytes[i++] = (byte) (in & 0xff);
         }
     }
-    private String startStream = "<< /Length 5 0 R /Filter /FlateDecode >>\n"
-                + "stream\n";
+    private final String startStream = "<< /Length 5 0 R /Filter /FlateDecode >>\n"
+            + "stream\n";
 
-    private String endStream = "endstream";
+    private final String endStream = "endstream";
 
+    @Override
     @Before
     public void setUp() {
-        abstractStream = new AbstractPDFStream() {
+        this.abstractStream = new AbstractPDFStream() {
 
             @Override
-            protected void outputRawStreamData(OutputStream out) throws IOException {
-                out.write(textData.getBytes());
+            protected void outputRawStreamData(final OutputStream out)
+                    throws IOException {
+                out.write(AbstractPDFStreamTestCase.this.textData.getBytes());
             }
 
             @Override
             protected int getSizeHint() throws IOException {
-                return textData.length();
+                return AbstractPDFStreamTestCase.this.textData.length();
             }
         };
-        abstractStream.setDocument(doc);
-        abstractStream.setParent(parent);
+        this.abstractStream.setDocument(this.doc);
+        this.abstractStream.setParent(this.parent);
 
-        pdfObjectUnderTest = abstractStream;
+        this.pdfObjectUnderTest = this.abstractStream;
     }
 
     /**
-     * Tests output() - ensure that this object is correctly formatted to the output stream.
-     * @throws IOException if an I/O error occurs
+     * Tests output() - ensure that this object is correctly formatted to the
+     * output stream.
+     * 
+     * @throws IOException
+     *             if an I/O error occurs
      */
     @Test
     public void testOutput() throws IOException {
-        // This differs from most other objects, if the object number = 0 an exception is thrown
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        abstractStream.setObjectNumber(1);
-        ByteArrayOutputStream expectedStream = new ByteArrayOutputStream();
-        expectedStream.write(startStream.getBytes());
+        // This differs from most other objects, if the object number = 0 an
+        // exception is thrown
+        final ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        this.abstractStream.setObjectNumber(1);
+        final ByteArrayOutputStream expectedStream = new ByteArrayOutputStream();
+        expectedStream.write(this.startStream.getBytes());
         expectedStream.write(encodedBytes);
-        expectedStream.write(endStream.getBytes());
-        assertEquals(expectedStream.size(), abstractStream.output(outStream));
+        expectedStream.write(this.endStream.getBytes());
+        assertEquals(expectedStream.size(),
+                this.abstractStream.output(outStream));
         assertEquals(expectedStream.toString(), outStream.toString());
     }
 }

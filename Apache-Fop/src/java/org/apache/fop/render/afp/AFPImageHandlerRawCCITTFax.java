@@ -22,51 +22,49 @@ package org.apache.fop.render.afp;
 import java.awt.Rectangle;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
+import org.apache.fop.afp.AFPDataObjectInfo;
+import org.apache.fop.afp.AFPImageObjectInfo;
+import org.apache.fop.render.RenderingContext;
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.impl.ImageRawCCITTFax;
 import org.apache.xmlgraphics.image.loader.impl.ImageRawStream;
 import org.apache.xmlgraphics.util.MimeConstants;
 
-import org.apache.fop.afp.AFPDataObjectInfo;
-import org.apache.fop.afp.AFPImageObjectInfo;
-import org.apache.fop.render.RenderingContext;
-
 /**
- * AFPImageHandler implementation which handles CCITT encoded images (CCITT fax group 3/4).
+ * AFPImageHandler implementation which handles CCITT encoded images (CCITT fax
+ * group 3/4).
  */
-public class AFPImageHandlerRawCCITTFax extends AbstractAFPImageHandlerRawStream {
+@Slf4j
+public class AFPImageHandlerRawCCITTFax extends
+AbstractAFPImageHandlerRawStream {
 
-    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] {
-        ImageFlavor.RAW_CCITTFAX,
-    };
-
-    /** logging instance */
-    private final Log log = LogFactory.getLog(AFPImageHandlerRawJPEG.class);
+    private static final ImageFlavor[] FLAVORS = new ImageFlavor[] { ImageFlavor.RAW_CCITTFAX, };
 
     /** {@inheritDoc} */
     @Override
-    protected void setAdditionalParameters(AFPDataObjectInfo dataObjectInfo,
-            ImageRawStream image) {
-        AFPImageObjectInfo imageObjectInfo = (AFPImageObjectInfo)dataObjectInfo;
-        ImageRawCCITTFax ccitt = (ImageRawCCITTFax)image;
-        int compression = ccitt.getCompression();
+    protected void setAdditionalParameters(
+            final AFPDataObjectInfo dataObjectInfo, final ImageRawStream image) {
+        final AFPImageObjectInfo imageObjectInfo = (AFPImageObjectInfo) dataObjectInfo;
+        final ImageRawCCITTFax ccitt = (ImageRawCCITTFax) image;
+        final int compression = ccitt.getCompression();
         imageObjectInfo.setCompression(compression);
 
         imageObjectInfo.setBitsPerPixel(1);
 
-        //CCITTFax flavor doesn't have TIFF associated but the AFP library listens to
-        //that to identify CCITT encoded images. CCITT is not exclusive to TIFF.
+        // CCITTFax flavor doesn't have TIFF associated but the AFP library
+        // listens to
+        // that to identify CCITT encoded images. CCITT is not exclusive to
+        // TIFF.
         imageObjectInfo.setMimeType(MimeConstants.MIME_TIFF);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void handleImage(RenderingContext context, Image image, Rectangle pos)
-            throws IOException {
+    public void handleImage(final RenderingContext context, final Image image,
+            final Rectangle pos) throws IOException {
         log.debug("Embedding undecoded CCITT data as data container...");
         super.handleImage(context, image, pos);
     }
@@ -78,26 +76,31 @@ public class AFPImageHandlerRawCCITTFax extends AbstractAFPImageHandlerRawStream
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getPriority() {
         return 400;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Class getSupportedImageClass() {
         return ImageRawCCITTFax.class;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor[] getSupportedImageFlavors() {
         return FLAVORS;
     }
 
     /** {@inheritDoc} */
-    public boolean isCompatible(RenderingContext targetContext, Image image) {
+    @Override
+    public boolean isCompatible(final RenderingContext targetContext,
+            final Image image) {
         if (targetContext instanceof AFPRenderingContext) {
-            AFPRenderingContext afpContext = (AFPRenderingContext)targetContext;
-            return (afpContext.getPaintingState().isNativeImagesSupported())
-                && (image == null || image instanceof ImageRawCCITTFax);
+            final AFPRenderingContext afpContext = (AFPRenderingContext) targetContext;
+            return afpContext.getPaintingState().isNativeImagesSupported()
+                    && (image == null || image instanceof ImageRawCCITTFax);
         }
         return false;
     }

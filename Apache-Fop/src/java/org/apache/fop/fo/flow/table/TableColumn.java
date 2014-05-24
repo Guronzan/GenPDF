@@ -20,8 +20,6 @@
 package org.apache.fop.fo.flow.table;
 
 // XML
-import org.xml.sax.Locator;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.datatypes.Length;
 import org.apache.fop.fo.FONode;
@@ -32,6 +30,7 @@ import org.apache.fop.fo.properties.CommonBorderPaddingBackground;
 import org.apache.fop.fo.properties.Property;
 import org.apache.fop.fo.properties.TableColLength;
 import org.apache.fop.layoutmgr.table.CollapsingBorderModel;
+import org.xml.sax.Locator;
 
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_table-column">
@@ -45,77 +44,83 @@ public class TableColumn extends TableFObj {
     private int numberColumnsRepeated;
     private int numberColumnsSpanned;
     // Unused but valid items, commented out for performance:
-    //     private int visibility;
+    // private int visibility;
     // End of property values
 
-    private boolean implicitColumn;
+    private final boolean implicitColumn;
     private PropertyList pList = null;
 
     /**
-     * Create a TableColumn instance with the given {@link FONode}
-     * as parent.
+     * Create a TableColumn instance with the given {@link FONode} as parent.
      *
-     * @param parent {@link FONode} that is the parent of this object
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public TableColumn(FONode parent) {
+    public TableColumn(final FONode parent) {
         this(parent, false);
     }
 
     /**
-     * Create a TableColumn instance with the given {@link FONode}
-     * as parent
+     * Create a TableColumn instance with the given {@link FONode} as parent
      *
-     * @param parent FONode that is the parent of this object
-     * @param implicit true if this table-column has automatically been created (does not
-     * correspond to an explicit fo:table-column in the input document)
+     * @param parent
+     *            FONode that is the parent of this object
+     * @param implicit
+     *            true if this table-column has automatically been created (does
+     *            not correspond to an explicit fo:table-column in the input
+     *            document)
      */
-    public TableColumn(FONode parent, boolean implicit) {
+    public TableColumn(final FONode parent, final boolean implicit) {
         super(parent);
         this.implicitColumn = implicit;
     }
 
-
     /** {@inheritDoc} */
-    public void bind(PropertyList pList) throws FOPException {
-        commonBorderPaddingBackground = pList.getBorderPaddingBackgroundProps();
-        columnNumber = pList.get(PR_COLUMN_NUMBER).getNumeric().getValue();
-        columnWidth = pList.get(PR_COLUMN_WIDTH).getLength();
-        numberColumnsRepeated = pList.get(PR_NUMBER_COLUMNS_REPEATED)
-                                    .getNumeric().getValue();
-        numberColumnsSpanned = pList.get(PR_NUMBER_COLUMNS_SPANNED)
-                                    .getNumeric().getValue();
+    @Override
+    public void bind(final PropertyList pList) throws FOPException {
+        this.commonBorderPaddingBackground = pList
+                .getBorderPaddingBackgroundProps();
+        this.columnNumber = pList.get(PR_COLUMN_NUMBER).getNumeric().getValue();
+        this.columnWidth = pList.get(PR_COLUMN_WIDTH).getLength();
+        this.numberColumnsRepeated = pList.get(PR_NUMBER_COLUMNS_REPEATED)
+                .getNumeric().getValue();
+        this.numberColumnsSpanned = pList.get(PR_NUMBER_COLUMNS_SPANNED)
+                .getNumeric().getValue();
         super.bind(pList);
 
-        if (numberColumnsRepeated <= 0) {
-            TableEventProducer eventProducer = TableEventProducer.Provider.get(
-                    getUserAgent().getEventBroadcaster());
+        if (this.numberColumnsRepeated <= 0) {
+            final TableEventProducer eventProducer = TableEventProducer.Provider
+                    .get(getUserAgent().getEventBroadcaster());
             eventProducer.valueMustBeBiggerGtEqOne(this,
-                    "number-columns-repeated", numberColumnsRepeated, getLocator());
+                    "number-columns-repeated", this.numberColumnsRepeated,
+                    getLocator());
         }
-        if (numberColumnsSpanned <= 0) {
-            TableEventProducer eventProducer = TableEventProducer.Provider.get(
-                    getUserAgent().getEventBroadcaster());
+        if (this.numberColumnsSpanned <= 0) {
+            final TableEventProducer eventProducer = TableEventProducer.Provider
+                    .get(getUserAgent().getEventBroadcaster());
             eventProducer.valueMustBeBiggerGtEqOne(this,
-                    "number-columns-spanned", numberColumnsSpanned, getLocator());
+                    "number-columns-spanned", this.numberColumnsSpanned,
+                    getLocator());
         }
 
-        /* check for unspecified width and replace with default of
-         * proportional-column-width(1), in case of fixed table-layout
-         * warn only for explicit columns
+        /*
+         * check for unspecified width and replace with default of
+         * proportional-column-width(1), in case of fixed table-layout warn only
+         * for explicit columns
          */
-        if (columnWidth.getEnum() == EN_AUTO) {
+        if (this.columnWidth.getEnum() == EN_AUTO) {
             if (!this.implicitColumn && !getTable().isAutoLayout()) {
-                TableEventProducer eventProducer = TableEventProducer.Provider.get(
-                        getUserAgent().getEventBroadcaster());
+                final TableEventProducer eventProducer = TableEventProducer.Provider
+                        .get(getUserAgent().getEventBroadcaster());
                 eventProducer.warnImplicitColumns(this, getLocator());
             }
-            columnWidth = new TableColLength(1.0, this);
+            this.columnWidth = new TableColLength(1.0, this);
         }
 
-        /* in case of explicit columns, from-table-column()
-         * can be used on descendants of the table-cells, so
-         * we need a reference to the column's property list
-         * (cleared in Table.endOfNode())
+        /*
+         * in case of explicit columns, from-table-column() can be used on
+         * descendants of the table-cells, so we need a reference to the
+         * column's property list (cleared in Table.endOfNode())
          */
         if (!this.implicitColumn) {
             this.pList = pList;
@@ -123,135 +128,151 @@ public class TableColumn extends TableFObj {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startOfNode() throws FOPException {
         super.startOfNode();
         getFOEventHandler().startColumn(this);
     }
 
-    void setCollapsedBorders(CollapsingBorderModel collapsingBorderModel) {
+    void setCollapsedBorders(final CollapsingBorderModel collapsingBorderModel) {
         this.collapsingBorderModel = collapsingBorderModel;
         setCollapsedBorders();
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endOfNode() throws FOPException {
         getFOEventHandler().endColumn(this);
     }
 
     /**
-     * {@inheritDoc}
-     * <br>XSL Content Model: empty
+     * {@inheritDoc} <br>
+     * XSL Content Model: empty
      */
-    protected void validateChildNode(Locator loc,
-                        String nsURI, String localName)
-        throws ValidationException {
+    @Override
+    protected void validateChildNode(final Locator loc, final String nsURI,
+            final String localName) throws ValidationException {
         if (FO_URI.equals(nsURI)) {
             invalidChildError(loc, nsURI, localName);
         }
     }
 
     /**
-     * Get the {@link CommonBorderPaddingBackground} instance
-     * attached to this TableColumn.
+     * Get the {@link CommonBorderPaddingBackground} instance attached to this
+     * TableColumn.
+     * 
      * @return the {@link CommonBorderPaddingBackground} instance
      */
+    @Override
     public CommonBorderPaddingBackground getCommonBorderPaddingBackground() {
-        return commonBorderPaddingBackground;
+        return this.commonBorderPaddingBackground;
     }
 
     /**
      * Get a {@link Length} instance corresponding to the
      * <code>column-width</code> property.
+     * 
      * @return the "column-width" property.
      */
     public Length getColumnWidth() {
-        return columnWidth;
+        return this.columnWidth;
     }
 
     /**
      * Sets the column width.
-     * @param columnWidth the column width
+     * 
+     * @param columnWidth
+     *            the column width
      */
-    public void setColumnWidth(Length columnWidth) {
+    public void setColumnWidth(final Length columnWidth) {
         this.columnWidth = columnWidth;
     }
 
     /**
      * Get the value of the <code>column-number</code> property
+     * 
      * @return the "column-number" property.
      */
     public int getColumnNumber() {
-        return columnNumber;
+        return this.columnNumber;
     }
 
     /**
      * Used for setting the column-number for an implicit column
-     * @param columnNumber the number to set
+     * 
+     * @param columnNumber
+     *            the number to set
      */
-    protected void setColumnNumber(int columnNumber) {
+    protected void setColumnNumber(final int columnNumber) {
         this.columnNumber = columnNumber;
     }
 
     /** @return value for number-columns-repeated. */
     public int getNumberColumnsRepeated() {
-        return numberColumnsRepeated;
+        return this.numberColumnsRepeated;
     }
 
     /** @return value for number-columns-spanned. */
     public int getNumberColumnsSpanned() {
-        return numberColumnsSpanned;
+        return this.numberColumnsSpanned;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "table-column";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_TABLE_COLUMN}
      */
+    @Override
     public int getNameId() {
         return FO_TABLE_COLUMN;
     }
 
     /**
-     * Indicates whether this table-column has been created as
-     * default column for this table in case no table-columns
-     * have been defined.
-     * Note that this only used to provide better
-     * user feedback (see ColumnSetup).
+     * Indicates whether this table-column has been created as default column
+     * for this table in case no table-columns have been defined. Note that this
+     * only used to provide better user feedback (see ColumnSetup).
+     * 
      * @return true if this table-column has been created as default column
      */
     public boolean isImplicitColumn() {
-        return implicitColumn;
+        return this.implicitColumn;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("fo:table-column");
+        final StringBuffer sb = new StringBuffer("fo:table-column");
         sb.append(" column-number=").append(getColumnNumber());
         if (getNumberColumnsRepeated() > 1) {
-            sb.append(" number-columns-repeated=")
-                .append(getNumberColumnsRepeated());
+            sb.append(" number-columns-repeated=").append(
+                    getNumberColumnsRepeated());
         }
         if (getNumberColumnsSpanned() > 1) {
-            sb.append(" number-columns-spanned=")
-                .append(getNumberColumnsSpanned());
+            sb.append(" number-columns-spanned=").append(
+                    getNumberColumnsSpanned());
         }
-        sb.append(" column-width=").append(((Property)getColumnWidth()).getString());
+        sb.append(" column-width=").append(
+                ((Property) getColumnWidth()).getString());
         return sb.toString();
     }
 
     /**
-     * Retrieve a property value through its Id; used by
-     * from-table-column() function
+     * Retrieve a property value through its Id; used by from-table-column()
+     * function
      *
-     * @param propId    the id for the property to retrieve
+     * @param propId
+     *            the id for the property to retrieve
      * @return the requested Property
-     * @throws PropertyException if there is a problem evaluating the property
+     * @throws PropertyException
+     *             if there is a problem evaluating the property
      */
-    public Property getProperty(int propId) throws PropertyException {
+    public Property getProperty(final int propId) throws PropertyException {
         return this.pList.get(propId);
     }
 

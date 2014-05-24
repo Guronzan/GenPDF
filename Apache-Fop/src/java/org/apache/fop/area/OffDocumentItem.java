@@ -20,40 +20,40 @@
 package org.apache.fop.area;
 
 /**
- * Interface for objects that are processed by the renderer outside
- * of the actual document.
- * An object implementing this interface can be handled by the renderer according to these
- * possibilities: IMMEDIATELY, AFTER_PAGE or END_OF_DOC.
+ * Interface for objects that are processed by the renderer outside of the
+ * actual document. An object implementing this interface can be handled by the
+ * renderer according to these possibilities: IMMEDIATELY, AFTER_PAGE or
+ * END_OF_DOC.
  */
 public interface OffDocumentItem {
 
     /**
-     * Process this extension immediately when
-     * being handled by the area tree.
+     * Process this extension immediately when being handled by the area tree.
      */
     int IMMEDIATELY = 0;
 
     /**
-     * Process this extension after the next page is rendered
-     * or prepared when being handled by the area tree.
+     * Process this extension after the next page is rendered or prepared when
+     * being handled by the area tree.
      */
     int AFTER_PAGE = 1;
 
     /**
-     * Process this extension at the end of the document once
-     * all pages have been fully rendered.
+     * Process this extension at the end of the document once all pages have
+     * been fully rendered.
      */
     int END_OF_DOC = 2;
 
-
     /**
      * Get an indicator of when this item should be processed
+     * 
      * @return int constant (IMMEDIATELY, AFTER_PAGE, END_OF_DOC)
      */
     int getWhenToProcess();
 
     /**
      * Return a human-readable name for this ODI (for error messages, etc.)
+     * 
      * @return String name of ODI
      */
     String getName();

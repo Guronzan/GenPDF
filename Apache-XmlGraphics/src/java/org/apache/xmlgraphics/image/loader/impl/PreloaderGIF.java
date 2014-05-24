@@ -38,22 +38,20 @@ public class PreloaderGIF extends AbstractImagePreloader {
     private static final int GIF_SIG_LENGTH = 10;
 
     /** {@inheritDoc} */
-    public ImageInfo preloadImage(String uri, Source src, ImageContext context)
-            throws IOException {
+    @Override
+    public ImageInfo preloadImage(final String uri, final Source src,
+            final ImageContext context) throws IOException {
         if (!ImageUtil.hasImageInputStream(src)) {
             return null;
         }
-        ImageInputStream in = ImageUtil.needImageInputStream(src);
-        byte[] header = getHeader(in, GIF_SIG_LENGTH);
-        boolean supported = ((header[0] == 'G')
-                && (header[1] == 'I')
-                && (header[2] == 'F')
-                && (header[3] == '8')
-                && (header[4] == '7' || header[4] == '9')
-                && (header[5] == 'a'));
+        final ImageInputStream in = ImageUtil.needImageInputStream(src);
+        final byte[] header = getHeader(in, GIF_SIG_LENGTH);
+        final boolean supported = header[0] == 'G' && header[1] == 'I'
+                && header[2] == 'F' && header[3] == '8'
+                && (header[4] == '7' || header[4] == '9') && header[5] == 'a';
 
         if (supported) {
-            ImageInfo info = new ImageInfo(uri, MimeConstants.MIME_GIF);
+            final ImageInfo info = new ImageInfo(uri, MimeConstants.MIME_GIF);
             info.setSize(determineSize(header, context));
             return info;
         } else {
@@ -61,16 +59,18 @@ public class PreloaderGIF extends AbstractImagePreloader {
         }
     }
 
-    private ImageSize determineSize(byte[] header, ImageContext context) {
+    private ImageSize determineSize(final byte[] header,
+            final ImageContext context) {
         // little endian notation
         int byte1 = header[6] & 0xff;
         int byte2 = header[7] & 0xff;
-        int width = ((byte2 << 8) | byte1) & 0xffff;
+        final int width = (byte2 << 8 | byte1) & 0xffff;
 
         byte1 = header[8] & 0xff;
         byte2 = header[9] & 0xff;
-        int height = ((byte2 << 8) | byte1) & 0xffff;
-        ImageSize size = new ImageSize(width, height, context.getSourceResolution());
+        final int height = (byte2 << 8 | byte1) & 0xffff;
+        final ImageSize size = new ImageSize(width, height,
+                context.getSourceResolution());
         size.calcSizeFromPixels();
         return size;
     }

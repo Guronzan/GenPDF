@@ -25,20 +25,24 @@ import java.io.InputStream;
 import java.io.Reader;
 
 /**
- * Redirects the content coming in through an InputStream using a separate thread to a
- * RedirectorLineHandler instance. The default text encoding is used.
+ * Redirects the content coming in through an InputStream using a separate
+ * thread to a RedirectorLineHandler instance. The default text encoding is
+ * used.
  */
 public class StreamRedirector implements Runnable {
 
-    private InputStream in;
-    private RedirectorLineHandler handler;
+    private final InputStream in;
+    private final RedirectorLineHandler handler;
     private Exception exception;
 
     /**
-     * @param in the InputStream to read the content from
-     * @param handler the handler that receives all the lines
+     * @param in
+     *            the InputStream to read the content from
+     * @param handler
+     *            the handler that receives all the lines
      */
-    public StreamRedirector(InputStream in, RedirectorLineHandler handler) {
+    public StreamRedirector(final InputStream in,
+            final RedirectorLineHandler handler) {
         this.in = in;
         this.handler = handler;
     }
@@ -47,35 +51,37 @@ public class StreamRedirector implements Runnable {
      * @return true if the run() method was terminated by an exception.
      */
     public boolean hasFailed() {
-        return (this.exception != null);
+        return this.exception != null;
     }
 
     /**
-     * @return the exception if the run() method was terminated by an exception, or null
+     * @return the exception if the run() method was terminated by an exception,
+     *         or null
      */
     public Exception getException() {
         return this.exception;
     }
 
     /** @see java.lang.Runnable#run() */
+    @Override
     public void run() {
         this.exception = null;
         try {
-            Reader inr = new java.io.InputStreamReader(in);
-            BufferedReader br = new BufferedReader(inr);
-            if (handler != null) {
-                handler.notifyStart();
+            final Reader inr = new java.io.InputStreamReader(this.in);
+            final BufferedReader br = new BufferedReader(inr);
+            if (this.handler != null) {
+                this.handler.notifyStart();
             }
             String line = null;
             while ((line = br.readLine()) != null) {
-                if (handler != null) {
-                    handler.handleLine(line);
+                if (this.handler != null) {
+                    this.handler.handleLine(line);
                 }
             }
-            if (handler != null) {
-                handler.notifyStart();
+            if (this.handler != null) {
+                this.handler.notifyStart();
             }
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             this.exception = ioe;
         }
     }

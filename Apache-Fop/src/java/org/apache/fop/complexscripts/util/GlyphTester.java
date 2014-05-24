@@ -20,18 +20,25 @@
 package org.apache.fop.complexscripts.util;
 
 /**
- * <p>Interface for testing glyph properties according to glyph identifier.</p>
+ * <p>
+ * Interface for testing glyph properties according to glyph identifier.
+ * </p>
  *
- * <p>This work was originally authored by Glenn Adams (gadams@apache.org).</p>
+ * <p>
+ * This work was originally authored by Glenn Adams (gadams@apache.org).
+ * </p>
  */
 public interface GlyphTester {
 
     /**
      * Perform a test on a glyph identifier.
-     * @param gi glyph identififer
-     * @param flags that apply to lookup in scope
+     * 
+     * @param gi
+     *            glyph identififer
+     * @param flags
+     *            that apply to lookup in scope
      * @return true if test is satisfied
      */
-    boolean test ( int gi, int flags );
+    boolean test(final int gi, final int flags);
 
 }

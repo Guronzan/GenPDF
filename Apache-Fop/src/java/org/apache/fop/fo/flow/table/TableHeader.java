@@ -23,7 +23,6 @@ package org.apache.fop.fo.flow.table;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.fo.FONode;
 
-
 /**
  * Class modelling the <a href="http://www.w3.org/TR/xsl/#fo_table-header">
  * <code>fo:table-header</code></a> object.
@@ -31,35 +30,41 @@ import org.apache.fop.fo.FONode;
 public class TableHeader extends TablePart {
 
     /**
-     * Create a TableHeader instance with the given {@link FONode}
-     * as parent.
-     * @param parent {@link FONode} that is the parent of this object
+     * Create a TableHeader instance with the given {@link FONode} as parent.
+     * 
+     * @param parent
+     *            {@link FONode} that is the parent of this object
      */
-    public TableHeader(FONode parent) {
+    public TableHeader(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
         super.startOfNode();
         getFOEventHandler().startHeader(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
         super.endOfNode();
         getFOEventHandler().endHeader(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "table-header";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_TABLE_HEADER}
      */
+    @Override
     public int getNameId() {
         return FO_TABLE_HEADER;
     }

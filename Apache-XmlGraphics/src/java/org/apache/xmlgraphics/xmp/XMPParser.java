@@ -38,31 +38,39 @@ public final class XMPParser {
 
     /**
      * Parses an XMP file.
-     * @param url the URL to load the file from
+     * 
+     * @param url
+     *            the URL to load the file from
      * @return the parsed Metadata object
-     * @throws TransformerException if an error occurs while parsing the file
+     * @throws TransformerException
+     *             if an error occurs while parsing the file
      */
-    public static Metadata parseXMP(URL url) throws TransformerException {
+    public static Metadata parseXMP(final URL url) throws TransformerException {
         return parseXMP(new StreamSource(url.toExternalForm()));
     }
 
     /**
      * Parses an XMP file.
-     * @param src a JAXP Source object where the XMP file can be loaded from
+     * 
+     * @param src
+     *            a JAXP Source object where the XMP file can be loaded from
      * @return the parsed Metadata object
-     * @throws TransformerException if an error occurs while parsing the file
+     * @throws TransformerException
+     *             if an error occurs while parsing the file
      */
-    public static Metadata parseXMP(Source src) throws TransformerException {
-        TransformerFactory tFactory = TransformerFactory.newInstance();
-        Transformer transformer = tFactory.newTransformer();
-        XMPHandler handler = createXMPHandler();
-        SAXResult res = new SAXResult(handler);
+    public static Metadata parseXMP(final Source src)
+            throws TransformerException {
+        final TransformerFactory tFactory = TransformerFactory.newInstance();
+        final Transformer transformer = tFactory.newTransformer();
+        final XMPHandler handler = createXMPHandler();
+        final SAXResult res = new SAXResult(handler);
         transformer.transform(src, res);
         return handler.getMetadata();
     }
 
     /**
      * Creates and returns an XMPHandler for passive XMP parsing.
+     * 
      * @return the requested XMPHandler
      */
     public static XMPHandler createXMPHandler() {

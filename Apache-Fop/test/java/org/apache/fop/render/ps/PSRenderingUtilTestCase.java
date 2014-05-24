@@ -21,11 +21,9 @@ package org.apache.fop.render.ps;
 
 import java.io.IOException;
 
-import org.junit.Test;
-
-import org.apache.xmlgraphics.ps.PSGenerator;
-
 import org.apache.fop.render.ps.extensions.PSPageTrailerCodeBefore;
+import org.apache.xmlgraphics.ps.PSGenerator;
+import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -33,13 +31,14 @@ import static org.mockito.Mockito.verify;
 public class PSRenderingUtilTestCase {
 
     private final String content = "<< /MyEntry 0 >> command";
-    private final PSPageTrailerCodeBefore ptcb = new PSPageTrailerCodeBefore(content);
+    private final PSPageTrailerCodeBefore ptcb = new PSPageTrailerCodeBefore(
+            this.content);
     private final PSGenerator gen = mock(PSGenerator.class);
 
     @Test
     public void testWriteEnclosedExtensionAttachment() throws IOException {
-        PSRenderingUtil.writeEnclosedExtensionAttachment(gen, ptcb);
-        verify(gen).writeln(content);
+        PSRenderingUtil.writeEnclosedExtensionAttachment(this.gen, this.ptcb);
+        verify(this.gen).writeln(this.content);
     }
 
 }

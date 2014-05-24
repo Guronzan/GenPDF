@@ -24,11 +24,10 @@ import java.util.Date;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamResult;
 
-import org.xml.sax.SAXException;
-
 import org.apache.xmlgraphics.xmp.Metadata;
 import org.apache.xmlgraphics.xmp.XMPSerializer;
 import org.apache.xmlgraphics.xmp.schemas.DublinCoreAdapter;
+import org.xml.sax.SAXException;
 
 /**
  * This example shows how to build an XMP metadata file from scratch in Java.
@@ -36,28 +35,30 @@ import org.apache.xmlgraphics.xmp.schemas.DublinCoreAdapter;
 public class MetadataFromScratch {
 
     private static void buildAndPrintMetadata()
-                throws TransformerConfigurationException, SAXException {
-        Metadata meta = new Metadata();
-        DublinCoreAdapter dc = new DublinCoreAdapter(meta);
+            throws TransformerConfigurationException, SAXException {
+        final Metadata meta = new Metadata();
+        final DublinCoreAdapter dc = new DublinCoreAdapter(meta);
         dc.setTitle("de", "Der Herr der Ringe");
         dc.setTitle("en", "Lord of the Rings");
         dc.addDate(new Date());
         dc.setFormat("application/pdf");
         dc.addCreator("J.R.R. Tolkien");
 
-        StreamResult res = new StreamResult(System.out);
+        final StreamResult res = new StreamResult(System.out);
         XMPSerializer.writeXML(meta, res);
 
     }
 
     /**
      * Command-line interface.
-     * @param args the command-line arguments
+     * 
+     * @param args
+     *            the command-line arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         try {
             buildAndPrintMetadata();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }

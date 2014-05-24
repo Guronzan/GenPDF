@@ -47,236 +47,236 @@ import org.apache.xmlgraphics.util.MimeConstants;
  * raw/undecoded stream.
  */
 @Slf4j
- public class ImageLoaderRawJPEG extends AbstractImageLoader implements
+public class ImageLoaderRawJPEG extends AbstractImageLoader implements
         JPEGConstants {
 
-     /**
-      * Main constructor.
-      */
-     public ImageLoaderRawJPEG() {
-     }
+    /**
+     * Main constructor.
+     */
+    public ImageLoaderRawJPEG() {
+    }
 
-     /** {@inheritDoc} */
-     @Override
-     public ImageFlavor getTargetFlavor() {
-         return ImageFlavor.RAW_JPEG;
-     }
+    /** {@inheritDoc} */
+    @Override
+    public ImageFlavor getTargetFlavor() {
+        return ImageFlavor.RAW_JPEG;
+    }
 
-     /** {@inheritDoc} */
-     @Override
-     public Image loadImage(final ImageInfo info, final Map hints,
+    /** {@inheritDoc} */
+    @Override
+    public Image loadImage(final ImageInfo info, final Map hints,
             final ImageSessionContext session) throws ImageException,
             IOException {
-         if (!MimeConstants.MIME_JPEG.equals(info.getMimeType())) {
-             throw new IllegalArgumentException(
+        if (!MimeConstants.MIME_JPEG.equals(info.getMimeType())) {
+            throw new IllegalArgumentException(
                     "ImageInfo must be from a image with MIME type: "
                             + MimeConstants.MIME_JPEG);
-         }
+        }
 
-         ColorSpace colorSpace = null;
-         boolean appeFound = false;
-         int sofType = 0;
-         ByteArrayOutputStream iccStream = null;
+        ColorSpace colorSpace = null;
+        boolean appeFound = false;
+        int sofType = 0;
+        ByteArrayOutputStream iccStream = null;
 
-         final Source src = session.needSource(info.getOriginalURI());
-         final ImageInputStream in = ImageUtil.needImageInputStream(src);
-         final JPEGFile jpeg = new JPEGFile(in);
-         in.mark();
-         try {
-             outer: while (true) {
-                     int reclen;
-                     final int segID = jpeg.readMarkerSegment();
-                     if (log.isTraceEnabled()) {
-                         log.trace("Seg Marker: " + Integer.toHexString(segID));
-                     }
-                     switch (segID) {
-                     case EOI:
-                         log.trace("EOI found. Stopping.");
-                         break outer;
-                     case SOS:
-                         log.trace("SOS found. Stopping early."); // TODO Not sure if
-                                                             // this is safe
-                         break outer;
-                     case SOI:
-                     case NULL:
-                         break;
-                     case SOF0: // baseline
-                     case SOF1: // extended sequential DCT
-                     case SOF2: // progressive (since PDF 1.3)
-                     case SOFA: // progressive (since PDF 1.3)
-                         sofType = segID;
-                         if (log.isTraceEnabled()) {
-                             log.trace("SOF: " + Integer.toHexString(sofType));
-                         }
-                         in.mark();
-                         try {
-                             reclen = jpeg.readSegmentLength();
-                             in.skipBytes(1); // data precision
-                             in.skipBytes(2); // height
-                             in.skipBytes(2); // width
-                             final int numComponents = in.readUnsignedByte();
-                             if (numComponents == 1) {
-                                 colorSpace = ColorSpace
+        final Source src = session.needSource(info.getOriginalURI());
+        final ImageInputStream in = ImageUtil.needImageInputStream(src);
+        final JPEGFile jpeg = new JPEGFile(in);
+        in.mark();
+        try {
+            outer: while (true) {
+                int reclen;
+                final int segID = jpeg.readMarkerSegment();
+                if (log.isTraceEnabled()) {
+                    log.trace("Seg Marker: " + Integer.toHexString(segID));
+                }
+                switch (segID) {
+                case EOI:
+                    log.trace("EOI found. Stopping.");
+                    break outer;
+                case SOS:
+                    log.trace("SOS found. Stopping early."); // TODO Not sure if
+                    // this is safe
+                    break outer;
+                case SOI:
+                case NULL:
+                    break;
+                case SOF0: // baseline
+                case SOF1: // extended sequential DCT
+                case SOF2: // progressive (since PDF 1.3)
+                case SOFA: // progressive (since PDF 1.3)
+                    sofType = segID;
+                    if (log.isTraceEnabled()) {
+                        log.trace("SOF: " + Integer.toHexString(sofType));
+                    }
+                    in.mark();
+                    try {
+                        reclen = jpeg.readSegmentLength();
+                        in.skipBytes(1); // data precision
+                        in.skipBytes(2); // height
+                        in.skipBytes(2); // width
+                        final int numComponents = in.readUnsignedByte();
+                        if (numComponents == 1) {
+                            colorSpace = ColorSpace
                                     .getInstance(ColorSpace.CS_GRAY);
-                             } else if (numComponents == 3) {
-                                 colorSpace = ColorSpace
+                        } else if (numComponents == 3) {
+                            colorSpace = ColorSpace
                                     .getInstance(ColorSpace.CS_LINEAR_RGB);
-                             } else if (numComponents == 4) {
-                                 colorSpace = ColorSpaces.getDeviceCMYKColorSpace();
-                             } else {
-                                 throw new ImageException(
+                        } else if (numComponents == 4) {
+                            colorSpace = ColorSpaces.getDeviceCMYKColorSpace();
+                        } else {
+                            throw new ImageException(
                                     "Unsupported ColorSpace for image "
                                             + info
                                             + ". The number of components supported are 1, 3 and 4.");
-                             }
-                         } finally {
-                             in.reset();
-                         }
-                         in.skipBytes(reclen);
-                         break;
-                     case APP2: // ICC (see ICC1V42.pdf)
-                         in.mark();
-                         try {
-                             reclen = jpeg.readSegmentLength();
-                             // Check for ICC profile
-                             final byte[] iccString = new byte[11];
-                             in.readFully(iccString);
-                             in.skipBytes(1); // string terminator (null byte)
+                        }
+                    } finally {
+                        in.reset();
+                    }
+                    in.skipBytes(reclen);
+                    break;
+                case APP2: // ICC (see ICC1V42.pdf)
+                    in.mark();
+                    try {
+                        reclen = jpeg.readSegmentLength();
+                        // Check for ICC profile
+                        final byte[] iccString = new byte[11];
+                        in.readFully(iccString);
+                        in.skipBytes(1); // string terminator (null byte)
 
-                             if ("ICC_PROFILE".equals(new String(iccString,
+                        if ("ICC_PROFILE".equals(new String(iccString,
                                 "US-ASCII"))) {
-                                 in.skipBytes(2); // chunk sequence number and total
-                                             // number of chunks
-                                 final int payloadSize = reclen - 2 - 12 - 2;
-                                 if (ignoreColorProfile(hints)) {
-                                     log.debug("Ignoring ICC profile data in JPEG");
-                                     in.skipBytes(payloadSize);
-                                 } else {
-                                     final byte[] buf = new byte[payloadSize];
-                                     in.readFully(buf);
-                                     if (iccStream == null) {
-                                         if (log.isDebugEnabled()) {
-                                             log.debug("JPEG has an ICC profile");
-                                             final DataInputStream din = new DataInputStream(
+                            in.skipBytes(2); // chunk sequence number and total
+                            // number of chunks
+                            final int payloadSize = reclen - 2 - 12 - 2;
+                            if (ignoreColorProfile(hints)) {
+                                log.debug("Ignoring ICC profile data in JPEG");
+                                in.skipBytes(payloadSize);
+                            } else {
+                                final byte[] buf = new byte[payloadSize];
+                                in.readFully(buf);
+                                if (iccStream == null) {
+                                    if (log.isDebugEnabled()) {
+                                        log.debug("JPEG has an ICC profile");
+                                        final DataInputStream din = new DataInputStream(
                                                 new ByteArrayInputStream(buf));
-                                             log.debug("Declared ICC profile size: "
+                                        log.debug("Declared ICC profile size: "
                                                 + din.readInt());
-                                         }
-                                         // ICC profiles can be split into several
+                                    }
+                                    // ICC profiles can be split into several
                                     // chunks
-                                         // so collect in a byte array output stream
-                                         iccStream = new ByteArrayOutputStream();
-                                     }
-                                     iccStream.write(buf);
-                                 }
-                             }
-                         } finally {
-                             in.reset();
-                         }
-                         in.skipBytes(reclen);
-                         break;
-                     case APPE: // Adobe-specific (see 5116.DCT_Filter.pdf)
-                         in.mark();
-                         try {
-                             reclen = jpeg.readSegmentLength();
-                             // Check for Adobe header
-                             final byte[] adobeHeader = new byte[5];
-                             in.readFully(adobeHeader);
+                                    // so collect in a byte array output stream
+                                    iccStream = new ByteArrayOutputStream();
+                                }
+                                iccStream.write(buf);
+                            }
+                        }
+                    } finally {
+                        in.reset();
+                    }
+                    in.skipBytes(reclen);
+                    break;
+                case APPE: // Adobe-specific (see 5116.DCT_Filter.pdf)
+                    in.mark();
+                    try {
+                        reclen = jpeg.readSegmentLength();
+                        // Check for Adobe header
+                        final byte[] adobeHeader = new byte[5];
+                        in.readFully(adobeHeader);
 
-                             if ("Adobe".equals(new String(adobeHeader, "US-ASCII"))) {
-                                 // The reason for reading the APPE marker is that
+                        if ("Adobe".equals(new String(adobeHeader, "US-ASCII"))) {
+                            // The reason for reading the APPE marker is that
                             // Adobe Photoshop
-                                 // generates CMYK JPEGs with inverted values. The
+                            // generates CMYK JPEGs with inverted values. The
                             // correct thing
-                                 // to do would be to interpret the values in the
+                            // to do would be to interpret the values in the
                             // marker, but for now
-                                 // only assume that if APPE marker is present and
+                            // only assume that if APPE marker is present and
                             // colorspace is CMYK,
-                                 // the image is inverted.
-                                 appeFound = true;
-                             }
-                         } finally {
-                             in.reset();
-                         }
-                         in.skipBytes(reclen);
-                         break;
-                     default:
-                         jpeg.skipCurrentMarkerSegment();
-                     }
-                 }
-         } finally {
-             in.reset();
-         }
+                            // the image is inverted.
+                            appeFound = true;
+                        }
+                    } finally {
+                        in.reset();
+                    }
+                    in.skipBytes(reclen);
+                    break;
+                default:
+                    jpeg.skipCurrentMarkerSegment();
+                }
+            }
+        } finally {
+            in.reset();
+        }
 
-         final ICC_Profile iccProfile = buildICCProfile(info, colorSpace,
+        final ICC_Profile iccProfile = buildICCProfile(info, colorSpace,
                 iccStream);
-         if (iccProfile == null && colorSpace == null) {
-             throw new ImageException(
+        if (iccProfile == null && colorSpace == null) {
+            throw new ImageException(
                     "ColorSpace could not be identified for JPEG image " + info);
-         }
+        }
 
-         boolean invertImage = false;
-         if (appeFound && colorSpace.getType() == ColorSpace.TYPE_CMYK) {
-             if (log.isDebugEnabled()) {
-                 log.debug("JPEG has an Adobe APPE marker. Note: CMYK Image will be inverted. ("
-                         + info.getOriginalURI() + ")");
-             }
-             invertImage = true;
-         }
+        boolean invertImage = false;
+        if (appeFound && colorSpace.getType() == ColorSpace.TYPE_CMYK) {
+            if (log.isDebugEnabled()) {
+                log.debug("JPEG has an Adobe APPE marker. Note: CMYK Image will be inverted. ("
+                        + info.getOriginalURI() + ")");
+            }
+            invertImage = true;
+        }
 
-         final ImageRawJPEG rawImage = new ImageRawJPEG(info,
-                 ImageUtil.needInputStream(src), sofType, colorSpace,
+        final ImageRawJPEG rawImage = new ImageRawJPEG(info,
+                ImageUtil.needInputStream(src), sofType, colorSpace,
                 iccProfile, invertImage);
-         return rawImage;
-     }
+        return rawImage;
+    }
 
-     private ICC_Profile buildICCProfile(final ImageInfo info,
+    private ICC_Profile buildICCProfile(final ImageInfo info,
             final ColorSpace colorSpace, final ByteArrayOutputStream iccStream)
-            throws IOException, ImageException {
-         if (iccStream != null && iccStream.size() > 0) {
-             if (log.isDebugEnabled()) {
-                 log.debug("Effective ICC profile size: " + iccStream.size());
-             }
-             final int alignment = 4;
-             final int padding = (alignment - iccStream.size() % alignment)
+            throws IOException {
+        if (iccStream != null && iccStream.size() > 0) {
+            if (log.isDebugEnabled()) {
+                log.debug("Effective ICC profile size: " + iccStream.size());
+            }
+            final int alignment = 4;
+            final int padding = (alignment - iccStream.size() % alignment)
                     % alignment;
-             if (padding != 0) {
-                 try {
-                     iccStream.write(new byte[padding]);
-                 } catch (final IOException ioe) {
-                     throw new IOException("Error while aligning ICC stream: "
+            if (padding != 0) {
+                try {
+                    iccStream.write(new byte[padding]);
+                } catch (final IOException ioe) {
+                    throw new IOException("Error while aligning ICC stream: "
                             + ioe.getMessage());
-                 }
-             }
+                }
+            }
 
-             ICC_Profile iccProfile = null;
-             try {
-                 iccProfile = ColorProfileUtil.getICC_Profile(iccStream
+            ICC_Profile iccProfile = null;
+            try {
+                iccProfile = ColorProfileUtil.getICC_Profile(iccStream
                         .toByteArray());
-                 if (log.isDebugEnabled()) {
-                     log.debug("JPEG has an ICC profile: "
+                if (log.isDebugEnabled()) {
+                    log.debug("JPEG has an ICC profile: "
                             + iccProfile.toString());
-                 }
-             } catch (final IllegalArgumentException iae) {
-                 log.warn("An ICC profile is present in the JPEG file but it is invalid ("
-                         + iae.getMessage()
+                }
+            } catch (final IllegalArgumentException iae) {
+                log.warn("An ICC profile is present in the JPEG file but it is invalid ("
+                        + iae.getMessage()
                         + "). The color profile will be ignored. ("
-                         + info.getOriginalURI() + ")");
-                 return null;
-             }
-             if (iccProfile.getNumComponents() != colorSpace.getNumComponents()) {
-                 log.warn("The number of components of the ICC profile ("
-                         + iccProfile.getNumComponents()
-                         + ") doesn't match the image ("
-                         + colorSpace.getNumComponents()
-                         + "). Ignoring the ICC color profile.");
-                 return null;
-             } else {
-                 return iccProfile;
-             }
-         } else {
-             return null; // no ICC profile available
-         }
-     }
+                        + info.getOriginalURI() + ")");
+                return null;
+            }
+            if (iccProfile.getNumComponents() != colorSpace.getNumComponents()) {
+                log.warn("The number of components of the ICC profile ("
+                        + iccProfile.getNumComponents()
+                        + ") doesn't match the image ("
+                        + colorSpace.getNumComponents()
+                        + "). Ignoring the ICC color profile.");
+                return null;
+            } else {
+                return iccProfile;
+            }
+        } else {
+            return null; // no ICC profile available
+        }
+    }
 
- }
+}

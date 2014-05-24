@@ -36,22 +36,27 @@ public class PDFICCStream extends PDFStream {
      */
     public PDFICCStream() {
         super();
-        cp = null;
+        this.cp = null;
     }
 
     /**
      * Sets the color space to encode in PDF.
-     * @param icc the ICC profile
-     * @param alt the PDF color space
+     * 
+     * @param icc
+     *            the ICC profile
+     * @param alt
+     *            the PDF color space
      */
-    public void setColorSpace(ICC_Profile icc, PDFDeviceColorSpace alt) {
+    public void setColorSpace(final ICC_Profile icc,
+            final PDFDeviceColorSpace alt) {
         this.cp = icc;
-        pdfColorSpace = alt;
+        this.pdfColorSpace = alt;
     }
 
     /**
-     * Returns the associated ICC profile. Note that this will return null once the
-     * ICC stream has been written to the PDF file.
+     * Returns the associated ICC profile. Note that this will return null once
+     * the ICC stream has been written to the PDF file.
+     * 
      * @return the ICC profile (or null if the stream has already been written)
      */
     public ICC_Profile getICCProfile() {
@@ -59,30 +64,30 @@ public class PDFICCStream extends PDFStream {
     }
 
     /**
-     * overload the base object method so we don't have to copy
-     * byte arrays around so much
-     * {@inheritDoc}
+     * overload the base object method so we don't have to copy byte arrays
+     * around so much {@inheritDoc}
      */
     @Override
-    public int output(java.io.OutputStream stream)
-                throws java.io.IOException {
-        int length = super.output(stream);
-        this.cp = null; //Free ICC stream when it's not used anymore
+    public int output(final java.io.OutputStream stream)
+            throws java.io.IOException {
+        final int length = super.output(stream);
+        this.cp = null; // Free ICC stream when it's not used anymore
         return length;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void outputRawStreamData(OutputStream out) throws IOException {
-        cp.write(out);
+    protected void outputRawStreamData(final OutputStream out)
+            throws IOException {
+        this.cp.write(out);
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void populateStreamDict(Object lengthEntry) {
-        put("N", cp.getNumComponents());
-        if (pdfColorSpace != null) {
-            put("Alternate", new PDFName(pdfColorSpace.getName()));
+    protected void populateStreamDict(final Object lengthEntry) {
+        put("N", this.cp.getNumComponents());
+        if (this.pdfColorSpace != null) {
+            put("Alternate", new PDFName(this.pdfColorSpace.getName()));
         }
         super.populateStreamDict(lengthEntry);
     }

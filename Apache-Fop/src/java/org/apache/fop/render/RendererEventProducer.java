@@ -37,27 +37,36 @@ public interface RendererEventProducer extends EventProducer {
 
         /**
          * Returns an event producer.
-         * @param broadcaster the event broadcaster to use
+         * 
+         * @param broadcaster
+         *            the event broadcaster to use
          * @return the event producer
          */
-        public static RendererEventProducer get(EventBroadcaster broadcaster) {
-            return (RendererEventProducer)broadcaster.getEventProducerFor(
-                    RendererEventProducer.class);
+        public static RendererEventProducer get(
+                final EventBroadcaster broadcaster) {
+            return (RendererEventProducer) broadcaster
+                    .getEventProducerFor(RendererEventProducer.class);
         }
     }
 
     /**
      * I/O error while writing target file.
-     * @param source the event source
-     * @param ioe the original I/O error
+     * 
+     * @param source
+     *            the event source
+     * @param ioe
+     *            the original I/O error
      * @event.severity ERROR
      */
-    void ioError(Object source, IOException ioe);
+    void ioError(final Object source, final IOException ioe);
 
     /**
      * Triggered at the end of page rendering.
-     * @param source the event source
-     * @param number the page number
+     * 
+     * @param source
+     *            the event source
+     * @param number
+     *            the page number
      */
-    void endPage(Object source, int number);
+    void endPage(final Object source, final int number);
 }

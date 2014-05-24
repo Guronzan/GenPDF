@@ -35,42 +35,50 @@ public class TXTStream {
 
     /**
      * Main constructor.
-     * @param os OutputStream to write to
+     * 
+     * @param os
+     *            OutputStream to write to
      */
-    public TXTStream(OutputStream os) {
-        out = os;
+    public TXTStream(final OutputStream os) {
+        this.out = os;
     }
 
     /**
      * Adds a String to the OutputStream
-     * @param str String to add
+     * 
+     * @param str
+     *            String to add
      */
-    public void add(String str) {
-        if (!doOutput) {
+    public void add(final String str) {
+        if (!this.doOutput) {
             return;
         }
 
         try {
-            byte[] buff = str.getBytes(encoding);
-            out.write(buff);
-        } catch (IOException e) {
+            final byte[] buff = str.getBytes(this.encoding);
+            this.out.write(buff);
+        } catch (final IOException e) {
             throw new RuntimeException(e.toString());
         }
     }
 
     /**
      * Controls whether output is actually written.
-     * @param doout true to enable output, false to suppress
+     * 
+     * @param doout
+     *            true to enable output, false to suppress
      */
-    public void setDoOutput(boolean doout) {
-        doOutput = doout;
+    public void setDoOutput(final boolean doout) {
+        this.doOutput = doout;
     }
 
     /**
      * Set the encoding for the text stream.
-     * @param encoding the encoding, if null, "UTF-8" is chosen as default
+     * 
+     * @param encoding
+     *            the encoding, if null, "UTF-8" is chosen as default
      */
-    public void setEncoding(String encoding) {
+    public void setEncoding(final String encoding) {
         if (encoding != null) {
             this.encoding = encoding;
         } else {
@@ -78,4 +86,3 @@ public class TXTStream {
         }
     }
 }
-

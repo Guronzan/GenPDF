@@ -33,15 +33,20 @@ public class ImageSource implements Source {
 
     private String systemId;
     private ImageInputStream iin;
-    private boolean fastSource;
+    private final boolean fastSource;
 
     /**
      * Main constructor.
-     * @param in the ImageInputStream to load from
-     * @param systemId the system identifier (resolved URI) of the image
-     * @param fastSource true if it's a fast source (accessing local files)
+     * 
+     * @param in
+     *            the ImageInputStream to load from
+     * @param systemId
+     *            the system identifier (resolved URI) of the image
+     * @param fastSource
+     *            true if it's a fast source (accessing local files)
      */
-    public ImageSource(ImageInputStream in, String systemId, boolean fastSource) {
+    public ImageSource(final ImageInputStream in, final String systemId,
+            final boolean fastSource) {
         assert in != null : "InputStream is null";
         this.iin = in;
         this.systemId = systemId;
@@ -50,6 +55,7 @@ public class ImageSource implements Source {
 
     /**
      * Returns an InputStream which operates on the underlying ImageInputStream.
+     * 
      * @return the InputStream or null if the stream has been closed
      */
     public InputStream getInputStream() {
@@ -62,6 +68,7 @@ public class ImageSource implements Source {
 
     /**
      * Returns the ImageInputStream.
+     * 
      * @return the ImageInputStream or null if the stream has been closed
      */
     public ImageInputStream getImageInputStream() {
@@ -70,25 +77,30 @@ public class ImageSource implements Source {
 
     /**
      * Sets the ImageInputStream.
-     * @param in the ImageInputStream
+     * 
+     * @param in
+     *            the ImageInputStream
      */
-    public void setImageInputStream(ImageInputStream in) {
+    public void setImageInputStream(final ImageInputStream in) {
         this.iin = in;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getSystemId() {
         return this.systemId;
     }
 
     /** {@inheritDoc} */
-    public void setSystemId(String systemId) {
+    @Override
+    public void setSystemId(final String systemId) {
         this.systemId = systemId;
     }
 
     /**
-     * Indicates whether this ImageSource is a fast source, i.e. accesses local files rather than
-     * network resources.
+     * Indicates whether this ImageSource is a fast source, i.e. accesses local
+     * files rather than network resources.
+     * 
      * @return true if it's a fast source
      */
     public boolean isFastSource() {
@@ -96,9 +108,10 @@ public class ImageSource implements Source {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
         return (isFastSource() ? "FAST " : "") + "ImageSource: "
-            + getSystemId() + " " + getImageInputStream();
+                + getSystemId() + " " + getImageInputStream();
     }
 
 }

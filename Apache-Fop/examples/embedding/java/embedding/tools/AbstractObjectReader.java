@@ -23,35 +23,32 @@ package embedding.tools;
 import java.io.IOException;
 import java.util.Map;
 
-//SAX
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+//SAX
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 
 /**
- * This class can be used as base class for XMLReaders that generate SAX
- * events from Java objects.
+ * This class can be used as base class for XMLReaders that generate SAX events
+ * from Java objects.
  */
 
 public abstract class AbstractObjectReader implements XMLReader {
 
-    private static final String NAMESPACES =
-        "http://xml.org/sax/features/namespaces";
-    private static final String NS_PREFIXES =
-        "http://xml.org/sax/features/namespace-prefixes";
+    private static final String NAMESPACES = "http://xml.org/sax/features/namespaces";
+    private static final String NS_PREFIXES = "http://xml.org/sax/features/namespace-prefixes";
 
-    private Map features = new java.util.HashMap();
+    private final Map features = new java.util.HashMap();
     private ContentHandler orgHandler;
 
     /** Proxy for easy SAX event generation */
     protected EasyGenerationContentHandlerProxy handler;
     /** Error handler */
     protected ErrorHandler errorHandler;
-
 
     /**
      * Constructor for the AbstractObjectReader object
@@ -66,6 +63,7 @@ public abstract class AbstractObjectReader implements XMLReader {
     /**
      * @see org.xml.sax.XMLReader#getContentHandler()
      */
+    @Override
     public ContentHandler getContentHandler() {
         return this.orgHandler;
     }
@@ -73,7 +71,8 @@ public abstract class AbstractObjectReader implements XMLReader {
     /**
      * @see org.xml.sax.XMLReader#setContentHandler(ContentHandler)
      */
-    public void setContentHandler(ContentHandler handler) {
+    @Override
+    public void setContentHandler(final ContentHandler handler) {
         this.orgHandler = handler;
         this.handler = new EasyGenerationContentHandlerProxy(handler);
     }
@@ -81,6 +80,7 @@ public abstract class AbstractObjectReader implements XMLReader {
     /**
      * @see org.xml.sax.XMLReader#getErrorHandler()
      */
+    @Override
     public ErrorHandler getErrorHandler() {
         return this.errorHandler;
     }
@@ -88,13 +88,15 @@ public abstract class AbstractObjectReader implements XMLReader {
     /**
      * @see org.xml.sax.XMLReader#setErrorHandler(ErrorHandler)
      */
-    public void setErrorHandler(ErrorHandler handler) {
+    @Override
+    public void setErrorHandler(final ErrorHandler handler) {
         this.errorHandler = handler;
     }
 
     /**
      * @see org.xml.sax.XMLReader#getDTDHandler()
      */
+    @Override
     public DTDHandler getDTDHandler() {
         return null;
     }
@@ -102,12 +104,14 @@ public abstract class AbstractObjectReader implements XMLReader {
     /**
      * @see org.xml.sax.XMLReader#setDTDHandler(DTDHandler)
      */
-    public void setDTDHandler(DTDHandler handler) {
+    @Override
+    public void setDTDHandler(final DTDHandler handler) {
     }
 
     /**
      * @see org.xml.sax.XMLReader#getEntityResolver()
      */
+    @Override
     public EntityResolver getEntityResolver() {
         return null;
     }
@@ -115,31 +119,37 @@ public abstract class AbstractObjectReader implements XMLReader {
     /**
      * @see org.xml.sax.XMLReader#setEntityResolver(EntityResolver)
      */
-    public void setEntityResolver(EntityResolver resolver) {
+    @Override
+    public void setEntityResolver(final EntityResolver resolver) {
     }
 
     /**
      * @see org.xml.sax.XMLReader#getProperty(String)
      */
-    public Object getProperty(java.lang.String name) {
+    @Override
+    public Object getProperty(final java.lang.String name) {
         return null;
     }
 
     /**
      * @see org.xml.sax.XMLReader#setProperty(String, Object)
      */
-    public void setProperty(java.lang.String name, java.lang.Object value) {
+    @Override
+    public void setProperty(final java.lang.String name,
+            final java.lang.Object value) {
     }
 
     /**
      * @see org.xml.sax.XMLReader#getFeature(String)
      */
-    public boolean getFeature(java.lang.String name) {
-        return ((Boolean) features.get(name)).booleanValue();
+    @Override
+    public boolean getFeature(final java.lang.String name) {
+        return ((Boolean) this.features.get(name)).booleanValue();
     }
 
     /**
      * Returns true if the NAMESPACES feature is enabled.
+     * 
      * @return boolean true if enabled
      */
     protected boolean isNamespaces() {
@@ -148,6 +158,7 @@ public abstract class AbstractObjectReader implements XMLReader {
 
     /**
      * Returns true if the MS_PREFIXES feature is enabled.
+     * 
      * @return boolean true if enabled
      */
     protected boolean isNamespacePrefixes() {
@@ -157,23 +168,25 @@ public abstract class AbstractObjectReader implements XMLReader {
     /**
      * @see org.xml.sax.XMLReader#setFeature(String, boolean)
      */
-    public void setFeature(java.lang.String name, boolean value) {
+    @Override
+    public void setFeature(final java.lang.String name, final boolean value) {
         this.features.put(name, new Boolean(value));
     }
 
     /**
      * @see org.xml.sax.XMLReader#parse(String)
      */
-    public void parse(String systemId) throws IOException, SAXException {
-        throw new SAXException(
-            this.getClass().getName()
+    @Override
+    public void parse(final String systemId) throws IOException, SAXException {
+        throw new SAXException(this.getClass().getName()
                 + " cannot be used with system identifiers (URIs)");
     }
 
     /**
      * @see org.xml.sax.XMLReader#parse(InputSource)
      */
-    public abstract void parse(InputSource input)
-        throws IOException, SAXException;
+    @Override
+    public abstract void parse(final InputSource input) throws IOException,
+            SAXException;
 
 }

@@ -20,7 +20,6 @@
 package org.apache.fop.render.txt;
 
 import org.apache.avalon.framework.configuration.Configuration;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.render.PrintRendererConfigurator;
@@ -33,22 +32,29 @@ public class TXTRendererConfigurator extends PrintRendererConfigurator {
 
     /**
      * Default constructor
-     * @param userAgent user agent
+     * 
+     * @param userAgent
+     *            user agent
      */
-    public TXTRendererConfigurator(FOUserAgent userAgent) {
+    public TXTRendererConfigurator(final FOUserAgent userAgent) {
         super(userAgent);
     }
 
     /**
      * Configure the PS renderer.
-     * @param renderer TXT renderer
-     * @throws FOPException fop exception
+     * 
+     * @param renderer
+     *            TXT renderer
+     * @throws FOPException
+     *             fop exception
      */
-    public void configure(Renderer renderer) throws FOPException {
-        Configuration cfg = super.getRendererConfig(renderer);
+    @Override
+    public void configure(final Renderer renderer) throws FOPException {
+        final Configuration cfg = super.getRendererConfig(renderer);
         if (cfg != null) {
-            TXTRenderer txtRenderer = (TXTRenderer)renderer;
-            txtRenderer.setEncoding(cfg.getChild("encoding", true).getValue(null));
+            final TXTRenderer txtRenderer = (TXTRenderer) renderer;
+            txtRenderer.setEncoding(cfg.getChild("encoding", true).getValue(
+                    null));
         }
     }
 }

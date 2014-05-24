@@ -24,8 +24,8 @@ import java.net.URL;
 import java.util.List;
 
 /**
- * Implementers provide find method for searching native operating system
- * for available fonts.
+ * Implementers provide find method for searching native operating system for
+ * available fonts.
  */
 public interface FontFinder {
 

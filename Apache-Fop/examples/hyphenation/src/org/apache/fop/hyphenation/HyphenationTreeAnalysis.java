@@ -29,12 +29,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * This class provides some useful methods to print the structure of a HyphenationTree object
+ * This class provides some useful methods to print the structure of a
+ * HyphenationTree object
  */
+@Slf4j
 public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
 
     /**
@@ -43,9 +47,10 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
     protected HyphenationTree ht;
 
     /**
-     * @param ht the HyphenationTree object
+     * @param ht
+     *            the HyphenationTree object
      */
-    public HyphenationTreeAnalysis(HyphenationTree ht) {
+    public HyphenationTreeAnalysis(final HyphenationTree ht) {
         super(ht);
         this.ht = ht;
     }
@@ -57,43 +62,48 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
         private String value = null;
 
         /**
-         * @param index the index of the node
+         * @param index
+         *            the index of the node
          */
-        protected Node(int index) {
+        protected Node(final int index) {
             super(index);
-            if (isLeafNode) {
-                value = readValue().toString();
+            if (this.isLeafNode) {
+                this.value = readValue().toString();
             }
         }
 
         private StringBuffer readValue() {
-            StringBuffer s = new StringBuffer();
-            int i = (int) ht.eq[index];
-            byte v = ht.vspace.get(i);
-            for (; v != 0; v = ht.vspace.get(++i)) {
-                int c = (int) ((v >>> 4) - 1);
+            final StringBuffer s = new StringBuffer();
+            int i = HyphenationTreeAnalysis.this.ht.eq[this.index];
+            byte v = HyphenationTreeAnalysis.this.ht.vspace.get(i);
+            for (; v != 0; v = HyphenationTreeAnalysis.this.ht.vspace.get(++i)) {
+                int c = (v >>> 4) - 1;
                 s.append(c);
-                c = (int) (v & 0x0f);
+                c = v & 0x0f;
                 if (c == 0) {
                     break;
                 }
-                c = (c - 1);
+                c = c - 1;
                 s.append(c);
             }
             return s;
         }
 
-        /* (non-Javadoc)
-         * @see org.apache.fop.hyphenation.TernaryTreeAnalysis.Node#toNodeString()
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * org.apache.fop.hyphenation.TernaryTreeAnalysis.Node#toNodeString()
          */
+        @Override
         public String toNodeString() {
-            if (isLeafNode) {
-                StringBuffer s = new StringBuffer();
-                s.append("-" + index);
-                if (isPacked) {
-                    s.append(",=>'" + key + "'");
+            if (this.isLeafNode) {
+                final StringBuffer s = new StringBuffer();
+                s.append("-" + this.index);
+                if (this.isPacked) {
+                    s.append(",=>'" + this.key + "'");
                 }
-                s.append("," + value);
+                s.append("," + this.value);
                 s.append(",leaf");
                 return s.toString();
             } else {
@@ -101,17 +111,21 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
             }
         }
 
-        /* (non-Javadoc)
-         * @see org.apache.fop.hyphenation.TernaryTreeAnalysis.Node#toCompactString()
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * org.apache.fop.hyphenation.TernaryTreeAnalysis.Node#toCompactString()
          */
+        @Override
         public String toCompactString() {
-            if (isLeafNode) {
-                StringBuffer s = new StringBuffer();
-                s.append("-" + index);
-                if (isPacked) {
-                    s.append(",=>'" + key + "'");
+            if (this.isLeafNode) {
+                final StringBuffer s = new StringBuffer();
+                s.append("-" + this.index);
+                if (this.isPacked) {
+                    s.append(",=>'" + this.key + "'");
                 }
-                s.append("," + value);
+                s.append("," + this.value);
                 s.append(",leaf\n");
                 return s.toString();
             } else {
@@ -119,37 +133,41 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
             }
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see java.lang.Object#toString()
          */
+        @Override
         public String toString() {
-            StringBuffer s = new StringBuffer();
+            final StringBuffer s = new StringBuffer();
             s.append(super.toString());
-            if (isLeafNode) {
-                s.append("value: " + value + "\n");
+            if (this.isLeafNode) {
+                s.append("value: " + this.value + "\n");
             }
             return s.toString();
         }
 
     }
 
-    private void addNode(int nodeIndex, List strings, NodeString ns) {
-        int pos = ns.indent + ns.string.length() + 1;
-        Node n = new Node(nodeIndex);
+    private void addNode(final int nodeIndex, final List strings,
+            final NodeString ns) {
+        final int pos = ns.indent + ns.string.length() + 1;
+        final Node n = new Node(nodeIndex);
         ns.string.append(n.toNodeString());
         if (n.high != 0) {
             ns.high.add(new Integer(pos));
-            NodeString highNs = new NodeString(pos);
+            final NodeString highNs = new NodeString(pos);
             highNs.low.add(new Integer(pos));
-            int index = strings.indexOf(ns);
+            final int index = strings.indexOf(ns);
             strings.add(index, highNs);
             addNode(n.high, strings, highNs);
         }
         if (n.low != 0) {
             ns.low.add(new Integer(pos));
-            NodeString lowNs = new NodeString(pos);
+            final NodeString lowNs = new NodeString(pos);
             lowNs.high.add(new Integer(pos));
-            int index = strings.indexOf(ns);
+            final int index = strings.indexOf(ns);
             strings.add(index + 1, lowNs);
             addNode(n.low, strings, lowNs);
         }
@@ -161,17 +179,19 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
 
     /**
      * Construct the tree representation of a list of node strings
-     * @param strings the list of node strings
+     *
+     * @param strings
+     *            the list of node strings
      * @return the string representing the tree
      */
-    public String toTree(List strings) {
-        StringBuffer indentString = new StringBuffer();
+    public String toTree(final List strings) {
+        final StringBuffer indentString = new StringBuffer();
         for (int j = indentString.length(); j < ((NodeString) strings.get(0)).indent; ++j) {
             indentString.append(' ');
         }
-        StringBuffer tree = new StringBuffer();
+        final StringBuffer tree = new StringBuffer();
         for (int i = 0; i < strings.size(); ++i) {
-            NodeString ns = (NodeString) strings.get(i);
+            final NodeString ns = (NodeString) strings.get(i);
             if (indentString.length() > ns.indent) {
                 indentString.setLength(ns.indent);
             } else {
@@ -187,7 +207,7 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
                 continue;
             }
             for (int j = 0; j < ns.low.size(); ++j) {
-                int pos = ((Integer) ns.low.get(j)).intValue();
+                final int pos = ((Integer) ns.low.get(j)).intValue();
                 if (pos < indentString.length()) {
                     indentString.setCharAt(pos, '|');
                 } else {
@@ -205,11 +225,12 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
 
     /**
      * Construct the tree representation of the HyphenationTree object
+     *
      * @return the string representing the tree
      */
     public String toTree() {
-        List strings = new ArrayList();
-        NodeString ns = new NodeString(0);
+        final List strings = new ArrayList();
+        final NodeString ns = new NodeString(0);
         strings.add(ns);
         addNode(1, strings, ns);
         return toTree(strings);
@@ -217,59 +238,65 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
 
     /**
      * Construct the compact node representation of the HyphenationTree object
+     *
      * @return the string representing the tree
      */
+    @Override
     public String toCompactNodes() {
-        StringBuffer s = new StringBuffer();
-        for (int i = 1; i < ht.sc.length; ++i) {
+        final StringBuffer s = new StringBuffer();
+        for (int i = 1; i < this.ht.sc.length; ++i) {
             if (i != 1) {
                 s.append("\n");
             }
-            s.append((new Node(i)).toCompactString());
+            s.append(new Node(i).toCompactString());
         }
         return s.toString();
     }
 
     /**
      * Construct the node representation of the HyphenationTree object
+     *
      * @return the string representing the tree
      */
+    @Override
     public String toNodes() {
-        StringBuffer s = new StringBuffer();
-        for (int i = 1; i < ht.sc.length; ++i) {
+        final StringBuffer s = new StringBuffer();
+        for (int i = 1; i < this.ht.sc.length; ++i) {
             if (i != 1) {
                 s.append("\n");
             }
-            s.append((new Node(i)).toString());
+            s.append(new Node(i).toString());
         }
         return s.toString();
     }
 
     /**
      * Construct the printed representation of the HyphenationTree object
+     *
      * @return the string representing the tree
      */
+    @Override
     public String toString() {
-        StringBuffer s = new StringBuffer();
+        final StringBuffer s = new StringBuffer();
 
         s.append("classes: \n");
-        s.append((new TernaryTreeAnalysis(ht.classmap)).toString());
+        s.append(new TernaryTreeAnalysis(this.ht.classmap).toString());
 
         s.append("\npatterns: \n");
         s.append(super.toString());
         s.append("vspace: ");
-        for (int i = 0; i < ht.vspace.length(); ++i) {
-            byte v = ht.vspace.get(i);
+        for (int i = 0; i < this.ht.vspace.length(); ++i) {
+            final byte v = this.ht.vspace.get(i);
             if (v == 0) {
                 s.append("--");
             } else {
-                int c = (int) ((v >>> 4) - 1);
+                int c = (v >>> 4) - 1;
                 s.append(c);
-                c = (int) (v & 0x0f);
+                c = v & 0x0f;
                 if (c == 0) {
                     s.append("-");
                 } else {
-                    c = (c - 1);
+                    c = c - 1;
                     s.append(c);
                 }
             }
@@ -280,34 +307,36 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
     }
 
     /**
-     * Provide interactive access to a HyphenationTree object and its representation methods
-     * @param args the arguments
+     * Provide interactive access to a HyphenationTree object and its
+     * representation methods
+     *
+     * @param args
+     *            the arguments
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         HyphenationTree ht = null;
         HyphenationTreeAnalysis hta = null;
         int minCharCount = 2;
-        BufferedReader in = new BufferedReader(new java.io.InputStreamReader(System.in));
+        final BufferedReader in = new BufferedReader(
+                new java.io.InputStreamReader(System.in));
         while (true) {
-            System.out.print("l:\tload patterns from XML\n"
-                             + "L:\tload patterns from serialized object\n"
-                             + "s:\tset minimun character count\n"
-                             + "w:\twrite hyphenation tree to object file\n"
-                             + "p:\tprint hyphenation tree to stdout\n"
-                             + "n:\tprint hyphenation tree nodes to stdout\n"
-                             + "c:\tprint compact hyphenation tree nodes to stdout\n"
-                             + "t:\tprint tree representation of hyphenation tree to stdout\n"
-                             + "h:\thyphenate\n"
-                             + "f:\tfind pattern\n"
-                             + "b:\tbenchmark\n"
-                             + "q:\tquit\n\n"
-                             + "Command:");
+            System.out
+                    .print("l:\tload patterns from XML\n"
+                            + "L:\tload patterns from serialized object\n"
+                            + "s:\tset minimun character count\n"
+                            + "w:\twrite hyphenation tree to object file\n"
+                            + "p:\tprint hyphenation tree to stdout\n"
+                            + "n:\tprint hyphenation tree nodes to stdout\n"
+                            + "c:\tprint compact hyphenation tree nodes to stdout\n"
+                            + "t:\tprint tree representation of hyphenation tree to stdout\n"
+                            + "h:\thyphenate\n" + "f:\tfind pattern\n"
+                            + "b:\tbenchmark\n" + "q:\tquit\n\n" + "Command:");
             try {
                 String token = in.readLine().trim();
                 if (token.equals("f")) {
                     System.out.print("Pattern: ");
                     token = in.readLine().trim();
-                    System.out.println("Values: " + ht.findPattern(token));
+                    log.info("Values: " + ht.findPattern(token));
                 } else if (token.equals("s")) {
                     System.out.print("Minimum value: ");
                     token = in.readLine().trim();
@@ -319,7 +348,7 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
                     token = in.readLine().trim();
                     try {
                         ht.loadPatterns(token);
-                    } catch (HyphenationException e) {
+                    } catch (final HyphenationException e) {
                         e.printStackTrace();
                     }
                 } else if (token.equals("L")) {
@@ -327,26 +356,27 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
                     System.out.print("Object file name: ");
                     token = in.readLine().trim();
                     try {
-                        String[] parts = token.split(":");
+                        final String[] parts = token.split(":");
                         InputStream is = null;
                         if (parts.length == 1) {
                             is = new FileInputStream(token);
                         } else if (parts.length == 2) {
-                            ZipFile jar = new ZipFile(parts[0]);
-                            ZipEntry entry = new ZipEntry(jar.getEntry(parts[1]));
+                            final ZipFile jar = new ZipFile(parts[0]);
+                            final ZipEntry entry = new ZipEntry(
+                                    jar.getEntry(parts[1]));
                             is = jar.getInputStream(entry);
                         }
                         ois = new ObjectInputStream(is);
                         ht = (HyphenationTree) ois.readObject();
                         hta = new HyphenationTreeAnalysis(ht);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         e.printStackTrace();
                     } finally {
                         if (ois != null) {
                             try {
                                 ois.close();
-                            } catch (IOException e) {
-                                //ignore
+                            } catch (final IOException e) {
+                                // ignore
                             }
                         }
                     }
@@ -355,21 +385,22 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
                     token = in.readLine().trim();
                     ObjectOutputStream oos = null;
                     try {
-                        oos = new ObjectOutputStream(new FileOutputStream(token));
+                        oos = new ObjectOutputStream(
+                                new FileOutputStream(token));
                         oos.writeObject(ht);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         e.printStackTrace();
                     } finally {
                         if (oos != null) {
                             try {
                                 oos.flush();
-                            } catch (IOException e) {
-                                //ignore
+                            } catch (final IOException e) {
+                                // ignore
                             }
                             try {
                                 oos.close();
-                            } catch (IOException e) {
-                                //ignore
+                            } catch (final IOException e) {
+                                // ignore
                             }
                         }
                     }
@@ -385,11 +416,11 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
                     System.out.print("Word: ");
                     token = in.readLine().trim();
                     System.out.print("Hyphenation points: ");
-                    System.out.println(ht.hyphenate(token, minCharCount,
-                                                    minCharCount));
+                    log.info(ht.hyphenate(token, minCharCount, minCharCount)
+                            .toString());
                 } else if (token.equals("b")) {
                     if (ht == null) {
-                        System.out.println("No patterns have been loaded.");
+                        log.info("No patterns have been loaded.");
                         break;
                     }
                     System.out.print("Word list filename: ");
@@ -397,36 +428,37 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
                     long starttime = 0;
                     int counter = 0;
                     try {
-                        BufferedReader reader = new BufferedReader(new FileReader(token));
+                        final BufferedReader reader = new BufferedReader(
+                                new FileReader(token));
                         String line;
 
                         starttime = System.currentTimeMillis();
                         while ((line = reader.readLine()) != null) {
                             // System.out.print("\nline: ");
-                            Hyphenation hyp = ht.hyphenate(line, minCharCount,
-                                                           minCharCount);
+                            final Hyphenation hyp = ht.hyphenate(line,
+                                    minCharCount, minCharCount);
                             if (hyp != null) {
-                                String hword = hyp.toString();
-                                // System.out.println(line);
-                                // System.out.println(hword);
+                                final String hword = hyp.toString();
+                                // log.info(line);
+                                // log.info(hword);
                             } else {
-                                // System.out.println("No hyphenation");
+                                // log.info("No hyphenation");
                             }
                             counter++;
                         }
-                    } catch (Exception ioe) {
-                        System.out.println("Exception " + ioe);
+                    } catch (final Exception ioe) {
+                        log.info("Exception " + ioe);
                         ioe.printStackTrace();
                     }
-                    long endtime = System.currentTimeMillis();
-                    long result = endtime - starttime;
-                    System.out.println(counter + " words in " + result
-                                       + " Milliseconds hyphenated");
+                    final long endtime = System.currentTimeMillis();
+                    final long result = endtime - starttime;
+                    log.info(counter + " words in " + result
+                            + " Milliseconds hyphenated");
 
                 } else if (token.equals("q")) {
                     break;
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace();
             }
         }

@@ -29,18 +29,21 @@ import org.apache.xmlgraphics.ps.PSGenerator;
  */
 public class DSCHeaderComment extends AbstractEvent {
 
-    private String comment;
+    private final String comment;
 
     /**
      * Creates a new instance.
-     * @param comment the comment
+     * 
+     * @param comment
+     *            the comment
      */
-    public DSCHeaderComment(String comment) {
+    public DSCHeaderComment(final String comment) {
         this.comment = comment;
     }
 
     /**
      * Returns the comment.
+     * 
      * @return the comment
      */
     public String getComment() {
@@ -49,6 +52,7 @@ public class DSCHeaderComment extends AbstractEvent {
 
     /**
      * Indicates whether the file started by this comments is DSC 3.0 compliant.
+     * 
      * @return true if the file is DSC 3.0 compliant.
      */
     public boolean isPSAdobe30() {
@@ -56,16 +60,17 @@ public class DSCHeaderComment extends AbstractEvent {
     }
 
     /**
-     * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#generate(
-     *              org.apache.xmlgraphics.ps.PSGenerator)
+     * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#generate(org.apache.xmlgraphics.ps.PSGenerator)
      */
-    public void generate(PSGenerator gen) throws IOException {
+    @Override
+    public void generate(final PSGenerator gen) throws IOException {
         gen.writeln("%!" + getComment());
     }
 
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.DSCEvent#getEventType()
      */
+    @Override
     public int getEventType() {
         return HEADER_COMMENT;
     }
@@ -73,6 +78,7 @@ public class DSCHeaderComment extends AbstractEvent {
     /**
      * @see org.apache.xmlgraphics.ps.dsc.events.AbstractEvent#isHeaderComment()
      */
+    @Override
     public boolean isHeaderComment() {
         return true;
     }

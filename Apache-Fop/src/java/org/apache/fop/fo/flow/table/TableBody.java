@@ -29,35 +29,41 @@ import org.apache.fop.fo.FONode;
 public class TableBody extends TablePart {
 
     /**
-     * Create a TableBody instance with the given {@link FONode}
-     * as parent.
-     * @param parent FONode that is the parent of the object
+     * Create a TableBody instance with the given {@link FONode} as parent.
+     * 
+     * @param parent
+     *            FONode that is the parent of the object
      */
-    public TableBody(FONode parent) {
+    public TableBody(final FONode parent) {
         super(parent);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void startOfNode() throws FOPException {
         super.startOfNode();
         getFOEventHandler().startBody(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     protected void endOfNode() throws FOPException {
         super.endOfNode();
         getFOEventHandler().endBody(this);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalName() {
         return "table-body";
     }
 
     /**
      * {@inheritDoc}
+     * 
      * @return {@link org.apache.fop.fo.Constants#FO_TABLE_BODY}
      */
+    @Override
     public int getNameId() {
         return FO_TABLE_BODY;
     }

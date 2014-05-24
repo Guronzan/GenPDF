@@ -24,19 +24,15 @@ import java.awt.image.IndexColorModel;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.zip.Deflater;
-import java.util.zip.DeflaterOutputStream;
-
-import org.junit.Test;
-
-import org.apache.xmlgraphics.image.loader.ImageSize;
-import org.apache.xmlgraphics.image.loader.impl.ImageRawPNG;
 
 import org.apache.fop.pdf.FlateFilter;
 import org.apache.fop.pdf.PDFAMode;
 import org.apache.fop.pdf.PDFDocument;
 import org.apache.fop.pdf.PDFProfile;
 import org.apache.fop.render.RawPNGTestUtil;
+import org.apache.xmlgraphics.image.loader.ImageSize;
+import org.apache.xmlgraphics.image.loader.impl.ImageRawPNG;
+import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -48,12 +44,12 @@ public class ImageRawPNGAdapterTestCase {
 
     @Test
     public void testSetupWithIndexColorModel() {
-        IndexColorModel cm = mock(IndexColorModel.class);
-        ImageRawPNG irpng = mock(ImageRawPNG.class);
-        PDFDocument doc = mock(PDFDocument.class);
-        PDFProfile profile = mock(PDFProfile.class);
-        ImageRawPNGAdapter irpnga = new ImageRawPNGAdapter(irpng, "mock");
-        ImageSize is = RawPNGTestUtil.getImageSize();
+        final IndexColorModel cm = mock(IndexColorModel.class);
+        final ImageRawPNG irpng = mock(ImageRawPNG.class);
+        final PDFDocument doc = mock(PDFDocument.class);
+        final PDFProfile profile = mock(PDFProfile.class);
+        final ImageRawPNGAdapter irpnga = new ImageRawPNGAdapter(irpng, "mock");
+        final ImageSize is = RawPNGTestUtil.getImageSize();
 
         when(irpng.getColorModel()).thenReturn(cm);
         // when(cm.hasAlpha()).thenReturn(false);
@@ -61,18 +57,18 @@ public class ImageRawPNGAdapterTestCase {
         when(profile.getPDFAMode()).thenReturn(PDFAMode.PDFA_1A);
         when(irpng.getSize()).thenReturn(is);
         irpnga.setup(doc);
-        FlateFilter filter = (FlateFilter) irpnga.getPDFFilter();
+        final FlateFilter filter = (FlateFilter) irpnga.getPDFFilter();
         assertEquals(1, filter.getColors());
     }
 
     @Test
     public void testSetupWithComponentColorModel() throws IOException {
-        ComponentColorModel cm = mock(ComponentColorModel.class);
-        ImageRawPNG irpng = mock(ImageRawPNG.class);
-        PDFDocument doc = mock(PDFDocument.class);
-        PDFProfile profile = mock(PDFProfile.class);
-        ImageRawPNGAdapter irpnga = new ImageRawPNGAdapter(irpng, "mock");
-        ImageSize is = RawPNGTestUtil.getImageSize();
+        final ComponentColorModel cm = mock(ComponentColorModel.class);
+        final ImageRawPNG irpng = mock(ImageRawPNG.class);
+        final PDFDocument doc = mock(PDFDocument.class);
+        final PDFProfile profile = mock(PDFProfile.class);
+        final ImageRawPNGAdapter irpnga = new ImageRawPNGAdapter(irpng, "mock");
+        final ImageSize is = RawPNGTestUtil.getImageSize();
 
         when(irpng.getColorModel()).thenReturn(cm);
         when(cm.getNumComponents()).thenReturn(3);
@@ -81,7 +77,7 @@ public class ImageRawPNGAdapterTestCase {
         when(profile.getPDFAMode()).thenReturn(PDFAMode.PDFA_1A);
         when(irpng.getSize()).thenReturn(is);
         irpnga.setup(doc);
-        FlateFilter filter = (FlateFilter) irpnga.getPDFFilter();
+        final FlateFilter filter = (FlateFilter) irpnga.getPDFFilter();
         assertEquals(3, filter.getColors());
     }
 
@@ -105,16 +101,17 @@ public class ImageRawPNGAdapterTestCase {
         testOutputContentsWithGRGBAPNG(128, -1, -1, -1, 128);
     }
 
-    private void testOutputContentsWithGRGBAPNG(int gray, int red, int green, int blue, int alpha)
+    private void testOutputContentsWithGRGBAPNG(final int gray, final int red,
+            final int green, final int blue, final int alpha)
             throws IOException {
-        int numColorComponents = gray > -1 ? 1 : 3;
-        int numComponents = numColorComponents + (alpha > -1 ? 1 : 0);
-        ComponentColorModel cm = mock(ComponentColorModel.class);
-        ImageRawPNG irpng = mock(ImageRawPNG.class);
-        PDFDocument doc = mock(PDFDocument.class);
-        PDFProfile profile = mock(PDFProfile.class);
-        ImageRawPNGAdapter irpnga = new ImageRawPNGAdapter(irpng, "mock");
-        ImageSize is = RawPNGTestUtil.getImageSize();
+        final int numColorComponents = gray > -1 ? 1 : 3;
+        final int numComponents = numColorComponents + (alpha > -1 ? 1 : 0);
+        final ComponentColorModel cm = mock(ComponentColorModel.class);
+        final ImageRawPNG irpng = mock(ImageRawPNG.class);
+        final PDFDocument doc = mock(PDFDocument.class);
+        final PDFProfile profile = mock(PDFProfile.class);
+        final ImageRawPNGAdapter irpnga = new ImageRawPNGAdapter(irpng, "mock");
+        final ImageSize is = RawPNGTestUtil.getImageSize();
 
         when(irpng.getColorModel()).thenReturn(cm);
         when(cm.getNumComponents()).thenReturn(numComponents);
@@ -123,16 +120,18 @@ public class ImageRawPNGAdapterTestCase {
         when(profile.getPDFAMode()).thenReturn(PDFAMode.PDFA_1A);
         when(irpng.getSize()).thenReturn(is);
         irpnga.setup(doc);
-        FlateFilter filter = (FlateFilter) irpnga.getPDFFilter();
+        final FlateFilter filter = (FlateFilter) irpnga.getPDFFilter();
         assertEquals(numColorComponents, filter.getColors());
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] data = RawPNGTestUtil.buildGRGBAData(gray, red, green, blue, alpha);
-        ByteArrayInputStream bais = new ByteArrayInputStream(data);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final byte[] data = RawPNGTestUtil.buildGRGBAData(gray, red, green,
+                blue, alpha);
+        final ByteArrayInputStream bais = new ByteArrayInputStream(data);
         when(irpng.createInputStream()).thenReturn(bais);
         irpnga.outputContents(baos);
         if (alpha > -1) {
-            byte[] expected = RawPNGTestUtil.buildGRGBAData(gray, red, green, blue, -1);
+            final byte[] expected = RawPNGTestUtil.buildGRGBAData(gray, red,
+                    green, blue, -1);
             assertArrayEquals(expected, baos.toByteArray());
         } else {
             assertArrayEquals(data, baos.toByteArray());
