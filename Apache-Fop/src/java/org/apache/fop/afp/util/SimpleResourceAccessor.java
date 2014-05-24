@@ -26,31 +26,37 @@ import java.net.URI;
 import java.net.URL;
 
 /**
- * Simple implementation of the {@link ResourceAccessor} interface for access relative to a
- * base URI.
+ * Simple implementation of the {@link ResourceAccessor} interface for access
+ * relative to a base URI.
  */
 public class SimpleResourceAccessor implements ResourceAccessor {
 
-    private URI baseURI;
+    private final URI baseURI;
 
     /**
      * Creates a new simple resource accessor.
-     * @param baseURI the base URI to resolve relative URIs against (may be null)
+     * 
+     * @param baseURI
+     *            the base URI to resolve relative URIs against (may be null)
      */
-    public SimpleResourceAccessor(URI baseURI) {
+    public SimpleResourceAccessor(final URI baseURI) {
         this.baseURI = baseURI;
     }
 
     /**
      * Creates a new simple resource accessor.
-     * @param baseDir the base directory to resolve relative filenames against (may be null)
+     * 
+     * @param baseDir
+     *            the base directory to resolve relative filenames against (may
+     *            be null)
      */
-    public SimpleResourceAccessor(File baseDir) {
+    public SimpleResourceAccessor(final File baseDir) {
         this(baseDir != null ? baseDir.toURI() : null);
     }
 
     /**
      * Returns the base URI.
+     * 
      * @return the base URI (or null if no base URI was set)
      */
     public URI getBaseURI() {
@@ -59,17 +65,20 @@ public class SimpleResourceAccessor implements ResourceAccessor {
 
     /**
      * Resolve the given URI against the baseURI.
-     * @param uri the URI to resolve
+     * 
+     * @param uri
+     *            the URI to resolve
      * @return the resolved URI
      */
-    protected URI resolveAgainstBase(URI uri) {
-        return (getBaseURI() != null ? getBaseURI().resolve(uri) : uri);
+    protected URI resolveAgainstBase(final URI uri) {
+        return getBaseURI() != null ? getBaseURI().resolve(uri) : uri;
     }
 
     /** {@inheritDoc} */
-    public InputStream createInputStream(URI uri) throws IOException {
-        URI resolved = resolveAgainstBase(uri);
-        URL url = resolved.toURL();
+    @Override
+    public InputStream createInputStream(final URI uri) throws IOException {
+        final URI resolved = resolveAgainstBase(uri);
+        final URL url = resolved.toURL();
         return url.openStream();
     }
 

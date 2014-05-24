@@ -24,8 +24,8 @@ import java.util.Iterator;
 
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.fo.FODocumentParser;
-import org.apache.fop.fo.FOEventHandler;
 import org.apache.fop.fo.FODocumentParser.FOEventHandlerFactory;
+import org.apache.fop.fo.FOEventHandler;
 import org.apache.fop.util.ConsoleEventListenerForTests;
 
 /**
@@ -37,26 +37,32 @@ abstract class AbstractTableTest {
 
     private TableHandler tableHandler;
 
-    protected void setUp(String filename) throws Exception {
+    protected void setUp(final String filename) throws Exception {
         createDocumentParser();
-        documentParser.setEventListener(new ConsoleEventListenerForTests(filename));
-        documentParser.parse(new FileInputStream("test/fotree/unittests/" + filename));
+        this.documentParser.setEventListener(new ConsoleEventListenerForTests(
+                filename));
+        this.documentParser.parse(new FileInputStream("test/fotree/unittests/"
+                + filename));
     }
 
     private void createDocumentParser() {
-        documentParser = FODocumentParser.newInstance(new FOEventHandlerFactory() {
-            public FOEventHandler newFOEventHandler(FOUserAgent foUserAgent) {
-                tableHandler = new TableHandler(foUserAgent);
-                return tableHandler;
-            }
-        });
+        this.documentParser = FODocumentParser
+                .newInstance(new FOEventHandlerFactory() {
+                    @Override
+                    public FOEventHandler newFOEventHandler(
+                            final FOUserAgent foUserAgent) {
+                        AbstractTableTest.this.tableHandler = new TableHandler(
+                                foUserAgent);
+                        return AbstractTableTest.this.tableHandler;
+                    }
+                });
     }
 
     protected TableHandler getTableHandler() {
-        return tableHandler;
+        return this.tableHandler;
     }
 
     protected Iterator getTableIterator() {
-        return tableHandler.getTables().iterator();
+        return this.tableHandler.getTables().iterator();
     }
 }

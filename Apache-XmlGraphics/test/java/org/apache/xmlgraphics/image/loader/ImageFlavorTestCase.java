@@ -28,7 +28,7 @@ import org.apache.xmlgraphics.util.MimeConstants;
  */
 public class ImageFlavorTestCase extends TestCase {
 
-    public void testBasicFlavors() throws Exception {
+    public void testBasicFlavors() {
         ImageFlavor f1, f2;
 
         f1 = ImageFlavor.RAW_JPEG;
@@ -61,7 +61,8 @@ public class ImageFlavorTestCase extends TestCase {
         assertNull(f2.getNamespace());
 
         f1 = ImageFlavor.XML_DOM;
-        f2 = new XMLNamespaceEnabledImageFlavor(ImageFlavor.XML_DOM, "http://www.w3.org/2000/svg");
+        f2 = new XMLNamespaceEnabledImageFlavor(ImageFlavor.XML_DOM,
+                "http://www.w3.org/2000/svg");
         assertFalse(f1.equals(f2));
         assertTrue(f2.isCompatible(f1));
         assertFalse(f1.isCompatible(f2));

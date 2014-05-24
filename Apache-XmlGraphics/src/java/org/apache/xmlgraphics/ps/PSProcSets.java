@@ -25,7 +25,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * This class defines the basic resources (procsets) used by the Apache XML Graphics project.
+ * This class defines the basic resources (procsets) used by the Apache XML
+ * Graphics project.
  *
  * @version $Id: PSProcSets.java 1353180 2012-06-23 19:17:07Z gadams $
  */
@@ -43,7 +44,7 @@ public final class PSProcSets {
     public static final PSCommandMap STD_COMMAND_MAP;
 
     static {
-        StdProcSet stdProcSet = new StdProcSet();
+        final StdProcSet stdProcSet = new StdProcSet();
         STD_PROCSET = stdProcSet;
         STD_COMMAND_MAP = stdProcSet;
     }
@@ -53,11 +54,14 @@ public final class PSProcSets {
      */
     private static class StdProcSet extends PSProcSet implements PSCommandMap {
 
-        /** A Map<String, String> of standard shorthand macros defined in the {@link StdProcSet}. */
+        /**
+         * A Map<String, String> of standard shorthand macros defined in the
+         * {@link StdProcSet}.
+         */
         private static final Map STANDARD_MACROS;
 
         static {
-            Map macros = new java.util.HashMap();
+            final Map macros = new java.util.HashMap();
             macros.put("moveto", "M");
             macros.put("rmoveto", "RM");
             macros.put("curveto", "C");
@@ -85,37 +89,42 @@ public final class PSProcSets {
             super("Apache XML Graphics Std ProcSet", 1.2f, 0);
         }
 
-        public void writeTo(PSGenerator gen) throws IOException {
-            gen.writeDSCComment(DSCConstants.BEGIN_RESOURCE,
-                    new Object[] {TYPE_PROCSET, getName(),
-                        Float.toString(getVersion()), Integer.toString(getRevision())});
-            gen.writeDSCComment(DSCConstants.VERSION,
-                    new Object[] {Float.toString(getVersion()), Integer.toString(getRevision())});
-            gen.writeDSCComment(DSCConstants.COPYRIGHT, "Copyright 2001-2003,2010 "
-                        + "The Apache Software Foundation. "
-                        + "License terms: http://www.apache.org/licenses/LICENSE-2.0");
+        public void writeTo(final PSGenerator gen) throws IOException {
+            gen.writeDSCComment(DSCConstants.BEGIN_RESOURCE, new Object[] {
+                    TYPE_PROCSET, getName(), Float.toString(getVersion()),
+                    Integer.toString(getRevision()) });
+            gen.writeDSCComment(
+                    DSCConstants.VERSION,
+                    new Object[] { Float.toString(getVersion()),
+                            Integer.toString(getRevision()) });
+            gen.writeDSCComment(
+                    DSCConstants.COPYRIGHT,
+                    "Copyright 2001-2003,2010 "
+                            + "The Apache Software Foundation. "
+                            + "License terms: http://www.apache.org/licenses/LICENSE-2.0");
             gen.writeDSCComment(DSCConstants.TITLE,
                     "Basic set of procedures used by the XML Graphics project (Batik and FOP)");
 
             gen.writeln("/bd{bind def}bind def");
             gen.writeln("/ld{load def}bd");
-            Iterator iter = STANDARD_MACROS.entrySet().iterator();
+            final Iterator iter = STANDARD_MACROS.entrySet().iterator();
             while (iter.hasNext()) {
-                Map.Entry entry = (Map.Entry)iter.next();
-                gen.writeln("/" + entry.getValue() + "/" + entry.getKey() + " ld");
+                final Map.Entry entry = (Map.Entry) iter.next();
+                gen.writeln("/" + entry.getValue() + "/" + entry.getKey()
+                        + " ld");
             }
 
-            gen.writeln("/re {4 2 roll M"); //define rectangle
+            gen.writeln("/re {4 2 roll M"); // define rectangle
             gen.writeln("1 index 0 rlineto");
             gen.writeln("0 exch rlineto");
             gen.writeln("neg 0 rlineto");
             gen.writeln("cp } bd");
 
-            gen.writeln("/_ctm matrix def"); //Holds the current matrix
+            gen.writeln("/_ctm matrix def"); // Holds the current matrix
             gen.writeln("/_tm matrix def");
-            //BT: save currentmatrix, set _tm to identitymatrix and move to 0/0
+            // BT: save currentmatrix, set _tm to identitymatrix and move to 0/0
             gen.writeln("/BT { _ctm currentmatrix pop matrix _tm copy pop 0 0 moveto } bd");
-            //ET: restore last currentmatrix
+            // ET: restore last currentmatrix
             gen.writeln("/ET { _ctm setmatrix } bd");
             gen.writeln("/iTm { _ctm setmatrix _tm concat } bd");
             gen.writeln("/Tm { _tm astore pop iTm 0 0 moveto } bd");
@@ -168,7 +177,7 @@ public final class PSProcSets {
             gen.writeln("  /UnderlinePosition get Ts mul /To exch def");
             gen.writeln("  /UnderlineThickness get Ts mul /Tt exch def");
             gen.writeln("  ux uy To add cs 10 mul 26 idiv add moveto "
-                        + "Tcx uy To add cs 10 mul 26 idiv add lineto");
+                    + "Tcx uy To add cs 10 mul 26 idiv add lineto");
             gen.writeln("  Tt setlinewidth stroke");
             gen.writeln("  grestore");
             gen.writeln("} bd");
@@ -252,9 +261,10 @@ public final class PSProcSets {
         }
 
         /** {@inheritDoc} */
-        public String mapCommand(String command) {
-            String mapped = (String)STANDARD_MACROS.get(command);
-            return (mapped != null ? mapped : command);
+        @Override
+        public String mapCommand(final String command) {
+            final String mapped = (String) STANDARD_MACROS.get(command);
+            return mapped != null ? mapped : command;
         }
 
     }
@@ -265,15 +275,19 @@ public final class PSProcSets {
             super("Apache XML Graphics EPS ProcSet", 1.0f, 0);
         }
 
-        public void writeTo(PSGenerator gen) throws IOException {
-            gen.writeDSCComment(DSCConstants.BEGIN_RESOURCE,
-                    new Object[] {TYPE_PROCSET, getName(),
-                        Float.toString(getVersion()), Integer.toString(getRevision())});
-            gen.writeDSCComment(DSCConstants.VERSION,
-                    new Object[] {Float.toString(getVersion()), Integer.toString(getRevision())});
-            gen.writeDSCComment(DSCConstants.COPYRIGHT, "Copyright 2002-2003 "
-                    + "The Apache Software Foundation. "
-                    + "License terms: http://www.apache.org/licenses/LICENSE-2.0");
+        public void writeTo(final PSGenerator gen) throws IOException {
+            gen.writeDSCComment(DSCConstants.BEGIN_RESOURCE, new Object[] {
+                    TYPE_PROCSET, getName(), Float.toString(getVersion()),
+                    Integer.toString(getRevision()) });
+            gen.writeDSCComment(
+                    DSCConstants.VERSION,
+                    new Object[] { Float.toString(getVersion()),
+                            Integer.toString(getRevision()) });
+            gen.writeDSCComment(
+                    DSCConstants.COPYRIGHT,
+                    "Copyright 2002-2003 "
+                            + "The Apache Software Foundation. "
+                            + "License terms: http://www.apache.org/licenses/LICENSE-2.0");
             gen.writeDSCComment(DSCConstants.TITLE,
                     "EPS procedures used by the Apache XML Graphics project (Batik and FOP)");
 
@@ -307,45 +321,30 @@ public final class PSProcSets {
     }
 
     /**
-     * Generates a resource defining standard procset with operations used by the XML Graphics
-     * project.
-     * @param gen PSGenerator to use for output
-     * @throws IOException In case of an I/O problem
+     * Generates a resource defining standard procset with operations used by
+     * the XML Graphics project.
+     *
+     * @param gen
+     *            PSGenerator to use for output
+     * @throws IOException
+     *             In case of an I/O problem
      */
-    public static void writeStdProcSet(PSGenerator gen) throws IOException {
-        ((StdProcSet)STD_PROCSET).writeTo(gen);
-    }
-
-    /**
-     * Generates a resource defining standard procset with operations used by the XML Graphics
-     * project.
-     * @param gen PSGenerator to use for output
-     * @throws IOException In case of an I/O problem
-     * @deprecated Use writeStdProcSet() instead.
-     */
-    public static void writeFOPStdProcSet(PSGenerator gen) throws IOException {
-        writeStdProcSet(gen);
-    }
-
-
-    /**
-     * Generates a resource defining a procset for including EPS graphics.
-     * @param gen PSGenerator to use for output
-     * @throws IOException In case of an I/O problem
-     */
-    public static void writeEPSProcSet(PSGenerator gen) throws IOException {
-        ((EPSProcSet)EPS_PROCSET).writeTo(gen);
+    public static void writeStdProcSet(final PSGenerator gen)
+            throws IOException {
+        ((StdProcSet) STD_PROCSET).writeTo(gen);
     }
 
     /**
      * Generates a resource defining a procset for including EPS graphics.
-     * @param gen PSGenerator to use for output
-     * @throws IOException In case of an I/O problem
-     * @deprecated Use writeEPSProcSet() instead.
+     *
+     * @param gen
+     *            PSGenerator to use for output
+     * @throws IOException
+     *             In case of an I/O problem
      */
-    public static void writeFOPEPSProcSet(PSGenerator gen) throws IOException {
-        writeEPSProcSet(gen);
+    public static void writeEPSProcSet(final PSGenerator gen)
+            throws IOException {
+        ((EPSProcSet) EPS_PROCSET).writeTo(gen);
     }
-
 
 }

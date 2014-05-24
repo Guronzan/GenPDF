@@ -26,12 +26,12 @@ import org.apache.fop.afp.Factory;
 import org.apache.fop.afp.modca.AbstractNamedAFPObject;
 
 /**
- * An Image Segment is represented by a set of self-defining fields, fields
- * that describe their own contents.  It starts with a Begin Segment, and
- * ends with an End Segment.
+ * An Image Segment is represented by a set of self-defining fields, fields that
+ * describe their own contents. It starts with a Begin Segment, and ends with an
+ * End Segment.
  *
- * Between the Begin Segment and End Segment is the image information to
- * be processed, called the Image Content.
+ * Between the Begin Segment and End Segment is the image information to be
+ * processed, called the Image Content.
  *
  * Only one Image Content can exist within a single IOCA Image Segment.
  */
@@ -45,133 +45,127 @@ public class ImageSegment extends AbstractNamedAFPObject {
     private final Factory factory;
 
     /**
-     * Constructor for the image segment with the specified name,
-     * the name must be a fixed length of eight characters.
-     * @param factory the object factory
+     * Constructor for the image segment with the specified name, the name must
+     * be a fixed length of eight characters.
+     * 
+     * @param factory
+     *            the object factory
      *
-     * @param name the name of the image.
+     * @param name
+     *            the name of the image.
      */
-    public ImageSegment(Factory factory, String name) {
+    public ImageSegment(final Factory factory, final String name) {
         super(name);
         this.factory = factory;
     }
 
     /**
      * Returns the image content object associated with this image segment.
+     * 
      * @return the image content
      */
     public ImageContent getImageContent() {
-        if (imageContent == null) {
-            this.imageContent = factory.createImageContent();
+        if (this.imageContent == null) {
+            this.imageContent = this.factory.createImageContent();
         }
-        return imageContent;
+        return this.imageContent;
     }
 
     /**
      * Sets the image size parameters resolution, hsize and vsize.
      *
-     * @param hsize The horizontal size of the image.
-     * @param vsize The vertical size of the image.
-     * @param hresol The horizontal resolution of the image.
-     * @param vresol The vertical resolution of the image.
+     * @param hsize
+     *            The horizontal size of the image.
+     * @param vsize
+     *            The vertical size of the image.
+     * @param hresol
+     *            The horizontal resolution of the image.
+     * @param vresol
+     *            The vertical resolution of the image.
      */
-    public void setImageSize(int hsize, int vsize, int hresol, int vresol) {
-        ImageSizeParameter imageSizeParameter
-            = factory.createImageSizeParameter(hsize, vsize, hresol, vresol);
+    public void setImageSize(final int hsize, final int vsize,
+            final int hresol, final int vresol) {
+        final ImageSizeParameter imageSizeParameter = this.factory
+                .createImageSizeParameter(hsize, vsize, hresol, vresol);
         getImageContent().setImageSizeParameter(imageSizeParameter);
     }
 
     /**
      * Sets the image encoding.
      *
-     * @param encoding The image encoding.
+     * @param encoding
+     *            The image encoding.
      */
-    public void setEncoding(byte encoding) {
+    public void setEncoding(final byte encoding) {
         getImageContent().setImageEncoding(encoding);
     }
 
     /**
      * Sets the image compression.
      *
-     * @param compression The image compression.
+     * @param compression
+     *            The image compression.
      */
-    public void setCompression(byte compression) {
+    public void setCompression(final byte compression) {
         getImageContent().setImageCompression(compression);
     }
 
     /**
      * Sets the image IDE size.
      *
-     * @param size The IDE size.
+     * @param size
+     *            The IDE size.
      */
-    public void setIDESize(byte size) {
+    public void setIDESize(final byte size) {
         getImageContent().setImageIDESize(size);
-    }
-
-    /**
-     * Sets the image IDE color model.
-     *
-     * @param colorModel the IDE color model.
-     * @deprecated Use {@link IDEStructureParameter#setColorModel(byte)} instead.
-     */
-    public void setIDEColorModel(byte colorModel) {
-        getImageContent().setImageIDEColorModel(colorModel);
-    }
-
-    /**
-     * Set either additive or subtractive mode (used for ASFLAG).
-     * @param subtractive true for subtractive mode, false for additive mode
-     * @deprecated Use {@link IDEStructureParameter#setSubtractive(boolean)} instead.
-     */
-    public void setSubtractive(boolean subtractive) {
-        getImageContent().setSubtractive(subtractive);
     }
 
     /**
      * Set the data image data.
      *
-     * @param imageData the image data
+     * @param imageData
+     *            the image data
      */
-    public void setData(byte[] imageData) {
+    public void setData(final byte[] imageData) {
         getImageContent().setImageData(imageData);
     }
 
     /** {@inheritDoc} */
-    public void writeContent(OutputStream os) throws IOException {
-        if (imageContent != null) {
-            imageContent.writeToStream(os);
+    @Override
+    public void writeContent(final OutputStream os) throws IOException {
+        if (this.imageContent != null) {
+            this.imageContent.writeToStream(os);
         }
     }
 
     private static final int NAME_LENGTH = 4;
 
     /** {@inheritDoc} */
+    @Override
     protected int getNameLength() {
         return NAME_LENGTH;
     }
 
     /** {@inheritDoc} */
-    protected void writeStart(OutputStream os) throws IOException {
-        //Name disabled, it's optional and not referenced by our code
-        //byte[] nameBytes = getNameBytes();
-        byte[] data = new byte[] {
-            0x70, // ID
-            0x00, // Length
-            /*
-            nameBytes[0], // Name byte 1
-            nameBytes[1], // Name byte 2
-            nameBytes[2], // Name byte 3
-            nameBytes[3], // Name byte 4
-            */
+    @Override
+    protected void writeStart(final OutputStream os) throws IOException {
+        // Name disabled, it's optional and not referenced by our code
+        // byte[] nameBytes = getNameBytes();
+        final byte[] data = new byte[] { 0x70, // ID
+                0x00, // Length
+        /*
+         * nameBytes[0], // Name byte 1 nameBytes[1], // Name byte 2
+         * nameBytes[2], // Name byte 3 nameBytes[3], // Name byte 4
+         */
         };
         os.write(data);
     }
 
     /** {@inheritDoc} */
-    protected void writeEnd(OutputStream os) throws IOException {
-        byte[] data = new byte[] {
-            0x71, // ID
-            0x00, // Length
+    @Override
+    protected void writeEnd(final OutputStream os) throws IOException {
+        final byte[] data = new byte[] { 0x71, // ID
+                0x00, // Length
         };
         os.write(data);
     }

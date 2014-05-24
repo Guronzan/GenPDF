@@ -37,7 +37,6 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.apache.xmlgraphics.util.io.Base64EncodeStream;
 import org.apache.xmlgraphics.util.uri.CommonURIResolver;
 
@@ -50,10 +49,10 @@ import org.apache.xmlgraphics.util.uri.CommonURIResolver;
 public class FOURIResolver implements javax.xml.transform.URIResolver {
 
     // log
-    private Log log = LogFactory.getLog("FOP");
+    private final Log log = LogFactory.getLog("FOP");
 
     /** Common URIResolver */
-    private CommonURIResolver commonURIResolver = new CommonURIResolver();
+    private final CommonURIResolver commonURIResolver = new CommonURIResolver();
 
     /** A user settable URI Resolver */
     private URIResolver uriResolver = null;
@@ -63,19 +62,27 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
 
     /**
      * Checks if the given base URL is acceptable. It also normalizes the URL.
-     * @param base the base URL to check
+     * 
+     * @param base
+     *            the base URL to check
      * @return the normalized URL
-     * @throws MalformedURLException if there's a problem with a file URL
+     * @throws MalformedURLException
+     *             if there's a problem with a file URL
      */
     public String checkBaseURL(String base) throws MalformedURLException {
-        // replace back slash with forward slash to ensure windows file:/// URLS are supported
+        // replace back slash with forward slash to ensure windows file:/// URLS
+        // are supported
         base = base.replace('\\', '/');
         if (!base.endsWith("/")) {
-            // The behavior described by RFC 3986 regarding resolution of relative
+            // The behavior described by RFC 3986 regarding resolution of
+            // relative
             // references may be misleading for normal users:
-            // file://path/to/resources + myResource.res -> file://path/to/myResource.res
-            // file://path/to/resources/ + myResource.res -> file://path/to/resources/myResource.res
-            // We assume that even when the ending slash is missing, users have the second
+            // file://path/to/resources + myResource.res ->
+            // file://path/to/myResource.res
+            // file://path/to/resources/ + myResource.res ->
+            // file://path/to/resources/myResource.res
+            // We assume that even when the ending slash is missing, users have
+            // the second
             // example in mind
             base += "/";
         }
@@ -86,22 +93,23 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
             URI baseURI;
             try {
                 baseURI = new URI(base);
-                String scheme = baseURI.getScheme();
+                final String scheme = baseURI.getScheme();
                 boolean directoryExists = true;
                 if ("file".equals(scheme)) {
                     dir = FileUtils.toFile(baseURI.toURL());
                     directoryExists = dir.isDirectory();
                 }
                 if (scheme == null || !directoryExists) {
-                    String message = "base " + base + " is not a valid directory";
-                    if (throwExceptions) {
+                    final String message = "base " + base
+                            + " is not a valid directory";
+                    if (this.throwExceptions) {
                         throw new MalformedURLException(message);
                     }
-                    log.error(message);
+                    this.log.error(message);
                 }
                 return baseURI.toASCIIString();
-            } catch (URISyntaxException e) {
-                //TODO not ideal: our base URLs are actually base URIs.
+            } catch (final URISyntaxException e) {
+                // TODO not ideal: our base URLs are actually base URIs.
                 throw new MalformedURLException(e.getMessage());
             }
         }
@@ -121,7 +129,7 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
      *            true if exceptions are to be thrown if the URIs cannot be
      *            resolved.
      */
-    public FOURIResolver(boolean throwExceptions) {
+    public FOURIResolver(final boolean throwExceptions) {
         this.throwExceptions = throwExceptions;
     }
 
@@ -135,12 +143,12 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
      * @param strict
      *            strict user config
      */
-    private void handleException(Exception e, String errorStr, boolean strict)
-            throws TransformerException {
+    private void handleException(final Exception e, final String errorStr,
+            final boolean strict) throws TransformerException {
         if (strict) {
             throw new TransformerException(errorStr, e);
         }
-        log.error(e.getMessage());
+        this.log.error(e.getMessage());
     }
 
     /**
@@ -167,22 +175,25 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
      *             Never thrown by this implementation.
      * @see javax.xml.transform.URIResolver#resolve(String, String)
      */
-    public Source resolve(String href, String base) throws TransformerException {
+    @Override
+    public Source resolve(String href, final String base)
+            throws TransformerException {
         Source source = null;
 
-        // data URLs can be quite long so evaluate early and don't try to build a File
+        // data URLs can be quite long so evaluate early and don't try to build
+        // a File
         // (can lead to problems)
-        source = commonURIResolver.resolve(href, base);
+        source = this.commonURIResolver.resolve(href, base);
 
         // Custom uri resolution
-        if (source == null && uriResolver != null) {
-            source = uriResolver.resolve(href, base);
+        if (source == null && this.uriResolver != null) {
+            source = this.uriResolver.resolve(href, base);
         }
 
         // Fallback to default resolution mechanism
         if (source == null) {
             URL absoluteURL = null;
-            int hashPos = href.indexOf('#');
+            final int hashPos = href.indexOf('#');
             String fileURL;
             String fragment;
             if (hashPos >= 0) {
@@ -192,17 +203,19 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
                 fileURL = href;
                 fragment = null;
             }
-            File file = new File(fileURL);
+            final File file = new File(fileURL);
             if (file.canRead() && file.isFile()) {
                 try {
                     if (fragment != null) {
-                        absoluteURL = new URL(file.toURI().toURL().toExternalForm() + fragment);
+                        absoluteURL = new URL(file.toURI().toURL()
+                                .toExternalForm()
+                                + fragment);
                     } else {
                         absoluteURL = file.toURI().toURL();
                     }
-                } catch (MalformedURLException mfue) {
+                } catch (final MalformedURLException mfue) {
                     handleException(mfue, "Could not convert filename '" + href
-                            + "' to URL", throwExceptions);
+                            + "' to URL", this.throwExceptions);
                 }
             } else {
                 // no base provided
@@ -210,15 +223,15 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
                     // We don't have a valid file protocol based URL
                     try {
                         absoluteURL = new URL(href);
-                    } catch (MalformedURLException mue) {
+                    } catch (final MalformedURLException mue) {
                         try {
                             // the above failed, we give it another go in case
                             // the href contains only a path then file: is
                             // assumed
                             absoluteURL = new URL("file:" + href);
-                        } catch (MalformedURLException mfue) {
+                        } catch (final MalformedURLException mfue) {
                             handleException(mfue, "Error with URL '" + href
-                                    + "'", throwExceptions);
+                                    + "'", this.throwExceptions);
                         }
                     }
 
@@ -227,21 +240,21 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
                     URL baseURL = null;
                     try {
                         baseURL = new URL(base);
-                    } catch (MalformedURLException mfue) {
+                    } catch (final MalformedURLException mfue) {
                         handleException(mfue, "Error with base URL '" + base
-                                + "'", throwExceptions);
+                                + "'", this.throwExceptions);
                     }
 
                     /*
                      * This piece of code is based on the following statement in
                      * RFC2396 section 5.2:
-                     *
+                     * 
                      * 3) If the scheme component is defined, indicating that
                      * the reference starts with a scheme name, then the
                      * reference is interpreted as an absolute URI and we are
                      * done. Otherwise, the reference URI's scheme is inherited
                      * from the base URI's scheme component.
-                     *
+                     * 
                      * Due to a loophole in prior specifications [RFC1630], some
                      * parsers allow the scheme name to be present in a relative
                      * URI if it is the same as the base URI scheme.
@@ -251,16 +264,16 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
                      * removing the scheme if it matches that of the base URI
                      * and the scheme is known to always use the <hier_part>
                      * syntax.
-                     *
+                     * 
                      * The URL class does not implement this work around, so we
                      * do.
                      */
-                    assert (baseURL != null);
-                    String scheme = baseURL.getProtocol() + ":";
+                    assert baseURL != null;
+                    final String scheme = baseURL.getProtocol() + ":";
                     if (href.startsWith(scheme) && "file:".equals(scheme)) {
                         href = href.substring(scheme.length());
-                        int colonPos = href.indexOf(':');
-                        int slashPos = href.indexOf('/');
+                        final int colonPos = href.indexOf(':');
+                        final int slashPos = href.indexOf('/');
                         if (slashPos >= 0 && colonPos >= 0
                                 && colonPos < slashPos) {
                             href = "/" + href; // Absolute file URL doesn't
@@ -269,28 +282,30 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
                     }
                     try {
                         absoluteURL = new URL(baseURL, href);
-                    } catch (MalformedURLException mfue) {
+                    } catch (final MalformedURLException mfue) {
                         handleException(mfue, "Error with URL; base '" + base
-                                + "' " + "href '" + href + "'", throwExceptions);
+                                + "' " + "href '" + href + "'",
+                                this.throwExceptions);
                     }
                 }
             }
 
             if (absoluteURL != null) {
-                String effURL = absoluteURL.toExternalForm();
+                final String effURL = absoluteURL.toExternalForm();
                 try {
-                    URLConnection connection = absoluteURL.openConnection();
+                    final URLConnection connection = absoluteURL
+                            .openConnection();
                     connection.setAllowUserInteraction(false);
                     connection.setDoInput(true);
                     updateURLConnection(connection, href);
                     connection.connect();
                     return new StreamSource(connection.getInputStream(), effURL);
-                } catch (FileNotFoundException fnfe) {
+                } catch (final FileNotFoundException fnfe) {
                     // Note: This is on "debug" level since the caller is
                     // supposed to handle this
-                    log.debug("File not found: " + effURL);
-                } catch (java.io.IOException ioe) {
-                    log.error("Error with opening URL '" + effURL + "': "
+                    this.log.debug("File not found: " + effURL);
+                } catch (final java.io.IOException ioe) {
+                    this.log.error("Error with opening URL '" + effURL + "': "
                             + ioe.getMessage());
                 }
             }
@@ -309,7 +324,8 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
      * @param href
      *            the original URI
      */
-    protected void updateURLConnection(URLConnection connection, String href) {
+    protected void updateURLConnection(final URLConnection connection,
+            final String href) {
         // nop
     }
 
@@ -325,20 +341,20 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
      * @param password
      *            the password
      */
-    protected void applyHttpBasicAuthentication(URLConnection connection,
-            String username, String password) {
-        String combined = username + ":" + password;
+    protected void applyHttpBasicAuthentication(final URLConnection connection,
+            final String username, final String password) {
+        final String combined = username + ":" + password;
         try {
-            ByteArrayOutputStream baout = new ByteArrayOutputStream(combined
-                    .length() * 2);
-            Base64EncodeStream base64 = new Base64EncodeStream(baout);
+            final ByteArrayOutputStream baout = new ByteArrayOutputStream(
+                    combined.length() * 2);
+            final Base64EncodeStream base64 = new Base64EncodeStream(baout);
             // TODO Not sure what charset/encoding can be used with basic
             // authentication
             base64.write(combined.getBytes("UTF-8"));
             base64.close();
             connection.setRequestProperty("Authorization", "Basic "
                     + new String(baout.toByteArray(), "UTF-8"));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // won't happen. We're operating in-memory.
             throw new RuntimeException(
                     "Error during base64 encodation of username/password");
@@ -346,14 +362,14 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
     }
 
     /**
-     * Sets the custom URI Resolver. It is used for resolving factory-level URIs like
-     * hyphenation patterns and as backup for URI resolution performed during a
-     * rendering run.
+     * Sets the custom URI Resolver. It is used for resolving factory-level URIs
+     * like hyphenation patterns and as backup for URI resolution performed
+     * during a rendering run.
      *
      * @param resolver
      *            the new URI resolver
      */
-    public void setCustomURIResolver(URIResolver resolver) {
+    public void setCustomURIResolver(final URIResolver resolver) {
         this.uriResolver = resolver;
     }
 
@@ -370,7 +386,7 @@ public class FOURIResolver implements javax.xml.transform.URIResolver {
      * @param throwExceptions
      *            Whether or not to throw exceptions on resolution error
      */
-    public void setThrowExceptions(boolean throwExceptions) {
+    public void setThrowExceptions(final boolean throwExceptions) {
         this.throwExceptions = throwExceptions;
     }
 }

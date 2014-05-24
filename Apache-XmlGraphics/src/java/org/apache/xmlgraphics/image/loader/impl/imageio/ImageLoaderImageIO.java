@@ -51,10 +51,7 @@ import javax.imageio.spi.IIOServiceProvider;
 import javax.imageio.stream.ImageInputStream;
 import javax.xml.transform.Source;
 
-import org.w3c.dom.Element;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageException;
@@ -66,100 +63,119 @@ import org.apache.xmlgraphics.image.loader.impl.ImageBuffered;
 import org.apache.xmlgraphics.image.loader.impl.ImageRendered;
 import org.apache.xmlgraphics.image.loader.util.ImageUtil;
 import org.apache.xmlgraphics.java2d.color.profile.ColorProfileUtil;
+import org.w3c.dom.Element;
 
 /**
  * An ImageLoader implementation based on ImageIO for loading bitmap images.
  */
+@Slf4j
 public class ImageLoaderImageIO extends AbstractImageLoader {
 
-    /** logger */
-    protected static Log log = LogFactory.getLog(ImageLoaderImageIO.class);
-
-    private ImageFlavor targetFlavor;
+    private final ImageFlavor targetFlavor;
 
     private static final String PNG_METADATA_NODE = "javax_imageio_png_1.0";
 
     private static final String JPEG_METADATA_NODE = "javax_imageio_jpeg_image_1.0";
 
-    private static final Set providersIgnoringICC = new HashSet(); // CSOK: ConstantName
+    private static final Set providersIgnoringICC = new HashSet(); // CSOK:
+    // ConstantName
 
     /**
      * Main constructor.
-     * @param targetFlavor the target flavor
+     *
+     * @param targetFlavor
+     *            the target flavor
      */
-    public ImageLoaderImageIO(ImageFlavor targetFlavor) {
-        if (!(ImageFlavor.BUFFERED_IMAGE.equals(targetFlavor)
-                || ImageFlavor.RENDERED_IMAGE.equals(targetFlavor))) {
-            throw new IllegalArgumentException("Unsupported target ImageFlavor: " + targetFlavor);
+    public ImageLoaderImageIO(final ImageFlavor targetFlavor) {
+        if (!(ImageFlavor.BUFFERED_IMAGE.equals(targetFlavor) || ImageFlavor.RENDERED_IMAGE
+                .equals(targetFlavor))) {
+            throw new IllegalArgumentException(
+                    "Unsupported target ImageFlavor: " + targetFlavor);
         }
         this.targetFlavor = targetFlavor;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ImageFlavor getTargetFlavor() {
         return this.targetFlavor;
     }
 
     /** {@inheritDoc} */
-    public Image loadImage(ImageInfo info, Map hints, ImageSessionContext session)
-            throws ImageException, IOException {
+    @Override
+    public Image loadImage(final ImageInfo info, final Map hints,
+            final ImageSessionContext session) throws ImageException,
+            IOException {
         RenderedImage imageData = null;
         IIOException firstException = null;
 
-        IIOMetadata iiometa = (IIOMetadata)info.getCustomObjects().get(
+        IIOMetadata iiometa = (IIOMetadata) info.getCustomObjects().get(
                 ImageIOUtil.IMAGEIO_METADATA);
-        boolean ignoreMetadata = (iiometa != null);
+        final boolean ignoreMetadata = iiometa != null;
         boolean providerIgnoresICC = false;
 
-        Source src = session.needSource(info.getOriginalURI());
-        ImageInputStream imgStream = ImageUtil.needImageInputStream(src);
+        final Source src = session.needSource(info.getOriginalURI());
+        final ImageInputStream imgStream = ImageUtil.needImageInputStream(src);
         try {
-            Iterator iter = ImageIO.getImageReaders(imgStream);
+            final Iterator<ImageReader> iter = ImageIO
+                    .getImageReaders(imgStream);
             while (iter.hasNext()) {
-                ImageReader reader = (ImageReader)iter.next();
+                final ImageReader reader = iter.next();
                 try {
                     imgStream.mark();
-                    ImageReadParam param = reader.getDefaultReadParam();
+                    final ImageReadParam param = reader.getDefaultReadParam();
                     reader.setInput(imgStream, false, ignoreMetadata);
-                    final int pageIndex = ImageUtil.needPageIndexFromURI(info.getOriginalURI());
+                    final int pageIndex = ImageUtil.needPageIndexFromURI(info
+                            .getOriginalURI());
                     try {
-                        if (ImageFlavor.BUFFERED_IMAGE.equals(this.targetFlavor)) {
+                        if (ImageFlavor.BUFFERED_IMAGE
+                                .equals(this.targetFlavor)) {
                             imageData = reader.read(pageIndex, param);
                         } else {
                             imageData = reader.read(pageIndex, param);
-                            //imageData = reader.readAsRenderedImage(pageIndex, param);
-                            //TODO Reenable the above when proper listeners are implemented
-                            //to react to late pixel population (so the stream can be closed
-                            //properly).
+                            // imageData = reader.readAsRenderedImage(pageIndex,
+                            // param);
+                            // TODO Reenable the above when proper listeners are
+                            // implemented
+                            // to react to late pixel population (so the stream
+                            // can be closed
+                            // properly).
                         }
                         if (iiometa == null) {
                             iiometa = reader.getImageMetadata(pageIndex);
                         }
                         providerIgnoresICC = checkProviderIgnoresICC(reader
                                 .getOriginatingProvider());
-                        break; //Quit early, we have the image
-                    } catch (IndexOutOfBoundsException indexe) {
-                        throw new ImageException("Page does not exist. Invalid image index: "
-                                + pageIndex);
-                    } catch (IllegalArgumentException iae) {
-                        //Some codecs like com.sun.imageio.plugins.wbmp.WBMPImageReader throw
-                        //IllegalArgumentExceptions when they have trouble parsing the image.
-                        throw new ImageException("Error loading image using ImageIO codec", iae);
-                    } catch (IIOException iioe) {
+                        break; // Quit early, we have the image
+                    } catch (final IndexOutOfBoundsException indexe) {
+                        throw new ImageException(
+                                "Page does not exist. Invalid image index: "
+                                        + pageIndex);
+                    } catch (final IllegalArgumentException iae) {
+                        // Some codecs like
+                        // com.sun.imageio.plugins.wbmp.WBMPImageReader throw
+                        // IllegalArgumentExceptions when they have trouble
+                        // parsing the image.
+                        throw new ImageException(
+                                "Error loading image using ImageIO codec", iae);
+                    } catch (final IIOException iioe) {
                         if (firstException == null) {
                             firstException = iioe;
                         } else {
-                            log.debug("non-first error loading image: " + iioe.getMessage());
+                            log.debug("non-first error loading image: "
+                                    + iioe.getMessage());
                         }
                     }
                     try {
-                        //Try fallback for CMYK images
-                        BufferedImage bi = getFallbackBufferedImage(reader, pageIndex, param);
+                        // Try fallback for CMYK images
+                        final BufferedImage bi = getFallbackBufferedImage(
+                                reader, pageIndex, param);
                         imageData = bi;
-                        firstException = null; //Clear exception after successful fallback attempt
+                        firstException = null; // Clear exception after
+                        // successful fallback attempt
                         break;
-                    } catch (IIOException iioe) {
-                        //ignore
+                    } catch (final IIOException iioe) {
+                        // ignore
                     }
                     imgStream.reset();
                 } finally {
@@ -168,7 +184,7 @@ public class ImageLoaderImageIO extends AbstractImageLoader {
             }
         } finally {
             ImageUtil.closeQuietly(src);
-            //TODO Some codecs may do late reading.
+            // TODO Some codecs may do late reading.
         }
         if (firstException != null) {
             throw new ImageException("Error while loading image: "
@@ -182,26 +198,26 @@ public class ImageLoaderImageIO extends AbstractImageLoader {
 
         Color transparentColor = null;
         if (cm instanceof IndexColorModel) {
-            //transparent color will be extracted later from the image
+            // transparent color will be extracted later from the image
         } else {
             if (providerIgnoresICC && cm instanceof ComponentColorModel) {
                 // Apply ICC Profile to Image by creating a new image with a new
                 // color model.
-                ICC_Profile iccProf = tryToExctractICCProfile(iiometa);
+                final ICC_Profile iccProf = tryToExctractICCProfile(iiometa);
                 if (iccProf != null) {
-                    ColorModel cm2 = new ComponentColorModel(
-                            new ICC_ColorSpace(iccProf), cm.hasAlpha(), cm
-                                    .isAlphaPremultiplied(), cm
-                                    .getTransparency(), cm.getTransferType());
-                    WritableRaster wr = Raster.createWritableRaster(imageData
-                            .getSampleModel(), null);
+                    final ColorModel cm2 = new ComponentColorModel(
+                            new ICC_ColorSpace(iccProf), cm.hasAlpha(),
+                            cm.isAlphaPremultiplied(), cm.getTransparency(),
+                            cm.getTransferType());
+                    final WritableRaster wr = Raster.createWritableRaster(
+                            imageData.getSampleModel(), null);
                     imageData.copyData(wr);
                     try {
-                        BufferedImage bi = new BufferedImage(cm2, wr, cm2
-                                .isAlphaPremultiplied(), null);
+                        final BufferedImage bi = new BufferedImage(cm2, wr,
+                                cm2.isAlphaPremultiplied(), null);
                         imageData = bi;
                         cm = cm2;
-                    } catch (IllegalArgumentException iae) {
+                    } catch (final IllegalArgumentException iae) {
                         log.warn("Image " + info.getOriginalURI()
                                 + " has an incompatible color profile."
                                 + " The color profile will be ignored."
@@ -214,25 +230,27 @@ public class ImageLoaderImageIO extends AbstractImageLoader {
             // ImageIOUtil.dumpMetadataToSystemOut(iiometa);
             // Retrieve the transparent color from the metadata
             if (iiometa != null && iiometa.isStandardMetadataFormatSupported()) {
-                Element metanode = (Element)iiometa.getAsTree(
-                        IIOMetadataFormatImpl.standardMetadataFormatName);
-                Element dim = ImageIOUtil.getChild(metanode, "Transparency");
+                final Element metanode = (Element) iiometa
+                        .getAsTree(IIOMetadataFormatImpl.standardMetadataFormatName);
+                final Element dim = ImageIOUtil.getChild(metanode,
+                        "Transparency");
                 if (dim != null) {
                     Element child;
                     child = ImageIOUtil.getChild(dim, "TransparentColor");
                     if (child != null) {
-                        String value = child.getAttribute("value");
+                        final String value = child.getAttribute("value");
                         if (value == null || value.length() == 0) {
-                            //ignore
+                            // ignore
                         } else if (cm.getNumColorComponents() == 1) {
-                            int gray = Integer.parseInt(value);
+                            final int gray = Integer.parseInt(value);
                             transparentColor = new Color(gray, gray, gray);
                         } else {
-                            StringTokenizer st = new StringTokenizer(value);
-                            transparentColor = new Color(
-                                    Integer.parseInt(st.nextToken()),
-                                    Integer.parseInt(st.nextToken()),
-                                    Integer.parseInt(st.nextToken()));
+                            final StringTokenizer st = new StringTokenizer(
+                                    value);
+                            transparentColor = new Color(Integer.parseInt(st
+                                    .nextToken()), Integer.parseInt(st
+                                            .nextToken()), Integer.parseInt(st
+                                                    .nextToken()));
                         }
                     }
                 }
@@ -240,7 +258,8 @@ public class ImageLoaderImageIO extends AbstractImageLoader {
         }
 
         if (ImageFlavor.BUFFERED_IMAGE.equals(this.targetFlavor)) {
-            return new ImageBuffered(info, (BufferedImage)imageData, transparentColor);
+            return new ImageBuffered(info, (BufferedImage) imageData,
+                    transparentColor);
         } else {
             return new ImageRendered(info, imageData, transparentColor);
         }
@@ -256,9 +275,10 @@ public class ImageLoaderImageIO extends AbstractImageLoader {
      * @return true if we know the provider to be broken and ignore ICC
      *         profiles.
      */
-    private boolean checkProviderIgnoresICC(IIOServiceProvider provider) {
+    private boolean checkProviderIgnoresICC(final IIOServiceProvider provider) {
         // TODO: This information could be cached.
-        StringBuffer b = new StringBuffer(provider.getDescription(Locale.ENGLISH));
+        final StringBuffer b = new StringBuffer(
+                provider.getDescription(Locale.ENGLISH));
         b.append('/').append(provider.getVendorName());
         b.append('/').append(provider.getVersion());
         if (log.isDebugEnabled()) {
@@ -275,39 +295,37 @@ public class ImageLoaderImageIO extends AbstractImageLoader {
      *            The ImageIO Metadata
      * @return an ICC Profile or null.
      */
-    private ICC_Profile tryToExctractICCProfile(IIOMetadata iiometa) {
+    private ICC_Profile tryToExctractICCProfile(final IIOMetadata iiometa) {
         ICC_Profile iccProf = null;
-        String[] supportedFormats = iiometa.getMetadataFormatNames();
-        for (int i = 0; i < supportedFormats.length; i++) {
-            String format = supportedFormats[i];
-            Element root = (Element) iiometa.getAsTree(format);
+        final String[] supportedFormats = iiometa.getMetadataFormatNames();
+        for (final String format : supportedFormats) {
+            final Element root = (Element) iiometa.getAsTree(format);
             if (PNG_METADATA_NODE.equals(format)) {
-                iccProf = this
-                        .tryToExctractICCProfileFromPNGMetadataNode(root);
+                iccProf = tryToExctractICCProfileFromPNGMetadataNode(root);
             } else if (JPEG_METADATA_NODE.equals(format)) {
-                iccProf = this.tryToExctractICCProfileFromJPEGMetadataNode(root);
+                iccProf = tryToExctractICCProfileFromJPEGMetadataNode(root);
             }
         }
         return iccProf;
     }
 
     private ICC_Profile tryToExctractICCProfileFromPNGMetadataNode(
-            Element pngNode) {
+            final Element pngNode) {
         ICC_Profile iccProf = null;
-        Element iccpNode = ImageIOUtil.getChild(pngNode, "iCCP");
+        final Element iccpNode = ImageIOUtil.getChild(pngNode, "iCCP");
         if (iccpNode instanceof IIOMetadataNode) {
-            IIOMetadataNode imn = (IIOMetadataNode) iccpNode;
-            byte[] prof = (byte[]) imn.getUserObject();
-            String comp = imn.getAttribute("compressionMethod");
+            final IIOMetadataNode imn = (IIOMetadataNode) iccpNode;
+            final byte[] prof = (byte[]) imn.getUserObject();
+            final String comp = imn.getAttribute("compressionMethod");
             if ("deflate".equalsIgnoreCase(comp)) {
-                Inflater decompresser = new Inflater();
+                final Inflater decompresser = new Inflater();
                 decompresser.setInput(prof);
-                byte[] result = new byte[100];
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                final byte[] result = new byte[100];
+                final ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 boolean failed = false;
                 while (!decompresser.finished() && !failed) {
                     try {
-                        int resultLength = decompresser.inflate(result);
+                        final int resultLength = decompresser.inflate(result);
                         bos.write(result, 0, resultLength);
                         if (resultLength == 0) {
                             // this means more data or an external dictionary is
@@ -316,15 +334,16 @@ public class ImageLoaderImageIO extends AbstractImageLoader {
                             log.debug("Failed to deflate ICC Profile");
                             failed = true;
                         }
-                    } catch (DataFormatException e) {
+                    } catch (final DataFormatException e) {
                         log.debug("Failed to deflate ICC Profile", e);
                         failed = true;
                     }
                 }
                 decompresser.end();
                 try {
-                    iccProf = ColorProfileUtil.getICC_Profile(bos.toByteArray());
-                } catch (IllegalArgumentException e) {
+                    iccProf = ColorProfileUtil
+                            .getICC_Profile(bos.toByteArray());
+                } catch (final IllegalArgumentException e) {
                     log.debug("Failed to interpret embedded ICC Profile", e);
                     iccProf = null;
                 }
@@ -334,31 +353,33 @@ public class ImageLoaderImageIO extends AbstractImageLoader {
     }
 
     private ICC_Profile tryToExctractICCProfileFromJPEGMetadataNode(
-            Element jpgNode) {
+            final Element jpgNode) {
         ICC_Profile iccProf = null;
-        Element jfifNode = ImageIOUtil.getChild(jpgNode, "app0JFIF");
+        final Element jfifNode = ImageIOUtil.getChild(jpgNode, "app0JFIF");
         if (jfifNode != null) {
-            Element app2iccNode = ImageIOUtil.getChild(jfifNode, "app2ICC");
+            final Element app2iccNode = ImageIOUtil.getChild(jfifNode,
+                    "app2ICC");
             if (app2iccNode instanceof IIOMetadataNode) {
-                IIOMetadataNode imn = (IIOMetadataNode) app2iccNode;
+                final IIOMetadataNode imn = (IIOMetadataNode) app2iccNode;
                 iccProf = (ICC_Profile) imn.getUserObject();
             }
         }
         return iccProf;
     }
 
-    private BufferedImage getFallbackBufferedImage(ImageReader reader,
-            int pageIndex, ImageReadParam param) throws IOException {
-        //Work-around found at: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4799903
-        //There are some additional ideas there if someone wants to go further.
+    private BufferedImage getFallbackBufferedImage(final ImageReader reader,
+            final int pageIndex, final ImageReadParam param) throws IOException {
+        // Work-around found at:
+        // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4799903
+        // There are some additional ideas there if someone wants to go further.
 
         // Try reading a Raster (no color conversion).
-        Raster raster = reader.readRaster(pageIndex, param);
+        final Raster raster = reader.readRaster(pageIndex, param);
 
         // Arbitrarily select a BufferedImage type.
         int imageType;
-        int numBands = raster.getNumBands();
-        switch(numBands) {
+        final int numBands = raster.getNumBands();
+        switch (numBands) {
         case 1:
             imageType = BufferedImage.TYPE_BYTE_GRAY;
             break;
@@ -369,13 +390,13 @@ public class ImageLoaderImageIO extends AbstractImageLoader {
             imageType = BufferedImage.TYPE_4BYTE_ABGR;
             break;
         default:
-            throw new UnsupportedOperationException("Unsupported band count: " + numBands);
+            throw new UnsupportedOperationException("Unsupported band count: "
+                    + numBands);
         }
 
         // Create a BufferedImage.
-        BufferedImage bi = new BufferedImage(raster.getWidth(),
-                                  raster.getHeight(),
-                                  imageType);
+        final BufferedImage bi = new BufferedImage(raster.getWidth(),
+                raster.getHeight(), imageType);
 
         // Set the image data.
         bi.getRaster().setRect(raster);

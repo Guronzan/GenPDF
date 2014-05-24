@@ -19,25 +19,27 @@
 
 package org.apache.fop.area;
 
+import java.awt.Rectangle;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
-import java.awt.Rectangle;
 
 /**
  * Tests implementations of the {@linkplain Viewport} interface.
  */
 public abstract class ViewportTest {
 
-    protected void checkNonClip(Viewport v) throws Exception {
+    protected void checkNonClip(final Viewport v) {
         assertFalse(v.hasClip());
         assertNull(v.getClipRectangle());
     }
 
-    protected void checkClip(Viewport v, int expectedWidth, int expectedHeight) throws Exception {
+    protected void checkClip(final Viewport v, final int expectedWidth,
+            final int expectedHeight) {
         assertTrue(v.hasClip());
-        assertEquals(new Rectangle(0, 0, expectedWidth, expectedHeight), v.getClipRectangle());
+        assertEquals(new Rectangle(0, 0, expectedWidth, expectedHeight),
+                v.getClipRectangle());
     }
 }

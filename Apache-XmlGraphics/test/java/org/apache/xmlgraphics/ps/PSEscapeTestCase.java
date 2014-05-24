@@ -19,8 +19,6 @@
 
 package org.apache.xmlgraphics.ps;
 
-import org.apache.xmlgraphics.ps.PSGenerator;
-
 import junit.framework.TestCase;
 
 /**
@@ -28,8 +26,8 @@ import junit.framework.TestCase;
  */
 public class PSEscapeTestCase extends TestCase {
 
-    public void testBasics() throws Exception {
-        StringBuffer sb = new StringBuffer();
+    public void testBasics() {
+        final StringBuffer sb = new StringBuffer();
 
         PSGenerator.escapeChar('a', sb);
         PSGenerator.escapeChar('b', sb);
@@ -44,19 +42,20 @@ public class PSEscapeTestCase extends TestCase {
         PSGenerator.escapeChar('x', sb);
         PSGenerator.escapeChar(')', sb);
         PSGenerator.escapeChar('\n', sb);
-        PSGenerator.escapeChar('\u001E', sb); //<RS>
-        PSGenerator.escapeChar('\u00E4', sb); //a umlaut
-        PSGenerator.escapeChar('\u20AC', sb); //EURO Sign
+        PSGenerator.escapeChar('\u001E', sb); // <RS>
+        PSGenerator.escapeChar('\u00E4', sb); // a umlaut
+        PSGenerator.escapeChar('\u20AC', sb); // EURO Sign
         assertEquals("0\\t\\(x\\)\\n\\036\\344?", sb.toString());
     }
 
-    public void testStringToDSC() throws Exception {
+    public void testStringToDSC() {
         String escaped;
         escaped = PSGenerator.convertStringToDSC("0\t(x)\n\u001E\u00E4\u20AC");
         assertEquals("0\\t\\(x\\)\\n\\036\\344?", escaped);
         escaped = PSGenerator.convertStringToDSC("0\t(x)\n\u001E\u00E4 \u20AC");
         assertEquals("(0\\t\\(x\\)\\n\\036\\344 ?)", escaped);
-        escaped = PSGenerator.convertStringToDSC("0\t(x)\n\u001E\u00E4\u20AC", true);
+        escaped = PSGenerator.convertStringToDSC("0\t(x)\n\u001E\u00E4\u20AC",
+                true);
         assertEquals("(0\\t\\(x\\)\\n\\036\\344?)", escaped);
     }
 

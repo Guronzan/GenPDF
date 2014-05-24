@@ -33,99 +33,111 @@ import org.apache.fop.util.CompareUtil;
  * A numeric property which hold the final absolute result of an expression
  * calculations.
  */
-public class NumericProperty extends Property implements Numeric, Length {
-    private double value;
-    private int dim;
+public class NumericProperty extends Property implements Length {
+    private final double value;
+    private final int dim;
 
     /**
      * Construct a Numeric object by specifying one or more components,
      * including absolute length, percent length, table units.
-     * @param value The value of the numeric.
-     * @param dim The dimension of the value. 0 for a Number, 1 for a Length
-     * (any type), >1, <0 if Lengths have been multiplied or divided.
+     * 
+     * @param value
+     *            The value of the numeric.
+     * @param dim
+     *            The dimension of the value. 0 for a Number, 1 for a Length
+     *            (any type), >1, <0 if Lengths have been multiplied or divided.
      */
-    protected NumericProperty(double value, int dim) {
+    protected NumericProperty(final double value, final int dim) {
         this.value = value;
         this.dim = dim;
     }
 
     /**
-     * Return the dimension.
-     * {@inheritDoc}
+     * Return the dimension. {@inheritDoc}
      */
+    @Override
     public int getDimension() {
-        return dim;
+        return this.dim;
     }
 
     /**
-     * Return the value.
-     * {@inheritDoc}
+     * Return the value. {@inheritDoc}
      */
+    @Override
     public double getNumericValue() {
-        return value;
+        return this.value;
     }
 
     /**
      * {@inheritDoc}
      */
-    public double getNumericValue(PercentBaseContext context) {
-        return value;
+    @Override
+    public double getNumericValue(final PercentBaseContext context) {
+        return this.value;
     }
 
     /**
-     * Return true of the numeric is absolute.
-     * {@inheritDoc}
+     * Return true of the numeric is absolute. {@inheritDoc}
      */
+    @Override
     public boolean isAbsolute() {
         return true;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Numeric getNumeric() {
         return this;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Number getNumber() {
-        return new Double(value);
+        return new Double(this.value);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getValue() {
-        return (int) value;
+        return (int) this.value;
     }
 
     /** {@inheritDoc} */
-    public int getValue(PercentBaseContext context) {
-        return (int) value;
+    @Override
+    public int getValue(final PercentBaseContext context) {
+        return (int) this.value;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Length getLength() {
-        if (dim == 1) {
+        if (this.dim == 1) {
             return this;
         }
-        log.error("Can't create length with dimension " + dim);
+        log.error("Can't create length with dimension " + this.dim);
         return null;
     }
 
     /** {@inheritDoc} */
-    public Color getColor(FOUserAgent foUserAgent) {
-        // TODO:  try converting to numeric number and then to color
+    @Override
+    public Color getColor(final FOUserAgent foUserAgent) {
+        // TODO: try converting to numeric number and then to color
         return null;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Object getObject() {
         return this;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        if (dim == 1) {
-            return (int) value + FixedLength.MPT;
+        if (this.dim == 1) {
+            return (int) this.value + FixedLength.MPT;
         } else {
-            return value + "^" + dim;
+            return this.value + "^" + this.dim;
         }
     }
 
@@ -133,20 +145,21 @@ public class NumericProperty extends Property implements Numeric, Length {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + dim;
-        result = prime * result + CompareUtil.getHashCode(value);
+        result = prime * result + this.dim;
+        result = prime * result + CompareUtil.getHashCode(this.value);
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
         if (!(obj instanceof NumericProperty)) {
             return false;
         }
-        NumericProperty other = (NumericProperty) obj;
-        return dim == other.dim && CompareUtil.equal(value, other.value);
+        final NumericProperty other = (NumericProperty) obj;
+        return this.dim == other.dim
+                && CompareUtil.equal(this.value, other.value);
     }
 }

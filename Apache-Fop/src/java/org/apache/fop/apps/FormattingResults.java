@@ -40,7 +40,7 @@ public class FormattingResults {
     /**
      * Gets the number of pages rendered
      *
-     * @return   The number of pages overall
+     * @return The number of pages overall
      */
     public int getPageCount() {
         return this.pageCount;
@@ -49,7 +49,7 @@ public class FormattingResults {
     /**
      * Gets the results for the individual page-sequences.
      *
-     * @return   A List with PageSequenceResults objects
+     * @return A List with PageSequenceResults objects
      */
     public List getPageSequences() {
         return this.pageSequences;
@@ -66,20 +66,20 @@ public class FormattingResults {
     }
 
     /**
-     * Reports the result of one page sequence rendering
-     * back into this object.
+     * Reports the result of one page sequence rendering back into this object.
      *
-     * @param pageSequence  the page sequence which just completed rendering
-     * @param pageCount     the number of pages rendered for that PageSequence
+     * @param pageSequence
+     *            the page sequence which just completed rendering
+     * @param pageCount
+     *            the number of pages rendered for that PageSequence
      */
-    public void haveFormattedPageSequence(AbstractPageSequence pageSequence, int pageCount) {
+    public void haveFormattedPageSequence(
+            final AbstractPageSequence pageSequence, final int pageCount) {
         this.pageCount += pageCount;
         if (this.pageSequences == null) {
             this.pageSequences = new java.util.ArrayList();
         }
-        this.pageSequences.add(
-                new PageSequenceResults(pageSequence.getId(),
-                                        pageCount));
+        this.pageSequences.add(new PageSequenceResults(pageSequence.getId(),
+                pageCount));
     }
 }
-

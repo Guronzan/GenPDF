@@ -29,58 +29,67 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.fop.apps.FOUserAgent;
 
 /**
- * Default implementation of the {@link ResourceAccessor} interface for use inside FOP.
+ * Default implementation of the {@link ResourceAccessor} interface for use
+ * inside FOP.
  */
 public class DefaultFOPResourceAccessor extends SimpleResourceAccessor {
 
-    private FOUserAgent userAgent;
-    private String categoryBaseURI;
+    private final FOUserAgent userAgent;
+    private final String categoryBaseURI;
 
     /**
-     * Constructor for resource to be accessed via the {@link FOUserAgent}. This contructor
-     * can take two base URIs: the category base URI is the one to use when differentiating between
-     * normal resources (ex. images) and font resources. So, if fonts need to be accessed, you can
-     * set the {@link org.apache.fop.fonts.FontManager}'s base URI instead of the one on the
-     * {@link org.apache.fop.apps.FopFactory}.
-     * @param userAgent the FO user agent
-     * @param categoryBaseURI the category base URI (may be null)
-     * @param baseURI the custom base URI to resolve relative URIs against (may be null)
+     * Constructor for resource to be accessed via the {@link FOUserAgent}. This
+     * contructor can take two base URIs: the category base URI is the one to
+     * use when differentiating between normal resources (ex. images) and font
+     * resources. So, if fonts need to be accessed, you can set the
+     * {@link org.apache.fop.fonts.FontManager}'s base URI instead of the one on
+     * the {@link org.apache.fop.apps.FopFactory}.
+     * 
+     * @param userAgent
+     *            the FO user agent
+     * @param categoryBaseURI
+     *            the category base URI (may be null)
+     * @param baseURI
+     *            the custom base URI to resolve relative URIs against (may be
+     *            null)
      */
-    public DefaultFOPResourceAccessor(FOUserAgent userAgent, String categoryBaseURI, URI baseURI) {
+    public DefaultFOPResourceAccessor(final FOUserAgent userAgent,
+            final String categoryBaseURI, final URI baseURI) {
         super(baseURI);
         this.userAgent = userAgent;
         this.categoryBaseURI = categoryBaseURI;
     }
 
     /** {@inheritDoc} */
-    public InputStream createInputStream(URI uri) throws IOException {
-        //Step 1: resolve against local base URI --> URI
-        URI resolved = resolveAgainstBase(uri);
+    @Override
+    public InputStream createInputStream(final URI uri) throws IOException {
+        // Step 1: resolve against local base URI --> URI
+        final URI resolved = resolveAgainstBase(uri);
 
-        //Step 2: resolve against the user agent --> stream
-        String base = (this.categoryBaseURI != null
-                ? this.categoryBaseURI
-                : this.userAgent.getBaseURL());
-        Source src = userAgent.resolveURI(resolved.toASCIIString(), base);
+        // Step 2: resolve against the user agent --> stream
+        final String base = this.categoryBaseURI != null ? this.categoryBaseURI
+                        : this.userAgent.getBaseURL();
+        final Source src = this.userAgent.resolveURI(resolved.toASCIIString(),
+                base);
 
         if (src == null) {
-            throw new FileNotFoundException("Resource not found: " + uri.toASCIIString());
+            throw new FileNotFoundException("Resource not found: "
+                    + uri.toASCIIString());
         } else if (src instanceof StreamSource) {
-            StreamSource ss = (StreamSource)src;
-            InputStream in = ss.getInputStream();
+            final StreamSource ss = (StreamSource) src;
+            final InputStream in = ss.getInputStream();
             if (in != null) {
                 return in;
             }
             if (ss.getReader() != null) {
-                //Don't support reader, retry using system ID below
+                // Don't support reader, retry using system ID below
                 IOUtils.closeQuietly(ss.getReader());
             }
         }
-        URL url = new URL(src.getSystemId());
+        final URL url = new URL(src.getSystemId());
         return url.openStream();
     }
 

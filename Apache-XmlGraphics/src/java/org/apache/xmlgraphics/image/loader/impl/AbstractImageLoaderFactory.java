@@ -19,9 +19,7 @@
 
 package org.apache.xmlgraphics.image.loader.impl;
 
-import org.apache.xmlgraphics.image.loader.ImageFlavor;
 import org.apache.xmlgraphics.image.loader.ImageInfo;
-import org.apache.xmlgraphics.image.loader.spi.ImageLoader;
 import org.apache.xmlgraphics.image.loader.spi.ImageLoaderFactory;
 
 /**
@@ -30,20 +28,12 @@ import org.apache.xmlgraphics.image.loader.spi.ImageLoaderFactory;
 public abstract class AbstractImageLoaderFactory implements ImageLoaderFactory {
 
     /** {@inheritDoc} */
-    public boolean isSupported(ImageInfo imageInfo) {
-        //Most ImageLoaderFactories are assumed to support the complete feature set of
-        //an image format.
+    @Override
+    public boolean isSupported(final ImageInfo imageInfo) {
+        // Most ImageLoaderFactories are assumed to support the complete feature
+        // set of
+        // an image format.
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @deprecated Redundancy with {@link ImageLoader#getUsagePenalty()}
-     */
-    public int getUsagePenalty(String mime, ImageFlavor flavor) {
-        //Kept for compatibility
-        ImageLoader loader = newImageLoader(flavor);
-        return loader.getUsagePenalty();
     }
 
 }

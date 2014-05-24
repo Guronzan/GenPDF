@@ -31,22 +31,25 @@ public final class BinaryUtils {
     }
 
     /**
-     * Convert an int into the corresponding byte array by encoding each
-     * two hexadecimal digits as a char. This will return a byte array
-     * to the length specified by bufsize.
-     * @param integer The int representation.
-     * @param bufsize The required byte array size.
+     * Convert an int into the corresponding byte array by encoding each two
+     * hexadecimal digits as a char. This will return a byte array to the length
+     * specified by bufsize.
+     * 
+     * @param integer
+     *            The int representation.
+     * @param bufsize
+     *            The required byte array size.
      * @return the hexadecimal digits as a byte array
      */
-    public static byte[] convert(int integer, int bufsize) {
-        StringBuffer buf = new StringBuffer(Integer.toHexString(integer));
-        //Convert to an even number of digits
+    public static byte[] convert(final int integer, final int bufsize) {
+        final StringBuffer buf = new StringBuffer(Integer.toHexString(integer));
+        // Convert to an even number of digits
         if (buf.length() % 2 != 0) {
             buf.insert(0, "0");
         }
         int size = buf.length() / 2;
         if (size > bufsize) {
-            buf.delete(0, buf.length() - (bufsize * 2));
+            buf.delete(0, buf.length() - bufsize * 2);
         } else {
             while (size < bufsize) {
                 buf.insert(0, "00");
@@ -57,19 +60,23 @@ public final class BinaryUtils {
     }
 
     /**
-     * Convert an int into the corresponding byte array by encoding each
-     * two hexadecimal digits as a char.
-     * @param integer The int representation
+     * Convert an int into the corresponding byte array by encoding each two
+     * hexadecimal digits as a char.
+     * 
+     * @param integer
+     *            The int representation
      * @return the hexadecimal digits as a byte array
      */
-    public static byte[] convert(int integer) {
+    public static byte[] convert(final int integer) {
         return convert(Integer.toHexString(integer));
     }
 
     /**
-     * Convert a String of hexadecimal digits into the corresponding
-     * byte array by encoding each two hexadecimal digits as a byte.
-     * @param digits The hexadecimal digits representation.
+     * Convert a String of hexadecimal digits into the corresponding byte array
+     * by encoding each two hexadecimal digits as a byte.
+     * 
+     * @param digits
+     *            The hexadecimal digits representation.
      * @return the hexadecimal digits as a byte array
      */
     public static byte[] convert(String digits) {
@@ -81,56 +88,60 @@ public final class BinaryUtils {
             digits = "0" + digits;
         }
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         for (int i = 0; i < digits.length(); i += 2) {
-            char c1 = digits.charAt(i);
-            char c2 = digits.charAt(i + 1);
+            final char c1 = digits.charAt(i);
+            final char c2 = digits.charAt(i + 1);
             byte b = 0;
-            if ((c1 >= '0') && (c1 <= '9')) {
-                b += ((c1 - '0') * 16);
-            } else if ((c1 >= 'a') && (c1 <= 'f')) {
-                b += ((c1 - 'a' + 10) * 16);
-            } else if ((c1 >= 'A') && (c1 <= 'F')) {
-                b += ((c1 - 'A' + 10) * 16);
+            if (c1 >= '0' && c1 <= '9') {
+                b += (c1 - '0') * 16;
+            } else if (c1 >= 'a' && c1 <= 'f') {
+                b += (c1 - 'a' + 10) * 16;
+            } else if (c1 >= 'A' && c1 <= 'F') {
+                b += (c1 - 'A' + 10) * 16;
             } else {
                 throw new IllegalArgumentException("Bad hexadecimal digit");
             }
 
-            if ((c2 >= '0') && (c2 <= '9')) {
-                b += (c2 - '0');
-            } else if ((c2 >= 'a') && (c2 <= 'f')) {
-                b += (c2 - 'a' + 10);
-            } else if ((c2 >= 'A') && (c2 <= 'F')) {
-                b += (c2 - 'A' + 10);
+            if (c2 >= '0' && c2 <= '9') {
+                b += c2 - '0';
+            } else if (c2 >= 'a' && c2 <= 'f') {
+                b += c2 - 'a' + 10;
+            } else if (c2 >= 'A' && c2 <= 'F') {
+                b += c2 - 'A' + 10;
             } else {
                 throw new IllegalArgumentException("Bad hexadecimal digit");
             }
             baos.write(b);
         }
-        return (baos.toByteArray());
+        return baos.toByteArray();
     }
 
     /**
      * Convert the specified short into a byte array.
-     * @param value The value to be converted.
-     * @param array The array to receive the data.
-     * @param offset The offset into the byte array for the start of the value.
+     * 
+     * @param value
+     *            The value to be converted.
+     * @param array
+     *            The array to receive the data.
+     * @param offset
+     *            The offset into the byte array for the start of the value.
      */
-    public static void shortToByteArray(
-        short value,
-        byte[] array,
-        int offset) {
+    public static void shortToByteArray(final short value, final byte[] array,
+            final int offset) {
         array[offset] = (byte) (value >>> 8);
         array[offset + 1] = (byte) value;
     }
 
     /**
      * Convert the specified short into a byte array.
-     * @param value The value to be converted.
+     * 
+     * @param value
+     *            The value to be converted.
      * @return The byte array
      */
-    public static byte[] shortToByteArray(short value) {
-        byte[] serverValue = new byte[2];
+    public static byte[] shortToByteArray(final short value) {
+        final byte[] serverValue = new byte[2];
         shortToByteArray(value, serverValue, 0);
         return serverValue;
     }

@@ -22,8 +22,6 @@ package org.apache.xmlgraphics.image.loader.mocks;
 import java.io.IOException;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageException;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
@@ -33,45 +31,54 @@ import org.apache.xmlgraphics.image.loader.impl.AbstractImageLoaderFactory;
 import org.apache.xmlgraphics.image.loader.spi.ImageLoader;
 import org.apache.xmlgraphics.util.MimeConstants;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  * Mock implementation posing as a TIFF-compatible loader.
  */
 public class MockImageLoaderFactoryTIFF extends AbstractImageLoaderFactory {
 
     /** {@inheritDoc} */
-    public ImageFlavor[] getSupportedFlavors(String mime) {
-        return new ImageFlavor[] {ImageFlavor.BUFFERED_IMAGE, ImageFlavor.RENDERED_IMAGE};
+    @Override
+    public ImageFlavor[] getSupportedFlavors(final String mime) {
+        return new ImageFlavor[] { ImageFlavor.BUFFERED_IMAGE,
+                ImageFlavor.RENDERED_IMAGE };
     }
 
     /** {@inheritDoc} */
+    @Override
     public String[] getSupportedMIMETypes() {
-        return new String[] {MimeConstants.MIME_TIFF};
+        return new String[] { MimeConstants.MIME_TIFF };
     }
 
-    private void checkSuppportedFlavor(String mime, ImageFlavor flavor) {
-        ImageFlavor[] flavors = getSupportedFlavors(mime);
+    private void checkSuppportedFlavor(final String mime,
+            final ImageFlavor flavor) {
+        final ImageFlavor[] flavors = getSupportedFlavors(mime);
         boolean found = false;
-        for (int i = 0; i < flavors.length; i++) {
-            if (flavors[i].equals(flavor)) {
+        for (final ImageFlavor flavor2 : flavors) {
+            if (flavor2.equals(flavor)) {
                 found = true;
                 break;
             }
         }
-        Assert.assertTrue(found);
+        assertTrue(found);
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isAvailable() {
         return true;
     }
 
     /** {@inheritDoc} */
-    public boolean isSupported(ImageInfo imageInfo) {
+    @Override
+    public boolean isSupported(final ImageInfo imageInfo) {
         return MimeConstants.MIME_TIFF.equals(imageInfo.getMimeType());
     }
 
     /** {@inheritDoc} */
-    public ImageLoader newImageLoader(ImageFlavor targetFlavor) {
+    @Override
+    public ImageLoader newImageLoader(final ImageFlavor targetFlavor) {
         checkSuppportedFlavor(MimeConstants.MIME_TIFF, targetFlavor);
         return new ImageLoaderImpl(targetFlavor);
     }
@@ -79,26 +86,32 @@ public class MockImageLoaderFactoryTIFF extends AbstractImageLoaderFactory {
     /** Mock image loader implementation. */
     private static class ImageLoaderImpl implements ImageLoader {
 
-        private ImageFlavor flavor;
+        private final ImageFlavor flavor;
 
-        public ImageLoaderImpl(ImageFlavor flavor) {
+        public ImageLoaderImpl(final ImageFlavor flavor) {
             this.flavor = flavor;
         }
 
+        @Override
         public ImageFlavor getTargetFlavor() {
-            return flavor;
+            return this.flavor;
         }
 
+        @Override
         public int getUsagePenalty() {
             return 0;
         }
 
-        public Image loadImage(ImageInfo info, Map hints, ImageSessionContext session)
-                throws ImageException, IOException {
+        @Override
+        public Image loadImage(final ImageInfo info, final Map hints,
+                final ImageSessionContext session) throws ImageException,
+                IOException {
             throw new UnsupportedOperationException("not implemented");
         }
 
-        public Image loadImage(ImageInfo info, ImageSessionContext session) throws ImageException,
+        @Override
+        public Image loadImage(final ImageInfo info,
+                final ImageSessionContext session) throws ImageException,
                 IOException {
             throw new UnsupportedOperationException("not implemented");
         }

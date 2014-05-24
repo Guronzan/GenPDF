@@ -27,7 +27,6 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.apache.fop.afp.AFPConstants;
 import org.apache.fop.afp.modca.AbstractAFPObject.Category;
 import org.apache.fop.afp.modca.ResourceObject;
@@ -35,17 +34,16 @@ import org.apache.fop.afp.parser.MODCAParser;
 import org.apache.fop.afp.parser.UnparsedStructuredField;
 
 /**
- * TODO better docs
- * Utility for AFP resource handling
+ * TODO better docs Utility for AFP resource handling
  *
  *
  * A utility class to read structured fields from a MO:DCA document. Each
- * component of a mixed object document is explicitly defined and delimited
- * in the data. This is accomplished through the use of MO:DCA data structures,
+ * component of a mixed object document is explicitly defined and delimited in
+ * the data. This is accomplished through the use of MO:DCA data structures,
  * called structured fields. Structured fields are used to envelop document
- * components and to provide commands and information to applications using
- * the data. Structured fields may contain one or more parameters. Each
- * parameter provides one value from a set of values defined by the architecture.
+ * components and to provide commands and information to applications using the
+ * data. Structured fields may contain one or more parameters. Each parameter
+ * provides one value from a set of values defined by the architecture.
  * <p/>
  * MO:DCA structured fields consist of two parts: an introducer that identifies
  * the length and type of the structured field, and data that provides the
@@ -56,46 +54,53 @@ import org.apache.fop.afp.parser.UnparsedStructuredField;
  */
 public final class AFPResourceUtil {
 
-    private static final byte TYPE_CODE_BEGIN = (byte)(0xA8 & 0xFF);
-    private static final byte TYPE_CODE_END = (byte)(0xA9 & 0xFF);
+    private static final byte TYPE_CODE_BEGIN = (byte) (0xA8 & 0xFF);
+    private static final byte TYPE_CODE_END = (byte) (0xA9 & 0xFF);
 
     private static final Log LOG = LogFactory.getLog(AFPResourceUtil.class);
 
     private AFPResourceUtil() {
-        //nop
+        // nop
     }
 
     /**
-     * Get the next structured field as identified by the identifier
-     * parameter (this must be a valid MO:DCA structured field).
-     * @param identifier the three byte identifier
-     * @param inputStream the inputStream
-     * @throws IOException if an I/O exception occurred
+     * Get the next structured field as identified by the identifier parameter
+     * (this must be a valid MO:DCA structured field).
+     * 
+     * @param identifier
+     *            the three byte identifier
+     * @param inputStream
+     *            the inputStream
+     * @throws IOException
+     *             if an I/O exception occurred
      * @return the next structured field or null when there are no more
      */
-    public static byte[] getNext(byte[] identifier, InputStream inputStream) throws IOException {
-        MODCAParser parser = new MODCAParser(inputStream);
+    public static byte[] getNext(final byte[] identifier,
+            final InputStream inputStream) throws IOException {
+        final MODCAParser parser = new MODCAParser(inputStream);
         while (true) {
-            UnparsedStructuredField field = parser.readNextStructuredField();
+            final UnparsedStructuredField field = parser
+                    .readNextStructuredField();
             if (field == null) {
                 return null;
             }
             if (field.getSfClassCode() == identifier[0]
                     && field.getSfTypeCode() == identifier[1]
-                    && field.getSfCategoryCode() == identifier[2]) {
+                            && field.getSfCategoryCode() == identifier[2]) {
                 return field.getCompleteFieldAsBytes();
             }
         }
     }
 
-    private static String getResourceName(UnparsedStructuredField field)
+    private static String getResourceName(final UnparsedStructuredField field)
             throws UnsupportedEncodingException {
-        //The first 8 bytes of the field data represent the resource name
-        byte[] nameBytes = new byte[8];
+        // The first 8 bytes of the field data represent the resource name
+        final byte[] nameBytes = new byte[8];
 
-        byte[] fieldData = field.getData();
+        final byte[] fieldData = field.getData();
         if (fieldData.length < 8) {
-            throw new IllegalArgumentException("Field data does not contain a resource name");
+            throw new IllegalArgumentException(
+                    "Field data does not contain a resource name");
         }
         System.arraycopy(fieldData, 0, nameBytes, 0, 8);
         return new String(nameBytes, AFPConstants.EBCIDIC_ENCODING);
@@ -103,15 +108,20 @@ public final class AFPResourceUtil {
 
     /**
      * Copy a complete resource file to a given {@link OutputStream}.
-     * @param in external resource input
-     * @param out output destination
-     * @throws IOException if an I/O error occurs
+     * 
+     * @param in
+     *            external resource input
+     * @param out
+     *            output destination
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public static void copyResourceFile(final InputStream in, OutputStream out)
-                throws IOException {
-        MODCAParser parser = new MODCAParser(in);
+    public static void copyResourceFile(final InputStream in,
+            final OutputStream out) throws IOException {
+        final MODCAParser parser = new MODCAParser(in);
         while (true) {
-            UnparsedStructuredField field = parser.readNextStructuredField();
+            final UnparsedStructuredField field = parser
+                    .readNextStructuredField();
             if (field == null) {
                 break;
             }
@@ -121,30 +131,38 @@ public final class AFPResourceUtil {
     }
 
     /**
-     * Copy a named resource to a given {@link OutputStream}. The MO:DCA fields read from the
-     * {@link InputStream} are scanned for the resource with the given name.
-     * @param name name of structured field
-     * @param in external resource input
-     * @param out output destination
-     * @throws IOException if an I/O error occurs
+     * Copy a named resource to a given {@link OutputStream}. The MO:DCA fields
+     * read from the {@link InputStream} are scanned for the resource with the
+     * given name.
+     * 
+     * @param name
+     *            name of structured field
+     * @param in
+     *            external resource input
+     * @param out
+     *            output destination
+     * @throws IOException
+     *             if an I/O error occurs
      */
-    public static void copyNamedResource(String name,
+    public static void copyNamedResource(final String name,
             final InputStream in, final OutputStream out) throws IOException {
         final MODCAParser parser = new MODCAParser(in);
-        Collection<String> resourceNames = new java.util.HashSet<String>();
+        final Collection<String> resourceNames = new java.util.HashSet<String>();
 
-        //Find matching "Begin" field
+        // Find matching "Begin" field
         final UnparsedStructuredField fieldBegin;
         while (true) {
-            final UnparsedStructuredField field = parser.readNextStructuredField();
+            final UnparsedStructuredField field = parser
+                    .readNextStructuredField();
 
             if (field == null) {
                 throw new IOException("Requested resource '" + name
-                        + "' not found. Encountered resource names: " + resourceNames);
+                        + "' not found. Encountered resource names: "
+                        + resourceNames);
             }
 
-            if (field.getSfTypeCode() != TYPE_CODE_BEGIN) { //0xA8=Begin
-                continue; //Not a "Begin" field
+            if (field.getSfTypeCode() != TYPE_CODE_BEGIN) { // 0xA8=Begin
+                continue; // Not a "Begin" field
             }
             final String resourceName = getResourceName(field);
 
@@ -156,27 +174,31 @@ public final class AFPResourceUtil {
                             + field);
                 }
                 fieldBegin = field;
-                break; //Name doesn't match
+                break; // Name doesn't match
             }
         }
 
-        //Decide whether the resource file has to be wrapped in a resource object
+        // Decide whether the resource file has to be wrapped in a resource
+        // object
         boolean wrapInResource;
         if (fieldBegin.getSfCategoryCode() == Category.PAGE_SEGMENT) {
-            //A naked page segment must be wrapped in a resource object
+            // A naked page segment must be wrapped in a resource object
             wrapInResource = true;
         } else if (fieldBegin.getSfCategoryCode() == Category.NAME_RESOURCE) {
-            //A resource object can be copied directly
+            // A resource object can be copied directly
             wrapInResource = false;
         } else {
             throw new IOException("Cannot handle resource: " + fieldBegin);
         }
 
-        //Copy structured fields (wrapped or as is)
+        // Copy structured fields (wrapped or as is)
         if (wrapInResource) {
-            ResourceObject resourceObject =  new ResourceObject(name) {
-                protected void writeContent(OutputStream os) throws IOException {
-                    copyNamedStructuredFields(name, fieldBegin, parser, out);
+            final ResourceObject resourceObject = new ResourceObject(name) {
+                @Override
+                protected void writeContent(final OutputStream os)
+                        throws IOException {
+                    copyNamedStructuredFields(this.name, fieldBegin, parser,
+                            out);
                 }
             };
             resourceObject.setType(ResourceObject.TYPE_PAGE_SEGMENT);
@@ -187,20 +209,23 @@ public final class AFPResourceUtil {
     }
 
     private static void copyNamedStructuredFields(final String name,
-            UnparsedStructuredField fieldBegin, MODCAParser parser,
-            OutputStream out) throws IOException {
+            final UnparsedStructuredField fieldBegin, final MODCAParser parser,
+            final OutputStream out) throws IOException {
 
         UnparsedStructuredField field = fieldBegin;
 
         while (true) {
             if (field == null) {
-                throw new IOException("Ending structured field not found for resource " + name);
+                throw new IOException(
+                        "Ending structured field not found for resource "
+                                + name);
             }
             out.write(MODCAParser.CARRIAGE_CONTROL_CHAR);
             field.writeTo(out);
 
             if (field.getSfTypeCode() == TYPE_CODE_END
-                    && fieldBegin.getSfCategoryCode() == field.getSfCategoryCode()
+                    && fieldBegin.getSfCategoryCode() == field
+                            .getSfCategoryCode()
                     && name.equals(getResourceName(field))) {
                 break;
             }

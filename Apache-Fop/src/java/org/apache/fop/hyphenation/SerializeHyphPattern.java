@@ -25,9 +25,16 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 /**
- * <p>Serialize hyphenation patterns.</p>
- * <p>For all xml files in the source directory a pattern file is built in the target directory.</p>
- * <p>This class may be called from the ant build file in a java task.</p>
+ * <p>
+ * Serialize hyphenation patterns.
+ * </p>
+ * <p>
+ * For all xml files in the source directory a pattern file is built in the
+ * target directory.
+ * </p>
+ * <p>
+ * This class may be called from the ant build file in a java task.
+ * </p>
  */
 public class SerializeHyphPattern {
 
@@ -35,52 +42,61 @@ public class SerializeHyphPattern {
 
     /**
      * Controls the amount of error information dumped.
-     * @param errorDump True if more error info should be provided
+     * 
+     * @param errorDump
+     *            True if more error info should be provided
      */
-    public void setErrorDump(boolean errorDump) {
+    public void setErrorDump(final boolean errorDump) {
         this.errorDump = errorDump;
     }
 
     /**
-     * Compile all xml files in sourceDir, and write output hyp files in targetDir
-     * @param sourceDir Directory with pattern xml files
-     * @param targetDir Directory to which compiled pattern hyp files should be written
+     * Compile all xml files in sourceDir, and write output hyp files in
+     * targetDir
+     * 
+     * @param sourceDir
+     *            Directory with pattern xml files
+     * @param targetDir
+     *            Directory to which compiled pattern hyp files should be
+     *            written
      */
-    public void serializeDir(File sourceDir, File targetDir) {
+    public void serializeDir(final File sourceDir, final File targetDir) {
         final String extension = ".xml";
-        String[] sourceFiles = sourceDir.list(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
+        final String[] sourceFiles = sourceDir.list(new FilenameFilter() {
+            @Override
+            public boolean accept(final File dir, final String name) {
                 return name.endsWith(extension);
             }
         });
-        for (int j = 0; j < sourceFiles.length; j++) {
-            File infile = new File(sourceDir, sourceFiles[j]);
-            String outfilename = sourceFiles[j].substring(0, sourceFiles[j].length()
-                                                          - extension.length()) + ".hyp";
-            File outfile = new File(targetDir, outfilename);
+        for (final String sourceFile : sourceFiles) {
+            final File infile = new File(sourceDir, sourceFile);
+            final String outfilename = sourceFile.substring(0,
+                    sourceFile.length() - extension.length())
+                    + ".hyp";
+            final File outfile = new File(targetDir, outfilename);
             serializeFile(infile, outfile);
         }
     }
 
     /*
-     * checks whether input or output files exists or the latter is older than input file
-     * and start build if necessary
+     * checks whether input or output files exists or the latter is older than
+     * input file and start build if necessary
      */
-    private void serializeFile(File infile, File outfile) {
+    private void serializeFile(final File infile, final File outfile) {
         boolean startProcess;
         startProcess = rebuild(infile, outfile);
         if (startProcess) {
-            HyphenationTree hTree = buildPatternFile(infile);
+            final HyphenationTree hTree = buildPatternFile(infile);
             // serialize class
             try {
-                ObjectOutputStream out = new ObjectOutputStream(
+                final ObjectOutputStream out = new ObjectOutputStream(
                         new java.io.BufferedOutputStream(
-                        new java.io.FileOutputStream(outfile)));
+                                new java.io.FileOutputStream(outfile)));
                 out.writeObject(hTree);
                 out.close();
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 System.err.println("Can't write compiled pattern file: "
-                                   + outfile);
+                        + outfile);
                 System.err.println(ioe);
             }
         }
@@ -89,19 +105,19 @@ public class SerializeHyphPattern {
     /*
      * serializes pattern files
      */
-    private HyphenationTree buildPatternFile(File infile) {
+    private HyphenationTree buildPatternFile(final File infile) {
         System.out.println("Processing " + infile);
-        HyphenationTree hTree = new HyphenationTree();
+        final HyphenationTree hTree = new HyphenationTree();
         try {
             hTree.loadPatterns(infile.toString());
-            if (errorDump) {
+            if (this.errorDump) {
                 System.out.println("Stats: ");
                 hTree.printStats();
             }
-        } catch (HyphenationException ex) {
+        } catch (final HyphenationException ex) {
             System.err.println("Can't load patterns from xml file " + infile
-                               + " - Maybe hyphenation.dtd is missing?");
-            if (errorDump) {
+                    + " - Maybe hyphenation.dtd is missing?");
+            if (this.errorDump) {
                 System.err.println(ex.toString());
             }
         }
@@ -109,10 +125,10 @@ public class SerializeHyphPattern {
     }
 
     /**
-     * Checks for existence of output file and compares
-     * dates with input and stylesheet file
+     * Checks for existence of output file and compares dates with input and
+     * stylesheet file
      */
-    private boolean rebuild(File infile, File outfile) {
+    private boolean rebuild(final File infile, final File outfile) {
         if (outfile.exists()) {
             // checks whether output file is older than input file
             if (outfile.lastModified() < infile.lastModified()) {
@@ -123,15 +139,16 @@ public class SerializeHyphPattern {
             return true;
         }
         return false;
-    }    // end rebuild
-
+    } // end rebuild
 
     /**
      * Entry point for ant java task
-     * @param args sourceDir, targetDir
+     * 
+     * @param args
+     *            sourceDir, targetDir
      */
-    public static void main (String[] args) {
-        SerializeHyphPattern ser = new SerializeHyphPattern();
+    public static void main(final String[] args) {
+        final SerializeHyphPattern ser = new SerializeHyphPattern();
         ser.serializeDir(new File(args[0]), new File(args[1]));
     }
 

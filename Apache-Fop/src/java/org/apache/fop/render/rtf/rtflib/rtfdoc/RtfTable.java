@@ -199,7 +199,7 @@ public class RtfTable extends RtfContainer {
                 e = e.parent;
             }
 
-            isNestedTable = Boolean.FALSE;
+            isNestedTable = false;
         } else {
             return isNestedTable.booleanValue();
         }

@@ -82,7 +82,7 @@ public class ImageWriterParams {
      */
     public void setJPEGQuality(float quality, boolean forceBaseline) {
         this.jpegQuality = new Float(quality);
-        this.jpegForceBaseline = forceBaseline ? Boolean.TRUE : Boolean.FALSE;
+        this.jpegForceBaseline = forceBaseline ? Boolean.TRUE : false;
     }
 
     /**

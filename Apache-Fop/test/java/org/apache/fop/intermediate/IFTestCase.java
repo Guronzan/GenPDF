@@ -38,7 +38,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-
 /**
  * Test case for the IF output.
  */
@@ -49,20 +48,22 @@ public class IFTestCase extends AbstractIFTest {
      * Gets the files for this test.
      *
      * @return a collection of file arrays containing the files to test
-     * @throws IOException if an error occurs when reading the test files
+     * @throws IOException
+     *             if an error occurs when reading the test files
      */
     @Parameters
     public static Collection<File[]> getParameters() throws IOException {
-        File testDir = new File("test/intermediate");
-        String[] tests = testDir.list(new FilenameFilter() {
+        final File testDir = new File("test/intermediate");
+        final String[] tests = testDir.list(new FilenameFilter() {
 
-            public boolean accept(File dir, String name) {
+            @Override
+            public boolean accept(final File dir, final String name) {
                 return name.endsWith(".xml");
             }
         });
 
-        Collection<File[]> parameters = new ArrayList<File[]>();
-        for (String test : tests) {
+        final Collection<File[]> parameters = new ArrayList<File[]>();
+        for (final String test : tests) {
             parameters.add(new File[] { new File(testDir, test) });
         }
         return parameters;
@@ -72,7 +73,7 @@ public class IFTestCase extends AbstractIFTest {
 
     @BeforeClass
     public static void setupTestEnvironment() {
-        File backupDir = new File("build/test-results/intermediate");
+        final File backupDir = new File("build/test-results/intermediate");
         backupDir.mkdirs();
         ifTester = new IFTester(TransformerFactory.newInstance(), backupDir);
     }
@@ -80,11 +81,14 @@ public class IFTestCase extends AbstractIFTest {
     /**
      * Creates a new test case.
      *
-     * @param test the file containing the test case
-     * @param ifTester the helper instance that will perform checks
-     * @throws IOException if an I/O error occurs while loading the test case
+     * @param test
+     *            the file containing the test case
+     * @param ifTester
+     *            the helper instance that will perform checks
+     * @throws IOException
+     *             if an I/O error occurs while loading the test case
      */
-    public IFTestCase(File test) throws IOException {
+    public IFTestCase(final File test) throws IOException {
         super(test);
         this.testDir = test.getParentFile();
     }
@@ -92,24 +96,27 @@ public class IFTestCase extends AbstractIFTest {
     @Override
     @Test
     public void runTest() throws Exception {
-        Element testRoot = testAssistant.getTestRoot(testFile);
-        NodeList nodes = testRoot.getElementsByTagName("if-checks");
+        final Element testRoot = testAssistant.getTestRoot(this.testFile);
+        final NodeList nodes = testRoot.getElementsByTagName("if-checks");
         if (nodes.getLength() == 0) {
             throw new RuntimeException("No IF check found");
         }
-        Element ifChecks = (Element) nodes.item(0);
+        final Element ifChecks = (Element) nodes.item(0);
 
-        Document doc = buildIntermediateDocument(testAssistant.getTestcase2FOStylesheet());
-        ifTester.doIFChecks(testFile.getName(), ifChecks, doc);
+        final Document doc = buildIntermediateDocument(testAssistant
+                .getTestcase2FOStylesheet());
+        ifTester.doIFChecks(this.testFile.getName(), ifChecks, doc);
     }
 
     @Override
-    protected void parseAndRender(Source src, OutputStream out) throws Exception {
+    protected void parseAndRender(final Source src, final OutputStream out)
+            throws Exception {
         throw new IllegalStateException("Not applicable to this test");
     }
 
     @Override
-    protected Document parseAndRenderToIntermediateFormat(Source src) throws Exception {
+    protected Document parseAndRenderToIntermediateFormat(final Source src)
+            throws Exception {
         throw new IllegalStateException("Not applicable to this test");
     }
 

@@ -19,14 +19,14 @@
 
 package org.apache.fop.util;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Map;
 
 import org.apache.fop.events.model.EventSeverity;
 import org.apache.fop.util.text.AdvancedMessageFormat;
 import org.junit.Test;
 import org.xml.sax.helpers.LocatorImpl;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for EventFormatter.
@@ -38,8 +38,7 @@ public class AdvancedMessageFormatTestCase {
         String msg;
         AdvancedMessageFormat format;
 
-        String pattern
-            = "Element \"{elementName}\" is missing[ required property \"{propertyName}\"]!";
+        String pattern = "Element \"{elementName}\" is missing[ required property \"{propertyName}\"]!";
         format = new AdvancedMessageFormat(pattern);
 
         Map params = new java.util.HashMap();
@@ -48,17 +47,20 @@ public class AdvancedMessageFormatTestCase {
         params.put("propertyName", "src");
 
         msg = format.format(params);
-        assertEquals("Element \"fo:external-graphic\" is missing required property \"src\"!", msg);
+        assertEquals(
+                "Element \"fo:external-graphic\" is missing required property \"src\"!",
+                msg);
 
         params.remove("propertyName");
         msg = format.format(params);
         assertEquals("Element \"fo:external-graphic\" is missing!", msg);
 
-        pattern
-            = "Testing \\{escaped \\[characters\\], now a normal field {elementName}!";
+        pattern = "Testing \\{escaped \\[characters\\], now a normal field {elementName}!";
         format = new AdvancedMessageFormat(pattern);
         msg = format.format(params);
-        assertEquals("Testing {escaped [characters], now a normal field fo:external-graphic!", msg);
+        assertEquals(
+                "Testing {escaped [characters], now a normal field fo:external-graphic!",
+                msg);
 
         pattern = "Multi-conditional: [case1: {var1}|case2: {var2}|case3: {var3}]";
         format = new AdvancedMessageFormat(pattern);
@@ -80,12 +82,11 @@ public class AdvancedMessageFormatTestCase {
         String msg;
         AdvancedMessageFormat format;
 
-        String pattern
-            = "Here's a Locator: {locator}";
+        final String pattern = "Here's a Locator: {locator}";
         format = new AdvancedMessageFormat(pattern);
 
-        Map params = new java.util.HashMap();
-        LocatorImpl loc = new LocatorImpl();
+        final Map params = new java.util.HashMap();
+        final LocatorImpl loc = new LocatorImpl();
         loc.setColumnNumber(7);
         loc.setLineNumber(12);
         params.put("locator", loc);
@@ -103,7 +104,7 @@ public class AdvancedMessageFormatTestCase {
 
         Map params = new java.util.HashMap();
 
-        params.put("isBad", Boolean.FALSE);
+        params.put("isBad", false);
         msg = format.format(params);
         assertEquals("You are nice!", msg);
 
@@ -111,14 +112,15 @@ public class AdvancedMessageFormatTestCase {
         msg = format.format(params);
         assertEquals("You are not nice!", msg);
 
-        format = new AdvancedMessageFormat("You are{isGood,if, very, not so} nice!");
+        format = new AdvancedMessageFormat(
+                "You are{isGood,if, very, not so} nice!");
 
         params = new java.util.HashMap();
 
-        msg = format.format(params); //isGood is missing
+        msg = format.format(params); // isGood is missing
         assertEquals("You are not so nice!", msg);
 
-        params.put("isGood", Boolean.FALSE);
+        params.put("isGood", false);
         msg = format.format(params);
         assertEquals("You are not so nice!", msg);
 
@@ -126,14 +128,15 @@ public class AdvancedMessageFormatTestCase {
         msg = format.format(params);
         assertEquals("You are very nice!", msg);
 
-        format = new AdvancedMessageFormat("You are{isGood,if, very\\, very} nice!");
+        format = new AdvancedMessageFormat(
+                "You are{isGood,if, very\\, very} nice!");
 
         params = new java.util.HashMap();
 
-        msg = format.format(params); //isGood is missing
+        msg = format.format(params); // isGood is missing
         assertEquals("You are nice!", msg);
 
-        params.put("isGood", Boolean.FALSE);
+        params.put("isGood", false);
         msg = format.format(params);
         assertEquals("You are nice!", msg);
 
@@ -150,7 +153,7 @@ public class AdvancedMessageFormatTestCase {
         format = new AdvancedMessageFormat(
                 "Error{severity,equals,EventSeverity:FATAL,,\nSome explanation!}");
 
-        Map params = new java.util.HashMap();
+        final Map params = new java.util.HashMap();
 
         params.put("severity", EventSeverity.FATAL);
         msg = format.format(params);
@@ -162,14 +165,14 @@ public class AdvancedMessageFormatTestCase {
     }
 
     @Test
-    public void testChoiceFormatting() throws Exception {
+    public void testChoiceFormatting() {
         String msg;
         AdvancedMessageFormat format;
 
         format = new AdvancedMessageFormat(
                 "You have {amount,choice,0#nothing|0<{amount} bucks|100<more than enough}.");
 
-        Map params = new java.util.HashMap();
+        final Map params = new java.util.HashMap();
 
         params.put("amount", new Integer(0));
         msg = format.format(params);

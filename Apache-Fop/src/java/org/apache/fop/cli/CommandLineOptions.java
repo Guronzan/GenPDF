@@ -83,9 +83,9 @@ public class CommandLineOptions {
     public static final int IMAGE_INPUT = 5;
 
     /* show configuration information */
-    private Boolean showConfiguration = Boolean.FALSE;
+    private Boolean showConfiguration = false;
     /* for area tree XML output, only down to block area level */
-    private Boolean suppressLowLevelAreas = Boolean.FALSE;
+    private Boolean suppressLowLevelAreas = false;
     /* user configuration file */
     private File userConfigFile = null;
     /* input fo file */

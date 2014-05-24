@@ -21,16 +21,16 @@ package org.apache.fop.complexscripts.bidi;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.apache.fop.complexscripts.bidi.UnicodeBidiAlgorithm;
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 /**
- * <p>Test case for Unicode Bidi Algorithm.</p>
+ * <p>
+ * Test case for Unicode Bidi Algorithm.
+ * </p>
+ *
  * @author Glenn Adams
  */
 public class BidiAlgorithmTestCase {
@@ -38,33 +38,32 @@ public class BidiAlgorithmTestCase {
     /**
      * logging instance
      */
-    private static final Log log = LogFactory.getLog(BidiAlgorithmTestCase.class);                                      // CSOK: ConstantNameCheck
+    private static final Log log = LogFactory
+            .getLog(BidiAlgorithmTestCase.class); // CSOK: ConstantNameCheck
 
     /**
-     * Concatenated array of <test-set,test-sequence> tuples
-     * specifying which sequences are to be excluded from testing,
-     * where -1 for either component is a wildcard.
+     * Concatenated array of <test-set,test-sequence> tuples specifying which
+     * sequences are to be excluded from testing, where -1 for either component
+     * is a wildcard.
      */
     private static final int[] EXCLUSIONS = {
         // no exclusions
     };
 
     /**
-     * Concatenated array of <test-set,test-sequence> tuples
-     * specifying which sequences are to be included in testing, where
-     * -1 for either component is a wildcard.
+     * Concatenated array of <test-set,test-sequence> tuples specifying which
+     * sequences are to be included in testing, where -1 for either component is
+     * a wildcard.
      */
-    private static final int[] INCLUSIONS = {
-        -1, -1                                  // all sequences
+    private static final int[] INCLUSIONS = { -1, -1 // all sequences
     };
 
     /**
-     * Concatenated array of <start,end> tuples expressing ranges of
-     * test sets to be tested, where -1 in the end position signifies
-     * all remaining test sets.
+     * Concatenated array of <start,end> tuples expressing ranges of test sets
+     * to be tested, where -1 in the end position signifies all remaining test
+     * sets.
      */
-    private static final int[] TEST_SET_RANGES = {
-        0, -1                                   // all test sets
+    private static final int[] TEST_SET_RANGES = { 0, -1 // all test sets
     };
 
     // instrumentation
@@ -74,75 +73,78 @@ public class BidiAlgorithmTestCase {
 
     @Test
     public void testBidiAlgorithm() throws Exception {
-        String ldPfx = BidiTestData.LD_PFX;
-        int ldCount = BidiTestData.LD_CNT;
-        for ( int i = 0; i < ldCount; i++ ) {
-            int[] da = BidiTestData.readTestData ( ldPfx, i );
-            if ( da != null ) {
-                testBidiAlgorithm ( i, da );
+        final String ldPfx = BidiTestData.LD_PFX;
+        final int ldCount = BidiTestData.LD_CNT;
+        for (int i = 0; i < ldCount; ++i) {
+            final int[] da = BidiTestData.readTestData(ldPfx, i);
+            if (da != null) {
+                testBidiAlgorithm(i, da);
             } else {
-                fail ( "unable to read bidi test data for resource at index " + i );
+                fail("unable to read bidi test data for resource at index " + i);
             }
         }
         // ensure we passed all test sequences
-        assertEquals ( "did not pass all test sequences", BidiTestData.NUM_TEST_SEQUENCES, passedSequences );
-        if ( log.isDebugEnabled() ) {
-            log.debug ( "Included Sequences : " + includedSequences );
-            log.debug ( "Excluded Sequences : " + excludedSequences );
-            log.debug( "Passed Sequences   : " + passedSequences );
+        assertEquals("did not pass all test sequences",
+                BidiTestData.NUM_TEST_SEQUENCES, this.passedSequences);
+        if (log.isDebugEnabled()) {
+            log.debug("Included Sequences : " + this.includedSequences);
+            log.debug("Excluded Sequences : " + this.excludedSequences);
+            log.debug("Passed Sequences   : " + this.passedSequences);
         }
     }
 
-    private void testBidiAlgorithm ( int testSet, int[] da ) throws Exception {
-        if ( da.length < 1 ) {
-            fail ( "test data is empty" );
-        } else if ( da.length < ( ( da[0] * 2 ) + 1 ) ) {
-            fail ( "test data is truncated" );
+    private void testBidiAlgorithm(final int testSet, final int[] da)
+            throws Exception {
+        if (da.length < 1) {
+            fail("test data is empty");
+        } else if (da.length < da[0] * 2 + 1) {
+            fail("test data is truncated");
         } else {
             int k = 0;
             // extract level count
-            int n = da[k++];
+            final int n = da[k++];
             // extract level array
-            int[] la = new int [ n ];
-            for ( int i = 0; i < n; i++ ) {
+            final int[] la = new int[n];
+            for (int i = 0; i < n; i++) {
                 la[i] = da[k++];
             }
             // extract reorder array
-            int[] ra = new int [ n ];
-            for ( int i = 0; i < n; i++ ) {
+            final int[] ra = new int[n];
+            for (int i = 0; i < n; i++) {
                 ra[i] = da[k++];
             }
             // extract and test each test sequence
             int testSequence = 0;
-            int[] ta = new int [ n ];
-            while ( ( k + ( 1 + n ) ) <= da.length ) {
-                int bs = da[k++];
-                for ( int i = 0; i < n; i++ ) {
+            final int[] ta = new int[n];
+            while (k + 1 + n <= da.length) {
+                final int bs = da[k++];
+                for (int i = 0; i < n; i++) {
                     ta[i] = da[k++];
                 }
-                if ( includeSequence ( testSet, testSequence ) ) {
-                    includedSequences++;
-                    if ( ! excludeSequence ( testSet, testSequence ) ) {
-                        if ( testBidiAlgorithm ( testSet, testSequence, la, ra, ta, bs ) ) {
-                            passedSequences++;
+                if (includeSequence(testSet, testSequence)) {
+                    ++this.includedSequences;
+                    if (!excludeSequence(testSet, testSequence)) {
+                        if (testBidiAlgorithm(testSet, testSequence, la, ra,
+                                ta, bs)) {
+                            ++this.passedSequences;
                         }
                     } else {
-                        excludedSequences++;
+                        ++this.excludedSequences;
                     }
                 }
-                testSequence++;
+                ++testSequence;
             }
             // ensure we exhausted test data
-            assertEquals ( "extraneous test data", da.length, k );
+            assertEquals("extraneous test data", da.length, k);
         }
     }
 
-    private boolean includeTestSet ( int testSet ) {
-        for ( int i = 0, n = TEST_SET_RANGES.length / 2; i < n; i++ ) {
-            int s = TEST_SET_RANGES [ ( i * 2 ) + 0 ];
-            int e = TEST_SET_RANGES [ ( i * 2 ) + 1 ];
-            if ( testSet >= s ) {
-                if ( ( e < 0 ) || ( testSet <= e ) ) {
+    private boolean includeTestSet(final int testSet) {
+        for (int i = 0, n = TEST_SET_RANGES.length / 2; i < n; i++) {
+            final int s = TEST_SET_RANGES[i * 2 + 0];
+            final int e = TEST_SET_RANGES[i * 2 + 1];
+            if (testSet >= s) {
+                if (e < 0 || testSet <= e) {
                     return true;
                 }
             }
@@ -150,23 +152,23 @@ public class BidiAlgorithmTestCase {
         return false;
     }
 
-    private boolean includeSequence ( int testSet, int testSequence ) {
-        if ( ! includeTestSet ( testSet ) ) {
+    private boolean includeSequence(final int testSet, final int testSequence) {
+        if (!includeTestSet(testSet)) {
             return false;
         } else {
-            for ( int i = 0, n = INCLUSIONS.length / 2; i < n; i++ ) {
-                int setno = INCLUSIONS [ ( i * 2 ) + 0 ];
-                int seqno = INCLUSIONS [ ( i * 2 ) + 1 ];
-                if ( setno < 0 ) {
-                    if ( seqno < 0 ) {
+            for (int i = 0, n = INCLUSIONS.length / 2; i < n; i++) {
+                final int setno = INCLUSIONS[i * 2 + 0];
+                final int seqno = INCLUSIONS[i * 2 + 1];
+                if (setno < 0) {
+                    if (seqno < 0) {
                         return true;
-                    } else if ( seqno == testSequence ) {
+                    } else if (seqno == testSequence) {
                         return true;
                     }
-                } else if ( setno == testSet ) {
-                    if ( seqno < 0 ) {
+                } else if (setno == testSet) {
+                    if (seqno < 0) {
                         return true;
-                    } else if ( seqno == testSequence ) {
+                    } else if (seqno == testSequence) {
                         return true;
                     }
                 }
@@ -175,20 +177,20 @@ public class BidiAlgorithmTestCase {
         }
     }
 
-    private boolean excludeSequence ( int testSet, int testSequence ) {
-        for ( int i = 0, n = EXCLUSIONS.length / 2; i < n; i++ ) {
-            int setno = EXCLUSIONS [ ( i * 2 ) + 0 ];
-            int seqno = EXCLUSIONS [ ( i * 2 ) + 1 ];
-            if ( setno < 0 ) {
-                if ( seqno < 0 ) {
+    private boolean excludeSequence(final int testSet, final int testSequence) {
+        for (int i = 0, n = EXCLUSIONS.length / 2; i < n; i++) {
+            final int setno = EXCLUSIONS[i * 2 + 0];
+            final int seqno = EXCLUSIONS[i * 2 + 1];
+            if (setno < 0) {
+                if (seqno < 0) {
                     return true;
-                } else if ( seqno == testSequence ) {
+                } else if (seqno == testSequence) {
                     return true;
                 }
-            } else if ( setno == testSet ) {
-                if ( seqno < 0 ) {
+            } else if (setno == testSet) {
+                if (seqno < 0) {
                     return true;
-                } else if ( seqno == testSequence ) {
+                } else if (seqno == testSequence) {
                     return true;
                 }
             }
@@ -196,29 +198,34 @@ public class BidiAlgorithmTestCase {
         return false;
     }
 
-    private boolean testBidiAlgorithm ( int testSet, int testSequence, int[] la, int[] ra, int[] ta, int bs ) throws Exception {
+    private boolean testBidiAlgorithm(final int testSet,
+            final int testSequence, final int[] la, final int[] ra,
+            final int[] ta, final int bs) {
         boolean passed = true;
-        int n = la.length;
-        if ( ra.length != n ) {
-            fail ( "bad reorder array length, expected " + n + ", got " + ra.length );
-        } else if ( ta.length != n ) {
-            fail ( "bad test array length, expected " + n + ", got " + ta.length );
+        final int n = la.length;
+        if (ra.length != n) {
+            fail("bad reorder array length, expected " + n + ", got "
+                    + ra.length);
+        } else if (ta.length != n) {
+            fail("bad test array length, expected " + n + ", got " + ta.length);
         } else {
             // auto-LTR
-            if ( ( bs & 1 ) != 0 ) {
+            if ((bs & 1) != 0) {
                 // auto-LTR is performed at higher level
             }
             // LTR
-            if ( ( bs & 2 ) != 0 ) {
-                int[] levels = UnicodeBidiAlgorithm.resolveLevels ( null, ta, 0, new int [ n ], true );
-                if ( ! verifyResults ( la, levels, ta, 0, testSet, testSequence ) ) {
+            if ((bs & 2) != 0) {
+                final int[] levels = UnicodeBidiAlgorithm.resolveLevels(null,
+                        ta, 0, new int[n], true);
+                if (!verifyResults(la, levels, ta, 0, testSet, testSequence)) {
                     passed = false;
                 }
             }
             // RTL
-            if ( ( bs & 4 ) != 0 ) {
-                int[] levels = UnicodeBidiAlgorithm.resolveLevels ( null, ta, 1, new int [ n ], true );
-                if ( ! verifyResults ( la, levels, ta, 1, testSet, testSequence ) ) {
+            if ((bs & 4) != 0) {
+                final int[] levels = UnicodeBidiAlgorithm.resolveLevels(null,
+                        ta, 1, new int[n], true);
+                if (!verifyResults(la, levels, ta, 1, testSet, testSequence)) {
                     passed = false;
                 }
             }
@@ -226,18 +233,23 @@ public class BidiAlgorithmTestCase {
         return passed;
     }
 
-    private boolean verifyResults ( int[] laExp, int[] laOut, int[] ta, int dl, int testSet, int testSequence ) {
-        if ( laOut.length != laExp.length ) {
-            fail ( "output levels array length mismatch, expected " + laExp.length + ", got " + laOut.length );
+    private boolean verifyResults(final int[] laExp, final int[] laOut,
+            final int[] ta, final int dl, final int testSet,
+            final int testSequence) {
+        if (laOut.length != laExp.length) {
+            fail("output levels array length mismatch, expected "
+                    + laExp.length + ", got " + laOut.length);
             return false;
         } else {
             int numMatch = 0;
-            for ( int i = 0, n = laExp.length; i < n; i++ ) {
-                if ( laExp[i] >= 0 ) {
-                    int lo = laOut[i];
-                    int le = laExp[i];
-                    if ( lo != le ) {
-                        assertEquals ( getMismatchMessage ( testSet, testSequence, i, dl ), le, lo );
+            for (int i = 0, n = laExp.length; i < n; i++) {
+                if (laExp[i] >= 0) {
+                    final int lo = laOut[i];
+                    final int le = laExp[i];
+                    if (lo != le) {
+                        assertEquals(
+                                getMismatchMessage(testSet, testSequence, i, dl),
+                                le, lo);
                     } else {
                         numMatch++;
                     }
@@ -249,16 +261,17 @@ public class BidiAlgorithmTestCase {
         }
     }
 
-    private String getMismatchMessage ( int testSet, int testSequence, int seqIndex, int defaultLevel ) {
-        StringBuffer sb = new StringBuffer();
-        sb.append ( "level mismatch for default level " );
-        sb.append ( defaultLevel );
-        sb.append ( " at sequence index " );
-        sb.append ( seqIndex );
-        sb.append ( " in test sequence " );
-        sb.append ( testSequence );
-        sb.append ( " of test set " );
-        sb.append ( testSet );
+    private String getMismatchMessage(final int testSet,
+            final int testSequence, final int seqIndex, final int defaultLevel) {
+        final StringBuffer sb = new StringBuffer();
+        sb.append("level mismatch for default level ");
+        sb.append(defaultLevel);
+        sb.append(" at sequence index ");
+        sb.append(seqIndex);
+        sb.append(" in test sequence ");
+        sb.append(testSequence);
+        sb.append(" of test set ");
+        sb.append(testSet);
         return sb.toString();
     }
 

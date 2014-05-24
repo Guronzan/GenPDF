@@ -19,13 +19,7 @@
 
 package org.apache.xmlgraphics.image.loader.impl;
 
-import static org.junit.Assert.assertTrue;
-
 import java.net.URL;
-
-import junit.framework.Assert;
-
-import org.junit.Test;
 
 import org.apache.xmlgraphics.image.loader.Image;
 import org.apache.xmlgraphics.image.loader.ImageContext;
@@ -36,6 +30,10 @@ import org.apache.xmlgraphics.image.loader.MockImageContext;
 import org.apache.xmlgraphics.image.loader.MockImageSessionContext;
 import org.apache.xmlgraphics.image.loader.impl.imageio.ImageLoaderImageIO;
 import org.apache.xmlgraphics.util.MimeConstants;
+import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for {@link ImageLoaderImageIO}.
@@ -43,21 +41,24 @@ import org.apache.xmlgraphics.util.MimeConstants;
 public class ImageLoaderImageIOTestCase {
 
     /**
-     * Tests a grayscale PNG that has a CMYK color profile. ImageLoaderImageIO used
-     * to fail on that with an IllegalArgumentException.
-     * @throws Exception if an error occurs
+     * Tests a grayscale PNG that has a CMYK color profile. ImageLoaderImageIO
+     * used to fail on that with an IllegalArgumentException.
+     * 
+     * @throws Exception
+     *             if an error occurs
      */
     @Test
     public void testGrayPNGWithCMYKProfile() throws Exception {
-        URL imageURL = getClass().getResource("gray-vs-cmyk-profile.png");
-        Assert.assertNotNull(imageURL);
-        String uri = imageURL.toURI().toASCIIString();
+        final URL imageURL = getClass().getResource("gray-vs-cmyk-profile.png");
+        assertNotNull(imageURL);
+        final String uri = imageURL.toURI().toASCIIString();
 
-        ImageLoaderImageIO loader = new ImageLoaderImageIO(ImageFlavor.RENDERED_IMAGE);
-        ImageContext context = MockImageContext.newSafeInstance();
-        ImageSessionContext session = new MockImageSessionContext(context);
-        ImageInfo info = new ImageInfo(uri, MimeConstants.MIME_PNG);
-        Image im = loader.loadImage(info, null, session);
+        final ImageLoaderImageIO loader = new ImageLoaderImageIO(
+                ImageFlavor.RENDERED_IMAGE);
+        final ImageContext context = MockImageContext.newSafeInstance();
+        final ImageSessionContext session = new MockImageSessionContext(context);
+        final ImageInfo info = new ImageInfo(uri, MimeConstants.MIME_PNG);
+        final Image im = loader.loadImage(info, null, session);
         assertTrue(im instanceof ImageRendered);
     }
 

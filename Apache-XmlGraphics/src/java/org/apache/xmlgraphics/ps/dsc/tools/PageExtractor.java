@@ -37,7 +37,8 @@ import org.apache.xmlgraphics.ps.dsc.events.DSCEvent;
 import org.apache.xmlgraphics.ps.dsc.events.DSCHeaderComment;
 
 /**
- * This class can extract a certain range of pages from a DSC-compliant PostScript file.
+ * This class can extract a certain range of pages from a DSC-compliant
+ * PostScript file.
  */
 public final class PageExtractor implements DSCParserConstants {
 
@@ -45,76 +46,90 @@ public final class PageExtractor implements DSCParserConstants {
     }
 
     /**
-     * Parses a DSC-compliant file and pipes the content through to the OutputStream omitting
-     * all pages not within the range.
-     * @param in the InputStream to parse from
-     * @param out the OutputStream to write the modified file to
-     * @param from the starting page (1-based)
-     * @param to the last page (inclusive, 1-based)
-     * @throws IOException In case of an I/O error
-     * @throws DSCException In case of a violation of the DSC spec
+     * Parses a DSC-compliant file and pipes the content through to the
+     * OutputStream omitting all pages not within the range.
+     *
+     * @param in
+     *            the InputStream to parse from
+     * @param out
+     *            the OutputStream to write the modified file to
+     * @param from
+     *            the starting page (1-based)
+     * @param to
+     *            the last page (inclusive, 1-based)
+     * @throws IOException
+     *             In case of an I/O error
+     * @throws DSCException
+     *             In case of a violation of the DSC spec
      */
-    public static void extractPages(InputStream in, OutputStream out, int from, int to)
-                throws IOException, DSCException {
+    public static void extractPages(final InputStream in,
+            final OutputStream out, final int from, final int to)
+                    throws IOException, DSCException {
         if (from <= 0) {
-            throw new IllegalArgumentException("'from' page number must be 1 or higher");
+            throw new IllegalArgumentException(
+                    "'from' page number must be 1 or higher");
         }
         if (to < from) {
             throw new IllegalArgumentException(
                     "'to' page number must be equal or larger than the 'from' page number");
         }
 
-        DSCParser parser = new DSCParser(in);
-        PSGenerator gen = new PSGenerator(out);
+        final DSCParser parser = new DSCParser(in);
+        final PSGenerator gen = new PSGenerator(out);
         parser.addListener(new DefaultNestedDocumentHandler(gen));
-        int pageCount = 0;
 
-        //Skip DSC header
-        DSCHeaderComment header = DSCTools.checkAndSkipDSC30Header(parser);
+        // Skip DSC header
+        final DSCHeaderComment header = DSCTools
+                .checkAndSkipDSC30Header(parser);
         header.generate(gen);
-        //Set number of pages
-        DSCCommentPages pages = new DSCCommentPages(to - from + 1);
+        // Set number of pages
+        final DSCCommentPages pages = new DSCCommentPages(to - from + 1);
         pages.generate(gen);
 
         parser.setFilter(new DSCFilter() {
-            public boolean accept(DSCEvent event) {
+            @Override
+            public boolean accept(final DSCEvent event) {
                 if (event.isDSCComment()) {
-                    //Filter %%Pages which we add manually above
-                    return !event.asDSCComment().getName().equals(DSCConstants.PAGES);
+                    // Filter %%Pages which we add manually above
+                    return !event.asDSCComment().getName()
+                            .equals(DSCConstants.PAGES);
                 } else {
                     return true;
                 }
             }
         });
 
-        //Skip the prolog and to the first page
-        DSCComment pageOrTrailer = parser.nextDSCComment(DSCConstants.PAGE, gen);
+        // Skip the prolog and to the first page
+        DSCComment pageOrTrailer = parser
+                .nextDSCComment(DSCConstants.PAGE, gen);
         if (pageOrTrailer == null) {
             throw new DSCException("Page expected, but none found");
         }
-        parser.setFilter(null); //Remove filter
+        parser.setFilter(null); // Remove filter
 
-        //Process individual pages (and skip as necessary)
+        // Process individual pages (and skip as necessary)
         while (true) {
-            DSCCommentPage page = (DSCCommentPage)pageOrTrailer;
-            boolean validPage = (page.getPagePosition() >= from && page.getPagePosition() <= to);
+            final DSCCommentPage page = (DSCCommentPage) pageOrTrailer;
+            final boolean validPage = page.getPagePosition() >= from
+                    && page.getPagePosition() <= to;
             if (validPage) {
                 page.setPagePosition(page.getPagePosition() - from + 1);
                 page.generate(gen);
-                pageCount++;
             }
-            pageOrTrailer = DSCTools.nextPageOrTrailer(parser, (validPage ? gen : null));
+            pageOrTrailer = DSCTools.nextPageOrTrailer(parser, validPage ? gen
+                    : null);
             if (pageOrTrailer == null) {
-                throw new DSCException("File is not DSC-compliant: Unexpected end of file");
+                throw new DSCException(
+                        "File is not DSC-compliant: Unexpected end of file");
             } else if (!DSCConstants.PAGE.equals(pageOrTrailer.getName())) {
                 pageOrTrailer.generate(gen);
                 break;
             }
         }
 
-        //Write the rest
+        // Write the rest
         while (parser.hasNext()) {
-            DSCEvent event = parser.nextEvent();
+            final DSCEvent event = parser.nextEvent();
             event.generate(gen);
         }
     }

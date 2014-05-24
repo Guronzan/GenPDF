@@ -19,8 +19,7 @@
 
 package org.apache.xmlgraphics.image.loader.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.xmlgraphics.image.codec.tiff.TIFFImage;
 import org.apache.xmlgraphics.image.loader.ImageFlavor;
@@ -31,90 +30,98 @@ import org.apache.xmlgraphics.util.MimeConstants;
 /**
  * Factory class for the ImageLoader for raw/undecoded CCITT encoded images.
  */
-public class ImageLoaderFactoryRawCCITTFax extends AbstractImageLoaderFactory {
+@Slf4j
+ public class ImageLoaderFactoryRawCCITTFax extends AbstractImageLoaderFactory {
 
-    /** logger */
-    private transient Log log = LogFactory.getLog(ImageLoaderFactoryRawCCITTFax.class);
+    private static final String[] MIMES = new String[] { MimeConstants.MIME_TIFF };
 
-    private static final String[] MIMES = new String[] {
-        MimeConstants.MIME_TIFF};
-
-    private static final ImageFlavor[][] FLAVORS = new ImageFlavor[][] {
-        {ImageFlavor.RAW_CCITTFAX}};
-
+     private static final ImageFlavor[][] FLAVORS = new ImageFlavor[][] { { ImageFlavor.RAW_CCITTFAX } };
 
     /**
-     * Returns the MIME type for a given ImageFlavor if it is from a format that is consumed
-     * without being undecoded. If the ImageFlavor is no raw flavor, an IllegalArgumentException
-     * is thrown.
-     * @param flavor the image flavor
+      * Returns the MIME type for a given ImageFlavor if it is from a format that
+     * is consumed without being undecoded. If the ImageFlavor is no raw flavor,
+     * an IllegalArgumentException is thrown.
+     * 
+     * @param flavor
+     *            the image flavor
      * @return the associated MIME type
-     */
-    public static String getMimeForRawFlavor(ImageFlavor flavor) {
-        for (int i = 0, ci = FLAVORS.length; i < ci; i++) {
-            for (int j = 0, cj = FLAVORS[i].length; j < cj; j++) {
-                if (FLAVORS[i][j].equals(flavor)) {
-                    return MIMES[i];
-                }
-            }
-        }
-        throw new IllegalArgumentException("ImageFlavor is not a \"raw\" flavor: " + flavor);
-    }
+      */
+     public static String getMimeForRawFlavor(final ImageFlavor flavor) {
+         for (int i = 0, ci = FLAVORS.length; i < ci; i++) {
+             for (int j = 0, cj = FLAVORS[i].length; j < cj; j++) {
+                 if (FLAVORS[i][j].equals(flavor)) {
+                     return MIMES[i];
+                 }
+             }
+         }
+         throw new IllegalArgumentException(
+                "ImageFlavor is not a \"raw\" flavor: " + flavor);
+     }
 
-    /** {@inheritDoc} */
-    public String[] getSupportedMIMETypes() {
-        return MIMES;
-    }
+     /** {@inheritDoc} */
+     @Override
+     public String[] getSupportedMIMETypes() {
+         return MIMES;
+     }
 
-    /** {@inheritDoc} */
-    public ImageFlavor[] getSupportedFlavors(String mime) {
-        for (int i = 0, c = MIMES.length; i < c; i++) {
-            if (MIMES[i].equals(mime)) {
-                return FLAVORS[i];
-            }
-        }
-        throw new IllegalArgumentException("Unsupported MIME type: " + mime);
-    }
+     /** {@inheritDoc} */
+     @Override
+     public ImageFlavor[] getSupportedFlavors(final String mime) {
+         for (int i = 0, c = MIMES.length; i < c; i++) {
+             if (MIMES[i].equals(mime)) {
+                 return FLAVORS[i];
+             }
+         }
+         throw new IllegalArgumentException("Unsupported MIME type: " + mime);
+     }
 
-    /** {@inheritDoc} */
-    public ImageLoader newImageLoader(ImageFlavor targetFlavor) {
-        if (targetFlavor.equals(ImageFlavor.RAW_CCITTFAX)) {
-            return new ImageLoaderRawCCITTFax();
-        } else {
-            throw new IllegalArgumentException("Unsupported image flavor: " + targetFlavor);
-        }
-    }
+     /** {@inheritDoc} */
+     @Override
+     public ImageLoader newImageLoader(final ImageFlavor targetFlavor) {
+         if (targetFlavor.equals(ImageFlavor.RAW_CCITTFAX)) {
+             return new ImageLoaderRawCCITTFax();
+         } else {
+             throw new IllegalArgumentException("Unsupported image flavor: "
+                    + targetFlavor);
+         }
+     }
 
-    /** {@inheritDoc} */
-    public boolean isAvailable() {
-        return true;
-    }
+     /** {@inheritDoc} */
+     @Override
+     public boolean isAvailable() {
+         return true;
+     }
 
-    /** {@inheritDoc} */
-    public boolean isSupported(ImageInfo imageInfo) {
-        Boolean tiled = (Boolean)imageInfo.getCustomObjects().get("TIFF_TILED");
-        if (Boolean.TRUE.equals(tiled)) {
-            //We don't support tiled images
-            log.trace("Raw CCITT loading not supported for tiled TIFF image");
-            return false;
-        }
-        Integer compression = (Integer)imageInfo.getCustomObjects().get("TIFF_COMPRESSION");
-        if (compression == null) {
-            return false;
-        }
-        switch (compression.intValue()) {
-        case TIFFImage.COMP_FAX_G3_1D:
-        case TIFFImage.COMP_FAX_G3_2D:
-        case TIFFImage.COMP_FAX_G4_2D:
-            Integer stripCount = (Integer)imageInfo.getCustomObjects().get("TIFF_STRIP_COUNT");
-            boolean supported = (stripCount != null && stripCount.intValue() == 1);
-            if (!supported) {
-                log.trace("Raw CCITT loading not supported for multi-strip TIFF image");
-            }
-            return supported;
-        default:
-            return false;
-        }
-    }
+     /** {@inheritDoc} */
+     @Override
+     public boolean isSupported(final ImageInfo imageInfo) {
+         final Boolean tiled = (Boolean) imageInfo.getCustomObjects().get(
+                "TIFF_TILED");
+         if (Boolean.TRUE.equals(tiled)) {
+             // We don't support tiled images
+             log.trace("Raw CCITT loading not supported for tiled TIFF image");
+             return false;
+         }
+         final Integer compression = (Integer) imageInfo.getCustomObjects().get(
+                "TIFF_COMPRESSION");
+         if (compression == null) {
+             return false;
+         }
+         switch (compression.intValue()) {
+         case TIFFImage.COMP_FAX_G3_1D:
+         case TIFFImage.COMP_FAX_G3_2D:
+         case TIFFImage.COMP_FAX_G4_2D:
+             final Integer stripCount = (Integer) imageInfo.getCustomObjects()
+                    .get("TIFF_STRIP_COUNT");
+             final boolean supported = stripCount != null
+                    && stripCount.intValue() == 1;
+             if (!supported) {
+                 log.trace("Raw CCITT loading not supported for multi-strip TIFF image");
+             }
+             return supported;
+         default:
+             return false;
+         }
+     }
 
-}
+ }

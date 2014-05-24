@@ -215,7 +215,7 @@ public class AFPSVGHandler extends AbstractGenericSVGHandler {
     /** {@inheritDoc} */
     protected void updateRendererContext(RendererContext context) {
         //Work around a problem in Batik: Gradients cannot be done in ColorSpace.CS_GRAY
-        context.setProperty(AFPRendererContextConstants.AFP_GRAYSCALE, Boolean.FALSE);
+        context.setProperty(AFPRendererContextConstants.AFP_GRAYSCALE, false);
     }
 
     private Graphics2DImagePainter createGraphics2DImagePainter(BridgeContext ctx,

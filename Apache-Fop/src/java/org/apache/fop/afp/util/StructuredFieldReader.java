@@ -24,12 +24,12 @@ import java.io.InputStream;
 
 /**
  * A helper class to read structured fields from a MO:DCA document. Each
- * component of a mixed object document is explicitly defined and delimited
- * in the data. This is accomplished through the use of MO:DCA data structures,
+ * component of a mixed object document is explicitly defined and delimited in
+ * the data. This is accomplished through the use of MO:DCA data structures,
  * called structured fields. Structured fields are used to envelop document
- * components and to provide commands and information to applications using
- * the data. Structured fields may contain one or more parameters. Each
- * parameter provides one value from a set of values defined by the architecture.
+ * components and to provide commands and information to applications using the
+ * data. Structured fields may contain one or more parameters. Each parameter
+ * provides one value from a set of values defined by the architecture.
  * <p/>
  * MO:DCA structured fields consist of two parts: an introducer that identifies
  * the length and type of the structured field, and data that provides the
@@ -47,28 +47,34 @@ public class StructuredFieldReader {
 
     /**
      * The constructor for the StructuredFieldReader
-     * @param inputStream the input stream to process
+     * 
+     * @param inputStream
+     *            the input stream to process
      */
-    public StructuredFieldReader(InputStream inputStream) {
+    public StructuredFieldReader(final InputStream inputStream) {
         this.inputStream = inputStream;
     }
 
     /**
-     * Get the next structured field as identified by the identifier
-     * parameter (this must be a valid MO:DCA structured field).
-     * Note: The returned data does not include the field length and identifier!
-     * @param identifier the three byte identifier
-     * @throws IOException if an I/O exception occurred
+     * Get the next structured field as identified by the identifier parameter
+     * (this must be a valid MO:DCA structured field). Note: The returned data
+     * does not include the field length and identifier!
+     * 
+     * @param identifier
+     *            the three byte identifier
+     * @throws IOException
+     *             if an I/O exception occurred
      * @return the next structured field or null when there are no more
      */
-    public byte[] getNext(byte[] identifier) throws IOException {
+    public byte[] getNext(final byte[] identifier) throws IOException {
 
         byte[] bytes = AFPResourceUtil.getNext(identifier, this.inputStream);
 
         if (bytes != null) {
-            //Users of this class expect the field data without length and identifier
-            int srcPos = 2 + identifier.length;
-            byte[] tmp = new byte[bytes.length - srcPos];
+            // Users of this class expect the field data without length and
+            // identifier
+            final int srcPos = 2 + identifier.length;
+            final byte[] tmp = new byte[bytes.length - srcPos];
             System.arraycopy(bytes, srcPos, tmp, 0, tmp.length);
             bytes = tmp;
         }

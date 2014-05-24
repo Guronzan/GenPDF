@@ -65,11 +65,15 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.render.awt.AWTRenderer;
 
 /**
- * AWT Viewer main window.
- * Surrounds a PreviewPanel with a bunch of pretty buttons and controls.
+ * AWT Viewer main window. Surrounds a PreviewPanel with a bunch of pretty
+ * buttons and controls.
  */
 public class PreviewDialog extends JFrame implements StatusListener {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = -3012213792592743247L;
     /** The Translator for localization */
     protected Translator translator;
     /** The AWT renderer */
@@ -79,143 +83,206 @@ public class PreviewDialog extends JFrame implements StatusListener {
     /** The originally configured target resolution */
     protected float configuredTargetResolution;
     /**
-     * Renderable instance that can be used to reload and re-render a document after
-     * modifications.
+     * Renderable instance that can be used to reload and re-render a document
+     * after modifications.
      */
     protected Renderable renderable;
 
     /** The JCombobox to rescale the rendered page view */
-    private JComboBox scale;
+    private final JComboBox scale;
 
     /** The JLabel for the process status bar */
-    private JLabel processStatus;
+    private final JLabel processStatus;
 
     /** The JLabel information status bar */
-    private JLabel infoStatus;
+    private final JLabel infoStatus;
 
     /** The main display area */
-    private PreviewPanel previewPanel;
+    private final PreviewPanel previewPanel;
 
     /** Formats the text in the scale combobox. */
-    private DecimalFormat percentFormat = new DecimalFormat("###0.0#",
-                                            new DecimalFormatSymbols(Locale.ENGLISH));
+    private final DecimalFormat percentFormat = new DecimalFormat("###0.0#",
+            new DecimalFormatSymbols(Locale.ENGLISH));
 
     /**
      * Creates a new PreviewDialog that uses the given renderer.
-     * @param foUserAgent the user agent
-     * @param renderable the Renderable instance that is used to reload/re-render a document
-     *                   after modifications.
+     *
+     * @param foUserAgent
+     *            the user agent
+     * @param renderable
+     *            the Renderable instance that is used to reload/re-render a
+     *            document after modifications.
      */
-    public PreviewDialog                                        // CSOK: MethodLength
-        (FOUserAgent foUserAgent, Renderable renderable) {
-        renderer = (AWTRenderer) foUserAgent.getRendererOverride();
+    public PreviewDialog // CSOK: MethodLength
+    (final FOUserAgent foUserAgent, final Renderable renderable) {
+        this.renderer = (AWTRenderer) foUserAgent.getRendererOverride();
         this.foUserAgent = foUserAgent;
-        this.configuredTargetResolution = this.foUserAgent.getTargetResolution();
+        this.configuredTargetResolution = this.foUserAgent
+                .getTargetResolution();
         this.renderable = renderable;
-        translator = new Translator();
+        this.translator = new Translator();
 
-        //Commands aka Actions
-        Command printAction = new Command(translator.getString("Menu.Print"), "Print") {
+        // Commands aka Actions
+        final Command printAction = new Command(
+                this.translator.getString("Menu.Print"), "Print") {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -6880301894303919528L;
+
+            @Override
             public void doit() {
                 startPrinterJob(true);
             }
         };
-        Command firstPageAction = new Command(translator.getString("Menu.First.page"),
-                                      "firstpg") {
+        final Command firstPageAction = new Command(
+                this.translator.getString("Menu.First.page"), "firstpg") {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 7569636648850763564L;
+
+            @Override
             public void doit() {
                 goToFirstPage();
             }
         };
-        Command previousPageAction = new Command(translator.getString("Menu.Prev.page"),
-                                         "prevpg") {
+        final Command previousPageAction = new Command(
+                this.translator.getString("Menu.Prev.page"), "prevpg") {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -6634525165008663802L;
+
+            @Override
             public void doit() {
                 goToPreviousPage();
             }
         };
-        Command nextPageAction = new Command(translator.getString("Menu.Next.page"), "nextpg") {
+        final Command nextPageAction = new Command(
+                this.translator.getString("Menu.Next.page"), "nextpg") {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -5999761598723872159L;
+
+            @Override
             public void doit() {
                 goToNextPage();
             }
 
         };
-        Command lastPageAction = new Command(translator.getString("Menu.Last.page"), "lastpg") {
+        final Command lastPageAction = new Command(
+                this.translator.getString("Menu.Last.page"), "lastpg") {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -3516741511052491703L;
+
+            @Override
             public void doit() {
                 goToLastPage();
             }
         };
-        Command reloadAction = new Command(translator.getString("Menu.Reload"), "reload") {
+        final Command reloadAction = new Command(
+                this.translator.getString("Menu.Reload"), "reload") {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 8947268310371884460L;
+
+            @Override
             public void doit() {
-                previewPanel.reload();
+                PreviewDialog.this.previewPanel.reload();
             }
         };
-        Command debugAction = new Command(translator.getString("Menu.Debug"), "debug") {
+        final Command debugAction = new Command(
+                this.translator.getString("Menu.Debug"), "debug") {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -3968791195048290331L;
+
             // TODO use Translator
+            @Override
             public void doit() {
-                previewPanel.debug();
+                PreviewDialog.this.previewPanel.debug();
             }
         };
-        Command aboutAction = new Command(translator.getString("Menu.About"), "fopLogo") {
+        final Command aboutAction = new Command(
+                this.translator.getString("Menu.About"), "fopLogo") {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 3401208052199171958L;
+
+            @Override
             public void doit() {
                 startHelpAbout();
             }
         };
 
-        setTitle("FOP: AWT-" + translator.getString("Title.Preview"));
+        setTitle("FOP: AWT-" + this.translator.getString("Title.Preview"));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        //Sets size to be 61%x90% of the screen size
-        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        // Sets size to be 61%x90% of the screen size
+        final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         // Needed due to bug in Sun's JVM 1.5 (6429775)
         pack();
-        //Rather frivolous size - fits A4 page width in 1024x768 screen on my desktop
+        // Rather frivolous size - fits A4 page width in 1024x768 screen on my
+        // desktop
         setSize(screen.width * 61 / 100, screen.height * 9 / 10);
 
-        //Page view stuff
-        previewPanel = new PreviewPanel(foUserAgent, renderable, renderer);
-        getContentPane().add(previewPanel, BorderLayout.CENTER);
-        previewPanel.addPageChangeListener(new PageChangeListener() {
-            public void pageChanged(PageChangeEvent pce) {
-              new ShowInfo().run();
+        // Page view stuff
+        this.previewPanel = new PreviewPanel(foUserAgent, renderable,
+                this.renderer);
+        getContentPane().add(this.previewPanel, BorderLayout.CENTER);
+        this.previewPanel.addPageChangeListener(new PageChangeListener() {
+            @Override
+            public void pageChanged(final PageChangeEvent pce) {
+                new ShowInfo().run();
             }
         });
 
         // Keyboard shortcuts - pgup/pgdn
-        InputMap im = previewPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap am = previewPanel.getActionMap();
+        final InputMap im = this.previewPanel
+                .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        final ActionMap am = this.previewPanel.getActionMap();
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0), "nextPage");
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), "prevPage");
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0), "firstPage");
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_END, 0), "lastPage");
-        previewPanel.getActionMap().put("nextPage", nextPageAction);
-        previewPanel.getActionMap().put("prevPage", previousPageAction);
-        previewPanel.getActionMap().put("firstPage", firstPageAction);
-        previewPanel.getActionMap().put("lastPage", lastPageAction);
+        this.previewPanel.getActionMap().put("nextPage", nextPageAction);
+        this.previewPanel.getActionMap().put("prevPage", previousPageAction);
+        this.previewPanel.getActionMap().put("firstPage", firstPageAction);
+        this.previewPanel.getActionMap().put("lastPage", lastPageAction);
 
-        //Scaling combobox
-        scale = new JComboBox();
-        scale.addItem(translator.getString("Menu.Fit.Window"));
-        scale.addItem(translator.getString("Menu.Fit.Width"));
-        scale.addItem("25%");
-        scale.addItem("50%");
-        scale.addItem("75%");
-        scale.addItem("100%");
-        scale.addItem("150%");
-        scale.addItem("200%");
-        scale.setMaximumSize(new Dimension(80, 24));
-        scale.setPreferredSize(new Dimension(80, 24));
-        scale.setSelectedItem("100%");
-        scale.setEditable(true);
-        scale.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        // Scaling combobox
+        this.scale = new JComboBox();
+        this.scale.addItem(this.translator.getString("Menu.Fit.Window"));
+        this.scale.addItem(this.translator.getString("Menu.Fit.Width"));
+        this.scale.addItem("25%");
+        this.scale.addItem("50%");
+        this.scale.addItem("75%");
+        this.scale.addItem("100%");
+        this.scale.addItem("150%");
+        this.scale.addItem("200%");
+        this.scale.setMaximumSize(new Dimension(80, 24));
+        this.scale.setPreferredSize(new Dimension(80, 24));
+        this.scale.setSelectedItem("100%");
+        this.scale.setEditable(true);
+        this.scale.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
                 scaleActionPerformed(e);
             }
         });
 
-        //Menu
+        // Menu
         setJMenuBar(setupMenu());
 
         // Toolbar
-        JToolBar toolBar = new JToolBar();
+        final JToolBar toolBar = new JToolBar();
         toolBar.add(printAction);
         toolBar.add(reloadAction);
         toolBar.addSeparator();
@@ -224,8 +291,8 @@ public class PreviewDialog extends JFrame implements StatusListener {
         toolBar.add(nextPageAction);
         toolBar.add(lastPageAction);
         toolBar.addSeparator(new Dimension(20, 0));
-        toolBar.add(new JLabel(translator.getString("Menu.Zoom") + " "));
-        toolBar.add(scale);
+        toolBar.add(new JLabel(this.translator.getString("Menu.Zoom") + " "));
+        toolBar.add(this.scale);
         toolBar.addSeparator();
         toolBar.add(debugAction);
         toolBar.addSeparator();
@@ -233,58 +300,61 @@ public class PreviewDialog extends JFrame implements StatusListener {
         getContentPane().add(toolBar, BorderLayout.NORTH);
 
         // Status bar
-        JPanel statusBar = new JPanel();
-        processStatus = new JLabel();
-        processStatus.setBorder(BorderFactory.createCompoundBorder(
+        final JPanel statusBar = new JPanel();
+        this.processStatus = new JLabel();
+        this.processStatus.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEtchedBorder(),
                 BorderFactory.createEmptyBorder(0, 3, 0, 0)));
-        infoStatus = new JLabel();
-        infoStatus.setBorder(BorderFactory.createCompoundBorder(
+        this.infoStatus = new JLabel();
+        this.infoStatus.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEtchedBorder(),
                 BorderFactory.createEmptyBorder(0, 3, 0, 0)));
 
         statusBar.setLayout(new GridBagLayout());
 
-        processStatus.setPreferredSize(new Dimension(200, 21));
-        processStatus.setMinimumSize(new Dimension(200, 21));
+        this.processStatus.setPreferredSize(new Dimension(200, 21));
+        this.processStatus.setMinimumSize(new Dimension(200, 21));
 
-        infoStatus.setPreferredSize(new Dimension(100, 21));
-        infoStatus.setMinimumSize(new Dimension(100, 21));
-        statusBar.add(processStatus,
-                      new GridBagConstraints(0, 0, 1, 0, 2.0, 0.0,
-                                             GridBagConstraints.CENTER,
-                                             GridBagConstraints.HORIZONTAL,
-                                             new Insets(0, 0, 0, 3), 0, 0));
-        statusBar.add(infoStatus,
-                      new GridBagConstraints(1, 0, 1, 0, 1.0, 0.0,
-                                             GridBagConstraints.CENTER,
-                                             GridBagConstraints.HORIZONTAL,
-                                             new Insets(0, 0, 0, 0), 0, 0));
+        this.infoStatus.setPreferredSize(new Dimension(100, 21));
+        this.infoStatus.setMinimumSize(new Dimension(100, 21));
+        statusBar.add(this.processStatus, new GridBagConstraints(0, 0, 1, 0,
+                2.0, 0.0, GridBagConstraints.CENTER,
+                GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 3), 0, 0));
+        statusBar.add(this.infoStatus, new GridBagConstraints(1, 0, 1, 0, 1.0,
+                0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
+                new Insets(0, 0, 0, 0), 0, 0));
         getContentPane().add(statusBar, BorderLayout.SOUTH);
     }
 
     /**
      * Creates and initialize the AWT Viewer main window.
-     * @param foUserAgent the FO user agent
-     * @param renderable the target for the rendering
-     * @param asMainWindow true if the window shall act as the main application window.
+     *
+     * @param foUserAgent
+     *            the FO user agent
+     * @param renderable
+     *            the target for the rendering
+     * @param asMainWindow
+     *            true if the window shall act as the main application window.
      * @return the newly initialized preview dialog
      */
-    public static PreviewDialog createPreviewDialog(FOUserAgent foUserAgent,
-                Renderable renderable, boolean asMainWindow) {
-        PreviewDialog frame = new PreviewDialog(foUserAgent, renderable);
+    public static PreviewDialog createPreviewDialog(
+            final FOUserAgent foUserAgent, final Renderable renderable,
+            final boolean asMainWindow) {
+        final PreviewDialog frame = new PreviewDialog(foUserAgent, renderable);
 
         if (asMainWindow) {
             frame.addWindowListener(new WindowAdapter() {
-                public void windowClosed(WindowEvent we) {
+                @Override
+                public void windowClosed(final WindowEvent we) {
                     System.exit(0);
                 }
             });
         }
 
         // Centers the window
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension frameSize = frame.getSize();
+        final Dimension screenSize = Toolkit.getDefaultToolkit()
+                .getScreenSize();
+        final Dimension frameSize = frame.getSize();
         if (frameSize.height > screenSize.height) {
             frameSize.height = screenSize.height;
         }
@@ -292,7 +362,7 @@ public class PreviewDialog extends JFrame implements StatusListener {
             frameSize.width = screenSize.width;
         }
         frame.setLocation((screenSize.width - frameSize.width) / 2,
-                    (screenSize.height - frameSize.height) / 2);
+                (screenSize.height - frameSize.height) / 2);
         frame.setStatus(frame.translator.getString("Status.Build.FO.tree"));
         frame.setVisible(true);
         return frame;
@@ -300,140 +370,278 @@ public class PreviewDialog extends JFrame implements StatusListener {
 
     /**
      * Creates a new PreviewDialog that uses the given renderer.
-     * @param foUserAgent the user agent
+     *
+     * @param foUserAgent
+     *            the user agent
      */
-    public PreviewDialog(FOUserAgent foUserAgent) {
+    public PreviewDialog(final FOUserAgent foUserAgent) {
         this(foUserAgent, null);
     }
 
     /**
      * Creates a new menubar to be shown in this window.
+     *
      * @return the newly created menubar
      */
     private JMenuBar setupMenu() {
-        JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu(translator.getString("Menu.File"));
+        final JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu(this.translator.getString("Menu.File"));
         menu.setMnemonic(KeyEvent.VK_F);
-        //Adds mostly the same actions, but without icons
-        menu.add(new Command(translator.getString("Menu.Print"), KeyEvent.VK_P) {
+        // Adds mostly the same actions, but without icons
+        menu.add(new Command(this.translator.getString("Menu.Print"),
+                KeyEvent.VK_P) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -2976985898434282500L;
+
+            @Override
             public void doit() {
                 startPrinterJob(true);
             }
         });
         // inputHandler must be set to allow reloading
-        if (renderable != null) {
-            menu.add(new Command(translator.getString("Menu.Reload"), KeyEvent.VK_R) {
+        if (this.renderable != null) {
+            menu.add(new Command(this.translator.getString("Menu.Reload"),
+                    KeyEvent.VK_R) {
+                /**
+                 *
+                 */
+                private static final long serialVersionUID = -4544261978525322724L;
+
+                @Override
                 public void doit() {
                     reload();
                 }
             });
         }
         menu.addSeparator();
-        menu.add(new Command(translator.getString("Menu.Exit"), KeyEvent.VK_X) {
+        menu.add(new Command(this.translator.getString("Menu.Exit"),
+                KeyEvent.VK_X) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -8905759323360351705L;
+
+            @Override
             public void doit() {
                 dispose();
             }
         });
         menuBar.add(menu);
 
-        menu = new JMenu(translator.getString("Menu.View"));
+        menu = new JMenu(this.translator.getString("Menu.View"));
         menu.setMnemonic(KeyEvent.VK_V);
-        menu.add(new Command(translator.getString("Menu.First.page"), KeyEvent.VK_F) {
+        menu.add(new Command(this.translator.getString("Menu.First.page"),
+                KeyEvent.VK_F) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -2631046724452265763L;
+
+            @Override
             public void doit() {
                 goToFirstPage();
             }
         });
-        menu.add(new Command(translator.getString("Menu.Prev.page"), KeyEvent.VK_P) {
+        menu.add(new Command(this.translator.getString("Menu.Prev.page"),
+                KeyEvent.VK_P) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 6675397958071542872L;
+
+            @Override
             public void doit() {
                 goToPreviousPage();
             }
         });
-        menu.add(new Command(translator.getString("Menu.Next.page"), KeyEvent.VK_N) {
+        menu.add(new Command(this.translator.getString("Menu.Next.page"),
+                KeyEvent.VK_N) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -4858194621607248309L;
+
+            @Override
             public void doit() {
                 goToNextPage();
             }
         });
-        menu.add(new Command(translator.getString("Menu.Last.page"), KeyEvent.VK_L) {
+        menu.add(new Command(this.translator.getString("Menu.Last.page"),
+                KeyEvent.VK_L) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 3897142567939832261L;
+
+            @Override
             public void doit() {
                 goToLastPage();
             }
         });
-        menu.add(new Command(translator.getString("Menu.Go.to.Page"), KeyEvent.VK_G) {
+        menu.add(new Command(this.translator.getString("Menu.Go.to.Page"),
+                KeyEvent.VK_G) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 6880660057702159492L;
+
+            @Override
             public void doit() {
                 showGoToPageDialog();
             }
         });
         menu.addSeparator();
-        JMenu subMenu = new JMenu(translator.getString("Menu.Zoom"));
+        final JMenu subMenu = new JMenu(this.translator.getString("Menu.Zoom"));
         subMenu.setMnemonic(KeyEvent.VK_Z);
         subMenu.add(new Command("25%", 0) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 4713742105272842208L;
+
+            @Override
             public void doit() {
                 setScale(25.0);
             }
         });
         subMenu.add(new Command("50%", 0) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -5332339882429252679L;
+
+            @Override
             public void doit() {
                 setScale(50.0);
             }
         });
         subMenu.add(new Command("75%", 0) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -5780774159658218593L;
+
+            @Override
             public void doit() {
                 setScale(75.0);
             }
         });
         subMenu.add(new Command("100%", 0) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 4415207530658759319L;
+
+            @Override
             public void doit() {
                 setScale(100.0);
             }
         });
         subMenu.add(new Command("150%", 0) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -5342451404417788834L;
+
+            @Override
             public void doit() {
                 setScale(150.0);
             }
         });
         subMenu.add(new Command("200%", 0) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -8873321332690231703L;
+
+            @Override
             public void doit() {
                 setScale(200.0);
             }
         });
         menu.add(subMenu);
         menu.addSeparator();
-        menu.add(new Command(translator.getString("Menu.Default.zoom"), KeyEvent.VK_D) {
+        menu.add(new Command(this.translator.getString("Menu.Default.zoom"),
+                KeyEvent.VK_D) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -2830315965636891278L;
+
+            @Override
             public void doit() {
                 setScale(100.0);
             }
         });
-        menu.add(new Command(translator.getString("Menu.Fit.Window"), KeyEvent.VK_F) {
+        menu.add(new Command(this.translator.getString("Menu.Fit.Window"),
+                KeyEvent.VK_F) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 7322747086626210170L;
+
+            @Override
             public void doit() {
                 setScaleToFitWindow();
             }
         });
-        menu.add(new Command(translator.getString("Menu.Fit.Width"), KeyEvent.VK_W) {
+        menu.add(new Command(this.translator.getString("Menu.Fit.Width"),
+                KeyEvent.VK_W) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -6320074587700100629L;
+
+            @Override
             public void doit() {
                 setScaleToFitWidth();
             }
         });
         menu.addSeparator();
 
-        ButtonGroup group = new ButtonGroup();
-        JRadioButtonMenuItem single = new JRadioButtonMenuItem(
-                new Command(translator.getString("Menu.Single"), KeyEvent.VK_S) {
+        final ButtonGroup group = new ButtonGroup();
+        final JRadioButtonMenuItem single = new JRadioButtonMenuItem(
+                new Command(this.translator.getString("Menu.Single"),
+                        KeyEvent.VK_S) {
+                    /**
+                     *
+                     */
+                    private static final long serialVersionUID = 6755071136212980710L;
+
+                    @Override
+                    public void doit() {
+                        PreviewDialog.this.previewPanel
+                        .setDisplayMode(PreviewPanel.SINGLE);
+                    }
+                });
+        final JRadioButtonMenuItem cont = new JRadioButtonMenuItem(new Command(
+                this.translator.getString("Menu.Continuous"), KeyEvent.VK_C) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = 5175720999687635219L;
+
+            @Override
             public void doit() {
-                previewPanel.setDisplayMode(PreviewPanel.SINGLE);
+                PreviewDialog.this.previewPanel
+                .setDisplayMode(PreviewPanel.CONTINUOUS);
             }
         });
-        JRadioButtonMenuItem cont = new JRadioButtonMenuItem(
-                new Command(translator.getString("Menu.Continuous"), KeyEvent.VK_C) {
-            public void doit() {
-                previewPanel.setDisplayMode(PreviewPanel.CONTINUOUS);
-            }
-        });
-        JRadioButtonMenuItem facing = new JRadioButtonMenuItem(
-                new Command(translator.getString("Menu.Facing"), 0) {
-            public void doit() {
-                previewPanel.setDisplayMode(PreviewPanel.CONT_FACING);
-            }
-        });
+        final JRadioButtonMenuItem facing = new JRadioButtonMenuItem(
+                new Command(this.translator.getString("Menu.Facing"), 0) {
+                    /**
+                     *
+                     */
+                    private static final long serialVersionUID = -4973490643945148983L;
+
+                    @Override
+                    public void doit() {
+                        PreviewDialog.this.previewPanel
+                        .setDisplayMode(PreviewPanel.CONT_FACING);
+                    }
+                });
         single.setSelected(true);
         group.add(single);
         group.add(cont);
@@ -444,9 +652,16 @@ public class PreviewDialog extends JFrame implements StatusListener {
 
         menuBar.add(menu);
 
-        menu = new JMenu(translator.getString("Menu.Help"));
+        menu = new JMenu(this.translator.getString("Menu.Help"));
         menu.setMnemonic(KeyEvent.VK_H);
-        menu.add(new Command(translator.getString("Menu.About"), KeyEvent.VK_A) {
+        menu.add(new Command(this.translator.getString("Menu.About"),
+                KeyEvent.VK_A) {
+            /**
+             *
+             */
+            private static final long serialVersionUID = -6828050572082036080L;
+
+            @Override
             public void doit() {
                 startHelpAbout();
             }
@@ -456,22 +671,25 @@ public class PreviewDialog extends JFrame implements StatusListener {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void notifyRendererStopped() {
         reload();
     }
 
     private void reload() {
-        setStatus(translator.getString("Status.Show"));
-        previewPanel.reload();
+        setStatus(this.translator.getString("Status.Show"));
+        this.previewPanel.reload();
     }
 
     /**
      * Changes the current visible page
-     * @param number the page number to go to
+     *
+     * @param number
+     *            the page number to go to
      */
-    public void goToPage(int number) {
-        if (number != previewPanel.getPage()) {
-            previewPanel.setPage(number);
+    public void goToPage(final int number) {
+        if (number != this.previewPanel.getPage()) {
+            this.previewPanel.setPage(number);
             notifyPageRendered();
         }
     }
@@ -480,7 +698,7 @@ public class PreviewDialog extends JFrame implements StatusListener {
      * Shows the previous page.
      */
     public void goToPreviousPage() {
-        int page = previewPanel.getPage();
+        final int page = this.previewPanel.getPage();
         if (page > 0) {
             goToPage(page - 1);
         }
@@ -490,8 +708,8 @@ public class PreviewDialog extends JFrame implements StatusListener {
      * Shows the next page.
      */
     public void goToNextPage() {
-        int page = previewPanel.getPage();
-        if (page < renderer.getNumberOfPages() - 1) {
+        final int page = this.previewPanel.getPage();
+        if (page < this.renderer.getNumberOfPages() - 1) {
             goToPage(page + 1);
         }
     }
@@ -505,18 +723,19 @@ public class PreviewDialog extends JFrame implements StatusListener {
      * Shows the last page.
      */
     public void goToLastPage() {
-        goToPage(renderer.getNumberOfPages() - 1);
+        goToPage(this.renderer.getNumberOfPages() - 1);
     }
 
     /** Shows the About box */
     private void startHelpAbout() {
-        PreviewDialogAboutBox dlg = new PreviewDialogAboutBox(this, translator);
-        //Centers the box
-        Dimension dlgSize = dlg.getPreferredSize();
-        Dimension frmSize = getSize();
-        Point loc = getLocation();
+        final PreviewDialogAboutBox dlg = new PreviewDialogAboutBox(this,
+                this.translator);
+        // Centers the box
+        final Dimension dlgSize = dlg.getPreferredSize();
+        final Dimension frmSize = getSize();
+        final Point loc = getLocation();
         dlg.setLocation((frmSize.width - dlgSize.width) / 2 + loc.x,
-                        (frmSize.height - dlgSize.height) / 2 + loc.y);
+                (frmSize.height - dlgSize.height) / 2 + loc.y);
         dlg.setVisible(true);
     }
 
@@ -524,14 +743,14 @@ public class PreviewDialog extends JFrame implements StatusListener {
      * Shows "go to page" dialog and then goes to the selected page
      */
     private void showGoToPageDialog() {
-                int currentPage = previewPanel.getPage();
-        GoToPageDialog d = new GoToPageDialog(this,
-            translator.getString("Menu.Go.to.Page"), translator);
-        d.setLocation((int)getLocation().getX() + 50,
-                      (int)getLocation().getY() + 50);
+        int currentPage = this.previewPanel.getPage();
+        final GoToPageDialog d = new GoToPageDialog(this,
+                this.translator.getString("Menu.Go.to.Page"), this.translator);
+        d.setLocation((int) getLocation().getX() + 50, (int) getLocation()
+                .getY() + 50);
         d.setVisible(true);
         currentPage = d.getPageNumber();
-        if (currentPage < 1 || currentPage > renderer.getNumberOfPages()) {
+        if (currentPage < 1 || currentPage > this.renderer.getNumberOfPages()) {
             return;
         }
         currentPage--;
@@ -540,11 +759,14 @@ public class PreviewDialog extends JFrame implements StatusListener {
 
     /**
      * Scales page image.
-     * @param scaleFactor the scale factor
+     *
+     * @param scaleFactor
+     *            the scale factor
      */
-    public void setScale(double scaleFactor) {
-        scale.setSelectedItem(percentFormat.format(scaleFactor) + "%");
-        previewPanel.setScaleFactor(scaleFactor / 100d);
+    public void setScale(final double scaleFactor) {
+        this.scale
+        .setSelectedItem(this.percentFormat.format(scaleFactor) + "%");
+        this.previewPanel.setScaleFactor(scaleFactor / 100d);
     }
 
     /**
@@ -552,62 +774,67 @@ public class PreviewDialog extends JFrame implements StatusListener {
      */
     public void setScaleToFitWindow() {
         try {
-            setScale(previewPanel.getScaleToFitWindow() * 100);
-        } catch (FOPException fopEx) {
+            setScale(this.previewPanel.getScaleToFitWindow() * 100);
+        } catch (final FOPException fopEx) {
             fopEx.printStackTrace();
         }
     }
 
     /**
-     * Sets the scaling so the contents are spread over the whole width available.
+     * Sets the scaling so the contents are spread over the whole width
+     * available.
      */
     public void setScaleToFitWidth() {
         try {
-            setScale(previewPanel.getScaleToFitWidth() * 100);
-        } catch (FOPException fopEx) {
+            setScale(this.previewPanel.getScaleToFitWidth() * 100);
+        } catch (final FOPException fopEx) {
             fopEx.printStackTrace();
         }
     }
 
-    private void scaleActionPerformed(ActionEvent e) {
-        int index = scale.getSelectedIndex();
+    private void scaleActionPerformed(final ActionEvent e) {
+        final int index = this.scale.getSelectedIndex();
         if (index == 0) {
             setScaleToFitWindow();
         } else if (index == 1) {
             setScaleToFitWidth();
         } else {
-            String item = (String)scale.getSelectedItem();
+            final String item = (String) this.scale.getSelectedItem();
             setScale(Double.parseDouble(item.substring(0, item.indexOf('%'))));
         }
     }
 
     /**
      * Prints the document.
-     * @param showDialog true if show dialog
+     *
+     * @param showDialog
+     *            true if show dialog
      */
-    public void startPrinterJob(boolean showDialog) {
-        //Restore originally configured target resolution
-        float saveResolution = foUserAgent.getTargetResolution();
-        foUserAgent.setTargetResolution(this.configuredTargetResolution);
+    public void startPrinterJob(final boolean showDialog) {
+        // Restore originally configured target resolution
+        final float saveResolution = this.foUserAgent.getTargetResolution();
+        this.foUserAgent.setTargetResolution(this.configuredTargetResolution);
 
-        PrinterJob pj = PrinterJob.getPrinterJob();
-        pj.setPageable(renderer);
+        final PrinterJob pj = PrinterJob.getPrinterJob();
+        pj.setPageable(this.renderer);
         if (!showDialog || pj.printDialog()) {
             try {
                 pj.print();
-            } catch (PrinterException e) {
+            } catch (final PrinterException e) {
                 e.printStackTrace();
             }
         }
 
-        foUserAgent.setTargetResolution(saveResolution);
+        this.foUserAgent.setTargetResolution(saveResolution);
     }
 
     /**
      * Sets message to be shown in the status bar in a thread safe way.
-     * @param message the message
+     *
+     * @param message
+     *            the message
      */
-    public void setStatus(String message) {
+    public void setStatus(final String message) {
         SwingUtilities.invokeLater(new ShowStatus(message));
     }
 
@@ -615,24 +842,28 @@ public class PreviewDialog extends JFrame implements StatusListener {
     private class ShowStatus implements Runnable {
 
         /** The message to display */
-        private String message;
+        private final String message;
 
         /**
          * Constructs ShowStatus thread
-         * @param message message to display
+         *
+         * @param message
+         *            message to display
          */
-        public ShowStatus(String message) {
+        public ShowStatus(final String message) {
             this.message = message;
         }
 
+        @Override
         public void run() {
-            processStatus.setText(message.toString());
+            PreviewDialog.this.processStatus.setText(this.message.toString());
         }
     }
 
     /**
      * Updates the message to be shown in the info bar in a thread safe way.
      */
+    @Override
     public void notifyPageRendered() {
         SwingUtilities.invokeLater(new ShowInfo());
     }
@@ -640,29 +871,33 @@ public class PreviewDialog extends JFrame implements StatusListener {
     /** This class is used to show info in a thread safe way. */
     private class ShowInfo implements Runnable {
 
+        @Override
         public void run() {
-            String message = translator.getString("Status.Page") + " "
-                    + (previewPanel.getPage() + 1) + " "
-                    + translator.getString("Status.of") + " "
-                    + (renderer.getNumberOfPages());
-            infoStatus.setText(message);
+            final String message = PreviewDialog.this.translator
+                    .getString("Status.Page")
+                    + " "
+                    + (PreviewDialog.this.previewPanel.getPage() + 1)
+                    + " "
+                    + PreviewDialog.this.translator.getString("Status.of")
+                    + " " + PreviewDialog.this.renderer.getNumberOfPages();
+            PreviewDialog.this.infoStatus.setText(message);
         }
     }
 
     /**
-     * Opens standard Swing error dialog box and reports given exception details.
-     * @param e the Exception
+     * Opens standard Swing error dialog box and reports given exception
+     * details.
+     *
+     * @param e
+     *            the Exception
      */
-    public void reportException(Exception e) {
-        String msg = translator.getString("Exception.Occured");
+    public void reportException(final Exception e) {
+        final String msg = this.translator.getString("Exception.Occured");
         setStatus(msg);
-        JOptionPane.showMessageDialog(
-            getContentPane(),
-            "<html><b>" + msg + ":</b><br>"
-                + e.getClass().getName() + "<br>"
-                + e.getMessage() + "</html>",
-            translator.getString("Exception.Error"),
-            JOptionPane.ERROR_MESSAGE
-        );
+        JOptionPane.showMessageDialog(getContentPane(),
+                "<html><b>" + msg + ":</b><br>" + e.getClass().getName()
+                + "<br>" + e.getMessage() + "</html>",
+                this.translator.getString("Exception.Error"),
+                JOptionPane.ERROR_MESSAGE);
     }
 }

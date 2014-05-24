@@ -29,7 +29,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-
 import org.apache.fop.fonts.FontCollection;
 import org.apache.fop.fonts.FontEventAdapter;
 import org.apache.fop.fonts.FontInfo;
@@ -37,9 +36,11 @@ import org.apache.fop.fonts.FontManager;
 import org.apache.fop.fonts.base14.Base14FontCollection;
 
 /**
- * Abstract base class for binary-writing {@link IFDocumentHandler} implementations.
+ * Abstract base class for binary-writing {@link IFDocumentHandler}
+ * implementations.
  */
-public abstract class AbstractBinaryWritingIFDocumentHandler extends AbstractIFDocumentHandler {
+public abstract class AbstractBinaryWritingIFDocumentHandler extends
+        AbstractIFDocumentHandler {
 
     /** The output stream to write the document to */
     protected OutputStream outputStream;
@@ -50,9 +51,10 @@ public abstract class AbstractBinaryWritingIFDocumentHandler extends AbstractIFD
     protected FontInfo fontInfo;
 
     /** {@inheritDoc} */
-    public void setResult(Result result) throws IFException {
+    @Override
+    public void setResult(final Result result) throws IFException {
         if (result instanceof StreamResult) {
-            StreamResult streamResult = (StreamResult)result;
+            final StreamResult streamResult = (StreamResult) result;
             OutputStream out = streamResult.getOutputStream();
             if (out == null) {
                 if (streamResult.getWriter() != null) {
@@ -60,61 +62,67 @@ public abstract class AbstractBinaryWritingIFDocumentHandler extends AbstractIFD
                             "FOP cannot use a Writer. Please supply an OutputStream!");
                 }
                 try {
-                    URL url = new URL(streamResult.getSystemId());
-                    File f = FileUtils.toFile(url);
+                    final URL url = new URL(streamResult.getSystemId());
+                    final File f = FileUtils.toFile(url);
                     if (f != null) {
                         out = new java.io.FileOutputStream(f);
                     } else {
                         out = url.openConnection().getOutputStream();
                     }
-                } catch (IOException ioe) {
-                    throw new IFException("I/O error while opening output stream" , ioe);
+                } catch (final IOException ioe) {
+                    throw new IFException(
+                            "I/O error while opening output stream", ioe);
                 }
                 out = new java.io.BufferedOutputStream(out);
                 this.ownOutputStream = true;
             }
-            if (out == null) {
-                throw new IllegalArgumentException("Need a StreamResult with an OutputStream");
-            }
             this.outputStream = out;
         } else {
             throw new UnsupportedOperationException(
-                    "Unsupported Result subclass: " + result.getClass().getName());
+                    "Unsupported Result subclass: "
+                            + result.getClass().getName());
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public FontInfo getFontInfo() {
         return this.fontInfo;
     }
 
     /** {@inheritDoc} */
-    public void setFontInfo(FontInfo fontInfo) {
+    @Override
+    public void setFontInfo(final FontInfo fontInfo) {
         this.fontInfo = fontInfo;
     }
 
     /** {@inheritDoc} */
-    public void setDefaultFontInfo(FontInfo fontInfo) {
-        FontManager fontManager = getUserAgent().getFactory().getFontManager();
-        FontCollection[] fontCollections = new FontCollection[] {
-                new Base14FontCollection(fontManager.isBase14KerningEnabled())
-        };
+    @Override
+    public void setDefaultFontInfo(final FontInfo fontInfo) {
+        final FontManager fontManager = getUserAgent().getFactory()
+                .getFontManager();
+        final FontCollection[] fontCollections = new FontCollection[] { new Base14FontCollection(
+                fontManager.isBase14KerningEnabled()) };
 
-        FontInfo fi = (fontInfo != null ? fontInfo : new FontInfo());
-        fi.setEventListener(new FontEventAdapter(getUserAgent().getEventBroadcaster()));
+        final FontInfo fi = fontInfo != null ? fontInfo : new FontInfo();
+        fi.setEventListener(new FontEventAdapter(getUserAgent()
+                .getEventBroadcaster()));
         fontManager.setup(fi, fontCollections);
         setFontInfo(fi);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void startDocument() throws IFException {
         super.startDocument();
         if (this.outputStream == null) {
-            throw new IllegalStateException("OutputStream hasn't been set through setResult()");
+            throw new IllegalStateException(
+                    "OutputStream hasn't been set through setResult()");
         }
     }
 
     /** {@inheritDoc} */
+    @Override
     public void endDocument() throws IFException {
         if (this.ownOutputStream) {
             IOUtils.closeQuietly(this.outputStream);

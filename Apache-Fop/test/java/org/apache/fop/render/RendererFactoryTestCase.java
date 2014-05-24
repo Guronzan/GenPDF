@@ -19,13 +19,7 @@
 
 package org.apache.fop.render;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import org.junit.Test;
-
 import org.apache.commons.io.output.NullOutputStream;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FopFactory;
@@ -37,6 +31,10 @@ import org.apache.fop.render.intermediate.IFDocumentHandler;
 import org.apache.fop.render.intermediate.IFRenderer;
 import org.apache.fop.render.pdf.PDFDocumentHandler;
 import org.apache.fop.render.rtf.RTFHandler;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests for {@link RendererFactory}.
@@ -45,8 +43,8 @@ public class RendererFactoryTestCase {
 
     @Test
     public void testDocumentHandlerLevel() throws Exception {
-        FopFactory fopFactory = FopFactory.newInstance();
-        RendererFactory factory = fopFactory.getRendererFactory();
+        final FopFactory fopFactory = FopFactory.newInstance();
+        final RendererFactory factory = fopFactory.getRendererFactory();
         FOUserAgent ua;
         IFDocumentHandler handler;
         IFDocumentHandler overrideHandler;
@@ -65,15 +63,15 @@ public class RendererFactoryTestCase {
         try {
             handler = factory.createDocumentHandler(ua, "invalid/format");
             fail("Expected UnsupportedOperationException");
-        } catch (UnsupportedOperationException uoe) {
-            //expected
+        } catch (final UnsupportedOperationException uoe) {
+            // expected
         }
     }
 
     @Test
     public void testRendererLevel() throws Exception {
-        FopFactory fopFactory = FopFactory.newInstance();
-        RendererFactory factory = fopFactory.getRendererFactory();
+        final FopFactory fopFactory = FopFactory.newInstance();
+        final RendererFactory factory = fopFactory.getRendererFactory();
         FOUserAgent ua;
         Renderer renderer;
 
@@ -97,52 +95,51 @@ public class RendererFactoryTestCase {
         try {
             renderer = factory.createRenderer(ua, "invalid/format");
             fail("Expected UnsupportedOperationException");
-        } catch (UnsupportedOperationException uoe) {
-            //expected
+        } catch (final UnsupportedOperationException uoe) {
+            // expected
         }
     }
 
     @Test
     public void testFOEventHandlerLevel() throws Exception {
-        FopFactory fopFactory = FopFactory.newInstance();
-        RendererFactory factory = fopFactory.getRendererFactory();
+        final FopFactory fopFactory = FopFactory.newInstance();
+        final RendererFactory factory = fopFactory.getRendererFactory();
         FOUserAgent ua;
         FOEventHandler foEventHandler;
         FOEventHandler overrideFOEventHandler;
 
         ua = fopFactory.newFOUserAgent();
-        foEventHandler = factory.createFOEventHandler(
-                ua, MimeConstants.MIME_PDF, new NullOutputStream());
+        foEventHandler = factory.createFOEventHandler(ua,
+                MimeConstants.MIME_PDF, new NullOutputStream());
         assertTrue(foEventHandler instanceof AreaTreeHandler);
 
         ua = fopFactory.newFOUserAgent();
-        foEventHandler = factory.createFOEventHandler(
-                ua, MimeConstants.MIME_RTF, new NullOutputStream());
+        foEventHandler = factory.createFOEventHandler(ua,
+                MimeConstants.MIME_RTF, new NullOutputStream());
         assertTrue(foEventHandler instanceof RTFHandler);
 
         ua = fopFactory.newFOUserAgent();
         try {
-            foEventHandler = factory.createFOEventHandler(
-                    ua, "invalid/format", new NullOutputStream());
+            foEventHandler = factory.createFOEventHandler(ua, "invalid/format",
+                    new NullOutputStream());
             fail("Expected UnsupportedOperationException");
-        } catch (UnsupportedOperationException uoe) {
-            //expected
+        } catch (final UnsupportedOperationException uoe) {
+            // expected
         }
 
         ua = fopFactory.newFOUserAgent();
         try {
-            foEventHandler = factory.createFOEventHandler(
-                    ua, MimeConstants.MIME_PDF, null);
+            foEventHandler = factory.createFOEventHandler(ua,
+                    MimeConstants.MIME_PDF, null);
             fail("Expected FOPException because of missing OutputStream");
-        } catch (FOPException fe) {
-            //expected
+        } catch (final FOPException fe) {
+            // expected
         }
 
         ua = fopFactory.newFOUserAgent();
         overrideFOEventHandler = new RTFHandler(ua, new NullOutputStream());
         ua.setFOEventHandlerOverride(overrideFOEventHandler);
-        foEventHandler = factory.createFOEventHandler(
-                ua, null, null);
+        foEventHandler = factory.createFOEventHandler(ua, null, null);
         assertTrue(foEventHandler == overrideFOEventHandler);
     }
 

@@ -19,31 +19,29 @@
 
 package org.apache.fop.events;
 
+import org.apache.fop.events.model.EventSeverity;
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.apache.fop.events.model.EventSeverity;
-import org.junit.Test;
-
 public class BasicEventTestCase {
 
     @Test
-    public void testBasics() throws Exception {
+    public void testBasics() {
 
-        MyEventListener listener = new MyEventListener();
+        final MyEventListener listener = new MyEventListener();
 
-        EventBroadcaster broadcaster = new DefaultEventBroadcaster();
+        final EventBroadcaster broadcaster = new DefaultEventBroadcaster();
         broadcaster.addEventListener(listener);
         assertTrue(broadcaster.hasEventListeners());
 
-        Event ev = new Event(this, "123", EventSeverity.INFO,
-                Event.paramsBuilder()
-                    .param("reason", "I'm tired")
-                    .param("blah", new Integer(23))
-                    .build());
+        Event ev = new Event(this, "123", EventSeverity.INFO, Event
+                .paramsBuilder().param("reason", "I'm tired")
+                .param("blah", new Integer(23)).build());
         broadcaster.broadcastEvent(ev);
 
         ev = listener.event;
@@ -56,23 +54,23 @@ public class BasicEventTestCase {
         broadcaster.removeEventListener(listener);
         assertFalse(broadcaster.hasEventListeners());
 
-        //Just check that there are no NPEs
+        // Just check that there are no NPEs
         broadcaster.broadcastEvent(ev);
     }
 
     @Test
     public void testEventProducer() throws Exception {
-        MyEventListener listener = new MyEventListener();
+        final MyEventListener listener = new MyEventListener();
 
-        EventBroadcaster broadcaster = new DefaultEventBroadcaster();
+        final EventBroadcaster broadcaster = new DefaultEventBroadcaster();
         broadcaster.addEventListener(listener);
         assertTrue(broadcaster.hasEventListeners());
 
-
-        TestEventProducer producer = TestEventProducer.Provider.get(broadcaster);
+        final TestEventProducer producer = TestEventProducer.Provider
+                .get(broadcaster);
         producer.complain(this, "I'm tired", 23);
 
-        Event ev = listener.event;
+        final Event ev = listener.event;
         assertNotNull(ev);
         assertEquals("org.apache.fop.events.TestEventProducer.complain",
                 listener.event.getEventID());
@@ -83,7 +81,7 @@ public class BasicEventTestCase {
         broadcaster.removeEventListener(listener);
         assertFalse(broadcaster.hasEventListeners());
 
-        //Just check that there are no NPEs
+        // Just check that there are no NPEs
         broadcaster.broadcastEvent(ev);
     }
 
@@ -91,7 +89,8 @@ public class BasicEventTestCase {
 
         private Event event;
 
-        public void processEvent(Event event) {
+        @Override
+        public void processEvent(final Event event) {
             if (this.event != null) {
                 fail("Multiple events received");
             }

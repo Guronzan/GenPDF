@@ -20,7 +20,6 @@
 package org.apache.fop.fonts.substitute;
 
 import org.apache.avalon.framework.configuration.Configuration;
-
 import org.apache.fop.apps.FOPException;
 
 /**
@@ -33,25 +32,27 @@ public class FontSubstitutionsConfigurator {
     /**
      * Main constructor
      *
-     * @param cfg a configuration
+     * @param cfg
+     *            a configuration
      */
-    public FontSubstitutionsConfigurator(Configuration cfg) {
+    public FontSubstitutionsConfigurator(final Configuration cfg) {
         this.cfg = cfg;
     }
 
-    private static FontQualifier getQualfierFromConfiguration(Configuration cfg)
-    throws FOPException {
-        String fontFamily = cfg.getAttribute("font-family", null);
+    private static FontQualifier getQualfierFromConfiguration(
+            final Configuration cfg) throws FOPException {
+        final String fontFamily = cfg.getAttribute("font-family", null);
         if (fontFamily == null) {
-            throw new FOPException("substitution qualifier must have a font-family");
+            throw new FOPException(
+                    "substitution qualifier must have a font-family");
         }
-        FontQualifier qualifier = new FontQualifier();
+        final FontQualifier qualifier = new FontQualifier();
         qualifier.setFontFamily(fontFamily);
-        String fontWeight = cfg.getAttribute("font-weight", null);
+        final String fontWeight = cfg.getAttribute("font-weight", null);
         if (fontWeight != null) {
             qualifier.setFontWeight(fontWeight);
         }
-        String fontStyle = cfg.getAttribute("font-style", null);
+        final String fontStyle = cfg.getAttribute("font-style", null);
         if (fontStyle != null) {
             qualifier.setFontStyle(fontStyle);
         }
@@ -61,23 +62,27 @@ public class FontSubstitutionsConfigurator {
     /**
      * Configures a font substitution catalog
      *
-     * @param substitutions font substitutions
-     * @throws FOPException if something's wrong with the config data
+     * @param substitutions
+     *            font substitutions
+     * @throws FOPException
+     *             if something's wrong with the config data
      */
-    public void configure(FontSubstitutions substitutions) throws FOPException {
-        Configuration[] substitutionCfgs = cfg.getChildren("substitution");
-        for (int i = 0; i < substitutionCfgs.length; i++) {
-            Configuration fromCfg = substitutionCfgs[i].getChild("from", false);
+    public void configure(final FontSubstitutions substitutions)
+            throws FOPException {
+        final Configuration[] substitutionCfgs = this.cfg
+                .getChildren("substitution");
+        for (final Configuration substitutionCfg : substitutionCfgs) {
+            final Configuration fromCfg = substitutionCfg.getChild("from",
+                    false);
             if (fromCfg == null) {
-                throw new FOPException("'substitution' element without child 'from' element");
+                throw new FOPException(
+                        "'substitution' element without child 'from' element");
             }
-            Configuration toCfg = substitutionCfgs[i].getChild("to", false);
-            if (fromCfg == null) {
-                throw new FOPException("'substitution' element without child 'to' element");
-            }
-            FontQualifier fromQualifier = getQualfierFromConfiguration(fromCfg);
-            FontQualifier toQualifier = getQualfierFromConfiguration(toCfg);
-            FontSubstitution substitution = new FontSubstitution(fromQualifier, toQualifier);
+            final Configuration toCfg = substitutionCfg.getChild("to", false);
+            final FontQualifier fromQualifier = getQualfierFromConfiguration(fromCfg);
+            final FontQualifier toQualifier = getQualfierFromConfiguration(toCfg);
+            final FontSubstitution substitution = new FontSubstitution(
+                    fromQualifier, toQualifier);
             substitutions.add(substitution);
         }
     }

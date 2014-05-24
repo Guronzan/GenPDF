@@ -37,21 +37,32 @@ public class FOPException extends SAXException {
 
     /**
      * Constructs a new FOP exception with the specified detail message.
-     * @param message the detail message.
+     * 
+     * @param message
+     *            the detail message.
      */
-    public FOPException(String message) {
+    public FOPException(final String message) {
         super(message);
     }
 
     /**
-     * Constructs a new FOP exception with the specified detail message and location.
-     * @param message the detail message
-     * @param systemId the system id of the FO document which is associated with the exception
-     *                 may be null.
-     * @param line line number in the FO document which is associated with the exception.
-     * @param column clolumn number in the line which is associated with the exception.
+     * Constructs a new FOP exception with the specified detail message and
+     * location.
+     * 
+     * @param message
+     *            the detail message
+     * @param systemId
+     *            the system id of the FO document which is associated with the
+     *            exception may be null.
+     * @param line
+     *            line number in the FO document which is associated with the
+     *            exception.
+     * @param column
+     *            clolumn number in the line which is associated with the
+     *            exception.
      */
-    public FOPException(String message, String systemId, int line, int column) {
+    public FOPException(final String message, final String systemId,
+            final int line, final int column) {
         super(message);
         this.systemId = systemId;
         this.line = line;
@@ -59,38 +70,48 @@ public class FOPException extends SAXException {
     }
 
     /**
-     * Constructs a new FOP exception with the specified detail message and location.
-     * @param message the detail message.
-     * @param locator the locator holding the location.
+     * Constructs a new FOP exception with the specified detail message and
+     * location.
+     * 
+     * @param message
+     *            the detail message.
+     * @param locator
+     *            the locator holding the location.
      */
-    public FOPException(String message, Locator locator) {
+    public FOPException(final String message, final Locator locator) {
         super(message);
         setLocator(locator);
     }
 
-
     /**
      * Constructs a new FOP exception with the specified cause.
-     * @param cause the cause.
+     * 
+     * @param cause
+     *            the cause.
      */
-    public FOPException(Exception cause) {
+    public FOPException(final Exception cause) {
         super(cause);
     }
 
     /**
      * Constructs a new exception with the specified detail message and cause.
-     * @param message  the detail message
-     * @param cause the cause
+     * 
+     * @param message
+     *            the detail message
+     * @param cause
+     *            the cause
      */
-    public FOPException(String message, Exception cause) {
+    public FOPException(final String message, final Exception cause) {
         super(message, cause);
     }
 
     /**
      * Set a location associated with the exception.
-     * @param locator the locator holding the location.
+     * 
+     * @param locator
+     *            the locator holding the location.
      */
-    public void setLocator(Locator locator) {
+    public void setLocator(final Locator locator) {
         if (locator != null) {
             this.systemId = locator.getSystemId();
             this.line = locator.getLineNumber();
@@ -100,12 +121,19 @@ public class FOPException extends SAXException {
 
     /**
      * Set a location associated with the exception.
-     * @param systemId the system id of the FO document which is associated with the exception;
-     *                 may be null.
-     * @param line line number in the FO document which is associated with the exception.
-     * @param column column number in the line which is associated with the exception.
+     * 
+     * @param systemId
+     *            the system id of the FO document which is associated with the
+     *            exception; may be null.
+     * @param line
+     *            line number in the FO document which is associated with the
+     *            exception.
+     * @param column
+     *            column number in the line which is associated with the
+     *            exception.
      */
-    public void setLocation(String systemId, int line, int column) {
+    public void setLocation(final String systemId, final int line,
+            final int column) {
         this.systemId = systemId;
         this.line = line;
         this.column = column;
@@ -113,28 +141,33 @@ public class FOPException extends SAXException {
 
     /**
      * Indicate whether a location was set.
+     * 
      * @return whether a location was set
      */
     public boolean isLocationSet() {
         // TODO: this is actually a dangerous assumption: A line
         // number of 0 or -1 might be used to indicate an unknown line
         // number, while the system ID might still be of use.
-        return line > 0;
+        return this.line > 0;
     }
 
     /**
-     * Returns the detail message string of this FOP exception.
-     * If a location was set, the message is prepended with it in the
-     * form
+     * Returns the detail message string of this FOP exception. If a location
+     * was set, the message is prepended with it in the form
+     * 
      * <pre>
      *  SystemId:LL:CC: &amp;the message&amp;
      * </pre>
+     * 
      * (the format used by most GNU tools)
+     * 
      * @return the detail message string of this FOP exception
      */
+    @Override
     public String getMessage() {
         if (isLocationSet()) {
-            return systemId + ":" + line + ":" + column + ": " + super.getMessage();
+            return this.systemId + ":" + this.line + ":" + this.column + ": "
+                    + super.getMessage();
         } else {
             return super.getMessage();
         }
@@ -142,17 +175,18 @@ public class FOPException extends SAXException {
 
     /**
      * Attempts to recast the exception as other Throwable types.
+     * 
      * @return the exception recast as another type if possible, otherwise null.
      */
     protected Throwable getRootException() {
         Throwable result = getException();
 
         if (result instanceof SAXException) {
-            result = ((SAXException)result).getException();
+            result = ((SAXException) result).getException();
         }
         if (result instanceof java.lang.reflect.InvocationTargetException) {
-            result
-                = ((java.lang.reflect.InvocationTargetException)result).getTargetException();
+            result = ((java.lang.reflect.InvocationTargetException) result)
+                    .getTargetException();
         }
         if (result != getException()) {
             return result;
@@ -163,6 +197,7 @@ public class FOPException extends SAXException {
     /**
      * Prints this FOP exception and its backtrace to the standard error stream.
      */
+    @Override
     public void printStackTrace() {
         synchronized (System.err) {
             super.printStackTrace();
@@ -178,10 +213,14 @@ public class FOPException extends SAXException {
     }
 
     /**
-     * Prints this FOP exception and its backtrace to the specified print stream.
-     * @param stream PrintStream to use for output
+     * Prints this FOP exception and its backtrace to the specified print
+     * stream.
+     * 
+     * @param stream
+     *            PrintStream to use for output
      */
-    public void printStackTrace(java.io.PrintStream stream) {
+    @Override
+    public void printStackTrace(final java.io.PrintStream stream) {
         synchronized (stream) {
             super.printStackTrace(stream);
             if (getException() != null) {
@@ -196,10 +235,14 @@ public class FOPException extends SAXException {
     }
 
     /**
-     * Prints this FOP exception and its backtrace to the specified print writer.
-     * @param writer PrintWriter to use for output
+     * Prints this FOP exception and its backtrace to the specified print
+     * writer.
+     * 
+     * @param writer
+     *            PrintWriter to use for output
      */
-    public void printStackTrace(java.io.PrintWriter writer) {
+    @Override
+    public void printStackTrace(final java.io.PrintWriter writer) {
         synchronized (writer) {
             super.printStackTrace(writer);
             if (getException() != null) {
@@ -215,13 +258,16 @@ public class FOPException extends SAXException {
 
     /**
      * Sets the localized message for this exception.
-     * @param msg the localized message
+     * 
+     * @param msg
+     *            the localized message
      */
-    public void setLocalizedMessage(String msg) {
+    public void setLocalizedMessage(final String msg) {
         this.localizedMessage = msg;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getLocalizedMessage() {
         if (this.localizedMessage != null) {
             return this.localizedMessage;
@@ -229,7 +275,5 @@ public class FOPException extends SAXException {
             return super.getLocalizedMessage();
         }
     }
-
-
 
 }

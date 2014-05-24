@@ -95,8 +95,8 @@ public class PDFGState extends PDFObject {
         vals.put(ML, new Float(10.0));
         vals.put(D, "0 []");
         vals.put(RI, "RelativeColorimetric");
-        vals.put(OP, Boolean.FALSE);
-        vals.put(op, Boolean.FALSE);
+        vals.put(OP, false);
+        vals.put(op, false);
         vals.put(OPM, new Integer(1));
         vals.put(Font, "");*/
 

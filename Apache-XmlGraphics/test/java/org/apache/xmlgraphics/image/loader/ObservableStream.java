@@ -26,8 +26,7 @@ import java.lang.reflect.Proxy;
 
 import javax.imageio.stream.ImageInputStream;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Implemented by observable streams.
@@ -36,44 +35,49 @@ public interface ObservableStream {
 
     /**
      * Indicates whether the stream has been closed.
+     * 
      * @return true if the stream is closed
      */
     boolean isClosed();
 
     /**
      * Returns the system ID for the stream being observed.
+     * 
      * @return the system ID
      */
     String getSystemID();
 
     public static class Factory {
 
-        public static ImageInputStream observe(ImageInputStream iin, String systemID) {
-            return (ImageInputStream)Proxy.newProxyInstance(
-                    Factory.class.getClassLoader(),
-                    new Class[] {ImageInputStream.class, ObservableStream.class},
-                    new ObservingImageInputStreamInvocationHandler(iin, systemID));
+        public static ImageInputStream observe(final ImageInputStream iin,
+                final String systemID) {
+            return (ImageInputStream) Proxy.newProxyInstance(Factory.class
+                    .getClassLoader(), new Class[] { ImageInputStream.class,
+                    ObservableStream.class },
+                    new ObservingImageInputStreamInvocationHandler(iin,
+                            systemID));
         }
 
     }
 
-    public static class ObservingImageInputStreamInvocationHandler
-            implements InvocationHandler, ObservableStream {
+    @Slf4j
+    public static class ObservingImageInputStreamInvocationHandler implements
+            InvocationHandler, ObservableStream {
 
-        /** logger */
-        protected static Log log = LogFactory.getLog(ObservableInputStream.class);
-
-        private ImageInputStream iin;
+        private final ImageInputStream iin;
         private boolean closed;
-        private String systemID;
+        private final String systemID;
 
-        public ObservingImageInputStreamInvocationHandler(ImageInputStream iin, String systemID) {
+        public ObservingImageInputStreamInvocationHandler(
+                final ImageInputStream iin, final String systemID) {
             this.iin = iin;
             this.systemID = systemID;
         }
 
         /** {@inheritDoc} */
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        @Override
+        public Object invoke(final Object proxy, final Method method,
+                final Object[] args) throws Throwable {
             if (method.getDeclaringClass().equals(ObservableStream.class)) {
                 return method.invoke(this, args);
             } else if ("close".equals(method.getName())) {
@@ -82,8 +86,9 @@ public interface ObservableStream {
                     closed = true;
                     try {
                         return method.invoke(iin, args);
-                    } catch (InvocationTargetException ite) {
-                        log.error("Error while closing underlying stream: " + ite.getMessage());
+                    } catch (final InvocationTargetException ite) {
+                        log.error("Error while closing underlying stream: ",
+                                ite);
                         throw ite;
                     }
                 } else {
@@ -95,11 +100,13 @@ public interface ObservableStream {
         }
 
         /** {@inheritDoc} */
+        @Override
         public String getSystemID() {
             return this.systemID;
         }
 
         /** {@inheritDoc} */
+        @Override
         public boolean isClosed() {
             return this.closed;
         }

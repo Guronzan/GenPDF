@@ -33,17 +33,17 @@ import java.util.Map;
 import org.apache.commons.io.IOUtils;
 
 /**
- * This class handles looking up service providers on the class path.
- * It implements the system described in:
+ * This class handles looking up service providers on the class path. It
+ * implements the system described in:
  *
- * <a href='http://java.sun.com/j2se/1.3/docs/guide/jar/jar.html#Service Provider'>JAR
- * File Specification Under Service Provider</a>. Note that this
- * interface is very similar to the one they describe which seems to
- * be missing in the JDK.
+ * <a href='http://java.sun.com/j2se/1.3/docs/guide/jar/jar.html#Service
+ * Provider'>JAR File Specification Under Service Provider</a>. Note that this
+ * interface is very similar to the one they describe which seems to be missing
+ * in the JDK.
  *
  * @version $Id: Service.java 1345683 2012-06-03 14:50:33Z gadams $
  *
- * Originally authored by Thomas DeWeese.
+ *          Originally authored by Thomas DeWeese.
  */
 public final class Service {
 
@@ -55,57 +55,58 @@ public final class Service {
     static Map<String, List<Object>> instanceMap = new java.util.HashMap<String, List<Object>>();
 
     /**
-     * Returns an iterator where each element should implement the
-     * interface (or subclass the baseclass) described by cls.  The
-     * Classes are found by searching the classpath for service files
-     * named: 'META-INF/services/&lt;fully qualified classname&gt; that list
-     * fully qualifted classnames of classes that implement the
-     * service files classes interface.  These classes must have
-     * default constructors.
+     * Returns an iterator where each element should implement the interface (or
+     * subclass the baseclass) described by cls. The Classes are found by
+     * searching the classpath for service files named:
+     * 'META-INF/services/&lt;fully qualified classname&gt; that list fully
+     * qualifted classnames of classes that implement the service files classes
+     * interface. These classes must have default constructors.
      *
-     * @param cls The class/interface to search for providers of.
+     * @param cls
+     *            The class/interface to search for providers of.
      */
-    public static synchronized Iterator<Object> providers(Class<?> cls) {
-        String serviceFile = getServiceFilename(cls);
+    @SuppressWarnings("unchecked")
+    public static synchronized <T> Iterator<T> providers(final Class<T> cls) {
+        final String serviceFile = getServiceFilename(cls);
 
         List<Object> l = instanceMap.get(serviceFile);
         if (l != null) {
-            return l.iterator();
+            return (Iterator<T>) l.iterator();
         }
 
         l = new java.util.ArrayList<Object>();
         instanceMap.put(serviceFile, l);
 
-        ClassLoader cl = getClassLoader(cls);
+        final ClassLoader cl = getClassLoader(cls);
         if (cl != null) {
-            List<String> names = getProviderNames(cls, cl);
-            for (String name : names) {
+            final List<String> names = getProviderNames(cls, cl);
+            for (final String name : names) {
                 try {
                     // Try and load the class
-                    Object obj = cl.loadClass(name).newInstance();
+                    final Object obj = cl.loadClass(name).newInstance();
                     // stick it into our vector...
                     l.add(obj);
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     // Just try the next name
                 }
             }
         }
-        return l.iterator();
+        return (Iterator<T>) l.iterator();
     }
 
     /**
-     * Returns an iterator where each element should be the name
-     * of a class that implements the
-     * interface (or subclass the baseclass) described by cls.  The
-     * Classes are found by searching the classpath for service files
-     * named: 'META-INF/services/&lt;fully qualified classname&gt; that list
-     * fully qualified classnames of classes that implement the
-     * service files classes interface.
+     * Returns an iterator where each element should be the name of a class that
+     * implements the interface (or subclass the baseclass) described by cls.
+     * The Classes are found by searching the classpath for service files named:
+     * 'META-INF/services/&lt;fully qualified classname&gt; that list fully
+     * qualified classnames of classes that implement the service files classes
+     * interface.
      *
-     * @param cls The class/interface to search for providers of.
+     * @param cls
+     *            The class/interface to search for providers of.
      */
-    public static synchronized Iterator<String> providerNames(Class<?> cls) {
-        String serviceFile = getServiceFilename(cls);
+    public static synchronized Iterator<String> providerNames(final Class<?> cls) {
+        final String serviceFile = getServiceFilename(cls);
 
         List<String> l = classMap.get(serviceFile);
         if (l != null) {
@@ -118,31 +119,13 @@ public final class Service {
         return l.iterator();
     }
 
-    /**
-     * Returns an iterator where each element should implement the
-     * interface (or subclass the baseclass) described by cls.  The
-     * Classes are found by searching the classpath for service files
-     * named: 'META-INF/services/&lt;fully qualified classname&gt; that list
-     * fully qualified classnames of classes that implement the
-     * service files classes interface.  These classes must have
-     * default constructors if returnInstances is true.
-     *
-     * This is a deprecated, type-unsafe legacy method.
-     *
-     * @param cls The class/interface to search for providers of.
-     * @param returnInstances true if the iterator should return instances rather than class names.
-     * @deprecated use the type-safe methods providers(Class<?>) or providerNames(Class<?>) instead.
-     */
-    public static Iterator<?> providers(Class<?> cls, boolean returnInstances) {
-        return (returnInstances ? providers(cls) : providerNames(cls));
-    }
-
-    private static List<String> getProviderNames(Class<?> cls) {
+    private static List<String> getProviderNames(final Class<?> cls) {
         return getProviderNames(cls, getClassLoader(cls));
     }
 
-    private static List<String> getProviderNames(Class<?> cls, ClassLoader cl) {
-        List<String> l = new java.util.ArrayList<String>();
+    private static List<String> getProviderNames(final Class<?> cls,
+            final ClassLoader cl) {
+        final List<String> l = new java.util.ArrayList<String>();
 
         // No class loader so we can't find 'serviceFile'.
         if (cl == null) {
@@ -152,21 +135,22 @@ public final class Service {
         Enumeration<URL> e;
         try {
             e = cl.getResources(getServiceFilename(cls));
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             return l;
         }
 
         while (e.hasMoreElements()) {
             try {
-                URL u = e.nextElement();
+                final URL u = e.nextElement();
 
-                InputStream    is = u.openStream();
-                Reader         r  = new InputStreamReader(is, "UTF-8");
-                BufferedReader br = new BufferedReader(r);
+                final InputStream is = u.openStream();
+                final Reader r = new InputStreamReader(is, "UTF-8");
+                final BufferedReader br = new BufferedReader(r);
                 try {
-                    for (String line = br.readLine(); line != null; line = br.readLine()) {
+                    for (String line = br.readLine(); line != null; line = br
+                            .readLine()) {
                         // First strip any comment...
-                        int idx = line.indexOf('#');
+                        final int idx = line.indexOf('#');
                         if (idx != -1) {
                             line = line.substring(0, idx);
                         }
@@ -182,18 +166,18 @@ public final class Service {
                     IOUtils.closeQuietly(br);
                     IOUtils.closeQuietly(is);
                 }
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 // Just try the next file...
             }
         }
         return l;
     }
 
-    private static ClassLoader getClassLoader(Class<?> cls) {
+    private static ClassLoader getClassLoader(final Class<?> cls) {
         ClassLoader cl = null;
         try {
             cl = cls.getClassLoader();
-        } catch (SecurityException se) {
+        } catch (final SecurityException se) {
             // Ooops! can't get his class loader.
         }
         // Can always request your own class loader. But it might be 'null'.
@@ -206,7 +190,7 @@ public final class Service {
         return cl;
     }
 
-    private static String getServiceFilename(Class<?> cls) {
+    private static String getServiceFilename(final Class<?> cls) {
         return "META-INF/services/" + cls.getName();
     }
 

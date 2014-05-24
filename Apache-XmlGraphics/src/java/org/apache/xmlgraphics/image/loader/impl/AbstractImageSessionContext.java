@@ -36,45 +36,47 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.xmlgraphics.image.loader.ImageSessionContext;
 import org.apache.xmlgraphics.image.loader.ImageSource;
 import org.apache.xmlgraphics.image.loader.util.ImageUtil;
 import org.apache.xmlgraphics.image.loader.util.SoftMapCache;
 
 /**
- * Abstract base class for classes implementing ImageSessionContext. This class provides all the
- * special treatment for Source creation, i.e. it provides optimized Source objects where possible.
+ * Abstract base class for classes implementing ImageSessionContext. This class
+ * provides all the special treatment for Source creation, i.e. it provides
+ * optimized Source objects where possible.
  */
-public abstract class AbstractImageSessionContext implements ImageSessionContext {
-
-    /** logger */
-    private static Log log = LogFactory.getLog(AbstractImageSessionContext.class);
+@Slf4j
+public abstract class AbstractImageSessionContext implements
+        ImageSessionContext {
 
     private static boolean noSourceReuse = false;
 
     static {
-        //TODO Temporary measure to track down a problem
-        //See: http://markmail.org/message/k6mno3jsxmovaz2e
-        String v = System.getProperty(
-                AbstractImageSessionContext.class.getName() + ".no-source-reuse");
+        // TODO Temporary measure to track down a problem
+        // See: http://markmail.org/message/k6mno3jsxmovaz2e
+        final String v = System.getProperty(AbstractImageSessionContext.class
+                .getName() + ".no-source-reuse");
         noSourceReuse = Boolean.valueOf(v).booleanValue();
     }
 
     /**
      * Attempts to resolve the given URI.
-     * @param uri URI to access
+     * 
+     * @param uri
+     *            URI to access
      * @return A {@link javax.xml.transform.Source} object, or null if the URI
-     * cannot be resolved.
+     *         cannot be resolved.
      */
-    protected abstract Source resolveURI(String uri);
+    protected abstract Source resolveURI(final String uri);
 
     /** {@inheritDoc} */
-    public Source newSource(String uri) {
-        Source source = resolveURI(uri);
+    @Override
+    public Source newSource(final String uri) {
+        final Source source = resolveURI(uri);
         if (source == null) {
             if (log.isDebugEnabled()) {
                 log.debug("URI could not be resolved: " + uri);
@@ -82,31 +84,34 @@ public abstract class AbstractImageSessionContext implements ImageSessionContext
             return null;
         }
         if (!(source instanceof StreamSource) && !(source instanceof SAXSource)) {
-            //Return any non-stream Sources and let the ImageLoaders deal with them
+            // Return any non-stream Sources and let the ImageLoaders deal with
+            // them
             return source;
         }
 
         ImageSource imageSource = null;
 
-        String resolvedURI = source.getSystemId();
+        final String resolvedURI = source.getSystemId();
         URL url;
         try {
             url = new URL(resolvedURI);
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             url = null;
         }
-        File f = /*FileUtils.*/toFile(url);
+        final File f = /* FileUtils. */toFile(url);
         if (f != null) {
             boolean directFileAccess = true;
-            assert (source instanceof StreamSource) || (source instanceof SAXSource);
+            assert source instanceof StreamSource
+                    || source instanceof SAXSource;
             InputStream in = ImageUtil.getInputStream(source);
             if (in == null) {
                 try {
                     in = new java.io.FileInputStream(f);
-                } catch (FileNotFoundException fnfe) {
+                } catch (final FileNotFoundException fnfe) {
                     log.error("Error while opening file."
                             + " Could not load image from system identifier '"
-                            + source.getSystemId() + "' (" + fnfe.getMessage() + ")");
+                            + source.getSystemId() + "' (" + fnfe.getMessage()
+                            + ")");
                     return null;
                 }
             }
@@ -114,19 +119,23 @@ public abstract class AbstractImageSessionContext implements ImageSessionContext
                 in = ImageUtil.decorateMarkSupported(in);
                 try {
                     if (ImageUtil.isGZIPCompressed(in)) {
-                        //GZIPped stream are not seekable, so buffer/cache like other URLs
+                        // GZIPped stream are not seekable, so buffer/cache like
+                        // other URLs
                         directFileAccess = false;
                     }
-                } catch (IOException ioe) {
+                } catch (final IOException ioe) {
                     log.error("Error while checking the InputStream for GZIP compression."
                             + " Could not load image from system identifier '"
-                            + source.getSystemId() + "' (" + ioe.getMessage() + ")");
+                            + source.getSystemId()
+                            + "' ("
+                            + ioe.getMessage()
+                            + ")");
                     return null;
                 }
             }
 
             if (directFileAccess) {
-                //Close as the file is reopened in a more optimal way
+                // Close as the file is reopened in a more optimal way
                 IOUtils.closeQuietly(in);
                 try {
                     // We let the OS' file system cache do the caching for us
@@ -135,25 +144,30 @@ public abstract class AbstractImageSessionContext implements ImageSessionContext
                             .createImageInputStream(f);
                     if (newInputStream == null) {
                         log.error("Unable to create ImageInputStream for local file "
-                                        + f
-                                        + " from system identifier '"
-                                        + source.getSystemId() + "'");
+                                + f
+                                + " from system identifier '"
+                                + source.getSystemId() + "'");
                         return null;
                     } else {
                         imageSource = new ImageSource(newInputStream,
                                 resolvedURI, true);
                     }
-                } catch (IOException ioe) {
+                } catch (final IOException ioe) {
                     log.error("Unable to create ImageInputStream for local file"
                             + " from system identifier '"
-                            + source.getSystemId() + "' (" + ioe.getMessage() + ")");
+                            + source.getSystemId()
+                            + "' ("
+                            + ioe.getMessage()
+                            + ")");
                 }
             }
         }
 
         if (imageSource == null) {
-            if (ImageUtil.hasReader(source) && !ImageUtil.hasInputStream(source)) {
-                //We don't handle Reader instances here so return the Source unchanged
+            if (ImageUtil.hasReader(source)
+                    && !ImageUtil.hasInputStream(source)) {
+                // We don't handle Reader instances here so return the Source
+                // unchanged
                 return source;
             }
             // Got a valid source, obtain an InputStream from it
@@ -161,9 +175,9 @@ public abstract class AbstractImageSessionContext implements ImageSessionContext
             if (in == null && url != null) {
                 try {
                     in = url.openStream();
-                } catch (Exception ex) {
+                } catch (final Exception ex) {
                     log.error("Unable to obtain stream from system identifier '"
-                        + source.getSystemId() + "'");
+                            + source.getSystemId() + "'");
                 }
             }
             if (in == null) {
@@ -173,50 +187,53 @@ public abstract class AbstractImageSessionContext implements ImageSessionContext
             }
 
             try {
-                //Buffer and uncompress if necessary
+                // Buffer and uncompress if necessary
                 in = ImageUtil.autoDecorateInputStream(in);
-                imageSource = new ImageSource(
-                        createImageInputStream(in), source.getSystemId(), false);
-            } catch (IOException ioe) {
+                imageSource = new ImageSource(createImageInputStream(in),
+                        source.getSystemId(), false);
+            } catch (final IOException ioe) {
                 log.error("Unable to create ImageInputStream for InputStream"
-                        + " from system identifier '"
-                        + source.getSystemId() + "' (" + ioe.getMessage() + ")");
+                        + " from system identifier '" + source.getSystemId()
+                        + "' (" + ioe.getMessage() + ")");
             }
         }
         return imageSource;
     }
 
-    protected ImageInputStream createImageInputStream(InputStream in) throws IOException {
-        ImageInputStream iin = ImageIO.createImageInputStream(in);
-        return (ImageInputStream)Proxy.newProxyInstance(
+    protected ImageInputStream createImageInputStream(final InputStream in)
+            throws IOException {
+        final ImageInputStream iin = ImageIO.createImageInputStream(in);
+        return (ImageInputStream) Proxy.newProxyInstance(
                 ImageInputStream.class.getClassLoader(),
-                new Class[] {ImageInputStream.class},
+                new Class[] { ImageInputStream.class },
                 new ObservingImageInputStreamInvocationHandler(iin, in));
     }
 
-    private static class ObservingImageInputStreamInvocationHandler
-        implements InvocationHandler {
+    private static class ObservingImageInputStreamInvocationHandler implements
+            InvocationHandler {
 
-        private ImageInputStream iin;
+        private final ImageInputStream iin;
         private InputStream in;
 
-        public ObservingImageInputStreamInvocationHandler(ImageInputStream iin,
-                InputStream underlyingStream) {
+        public ObservingImageInputStreamInvocationHandler(
+                final ImageInputStream iin, final InputStream underlyingStream) {
             this.iin = iin;
             this.in = underlyingStream;
         }
 
         /** {@inheritDoc} */
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        @Override
+        public Object invoke(final Object proxy, final Method method,
+                final Object[] args) throws Throwable {
             if ("close".equals(method.getName())) {
                 try {
-                    return method.invoke(iin, args);
+                    return method.invoke(this.iin, args);
                 } finally {
                     IOUtils.closeQuietly(this.in);
                     this.in = null;
                 }
             } else {
-                return method.invoke(iin, args);
+                return method.invoke(this.iin, args);
             }
         }
 
@@ -225,19 +242,22 @@ public abstract class AbstractImageSessionContext implements ImageSessionContext
     /**
      * Convert from a <code>URL</code> to a <code>File</code>.
      * <p>
-     * This method will decode the URL.
-     * Syntax such as <code>file:///my%20docs/file.txt</code> will be
-     * correctly decoded to <code>/my docs/file.txt</code>.
+     * This method will decode the URL. Syntax such as
+     * <code>file:///my%20docs/file.txt</code> will be correctly decoded to
+     * <code>/my docs/file.txt</code>.
      * <p>
-     * Note: this method has been copied over from Apache Commons IO and enhanced to support
-     * UNC paths.
+     * Note: this method has been copied over from Apache Commons IO and
+     * enhanced to support UNC paths.
      *
-     * @param url  the file URL to convert, <code>null</code> returns <code>null</code>
-     * @return the equivalent <code>File</code> object, or <code>null</code>
-     *  if the URL's protocol is not <code>file</code>
-     * @throws IllegalArgumentException if the file is incorrectly encoded
+     * @param url
+     *            the file URL to convert, <code>null</code> returns
+     *            <code>null</code>
+     * @return the equivalent <code>File</code> object, or <code>null</code> if
+     *         the URL's protocol is not <code>file</code>
+     * @throws IllegalArgumentException
+     *             if the file is incorrectly encoded
      */
-    public static File toFile(URL url) {
+    public static File toFile(final URL url) {
         if (url == null || !url.getProtocol().equals("file")) {
             return null;
         } else {
@@ -255,22 +275,27 @@ public abstract class AbstractImageSessionContext implements ImageSessionContext
                     return null;
                 }
                 return f;
-            } catch (java.io.UnsupportedEncodingException uee) {
+            } catch (final java.io.UnsupportedEncodingException uee) {
                 assert false;
                 return null;
             }
         }
     }
 
-    private SoftMapCache sessionSources = new SoftMapCache(false); //no need for synchronization
+    private final SoftMapCache sessionSources = new SoftMapCache(false); // no
+                                                                         // need
+                                                                         // for
+                                                                         // synchronization
 
     /** {@inheritDoc} */
-    public Source getSource(String uri) {
-        return (Source)sessionSources.remove(uri);
+    @Override
+    public Source getSource(final String uri) {
+        return (Source) this.sessionSources.remove(uri);
     }
 
     /** {@inheritDoc} */
-    public Source needSource(String uri) throws FileNotFoundException {
+    @Override
+    public Source needSource(final String uri) throws FileNotFoundException {
         Source src = getSource(uri);
         if (src == null) {
             if (log.isDebugEnabled()) {
@@ -290,40 +315,45 @@ public abstract class AbstractImageSessionContext implements ImageSessionContext
     }
 
     /** {@inheritDoc} */
-    public void returnSource(String uri, Source src) {
-        //Safety check to make sure the Preloaders behave
-        ImageInputStream in = ImageUtil.getImageInputStream(src);
+    @Override
+    public void returnSource(final String uri, final Source src) {
+        // Safety check to make sure the Preloaders behave
+        final ImageInputStream in = ImageUtil.getImageInputStream(src);
         try {
             if (in != null && in.getStreamPosition() != 0) {
-                throw new IllegalStateException("ImageInputStream is not reset for: " + uri);
+                throw new IllegalStateException(
+                        "ImageInputStream is not reset for: " + uri);
             }
-        } catch (IOException ioe) {
-            //Ignore exception
+        } catch (final IOException ioe) {
+            // Ignore exception
             ImageUtil.closeQuietly(src);
         }
 
         if (isReusable(src)) {
-            //Only return the Source if it's reusable
+            // Only return the Source if it's reusable
             log.debug("Returning Source for " + uri);
-            sessionSources.put(uri, src);
+            this.sessionSources.put(uri, src);
         } else {
-            //Otherwise, try to close if possible and forget about it
+            // Otherwise, try to close if possible and forget about it
             ImageUtil.closeQuietly(src);
         }
     }
 
     /**
-     * Indicates whether a Source is reusable. A Source object is reusable if it's an
-     * {@link ImageSource} (containing an {@link ImageInputStream}) or a {@link DOMSource}.
-     * @param src the Source object
+     * Indicates whether a Source is reusable. A Source object is reusable if
+     * it's an {@link ImageSource} (containing an {@link ImageInputStream}) or a
+     * {@link DOMSource}.
+     * 
+     * @param src
+     *            the Source object
      * @return true if the Source is reusable
      */
-    protected boolean isReusable(Source src) {
+    protected boolean isReusable(final Source src) {
         if (noSourceReuse) {
             return false;
         }
         if (src instanceof ImageSource) {
-            ImageSource is = (ImageSource)src;
+            final ImageSource is = (ImageSource) src;
             if (is.getImageInputStream() != null) {
                 return true;
             }

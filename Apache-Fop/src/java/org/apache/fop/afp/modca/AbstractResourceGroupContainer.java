@@ -26,14 +26,11 @@ import java.util.Iterator;
 
 import org.apache.fop.afp.Completable;
 import org.apache.fop.afp.Factory;
-import org.apache.fop.afp.Streamable;
-
 
 /**
  * An abstract container of resource objects
  */
-public abstract class AbstractResourceGroupContainer extends AbstractPageObject
-implements Streamable {
+public abstract class AbstractResourceGroupContainer extends AbstractPageObject {
 
     /** The container started state */
     protected boolean started = false;
@@ -44,19 +41,23 @@ implements Streamable {
     /**
      * Default constructor
      *
-     * @param factory the object factory
+     * @param factory
+     *            the object factory
      */
-    public AbstractResourceGroupContainer(Factory factory) {
+    public AbstractResourceGroupContainer(final Factory factory) {
         super(factory);
     }
 
     /**
      * Named constructor
      *
-     * @param factory the object factory
-     * @param name the name of this resource container
+     * @param factory
+     *            the object factory
+     * @param name
+     *            the name of this resource container
      */
-    public AbstractResourceGroupContainer(Factory factory, String name) {
+    public AbstractResourceGroupContainer(final Factory factory,
+            final String name) {
         super(factory, name);
     }
 
@@ -79,8 +80,9 @@ implements Streamable {
      * @param heightRes
      *            the height resolution of the page.
      */
-    public AbstractResourceGroupContainer(Factory factory,
-            String name, int width, int height, int rotation, int widthRes, int heightRes) {
+    public AbstractResourceGroupContainer(final Factory factory,
+            final String name, final int width, final int height,
+            final int rotation, final int widthRes, final int heightRes) {
         super(factory, name, width, height, rotation, widthRes, heightRes);
     }
 
@@ -90,8 +92,8 @@ implements Streamable {
      * @return the number of resources in this container
      */
     protected int getResourceCount() {
-        if (resourceGroup != null) {
-            return resourceGroup.getResourceCount();
+        if (this.resourceGroup != null) {
+            return this.resourceGroup.getResourceCount();
         }
         return 0;
     }
@@ -102,7 +104,8 @@ implements Streamable {
      * @return true if this resource group container contains resources
      */
     protected boolean hasResources() {
-        return resourceGroup != null && resourceGroup.getResourceCount() > 0;
+        return this.resourceGroup != null
+                && this.resourceGroup.getResourceCount() > 0;
     }
 
     /**
@@ -111,56 +114,62 @@ implements Streamable {
      * @return the resource group in this resource group container
      */
     public ResourceGroup getResourceGroup() {
-        if (resourceGroup == null) {
-            resourceGroup = factory.createResourceGroup();
+        if (this.resourceGroup == null) {
+            this.resourceGroup = this.factory.createResourceGroup();
         }
-        return resourceGroup;
+        return this.resourceGroup;
     }
 
-//    /** {@inheritDoc} */
-//    protected void writeContent(OutputStream os) throws IOException {
-//        if (resourceGroup != null) {
-//            resourceGroup.writeToStream(os);
-//        }
-//        super.writeContent(os);
-//    }
+    // /** {@inheritDoc} */
+    // protected void writeContent(OutputStream os) throws IOException {
+    // if (resourceGroup != null) {
+    // resourceGroup.writeToStream(os);
+    // }
+    // super.writeContent(os);
+    // }
 
     /** {@inheritDoc} */
     @Override
-    public void writeToStream(OutputStream os) throws IOException {
-        if (!started) {
+    public void writeToStream(final OutputStream os) throws IOException {
+        if (!this.started) {
             writeStart(os);
-            started = true;
+            this.started = true;
         }
 
         writeContent(os);
 
-        if (complete) {
+        if (this.complete) {
             writeEnd(os);
         }
     }
 
     /** {@inheritDoc} */
     @Override
-    protected void writeObjects(Collection/*<AbstractAFPObject>*/ objects, OutputStream os)
-            throws IOException {
+    protected void writeObjects(
+            final Collection/* <AbstractAFPObject> */objects,
+            final OutputStream os) throws IOException {
         writeObjects(objects, os, false);
     }
 
     /**
      * Writes a collection of {@link AbstractAFPObject}s to the AFP Datastream.
      *
-     * @param objects a list of AFPObjects
-     * @param os The stream to write to
-     * @param forceWrite true if writing should happen in any case
-     * @throws java.io.IOException an I/O exception of some sort has occurred.
+     * @param objects
+     *            a list of AFPObjects
+     * @param os
+     *            The stream to write to
+     * @param forceWrite
+     *            true if writing should happen in any case
+     * @throws java.io.IOException
+     *             an I/O exception of some sort has occurred.
      */
-    protected void writeObjects(Collection/*<AbstractAFPObject>*/ objects, OutputStream os,
-            boolean forceWrite) throws IOException {
+    protected void writeObjects(
+            final Collection/* <AbstractAFPObject> */objects,
+            final OutputStream os, final boolean forceWrite) throws IOException {
         if (objects != null && objects.size() > 0) {
-            Iterator it = objects.iterator();
+            final Iterator it = objects.iterator();
             while (it.hasNext()) {
-                AbstractAFPObject ao = (AbstractAFPObject)it.next();
+                final AbstractAFPObject ao = (AbstractAFPObject) it.next();
                 if (forceWrite || canWrite(ao)) {
                     ao.writeToStream(os);
                     it.remove();
@@ -174,14 +183,15 @@ implements Streamable {
     /**
      * Returns true if this object can be written
      *
-     * @param obj an AFP object
+     * @param obj
+     *            an AFP object
      * @return true if this object can be written
      */
-    protected boolean canWrite(AbstractAFPObject obj) {
+    protected boolean canWrite(final AbstractAFPObject obj) {
         if (obj instanceof Completable) {
-            return ((Completable)obj).isComplete();
+            return ((Completable) obj).isComplete();
         } else {
-            return this.isComplete();
+            return isComplete();
         }
     }
 }

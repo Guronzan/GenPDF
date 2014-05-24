@@ -32,11 +32,9 @@ import java.awt.image.ComponentColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
-import java.io.IOException;
-
-import org.apache.xmlgraphics.util.UnitConv;
 
 import org.apache.fop.render.RendererContext.RendererContextWrapper;
+import org.apache.xmlgraphics.util.UnitConv;
 
 /**
  * Abstract base class for Graphics2DAdapter implementations.
@@ -45,18 +43,25 @@ public abstract class AbstractGraphics2DAdapter implements Graphics2DAdapter {
 
     /**
      * Paints the image to a BufferedImage and returns that.
-     * @param painter the painter which will paint the actual image
-     * @param context the renderer context for the current renderer
-     * @param resolution the requested bitmap resolution
-     * @param gray true if the generated image should be in grayscales
-     * @param withAlpha true if an alpha channel should be created
+     * 
+     * @param painter
+     *            the painter which will paint the actual image
+     * @param context
+     *            the renderer context for the current renderer
+     * @param resolution
+     *            the requested bitmap resolution
+     * @param gray
+     *            true if the generated image should be in grayscales
+     * @param withAlpha
+     *            true if an alpha channel should be created
      * @return the generated BufferedImage
      */
     protected BufferedImage paintToBufferedImage(
-            org.apache.xmlgraphics.java2d.Graphics2DImagePainter painter,
-             RendererContextWrapper context, int resolution, boolean gray, boolean withAlpha) {
-        int bmw = mpt2px(context.getWidth(), resolution);
-        int bmh = mpt2px(context.getHeight(), resolution);
+            final org.apache.xmlgraphics.java2d.Graphics2DImagePainter painter,
+            final RendererContextWrapper context, final int resolution,
+            final boolean gray, final boolean withAlpha) {
+        final int bmw = mpt2px(context.getWidth(), resolution);
+        final int bmh = mpt2px(context.getHeight(), resolution);
         BufferedImage bi;
         if (gray) {
             if (withAlpha) {
@@ -71,7 +76,7 @@ public abstract class AbstractGraphics2DAdapter implements Graphics2DAdapter {
                 bi = new BufferedImage(bmw, bmh, BufferedImage.TYPE_INT_RGB);
             }
         }
-        Graphics2D g2d = bi.createGraphics();
+        final Graphics2D g2d = bi.createGraphics();
         try {
             g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
                     RenderingHints.VALUE_FRACTIONALMETRICS_ON);
@@ -82,20 +87,18 @@ public abstract class AbstractGraphics2DAdapter implements Graphics2DAdapter {
             if (!withAlpha) {
                 g2d.clearRect(0, 0, bmw, bmh);
             }
-            /* debug code
-            int off = 2;
-            g2d.drawLine(off, 0, off, bmh);
-            g2d.drawLine(bmw - off, 0, bmw - off, bmh);
-            g2d.drawLine(0, off, bmw, off);
-            g2d.drawLine(0, bmh - off, bmw, bmh - off);
-            */
-            double sx = (double)bmw / context.getWidth();
-            double sy = (double)bmh / context.getHeight();
+            /*
+             * debug code int off = 2; g2d.drawLine(off, 0, off, bmh);
+             * g2d.drawLine(bmw - off, 0, bmw - off, bmh); g2d.drawLine(0, off,
+             * bmw, off); g2d.drawLine(0, bmh - off, bmw, bmh - off);
+             */
+            final double sx = (double) bmw / context.getWidth();
+            final double sy = (double) bmh / context.getHeight();
             g2d.scale(sx, sy);
 
-            //Paint the image on the BufferedImage
-            Rectangle2D area = new Rectangle2D.Double(
-                    0.0, 0.0, context.getWidth(), context.getHeight());
+            // Paint the image on the BufferedImage
+            final Rectangle2D area = new Rectangle2D.Double(0.0, 0.0,
+                    context.getWidth(), context.getHeight());
             painter.paint(g2d, area);
         } finally {
             g2d.dispose();
@@ -106,58 +109,48 @@ public abstract class AbstractGraphics2DAdapter implements Graphics2DAdapter {
     /**
      * Converts millipoints to pixels
      *
-     * @param unit the unit to convert in mpts
-     * @param resolution the target resolution
+     * @param unit
+     *            the unit to convert in mpts
+     * @param resolution
+     *            the target resolution
      * @return the converted unit in pixels
      */
-    protected int mpt2px(int unit, int resolution) {
-        return (int)Math.ceil(UnitConv.mpt2px(unit, resolution));
+    protected int mpt2px(final int unit, final int resolution) {
+        return (int) Math.ceil(UnitConv.mpt2px(unit, resolution));
     }
 
-    private static BufferedImage createGrayBufferedImageWithAlpha(int width, int height) {
+    private static BufferedImage createGrayBufferedImageWithAlpha(
+            final int width, final int height) {
         BufferedImage bi;
-        boolean alphaPremultiplied = true;
-        int bands = 2;
-        int[] bits = new int[bands];
+        final boolean alphaPremultiplied = true;
+        final int bands = 2;
+        final int[] bits = new int[bands];
         for (int i = 0; i < bands; i++) {
             bits[i] = 8;
         }
-        ColorModel cm = new ComponentColorModel(
-                ColorSpace.getInstance(ColorSpace.CS_GRAY),
-                bits,
-                true, alphaPremultiplied,
-                Transparency.TRANSLUCENT,
+        final ColorModel cm = new ComponentColorModel(
+                ColorSpace.getInstance(ColorSpace.CS_GRAY), bits, true,
+                alphaPremultiplied, Transparency.TRANSLUCENT,
                 DataBuffer.TYPE_BYTE);
-        WritableRaster wr = Raster.createInterleavedRaster(
-                DataBuffer.TYPE_BYTE,
-                width, height, bands,
-                new Point(0, 0));
+        final WritableRaster wr = Raster.createInterleavedRaster(
+                DataBuffer.TYPE_BYTE, width, height, bands, new Point(0, 0));
         bi = new BufferedImage(cm, wr, alphaPremultiplied, null);
         return bi;
     }
 
     /**
-     * Sets rendering hints on the Graphics2D created for painting to a BufferedImage. Subclasses
-     * can modify the settings to customize the behaviour.
-     * @param g2d the Graphics2D instance
+     * Sets rendering hints on the Graphics2D created for painting to a
+     * BufferedImage. Subclasses can modify the settings to customize the
+     * behaviour.
+     * 
+     * @param g2d
+     *            the Graphics2D instance
      */
-    protected void setRenderingHintsForBufferedImage(Graphics2D g2d) {
+    protected void setRenderingHintsForBufferedImage(final Graphics2D g2d) {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_OFF);
+                RenderingHints.VALUE_ANTIALIAS_OFF);
         g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-            RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-    }
-
-    /**
-     * {@inheritDoc}
-     * @deprecated
-     */
-    public void paintImage(Graphics2DImagePainter painter,
-            RendererContext context,
-            int x, int y, int width, int height) throws IOException {
-        //TODO Deprecated method to be removed once Barcode4J 2.1 is released.
-        paintImage((org.apache.xmlgraphics.java2d.Graphics2DImagePainter)painter,
-                context, x, y, width, height);
+                RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
     }
 
 }

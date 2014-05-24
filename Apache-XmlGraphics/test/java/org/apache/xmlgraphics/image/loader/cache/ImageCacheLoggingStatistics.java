@@ -19,55 +19,57 @@
 
 package org.apache.xmlgraphics.image.loader.cache;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * ImageCacheListener implementation for debugging purposes.
  */
-public class ImageCacheLoggingStatistics extends ImageCacheStatistics {
-
-    /** logger */
-    protected static Log log = LogFactory.getLog(ImageCacheLoggingStatistics.class);
+@Slf4j
+ public class ImageCacheLoggingStatistics extends ImageCacheStatistics {
 
     /**
-     * Main constructor.
-     * @param detailed true if statistics for each URI should be kept.
-     */
-    public ImageCacheLoggingStatistics(boolean detailed) {
-        super(detailed);
-    }
+      * Main constructor.
+      * 
+     * @param detailed
+     *            true if statistics for each URI should be kept.
+      */
+     public ImageCacheLoggingStatistics(final boolean detailed) {
+         super(detailed);
+     }
 
-    /** {@inheritDoc} */
-    public void invalidHit(String uri) {
-        super.invalidHit(uri);
-        log.info("Invalid HIT: " + uri);
-    }
+     /** {@inheritDoc} */
+     @Override
+     public void invalidHit(final String uri) {
+         super.invalidHit(uri);
+         log.info("Invalid HIT: " + uri);
+     }
 
-    /** {@inheritDoc} */
-    public void cacheHitImage(ImageKey key) {
-        super.cacheHitImage(key);
-        log.info("Image Cache HIT: " + key);
-    }
+     /** {@inheritDoc} */
+     @Override
+     public void cacheHitImage(final ImageKey key) {
+         super.cacheHitImage(key);
+         log.info("Image Cache HIT: " + key);
+     }
 
-    /** {@inheritDoc} */
-    public void cacheHitImageInfo(String uri) {
-        super.cacheHitImageInfo(uri);
-        log.info("ImageInfo Cache HIT: " + uri);
-    }
+     /** {@inheritDoc} */
+     @Override
+     public void cacheHitImageInfo(final String uri) {
+         super.cacheHitImageInfo(uri);
+         log.info("ImageInfo Cache HIT: " + uri);
+     }
 
-    /** {@inheritDoc} */
-    public void cacheMissImage(ImageKey key) {
-        super.cacheMissImage(key);
-        log.info("Image Cache MISS: " + key);
-    }
+     /** {@inheritDoc} */
+     @Override
+     public void cacheMissImage(final ImageKey key) {
+         super.cacheMissImage(key);
+         log.info("Image Cache MISS: " + key);
+     }
 
-    /** {@inheritDoc} */
-    public void cacheMissImageInfo(String uri) {
-        super.cacheMissImageInfo(uri);
-        log.info("ImageInfo Cache MISS: " + uri);
-    }
-
-
+     /** {@inheritDoc} */
+     @Override
+     public void cacheMissImageInfo(final String uri) {
+         super.cacheMissImageInfo(uri);
+         log.info("ImageInfo Cache MISS: " + uri);
+     }
 
 }

@@ -25,13 +25,12 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.apache.xmlgraphics.util.Service;
 
 /**
  * This class holds references to various XML handlers used by FOP. It also
- * supports automatic discovery of additional XML handlers available through
- * the class path.
+ * supports automatic discovery of additional XML handlers available through the
+ * class path.
  */
 public class XMLHandlerRegistry {
 
@@ -39,8 +38,7 @@ public class XMLHandlerRegistry {
     private static Log log = LogFactory.getLog(XMLHandlerRegistry.class);
 
     /** Map containing XML handlers for various document types */
-    private Map<String, List<XMLHandler>> handlers
-    = new java.util.HashMap<String, List<XMLHandler>>();
+    private final Map<String, List<XMLHandler>> handlers = new java.util.HashMap<String, List<XMLHandler>>();
 
     /**
      * Default constructor.
@@ -51,42 +49,48 @@ public class XMLHandlerRegistry {
 
     /**
      * Add a default XML handler which is able to handle any namespace.
-     * @param handler XMLHandler to use
+     *
+     * @param handler
+     *            XMLHandler to use
      */
-    private void setDefaultXMLHandler(XMLHandler handler) {
+    private void setDefaultXMLHandler(final XMLHandler handler) {
         addXMLHandler(XMLHandler.HANDLE_ALL, handler);
     }
 
     /**
-     * Add an XML handler. The handler itself is inspected to find out what it supports.
-     * @param classname the fully qualified class name
+     * Add an XML handler. The handler itself is inspected to find out what it
+     * supports.
+     *
+     * @param classname
+     *            the fully qualified class name
      */
-    public void addXMLHandler(String classname) {
+    public void addXMLHandler(final String classname) {
         try {
-            XMLHandler handlerInstance = (XMLHandler)Class.forName(classname).newInstance();
+            final XMLHandler handlerInstance = (XMLHandler) Class.forName(
+                    classname).newInstance();
             addXMLHandler(handlerInstance);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalArgumentException("Could not find "
-                                               + classname);
-        } catch (InstantiationException e) {
+        } catch (final ClassNotFoundException e) {
+            throw new IllegalArgumentException("Could not find " + classname);
+        } catch (final InstantiationException e) {
             throw new IllegalArgumentException("Could not instantiate "
-                                               + classname);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException("Could not access "
-                                               + classname);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException(classname
-                                               + " is not an "
-                                               + XMLHandler.class.getName());
+                    + classname);
+        } catch (final IllegalAccessException e) {
+            throw new IllegalArgumentException("Could not access " + classname);
+        } catch (final ClassCastException e) {
+            throw new IllegalArgumentException(classname + " is not an "
+                    + XMLHandler.class.getName());
         }
     }
 
     /**
-     * Add an XML handler. The handler itself is inspected to find out what it supports.
-     * @param handler the XMLHandler instance
+     * Add an XML handler. The handler itself is inspected to find out what it
+     * supports.
+     *
+     * @param handler
+     *            the XMLHandler instance
      */
-    public void addXMLHandler(XMLHandler handler) {
-        String ns = handler.getNamespace();
+    public void addXMLHandler(final XMLHandler handler) {
+        final String ns = handler.getNamespace();
         if (ns == null) {
             setDefaultXMLHandler(handler);
         } else {
@@ -96,67 +100,77 @@ public class XMLHandlerRegistry {
 
     /**
      * Add an XML handler for the given MIME type and XML namespace.
-     * @param ns Namespace URI
-     * @param handler XMLHandler to use
+     *
+     * @param ns
+     *            Namespace URI
+     * @param handler
+     *            XMLHandler to use
      */
-    private void addXMLHandler(String ns, XMLHandler handler) {
-        List<XMLHandler> lst = handlers.get(ns);
+    private void addXMLHandler(final String ns, final XMLHandler handler) {
+        List<XMLHandler> lst = this.handlers.get(ns);
         if (lst == null) {
             lst = new java.util.ArrayList<XMLHandler>();
-            handlers.put(ns, lst);
+            this.handlers.put(ns, lst);
         }
         lst.add(handler);
     }
 
     /**
-     * Returns an XMLHandler which handles an XML dialect of the given namespace and for
-     * a specified output format defined by its MIME type.
-     * @param renderer the Renderer for which to retrieve a Renderer
-     * @param ns the XML namespace associated with the XML to be rendered
-     * @return the XMLHandler responsible for handling the XML or null if none is available
+     * Returns an XMLHandler which handles an XML dialect of the given namespace
+     * and for a specified output format defined by its MIME type.
+     *
+     * @param renderer
+     *            the Renderer for which to retrieve a Renderer
+     * @param ns
+     *            the XML namespace associated with the XML to be rendered
+     * @return the XMLHandler responsible for handling the XML or null if none
+     *         is available
      */
-    public XMLHandler getXMLHandler(Renderer renderer, String ns) {
+    public XMLHandler getXMLHandler(final Renderer renderer, final String ns) {
         XMLHandler handler;
 
-        List<XMLHandler> lst = handlers.get(ns);
+        List<XMLHandler> lst = this.handlers.get(ns);
         handler = getXMLHandler(renderer, lst);
         if (handler == null) {
-            lst = handlers.get(XMLHandler.HANDLE_ALL);
+            lst = this.handlers.get(XMLHandler.HANDLE_ALL);
             handler = getXMLHandler(renderer, lst);
         }
         return handler;
     }
 
-    private XMLHandler getXMLHandler(Renderer renderer, List<XMLHandler> lst) {
+    private XMLHandler getXMLHandler(final Renderer renderer,
+            final List<XMLHandler> lst) {
         XMLHandler handler;
         if (lst != null) {
-            for (int i = 0, c = lst.size(); i < c; i++) {
-                //TODO Maybe add priorities later
+            for (int i = 0, c = lst.size(); i < c; ++i) {
+                // TODO Maybe add priorities later
                 handler = lst.get(i);
                 if (handler.supportsRenderer(renderer)) {
                     return handler;
                 }
             }
         }
-        return null; //No handler found
+        return null; // No handler found
     }
 
     /**
-     * Discovers XMLHandler implementations through the classpath and dynamically
-     * registers them.
+     * Discovers XMLHandler implementations through the classpath and
+     * dynamically registers them.
      */
     private void discoverXMLHandlers() {
         // add mappings from available services
-        Iterator<Object> providers = Service.providers(XMLHandler.class);
+        final Iterator<XMLHandler> providers = Service
+                .providers(XMLHandler.class);
         if (providers != null) {
             while (providers.hasNext()) {
-                XMLHandler handler = (XMLHandler)providers.next();
+                final XMLHandler handler = providers.next();
                 try {
                     if (log.isDebugEnabled()) {
-                        log.debug("Dynamically adding XMLHandler: " + handler.getClass().getName());
+                        log.debug("Dynamically adding XMLHandler: "
+                                + handler.getClass().getName());
                     }
                     addXMLHandler(handler);
-                } catch (IllegalArgumentException e) {
+                } catch (final IllegalArgumentException e) {
                     log.error("Error while adding XMLHandler", e);
                 }
 

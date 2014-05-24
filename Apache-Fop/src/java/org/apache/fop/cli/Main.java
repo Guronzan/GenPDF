@@ -28,7 +28,6 @@ import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.MimeConstants;
 
@@ -42,11 +41,12 @@ public final class Main {
 
     /**
      * @return the list of URLs to all libraries.
-     * @throws MalformedURLException In case there is a problem converting java.io.File
-     * instances to URLs.
+     * @throws MalformedURLException
+     *             In case there is a problem converting java.io.File instances
+     *             to URLs.
      */
     public static URL[] getJARList() throws MalformedURLException {
-        String fopHome = System.getProperty("fop.home");
+        final String fopHome = System.getProperty("fop.home");
         File baseDir;
         if (fopHome != null) {
             baseDir = new File(fopHome).getAbsoluteFile();
@@ -68,11 +68,12 @@ public final class Main {
             throw new RuntimeException("fop.jar not found in directory: "
                     + baseDir.getAbsolutePath() + " (or below)");
         }
-        List jars = new java.util.ArrayList();
+        final List jars = new java.util.ArrayList();
         jars.add(fopJar.toURI().toURL());
         File[] files;
-        FileFilter filter = new FileFilter() {
-            public boolean accept(File pathname) {
+        final FileFilter filter = new FileFilter() {
+            @Override
+            public boolean accept(final File pathname) {
                 return pathname.getName().endsWith(".jar");
             }
         };
@@ -82,59 +83,65 @@ public final class Main {
         }
         files = libDir.listFiles(filter);
         if (files != null) {
-            for (int i = 0, size = files.length; i < size; i++) {
-                jars.add(files[i].toURI().toURL());
+            for (final File file : files) {
+                jars.add(file.toURI().toURL());
             }
         }
-        String optionalLib = System.getProperty("fop.optional.lib");
+        final String optionalLib = System.getProperty("fop.optional.lib");
         if (optionalLib != null) {
             files = new File(optionalLib).listFiles(filter);
             if (files != null) {
-                for (int i = 0, size = files.length; i < size; i++) {
-                    jars.add(files[i].toURI().toURL());
+                for (final File file : files) {
+                    jars.add(file.toURI().toURL());
                 }
             }
         }
-        URL[] urls = (URL[])jars.toArray(new URL[jars.size()]);
+        final URL[] urls = (URL[]) jars.toArray(new URL[jars.size()]);
         /*
-        for (int i = 0, c = urls.length; i < c; i++) {
-            System.out.println(urls[i]);
-        }*/
+         * for (int i = 0, c = urls.length; i < c; i++) {
+         * System.out.println(urls[i]); }
+         */
         return urls;
     }
 
     /**
-     * @return true if FOP's dependecies are available in the current ClassLoader setup.
+     * @return true if FOP's dependecies are available in the current
+     *         ClassLoader setup.
      */
     public static boolean checkDependencies() {
         try {
-            //System.out.println(Thread.currentThread().getContextClassLoader());
+            // System.out.println(Thread.currentThread().getContextClassLoader());
             Class clazz = Class.forName("org.apache.commons.io.IOUtils");
             if (clazz != null) {
-                clazz = Class.forName("org.apache.avalon.framework.configuration.Configuration");
+                clazz = Class
+                        .forName("org.apache.avalon.framework.configuration.Configuration");
             }
-            return (clazz != null);
-        } catch (Exception e) {
+            return clazz != null;
+        } catch (final Exception e) {
             return false;
         }
     }
 
     /**
      * Dynamically builds a ClassLoader and executes FOP.
-     * @param args command-line arguments
+     * 
+     * @param args
+     *            command-line arguments
      */
-    public static void startFOPWithDynamicClasspath(String[] args) {
+    public static void startFOPWithDynamicClasspath(final String[] args) {
         try {
-            URL[] urls = getJARList();
-            //System.out.println("CCL: "
-            //    + Thread.currentThread().getContextClassLoader().toString());
-            ClassLoader loader = new java.net.URLClassLoader(urls, null);
+            final URL[] urls = getJARList();
+            // System.out.println("CCL: "
+            // + Thread.currentThread().getContextClassLoader().toString());
+            final ClassLoader loader = new java.net.URLClassLoader(urls, null);
             Thread.currentThread().setContextClassLoader(loader);
-            Class clazz = Class.forName("org.apache.fop.cli.Main", true, loader);
-            //System.out.println("CL: " + clazz.getClassLoader().toString());
-            Method mainMethod = clazz.getMethod("startFOP", new Class[] {String[].class});
-            mainMethod.invoke(null, new Object[] {args});
-        } catch (Exception e) {
+            final Class clazz = Class.forName("org.apache.fop.cli.Main", true,
+                    loader);
+            // System.out.println("CL: " + clazz.getClassLoader().toString());
+            final Method mainMethod = clazz.getMethod("startFOP",
+                    new Class[] { String[].class });
+            mainMethod.invoke(null, new Object[] { args });
+        } catch (final Exception e) {
             System.err.println("Unable to start FOP:");
             e.printStackTrace();
             System.exit(-1);
@@ -142,16 +149,19 @@ public final class Main {
     }
 
     /**
-     * Executes FOP with the given arguments. If no argument is provided, returns its
-     * version number as well as a short usage statement; if '-v' is provided, returns its
-     * version number alone; if '-h' is provided, returns its short help message.
+     * Executes FOP with the given arguments. If no argument is provided,
+     * returns its version number as well as a short usage statement; if '-v' is
+     * provided, returns its version number alone; if '-h' is provided, returns
+     * its short help message.
      *
-     * @param args command-line arguments
+     * @param args
+     *            command-line arguments
      */
-    public static void startFOP(String[] args) {
-        //System.out.println("static CCL: "
-        //    + Thread.currentThread().getContextClassLoader().toString());
-        //System.out.println("static CL: " + Fop.class.getClassLoader().toString());
+    public static void startFOP(final String[] args) {
+        // System.out.println("static CCL: "
+        // + Thread.currentThread().getContextClassLoader().toString());
+        // System.out.println("static CL: " +
+        // Fop.class.getClassLoader().toString());
         CommandLineOptions options = null;
         FOUserAgent foUserAgent = null;
         OutputStream out = null;
@@ -163,18 +173,20 @@ public final class Main {
             }
 
             foUserAgent = options.getFOUserAgent();
-            String outputFormat = options.getOutputFormat();
+            final String outputFormat = options.getOutputFormat();
 
             try {
                 if (options.getOutputFile() != null) {
                     out = new java.io.BufferedOutputStream(
-                            new java.io.FileOutputStream(options.getOutputFile()));
+                            new java.io.FileOutputStream(
+                                    options.getOutputFile()));
                     foUserAgent.setOutputFile(options.getOutputFile());
                 } else if (options.isOutputToStdOut()) {
                     out = new java.io.BufferedOutputStream(System.out);
                 }
                 if (!MimeConstants.MIME_XSL_FO.equals(outputFormat)) {
-                    options.getInputHandler().renderTo(foUserAgent, outputFormat, out);
+                    options.getInputHandler().renderTo(foUserAgent,
+                            outputFormat, out);
                 } else {
                     options.getInputHandler().transformTo(out);
                 }
@@ -188,7 +200,7 @@ public final class Main {
             if (!MimeConstants.MIME_FOP_AWT_PREVIEW.equals(outputFormat)) {
                 System.exit(0);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             if (options != null) {
                 options.getLogger().error("Exception", e);
                 if (options.getOutputFile() != null) {
@@ -201,9 +213,11 @@ public final class Main {
 
     /**
      * The main routine for the command line interface
-     * @param args the command line parameters
+     * 
+     * @param args
+     *            the command line parameters
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         if (checkDependencies()) {
             startFOP(args);
         } else {

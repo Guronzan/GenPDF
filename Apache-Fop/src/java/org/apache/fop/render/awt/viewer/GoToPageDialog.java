@@ -34,95 +34,97 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * Go to Page Dialog.
- * Originally contributed by:
- * Juergen Verwohlt: Juergen.Verwohlt@jCatalog.com,
- * Rainer Steinkuhle: Rainer.Steinkuhle@jCatalog.com,
- * Stanislav Gorkhover: Stanislav.Gorkhover@jCatalog.com
+ * Go to Page Dialog. Originally contributed by: Juergen Verwohlt:
+ * Juergen.Verwohlt@jCatalog.com, Rainer Steinkuhle:
+ * Rainer.Steinkuhle@jCatalog.com, Stanislav Gorkhover:
+ * Stanislav.Gorkhover@jCatalog.com
  */
 public class GoToPageDialog extends JDialog {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 3256524020494932166L;
     private JTextField pageNumberField;
     private int pageNumber = -1;
 
     /**
      * Creates modal dialog with a given title, attached to a given frame.
-     * @param frame Frame to attach to
-     * @param title dialog title
-     * @param translator translator for localization
+     *
+     * @param frame
+     *            Frame to attach to
+     * @param title
+     *            dialog title
+     * @param translator
+     *            translator for localization
      */
-    public GoToPageDialog(Frame frame, String title, Translator translator) {
+    public GoToPageDialog(final Frame frame, final String title,
+            final Translator translator) {
         super(frame, title, true);
         jbInit(translator);
         pack();
     }
 
-    private void jbInit(Translator translator) {
-        JPanel panel1 = new JPanel();
-        GridBagLayout gridBagLayout1 = new GridBagLayout();
-        JLabel pgNbLabel = new JLabel();
-        pageNumberField = new JTextField();
-        JButton okButton = new JButton();
-        JButton cancelButton = new JButton();
+    private void jbInit(final Translator translator) {
+        final JPanel panel1 = new JPanel();
+        final GridBagLayout gridBagLayout1 = new GridBagLayout();
+        final JLabel pgNbLabel = new JLabel();
+        this.pageNumberField = new JTextField();
+        final JButton okButton = new JButton();
+        final JButton cancelButton = new JButton();
         panel1.setLayout(gridBagLayout1);
         pgNbLabel.setText(translator.getString("Label.Page.number"));
         okButton.setText(translator.getString("Button.Ok"));
         okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
                 okButtonActionPerformed(e);
             }
         });
         cancelButton.setText(translator.getString("Button.Cancel"));
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
                 cancelButtonActionPerformed(e);
             }
         });
         panel1.setMinimumSize(new Dimension(250, 78));
         getContentPane().add(panel1);
-        panel1.add(pgNbLabel,
-                   new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-                                          GridBagConstraints.WEST,
-                                          GridBagConstraints.NONE,
-                                          new Insets(10, 10, 10, 5), 0, 0));
-        panel1.add(pageNumberField,
-                   new GridBagConstraints(1, 0, 1, 1, 1.0, 0.0,
-                                          GridBagConstraints.WEST,
-                                          GridBagConstraints.BOTH,
-                                          new Insets(10, 5, 10, 10), 0, 0));
-        panel1.add(okButton,
-                   new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
-                                          GridBagConstraints.EAST,
-                                          GridBagConstraints.NONE,
-                                          new Insets(0, 0, 10, 5), 0, 0));
-        panel1.add(cancelButton,
-                   new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
-                                          GridBagConstraints.WEST,
-                                          GridBagConstraints.NONE,
-                                          new Insets(0, 10, 10, 10), 0, 0));
+        panel1.add(pgNbLabel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(
+                        10, 10, 10, 5), 0, 0));
+        panel1.add(this.pageNumberField, new GridBagConstraints(1, 0, 1, 1,
+                1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+                new Insets(10, 5, 10, 10), 0, 0));
+        panel1.add(okButton, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+                GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,
+                        0, 10, 5), 0, 0));
+        panel1.add(cancelButton, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
+                GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0,
+                        10, 10, 10), 0, 0));
     }
 
-    private void okButtonActionPerformed(ActionEvent e) {
+    private void okButtonActionPerformed(final ActionEvent e) {
         try {
-            pageNumber = Integer.parseInt(pageNumberField.getText());
+            this.pageNumber = Integer.parseInt(this.pageNumberField.getText());
             dispose();
-        } catch (NumberFormatException nfe) {
-            pageNumberField.setText("???");
+        } catch (final NumberFormatException nfe) {
+            this.pageNumberField.setText("???");
         }
 
     }
 
-    private void cancelButtonActionPerformed(ActionEvent e) {
-        pageNumber = -1;
+    private void cancelButtonActionPerformed(final ActionEvent e) {
+        this.pageNumber = -1;
         dispose();
     }
 
     /**
      * Returns page number, entered by user.
+     *
      * @return the page number
      */
     public int getPageNumber() {
-        return pageNumber;
+        return this.pageNumber;
     }
 }
-

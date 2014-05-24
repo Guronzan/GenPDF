@@ -19,10 +19,6 @@
 
 package org.apache.fop.afp.modca;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,25 +26,28 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import org.apache.fop.afp.modca.triplets.AbstractTriplet;
 import org.apache.fop.afp.modca.triplets.AttributeQualifierTriplet;
 import org.apache.fop.afp.modca.triplets.CommentTriplet;
 import org.apache.fop.afp.modca.triplets.ObjectAreaSizeTriplet;
 import org.apache.fop.afp.modca.triplets.Triplet;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test {@link AbstractTripletStructuredObject}
  */
-public class AbstractTripletStructuredObjectTest<S extends AbstractTripletStructuredObject>
-        extends AbstractStructuredObjectTest<AbstractTripletStructuredObject> {
+public class AbstractTripletStructuredObjectTest extends
+        AbstractStructuredObjectTest<AbstractTripletStructuredObject> {
 
     private static final List<AbstractTriplet> TRIPLETS;
 
     static {
-        List<AbstractTriplet> triplets = new ArrayList<AbstractTriplet>();
+        final List<AbstractTriplet> triplets = new ArrayList<AbstractTriplet>();
 
         triplets.add(new CommentTriplet((byte) 0x01, "test comment"));
 
@@ -59,30 +58,30 @@ public class AbstractTripletStructuredObjectTest<S extends AbstractTripletStruct
         TRIPLETS = Collections.unmodifiableList(triplets);
     }
 
-    private AbstractTripletStructuredObject emptyStructuredObject
-            = new AbstractTripletStructuredObject() { };
+    private final AbstractTripletStructuredObject emptyStructuredObject = new AbstractTripletStructuredObject() {
+    };
 
     @Before
-    public void setUp() throws Exception {
-        AbstractTripletStructuredObject sut = getSut();
+    public void setUp() {
+        final AbstractTripletStructuredObject sut = getSut();
 
-        for (AbstractTriplet triplet : TRIPLETS) {
+        for (final AbstractTriplet triplet : TRIPLETS) {
             sut.addTriplet(triplet);
         }
     }
 
-
     /**
-     * Test getTripletLength() - ensure a sum of all enclosing object lengths is returned.
+     * Test getTripletLength() - ensure a sum of all enclosing object lengths is
+     * returned.
      */
     public void testGetTripletLength() {
 
         int dataLength = 0;
-        for (Triplet t : TRIPLETS) {
+        for (final Triplet t : TRIPLETS) {
             dataLength += t.getDataLength();
         }
         assertEquals(dataLength, getSut().getTripletDataLength());
-        assertEquals(0, emptyStructuredObject.getTripletDataLength());
+        assertEquals(0, this.emptyStructuredObject.getTripletDataLength());
     }
 
     /**
@@ -90,40 +89,43 @@ public class AbstractTripletStructuredObjectTest<S extends AbstractTripletStruct
      */
     public void testHasTriplets() {
         assertTrue(getSut().hasTriplets());
-        assertFalse(emptyStructuredObject.hasTriplets());
+        assertFalse(this.emptyStructuredObject.hasTriplets());
     }
 
     /**
      * Test writeTriplets() - Ensure the triplets are written properly.
      *
-     * @throws IOException -
+     * @throws IOException
+     *             -
      */
     public void testWriteObjects() throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        for (AbstractTriplet triplet : TRIPLETS) {
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        for (final AbstractTriplet triplet : TRIPLETS) {
             triplet.writeToStream(baos);
         }
-        byte[] expected = baos.toByteArray();
+        final byte[] expected = baos.toByteArray();
         baos.reset();
         getSut().writeTriplets(baos);
         assertTrue(Arrays.equals(expected, baos.toByteArray()));
 
         baos.reset();
         // Ensure it doesn't die if no data has been added
-        emptyStructuredObject.writeTriplets(baos);
-        byte[] emptyArray = baos.toByteArray();
+        this.emptyStructuredObject.writeTriplets(baos);
+        final byte[] emptyArray = baos.toByteArray();
         assertTrue(Arrays.equals(emptyArray, new byte[0]));
     }
 
     /**
-     * Test hasTriplet() - ensure both positive and negative values are returned.
+     * Test hasTriplet() - ensure both positive and negative values are
+     * returned.
      */
     public void testHasTriplet() {
-        for (AbstractTriplet triplet : TRIPLETS) {
+        for (final AbstractTriplet triplet : TRIPLETS) {
             assertTrue(getSut().hasTriplet(triplet.getId()));
-            assertFalse(emptyStructuredObject.hasTriplet(triplet.getId()));
+            assertFalse(this.emptyStructuredObject.hasTriplet(triplet.getId()));
         }
-        CommentTriplet notInSystem = new CommentTriplet((byte) 0x30, "This should return false");
+        final CommentTriplet notInSystem = new CommentTriplet((byte) 0x30,
+                "This should return false");
         assertFalse(getSut().hasTriplet(notInSystem.getId()));
     }
 
@@ -141,20 +143,21 @@ public class AbstractTripletStructuredObjectTest<S extends AbstractTripletStruct
     @Test
     public void testAddTriplets() {
         // Tested on empty object
-        List<AbstractTriplet> expectedList = TRIPLETS;
-        emptyStructuredObject.addTriplets(expectedList);
+        final List<AbstractTriplet> expectedList = TRIPLETS;
+        this.emptyStructuredObject.addTriplets(expectedList);
         // checks equals() on each member of both lists
-        assertEquals(expectedList, emptyStructuredObject.getTriplets());
+        assertEquals(expectedList, this.emptyStructuredObject.getTriplets());
 
         // Add a list to an already populated list
         getSut().addTriplets(expectedList);
 
-        List<AbstractTriplet> newExpected = new ArrayList<AbstractTriplet>(expectedList);
+        final List<AbstractTriplet> newExpected = new ArrayList<AbstractTriplet>(
+                expectedList);
         newExpected.addAll(expectedList);
         assertEquals(newExpected, getSut().getTriplets());
 
         // Ensure null doesn't throw exception
-        emptyStructuredObject.addTriplets(null);
+        this.emptyStructuredObject.addTriplets(null);
     }
 
 }

@@ -29,14 +29,18 @@ public final class StringUtils {
     }
 
     /**
-     * Padds the string to the left with the given character for
-     * the specified length.
-     * @param input The input string.
-     * @param padding The char used for padding.
-     * @param length The length of the new string.
+     * Padds the string to the left with the given character for the specified
+     * length.
+     * 
+     * @param input
+     *            The input string.
+     * @param padding
+     *            The char used for padding.
+     * @param length
+     *            The length of the new string.
      * @return The padded string.
      */
-    public static String lpad(String input, char padding, int length) {
+    public static String lpad(String input, final char padding, final int length) {
 
         if (input == null) {
             input = new String();
@@ -45,8 +49,8 @@ public final class StringUtils {
         if (input.length() >= length) {
             return input;
         } else {
-            StringBuffer result = new StringBuffer();
-            int numChars = length - input.length();
+            final StringBuffer result = new StringBuffer();
+            final int numChars = length - input.length();
             for (int i = 0; i < numChars; i++) {
                 result.append(padding);
             }
@@ -56,14 +60,18 @@ public final class StringUtils {
     }
 
     /**
-     * Padds the string to the right with the given character for
-     * the specified length.
-     * @param input The input string.
-     * @param padding The char used for padding.
-     * @param length The length of the new string.
+     * Padds the string to the right with the given character for the specified
+     * length.
+     * 
+     * @param input
+     *            The input string.
+     * @param padding
+     *            The char used for padding.
+     * @param length
+     *            The length of the new string.
      * @return The padded string.
      */
-    public static String rpad(String input, char padding, int length) {
+    public static String rpad(String input, final char padding, final int length) {
 
         if (input == null) {
             input = new String();
@@ -72,8 +80,8 @@ public final class StringUtils {
         if (input.length() >= length) {
             return input;
         } else {
-            StringBuffer result = new StringBuffer(input);
-            int numChars = length - input.length();
+            final StringBuffer result = new StringBuffer(input);
+            final int numChars = length - input.length();
             for (int i = 0; i < numChars; i++) {
                 result.append(padding);
             }

@@ -32,28 +32,34 @@ public final class EventExceptionManager {
     private EventExceptionManager() {
     }
 
-    private static final Map<String, ExceptionFactory> EXCEPTION_FACTORIES
-        = new java.util.HashMap<String, ExceptionFactory>();
+    private static final Map<String, ExceptionFactory> EXCEPTION_FACTORIES = new java.util.HashMap<String, ExceptionFactory>();
 
     static {
-        Iterator<Object> iter;
-        iter = Service.providers(ExceptionFactory.class);
+        final Iterator<ExceptionFactory> iter = Service
+                .providers(ExceptionFactory.class);
         while (iter.hasNext()) {
-            ExceptionFactory factory = (ExceptionFactory)iter.next();
-            EXCEPTION_FACTORIES.put(factory.getExceptionClass().getName(), factory);
+            final ExceptionFactory factory = iter.next();
+            EXCEPTION_FACTORIES.put(factory.getExceptionClass().getName(),
+                    factory);
         }
     }
 
     /**
-     * Converts an event into an exception and throws that. If the exception class is null,
-     * a {@link RuntimeException} will be thrown.
-     * @param event the event to be converted
-     * @param exceptionClass the exception class to be thrown
-     * @throws Throwable this happens always
+     * Converts an event into an exception and throws that. If the exception
+     * class is null, a {@link RuntimeException} will be thrown.
+     * 
+     * @param event
+     *            the event to be converted
+     * @param exceptionClass
+     *            the exception class to be thrown
+     * @throws Throwable
+     *             this happens always
      */
-    public static void throwException(Event event, String exceptionClass) throws Throwable {
+    public static void throwException(final Event event,
+            final String exceptionClass) throws Throwable {
         if (exceptionClass != null) {
-            ExceptionFactory factory = (ExceptionFactory)EXCEPTION_FACTORIES.get(exceptionClass);
+            final ExceptionFactory factory = EXCEPTION_FACTORIES
+                    .get(exceptionClass);
             if (factory != null) {
                 throw factory.createException(event);
             } else {
@@ -61,14 +67,15 @@ public final class EventExceptionManager {
                         "No such ExceptionFactory available: " + exceptionClass);
             }
         } else {
-            String msg = EventFormatter.format(event);
-            //Get original exception as cause if it is given as one of the parameters
+            final String msg = EventFormatter.format(event);
+            // Get original exception as cause if it is given as one of the
+            // parameters
             Throwable t = null;
-            Iterator<Object> iter = event.getParams().values().iterator();
+            final Iterator<Object> iter = event.getParams().values().iterator();
             while (iter.hasNext()) {
-                Object o = iter.next();
+                final Object o = iter.next();
                 if (o instanceof Throwable) {
-                    t = (Throwable)o;
+                    t = (Throwable) o;
                     break;
                 }
             }
@@ -81,20 +88,23 @@ public final class EventExceptionManager {
     }
 
     /**
-     * This interface is implementation by exception factories that can create exceptions from
-     * events.
+     * This interface is implementation by exception factories that can create
+     * exceptions from events.
      */
     public interface ExceptionFactory {
 
         /**
          * Creates an exception from an event.
-         * @param event the event
+         * 
+         * @param event
+         *            the event
          * @return the newly created exception
          */
-        Throwable createException(Event event);
+        Throwable createException(final Event event);
 
         /**
          * Returns the {@link Exception} class created by this factory.
+         * 
          * @return the exception class
          */
         Class<? extends Exception> getExceptionClass();

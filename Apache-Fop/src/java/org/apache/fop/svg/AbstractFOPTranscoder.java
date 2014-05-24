@@ -84,7 +84,7 @@ public abstract class AbstractFOPTranscoder extends SVGAbstractTranscoder implem
     public static final Boolean VALUE_FORMAT_ON = Boolean.TRUE;
 
     /** The value to turn off text stroking. */
-    public static final Boolean VALUE_FORMAT_OFF = Boolean.FALSE;
+    public static final Boolean VALUE_FORMAT_OFF = false;
 
     /**
      * The user agent dedicated to this Transcoder.

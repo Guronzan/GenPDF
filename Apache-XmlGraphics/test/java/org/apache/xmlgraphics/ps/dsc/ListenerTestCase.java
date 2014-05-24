@@ -26,7 +26,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.apache.commons.io.IOUtils;
-
 import org.apache.xmlgraphics.ps.DSCConstants;
 import org.apache.xmlgraphics.ps.dsc.events.DSCComment;
 import org.apache.xmlgraphics.ps.dsc.events.DSCCommentLanguageLevel;
@@ -39,22 +38,25 @@ public class ListenerTestCase extends TestCase {
 
     /**
      * Tests {@link DSCParser#setFilter(DSCFilter)}.
-     * @throws Exception if an error occurs
+     * 
+     * @throws Exception
+     *             if an error occurs
      */
     public void testFilter() throws Exception {
-        InputStream in = getClass().getResourceAsStream("test1.txt");
+        final InputStream in = getClass().getResourceAsStream("test1.txt");
         try {
-            DSCParser parser = new DSCParser(in);
+            final DSCParser parser = new DSCParser(in);
             parser.setFilter(new DSCFilter() {
 
-                public boolean accept(DSCEvent event) {
-                    //Filter out all non-DSC comments
+                @Override
+                public boolean accept(final DSCEvent event) {
+                    // Filter out all non-DSC comments
                     return !event.isComment();
                 }
 
             });
             while (parser.hasNext()) {
-                DSCEvent event = parser.nextEvent();
+                final DSCEvent event = parser.nextEvent();
 
                 if (parser.getCurrentEvent().isComment()) {
                     fail("Filter failed. Comment found.");
@@ -67,27 +69,31 @@ public class ListenerTestCase extends TestCase {
 
     /**
      * Tests listeners on DSCParser.
-     * @throws Exception if an error occurs
+     * 
+     * @throws Exception
+     *             if an error occurs
      */
     public void testListeners() throws Exception {
-        InputStream in = getClass().getResourceAsStream("test1.txt");
+        final InputStream in = getClass().getResourceAsStream("test1.txt");
         try {
             final Map results = new java.util.HashMap();
-            DSCParser parser = new DSCParser(in);
+            final DSCParser parser = new DSCParser(in);
 
-            //Filter the prolog
+            // Filter the prolog
             parser.addListener(new DSCListener() {
-                public void processEvent(DSCEvent event, DSCParser parser)
-                        throws IOException, DSCException {
+                @Override
+                public void processEvent(final DSCEvent event,
+                        final DSCParser parser) throws IOException,
+                        DSCException {
                     if (event.isDSCComment()) {
-                        DSCComment comment = event.asDSCComment();
+                        final DSCComment comment = event.asDSCComment();
                         if (DSCConstants.BEGIN_PROLOG.equals(comment.getName())) {
-                            //Skip until end of prolog
+                            // Skip until end of prolog
                             while (parser.hasNext()) {
-                                DSCEvent e = parser.nextEvent();
+                                final DSCEvent e = parser.nextEvent();
                                 if (e.isDSCComment()) {
-                                    if (DSCConstants.END_PROLOG.equals(
-                                            e.asDSCComment().getName())) {
+                                    if (DSCConstants.END_PROLOG.equals(e
+                                            .asDSCComment().getName())) {
                                         parser.next();
                                         break;
                                     }
@@ -99,19 +105,22 @@ public class ListenerTestCase extends TestCase {
                 }
             });
 
-            //Listener for the language level
+            // Listener for the language level
             parser.addListener(new DSCListener() {
-                public void processEvent(DSCEvent event, DSCParser parser)
-                        throws IOException, DSCException {
+                @Override
+                public void processEvent(final DSCEvent event,
+                        final DSCParser parser) throws IOException,
+                        DSCException {
                     if (event instanceof DSCCommentLanguageLevel) {
-                        DSCCommentLanguageLevel level = (DSCCommentLanguageLevel)event;
-                        results.put("level", new Integer(level.getLanguageLevel()));
+                        final DSCCommentLanguageLevel level = (DSCCommentLanguageLevel) event;
+                        results.put("level",
+                                new Integer(level.getLanguageLevel()));
                     }
                 }
             });
             int count = 0;
             while (parser.hasNext()) {
-                DSCEvent event = parser.nextEvent();
+                final DSCEvent event = parser.nextEvent();
                 System.out.println(event);
                 count++;
             }
