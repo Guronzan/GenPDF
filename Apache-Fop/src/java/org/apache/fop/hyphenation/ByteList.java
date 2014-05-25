@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-/* $Id: ByteVector.java 1297284 2012-03-05 23:29:29Z gadams $ */
+/* $Id: ByteList.java 1297284 2012-03-05 23:29:29Z gadams $ */
 
 package org.apache.fop.hyphenation;
 
@@ -31,7 +31,7 @@ import java.io.Serializable;
  * This work was authored by Carlos Villegas (cav@uniscope.co.jp).
  * </p>
  */
-public class ByteVector implements Serializable {
+public class ByteList implements Serializable {
 
     private static final long serialVersionUID = 1554572867863466772L;
 
@@ -54,17 +54,17 @@ public class ByteVector implements Serializable {
     /**
      * Construct byte vector instance with default block size.
      */
-    public ByteVector() {
+    public ByteList() {
         this(DEFAULT_BLOCK_SIZE);
     }
 
     /**
      * Construct byte vector instance.
-     * 
+     *
      * @param capacity
      *            initial block size
      */
-    public ByteVector(final int capacity) {
+    public ByteList(final int capacity) {
         if (capacity > 0) {
             this.blockSize = capacity;
         } else {
@@ -76,12 +76,12 @@ public class ByteVector implements Serializable {
 
     /**
      * Construct byte vector instance.
-     * 
+     *
      * @param a
      *            byte array to use TODO should n should be initialized to
-     *            a.length to be consistent with CharVector behavior? [GA]
+     *            a.length to be consistent with CharList behavior? [GA]
      */
-    public ByteVector(final byte[] a) {
+    public ByteList(final byte[] a) {
         this.blockSize = DEFAULT_BLOCK_SIZE;
         this.array = a;
         this.n = 0;
@@ -89,14 +89,14 @@ public class ByteVector implements Serializable {
 
     /**
      * Construct byte vector instance.
-     * 
+     *
      * @param a
      *            byte array to use
      * @param capacity
      *            initial block size TODO should n should be initialized to
-     *            a.length to be consistent with CharVector behavior? [GA]
+     *            a.length to be consistent with CharList behavior? [GA]
      */
-    public ByteVector(final byte[] a, final int capacity) {
+    public ByteList(final byte[] a, final int capacity) {
         if (capacity > 0) {
             this.blockSize = capacity;
         } else {
@@ -108,7 +108,7 @@ public class ByteVector implements Serializable {
 
     /**
      * Obtain byte vector array.
-     * 
+     *
      * @return byte array
      */
     public byte[] getArray() {
@@ -117,7 +117,7 @@ public class ByteVector implements Serializable {
 
     /**
      * Obtain number of items in array.
-     * 
+     *
      * @return number of items
      */
     public int length() {
@@ -126,7 +126,7 @@ public class ByteVector implements Serializable {
 
     /**
      * Obtain capacity of array.
-     * 
+     *
      * @return current capacity of array
      */
     public int capacity() {
@@ -135,7 +135,7 @@ public class ByteVector implements Serializable {
 
     /**
      * Pet byte at index.
-     * 
+     *
      * @param index
      *            the index
      * @param val
@@ -147,7 +147,7 @@ public class ByteVector implements Serializable {
 
     /**
      * Get byte at index.
-     * 
+     *
      * @param index
      *            the index
      * @return a byte
@@ -158,7 +158,7 @@ public class ByteVector implements Serializable {
 
     /**
      * This is to implement memory allocation in the array. Like malloc().
-     * 
+     *
      * @param size
      *            to allocate
      * @return previous length

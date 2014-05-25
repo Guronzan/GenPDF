@@ -66,7 +66,7 @@ public class PSProcSet extends PSResource {
     /** @return the <resource> specification as defined in DSC v3.0 spec. */
     @Override
     public String getResourceSpecification() {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append(getType()).append(" ")
                 .append(PSGenerator.convertStringToDSC(getName()));
         sb.append(" ").append(PSGenerator.convertRealToDSC(getVersion()));

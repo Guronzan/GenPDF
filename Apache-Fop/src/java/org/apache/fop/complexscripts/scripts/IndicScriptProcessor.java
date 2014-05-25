@@ -21,11 +21,12 @@ package org.apache.fop.complexscripts.scripts;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,55 +62,55 @@ public class IndicScriptProcessor extends DefaultScriptProcessor {
 
     /** required features to use for substitutions */
     private static final String[] gsubReqFeatures = // CSOK: ConstantNameCheck
-    { "abvf", // above base forms
-        "abvs", // above base substitutions
-        "akhn", // akhand
-        "blwf", // below base forms
-        "blws", // below base substitutions
-        "ccmp", // glyph composition/decomposition
-        "cjct", // conjunct forms
-        "clig", // contextual ligatures
-        "half", // half forms
-        "haln", // halant forms
-        "locl", // localized forms
-        "nukt", // nukta forms
-        "pref", // pre-base forms
-        "pres", // pre-base substitutions
-        "pstf", // post-base forms
-        "psts", // post-base substitutions
-        "rkrf", // rakar forms
-        "rphf", // reph form
-        "vatu" // vattu variants
-    };
+        { "abvf", // above base forms
+            "abvs", // above base substitutions
+            "akhn", // akhand
+            "blwf", // below base forms
+            "blws", // below base substitutions
+            "ccmp", // glyph composition/decomposition
+            "cjct", // conjunct forms
+            "clig", // contextual ligatures
+            "half", // half forms
+            "haln", // halant forms
+            "locl", // localized forms
+            "nukt", // nukta forms
+            "pref", // pre-base forms
+            "pres", // pre-base substitutions
+            "pstf", // post-base forms
+            "psts", // post-base substitutions
+            "rkrf", // rakar forms
+            "rphf", // reph form
+            "vatu" // vattu variants
+        };
 
     /** optional features to use for substitutions */
     private static final String[] gsubOptFeatures = // CSOK: ConstantNameCheck
-    { "afrc", // alternative fractions
-        "calt", // contextual alternatives
-        "dlig" // discretionary ligatures
-    };
+        { "afrc", // alternative fractions
+            "calt", // contextual alternatives
+            "dlig" // discretionary ligatures
+        };
 
     /** required features to use for positioning */
     private static final String[] gposReqFeatures = // CSOK: ConstantNameCheck
-    { "abvm", // above base marks
-        "blwm", // below base marks
-        "dist", // distance (adjustment)
-        "kern" // kerning
-    };
+        { "abvm", // above base marks
+            "blwm", // below base marks
+            "dist", // distance (adjustment)
+            "kern" // kerning
+        };
 
     /** required features to use for positioning */
     private static final String[] gposOptFeatures = // CSOK: ConstantNameCheck
-    {};
+        {};
 
     private static class SubstitutionScriptContextTester implements
-    ScriptContextTester {
+            ScriptContextTester {
         private static Map/* <String,GlyphContextTester> */testerMap = new HashMap/*
-         * <
-         * String
-         * ,
-         * GlyphContextTester
-         * >
-         */();
+                                                                                   * <
+                                                                                   * String
+                                                                                   * ,
+                                                                                   * GlyphContextTester
+                                                                                   * >
+                                                                                   */();
 
         @Override
         public GlyphContextTester getTester(final String feature) {
@@ -118,14 +119,14 @@ public class IndicScriptProcessor extends DefaultScriptProcessor {
     }
 
     private static class PositioningScriptContextTester implements
-    ScriptContextTester {
+            ScriptContextTester {
         private static Map/* <String,GlyphContextTester> */testerMap = new HashMap/*
-         * <
-         * String
-         * ,
-         * GlyphContextTester
-         * >
-         */();
+                                                                                   * <
+                                                                                   * String
+                                                                                   * ,
+                                                                                   * GlyphContextTester
+                                                                                   * >
+                                                                                   */();
 
         @Override
         public GlyphContextTester getTester(final String feature) {
@@ -260,9 +261,9 @@ public class IndicScriptProcessor extends DefaultScriptProcessor {
 
     private static Set<String> basicShapingFeatures;
     private static final String[] basicShapingFeatureStrings = { // CSOK:
-            // ConstantNameCheck
-            "abvf", "akhn", "blwf", "cjct", "half", "locl", "nukt", "pref",
-            "pstf", "rkrf", "rphf", "vatu", };
+        // ConstantNameCheck
+        "abvf", "akhn", "blwf", "cjct", "half", "locl", "nukt", "pref",
+        "pstf", "rkrf", "rphf", "vatu", };
     static {
         basicShapingFeatures = new HashSet<String>();
         for (final String s : basicShapingFeatureStrings) {
@@ -281,8 +282,8 @@ public class IndicScriptProcessor extends DefaultScriptProcessor {
 
     private static Set<String> presentationFeatures;
     private static final String[] presentationFeatureStrings = { // CSOK:
-        // ConstantNameCheck
-            "abvs", "blws", "calt", "haln", "pres", "psts", };
+    // ConstantNameCheck
+        "abvs", "blws", "calt", "haln", "pres", "psts", };
     static {
         presentationFeatures = new HashSet<String>();
         for (final String s : presentationFeatureStrings) {
@@ -523,7 +524,7 @@ public class IndicScriptProcessor extends DefaultScriptProcessor {
          * @return array of syllable segments
          */
         protected Segment[] segmentize(final int[] ca, final int nc) {
-            final Vector<Segment> sv = new Vector<Segment>(nc);
+            final List<Segment> sv = new ArrayList<Segment>(nc);
             for (int s = 0, e = nc; s < e;) {
                 int i;
                 if ((i = findStartOfSyllable(ca, s, e)) > s) {
@@ -565,10 +566,10 @@ public class IndicScriptProcessor extends DefaultScriptProcessor {
             final int[] ga = gs.getGlyphArray(false);
             final GlyphSequence.CharAssociation[] aa = gs
                     .getAssociations(0, -1);
-            final Vector<GlyphSequence> nsv = new Vector<GlyphSequence>();
+            final List<GlyphSequence> nsv = new ArrayList<GlyphSequence>();
             for (final Segment s : sa) {
-                final Vector<Integer> ngv = new Vector<Integer>(ng);
-                final Vector<GlyphSequence.CharAssociation> nav = new Vector<GlyphSequence.CharAssociation>(
+                final List<Integer> ngv = new ArrayList<Integer>(ng);
+                final List<GlyphSequence.CharAssociation> nav = new ArrayList<GlyphSequence.CharAssociation>(
                         ng);
                 for (int j = 0; j < ng; j++) {
                     final GlyphSequence.CharAssociation ca = aa[j];
@@ -581,7 +582,7 @@ public class IndicScriptProcessor extends DefaultScriptProcessor {
                     nsv.add(new GlyphSequence(gs, null, toIntArray(ngv), null,
                             null,
                             nav.toArray(new GlyphSequence.CharAssociation[nav
-                                                                          .size()]), null));
+                                    .size()]), null));
                 }
             }
             if (nsv.size() > 0) {
@@ -623,7 +624,7 @@ public class IndicScriptProcessor extends DefaultScriptProcessor {
             return s;
         }
 
-        private static int[] toIntArray(final Vector<Integer> iv) {
+        private static int[] toIntArray(final List<Integer> iv) {
             final int ni = iv.size();
             final int[] ia = new int[iv.size()];
             for (int i = 0, n = ni; i < n; i++) {

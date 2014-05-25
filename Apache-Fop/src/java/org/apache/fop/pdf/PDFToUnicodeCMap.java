@@ -323,7 +323,7 @@ public class PDFToUnicodeCMap extends PDFCMap {
             if (length >= numChars) {
                 return input;
             }
-            final StringBuffer returnString = new StringBuffer();
+            final StringBuilder returnString = new StringBuilder();
             for (int i = 1; i <= numChars - length; i++) {
                 returnString.append("0");
             }

@@ -102,7 +102,7 @@ final class WhitespaceCollapser {
             final boolean endSpace = allSpaces
                     || Character.isWhitespace(orig.charAt(orig.length() - 1));
             final boolean beginSpace = Character.isWhitespace(orig.charAt(0));
-            final StringBuffer sb = new StringBuffer(orig.length());
+            final StringBuilder sb = new StringBuilder(orig.length());
 
             // if text contains spaces only, keep at most one
             if (allSpaces) {

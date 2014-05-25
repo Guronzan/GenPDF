@@ -59,7 +59,7 @@ public class PDFLaunch extends PDFAction {
     /** {@inheritDoc} */
     @Override
     public String toPDFString() {
-        final StringBuffer sb = new StringBuffer(64);
+        final StringBuilder sb = new StringBuilder(64);
         sb.append("<<\n/S /Launch\n/F ");
         sb.append(this.externalFileSpec.toString());
         sb.append("\n>>");

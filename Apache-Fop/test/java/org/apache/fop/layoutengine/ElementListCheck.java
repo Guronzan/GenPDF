@@ -257,7 +257,7 @@ public class ElementListCheck implements LayoutEngineCheck {
     }
 
     private static String getElementText(final Element el) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         final NodeList children = el.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             final Node node = children.item(i);
@@ -273,7 +273,7 @@ public class ElementListCheck implements LayoutEngineCheck {
     /** @see java.lang.Object#toString() */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("element-list");
+        final StringBuilder sb = new StringBuilder("element-list");
         sb.append(" category=").append(this.category);
         if (haveID()) {
             sb.append(" id=").append(this.id);

@@ -324,7 +324,7 @@ public final class GenerateBidiClass {
 
     private static void dumpData(final PrintWriter out) {
         boolean first;
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         // bcL1
         first = true;

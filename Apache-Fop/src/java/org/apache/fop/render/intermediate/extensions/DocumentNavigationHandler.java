@@ -42,7 +42,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class DocumentNavigationHandler extends DefaultHandler implements
 DocumentNavigationExtensionConstants {
 
-    private final StringBuffer content = new StringBuffer();
+    private final StringBuilder content = new StringBuilder();
     private final Stack objectStack = new Stack();
 
     private final IFDocumentNavigationHandler navHandler;

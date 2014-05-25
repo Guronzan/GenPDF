@@ -278,7 +278,7 @@ public class ImageLoaderImageIO extends AbstractImageLoader {
      */
     private boolean checkProviderIgnoresICC(final IIOServiceProvider provider) {
         // TODO: This information could be cached.
-        final StringBuffer b = new StringBuffer(
+        final StringBuilder b = new StringBuilder(
                 provider.getDescription(Locale.ENGLISH));
         b.append('/').append(provider.getVendorName());
         b.append('/').append(provider.getVersion());

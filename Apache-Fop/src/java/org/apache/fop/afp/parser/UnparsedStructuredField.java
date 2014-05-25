@@ -57,7 +57,7 @@ public final class UnparsedStructuredField {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Structured Field: ");
+        final StringBuilder sb = new StringBuilder("Structured Field: ");
         sb.append(Integer.toHexString(getSfTypeID()).toUpperCase());
         sb.append(", len=");
         sb.append(new DecimalFormat("00000").format(getSfLength()));

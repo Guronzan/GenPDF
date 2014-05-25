@@ -117,7 +117,7 @@ public abstract class NativeTextPainter extends StrokingTextPainter {
      */
     protected CharSequence collectCharacters(
             final AttributedCharacterIterator runaci) {
-        final StringBuffer chars = new StringBuffer();
+        final StringBuilder chars = new StringBuilder();
         for (runaci.first(); runaci.getIndex() < runaci.getEndIndex();) {
             chars.append(runaci.current());
             runaci.next();

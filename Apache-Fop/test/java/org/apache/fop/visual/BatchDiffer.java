@@ -207,7 +207,7 @@ public class BatchDiffer {
                         times[j] = System.currentTimeMillis() - times[j];
                     }
                     if (log.isDebugEnabled()) {
-                        final StringBuffer sb = new StringBuffer(
+                        final StringBuilder sb = new StringBuilder(
                                 "Bitmap production times: ");
                         for (int j = 0; j < producers.length; j++) {
                             if (j > 0) {

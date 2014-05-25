@@ -688,7 +688,7 @@ public final class ColorUtil {
         if (color instanceof ColorWithAlternatives) {
             return toFunctionCall((ColorWithAlternatives) color);
         } else if (cs != null && cs.getType() == ColorSpace.TYPE_CMYK) {
-            final StringBuffer sbuf = new StringBuffer(24);
+            final StringBuilder sbuf = new StringBuilder(24);
             final float[] cmyk = color.getColorComponents(null);
             sbuf.append("cmyk(").append(cmyk[0]).append(",").append(cmyk[1])
                     .append(",").append(cmyk[2]).append(",").append(cmyk[3])
@@ -700,7 +700,7 @@ public final class ColorUtil {
     }
 
     private static String toRGBFunctionCall(final Color color) {
-        final StringBuffer sbuf = new StringBuffer();
+        final StringBuilder sbuf = new StringBuilder();
         sbuf.append('#');
         String s = Integer.toHexString(color.getRed());
         if (s.length() == 1) {
@@ -782,7 +782,7 @@ public final class ColorUtil {
         final Color fallbackColor = getsRGBFallback(color);
         final float[] rgb = fallbackColor.getColorComponents(null);
         assert rgb.length == 3;
-        final StringBuffer sb = new StringBuffer(40);
+        final StringBuilder sb = new StringBuilder(40);
         sb.append("(");
         sb.append(rgb[0]).append(",");
         sb.append(rgb[1]).append(",");
@@ -815,7 +815,7 @@ public final class ColorUtil {
 
     private static String toCIELabFunctionCall(final ColorWithAlternatives color) {
         final Color fallbackColor = getsRGBFallback(color);
-        final StringBuffer sb = new StringBuffer("cie-lab-color(");
+        final StringBuilder sb = new StringBuilder("cie-lab-color(");
         sb.append(fallbackColor.getRed()).append(',');
         sb.append(fallbackColor.getGreen()).append(',');
         sb.append(fallbackColor.getBlue());

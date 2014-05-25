@@ -121,7 +121,7 @@ public class PDFGoToRemote extends PDFAction {
      */
     @Override
     public String toPDFString() {
-        final StringBuffer sb = new StringBuffer(64);
+        final StringBuilder sb = new StringBuilder(64);
         sb.append("<<\n/S /GoToR\n/F ");
         sb.append(this.pdfFileSpec.toString());
         sb.append("\n");

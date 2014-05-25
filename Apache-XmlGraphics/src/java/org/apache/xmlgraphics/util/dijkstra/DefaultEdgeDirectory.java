@@ -30,20 +30,20 @@ import java.util.Map;
 public class DefaultEdgeDirectory implements EdgeDirectory {
 
     /** The directory of edges */
-    private final Map edges = new java.util.HashMap();
+    private final Map<Vertex, Map<Vertex, Edge>> edges = new java.util.HashMap<Vertex, Map<Vertex, Edge>>();
 
     // Map<Vertex,Map<Vertex,Edge>>
 
     /**
      * Adds a new edge between two vertices.
-     * 
+     *
      * @param edge
      *            the new edge
      */
     public void addEdge(final Edge edge) {
-        Map directEdges = (Map) this.edges.get(edge.getStart());
+        Map<Vertex, Edge> directEdges = this.edges.get(edge.getStart());
         if (directEdges == null) {
-            directEdges = new java.util.HashMap();
+            directEdges = new java.util.HashMap<Vertex, Edge>();
             this.edges.put(edge.getStart(), directEdges);
         }
         directEdges.put(edge.getEnd(), edge);
@@ -52,9 +52,9 @@ public class DefaultEdgeDirectory implements EdgeDirectory {
     /** {@inheritDoc} */
     @Override
     public int getPenalty(final Vertex start, final Vertex end) {
-        final Map edgeMap = (Map) this.edges.get(start);
+        final Map<Vertex, Edge> edgeMap = this.edges.get(start);
         if (edgeMap != null) {
-            final Edge route = (Edge) edgeMap.get(end);
+            final Edge route = edgeMap.get(end);
             if (route != null) {
                 final int penalty = route.getPenalty();
                 if (penalty < 0) {
@@ -69,35 +69,35 @@ public class DefaultEdgeDirectory implements EdgeDirectory {
 
     /** {@inheritDoc} */
     @Override
-    public Iterator getDestinations(final Vertex origin) {
-        final Map directRoutes = (Map) this.edges.get(origin);
+    public Iterator<Vertex> getDestinations(final Vertex origin) {
+        final Map<Vertex, Edge> directRoutes = this.edges.get(origin);
         if (directRoutes != null) {
-            final Iterator iter = directRoutes.keySet().iterator();
+            final Iterator<Vertex> iter = directRoutes.keySet().iterator();
             return iter;
         }
-        return Collections.EMPTY_LIST.iterator();
+        return Collections.<Vertex> emptyList().iterator();
     }
 
     /**
      * Returns an iterator over all edges with the given origin.
-     * 
+     *
      * @param origin
      *            the origin
      * @return an iterator over Edge instances
      */
-    public Iterator getEdges(final Vertex origin) {
-        final Map directRoutes = (Map) this.edges.get(origin);
+    public Iterator<Edge> getEdges(final Vertex origin) {
+        final Map<Vertex, Edge> directRoutes = this.edges.get(origin);
         if (directRoutes != null) {
-            final Iterator iter = directRoutes.values().iterator();
+            final Iterator<Edge> iter = directRoutes.values().iterator();
             return iter;
         }
-        return Collections.EMPTY_LIST.iterator();
+        return Collections.<Edge> emptyList().iterator();
     }
 
     /**
      * Returns the best edge (the edge with the lowest penalty) between two
      * given vertices.
-     * 
+     *
      * @param start
      *            the start vertex
      * @param end
@@ -106,9 +106,9 @@ public class DefaultEdgeDirectory implements EdgeDirectory {
      */
     public Edge getBestEdge(final Vertex start, final Vertex end) {
         Edge best = null;
-        final Iterator iter = getEdges(start);
+        final Iterator<Edge> iter = getEdges(start);
         while (iter.hasNext()) {
-            final Edge edge = (Edge) iter.next();
+            final Edge edge = iter.next();
             if (edge.getEnd().equals(end)) {
                 if (best == null || edge.getPenalty() < best.getPenalty()) {
                     best = edge;

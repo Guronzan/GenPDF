@@ -449,7 +449,7 @@ public class TextLayoutManager extends LeafNodeLayoutManager {
         private int blockProgressionDimension; // calculated bpd
         private AreaInfo areaInfo; // current area info when iterating over
         // words
-        private StringBuffer wordChars; // current word's character buffer
+        private StringBuilder wordChars; // current word's character buffer
         private int[] letterSpaceAdjust; // current word's letter space
         // adjustments
         private int letterSpaceAdjustIndex; // last written letter space
@@ -655,7 +655,7 @@ public class TextLayoutManager extends LeafNodeLayoutManager {
          *            length of word including all (possibly mapped) fragments
          */
         private void initWord(final int wordLength) {
-            this.wordChars = new StringBuffer(wordLength);
+            this.wordChars = new StringBuilder(wordLength);
             this.letterSpaceAdjust = new int[wordLength];
             this.letterSpaceAdjustIndex = 0;
             this.wordLevels = new int[wordLength];
@@ -1527,7 +1527,7 @@ public class TextLayoutManager extends LeafNodeLayoutManager {
                 + this.changeOffset;
         if (leafValue != -1) {
             final AreaInfo areaInfo = getAreaInfo(leafValue);
-            final StringBuffer buffer = new StringBuffer(
+            final StringBuilder buffer = new StringBuilder(
                     areaInfo.getWordLength());
             for (int i = areaInfo.startIndex; i < areaInfo.breakIndex; i++) {
                 buffer.append(this.foText.charAt(i));

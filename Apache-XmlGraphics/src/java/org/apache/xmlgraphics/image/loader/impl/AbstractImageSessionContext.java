@@ -51,7 +51,7 @@ import org.apache.xmlgraphics.image.loader.util.SoftMapCache;
  */
 @Slf4j
 public abstract class AbstractImageSessionContext implements
-ImageSessionContext {
+        ImageSessionContext {
 
     private static boolean noSourceReuse = false;
 
@@ -102,7 +102,7 @@ ImageSessionContext {
         if (f != null) {
             boolean directFileAccess = true;
             assert source instanceof StreamSource
-            || source instanceof SAXSource;
+                    || source instanceof SAXSource;
             InputStream in = ImageUtil.getInputStream(source);
             if (in == null) {
                 try {
@@ -115,23 +115,18 @@ ImageSessionContext {
                     return null;
                 }
             }
-            if (in != null) {
-                in = ImageUtil.decorateMarkSupported(in);
-                try {
-                    if (ImageUtil.isGZIPCompressed(in)) {
-                        // GZIPped stream are not seekable, so buffer/cache like
-                        // other URLs
-                        directFileAccess = false;
-                    }
-                } catch (final IOException ioe) {
-                    log.error("Error while checking the InputStream for GZIP compression."
-                            + " Could not load image from system identifier '"
-                            + source.getSystemId()
-                            + "' ("
-                            + ioe.getMessage()
-                            + ")");
-                    return null;
+            in = ImageUtil.decorateMarkSupported(in);
+            try {
+                if (ImageUtil.isGZIPCompressed(in)) {
+                    // GZIPped stream are not seekable, so buffer/cache like
+                    // other URLs
+                    directFileAccess = false;
                 }
+            } catch (final IOException ioe) {
+                log.error("Error while checking the InputStream for GZIP compression."
+                        + " Could not load image from system identifier '"
+                        + source.getSystemId() + "' (" + ioe.getMessage() + ")");
+                return null;
             }
 
             if (directFileAccess) {
@@ -210,7 +205,7 @@ ImageSessionContext {
     }
 
     private static class ObservingImageInputStreamInvocationHandler implements
-    InvocationHandler {
+            InvocationHandler {
 
         private final ImageInputStream iin;
         private InputStream in;
@@ -283,6 +278,7 @@ ImageSessionContext {
     }
 
     private final SoftMapCache sessionSources = new SoftMapCache(false); // no
+
     // need
     // for
     // synchronization

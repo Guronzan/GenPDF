@@ -85,7 +85,7 @@ public class PDFNumber extends PDFObject {
             throw new IllegalArgumentException(
                     "Parameter dec must be between 1 and 16");
         }
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         DoubleFormatUtil.formatDouble(doubleDown, dec, dec, buf);
         return buf.toString();
     }
@@ -97,7 +97,7 @@ public class PDFNumber extends PDFObject {
             throw new IllegalArgumentException(
                     "The number of this PDFNumber must not be empty");
         }
-        final StringBuffer sb = new StringBuffer(64);
+        final StringBuilder sb = new StringBuilder(64);
         sb.append(doubleOut(getNumber().doubleValue(), 10));
         return sb.toString();
     }

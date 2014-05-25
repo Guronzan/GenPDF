@@ -629,7 +629,7 @@ public class PageViewport extends AreaTreeObject implements Resolvable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer(64);
+        final StringBuilder sb = new StringBuilder(64);
         sb.append("PageViewport: page=");
         sb.append(getPageNumberString());
         return sb.toString();

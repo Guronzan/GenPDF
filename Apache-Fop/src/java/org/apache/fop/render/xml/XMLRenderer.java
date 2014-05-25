@@ -862,7 +862,7 @@ public class XMLRenderer extends AbstractXMLRenderer {
         }
         final int[] letterAdjust = word.getLetterAdjustArray();
         if (letterAdjust != null) {
-            final StringBuffer sb = new StringBuffer(64);
+            final StringBuilder sb = new StringBuilder(64);
             boolean nonZeroFound = false;
             for (int i = 0, c = letterAdjust.length; i < c; i++) {
                 if (i > 0) {

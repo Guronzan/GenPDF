@@ -133,7 +133,7 @@ class CellPart {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Part: ");
+        final StringBuilder sb = new StringBuilder("Part: ");
         sb.append(this.start).append("-").append(this.end);
         sb.append(" [").append(isFirstPart() ? "F" : "-")
                 .append(isLastPart() ? "L" : "-");

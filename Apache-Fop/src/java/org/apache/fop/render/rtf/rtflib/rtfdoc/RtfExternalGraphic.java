@@ -439,7 +439,7 @@ public class RtfExternalGraphic extends RtfElement {
         writeGroupMark(true);
         writeControlWord("pict");
 
-        final StringBuffer buf = new StringBuffer(this.imagedata.length * 3);
+        final StringBuilder buf = new StringBuilder(this.imagedata.length * 3);
 
         writeControlWord(this.imageformat.getRtfTag());
 

@@ -208,7 +208,7 @@ public class NamedColorProfileParser {
     }
 
     private String toSignatureString(final int sig) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append((char) (sig >> 24 & 0xFF));
         sb.append((char) (sig >> 16 & 0xFF));
         sb.append((char) (sig >> 8 & 0xFF));

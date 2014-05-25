@@ -153,7 +153,7 @@ public class RegionReference extends Area {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer(super.toString());
+        final StringBuilder sb = new StringBuilder(super.toString());
         sb.append(" {regionName=").append(this.regionName);
         sb.append(", regionClass=").append(this.regionClass);
         sb.append(", ctm=").append(this.ctm);

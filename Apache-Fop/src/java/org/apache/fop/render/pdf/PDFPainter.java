@@ -71,7 +71,7 @@ public class PDFPainter extends AbstractIFPainter {
 
     /**
      * Default constructor.
-     * 
+     *
      * @param documentHandler
      *            the parent document handler
      * @param logicalStructureHandler
@@ -178,7 +178,7 @@ public class PDFPainter extends AbstractIFPainter {
 
     /**
      * Places a previously registered image at a certain place on the page.
-     * 
+     *
      * @param rect
      *            the rectangle for the image
      * @param xobj
@@ -195,7 +195,7 @@ public class PDFPainter extends AbstractIFPainter {
     /**
      * Places a previously registered image at a certain place on the page -
      * Accessibility version
-     * 
+     *
      * @param rect
      *            the rectangle for the image
      * @param xobj
@@ -234,7 +234,7 @@ public class PDFPainter extends AbstractIFPainter {
     /**
      * Formats a integer value (normally coordinates in millipoints) to a
      * String.
-     * 
+     *
      * @param value
      *            the value (in millipoints)
      * @return the formatted value
@@ -259,22 +259,17 @@ public class PDFPainter extends AbstractIFPainter {
         }
         if (rect.width != 0 && rect.height != 0) {
             this.generator.endTextObject();
-            if (fill != null) {
-                if (fill instanceof Color) {
-                    this.generator.updateColor((Color) fill, true, null);
-                } else {
-                    throw new UnsupportedOperationException(
-                            "Non-Color paints NYI");
-                }
+            if (fill instanceof Color) {
+                this.generator.updateColor((Color) fill, true, null);
+            } else {
+                throw new UnsupportedOperationException("Non-Color paints NYI");
             }
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append(format(rect.x)).append(' ');
             sb.append(format(rect.y)).append(' ');
             sb.append(format(rect.width)).append(' ');
             sb.append(format(rect.height)).append(" re");
-            if (fill != null) {
-                sb.append(" f");
-            }
+            sb.append(" f");
             /*
              * Removed from method signature as it is currently not used if
              * (stroke != null) { sb.append(" S"); }
@@ -322,7 +317,7 @@ public class PDFPainter extends AbstractIFPainter {
     @Override
     public void drawText(final int x, final int y, final int letterSpacing,
             final int wordSpacing, final int[][] dp, final String text)
-                    throws IFException {
+            throws IFException {
         if (this.accessEnabled) {
             final PDFStructElem structElem = (PDFStructElem) getContext()
                     .getStructureTreeElement();

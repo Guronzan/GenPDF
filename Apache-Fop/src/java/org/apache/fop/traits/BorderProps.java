@@ -185,7 +185,7 @@ public class BorderProps implements Serializable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sbuf = new StringBuffer();
+        final StringBuilder sbuf = new StringBuilder();
         sbuf.append('(');
         sbuf.append(getStyleString());
         sbuf.append(',');

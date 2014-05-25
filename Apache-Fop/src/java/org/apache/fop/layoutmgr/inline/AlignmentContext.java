@@ -582,7 +582,7 @@ public class AlignmentContext implements Constants {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer(64);
+        final StringBuilder sb = new StringBuilder(64);
         sb.append("areaHeight=").append(this.areaHeight);
         sb.append(" lineHeight=").append(this.lineHeight);
         sb.append(" alignmentPoint=").append(this.alignmentPoint);

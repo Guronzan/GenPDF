@@ -102,7 +102,7 @@ public final class GenerateBidiTestData {
      */
     private static void convertBidiTestData(final String ucdFileName,
             final String bidiFileName, final String outFileName)
-                    throws Exception {
+            throws Exception {
 
         // read type data from UCD if ignoring deprecated type data
         if (ignoreDeprecatedTypeData) {
@@ -213,11 +213,11 @@ public final class GenerateBidiTestData {
     }
 
     private static void parseTypeProperties(final String line, final Map/*
-     * <Integer
-     * ,
-     * List>
-     */sm,
-     final Map/* <String,int[3]> */im) {
+                                                                         * <Integer
+                                                                         * ,
+                                                                         * List>
+                                                                         */sm,
+            final Map/* <String,int[3]> */im) {
         final String[] sa = line.split(";");
         if (sa.length >= 5) {
             final int uc = Integer.parseInt(sa[0], 16);
@@ -231,7 +231,7 @@ public final class GenerateBidiTestData {
                     } else {
                         throw new IllegalArgumentException(
                                 "duplicate start of block '" + ucBlock
-                                + "' at entry: " + line);
+                                        + "' at entry: " + line);
                     }
                 } else if (isBlockEnd(ucName)) {
                     final String ucBlock = getBlockName(ucName);
@@ -243,12 +243,12 @@ public final class GenerateBidiTestData {
                         } else {
                             throw new IllegalArgumentException(
                                     "duplicate end of block '" + ucBlock
-                                    + "' at entry: " + line);
+                                            + "' at entry: " + line);
                         }
                     } else {
                         throw new IllegalArgumentException(
                                 "missing start of block '" + ucBlock
-                                + "' at entry: " + line);
+                                        + "' at entry: " + line);
                     }
                 } else {
                     final Integer k = Integer.valueOf(bc);
@@ -321,9 +321,9 @@ public final class GenerateBidiTestData {
         int eLast = 0;
         for (final Iterator it = rm.entrySet().iterator(); it.hasNext();) {
             final Map.Entry/* <Integer,Integer> */me = (Map.Entry/*
-             * <Integer,Integer
-             * >
-             */) it.next();
+                                                                  * <Integer,Integer
+                                                                  * >
+                                                                  */) it.next();
             final int s = ((Integer) me.getKey()).intValue();
             final int e = ((Integer) me.getValue()).intValue();
             if (s > eLast) {
@@ -410,7 +410,7 @@ public final class GenerateBidiTestData {
     }
 
     private static int readType(final String line, final BufferedReader b,
-            final List lines) throws IOException {
+            final List lines) {
         lines.add(line);
         return 0;
     }
@@ -720,7 +720,7 @@ public final class GenerateBidiTestData {
 
     private static String maybeReadHexDigits(final CharacterIterator ci,
             final int numDigits) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         while (numDigits < 0 || sb.length() < numDigits) {
             final char c = ci.current();
             if (c != CharacterIterator.DONE) {
@@ -775,9 +775,9 @@ public final class GenerateBidiTestData {
         final List compRanges = new ArrayList(rm.size() + 1);
         for (final Iterator it = rm.entrySet().iterator(); it.hasNext();) {
             final Map.Entry/* <Integer,Integer> */me = (Map.Entry/*
-             * <Integer,Integer
-             * >
-             */) it.next();
+                                                                  * <Integer,Integer
+                                                                  * >
+                                                                  */) it.next();
             s = ((Integer) me.getKey()).intValue();
             e = ((Integer) me.getValue()).intValue();
             if (s > cs) {
@@ -866,7 +866,7 @@ public final class GenerateBidiTestData {
     }
 
     private static String remainder(final CharacterIterator ci) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         for (char c; (c = ci.current()) != CharacterIterator.DONE;) {
             ci.next();
             sb.append(c);
@@ -958,7 +958,7 @@ public final class GenerateBidiTestData {
             } else {
                 throw new IllegalStateException(
                         "test array length error, expected " + (nl + 1)
-                        + " entries, got " + ta.length + " entries");
+                                + " entries, got " + ta.length + " entries");
             }
         }
         assert k == data.length;
@@ -1011,7 +1011,7 @@ public final class GenerateBidiTestData {
             negative = false;
         }
         // read digits
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         while (true) {
             final char c = ci.current();
             if (c != CharacterIterator.DONE && isDigit(c)) {
@@ -1171,7 +1171,7 @@ public final class GenerateBidiTestData {
 
     private static String maybeReadIdentifier(final CharacterIterator ci) {
         // read keyword chars ([A-Z])
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         while (true) {
             final char c = ci.current();
             if (c == CharacterIterator.DONE) {
@@ -1278,7 +1278,7 @@ public final class GenerateBidiTestData {
 
     private static void dumpResourcesData(final File btcDir,
             final String btcName, final String prefix, final int[][] data)
-                    throws IOException {
+            throws IOException {
         final String btdName = extractDataFileName(btcName);
         for (int i = 0, n = data.length; i < n; i++) {
             final File f = new File(btcDir, btdName + "$" + prefix + i + ".ser");

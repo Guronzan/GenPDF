@@ -56,7 +56,7 @@ public class FODimension {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer(super.toString());
+        final StringBuilder sb = new StringBuilder(super.toString());
         sb.append(" {ipd=").append(Integer.toString(this.ipd));
         sb.append(", bpd=").append(Integer.toString(this.bpd));
         sb.append("}");

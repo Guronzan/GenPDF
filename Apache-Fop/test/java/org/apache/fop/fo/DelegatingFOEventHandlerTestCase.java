@@ -101,13 +101,13 @@ public class DelegatingFOEventHandlerTestCase {
         @Override
         public void startDocument() throws SAXException {
             DelegatingFOEventHandlerTestCase.this.actualEvents
-            .add("start document");
+                    .add("start document");
         }
 
         @Override
         public void endDocument() throws SAXException {
             DelegatingFOEventHandlerTestCase.this.actualEvents
-            .add("end   document");
+                    .add("end   document");
         }
 
         @Override
@@ -407,7 +407,7 @@ public class DelegatingFOEventHandlerTestCase {
             this.eventBuilder.append(node.getLocalName());
             addID(node);
             DelegatingFOEventHandlerTestCase.this.actualEvents
-            .add(this.eventBuilder.toString());
+                    .add(this.eventBuilder.toString());
             this.eventBuilder.setLength(0);
         }
 
@@ -422,13 +422,13 @@ public class DelegatingFOEventHandlerTestCase {
     }
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
         setUpEvents();
         loadDocument();
         createDocumentParser();
     }
 
-    private void setUpEvents() throws IOException {
+    private void setUpEvents() {
         loadDocument();
         loadExpectedEvents();
         this.actualEvents = new ArrayList<String>(this.expectedEvents.size());
@@ -438,7 +438,7 @@ public class DelegatingFOEventHandlerTestCase {
         this.document = getClass().getResourceAsStream("complete_document.fo");
     }
 
-    private void loadExpectedEvents() throws IOException {
+    private void loadExpectedEvents() {
         this.expectedEvents = new ArrayList<String>();
         final InputStream xslt = getClass().getResourceAsStream(
                 "extract-events.xsl");
@@ -479,7 +479,7 @@ public class DelegatingFOEventHandlerTestCase {
             @Override
             public void startElement(final String uri, final String localName,
                     final String qName, final Attributes attributes)
-                            throws SAXException {
+                    throws SAXException {
                 this.event.setLength(0);
             }
 
@@ -493,7 +493,7 @@ public class DelegatingFOEventHandlerTestCase {
             public void endElement(final String uri, final String localName,
                     final String qName) throws SAXException {
                 DelegatingFOEventHandlerTestCase.this.expectedEvents
-                .add(this.event.toString());
+                        .add(this.event.toString());
             }
 
         });

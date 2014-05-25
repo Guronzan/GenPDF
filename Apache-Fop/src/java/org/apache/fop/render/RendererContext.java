@@ -131,7 +131,7 @@ public class RendererContext {
     /** {@inheritDoc} **/
     @Override
     public String toString() {
-        final StringBuffer stringBuffer = new StringBuffer("RendererContext{\n");
+        final StringBuilder stringBuffer = new StringBuilder("RendererContext{\n");
         final Iterator it = this.props.keySet().iterator();
         while (it.hasNext()) {
             final String key = (String) it.next();

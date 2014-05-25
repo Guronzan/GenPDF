@@ -33,7 +33,7 @@ public class TTFTableNameTestCase {
     /**
      * Test getName() - tests that the getName() method returns the expected
      * String as expected in the Directory Table.
-     * 
+     *
      * @exception IllegalAccessException
      *                error
      */
@@ -77,7 +77,7 @@ public class TTFTableNameTestCase {
      * Test getValue(String) - tests that the getValue(String) method returns
      * the expected TTFTableNames value when it is given a String (name of a
      * table).
-     * 
+     *
      * @exception IllegalAccessException
      *                error
      */
@@ -111,13 +111,13 @@ public class TTFTableNameTestCase {
         // Test that we can store a random table name and it will not fail or
         // throw an error.
         final TTFTableName test = TTFTableName.getValue("random");
-        assertTrue(test instanceof TTFTableName);
+        assertTrue(test != null);
     }
 
     /**
      * This class overrides hashCode() - we need to ensure it works properly by
      * instantiating two objects and comparing their hash-codes.
-     * 
+     *
      * @exception IllegalAccessException
      *                error
      */
@@ -134,7 +134,7 @@ public class TTFTableNameTestCase {
      * This class overrides equals(object) - we need to test: 1) Reflexivity 2)
      * Symmetry 3) Transitivity 4) Consistency 5) check it fails if you put in a
      * null value
-     * 
+     *
      * @throws IllegalAccessException
      *             error
      */

@@ -1827,7 +1827,7 @@ public class GlyphSubstitutionTable extends GlyphTable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("{components={");
             for (int i = 0, n = this.components.length; i < n; i++) {
                 if (i > 0) {
@@ -1908,7 +1908,7 @@ public class GlyphSubstitutionTable extends GlyphTable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("{ligs={");
             for (int i = 0, n = this.ligatures.length; i < n; i++) {
                 if (i > 0) {

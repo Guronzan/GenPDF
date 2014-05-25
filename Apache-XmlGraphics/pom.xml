@@ -5,7 +5,7 @@
 	<artifactId>Apache-XmlGraphics</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
-		<sourceDirectory>examples/java</sourceDirectory>
+		<sourceDirectory>src/java</sourceDirectory>
 		<testSourceDirectory>test/java</testSourceDirectory>
 		<resources>
 			<resource>

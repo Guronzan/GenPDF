@@ -75,7 +75,7 @@ public class CommonAbsolutePosition {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("CommonAbsolutePosition{");
+        final StringBuilder sb = new StringBuilder("CommonAbsolutePosition{");
         sb.append(" absPos=");
         sb.append(this.absolutePosition);
         sb.append(" top=");

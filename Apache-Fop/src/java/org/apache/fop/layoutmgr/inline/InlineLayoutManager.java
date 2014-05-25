@@ -300,7 +300,7 @@ public class InlineLayoutManager extends InlineStackingLayoutManager {
             }
         }
 
-        final StringBuffer trace = new StringBuffer("InlineLM:");
+        final StringBuilder trace = new StringBuilder("InlineLM:");
 
         // We'll add the border to the first inline sequence created.
         // This flag makes sure we do it only once.

@@ -82,8 +82,8 @@ final class FoUnitsConverter {
         foValue = foValue.trim();
 
         // break value into number and units
-        final StringBuffer number = new StringBuffer();
-        final StringBuffer units = new StringBuffer();
+        final StringBuilder number = new StringBuilder();
+        final StringBuilder units = new StringBuilder();
 
         for (int i = 0; i < foValue.length(); i++) {
             final char c = foValue.charAt(i);

@@ -455,7 +455,7 @@ public class GlyphSequence implements Cloneable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append('{');
         sb.append("chars = [");
         sb.append(this.characters);

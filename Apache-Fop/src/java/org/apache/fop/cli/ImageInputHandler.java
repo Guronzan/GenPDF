@@ -21,7 +21,7 @@ package org.apache.fop.cli;
 
 import java.io.File;
 import java.io.StringReader;
-import java.util.Vector;
+import java.util.List;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -40,11 +40,11 @@ public class ImageInputHandler extends InputHandler {
      *            XSLT file (may be null in which case the default stylesheet is
      *            used)
      * @param params
-     *            Vector of command-line parameters (name, value, name, value,
+     *            List of command-line parameters (name, value, name, value,
      *            ...) for XSL stylesheet, null if none
      */
     public ImageInputHandler(final File imagefile, final File xsltfile,
-            final Vector params) {
+            final List params) {
         super(imagefile, xsltfile, params);
     }
 

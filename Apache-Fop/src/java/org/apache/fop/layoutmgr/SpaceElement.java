@@ -90,7 +90,7 @@ public class SpaceElement extends UnresolvedListElementWithLength {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Space[");
+        final StringBuilder sb = new StringBuilder("Space[");
         sb.append(super.toString());
         sb.append(", precedence=");
         if (isForcing()) {

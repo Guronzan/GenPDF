@@ -63,7 +63,7 @@ public final class DoubleFormatUtil {
      *            the buffer to write to
      */
     public static void formatDouble(final double source, final int decimals,
-            final int precision, final StringBuffer target) {
+            final int precision, final StringBuilder target) {
         final int scale = Math.abs(source) >= 1.0 ? decimals : precision;
         if (tooManyDigitsUsed(source, scale) || tooCloseToRound(source, scale)) {
             formatDoublePrecise(source, decimals, precision, target);
@@ -89,7 +89,7 @@ public final class DoubleFormatUtil {
      *            the buffer to write to
      */
     public static void formatDoublePrecise(double source, final int decimals,
-            final int precision, final StringBuffer target) {
+            final int precision, final StringBuilder target) {
         if (isRoundedToZero(source, decimals, precision)) {
             // Will always be rounded to 0
             target.append('0');
@@ -264,7 +264,7 @@ public final class DoubleFormatUtil {
      * @param decP
      *            the source decimal part, truncated to scale + 1 digit
      */
-    private static void format(final StringBuffer target, int scale, long intP,
+    private static void format(final StringBuilder target, int scale, long intP,
             long decP) {
         if (decP != 0L) {
             // decP is the decimal part of source, truncated to scale + 1 digit.
@@ -317,7 +317,7 @@ public final class DoubleFormatUtil {
      *            the buffer to write to
      */
     public static void formatDoubleFast(double source, final int decimals,
-            final int precision, final StringBuffer target) {
+            final int precision, final StringBuilder target) {
         if (isRoundedToZero(source, decimals, precision)) {
             // Will always be rounded to 0
             target.append('0');

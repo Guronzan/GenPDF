@@ -1017,7 +1017,7 @@ public final class Glyphs {
         }
         final String[] arr = new String[lines.size() * 2];
         int pos = 0;
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         for (int i = 0, c = lines.size(); i < c; i++) {
             final String line = (String) lines.get(i);
             final int semicolon = line.indexOf(';');
@@ -1081,7 +1081,7 @@ public final class Glyphs {
         }
 
         // Step 2
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         final StringTokenizer tokenizer = new StringTokenizer(glyphName, "_",
                 false);
         while (tokenizer.hasMoreTokens()) {

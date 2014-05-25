@@ -71,7 +71,7 @@ public class PDFColorHandler {
      * @param fill
      *            true for fill color, false for stroke color
      */
-    public void establishColor(final StringBuffer codeBuffer,
+    public void establishColor(final StringBuilder codeBuffer,
             final Color color, final boolean fill) {
         if (color instanceof ColorWithAlternatives) {
             final ColorWithAlternatives colExt = (ColorWithAlternatives) color;
@@ -98,7 +98,7 @@ public class PDFColorHandler {
         }
     }
 
-    private boolean establishColorFromColor(final StringBuffer codeBuffer,
+    private boolean establishColorFromColor(final StringBuilder codeBuffer,
             final Color color, final boolean fill) {
         final ColorSpace cs = color.getColorSpace();
         if (cs instanceof DeviceCMYKColorSpace) {
@@ -186,14 +186,14 @@ public class PDFColorHandler {
         return cielab;
     }
 
-    private void establishColor(final StringBuffer codeBuffer,
+    private void establishColor(final StringBuilder codeBuffer,
             final PDFColorSpace pdfcs, final Color color, final boolean fill) {
         selectColorSpace(codeBuffer, pdfcs, fill);
         writeColor(codeBuffer, color, pdfcs.getNumComponents(), fill ? "sc"
                 : "SC");
     }
 
-    private void selectColorSpace(final StringBuffer codeBuffer,
+    private void selectColorSpace(final StringBuilder codeBuffer,
             final PDFColorSpace pdfcs, final boolean fill) {
         codeBuffer.append(new PDFName(pdfcs.getName()));
         if (fill) {
@@ -203,7 +203,7 @@ public class PDFColorHandler {
         }
     }
 
-    private void establishDeviceRGB(final StringBuffer codeBuffer,
+    private void establishDeviceRGB(final StringBuilder codeBuffer,
             final Color color, final boolean fill) {
         float[] comps;
         if (color.getColorSpace().isCS_sRGB()) {
@@ -224,18 +224,18 @@ public class PDFColorHandler {
         }
     }
 
-    private void establishDeviceCMYK(final StringBuffer codeBuffer,
+    private void establishDeviceCMYK(final StringBuilder codeBuffer,
             final Color color, final boolean fill) {
         writeColor(codeBuffer, color, 4, fill ? "k" : "K");
     }
 
-    private void writeColor(final StringBuffer codeBuffer, final Color color,
+    private void writeColor(final StringBuilder codeBuffer, final Color color,
             final int componentCount, final String command) {
         final float[] comps = color.getColorComponents(null);
         writeColor(codeBuffer, comps, componentCount, command);
     }
 
-    private void writeColor(final StringBuffer codeBuffer, final float[] comps,
+    private void writeColor(final StringBuilder codeBuffer, final float[] comps,
             final int componentCount, final String command) {
         if (comps.length != componentCount) {
             throw new IllegalStateException(

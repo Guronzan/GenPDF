@@ -19,9 +19,9 @@
 
 package org.apache.fop.complexscripts.bidi;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.fop.area.inline.Anchor;
 import org.apache.fop.area.inline.InlineArea;
@@ -58,7 +58,7 @@ public class InlineRun {
 
     /**
      * Primary constructor.
-     * 
+     *
      * @param inline
      *            which generated this inline run
      * @param levels
@@ -74,7 +74,7 @@ public class InlineRun {
 
     /**
      * Alternate constructor.
-     * 
+     *
      * @param inline
      *            which generated this inline run
      * @param level
@@ -88,7 +88,7 @@ public class InlineRun {
 
     /**
      * Obtain inline area that generated this inline run.
-     * 
+     *
      * @return inline area that generated this inline run.
      */
     public InlineArea getInline() {
@@ -97,7 +97,7 @@ public class InlineRun {
 
     /**
      * Obtain minimum bidi level for this run.
-     * 
+     *
      * @return minimum bidi level
      */
     public int getMinLevel() {
@@ -106,7 +106,7 @@ public class InlineRun {
 
     /**
      * Obtain maximum bidi level for this run.
-     * 
+     *
      * @return maximum bidi level
      */
     public int getMaxLevel() {
@@ -117,8 +117,7 @@ public class InlineRun {
         int mn = Integer.MAX_VALUE;
         int mx = Integer.MIN_VALUE;
         if (levels != null && levels.length > 0) {
-            for (int i = 0, n = levels.length; i < n; i++) {
-                final int l = levels[i];
+            for (final int l : levels) {
                 if (l < mn) {
                     mn = l;
                 }
@@ -135,7 +134,7 @@ public class InlineRun {
 
     /**
      * Determine if this run has homogenous (same valued) bidi levels.
-     * 
+     *
      * @return true if homogenous
      */
     public boolean isHomogenous() {
@@ -144,11 +143,11 @@ public class InlineRun {
 
     /**
      * Split this inline run into homogenous runs.
-     * 
+     *
      * @return list of new runs
      */
     public List split() {
-        final List runs = new Vector();
+        final List runs = new ArrayList();
         for (int i = 0, n = this.levels.length; i < n;) {
             final int l = this.levels[i];
             final int s = i;
@@ -171,7 +170,7 @@ public class InlineRun {
 
     /**
      * Update a min/max array to correspond with this run's min/max values.
-     * 
+     *
      * @param mm
      *            reference to min/max array
      */
@@ -186,7 +185,7 @@ public class InlineRun {
 
     /**
      * Determine if run needs mirroring.
-     * 
+     *
      * @return true if run is homogenous and odd (i.e., right to left)
      */
     public boolean maybeNeedsMirroring() {
@@ -202,7 +201,7 @@ public class InlineRun {
 
     /**
      * Reverse inline area if it is a word area and it requires reversal.
-     * 
+     *
      * @param mirror
      *            if true then also mirror characters
      */
@@ -261,7 +260,7 @@ public class InlineRun {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("RR: { type = \'");
+        final StringBuilder sb = new StringBuilder("RR: { type = \'");
         char c;
         String content = null;
         if (this.inline instanceof WordArea) {
@@ -304,7 +303,7 @@ public class InlineRun {
     }
 
     private String generateLevels(final int[] levels) {
-        final StringBuffer lb = new StringBuffer();
+        final StringBuilder lb = new StringBuilder();
         int maxLevel = -1;
         final int numLevels = levels.length;
         for (int i = 0; i < numLevels; i++) {

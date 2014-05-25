@@ -173,7 +173,7 @@ public class CommonBorderPaddingBackground {
 
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer("BorderInfo");
+            final StringBuilder sb = new StringBuilder("BorderInfo");
             sb.append(" {");
             sb.append(this.mStyle);
             sb.append(", ");

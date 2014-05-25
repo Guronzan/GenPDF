@@ -157,7 +157,7 @@ public class Marker extends FObjMixed {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer(super.toString());
+        final StringBuilder sb = new StringBuilder(super.toString());
         sb.append(" {").append(getMarkerClassName()).append("}");
         return sb.toString();
     }

@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Vector;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParserFactory;
@@ -62,7 +62,7 @@ public class InputHandler implements ErrorListener, Renderable {
     /** original source file */
     protected File sourcefile;
     private File stylesheet; // for XML/XSLT usage
-    private Vector xsltParams; // for XML/XSLT usage
+    private List<String> xsltParams; // for XML/XSLT usage
     private EntityResolver entityResolver = null;
     private URIResolver uriResolver = null;
 
@@ -74,11 +74,11 @@ public class InputHandler implements ErrorListener, Renderable {
      * @param xsltfile
      *            XSLT file
      * @param params
-     *            Vector of command-line parameters (name, value, name, value,
+     *            List of command-line parameters (name, value, name, value,
      *            ...) for XSL stylesheet, null if none
      */
     public InputHandler(final File xmlfile, final File xsltfile,
-            final Vector params) {
+            final List<String> params) {
         this.sourcefile = xmlfile;
         this.stylesheet = xsltfile;
         this.xsltParams = params;
@@ -109,7 +109,7 @@ public class InputHandler implements ErrorListener, Renderable {
      */
     public void renderTo(final FOUserAgent userAgent,
             final String outputFormat, final OutputStream out)
-                    throws FOPException {
+            throws FOPException {
 
         final FopFactory factory = userAgent.getFactory();
         Fop fop;
@@ -125,7 +125,7 @@ public class InputHandler implements ErrorListener, Renderable {
 
             try {
                 baseURL = new File(this.sourcefile.getAbsolutePath())
-                        .getParentFile().toURI().toURL().toExternalForm();
+                .getParentFile().toURI().toURL().toExternalForm();
             } catch (final Exception e) {
                 baseURL = "";
             }
@@ -216,7 +216,7 @@ public class InputHandler implements ErrorListener, Renderable {
     public void createCatalogResolver(final FOUserAgent userAgent) {
         final String[] classNames = new String[] {
                 "org.apache.xml.resolver.tools.CatalogResolver",
-                "com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver" };
+        "com.sun.org.apache.xml.internal.resolver.tools.CatalogResolver" };
         final ResourceEventProducer eventProducer = ResourceEventProducer.Provider
                 .get(userAgent.getEventBroadcaster());
         Class resolverClass = null;
@@ -273,7 +273,7 @@ public class InputHandler implements ErrorListener, Renderable {
     }
 
     private XMLReader getXMLReader() throws ParserConfigurationException,
-    SAXException {
+            SAXException {
         final SAXParserFactory spf = SAXParserFactory.newInstance();
         spf.setFeature("http://xml.org/sax/features/namespaces", true);
         spf.setFeature("http://apache.org/xml/features/xinclude", true);
@@ -306,9 +306,8 @@ public class InputHandler implements ErrorListener, Renderable {
                 // Set the value of parameters, if any, defined for stylesheet
                 if (this.xsltParams != null) {
                     for (int i = 0; i < this.xsltParams.size(); i += 2) {
-                        transformer.setParameter(
-                                (String) this.xsltParams.elementAt(i),
-                                (String) this.xsltParams.elementAt(i + 1));
+                        transformer.setParameter(this.xsltParams.get(i),
+                                this.xsltParams.get(i + 1));
                     }
                 }
                 if (this.uriResolver != null) {

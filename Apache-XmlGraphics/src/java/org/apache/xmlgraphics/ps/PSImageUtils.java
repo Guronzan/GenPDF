@@ -215,7 +215,7 @@ public class PSImageUtils {
     private static String getDecodeArray(final int numComponents,
             final boolean invertColors) {
         String decodeArray;
-        final StringBuffer sb = new StringBuffer("[");
+        final StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < numComponents; i++) {
             if (i > 0) {
                 sb.append(" ");
@@ -313,7 +313,7 @@ public class PSImageUtils {
             '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
     private static String rgb2Hex(final int rgb) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         for (int i = 5; i >= 0; i--) {
             final int shift = i * 4;
             final int n = (rgb & 15 << shift) >> shift;

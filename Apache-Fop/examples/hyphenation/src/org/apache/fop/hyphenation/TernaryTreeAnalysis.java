@@ -50,7 +50,7 @@ public class TernaryTreeAnalysis {
         /**
          * The node string being constructed
          */
-        public StringBuffer string = new StringBuffer();
+        public StringBuilder string = new StringBuilder();
 
         /**
          * The indent of the node string
@@ -138,8 +138,8 @@ public class TernaryTreeAnalysis {
             }
         }
 
-        private StringBuffer readKey() {
-            final StringBuffer s = new StringBuffer();
+        private StringBuilder readKey() {
+            final StringBuilder s = new StringBuilder();
             int i = TernaryTreeAnalysis.this.tt.lo[this.index];
             char c = TernaryTreeAnalysis.this.tt.kv.get(i);
             for (; c != 0; c = TernaryTreeAnalysis.this.tt.kv.get(++i)) {
@@ -154,7 +154,7 @@ public class TernaryTreeAnalysis {
          * @return the string representing the node
          */
         public String toNodeString() {
-            final StringBuffer s = new StringBuffer();
+            final StringBuilder s = new StringBuilder();
             if (this.isLeafNode) {
                 s.append("-" + this.index);
                 if (this.isPacked) {
@@ -173,7 +173,7 @@ public class TernaryTreeAnalysis {
          * @return the string representing the node
          */
         public String toCompactString() {
-            final StringBuffer s = new StringBuffer();
+            final StringBuilder s = new StringBuilder();
             if (this.isLeafNode) {
                 s.append("-" + this.index);
                 if (this.isPacked) {
@@ -200,7 +200,7 @@ public class TernaryTreeAnalysis {
          */
         @Override
         public String toString() {
-            final StringBuffer s = new StringBuffer();
+            final StringBuilder s = new StringBuilder();
             s.append("Node " + this.index + ":\n");
             if (this.isLeafNode) {
                 if (this.isPacked) {
@@ -225,7 +225,7 @@ public class TernaryTreeAnalysis {
      * @return the string representing the tree
      */
     public String toCompactNodes() {
-        final StringBuffer s = new StringBuffer();
+        final StringBuilder s = new StringBuilder();
         for (int i = 1; i < this.tt.sc.length; ++i) {
             if (i != 1) {
                 s.append("\n");
@@ -241,7 +241,7 @@ public class TernaryTreeAnalysis {
      * @return the string representing the tree
      */
     public String toNodes() {
-        final StringBuffer s = new StringBuffer();
+        final StringBuilder s = new StringBuilder();
         for (int i = 1; i < this.tt.sc.length; ++i) {
             if (i != 1) {
                 s.append("\n");
@@ -251,8 +251,8 @@ public class TernaryTreeAnalysis {
         return s.toString();
     }
 
-    private static StringBuffer toString(final char[] c) {
-        final StringBuffer s = new StringBuffer();
+    private static StringBuilder toString(final char[] c) {
+        final StringBuilder s = new StringBuilder();
         for (int i = 0; i < c.length; ++i) {
             s.append((int) c[i]);
             s.append(",");
@@ -267,7 +267,7 @@ public class TernaryTreeAnalysis {
      */
     @Override
     public String toString() {
-        final StringBuffer s = new StringBuffer();
+        final StringBuilder s = new StringBuilder();
 
         s.append("hi: ");
         s.append(toString(this.tt.hi));

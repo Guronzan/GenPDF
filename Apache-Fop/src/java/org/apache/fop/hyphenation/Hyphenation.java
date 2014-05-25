@@ -83,7 +83,7 @@ public class Hyphenation {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer str = new StringBuffer();
+        final StringBuilder str = new StringBuilder();
         int start = 0;
         for (int i = 0; i < this.len; i++) {
             str.append(this.word.substring(start, this.hyphenPoints[i]) + "-");

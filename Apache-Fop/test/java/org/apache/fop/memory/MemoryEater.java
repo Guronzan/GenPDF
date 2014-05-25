@@ -23,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -56,8 +55,7 @@ public class MemoryEater {
 
     private Stats stats;
 
-    public MemoryEater() throws TransformerConfigurationException,
-    MalformedURLException {
+    public MemoryEater() throws TransformerConfigurationException {
         final File xsltFile = new File("test/xsl/fo-replicator.xsl");
         final Source xslt = new StreamSource(xsltFile);
         this.replicatorTemplates = this.tFactory.newTemplates(xslt);

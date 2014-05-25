@@ -78,7 +78,7 @@ public final class SVGUtil {
      */
     public static String formatAffineTransformsMptToPt(
             final AffineTransform[] transforms) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         for (int i = 0, c = transforms.length; i < c; i++) {
             if (i > 0) {
                 sb.append(' ');

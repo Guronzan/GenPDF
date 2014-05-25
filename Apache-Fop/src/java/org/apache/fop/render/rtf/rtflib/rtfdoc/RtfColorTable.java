@@ -27,8 +27,9 @@ package org.apache.fop.render.rtf.rtflib.rtfdoc;
  */
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * <p>
@@ -61,7 +62,7 @@ public final class RtfColorTable {
     /** Index table for the colors */
     private Hashtable colorIndex = null;
     /** Used colors to this vector */
-    private Vector colorTable = null;
+    private List colorTable = null;
     /** Map of color names to color numbers */
     private Hashtable namedColors = null;
 
@@ -73,7 +74,7 @@ public final class RtfColorTable {
      * Constructor.
      */
     private RtfColorTable() {
-        this.colorTable = new Vector();
+        this.colorTable = new ArrayList();
         this.colorIndex = new Hashtable();
         this.namedColors = new Hashtable();
 
@@ -229,7 +230,7 @@ public final class RtfColorTable {
      */
     private void addColor(final Integer i) {
         this.colorIndex.put(i, new Integer(this.colorTable.size()));
-        this.colorTable.addElement(i);
+        this.colorTable.add(i);
     }
 
     /**

@@ -60,7 +60,7 @@ public class PSTilingPattern {
     /**
      * A PostScript procedure for painting the pattern cell
      */
-    protected StringBuffer paintProc = null;
+    protected StringBuilder paintProc = null;
 
     /**
      * An array of four numbers in the pattern coordinate system, giving the
@@ -124,7 +124,7 @@ public class PSTilingPattern {
      *            an extended unique ID (optional)
      */
     public PSTilingPattern(final String patternName,
-            final StringBuffer paintProc, final Rectangle bBox,
+            final StringBuilder paintProc, final Rectangle bBox,
             final double xStep, final double yStep, final int paintType,
             final int tilingType, final List xUID) {
 
@@ -239,7 +239,7 @@ public class PSTilingPattern {
      *
      * @return the postscript procedure PaintProc
      */
-    public StringBuffer getPaintProc() {
+    public StringBuilder getPaintProc() {
         return this.paintProc;
     }
 
@@ -249,7 +249,7 @@ public class PSTilingPattern {
      * @param paintProc
      *            the postscript procedure PaintProc
      */
-    public void setPaintProc(final StringBuffer paintProc) {
+    public void setPaintProc(final StringBuilder paintProc) {
         this.paintProc = paintProc;
     }
 
@@ -396,7 +396,7 @@ public class PSTilingPattern {
      */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("<<\n");
+        final StringBuilder sb = new StringBuilder("<<\n");
         sb.append("/PatternType " + this.patternType + "\n");
         sb.append("/PaintType " + this.paintType + "\n");
         sb.append("/TilingType " + this.tilingType + "\n");
@@ -444,11 +444,11 @@ public class PSTilingPattern {
                     count = 0; // line should not be longer than 255 characters
                 }
                 // delete alpha canal and write to output
-                StringBuffer sRGB = new StringBuffer(
+                StringBuilder sRGB = new StringBuilder(
                         Integer.toHexString(argb[i] & 0x00ffffff));
                 if (sRGB.length() != 6) {
                     sRGB.insert(0, "000000"); // zero padding
-                    sRGB = new StringBuffer(sRGB.substring(sRGB.length() - 6));
+                    sRGB = new StringBuilder(sRGB.substring(sRGB.length() - 6));
                 }
                 sb.append(sRGB);
                 count += 6;

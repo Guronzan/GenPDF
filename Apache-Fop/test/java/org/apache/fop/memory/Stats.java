@@ -82,7 +82,7 @@ class Stats {
     }
 
     public String getGoogleChartURL() {
-        final StringBuffer sb = new StringBuffer(
+        final StringBuilder sb = new StringBuilder(
                 "http://chart.apis.google.com/chart?");
         // http://chart.apis.google.com/chart?cht=ls&chd=t:60,40&chs=250x100&chl=Hello|World
         sb.append("cht=ls");

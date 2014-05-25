@@ -147,7 +147,7 @@ public class NamedCharacter {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer(this.unicodeSequence);
+        final StringBuilder sb = new StringBuilder(this.unicodeSequence);
         sb.append(" (");
         if (this.unicodeSequence != null) {
             for (int i = 0, c = this.unicodeSequence.length(); i < c; i++) {

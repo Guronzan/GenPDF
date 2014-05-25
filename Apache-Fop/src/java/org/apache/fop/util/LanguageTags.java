@@ -40,7 +40,7 @@ public final class LanguageTags {
      * @return the corresponding language tag
      */
     public static String toLanguageTag(final Locale locale) {
-        final StringBuffer sb = new StringBuffer(5);
+        final StringBuilder sb = new StringBuilder(5);
         sb.append(locale.getLanguage());
         final String country = locale.getCountry();
         if (country.length() > 0) {

@@ -86,7 +86,7 @@ class RGBNamedColorFunction extends FunctionBase {
                 // containing the color profile src attribute as it is defined in the
         // color-profile
                 // declarations element.
-                final StringBuffer sb = new StringBuffer();
+                final StringBuilder sb = new StringBuilder();
                 sb.append("fop-rgb-named-color(");
                 sb.append(red / 255f);
                 sb.append(',').append(green / 255f);

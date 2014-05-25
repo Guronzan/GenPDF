@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
-import java.util.Vector;
 
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
@@ -100,7 +99,7 @@ public class TTXFile {
     private final Map<String, Integer> glyphIds; // map of glyph names to glyph
     // identifiers
     private final List<int[]> cmapEntries; // list of <charCode,glyphCode> pairs
-    private final Vector<int[]> hmtxEntries; // vector of <width,lsb> pairs
+    private final List<int[]> hmtxEntries; // vector of <width,lsb> pairs
     private final Map<String, Integer> glyphClasses; // map of glyph names to
     // glyph classes
     private final Map<String, Map<String, List<String>>> scripts; // map of
@@ -198,7 +197,7 @@ public class TTXFile {
         this.elements = new Stack<String[]>();
         this.glyphIds = new HashMap<String, Integer>();
         this.cmapEntries = new ArrayList<int[]>();
-        this.hmtxEntries = new Vector<int[]>();
+        this.hmtxEntries = new ArrayList<int[]>();
         this.glyphClasses = new HashMap<String, Integer>();
         this.scripts = new HashMap<String, Map<String, List<String>>>();
         this.languages = new HashMap<String, List<String>>();
@@ -2065,8 +2064,9 @@ public class TTXFile {
                 if (!isParent(pn)) {
                     notPermittedInElementContext(en, getParent(), pn);
                 } else if (TTXFile.this.glyphIdMax > 0) {
-                    TTXFile.this.hmtxEntries
-                    .setSize(TTXFile.this.glyphIdMax + 1);
+                    // TODO fixme setSize in Vector ==> ? in List
+                    // TTXFile.this.hmtxEntries
+                    // .setSize(TTXFile.this.glyphIdMax + 1);
                 }
             } else if (en[1].equals("indexToLocFormat")) {
                 final String[] pn = new String[] { null, "head" };

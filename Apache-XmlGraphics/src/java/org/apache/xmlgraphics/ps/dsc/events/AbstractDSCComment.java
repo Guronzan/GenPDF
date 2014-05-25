@@ -46,7 +46,7 @@ public abstract class AbstractDSCComment extends AbstractEvent implements
             final List lst) {
         int nestLevel = 1;
         pos++;
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         while (pos < value.length() && nestLevel > 0) {
             final char c = value.charAt(pos);
             switch (c) {

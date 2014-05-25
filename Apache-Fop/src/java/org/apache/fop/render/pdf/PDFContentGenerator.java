@@ -329,7 +329,7 @@ public class PDFContentGenerator {
      *            the clip rectangle
      */
     public void clipRect(final Rectangle rect) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append(format(rect.x / 1000f)).append(' ');
         sb.append(format(rect.y / 1000f)).append(' ');
         sb.append(format(rect.width / 1000f)).append(' ');
@@ -396,7 +396,7 @@ public class PDFContentGenerator {
     public void setColor(final Color col, final boolean fill,
             final PDFStream stream) {
         assert stream != null;
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         setColor(col, fill, sb);
         stream.add(sb.toString());
     }
@@ -422,11 +422,11 @@ public class PDFContentGenerator {
      * @param fill
      *            true to set the fill color, false for the foreground color
      * @param pdf
-     *            StringBuffer to write the PDF code to, if null, the code is
+     *            StringBuilder to write the PDF code to, if null, the code is
      *            written to the current stream.
      */
     protected void setColor(final Color col, final boolean fill,
-            final StringBuffer pdf) {
+            final StringBuilder pdf) {
         if (pdf != null) {
             this.colorHandler.establishColor(pdf, col, fill);
         } else {
@@ -442,11 +442,11 @@ public class PDFContentGenerator {
      * @param fill
      *            true to set the fill color, false for the foreground color
      * @param pdf
-     *            StringBuffer to write the PDF code to, if null, the code is
+     *            StringBuilder to write the PDF code to, if null, the code is
      *            written to the current stream.
      */
     public void updateColor(final Color col, final boolean fill,
-            final StringBuffer pdf) {
+            final StringBuilder pdf) {
         if (col == null) {
             return;
         }

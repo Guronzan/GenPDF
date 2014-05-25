@@ -38,7 +38,7 @@ class CMYKColorFunction extends FunctionBase {
     @Override
     public Property eval(final Property[] args, final PropertyInfo pInfo)
             throws PropertyException {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append("cmyk(" + args[0] + "," + args[1] + "," + args[2] + ","
                 + args[3] + ")");
         final FOUserAgent ua = pInfo == null ? null

@@ -55,7 +55,7 @@ public class RenderedImageCachableRed implements CachableRed {
     }
 
     private final RenderedImage src;
-    private final Vector srcs = new Vector(0);
+    private final Vector<RenderedImage> srcs = new java.util.Vector(0);
 
     public RenderedImageCachableRed(final RenderedImage src) {
         if (src == null) {
@@ -65,7 +65,7 @@ public class RenderedImageCachableRed implements CachableRed {
     }
 
     @Override
-    public Vector getSources() {
+    public Vector<RenderedImage> getSources() {
         return this.srcs; // should always be empty...
     }
 

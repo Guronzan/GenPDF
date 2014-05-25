@@ -347,7 +347,7 @@ public class PCLGraphics2D extends AbstractGraphics2D {
         boolean penDown = false;
         double x = 0;
         double y = 0;
-        final StringBuffer sb = new StringBuffer(256);
+        final StringBuilder sb = new StringBuilder(256);
         penUp(sb);
         while (!iter.isDone()) {
             final int type = iter.currentSegment(vals);
@@ -424,7 +424,7 @@ public class PCLGraphics2D extends AbstractGraphics2D {
         double x = 0;
         double y = 0;
         boolean pendingPM0 = true;
-        final StringBuffer sb = new StringBuffer(256);
+        final StringBuilder sb = new StringBuilder(256);
         penUp(sb);
         while (!iter.isDone()) {
             final int type = iter.currentSegment(vals);
@@ -482,21 +482,21 @@ public class PCLGraphics2D extends AbstractGraphics2D {
         this.gen.writeText(sb.toString());
     }
 
-    private void fillPolygon(final int windingRule, final StringBuffer sb) {
+    private void fillPolygon(final int windingRule, final StringBuilder sb) {
         final int fillMethod = windingRule == PathIterator.WIND_EVEN_ODD ? 0
                 : 1;
         sb.append("FP").append(fillMethod).append(";");
     }
 
     private void plotAbsolute(final double x, final double y,
-            final StringBuffer sb) {
+            final StringBuilder sb) {
         sb.append("PA").append(this.gen.formatDouble4(x));
         sb.append(",").append(this.gen.formatDouble4(y)).append(";");
     }
 
     private void bezierAbsolute(final double x1, final double y1,
             final double x2, final double y2, final double x3, final double y3,
-            final StringBuffer sb) {
+            final StringBuilder sb) {
         sb.append("BZ").append(this.gen.formatDouble4(x1));
         sb.append(",").append(this.gen.formatDouble4(y1));
         sb.append(",").append(this.gen.formatDouble4(x2));
@@ -507,7 +507,7 @@ public class PCLGraphics2D extends AbstractGraphics2D {
 
     private void quadraticBezierAbsolute(final double originX,
             final double originY, final double x1, final double y1,
-            final double x2, final double y2, final StringBuffer sb) {
+            final double x2, final double y2, final StringBuilder sb) {
         // Quadratic Bezier curve can be mapped to a normal bezier curve
         // See http://pfaedit.sourceforge.net/bezier.html
         final double nx1 = originX + 2.0 / 3.0 * (x1 - originX);
@@ -519,11 +519,11 @@ public class PCLGraphics2D extends AbstractGraphics2D {
         bezierAbsolute(nx1, ny1, nx2, ny2, x2, y2, sb);
     }
 
-    private void penDown(final StringBuffer sb) {
+    private void penDown(final StringBuilder sb) {
         sb.append("PD;");
     }
 
-    private void penUp(final StringBuffer sb) {
+    private void penUp(final StringBuilder sb) {
         sb.append("PU;");
     }
 
@@ -578,19 +578,19 @@ public class PCLGraphics2D extends AbstractGraphics2D {
          * positioning and rotation issues final int width =
          * img.getWidth(observer); final int height = img.getHeight(observer);
          * if (width == -1 || height == -1) { return false; }
-         *
+         * 
          * Dimension size = new Dimension(width, height); BufferedImage buf =
          * buildBufferedImage(size);
-         *
+         * 
          * java.awt.Graphics2D g = buf.createGraphics(); try {
          * g.setComposite(AlphaComposite.SrcOver); g.setBackground(new
          * Color(255, 255, 255)); g.setPaint(new Color(255, 255, 255));
          * g.fillRect(0, 0, width, height); g.clip(new Rectangle(0, 0,
          * buf.getWidth(), buf.getHeight()));
-         *
+         * 
          * if (!g.drawImage(img, 0, 0, observer)) { return false; } } finally {
          * g.dispose(); }
-         *
+         * 
          * try { AffineTransform at = getTransform(); gen.enterPCLMode(false);
          * //Shape imclip = getClip(); Clipping is not available in PCL Point2D
          * p1 = new Point2D.Double(x, y); at.transform(p1, p1);
@@ -598,7 +598,7 @@ public class PCLGraphics2D extends AbstractGraphics2D {
          * gen.setCursorPos(p1.getX(), p1.getY()); gen.paintBitmap(buf, 72);
          * gen.enterHPGL2Mode(false); } catch (IOException ioe) {
          * handleIOException(ioe); }
-         *
+         * 
          * return true;
          */
     }

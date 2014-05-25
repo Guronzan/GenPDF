@@ -72,8 +72,8 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
             }
         }
 
-        private StringBuffer readValue() {
-            final StringBuffer s = new StringBuffer();
+        private StringBuilder readValue() {
+            final StringBuilder s = new StringBuilder();
             int i = HyphenationTreeAnalysis.this.ht.eq[this.index];
             byte v = HyphenationTreeAnalysis.this.ht.vspace.get(i);
             for (; v != 0; v = HyphenationTreeAnalysis.this.ht.vspace.get(++i)) {
@@ -98,7 +98,7 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
         @Override
         public String toNodeString() {
             if (this.isLeafNode) {
-                final StringBuffer s = new StringBuffer();
+                final StringBuilder s = new StringBuilder();
                 s.append("-" + this.index);
                 if (this.isPacked) {
                     s.append(",=>'" + this.key + "'");
@@ -120,7 +120,7 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
         @Override
         public String toCompactString() {
             if (this.isLeafNode) {
-                final StringBuffer s = new StringBuffer();
+                final StringBuilder s = new StringBuilder();
                 s.append("-" + this.index);
                 if (this.isPacked) {
                     s.append(",=>'" + this.key + "'");
@@ -140,7 +140,7 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
          */
         @Override
         public String toString() {
-            final StringBuffer s = new StringBuffer();
+            final StringBuilder s = new StringBuilder();
             s.append(super.toString());
             if (this.isLeafNode) {
                 s.append("value: " + this.value + "\n");
@@ -185,11 +185,11 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
      * @return the string representing the tree
      */
     public String toTree(final List strings) {
-        final StringBuffer indentString = new StringBuffer();
+        final StringBuilder indentString = new StringBuilder();
         for (int j = indentString.length(); j < ((NodeString) strings.get(0)).indent; ++j) {
             indentString.append(' ');
         }
-        final StringBuffer tree = new StringBuffer();
+        final StringBuilder tree = new StringBuilder();
         for (int i = 0; i < strings.size(); ++i) {
             final NodeString ns = (NodeString) strings.get(i);
             if (indentString.length() > ns.indent) {
@@ -243,7 +243,7 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
      */
     @Override
     public String toCompactNodes() {
-        final StringBuffer s = new StringBuffer();
+        final StringBuilder s = new StringBuilder();
         for (int i = 1; i < this.ht.sc.length; ++i) {
             if (i != 1) {
                 s.append("\n");
@@ -260,7 +260,7 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
      */
     @Override
     public String toNodes() {
-        final StringBuffer s = new StringBuffer();
+        final StringBuilder s = new StringBuilder();
         for (int i = 1; i < this.ht.sc.length; ++i) {
             if (i != 1) {
                 s.append("\n");
@@ -277,7 +277,7 @@ public class HyphenationTreeAnalysis extends TernaryTreeAnalysis {
      */
     @Override
     public String toString() {
-        final StringBuffer s = new StringBuffer();
+        final StringBuilder s = new StringBuilder();
 
         s.append("classes: \n");
         s.append(new TernaryTreeAnalysis(this.ht.classmap).toString());

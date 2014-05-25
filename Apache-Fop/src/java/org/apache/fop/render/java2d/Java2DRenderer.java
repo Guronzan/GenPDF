@@ -110,7 +110,7 @@ import org.apache.xmlgraphics.util.UnitConv;
  */
 @Slf4j
 public abstract class Java2DRenderer extends AbstractPathOrientedRenderer
-implements Printable {
+        implements Printable {
 
     /**
      * Rendering Options key for the controlling the transparent page background
@@ -196,7 +196,7 @@ implements Printable {
                 new ConfiguredFontCollection(getFontResolver(), getFontList(),
                         this.userAgent.isComplexScriptFeaturesEnabled()) };
         this.userAgent.getFactory().getFontManager()
-        .setup(getFontInfo(), fontCollections);
+                .setup(getFontInfo(), fontCollections);
     }
 
     /** {@inheritDoc} */
@@ -295,7 +295,7 @@ implements Printable {
      */
     @Override
     public void renderPage(final PageViewport pageViewport) throws IOException,
-    FOPException {
+            FOPException {
         try {
             rememberPage((PageViewport) pageViewport.clone());
         } catch (final CloneNotSupportedException e) {
@@ -878,7 +878,7 @@ implements Printable {
                         + 2
                         * text.getTextLetterSpaceAdjust() : 0;
 
-                textCursor += (font.getCharWidth(sp) + tws) / 1000f;
+                        textCursor += (font.getCharWidth(sp) + tws) / 1000f;
             } else {
                 throw new IllegalStateException("Unsupported child element: "
                         + child);
@@ -1002,8 +1002,8 @@ implements Printable {
     }
 
     private static final ImageFlavor[] FLAVOURS = new ImageFlavor[] {
-        ImageFlavor.GRAPHICS2D, ImageFlavor.BUFFERED_IMAGE,
-        ImageFlavor.RENDERED_IMAGE, ImageFlavor.XML_DOM };
+            ImageFlavor.GRAPHICS2D, ImageFlavor.BUFFERED_IMAGE,
+            ImageFlavor.RENDERED_IMAGE, ImageFlavor.XML_DOM };
 
     /** {@inheritDoc} */
     @Override

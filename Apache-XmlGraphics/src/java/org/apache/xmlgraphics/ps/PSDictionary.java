@@ -299,7 +299,7 @@ public class PSDictionary extends java.util.HashMap {
         if (isEmpty()) {
             return "";
         }
-        final StringBuffer sb = new StringBuffer("<<\n");
+        final StringBuilder sb = new StringBuilder("<<\n");
         for (final Iterator it = super.keySet().iterator(); it.hasNext();) {
             final String key = (String) it.next();
             sb.append("  " + key + " ");

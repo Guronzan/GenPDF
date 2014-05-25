@@ -399,7 +399,7 @@ public class DataStream {
                 builder.setCodedFont((byte) textDataInfo.getFontReference());
 
                 final int l = textDataInfo.getString().length();
-                final StringBuffer sb = new StringBuffer();
+                final StringBuilder sb = new StringBuilder();
 
                 int interCharacterAdjustment = 0;
                 final AFPUnitConverter unitConv = DataStream.this.paintingState
@@ -461,7 +461,7 @@ public class DataStream {
             }
 
             private void flushText(final PtocaBuilder builder,
-                    final StringBuffer sb, final CharacterSet charSet)
+                    final StringBuilder sb, final CharacterSet charSet)
                             throws IOException {
                 if (sb.length() > 0) {
                     builder.addTransparentData(charSet.encodeChars(sb));

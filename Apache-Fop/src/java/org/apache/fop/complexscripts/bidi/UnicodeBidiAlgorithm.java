@@ -816,7 +816,7 @@ public final class UnicodeBidiAlgorithm implements BidiConstants {
             final int[] classes, final int defaultLevel, final int[] levels) {
         log.debug(header);
         log.debug("BD: default level(" + defaultLevel + ")");
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         if (chars != null) {
             for (int i = 0, n = chars.length; i < n; i++) {
                 final int ch = chars[i];
@@ -898,7 +898,7 @@ public final class UnicodeBidiAlgorithm implements BidiConstants {
     }
 
     private static String padLeft(final String s, final int width) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         for (int i = s.length(); i < width; i++) {
             sb.append(' ');
         }
@@ -912,7 +912,7 @@ public final class UnicodeBidiAlgorithm implements BidiConstants {
      */
 
     private static String padRight(final String s, final int width) {
-        final StringBuffer sb = new StringBuffer(s);
+        final StringBuilder sb = new StringBuilder(s);
         for (int i = sb.length(); i < width; i++) {
             sb.append(' ');
         }

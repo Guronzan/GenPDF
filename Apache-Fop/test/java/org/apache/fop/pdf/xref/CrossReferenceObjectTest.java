@@ -47,7 +47,7 @@ public abstract class CrossReferenceObjectTest {
     private CrossReferenceObject crossReferenceObject;
 
     @Before
-    public void setUp() throws UnsupportedEncodingException {
+    public void setUp() {
         this.pdfDocument = new PDFDocument("Apache FOP");
         final Map<String, List<String>> filterMap = this.pdfDocument
                 .getFilterMap();
@@ -58,7 +58,7 @@ public abstract class CrossReferenceObjectTest {
         final byte[] fileID = new byte[] { 0x01, 0x23, 0x45, 0x67, (byte) 0x89,
                 (byte) 0xab, (byte) 0xcd, (byte) 0xef };
         this.trailerDictionary = new TrailerDictionary(this.pdfDocument)
-        .setRoot(root).setInfo(info).setFileID(fileID, fileID);
+                .setRoot(root).setInfo(info).setFileID(fileID, fileID);
     }
 
     protected void runTest() throws IOException {

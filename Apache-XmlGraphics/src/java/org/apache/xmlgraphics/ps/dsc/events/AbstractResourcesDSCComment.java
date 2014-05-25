@@ -158,7 +158,7 @@ public abstract class AbstractResourcesDSCComment extends AbstractDSCComment {
         if (this.resources == null || this.resources.size() == 0) {
             return;
         }
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append("%%").append(getName()).append(": ");
         boolean first = true;
         final Iterator i = this.resources.iterator();

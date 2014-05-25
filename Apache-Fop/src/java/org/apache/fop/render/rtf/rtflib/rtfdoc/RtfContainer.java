@@ -86,7 +86,7 @@ public class RtfContainer extends RtfElement {
     protected void addChild(final RtfElement e) throws RtfStructureException {
         if (isClosed()) {
             // No childs should be added to a container that has been closed
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("addChild: container already closed (parent=");
             sb.append(this.getClass().getName());
             sb.append(" child=");

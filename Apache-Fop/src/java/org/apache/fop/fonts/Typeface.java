@@ -156,7 +156,7 @@ public abstract class Typeface implements FontMetrics {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sbuf = new StringBuffer(super.toString());
+        final StringBuilder sbuf = new StringBuilder(super.toString());
         sbuf.append('{');
         sbuf.append(getFullName());
         sbuf.append('}');

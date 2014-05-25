@@ -111,7 +111,7 @@ public class NamedColorProfile {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Named color profile: ");
+        final StringBuilder sb = new StringBuilder("Named color profile: ");
         sb.append(getProfileName());
         sb.append(", ").append(this.namedColors.length).append(" colors");
         return sb.toString();

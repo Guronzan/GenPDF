@@ -19,7 +19,6 @@
 
 package org.apache.fop.render.pcl;
 
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 
 /**
@@ -50,7 +49,7 @@ public final class PCLRenderingMode implements Serializable {
 
     /**
      * Constructor to add a new named item.
-     * 
+     *
      * @param name
      *            Name of the item.
      * @param defaultDitheringQuality
@@ -69,7 +68,7 @@ public final class PCLRenderingMode implements Serializable {
 
     /**
      * Returns the default dithering quality for this rendering mode.
-     * 
+     *
      * @return the default dithering quality (0.0f..1.0f)
      */
     public float getDefaultDitheringQuality() {
@@ -78,7 +77,7 @@ public final class PCLRenderingMode implements Serializable {
 
     /**
      * Returns the enumeration/singleton object based on its name.
-     * 
+     *
      * @param name
      *            the name of the enumeration value
      * @return the enumeration object
@@ -96,7 +95,7 @@ public final class PCLRenderingMode implements Serializable {
         }
     }
 
-    private Object readResolve() throws ObjectStreamException {
+    private Object readResolve() {
         return valueOf(getName());
     }
 

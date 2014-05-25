@@ -247,7 +247,7 @@ public class TableColumn extends TableFObj {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("fo:table-column");
+        final StringBuilder sb = new StringBuilder("fo:table-column");
         sb.append(" column-number=").append(getColumnNumber());
         if (getNumberColumnsRepeated() > 1) {
             sb.append(" number-columns-repeated=").append(

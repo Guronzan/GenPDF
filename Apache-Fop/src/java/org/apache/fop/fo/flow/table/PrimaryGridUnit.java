@@ -354,7 +354,7 @@ public class PrimaryGridUnit extends GridUnit {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer(super.toString());
+        final StringBuilder sb = new StringBuilder(super.toString());
         sb.append(" rowIndex=").append(this.rowIndex);
         sb.append(" colIndex=").append(this.colIndex);
         return sb.toString();

@@ -75,7 +75,7 @@ public abstract class AbstractPSExtensionElement extends FONode {
             final int length, final PropertyList pList, final Locator locator) {
         final PSExtensionAttachment a = (PSExtensionAttachment) getExtensionAttachment();
         if (a.getContent() != null) {
-            final StringBuffer sb = new StringBuffer(a.getContent());
+            final StringBuilder sb = new StringBuilder(a.getContent());
             sb.append(data, start, length);
             a.setContent(sb.toString());
         } else {

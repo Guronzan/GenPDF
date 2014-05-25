@@ -236,7 +236,7 @@ public class XMPProperty implements XMLizable {
     /** @see java.lang.Object#toString() */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("XMP Property ");
+        final StringBuilder sb = new StringBuilder("XMP Property ");
         sb.append(getName()).append(": ");
         sb.append(getValue());
         return sb.toString();

@@ -713,7 +713,7 @@ public abstract class FONode implements Cloneable {
     public static String decorateWithContextInfo(final String text,
             final FONode node) {
         if (node != null) {
-            final StringBuffer sb = new StringBuffer(text);
+            final StringBuilder sb = new StringBuilder(text);
             sb.append(" (").append(node.getContextInfo()).append(")");
             return sb.toString();
         } else {
@@ -733,7 +733,7 @@ public abstract class FONode implements Cloneable {
     // @deprecated Not localized! Should rename getContextInfoAlt() to
     // getContextInfo() when done!
     public String getContextInfo() {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         if (getLocalName() != null) {
             sb.append(getName());
             sb.append(", ");
@@ -771,7 +771,7 @@ public abstract class FONode implements Cloneable {
     protected String getContextInfoAlt() {
         final String s = gatherContextInfo();
         if (s != null) {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             if (getLocalName() != null) {
                 sb.append(getName());
                 sb.append(", ");
@@ -849,7 +849,7 @@ public abstract class FONode implements Cloneable {
      */
     public String getName(final String prefix) {
         if (prefix != null) {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append(prefix).append(':').append(getLocalName());
             return sb.toString();
         } else {

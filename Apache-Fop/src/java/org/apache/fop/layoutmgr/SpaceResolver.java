@@ -144,7 +144,7 @@ public final class SpaceResolver {
             throw new IllegalArgumentException(
                     "The length of both arrays must be equal");
         }
-        final StringBuffer sb = new StringBuffer("[");
+        final StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < arr1.length; i++) {
             if (i > 0) {
                 sb.append(", ");
@@ -577,7 +577,7 @@ public final class SpaceResolver {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("SpaceHandlingBreakPosition(");
             sb.append(this.originalPosition);
             sb.append(")");

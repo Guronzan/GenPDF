@@ -413,7 +413,7 @@ public abstract class FObj extends FONode implements Constants {
     /** {@inheritDoc} */
     @Override
     protected String getContextInfoAlt() {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         if (getLocalName() != null) {
             sb.append(getName());
             sb.append(", ");
@@ -448,7 +448,7 @@ public abstract class FObj extends FONode implements Constants {
             if (iter == null) {
                 return null;
             }
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             while (iter.hasNext()) {
                 final FONode node = (FONode) iter.next();
                 final String s = node.gatherContextInfo();

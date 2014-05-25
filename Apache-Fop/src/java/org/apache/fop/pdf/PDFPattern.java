@@ -89,7 +89,7 @@ public class PDFPattern extends PDFPathPaint {
      * TODO use PDFGState String representing the extended Graphics state.
      * Probably will never be used like this.
      */
-    protected StringBuffer extGState = null;
+    protected StringBuilder extGState = null;
 
     /**
      * List of Doubles representing the Transformation matrix.
@@ -122,7 +122,7 @@ public class PDFPattern extends PDFPathPaint {
      *            Optional List of Doubles transformation matrix
      * @param theXUID
      *            Optional vector of Integers that uniquely identify the pattern
-     * @param thePatternDataStream
+     * @param stringBuffer
      *            The stream of pattern data to be tiled.
      */
     public PDFPattern(
@@ -132,7 +132,7 @@ public class PDFPattern extends PDFPathPaint {
             final int thePaintType, final int theTilingType,
             final List theBBox, final double theXStep, final double theYStep,
             final List theMatrix, final List theXUID,
-            final StringBuffer thePatternDataStream) {
+            final StringBuffer stringBuffer) {
         super();
         this.resources = theResources;
         // This next parameter is implicit to all constructors, and is
@@ -146,7 +146,7 @@ public class PDFPattern extends PDFPathPaint {
         this.yStep = theYStep;
         this.matrix = theMatrix;
         this.xUID = theXUID;
-        this.patternDataStream = thePatternDataStream;
+        this.patternDataStream = stringBuffer;
     }
 
     /**
@@ -164,7 +164,7 @@ public class PDFPattern extends PDFPathPaint {
      *            Optional:List of Doubles that specify the matrix.
      */
     public PDFPattern(final int thePatternType, final PDFShading theShading,
-            final List theXUID, final StringBuffer theExtGState,
+            final List theXUID, final StringBuilder theExtGState,
             final List theMatrix) {
         super();
 
@@ -238,7 +238,7 @@ public class PDFPattern extends PDFPathPaint {
         int vectorSize = 0;
         int tempInt = 0;
         byte[] buffer;
-        final StringBuffer p = new StringBuffer(64);
+        final StringBuilder p = new StringBuilder(64);
         p.append("<< \n/Type /Pattern \n");
 
         if (this.resources != null) {

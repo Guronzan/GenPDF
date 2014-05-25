@@ -234,7 +234,7 @@ public class PDFRendererConfigurator extends PrintRendererConfigurator {
             }
 
             if (!filterList.isEmpty() && log.isDebugEnabled()) {
-                final StringBuffer debug = new StringBuffer("Adding PDF filter");
+                final StringBuilder debug = new StringBuilder("Adding PDF filter");
                 if (filterList.size() != 1) {
                     debug.append("s");
                 }

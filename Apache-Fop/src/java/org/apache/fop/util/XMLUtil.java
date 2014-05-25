@@ -236,7 +236,7 @@ public final class XMLUtil implements XMLConstants {
     public static String encodePositionAdjustments(final int[][] dp,
             final int paCount) {
         assert dp != null;
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         final int na = paCount;
         int nz = 0;
         sb.append(na);
@@ -275,13 +275,13 @@ public final class XMLUtil implements XMLConstants {
         return encodePositionAdjustments(dp, dp.length);
     }
 
-    private static void encodeNextAdjustment(final StringBuffer sb,
+    private static void encodeNextAdjustment(final StringBuilder sb,
             final int nz, final int a) {
         encodeZeroes(sb, nz);
         encodeAdjustment(sb, a);
     }
 
-    private static void encodeZeroes(final StringBuffer sb, final int nz) {
+    private static void encodeZeroes(final StringBuilder sb, final int nz) {
         if (nz > 0) {
             sb.append(' ');
             if (nz == 1) {
@@ -293,7 +293,7 @@ public final class XMLUtil implements XMLConstants {
         }
     }
 
-    private static void encodeAdjustment(final StringBuffer sb, final int a) {
+    private static void encodeAdjustment(final StringBuilder sb, final int a) {
         if (a != 0) {
             sb.append(' ');
             sb.append(a);

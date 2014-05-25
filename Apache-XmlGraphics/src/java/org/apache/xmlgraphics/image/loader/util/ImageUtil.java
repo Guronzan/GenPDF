@@ -393,7 +393,7 @@ public final class ImageUtil {
                 int pos = fragment.indexOf(PAGE_INDICATOR);
                 if (pos >= 0) {
                     pos += PAGE_INDICATOR.length();
-                    final StringBuffer sb = new StringBuffer();
+                    final StringBuilder sb = new StringBuilder();
                     while (pos < fragment.length()) {
                         final char c = fragment.charAt(pos);
                         if (c >= '0' && c <= '9') {

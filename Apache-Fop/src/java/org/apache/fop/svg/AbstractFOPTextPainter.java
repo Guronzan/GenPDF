@@ -320,7 +320,7 @@ public abstract class AbstractFOPTextPainter implements TextPainter {
      * @return the extracted text
      */
     protected String getText(final AttributedCharacterIterator aci) {
-        final StringBuffer sb = new StringBuffer(aci.getEndIndex()
+        final StringBuilder sb = new StringBuilder(aci.getEndIndex()
                 - aci.getBeginIndex());
         for (char c = aci.first(); c != CharacterIterator.DONE; c = aci.next()) {
             sb.append(c);

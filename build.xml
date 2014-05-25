@@ -1,0 +1,65 @@
+<project name="Apache-Fop" default="deploy" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+	<description>
+		Script de creation du jar de Apahe-Fop
+	</description>
+	<property environment="env" />
+
+	<!-- Launch4J task -->
+	<taskdef name="launch4j" classname="net.sf.launch4j.ant.Launch4jTask" classpath="${env.LAUNCH4J_HOME}/launch4j.jar:${env.LAUNCH4J_HOME}/lib/xstream.jar" />
+
+	<property name="fop.dir">./Apache-Fop</property>
+	<property name="xmlCommonsGraphics.dir">./Apache-XmlGraphics</property>
+
+	<target name="conf">
+		<copy file="logback.xml" todir="${fop.dir}/liv/lib" />
+	</target>
+
+	
+	<target name="jarDeploy">
+		<delete dir="${xmlCommonsGraphics.dir}/target" />
+		<delete dir="${fop.dir}/target" />
+		<delete dir="${fop.dir}/liv" />
+		
+		
+		<artifact:mvn pom="${xmlCommonsGraphics.dir}/pom.xml" mavenHome="${env.MAVEN_HOME}" fork="true">
+			<arg value="dependency:copy-dependencies" />
+			<arg value="-DincludeScope=compile" />
+			<arg value="-DincludeScope=runtime" />
+			<arg value="-DoutputDirectory=${fop.dir}/liv/lib" />
+			<arg line="package -Dmaven.test.skip=true" />
+		</artifact:mvn>
+		
+		<artifact:mvn pom="${fop.dir}/pom.xml" mavenHome="${env.MAVEN_HOME}" fork="true">
+			<arg value="dependency:copy-dependencies" />
+			<arg value="-DincludeScope=compile" />
+			<arg value="-DincludeScope=runtime" />
+			<arg value="-DoutputDirectory=${fop.dir}/liv/lib" />
+			<arg line="package -Dmaven.test.skip=true" />
+		</artifact:mvn>
+	</target>
+
+	<target name="deploy" depends="jarDeploy, conf">
+		<copy file="${fop.dir}/target/Apache-Fop.jar" todir="${fop.dir}/liv/lib" />
+	</target>
+
+
+	<target name="jarExe">
+		<delete dir="${fop.dir}/target" />
+
+		<artifact:mvn pom="${fop.dir}/pom.xml" mavenHome="${env.MAVEN_HOME}" fork="true">
+			<arg value="dependency:copy-dependencies" />
+			<arg value="-DincludeScope=compile" />
+			<arg value="-DincludeScope=runtime" />
+			<arg value="-DoutputDirectory=${fop.dir}/liv/lib" />
+			<arg line="package -Dmaven.test.skip=true" />
+		</artifact:mvn>
+	</target>
+
+	<target name="exe" depends="jarExe">
+		<launch4j configFile="${fop.dir}/launch4j.xml" />
+	</target>
+
+	<target name="zip" depends="exe">
+		<zip destfile="${fop.dir}/release.zip" basedir="${fop.dir}/liv" />
+	</target>
+</project>

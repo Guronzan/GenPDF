@@ -98,7 +98,7 @@ public class CrossReferenceStream extends CrossReferenceObject {
         PDFDocument.outputIndirectObject(helperStream, stream);
     }
 
-    private void populateDictionary() throws IOException {
+    private void populateDictionary() {
         final int objectCount = this.objectReferences.size() + 1;
         final PDFDictionary dictionary = this.trailerDictionary.getDictionary();
         dictionary.put("/Type", XREF);

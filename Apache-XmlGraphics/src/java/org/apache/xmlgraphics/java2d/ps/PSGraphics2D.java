@@ -627,7 +627,7 @@ public class PSGraphics2D extends AbstractGraphics2D {
 
             final float[] da = basicStroke.getDashArray();
             if (da != null) {
-                final StringBuffer sb = new StringBuffer("[");
+                final StringBuilder sb = new StringBuilder("[");
                 for (int count = 0; count < da.length; count++) {
                     sb.append(gen.formatDouble(da[count]));
                     if (count < da.length - 1) {

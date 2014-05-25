@@ -1208,8 +1208,8 @@ public class PNGRed extends AbstractRed {
     }
 
     private void parse_tEXt_chunk(final PNGChunk chunk) {
-        final StringBuffer key = new StringBuffer();
-        final StringBuffer value = new StringBuffer();
+        final StringBuilder key = new StringBuilder();
+        final StringBuilder value = new StringBuilder();
         byte b;
 
         int textIndex = 0;
@@ -1326,8 +1326,8 @@ public class PNGRed extends AbstractRed {
     }
 
     private void parse_zTXt_chunk(final PNGChunk chunk) {
-        final StringBuffer key = new StringBuffer();
-        final StringBuffer value = new StringBuffer();
+        final StringBuilder key = new StringBuilder();
+        final StringBuilder value = new StringBuilder();
         byte b;
 
         int textIndex = 0;

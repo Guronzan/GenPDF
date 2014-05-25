@@ -85,7 +85,7 @@ public class Hyphen implements Serializable {
                 && this.preBreak != null && this.preBreak.equals("-")) {
             return "-";
         }
-        final StringBuffer res = new StringBuffer("{");
+        final StringBuilder res = new StringBuilder("{");
         res.append(this.preBreak);
         res.append("}{");
         res.append(this.postBreak);

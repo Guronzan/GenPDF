@@ -113,7 +113,7 @@ public final class XMPSerializer {
             } else {
                 // Create padding string (40 * 101 characters is more or less
                 // the recommended 4KB)
-                final StringBuffer sb = new StringBuffer(101);
+                final StringBuilder sb = new StringBuilder(101);
                 sb.append('\n');
                 for (int i = 0; i < 100; i++) {
                     sb.append(" ");

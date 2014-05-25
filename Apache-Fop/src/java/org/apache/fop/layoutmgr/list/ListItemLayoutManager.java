@@ -122,7 +122,7 @@ ConditionalElementListener {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer("ListItemPosition:");
+            final StringBuilder sb = new StringBuilder("ListItemPosition:");
             sb.append(getIndex()).append("(");
             sb.append("label:").append(this.labelFirstIndex).append("-")
             .append(this.labelLastIndex);

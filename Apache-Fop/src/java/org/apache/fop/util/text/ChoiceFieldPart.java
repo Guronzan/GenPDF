@@ -60,7 +60,7 @@ public class ChoiceFieldPart implements Part {
 
     /** {@inheritDoc} */
     @Override
-    public void write(final StringBuffer sb, final Map params) {
+    public void write(final StringBuilder sb, final Map params) {
         final Object obj = params.get(this.fieldName);
         final Number num = (Number) obj;
         final String result = this.choiceFormat.format(num.doubleValue());

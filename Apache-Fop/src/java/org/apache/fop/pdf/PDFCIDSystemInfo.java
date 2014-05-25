@@ -56,7 +56,7 @@ public class PDFCIDSystemInfo extends PDFObject {
      */
     @Override
     public String toPDFString() {
-        final StringBuffer p = new StringBuffer(64);
+        final StringBuilder p = new StringBuilder(64);
         p.setLength(0);
         p.append("/CIDSystemInfo << /Registry (");
         p.append(this.registry);

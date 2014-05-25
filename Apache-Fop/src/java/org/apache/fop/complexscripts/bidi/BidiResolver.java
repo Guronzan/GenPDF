@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
-import java.util.Vector;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -76,7 +75,7 @@ public final class BidiResolver {
     public static void reorder(final LineArea la) {
 
         // 1. collect inline levels
-        List runs = collectRuns(la.getInlineAreas(), new Vector());
+        List runs = collectRuns(la.getInlineAreas(), new ArrayList());
         if (log.isDebugEnabled()) {
             dumpRuns("BD: REORDER: INPUT:", runs);
         }
@@ -127,16 +126,15 @@ public final class BidiResolver {
         }
     }
 
-    private static List collectRuns(final List inlines, List runs) {
-        for (final Iterator it = inlines.iterator(); it.hasNext();) {
-            final InlineArea ia = (InlineArea) it.next();
+    private static List collectRuns(final List<InlineArea> inlines, List runs) {
+        for (final InlineArea ia : inlines) {
             runs = ia.collectInlineRuns(runs);
         }
         return runs;
     }
 
     private static List splitRuns(List runs) {
-        final List runsNew = new Vector();
+        final List runsNew = new ArrayList();
         for (final Iterator it = runs.iterator(); it.hasNext();) {
             final InlineRun ir = (InlineRun) it.next();
             if (ir.isHomogenous()) {
@@ -164,7 +162,7 @@ public final class BidiResolver {
 
     private static List reorderRuns(List runs, final int level) {
         assert level >= 0;
-        final List runsNew = new Vector();
+        final List runsNew = new ArrayList();
         for (int i = 0, n = runs.size(); i < n; i++) {
             final InlineRun iri = (InlineRun) runs.get(i);
             if (iri.getMinLevel() < level) {
@@ -194,7 +192,7 @@ public final class BidiResolver {
 
     private static List reverseRuns(final List runs, final int s, final int e) {
         final int n = e - s;
-        final Vector runsNew = new Vector(n);
+        final List runsNew = new ArrayList(n);
         if (n > 0) {
             for (int i = 0; i < n; i++) {
                 final int k = n - i - 1;
@@ -241,7 +239,7 @@ public final class BidiResolver {
     }
 
     private static List pruneEmptyRanges(final Stack ranges) {
-        final Vector rv = new Vector();
+        final List rv = new ArrayList();
         for (final Iterator it = ranges.iterator(); it.hasNext();) {
             final DelimitedTextRange r = (DelimitedTextRange) it.next();
             if (!r.isEmpty()) {

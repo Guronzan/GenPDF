@@ -21,6 +21,7 @@ package org.apache.xmlgraphics.util;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -29,7 +30,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -154,7 +154,7 @@ public final class ClasspathResource {
             final ClassLoader classLoader) {
         List existingFiles = (List) this.contentMappings.get(contentType);
         if (existingFiles == null) {
-            existingFiles = new Vector();
+            existingFiles = new ArrayList();
             this.contentMappings.put(contentType, existingFiles);
         }
         final URL url = classLoader.getResource(name);

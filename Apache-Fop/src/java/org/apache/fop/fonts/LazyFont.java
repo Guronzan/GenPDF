@@ -85,7 +85,7 @@ Substitutable, Positionable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sbuf = new StringBuffer(super.toString());
+        final StringBuilder sbuf = new StringBuilder(super.toString());
         sbuf.append('{');
         sbuf.append("metrics-url=" + this.metricsFileName);
         sbuf.append(",embed-url=" + this.fontEmbedPath);

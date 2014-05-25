@@ -261,7 +261,7 @@ public final class GlyphClassTable extends GlyphMappingTable implements
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("{ firstGlyph = " + this.firstGlyph + ", classes = {");
             for (int i = 0, n = this.gca.length; i < n; i++) {
                 if (i > 0) {

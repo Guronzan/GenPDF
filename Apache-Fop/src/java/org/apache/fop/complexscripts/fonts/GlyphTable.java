@@ -329,7 +329,7 @@ public class GlyphTable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer(super.toString());
+        final StringBuilder sb = new StringBuilder(super.toString());
         sb.append("{");
         sb.append("lookups={");
         sb.append(this.lookups.toString());
@@ -497,7 +497,7 @@ public class GlyphTable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer(super.toString());
+            final StringBuilder sb = new StringBuilder(super.toString());
             sb.append("{");
             sb.append("<'" + this.script + "'");
             sb.append(",'" + this.language + "'");
@@ -867,7 +867,7 @@ public class GlyphTable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("{ ");
             sb.append("id = " + this.id);
             sb.append(", subtables = " + this.subtables);
@@ -1191,7 +1191,7 @@ public class GlyphTable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("{ ");
             sb.append("lookups = " + Arrays.toString(getLookups()));
             sb.append(", glyphs = " + Arrays.toString(this.glyphs));
@@ -1256,7 +1256,7 @@ public class GlyphTable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("{ ");
             sb.append("lookups = " + Arrays.toString(getLookups()));
             sb.append(", classes = " + Arrays.toString(this.classes));
@@ -1303,7 +1303,7 @@ public class GlyphTable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("{ ");
             sb.append("lookups = " + Arrays.toString(getLookups()));
             sb.append(", coverages = " + Arrays.toString(this.coverages));
@@ -1364,7 +1364,7 @@ public class GlyphTable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("{ ");
             sb.append("lookups = " + Arrays.toString(getLookups()));
             sb.append(", glyphs = " + Arrays.toString(getGlyphs()));
@@ -1429,7 +1429,7 @@ public class GlyphTable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("{ ");
             sb.append("lookups = " + Arrays.toString(getLookups()));
             sb.append(", classes = " + Arrays.toString(getClasses()));
@@ -1499,7 +1499,7 @@ public class GlyphTable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("{ ");
             sb.append("lookups = " + Arrays.toString(getLookups()));
             sb.append(", coverages = " + Arrays.toString(getCoverages()));

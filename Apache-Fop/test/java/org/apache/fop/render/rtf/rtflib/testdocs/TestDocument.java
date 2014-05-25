@@ -34,20 +34,19 @@ import java.util.Date;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfDocumentArea;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfFile;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfParagraph;
-
 //import org.apache.fop.render.rtf.rtflib.jfor.main.JForVersionInfo;
 import org.apache.fop.render.rtf.rtflib.rtfdoc.RtfSection;
 
 /**
  * Base class for generating RTF documents used to test the jfor rtflib package.
- * 
+ *
  * @author Bertrand Delacretaz bdelacretaz@codeconsult.ch
  */
 
 abstract class TestDocument {
     private File output;
 
-    final void setOutputDir(final File outDir) throws IOException {
+    final void setOutputDir(final File outDir) {
         this.output = new File(outDir, getRtfFilename());
     }
 

@@ -24,9 +24,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.swing.UIManager;
 
@@ -129,7 +130,7 @@ public class CommandLineOptions {
 
     private InputHandler inputHandler;
 
-    private Vector xsltParams = null;
+    private List<String> xsltParams = null;
 
     private String mimicRenderer = null;
 
@@ -244,10 +245,10 @@ public class CommandLineOptions {
 
     private void addXSLTParameter(final String name, final String value) {
         if (this.xsltParams == null) {
-            this.xsltParams = new Vector();
+            this.xsltParams = new ArrayList<String>();
         }
-        this.xsltParams.addElement(name);
-        this.xsltParams.addElement(value);
+        this.xsltParams.add(name);
+        this.xsltParams.add(value);
     }
 
     /**

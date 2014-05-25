@@ -102,7 +102,7 @@ public class IFParser implements IFConstants {
      */
     public void parse(final Source src,
             final IFDocumentHandler documentHandler, final FOUserAgent userAgent)
-            throws TransformerException, IFException {
+                    throws TransformerException, IFException {
         try {
             final Transformer transformer = tFactory.newTransformer();
             transformer.setErrorListener(new DefaultErrorListener(log));
@@ -156,7 +156,7 @@ public class IFParser implements IFConstants {
 
         private Attributes lastAttributes;
 
-        private final StringBuffer content = new StringBuffer();
+        private final StringBuilder content = new StringBuilder();
         private boolean ignoreCharacters = true;
 
         // private Stack delegateStack = new Stack();
@@ -181,7 +181,7 @@ public class IFParser implements IFConstants {
 
             private StructureTreeHandler(
                     final StructureTreeEventHandler structureTreeEventHandler,
-                    final Locale pageSequenceLanguage) throws SAXException {
+                    final Locale pageSequenceLanguage) {
                 this.pageSequenceLanguage = pageSequenceLanguage;
                 this.structureTreeEventHandler = structureTreeEventHandler;
             }
@@ -201,7 +201,7 @@ public class IFParser implements IFConstants {
             @Override
             public void startElement(final String uri, String localName,
                     final String qName, final Attributes attributes)
-                            throws SAXException {
+                    throws SAXException {
                 if (!"structure-tree".equals(localName)) {
                     if (localName.equals("marked-content")) {
                         localName = "#PCDATA";
@@ -279,7 +279,7 @@ public class IFParser implements IFConstants {
         @Override
         public void startElement(final String uri, final String localName,
                 final String qName, final Attributes attributes)
-                        throws SAXException {
+                throws SAXException {
             if (this.delegate != null) {
                 this.delegateDepth++;
                 this.delegate.startElement(uri, localName, qName, attributes);
@@ -328,7 +328,7 @@ public class IFParser implements IFConstants {
                     if (this.navParser == null) {
                         this.navParser = new DocumentNavigationHandler(
                                 this.documentHandler
-                                .getDocumentNavigationHandler(),
+                                        .getDocumentNavigationHandler(),
                                 this.structureTreeElements);
                     }
                     this.delegate = this.navParser;
@@ -457,7 +457,7 @@ public class IFParser implements IFConstants {
 
         private interface ElementHandler {
             void startElement(final Attributes attributes) throws IFException,
-            SAXException;
+                    SAXException;
 
             void endElement() throws IFException;
 
@@ -518,7 +518,7 @@ public class IFParser implements IFConstants {
             public void startElement(final Attributes attributes)
                     throws IFException {
                 Handler.this.documentHandler
-                .setDocumentLocale(getLanguage(attributes));
+                        .setDocumentLocale(getLanguage(attributes));
             }
         }
 
@@ -765,7 +765,7 @@ public class IFParser implements IFConstants {
                 final int height = Integer.parseInt(attributes
                         .getValue("height"));
                 Handler.this.painter
-                .clipRect(new Rectangle(x, y, width, height));
+                        .clipRect(new Rectangle(x, y, width, height));
             }
 
         }
@@ -821,7 +821,7 @@ public class IFParser implements IFConstants {
         }
 
         private static final String[] SIDES = new String[] { "top", "bottom",
-            "left", "right" };
+                "left", "right" };
 
         private class BorderRectHandler extends AbstractElementHandler {
 
@@ -844,8 +844,8 @@ public class IFParser implements IFConstants {
                 }
 
                 Handler.this.painter
-                .drawBorderRect(new Rectangle(x, y, width, height),
-                        borders[0], borders[1], borders[2], borders[3]);
+                        .drawBorderRect(new Rectangle(x, y, width, height),
+                                borders[0], borders[1], borders[2], borders[3]);
             }
 
         }

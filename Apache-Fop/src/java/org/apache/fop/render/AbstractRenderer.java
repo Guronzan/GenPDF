@@ -208,7 +208,7 @@ public abstract class AbstractRenderer implements Renderer, Constants {
     }
 
     private String convertToString(final List children) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         for (int count = 0; count < children.size(); count++) {
             final InlineArea inline = (InlineArea) children.get(count);
             // if (inline instanceof Character) {

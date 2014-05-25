@@ -91,14 +91,12 @@ public class ArabicTestCase implements ArabicTestConstants {
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(dpn);
-            if (fis != null) {
-                final ObjectInputStream ois = new ObjectInputStream(fis);
-                final List<Object[]> data = (List<Object[]>) ois.readObject();
-                if (data != null) {
-                    processWordForms(data);
-                }
-                ois.close();
+            final ObjectInputStream ois = new ObjectInputStream(fis);
+            final List<Object[]> data = (List<Object[]>) ois.readObject();
+            if (data != null) {
+                processWordForms(data);
             }
+            ois.close();
         } catch (final FileNotFoundException e) {
             throw new RuntimeException(e.getMessage(), e);
         } catch (final IOException e) {

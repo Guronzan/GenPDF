@@ -978,7 +978,7 @@ public abstract class SeekableStream extends InputStream implements DataInput {
      */
     @Override
     public final String readLine() throws IOException {
-        final StringBuffer input = new StringBuffer();
+        final StringBuilder input = new StringBuilder();
         int c = -1;
         boolean eol = false;
 

@@ -411,7 +411,7 @@ public final class Trait implements Serializable {
          */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("pvKey=").append(this.pvKey);
             sb.append(",idRef=").append(this.idRef);
             return sb.toString();
@@ -497,7 +497,7 @@ public final class Trait implements Serializable {
          */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer(64);
+            final StringBuilder sb = new StringBuilder(64);
             sb.append("newWindow=").append(this.newWindow);
             sb.append(",dest=").append(this.destination);
             return sb.toString();
@@ -690,7 +690,7 @@ public final class Trait implements Serializable {
          */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             if (this.color != null) {
                 sb.append("color=").append(ColorUtil.colorToString(this.color));
             }

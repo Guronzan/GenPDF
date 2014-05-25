@@ -77,7 +77,7 @@ public abstract class SimpleRenderedImage implements RenderedImage {
     /** The image's ColorModel. */
     protected ColorModel colorModel = null;
 
-    /** The image's sources, stored in a Vector. */
+    /** The image's sources, stored in a List. */
     protected List sources = new ArrayList();
 
     /** A Hashtable containing the image properties. */
@@ -293,7 +293,7 @@ public abstract class SimpleRenderedImage implements RenderedImage {
             return null;
         }
 
-        // Copy the strings from the Vector over to a String array.
+        // Copy the strings from the List over to a String array.
         final String[] prefixNames = new String[names.size()];
         names.toArray(prefixNames);
         return prefixNames;
@@ -400,7 +400,7 @@ public abstract class SimpleRenderedImage implements RenderedImage {
     }
 
     @Override
-    public Vector getSources() {
+    public Vector<RenderedImage> getSources() {
         return null;
     }
 

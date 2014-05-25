@@ -166,7 +166,7 @@ public final class EventFormatter {
         }
 
         @Override
-        public void write(final StringBuffer sb, final Map params) {
+        public void write(final StringBuilder sb, final Map params) {
             final String groupID = (String) params.get("groupID");
             final Locale locale = (Locale) params.get("locale");
             final ResourceBundle bundle = getBundle(groupID, locale);

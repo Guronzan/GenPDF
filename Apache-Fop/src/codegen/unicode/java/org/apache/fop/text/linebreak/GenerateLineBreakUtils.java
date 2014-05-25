@@ -159,7 +159,7 @@ public final class GenerateLineBreakUtils {
                 }
             }
             if (columnNumber < columnHeader.length) {
-                final StringBuffer missing = new StringBuffer();
+                final StringBuilder missing = new StringBuilder();
                 for (int j = 0; j < lineBreakPropertyShortNames.size(); j++) {
                     boolean found = false;
                     for (int k = 0; k < columnNumber; k++) {
@@ -237,7 +237,7 @@ public final class GenerateLineBreakUtils {
             rowNumber++;
         }
         if (rowNumber < rowHeader.length) {
-            final StringBuffer missing = new StringBuffer();
+            final StringBuilder missing = new StringBuilder();
             for (int j = 0; j < lineBreakPropertyShortNames.size(); j++) {
                 boolean found = false;
                 for (int k = 0; k < rowNumber; k++) {
@@ -262,7 +262,7 @@ public final class GenerateLineBreakUtils {
         final int blocksize = lineBreakProperties.length / rowsize;
         final byte[][] row = new byte[rowsize][];
         int idx = 0;
-        final StringBuffer doStaticLinkCode = new StringBuffer();
+        final StringBuilder doStaticLinkCode = new StringBuilder();
         final PrintWriter out = new PrintWriter(new FileWriter(outFileName));
         License.writeJavaLicenseId(out);
         out.println();

@@ -73,10 +73,10 @@ public class TXTRenderer extends AbstractPathOrientedRenderer {
     private TXTStream currentStream;
 
     /** Buffer for text. */
-    private StringBuffer[] charData;
+    private StringBuilder[] charData;
 
     /** Buffer for background and images. */
-    private StringBuffer[] decoData;
+    private StringBuilder[] decoData;
 
     /** Leading of line containing Courier font size of 10pt. */
     public static final int LINE_LEADING = 1070;
@@ -189,7 +189,7 @@ public class TXTRenderer extends AbstractPathOrientedRenderer {
     protected void putChar(final int x, final int y, final char ch,
             final boolean ischar) {
         if (isLayInside(x, y)) {
-            final StringBuffer sb = ischar ? this.charData[y]
+            final StringBuilder sb = ischar ? this.charData[y]
                     : this.decoData[y];
             while (sb.length() <= x) {
                 sb.append(' ');
@@ -256,11 +256,11 @@ public class TXTRenderer extends AbstractPathOrientedRenderer {
                 * LINE_LEADING);
 
         // init buffers
-        this.charData = new StringBuffer[this.pageHeight];
-        this.decoData = new StringBuffer[this.pageHeight];
+        this.charData = new StringBuilder[this.pageHeight];
+        this.decoData = new StringBuilder[this.pageHeight];
         for (int i = 0; i < this.pageHeight; i++) {
-            this.charData[i] = new StringBuffer();
-            this.decoData[i] = new StringBuffer();
+            this.charData[i] = new StringBuilder();
+            this.decoData[i] = new StringBuilder();
         }
 
         this.bm = new BorderManager(this.pageWidth, this.pageHeight,
@@ -292,9 +292,9 @@ public class TXTRenderer extends AbstractPathOrientedRenderer {
      */
     private void flushBuffer() {
         for (int row = 0; row < this.pageHeight; row++) {
-            final StringBuffer cr = this.charData[row];
-            final StringBuffer dr = this.decoData[row];
-            StringBuffer outr = null;
+            final StringBuilder cr = this.charData[row];
+            final StringBuilder dr = this.decoData[row];
+            StringBuilder outr = null;
 
             if (cr != null && dr == null) {
                 outr = cr;
@@ -305,7 +305,7 @@ public class TXTRenderer extends AbstractPathOrientedRenderer {
                 if (cr.length() > len) {
                     len = cr.length();
                 }
-                outr = new StringBuffer();
+                outr = new StringBuilder();
                 for (int countr = 0; countr < len; countr++) {
                     if (countr < cr.length() && cr.charAt(countr) != ' ') {
                         outr.append(cr.charAt(countr));

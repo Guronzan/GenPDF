@@ -54,7 +54,7 @@ public abstract class PDFTextUtil {
     private String startText;
     private String endText;
     private boolean useMultiByte;
-    private StringBuffer bufTJ;
+    private StringBuilder bufTJ;
     private int textRenderingMode = TR_FILL;
 
     private String currentFontName;
@@ -76,7 +76,7 @@ public abstract class PDFTextUtil {
     protected abstract void write(final String code);
 
     private void writeAffineTransform(final AffineTransform at,
-            final StringBuffer sb) {
+            final StringBuilder sb) {
         final double[] lt = new double[6];
         at.getMatrix(lt);
         sb.append(PDFNumber.doubleOut(lt[0], DEC)).append(" ");
@@ -87,7 +87,7 @@ public abstract class PDFTextUtil {
         sb.append(PDFNumber.doubleOut(lt[5], DEC));
     }
 
-    private static void writeChar(final char ch, final StringBuffer sb,
+    private static void writeChar(final char ch, final StringBuilder sb,
             final boolean multibyte) {
         if (!multibyte) {
             if (ch < 32 || ch > 127) {
@@ -108,7 +108,7 @@ public abstract class PDFTextUtil {
         }
     }
 
-    private void writeChar(final char ch, final StringBuffer sb) {
+    private void writeChar(final char ch, final StringBuilder sb) {
         writeChar(ch, sb, this.useMultiByte);
     }
 
@@ -167,7 +167,7 @@ public abstract class PDFTextUtil {
     public void concatMatrix(final AffineTransform at) {
         if (!at.isIdentity()) {
             writeTJ();
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             writeAffineTransform(at, sb);
             sb.append(" cm\n");
             write(sb.toString());
@@ -265,7 +265,7 @@ public abstract class PDFTextUtil {
      *            the new text transformation matrix
      */
     public void writeTextMatrix(final AffineTransform localTransform) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         writeAffineTransform(localTransform, sb);
         sb.append(" Tm ");
         write(sb.toString());
@@ -279,7 +279,7 @@ public abstract class PDFTextUtil {
      */
     public void writeTJMappedChar(final char codepoint) {
         if (this.bufTJ == null) {
-            this.bufTJ = new StringBuffer();
+            this.bufTJ = new StringBuilder();
         }
         if (this.bufTJ.length() == 0) {
             this.bufTJ.append("[");
@@ -309,7 +309,7 @@ public abstract class PDFTextUtil {
      */
     public void adjustGlyphTJ(final double adjust) {
         if (this.bufTJ == null) {
-            this.bufTJ = new StringBuffer();
+            this.bufTJ = new StringBuilder();
         }
         if (this.bufTJ.length() == 0) {
             this.bufTJ.append("[");
@@ -347,7 +347,7 @@ public abstract class PDFTextUtil {
      *            coordinate
      */
     public void writeTd(final double x, final double y) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append(PDFNumber.doubleOut(x, DEC));
         sb.append(' ');
         sb.append(PDFNumber.doubleOut(y, DEC));
@@ -362,7 +362,7 @@ public abstract class PDFTextUtil {
      *            character code to write
      */
     public void writeTj(final char ch) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append('<');
         writeChar(ch, sb, true);
         sb.append('>');

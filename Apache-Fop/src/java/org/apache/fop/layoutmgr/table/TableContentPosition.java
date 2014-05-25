@@ -125,7 +125,7 @@ class TableContentPosition extends Position {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("TableContentPosition:");
+        final StringBuilder sb = new StringBuilder("TableContentPosition:");
         sb.append(getIndex());
         sb.append("[");
         sb.append(this.row.getIndex()).append("/");

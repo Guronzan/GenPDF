@@ -35,7 +35,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class PSExtensionHandler extends DefaultHandler implements
 ContentHandlerFactory.ObjectSource {
 
-    private final StringBuffer content = new StringBuffer();
+    private final StringBuilder content = new StringBuilder();
     private Attributes lastAttributes;
 
     private PSExtensionAttachment returnedObject;

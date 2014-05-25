@@ -67,7 +67,7 @@ public class LeafPosition extends Position {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append("LeafPos:").append(getIndex()).append("(");
         sb.append("pos=").append(getLeafPos());
         sb.append(", lm=").append(getShortLMName()).append(")");

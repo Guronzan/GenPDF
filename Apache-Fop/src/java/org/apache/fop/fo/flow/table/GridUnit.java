@@ -486,7 +486,7 @@ public class GridUnit {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         if (isEmpty()) {
             buffer.append("EMPTY");
         } else if (isPrimary()) {

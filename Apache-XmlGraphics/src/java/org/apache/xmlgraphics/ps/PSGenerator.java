@@ -79,9 +79,9 @@ public class PSGenerator implements PSCommandMap {
     private final Stack<PSState> graphicsStateStack = new Stack<PSState>();
     private PSState currentState;
 
-    private final StringBuffer doubleBuffer = new StringBuffer(16);
+    private final StringBuilder doubleBuffer = new StringBuilder(16);
 
-    private final StringBuffer tempBuffer = new StringBuffer(256);
+    private final StringBuilder tempBuffer = new StringBuilder(256);
 
     private boolean identityHEmbedded;
 
@@ -328,9 +328,9 @@ public class PSGenerator implements PSCommandMap {
      * @param c
      *            character to escape
      * @param target
-     *            target StringBuffer to write the escaped character to
+     *            target StringBuilder to write the escaped character to
      */
-    public static final void escapeChar(final char c, final StringBuffer target) {
+    public static final void escapeChar(final char c, final StringBuilder target) {
         switch (c) {
         case '\n':
             target.append("\\n");
@@ -411,7 +411,7 @@ public class PSGenerator implements PSCommandMap {
         } else {
             int initialSize = text.length();
             initialSize += initialSize / 2;
-            final StringBuffer sb = new StringBuffer(initialSize);
+            final StringBuilder sb = new StringBuilder(initialSize);
             if (text.indexOf(' ') >= 0 || forceParentheses) {
                 sb.append('(');
                 for (int i = 0; i < text.length(); i++) {
@@ -772,7 +772,7 @@ public class PSGenerator implements PSCommandMap {
     }
 
     private String convertColorToPS(final Color color) {
-        final StringBuffer codeBuffer = new StringBuffer();
+        final StringBuilder codeBuffer = new StringBuilder();
 
         // Important: Right now, CMYK colors are treated as device colors
         // (DeviceCMYK) irrespective
@@ -809,7 +809,7 @@ public class PSGenerator implements PSCommandMap {
         return codeBuffer.toString();
     }
 
-    private boolean establishColorFromColor(final StringBuffer codeBuffer,
+    private boolean establishColorFromColor(final StringBuilder codeBuffer,
             final Color color) {
         // Important: see above note about color handling!
         final float[] comps = color.getColorComponents(null);
@@ -821,7 +821,7 @@ public class PSGenerator implements PSCommandMap {
         return false;
     }
 
-    private void writeSetColor(final StringBuffer codeBuffer,
+    private void writeSetColor(final StringBuilder codeBuffer,
             final float[] comps, final String command) {
         for (int i = 0, c = comps.length; i < c; i++) {
             if (i > 0) {
@@ -832,7 +832,7 @@ public class PSGenerator implements PSCommandMap {
         codeBuffer.append(" ").append(mapCommand(command));
     }
 
-    private void establishFallbackRGB(final StringBuffer codeBuffer,
+    private void establishFallbackRGB(final StringBuilder codeBuffer,
             final Color color) {
         float[] comps;
         if (color.getColorSpace().isCS_sRGB()) {

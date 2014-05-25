@@ -176,7 +176,7 @@ public class FopFactoryConfigurator {
                 String lang;
                 String country;
                 String filename;
-                final StringBuffer error = new StringBuffer();
+                final StringBuilder error = new StringBuilder();
                 final String location = element.getLocation();
 
                 lang = element.getAttribute("lang", null);
@@ -306,7 +306,7 @@ public class FopFactoryConfigurator {
         configureImageLoading(this.cfg.getChild("image-loading", false), strict);
     }
 
-    private static void addError(final String message, final StringBuffer error) {
+    private static void addError(final String message, final StringBuilder error) {
         if (error.length() != 0) {
             error.append(". ");
         }

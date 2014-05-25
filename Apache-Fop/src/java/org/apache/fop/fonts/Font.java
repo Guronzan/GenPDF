@@ -296,7 +296,7 @@ public class Font implements Substitutable, Positionable {
      */
     @Override
     public String toString() {
-        final StringBuffer sbuf = new StringBuffer(super.toString());
+        final StringBuilder sbuf = new StringBuilder(super.toString());
         sbuf.append('{');
         /*
          * sbuf.append(fontFamily); sbuf.append(',');

@@ -103,7 +103,7 @@ public class PFMInputStream extends java.io.FilterInputStream {
     public String readString() throws IOException {
         final InputStreamReader reader = new InputStreamReader(this.in,
                 "ISO-8859-1");
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
 
         int ch = reader.read();
         while (ch > 0) {

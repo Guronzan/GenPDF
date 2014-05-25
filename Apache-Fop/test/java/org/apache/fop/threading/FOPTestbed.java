@@ -246,7 +246,7 @@ public class FOPTestbed extends AbstractLogEnabled implements Configurable,
 
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             if (this.fo != null) {
                 sb.append("fo=");
                 sb.append(this.fo);

@@ -29,7 +29,7 @@ public class LocatorFormatter implements ObjectFormatter {
 
     /** {@inheritDoc} */
     @Override
-    public void format(final StringBuffer sb, final Object obj) {
+    public void format(final StringBuilder sb, final Object obj) {
         final Locator loc = (Locator) obj;
         sb.append(loc.getLineNumber()).append(":")
                 .append(loc.getColumnNumber());

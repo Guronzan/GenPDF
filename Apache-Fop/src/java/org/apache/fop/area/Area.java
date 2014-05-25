@@ -503,7 +503,7 @@ public class Area extends AreaTreeObject implements Serializable {
      */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer(super.toString());
+        final StringBuilder sb = new StringBuilder(super.toString());
         sb.append(" {ipd=").append(Integer.toString(getIPD()));
         sb.append(", bpd=").append(Integer.toString(getBPD()));
         sb.append("}");

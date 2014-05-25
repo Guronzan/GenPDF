@@ -44,7 +44,7 @@ public class DOMBuilderContentHandlerFactory implements ContentHandlerFactory {
 
     /**
      * Main Constructor
-     * 
+     *
      * @param namespaceURI
      *            the main namespace URI for the DOM to be parsed
      * @param domImplementation
@@ -69,12 +69,12 @@ public class DOMBuilderContentHandlerFactory implements ContentHandlerFactory {
     }
 
     private class Handler extends DelegatingContentHandler implements
-            ContentHandlerFactory.ObjectSource {
+    ContentHandlerFactory.ObjectSource {
 
         private Document doc;
         private ObjectBuiltListener obListener;
 
-        public Handler() throws SAXException {
+        public Handler() {
             super();
         }
 

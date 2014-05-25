@@ -701,7 +701,7 @@ public class NumberConverter {
         } else if (caseType == Character.LOWERCASE_LETTER) {
             return word.toLowerCase();
         } else if (caseType == Character.TITLECASE_LETTER) {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             for (int i = 0, n = word.length(); i < n; i++) {
                 final String s = word.substring(i, i + 1);
                 if (i == 0) {
@@ -718,7 +718,7 @@ public class NumberConverter {
 
     private static String joinWords(final List<String> words,
             final String separator) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         for (final String w : words) {
             if (sb.length() > 0) {
                 sb.append(separator);
@@ -997,7 +997,7 @@ public class NumberConverter {
                         wl.add("et");
                         wl.add(frenchWordOnes[ones]);
                     } else {
-                        final StringBuffer sb = new StringBuffer();
+                        final StringBuilder sb = new StringBuilder();
                         sb.append(frenchWordTens[tens]);
                         if (ones > 0) {
                             sb.append('-');
@@ -1011,14 +1011,14 @@ public class NumberConverter {
                         wl.add("et");
                         wl.add(frenchWordTeens[ones]);
                     } else {
-                        final StringBuffer sb = new StringBuffer();
+                        final StringBuilder sb = new StringBuilder();
                         sb.append(frenchWordTens[6]);
                         sb.append('-');
                         sb.append(frenchWordTeens[ones]);
                         wl.add(sb.toString());
                     }
                 } else if (tens == 8) {
-                    final StringBuffer sb = new StringBuffer();
+                    final StringBuilder sb = new StringBuilder();
                     sb.append(frenchWordTens[tens]);
                     if (ones > 0) {
                         sb.append('-');
@@ -1028,7 +1028,7 @@ public class NumberConverter {
                     }
                     wl.add(sb.toString());
                 } else if (tens == 9) {
-                    final StringBuffer sb = new StringBuffer();
+                    final StringBuilder sb = new StringBuilder();
                     sb.append(frenchWordTens[8]);
                     sb.append('-');
                     sb.append(frenchWordTeens[ones]);

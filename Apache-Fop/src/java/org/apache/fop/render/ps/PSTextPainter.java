@@ -355,7 +355,7 @@ public class PSTextPainter extends NativeTextPainter {
 
         private AffineTransform textTransform;
         private final List relativePositions = new java.util.LinkedList();
-        private final StringBuffer currentChars = new StringBuffer();
+        private final StringBuilder currentChars = new StringBuilder();
         private int horizChanges = 0;
         private int vertChanges = 0;
 
@@ -452,7 +452,7 @@ public class PSTextPainter extends NativeTextPainter {
             final boolean multiByte = metrics instanceof MultiByteFont
                     || metrics instanceof LazyFont
                     && ((LazyFont) metrics).getRealFont() instanceof MultiByteFont;
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append(multiByte ? '<' : '(');
             for (int i = 0, c = this.currentChars.length(); i < c; i++) {
                 final char ch = this.currentChars.charAt(i);

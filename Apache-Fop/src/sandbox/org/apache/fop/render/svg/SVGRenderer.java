@@ -43,7 +43,7 @@ import org.w3c.dom.Document;
 
 /**
  * <p>
- * This renderer generates SVG (Scalable Vector Graphics) format.
+ * This renderer generates SVG (Scalable List Graphics) format.
  * <p>
  * This class actually does not render itself, instead it extends
  * <code>org.apache.fop.render.java2D.Java2DRenderer</code> and uses Apache

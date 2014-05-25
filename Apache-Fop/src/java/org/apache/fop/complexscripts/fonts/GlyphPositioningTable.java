@@ -2575,7 +2575,7 @@ public class GlyphPositioningTable extends GlyphTable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             boolean first = true;
             sb.append("{ ");
             if (this.xPlacement != 0) {
@@ -2694,7 +2694,7 @@ public class GlyphPositioningTable extends GlyphTable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             boolean first = true;
             sb.append("{ ");
             if (this.glyph != 0) {
@@ -2847,7 +2847,7 @@ public class GlyphPositioningTable extends GlyphTable {
         /** {@inheritDoc} */
         @Override
         public String toString() {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             sb.append("{ [" + this.x + "," + this.y + "]");
             if (this.anchorPoint != -1) {
                 sb.append(", anchorPoint = " + this.anchorPoint);

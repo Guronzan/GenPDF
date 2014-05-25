@@ -444,7 +444,7 @@ public class AFPPainter extends AbstractIFPainter {
                     final int l = text.length();
                     final int[] dx = IFUtil.convertDPToDX(dp);
                     final int dxl = dx != null ? dx.length : 0;
-                    final StringBuffer sb = new StringBuffer();
+                    final StringBuilder sb = new StringBuilder();
 
                     if (dxl > 0 && dx[0] != 0) {
                         final int dxu = Math.round(AFPPainter.this.unitConv
@@ -559,7 +559,7 @@ public class AFPPainter extends AbstractIFPainter {
                 }
 
                 private void flushText(final PtocaBuilder builder,
-                        final StringBuffer sb, final CharacterSet charSet)
+                        final StringBuilder sb, final CharacterSet charSet)
                         throws IOException {
                     if (sb.length() > 0) {
                         builder.addTransparentData(charSet.encodeChars(sb));

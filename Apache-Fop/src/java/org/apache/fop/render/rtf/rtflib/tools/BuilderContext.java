@@ -149,7 +149,7 @@ public class BuilderContext {
      */
     public void replaceContainer(final RtfContainer oldC,
             final RtfContainer newC) throws Exception {
-        // treating the Stack as a Vector allows such manipulations (yes, I hear
+        // treating the Stack as a List allows such manipulations (yes, I hear
         // you screaming ;-)
         final int index = this.containers.indexOf(oldC);
         if (index < 0) {

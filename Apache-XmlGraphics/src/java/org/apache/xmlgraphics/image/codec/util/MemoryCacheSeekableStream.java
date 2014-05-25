@@ -54,7 +54,7 @@ public final class MemoryCacheSeekableStream extends SeekableStream {
     /** A mask to determine the offset within a sector. */
     private static final int SECTOR_MASK = SECTOR_SIZE - 1;
 
-    /** A Vector of source sectors. */
+    /** A List of source sectors. */
     private final List data = new ArrayList();
 
     /** Number of sectors stored. */

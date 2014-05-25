@@ -370,7 +370,7 @@ public class PDFShading extends PDFObject {
     public String toPDFString() { // CSOK: MethodLength
         int vectorSize;
         int tempInt;
-        final StringBuffer p = new StringBuffer(128);
+        final StringBuilder p = new StringBuilder(128);
         p.append("<<\n/ShadingType " + this.shadingType + " \n");
         if (this.colorSpace != null) {
             p.append("/ColorSpace /" + this.colorSpace.getName() + " \n");

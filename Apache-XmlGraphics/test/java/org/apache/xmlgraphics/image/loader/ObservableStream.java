@@ -81,11 +81,11 @@ public interface ObservableStream {
             if (method.getDeclaringClass().equals(ObservableStream.class)) {
                 return method.invoke(this, args);
             } else if ("close".equals(method.getName())) {
-                if (!closed) {
+                if (!this.closed) {
                     log.debug("Stream is being closed: " + getSystemID());
-                    closed = true;
+                    this.closed = true;
                     try {
-                        return method.invoke(iin, args);
+                        return method.invoke(this.iin, args);
                     } catch (final InvocationTargetException ite) {
                         log.error("Error while closing underlying stream: ",
                                 ite);
@@ -95,7 +95,7 @@ public interface ObservableStream {
                     throw new IllegalStateException("Stream is already closed!");
                 }
             } else {
-                return method.invoke(iin, args);
+                return method.invoke(this.iin, args);
             }
         }
 

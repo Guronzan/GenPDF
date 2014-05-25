@@ -129,7 +129,7 @@ public class SVGPainter extends AbstractIFPainter implements SVGConstants {
                     sum += Math.abs(v[i]);
                 }
                 if (sum != 0) {
-                    final StringBuffer sb = new StringBuffer("rect(");
+                    final StringBuilder sb = new StringBuilder("rect(");
                     sb.append(SVGUtil.formatMptToPt(v[0])).append(',');
                     sb.append(SVGUtil.formatMptToPt(v[1])).append(',');
                     sb.append(SVGUtil.formatMptToPt(v[2])).append(',');

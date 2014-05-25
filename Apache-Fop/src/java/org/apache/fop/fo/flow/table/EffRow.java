@@ -307,7 +307,7 @@ public class EffRow {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("EffRow {");
+        final StringBuilder sb = new StringBuilder("EffRow {");
         sb.append(this.index);
         if (getBodyType() == TableRowIterator.BODY) {
             sb.append(" in body");

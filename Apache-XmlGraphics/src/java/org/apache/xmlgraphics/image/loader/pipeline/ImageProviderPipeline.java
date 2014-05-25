@@ -293,7 +293,7 @@ public class ImageProviderPipeline {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append("Loader: ").append(this.loader);
         if (this.converters.size() > 0) {
             sb.append(" Converters: ");

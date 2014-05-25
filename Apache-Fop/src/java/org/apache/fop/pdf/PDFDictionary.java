@@ -117,7 +117,7 @@ public class PDFDictionary extends PDFObject {
     }
 
     /**
-     * Writes the contents of the dictionary to a StringBuffer.
+     * Writes the contents of the dictionary to a StringBuilder.
      * 
      * @param out
      *            the OutputStream (for binary content)

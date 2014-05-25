@@ -205,19 +205,16 @@ public class PCLPainter extends AbstractIFPainter implements PCLConstants {
         }
         if (rect.width != 0 && rect.height != 0) {
             Color fillColor = null;
-            if (fill != null) {
-                if (fill instanceof Color) {
-                    fillColor = (Color) fill;
-                } else {
-                    throw new UnsupportedOperationException(
-                            "Non-Color paints NYI");
-                }
-                try {
-                    setCursorPos(rect.x, rect.y);
-                    this.gen.fillRect(rect.width, rect.height, fillColor);
-                } catch (final IOException ioe) {
-                    throw new IFException("I/O error in fillRect()", ioe);
-                }
+            if (fill instanceof Color) {
+                fillColor = (Color) fill;
+            } else {
+                throw new UnsupportedOperationException("Non-Color paints NYI");
+            }
+            try {
+                setCursorPos(rect.x, rect.y);
+                this.gen.fillRect(rect.width, rect.height, fillColor);
+            } catch (final IOException ioe) {
+                throw new IFException("I/O error in fillRect()", ioe);
             }
         }
     }
@@ -339,7 +336,7 @@ public class PCLPainter extends AbstractIFPainter implements PCLConstants {
     @Override
     public void drawText(final int x, final int y, final int letterSpacing,
             final int wordSpacing, final int[][] dp, final String text)
-                    throws IFException {
+            throws IFException {
         try {
             final FontTriplet triplet = new FontTriplet(
                     this.state.getFontFamily(), this.state.getFontStyle(),
@@ -390,10 +387,10 @@ public class PCLPainter extends AbstractIFPainter implements PCLConstants {
         final int[] dx = IFUtil.convertDPToDX(dp);
         final int dxl = dx != null ? dx.length : 0;
 
-        final StringBuffer sb = new StringBuffer(Math.max(16, l));
+        final StringBuilder sb = new StringBuilder(Math.max(16, l));
         if (dx != null && dxl > 0 && dx[0] != 0) {
             sb.append("\u001B&a+")
-            .append(this.gen.formatDouble2(dx[0] / 100.0)).append('H');
+                    .append(this.gen.formatDouble2(dx[0] / 100.0)).append('H');
         }
         for (int i = 0; i < l; i++) {
             final char orgChar = text.charAt(i);
@@ -425,8 +422,8 @@ public class PCLPainter extends AbstractIFPainter implements PCLConstants {
 
             if (glyphAdjust != 0) {
                 sb.append("\u001B&a+")
-                .append(this.gen.formatDouble2(glyphAdjust / 100.0))
-                .append('H');
+                        .append(this.gen.formatDouble2(glyphAdjust / 100.0))
+                        .append('H');
             }
 
         }

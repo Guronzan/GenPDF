@@ -245,7 +245,7 @@ public final class ColorExt extends Color {
      * @return the string representing the internal fop-rgb-icc() function call
      */
     public String toFunctionCall() {
-        final StringBuffer sb = new StringBuffer(40);
+        final StringBuilder sb = new StringBuilder(40);
         sb.append("fop-rgb-icc(");
         sb.append(this.rgbReplacementRed + ",");
         sb.append(this.rgbReplacementGreen + ",");

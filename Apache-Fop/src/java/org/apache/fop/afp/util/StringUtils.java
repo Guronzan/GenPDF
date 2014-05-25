@@ -49,7 +49,7 @@ public final class StringUtils {
         if (input.length() >= length) {
             return input;
         } else {
-            final StringBuffer result = new StringBuffer();
+            final StringBuilder result = new StringBuilder();
             final int numChars = length - input.length();
             for (int i = 0; i < numChars; i++) {
                 result.append(padding);
@@ -80,7 +80,7 @@ public final class StringUtils {
         if (input.length() >= length) {
             return input;
         } else {
-            final StringBuffer result = new StringBuffer(input);
+            final StringBuilder result = new StringBuilder(input);
             final int numChars = length - input.length();
             for (int i = 0; i < numChars; i++) {
                 result.append(padding);

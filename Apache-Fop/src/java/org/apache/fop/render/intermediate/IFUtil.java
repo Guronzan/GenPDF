@@ -41,7 +41,7 @@ public final class IFUtil {
             // http://java.sun.com/docs/books/jls/third_edition/html/typesValues.html#4.2.3
             value = 0.0;
         }
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         DoubleFormatUtil.formatDouble(value, 6, 6, buf);
         return buf.toString();
     }
@@ -53,11 +53,11 @@ public final class IFUtil {
      * @param transform
      *            the transformation matrix
      * @param sb
-     *            the StringBuffer to write the transform method to
-     * @return the StringBuffer passed to this method
+     *            the StringBuilder to write the transform method to
+     * @return the StringBuilder passed to this method
      */
-    public static StringBuffer toString(final AffineTransform transform,
-            final StringBuffer sb) {
+    public static StringBuilder toString(final AffineTransform transform,
+            final StringBuilder sb) {
         if (transform.isIdentity()) {
             return sb;
         }
@@ -90,11 +90,11 @@ public final class IFUtil {
      * @param transforms
      *            the transformation matrix array
      * @param sb
-     *            the StringBuffer to write the transform method sequence to
-     * @return the StringBuffer passed to this method
+     *            the StringBuilder to write the transform method sequence to
+     * @return the StringBuilder passed to this method
      */
-    public static StringBuffer toString(final AffineTransform[] transforms,
-            final StringBuffer sb) {
+    public static StringBuilder toString(final AffineTransform[] transforms,
+            final StringBuilder sb) {
         for (int i = 0, c = transforms.length; i < c; i++) {
             if (i > 0) {
                 sb.append(' ');
@@ -113,7 +113,7 @@ public final class IFUtil {
      * @return the formatted array
      */
     public static String toString(final AffineTransform[] transforms) {
-        return toString(transforms, new StringBuffer()).toString();
+        return toString(transforms, new StringBuilder()).toString();
     }
 
     /**
@@ -125,7 +125,7 @@ public final class IFUtil {
      * @return the formatted array
      */
     public static String toString(final AffineTransform transform) {
-        return toString(transform, new StringBuffer()).toString();
+        return toString(transform, new StringBuilder()).toString();
     }
 
     /**
@@ -139,7 +139,7 @@ public final class IFUtil {
         if (coordinates == null) {
             return "";
         }
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         for (int i = 0, c = coordinates.length; i < c; i++) {
             if (i > 0) {
                 sb.append(' ');
@@ -160,7 +160,7 @@ public final class IFUtil {
         if (rect == null) {
             return "";
         }
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append(rect.x).append(' ').append(rect.y).append(' ');
         sb.append(rect.width).append(' ').append(rect.height);
         return sb.toString();

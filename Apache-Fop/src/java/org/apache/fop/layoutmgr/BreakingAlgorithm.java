@@ -1617,7 +1617,7 @@ public abstract class BreakingAlgorithm {
      * @return the requested string
      */
     public String toString(final String prepend) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append("[\n");
         for (int i = this.startLine; i < this.endLine; i++) {
             for (KnuthNode node = getNode(i); node != null; node = node.next) {

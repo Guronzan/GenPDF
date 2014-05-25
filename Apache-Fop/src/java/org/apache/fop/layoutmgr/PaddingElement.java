@@ -73,7 +73,7 @@ public class PaddingElement extends BorderOrPaddingElement {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("Padding[");
+        final StringBuilder sb = new StringBuilder("Padding[");
         sb.append(super.toString());
         sb.append("]");
         return sb.toString();

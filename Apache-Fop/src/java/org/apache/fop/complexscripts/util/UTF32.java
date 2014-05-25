@@ -112,7 +112,7 @@ public final class UTF32 {
      */
     public static String fromUTF32(final Integer[] sa)
             throws IllegalArgumentException {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         for (final int s : sa) {
             if (s < 65535) {
                 if (s < 0xD800 || s > 0xDFFF) {

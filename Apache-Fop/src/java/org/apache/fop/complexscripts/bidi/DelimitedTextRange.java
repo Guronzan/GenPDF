@@ -19,9 +19,9 @@
 
 package org.apache.fop.complexscripts.bidi;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,9 +51,10 @@ import org.apache.fop.util.CharUtilities;
 @Slf4j
 public class DelimitedTextRange {
     private final FONode fn; // node that generates this text range
-    private final StringBuffer buffer; // flattened character sequence of
+    private final StringBuilder buffer; // flattened character sequence of
     // generating FO nodes
     private List intervals; // list of intervals over buffer of generating FO
+
     // nodes
 
     /**
@@ -64,8 +65,8 @@ public class DelimitedTextRange {
      */
     public DelimitedTextRange(final FONode fn) {
         this.fn = fn;
-        this.buffer = new StringBuffer();
-        this.intervals = new Vector();
+        this.buffer = new StringBuilder();
+        this.intervals = new ArrayList();
     }
 
     /**
@@ -136,7 +137,7 @@ public class DelimitedTextRange {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("DR: "
+        final StringBuilder sb = new StringBuilder("DR: "
                 + this.fn.getLocalName() + " { <"
                 + CharUtilities.toNCRefs(this.buffer.toString()) + ">");
         sb.append(", intervals <");
@@ -180,7 +181,7 @@ public class DelimitedTextRange {
      *            delimited text range
      */
     private void assignLevels(final int[] levels) {
-        final Vector intervalsNew = new Vector(this.intervals.size());
+        final List intervalsNew = new ArrayList(this.intervals.size());
         for (final Iterator it = this.intervals.iterator(); it.hasNext();) {
             final TextInterval ti = (TextInterval) it.next();
             intervalsNew.addAll(assignLevels(ti, levels));
@@ -210,7 +211,7 @@ public class DelimitedTextRange {
      * @return a list of text intervals as described above
      */
     private List assignLevels(TextInterval ti, final int[] levels) {
-        final Vector tiv = new Vector();
+        final List tiv = new ArrayList();
         final FONode fn = ti.getNode();
         final int fnStart = ti.getStart(); // start of node's text in delimited
         // text range

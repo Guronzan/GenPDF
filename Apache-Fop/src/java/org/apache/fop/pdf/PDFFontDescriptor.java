@@ -159,7 +159,7 @@ public class PDFFontDescriptor extends PDFDictionary {
      * {@inheritDoc}
      */
     /*
-     * public String toPDFString() { StringBuffer p = new StringBuffer(128);
+     * public String toPDFString() { StringBuilder p = new StringBuilder(128);
      * p.append(getObjectID() + "<< /Type /FontDescriptor" + "\n/FontName /" +
      * this.basefont);
      * 
@@ -192,7 +192,7 @@ public class PDFFontDescriptor extends PDFDictionary {
      *            the buffer to be completed with the specific fields
      */
     /*
-     * protected void fillInPDF(StringBuffer begin) { //nop }
+     * protected void fillInPDF(StringBuilder begin) { //nop }
      */
 
 }

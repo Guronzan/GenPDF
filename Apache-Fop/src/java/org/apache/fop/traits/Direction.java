@@ -19,8 +19,6 @@
 
 package org.apache.fop.traits;
 
-import java.io.ObjectStreamException;
-
 import org.apache.fop.fo.Constants;
 
 /**
@@ -32,10 +30,10 @@ public final class Direction extends TraitEnum {
     private static final long serialVersionUID = 1L;
 
     private static final String[] DIRECTION_NAMES = new String[] { "lr", "rl",
-            "tb", "bt" };
+        "tb", "bt" };
 
     private static final int[] DIRECTION_VALUES = new int[] { Constants.EN_LR,
-            Constants.EN_RL, Constants.EN_TB, Constants.EN_BT };
+        Constants.EN_RL, Constants.EN_TB, Constants.EN_BT };
 
     /** direction: left-to-right */
     public static final Direction LR = new Direction(0);
@@ -47,7 +45,7 @@ public final class Direction extends TraitEnum {
     public static final Direction BT = new Direction(3);
 
     private static final Direction[] DIRECTIONS = new Direction[] { LR, RL, TB,
-            BT };
+        BT };
 
     private Direction(final int index) {
         super(DIRECTION_NAMES[index], DIRECTION_VALUES[index]);
@@ -55,7 +53,7 @@ public final class Direction extends TraitEnum {
 
     /**
      * Determine if direction is vertical or not.
-     * 
+     *
      * @return true if vertical
      */
     public boolean isVertical() {
@@ -65,7 +63,7 @@ public final class Direction extends TraitEnum {
 
     /**
      * Determine if direction is horizontal or not.
-     * 
+     *
      * @return true if horizontal
      */
     public boolean isHorizontal() {
@@ -75,15 +73,15 @@ public final class Direction extends TraitEnum {
 
     /**
      * Returns the enumeration/singleton object based on its name.
-     * 
+     *
      * @param name
      *            the name of the enumeration value
      * @return the enumeration object
      */
     public static Direction valueOf(final String name) {
-        for (int i = 0; i < DIRECTIONS.length; i++) {
-            if (DIRECTIONS[i].getName().equalsIgnoreCase(name)) {
-                return DIRECTIONS[i];
+        for (final Direction element : DIRECTIONS) {
+            if (element.getName().equalsIgnoreCase(name)) {
+                return element;
             }
         }
         throw new IllegalArgumentException("Illegal direction: " + name);
@@ -91,21 +89,21 @@ public final class Direction extends TraitEnum {
 
     /**
      * Returns the enumeration/singleton object based on its name.
-     * 
+     *
      * @param enumValue
      *            the enumeration value
      * @return the enumeration object
      */
     public static Direction valueOf(final int enumValue) {
-        for (int i = 0; i < DIRECTIONS.length; i++) {
-            if (DIRECTIONS[i].getEnumValue() == enumValue) {
-                return DIRECTIONS[i];
+        for (final Direction element : DIRECTIONS) {
+            if (element.getEnumValue() == enumValue) {
+                return element;
             }
         }
         throw new IllegalArgumentException("Illegal direction: " + enumValue);
     }
 
-    private Object readResolve() throws ObjectStreamException {
+    private Object readResolve() {
         return valueOf(getName());
     }
 

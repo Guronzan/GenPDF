@@ -64,7 +64,7 @@ public class GenerateArabicTestData implements ArabicTestConstants {
     }
 
     private static void help() {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append("org.apache.fop.complexscripts.arabic.ArabicTestCase");
         sb.append(" [-compile]");
         sb.append(" [-?]");

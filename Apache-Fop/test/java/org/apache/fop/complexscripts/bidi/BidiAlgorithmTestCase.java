@@ -257,7 +257,7 @@ public class BidiAlgorithmTestCase {
 
     private String getMismatchMessage(final int testSet,
             final int testSequence, final int seqIndex, final int defaultLevel) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         sb.append("level mismatch for default level ");
         sb.append(defaultLevel);
         sb.append(" at sequence index ");

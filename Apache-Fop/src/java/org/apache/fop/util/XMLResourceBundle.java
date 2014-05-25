@@ -367,7 +367,7 @@ public class XMLResourceBundle extends ResourceBundle {
         private static final String CATALOGUE = "catalogue";
         private static final String MESSAGE = "message";
 
-        private final StringBuffer valueBuffer = new StringBuffer();
+        private final StringBuilder valueBuffer = new StringBuilder();
         private final Stack elementStack = new Stack();
         private String currentKey = null;
 

@@ -72,7 +72,7 @@ import java.util.Map;
  *      Originally authored by Vincent Hardy.
  */
 public abstract class AbstractGraphics2D extends Graphics2D implements
-        Cloneable {
+Cloneable {
     /**
      * Current state of the Graphic Context. The GraphicsContext class manages
      * the state of this <tt>Graphics2D</tt> graphic context attributes.
@@ -101,7 +101,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
 
     /**
      * Creates a new AbstractGraphics2D from an existing instance.
-     * 
+     *
      * @param g
      *            the AbstractGraphics2D whose properties should be copied
      */
@@ -118,7 +118,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * (<i>x</i>,&nbsp;<i>y</i>) in this graphics context's original coordinate
      * system. All coordinates used in subsequent rendering operations on this
      * graphics context will be relative to this new origin.
-     * 
+     *
      * @param x
      *            the <i>x</i> coordinate.
      * @param y
@@ -131,7 +131,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
 
     /**
      * Gets this graphics context's current color.
-     * 
+     *
      * @return this graphics context's current color.
      * @see java.awt.Color
      * @see java.awt.Graphics#setColor
@@ -145,7 +145,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * Sets this graphics context's current color to the specified color. All
      * subsequent graphics operations using this graphics context use this
      * specified color.
-     * 
+     *
      * @param c
      *            the new rendering color.
      * @see java.awt.Color
@@ -170,7 +170,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
 
     /**
      * Gets the current font.
-     * 
+     *
      * @return this graphics context's current font.
      * @see java.awt.Font
      * @see java.awt.Graphics#setFont
@@ -183,7 +183,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
     /**
      * Sets this graphics context's font to the specified font. All subsequent
      * text operations using this graphics context use this font.
-     * 
+     *
      * @param font
      *            the font.
      * @see java.awt.Graphics#getFont
@@ -200,7 +200,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * set, or if the clip has been cleared using <code>setClip(null)</code>,
      * this method returns <code>null</code>. The coordinates in the rectangle
      * are relative to the coordinate system origin of this graphics context.
-     * 
+     *
      * @return the bounding rectangle of the current clipping area, or
      *         <code>null</code> if no clip is set.
      * @see java.awt.Graphics#getClip
@@ -225,7 +225,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * be used to make the current clip smaller. To set the current clip larger,
      * use any of the setClip methods. Rendering operations have no effect
      * outside of the clipping area.
-     * 
+     *
      * @param x
      *            the x coordinate of the rectangle to intersect the clip with
      * @param y
@@ -248,7 +248,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * coordinates. This method sets the user clip, which is independent of the
      * clipping associated with device bounds and window visibility. Rendering
      * operations have no effect outside of the clipping area.
-     * 
+     *
      * @param x
      *            the <i>x</i> coordinate of the new clip rectangle.
      * @param y
@@ -273,7 +273,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * visibility. If no clip has previously been set, or if the clip has been
      * cleared using <code>setClip(null)</code>, this method returns
      * <code>null</code>.
-     * 
+     *
      * @return a <code>Shape</code> object representing the current clipping
      *         area, or <code>null</code> if no clip is set.
      * @see java.awt.Graphics#getClipBounds()
@@ -295,7 +295,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * <code>getClip</code> method and via <code>Rectangle</code> objects. This
      * method sets the user clip, which is independent of the clipping
      * associated with device bounds and window visibility.
-     * 
+     *
      * @param clip
      *            the <code>Shape</code> to use to set the clip
      * @see java.awt.Graphics#getClip()
@@ -312,7 +312,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * Draws a line, using the current color, between the points
      * <code>(x1,&nbsp;y1)</code> and <code>(x2,&nbsp;y2)</code> in this
      * graphics context's coordinate system.
-     * 
+     *
      * @param x1
      *            the first point's <i>x</i> coordinate.
      * @param y1
@@ -336,7 +336,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * covers an area <code>width</code> pixels wide by <code>height</code>
      * pixels tall. The rectangle is filled using the graphics context's current
      * color.
-     * 
+     *
      * @param x
      *            the <i>x</i> coordinate of the rectangle to be filled.
      * @param y
@@ -371,7 +371,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * may be system dependent. Applications should use <code>setColor</code>
      * followed by <code>fillRect</code> to ensure that an offscreen image is
      * cleared to a specific color.
-     * 
+     *
      * @param x
      *            the <i>x</i> coordinate of the rectangle to clear.
      * @param y
@@ -401,7 +401,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * <code>x</code> and <code>x&nbsp;+&nbsp;width</code>, respectively. The
      * top and bottom edges of the rectangle are at <code>y</code> and
      * <code>y&nbsp;+&nbsp;height</code>.
-     * 
+     *
      * @param x
      *            the <i>x</i> coordinate of the rectangle to be drawn.
      * @param y
@@ -430,7 +430,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * <code>x&nbsp;+&nbsp;width&nbsp;-&nbsp;1</code>, respectively. The top and
      * bottom edges of the rectangle are at <code>y</code> and
      * <code>y&nbsp;+&nbsp;height&nbsp;-&nbsp;1</code>.
-     * 
+     *
      * @param x
      *            the <i>x</i> coordinate of the rectangle to be filled.
      * @param y
@@ -460,7 +460,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * <p>
      * The oval covers an area that is <code>width&nbsp;+&nbsp;1</code> pixels
      * wide and <code>height&nbsp;+&nbsp;1</code> pixels tall.
-     * 
+     *
      * @param x
      *            the <i>x</i> coordinate of the upper left corner of the oval
      *            to be drawn.
@@ -482,7 +482,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
 
     /**
      * Fills an oval bounded by the specified rectangle with the current color.
-     * 
+     *
      * @param x
      *            the <i>x</i> coordinate of the upper left corner of the oval
      *            to be filled.
@@ -525,7 +525,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * rectangle. As a result, if the bounding rectangle is noticeably longer in
      * one axis than the other, the angles to the start and end of the arc
      * segment will be skewed farther along the longer axis of the bounds.
-     * 
+     *
      * @param x
      *            the <i>x</i> coordinate of the upper-left corner of the arc to
      *            be drawn.
@@ -572,7 +572,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * rectangle. As a result, if the bounding rectangle is noticeably longer in
      * one axis than the other, the angles to the start and end of the arc
      * segment will be skewed farther along the longer axis of the bounds.
-     * 
+     *
      * @param x
      *            the <i>x</i> coordinate of the upper-left corner of the arc to
      *            be filled.
@@ -602,7 +602,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * <i>y</i> coordinates. Each pair of (<i>x</i>,&nbsp;<i>y</i>) coordinates
      * defines a point. The figure is not closed if the first point differs from
      * the last point.
-     * 
+     *
      * @param xPoints
      *            an array of <i>x</i> points
      * @param yPoints
@@ -639,7 +639,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * 1&nbsp;&le;&nbsp;<i>i</i>&nbsp;&le;&nbsp;<code>nPoints</code>. The figure
      * is automatically closed by drawing a line connecting the final point to
      * the first point, if those points are different.
-     * 
+     *
      * @param xPoints
      *            a an array of <code>x</code> coordinates.
      * @param yPoints
@@ -671,7 +671,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * <p>
      * The area inside the polygon is defined using an even-odd fill rule, also
      * known as the alternating rule.
-     * 
+     *
      * @param xPoints
      *            a an array of <code>x</code> coordinates.
      * @param yPoints
@@ -692,7 +692,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * context's current font and color. The baseline of the first character is
      * at position (<i>x</i>,&nbsp;<i>y</i>) in this graphics context's
      * coordinate system.
-     * 
+     *
      * @param str
      *            the string to be drawn.
      * @param x
@@ -724,7 +724,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
             final float x, final float y) {
         if (this.inPossibleRecursion) {
             System.err
-                    .println("Called itself: drawString(AttributedCharacterIterator)");
+            .println("Called itself: drawString(AttributedCharacterIterator)");
         } else {
             this.inPossibleRecursion = true;
             final TextLayout layout = new TextLayout(iterator,
@@ -739,7 +739,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * context's current color. The iterator has to specify a font for each
      * character. The baseline of the first character is at position
      * (<i>x</i>,&nbsp;<i>y</i>) in this graphics context's coordinate system.
-     * 
+     *
      * @param iterator
      *            the iterator whose text is to be drawn
      * @param x
@@ -773,7 +773,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * <code>drawImage</code> returns <code>false</code>. As more of the image
      * becomes available, the process that draws the image notifies the
      * specified image observer.
-     * 
+     *
      * @param img
      *            the specified image to be drawn.
      * @param x
@@ -820,7 +820,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * constructed for this output device. Each size of the image may be cached
      * separately and generated from the original data in a separate image
      * production sequence.
-     * 
+     *
      * @param img
      *            the specified image to be drawn.
      * @param x
@@ -875,7 +875,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * the destination rectangle, and the second source coordinate is mapped to
      * the second destination coordinate. The subimage is scaled and flipped as
      * needed to preserve those mappings.
-     * 
+     *
      * @param img
      *            the specified image to be drawn
      * @param dx1
@@ -951,7 +951,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * the destination rectangle, and the second source coordinate is mapped to
      * the second destination coordinate. The subimage is scaled and flipped as
      * needed to preserve those mappings.
-     * 
+     *
      * @param img
      *            the specified image to be drawn
      * @param dx1
@@ -1012,7 +1012,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * <code>Clip</code>, <code>Transform</code>, and <code>Composite</code>
      * attributes. Note that no rendering is done if the specified transform is
      * noninvertible.
-     * 
+     *
      * @param img
      *            the <code>Image</code> to be rendered
      * @param xform
@@ -1064,12 +1064,12 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * {@link BufferedImageOp}. The rendering attributes applied include the
      * <code>Clip</code>, <code>Transform</code> and <code>Composite</code>
      * attributes. This is equivalent to:
-     * 
+     *
      * <pre>
      * img1 = op.filter(img, null);
      * drawImage(img1, new AffineTransform(1f, 0f, 0f, 1f, x, y), null);
      * </pre>
-     * 
+     *
      * @param img
      *            the <code>BufferedImage</code> to be rendered
      * @param op
@@ -1092,16 +1092,16 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
     }
 
     /**
-     * Renders the text of the specified {@link GlyphVector} using the
+     * Renders the text of the specified {@link GlyphList} using the
      * <code>Graphics2D</code> context's rendering attributes. The rendering
      * attributes applied include the <code>Clip</code>, <code>Transform</code>,
      * <code>Paint</code>, and <code>Composite</code> attributes. The
-     * <code>GlyphVector</code> specifies individual glyphs from a {@link Font}.
-     * The <code>GlyphVector</code> can also contain the glyph positions. This
-     * is the fastest way to render a set of characters to the screen.
+     * <code>GlyphList</code> specifies individual glyphs from a {@link Font}.
+     * The <code>GlyphList</code> can also contain the glyph positions. This is
+     * the fastest way to render a set of characters to the screen.
      *
      * @param g
-     *            the <code>GlyphVector</code> to be rendered
+     *            the <code>GlyphList</code> to be rendered
      * @param x
      *            the x position in user space where the glyphs should be
      *            rendered
@@ -1109,8 +1109,8 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      *            the y position in user space where the glyphs should be
      *            rendered
      *
-     * @see java.awt.Font#createGlyphVector(FontRenderContext, char[])
-     * @see java.awt.font.GlyphVector
+     * @see java.awt.Font#createGlyphList(FontRenderContext, char[])
+     * @see java.awt.font.GlyphList
      * @see #setPaint
      * @see java.awt.Graphics#setColor
      * @see #setTransform
@@ -1135,7 +1135,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * <code>Rectangle</code>. The rendering attributes taken into account
      * include the <code>Clip</code>, <code>Transform</code>, and
      * <code>Stroke</code> attributes.
-     * 
+     *
      * @param rect
      *            the area in device space to check for a hit
      * @param s
@@ -1179,7 +1179,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * <code>AlphaComposite</code> class, and if there is a security manager,
      * its <code>checkPermission</code> method is called with an
      * <code>AWTPermission("readDisplayPixels")</code> permission.
-     * 
+     *
      * @param comp
      *            the <code>Composite</code> object to be used for rendering
      * @throws SecurityException
@@ -1201,7 +1201,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * context. Calling this method with a <code>null</code> <code>Paint</code>
      * object does not have any effect on the current <code>Paint</code>
      * attribute of this <code>Graphics2D</code>.
-     * 
+     *
      * @param paint
      *            the <code>Paint</code> object to be used to generate color
      *            during the rendering process, or <code>null</code>
@@ -1214,7 +1214,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
 
     /**
      * Sets the <code>Stroke</code> for the <code>Graphics2D</code> context.
-     * 
+     *
      * @param s
      *            the <code>Stroke</code> object to be used to stroke a
      *            <code>Shape</code> during the rendering process
@@ -1230,7 +1230,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * time/quality trade-off in the rendering process. Refer to the
      * <code>RenderingHints</code> class for definitions of some common keys and
      * values.
-     * 
+     *
      * @param hintKey
      *            the key of the hint to be set.
      * @param hintValue
@@ -1250,7 +1250,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * time/quality trade-off in the rendering process. Refer to the
      * <code>RenderingHints</code> class for definitions of some common keys and
      * values.
-     * 
+     *
      * @param hintKey
      *            the key corresponding to the hint to get.
      * @return an object representing the value for the specified hint key. Some
@@ -1271,7 +1271,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * include controls for rendering quality and overall time/quality trade-off
      * in the rendering process. Refer to the <code>RenderingHints</code> class
      * for definitions of some common keys and values.
-     * 
+     *
      * @param hints
      *            the rendering hints to be set
      * @see RenderingHints
@@ -1289,7 +1289,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * include controls for rendering quality and overall time/quality trade-off
      * in the rendering process. Refer to the <code>RenderingHints</code> class
      * for definitions of some common keys and values.
-     * 
+     *
      * @param hints
      *            the rendering hints to be set
      * @see RenderingHints
@@ -1306,7 +1306,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * were ever specified in one operation. Refer to the
      * <code>RenderingHints</code> class for definitions of some common keys and
      * values.
-     * 
+     *
      * @return a reference to an instance of <code>RenderingHints</code> that
      *         contains the current preferences.
      * @see RenderingHints
@@ -1322,13 +1322,13 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * specified distance relative to the previous position. This is equivalent
      * to calling transform(T), where T is an <code>AffineTransform</code>
      * represented by the following matrix:
-     * 
+     *
      * <pre>
      *          [   1    0    tx  ]
      *          [   0    1    ty  ]
      *          [   0    0    1   ]
      * </pre>
-     * 
+     *
      * @param tx
      *            the distance to translate along the x-axis
      * @param ty
@@ -1345,16 +1345,16 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * specified radians relative to the previous origin. This is equivalent to
      * calling <code>transform(R)</code>, where R is an
      * <code>AffineTransform</code> represented by the following matrix:
-     * 
+     *
      * <pre>
      *          [   cos(theta)    -sin(theta)    0   ]
      *          [   sin(theta)     cos(theta)    0   ]
      *          [       0              0         1   ]
      * </pre>
-     * 
+     *
      * Rotating with a positive angle theta rotates points on the positive x
      * axis toward the positive y axis.
-     * 
+     *
      * @param theta
      *            the angle of rotation in radians
      */
@@ -1370,16 +1370,16 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * location, rotating by the specified radians, and translating back by the
      * same amount as the original translation. This is equivalent to the
      * following sequence of calls:
-     * 
+     *
      * <pre>
      * translate(x, y);
      * rotate(theta);
      * translate(-x, -y);
      * </pre>
-     * 
+     *
      * Rotating with a positive angle theta rotates points on the positive x
      * axis toward the positive y axis.
-     * 
+     *
      * @param theta
      *            the angle of rotation in radians
      * @param x
@@ -1398,13 +1398,13 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * to the specified scaling factors relative to the previous scaling. This
      * is equivalent to calling <code>transform(S)</code>, where S is an
      * <code>AffineTransform</code> represented by the following matrix:
-     * 
+     *
      * <pre>
      *          [   sx   0    0   ]
      *          [   0    sy   0   ]
      *          [   0    0    1   ]
      * </pre>
-     * 
+     *
      * @param sx
      *            the amount by which X coordinates in subsequent rendering
      *            operations are multiplied relative to previous rendering
@@ -1425,13 +1425,13 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * specified multiplier relative to the previous position. This is
      * equivalent to calling <code>transform(SH)</code>, where SH is an
      * <code>AffineTransform</code> represented by the following matrix:
-     * 
+     *
      * <pre>
      *          [   1   shx   0   ]
      *          [  shy   1    0   ]
      *          [   0    0    1   ]
      * </pre>
-     * 
+     *
      * @param shx
      *            the multiplier by which coordinates are shifted in the
      *            positive X axis direction as a function of their Y coordinate
@@ -1455,7 +1455,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * and then transforming the result by the original <code>Transform</code>
      * Cx. In other words, Cx'(p) = Cx(Tx(p)). A copy of the Tx is made, if
      * necessary, so further modifications to Tx do not affect rendering.
-     * 
+     *
      * @param Tx
      *            the <code>AffineTransform</code> object to be composed with
      *            the current <code>Transform</code>
@@ -1469,7 +1469,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
 
     /**
      * Sets the <code>Transform</code> in the <code>Graphics2D</code> context.
-     * 
+     *
      * @param Tx
      *            the <code>AffineTransform</code> object to be used in the
      *            rendering process
@@ -1484,7 +1484,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
     /**
      * Returns a copy of the current <code>Transform</code> in the
      * <code>Graphics2D</code> context.
-     * 
+     *
      * @return the current <code>AffineTransform</code> in the
      *         <code>Graphics2D</code> context.
      * @see #transform
@@ -1498,7 +1498,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
     /**
      * Returns the current <code>Paint</code> of the <code>Graphics2D</code>
      * context.
-     * 
+     *
      * @return the current <code>Graphics2D</code> <code>Paint</code>, which
      *         defines a color or pattern.
      * @see #setPaint
@@ -1512,7 +1512,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
     /**
      * Returns the current <code>Composite</code> in the <code>Graphics2D</code>
      * context.
-     * 
+     *
      * @return the current <code>Graphics2D</code> <code>Composite</code>, which
      *         defines a compositing style.
      * @see #setComposite
@@ -1532,7 +1532,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * of the <code>Component</code>. To change the background of the
      * <code>Component</code>, use appropriate methods of the
      * <code>Component</code>.
-     * 
+     *
      * @param color
      *            the background color that isused in subsequent calls to
      *            <code>clearRect</code>
@@ -1546,7 +1546,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
 
     /**
      * Returns the background color used for clearing a region.
-     * 
+     *
      * @return the current <code>Graphics2D</code> <code>Color</code>, which
      *         defines the background color.
      * @see #setBackground
@@ -1559,7 +1559,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
     /**
      * Returns the current <code>Stroke</code> in the <code>Graphics2D</code>
      * context.
-     * 
+     *
      * @return the current <code>Graphics2D</code> <code>Stroke</code>, which
      *         defines the line style.
      * @see #setStroke
@@ -1582,7 +1582,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      * the clip has been cleared using {@link java.awt.Graphics#setClip(Shape)
      * setClip} with a <code>null</code> argument, the specified
      * <code>Shape</code> becomes the new user clip.
-     * 
+     *
      * @param s
      *            the <code>Shape</code> to be intersected with the current
      *            <code>Clip</code>. If <code>s</code> is <code>null</code>,
@@ -1608,7 +1608,7 @@ public abstract class AbstractGraphics2D extends Graphics2D implements
      *
      * @return a reference to an instance of FontRenderContext.
      * @see java.awt.font.FontRenderContext
-     * @see java.awt.Font#createGlyphVector(FontRenderContext,char[])
+     * @see java.awt.Font#createGlyphList(FontRenderContext,char[])
      * @see java.awt.font.TextLayout
      * @since JDK1.2
      */

@@ -227,7 +227,7 @@ public class Java2DPainter extends AbstractIFPainter {
     @Override
     public void drawText(final int x, final int y, final int letterSpacing,
             final int wordSpacing, final int[][] dp, final String text)
-            throws IFException {
+                    throws IFException {
         this.g2dState.updateColor(this.state.getTextColor());
         final FontTriplet triplet = new FontTriplet(this.state.getFontFamily(),
                 this.state.getFontStyle(), this.state.getFontWeight());

@@ -55,7 +55,7 @@ public class DigestFilter extends XMLFilterImpl {
 
     public String getDigestString() {
         if (this.value != null) {
-            final StringBuffer buffer = new StringBuffer(2 * this.value.length);
+            final StringBuilder buffer = new StringBuilder(2 * this.value.length);
             for (int i = 0; i < this.value.length; i++) {
                 final int val = this.value[i];
                 final int hi = val >> 4 & 0xF;

@@ -332,7 +332,7 @@ public class PDFFactory {
             final List theRange, final List theSize,
             final int theBitsPerSample, final int theOrder,
             final List theEncode, final List theDecode,
-            final StringBuffer theFunctionDataStream, final List theFilter) {
+            final StringBuilder theFunctionDataStream, final List theFilter) {
         // Type 0 function
         PDFFunction function = new PDFFunction(theFunctionType, theDomain,
                 theRange, theSize, theBitsPerSample, theOrder, theEncode,
@@ -463,7 +463,7 @@ public class PDFFactory {
      */
     public PDFFunction makeFunction(final int theNumber,
             final int theFunctionType, final List theDomain,
-            final List theRange, final StringBuffer theFunctionDataStream) {
+            final List theRange, final StringBuilder theFunctionDataStream) {
         // Type 4
         PDFFunction function = new PDFFunction(theFunctionType, theDomain,
                 theRange, theFunctionDataStream);
@@ -748,7 +748,7 @@ public class PDFFactory {
      *            Optional List of Doubles transformation matrix
      * @param theXUID
      *            Optional vector of Integers that uniquely identify the pattern
-     * @param thePatternDataStream
+     * @param stringBuffer
      *            The stream of pattern data to be tiled.
      * @return the PDF pattern that was created
      */
@@ -759,11 +759,11 @@ public class PDFFactory {
             final PDFResources theResources, final int thePaintType,
             final int theTilingType, final List theBBox, final double theXStep,
             final double theYStep, final List theMatrix, final List theXUID,
-            final StringBuffer thePatternDataStream) {
+            final StringBuffer stringBuffer) {
         // PDFResources theResources
         PDFPattern pattern = new PDFPattern(theResources, 1, thePaintType,
                 theTilingType, theBBox, theXStep, theYStep, theMatrix, theXUID,
-                thePatternDataStream);
+                stringBuffer);
 
         final PDFPattern oldpatt = getDocument().findPattern(pattern);
         if (oldpatt == null) {
@@ -800,7 +800,7 @@ public class PDFFactory {
      */
     public PDFPattern makePattern(final PDFResourceContext res,
             final int thePatternType, final PDFShading theShading,
-            final List theXUID, final StringBuffer theExtGState,
+            final List theXUID, final StringBuilder theExtGState,
             final List theMatrix) {
         PDFPattern pattern = new PDFPattern(2, theShading, theXUID,
                 theExtGState, theMatrix);
@@ -882,8 +882,8 @@ public class PDFFactory {
                 theColors.set(currentPosition + 1, nextColor);
             }
 
-            theCzero = toColorVector(currentColor);
-            theCone = toColorVector(nextColor);
+            theCzero = toColorList(currentColor);
+            theCone = toColorList(nextColor);
 
             myfunc = makeFunction(2, null, null, theCzero, theCone,
                     interpolation);
@@ -924,7 +924,7 @@ public class PDFFactory {
         return myPattern;
     }
 
-    private List toColorVector(final Color nextColor) {
+    private List toColorList(final Color nextColor) {
         final List vector = new java.util.ArrayList();
         final float[] comps = nextColor.getColorComponents(null);
         for (final float comp : comps) {
@@ -1241,7 +1241,7 @@ public class PDFFactory {
         // newWindow);
 
         // This finally seems to work:
-        final StringBuffer scriptBuffer = new StringBuffer();
+        final StringBuilder scriptBuffer = new StringBuilder();
         scriptBuffer.append("this.exportDataObject({cName:\"");
         scriptBuffer.append(filename);
         scriptBuffer.append("\", nLaunch:2});");
@@ -1687,7 +1687,7 @@ public class PDFFactory {
                 .format(this.subsetFontCounter);
 
         // Subset prefix as described in chapter 5.5.3 of PDF 1.4
-        final StringBuffer sb = new StringBuffer("E");
+        final StringBuilder sb = new StringBuilder("E");
 
         for (final char c : counterString.toCharArray()) {
             // translate numbers to uppercase characters
@@ -1722,7 +1722,7 @@ public class PDFFactory {
                     desc.getAscender(), desc.getDescender(),
                     desc.getCapHeight(), desc.getFlags(), new PDFRectangle(
                             desc.getFontBBox()), desc.getItalicAngle(),
-                    desc.getStemV());
+                            desc.getStemV());
         }
         getDocument().registerObject(descriptor);
 

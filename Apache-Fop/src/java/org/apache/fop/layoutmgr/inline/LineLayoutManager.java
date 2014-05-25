@@ -725,7 +725,7 @@ BlockLevelLayoutManager {
         // of KnuthBox, KnuthGlue and KnuthPenalty objects
         boolean previousIsBox = false;
 
-        final StringBuffer trace = new StringBuffer("LineLM:");
+        final StringBuilder trace = new StringBuilder("LineLM:");
 
         Paragraph lastPar = null;
 
@@ -1372,7 +1372,7 @@ BlockLevelLayoutManager {
         int boxCount;
         // number of auxiliary KnuthElements between KnuthBoxes
         int auxCount;
-        StringBuffer sbChars;
+        StringBuilder sbChars;
 
         // find all hyphenation points
         while (currParIterator.hasNext()) {
@@ -1396,7 +1396,7 @@ BlockLevelLayoutManager {
             if (firstElement.isBox() && !firstElement.isAuxiliary()) {
                 boxCount = 1;
                 auxCount = 0;
-                sbChars = new StringBuffer();
+                sbChars = new StringBuilder();
                 sbChars.append(currLM.getWordChars(firstElement.getPosition()));
                 // look if next elements are boxes too
                 while (currParIterator.hasNext()) {
@@ -1523,7 +1523,7 @@ BlockLevelLayoutManager {
         return true;
     }
 
-    private HyphContext getHyphenContext(final StringBuffer sbChars) {
+    private HyphContext getHyphenContext(final StringBuilder sbChars) {
         // Find all hyphenation points in this word
         // (get in an array of offsets)
         // hyphenationProperties are from the block level?.

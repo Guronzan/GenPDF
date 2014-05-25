@@ -19,8 +19,6 @@
 
 package org.apache.fop.traits;
 
-import java.io.ObjectStreamException;
-
 import org.apache.fop.fo.Constants;
 
 /** Enumeration class for writing mode trait. */
@@ -29,11 +27,11 @@ public final class WritingMode extends TraitEnum {
     private static final long serialVersionUID = 1L;
 
     private static final String[] WRITING_MODE_NAMES = new String[] { "lr-tb",
-            "rl-tb", "tb-lr", "tb-rl" };
+        "rl-tb", "tb-lr", "tb-rl" };
 
     private static final int[] WRITING_MODE_VALUES = new int[] {
-            Constants.EN_LR_TB, Constants.EN_RL_TB, Constants.EN_TB_LR,
-            Constants.EN_TB_RL };
+        Constants.EN_LR_TB, Constants.EN_RL_TB, Constants.EN_TB_LR,
+        Constants.EN_TB_RL };
 
     /** writing mode: lr-tb */
     public static final WritingMode LR_TB = new WritingMode(0);
@@ -45,7 +43,7 @@ public final class WritingMode extends TraitEnum {
     public static final WritingMode TB_RL = new WritingMode(3);
 
     private static final WritingMode[] WRITING_MODES = new WritingMode[] {
-            LR_TB, RL_TB, TB_LR, TB_RL };
+        LR_TB, RL_TB, TB_LR, TB_RL };
 
     private WritingMode(final int index) {
         super(WRITING_MODE_NAMES[index], WRITING_MODE_VALUES[index]);
@@ -54,7 +52,7 @@ public final class WritingMode extends TraitEnum {
     /**
      * Assign writing mode traits from this trait to the specified writing mode
      * traits setter.
-     * 
+     *
      * @param wms
      *            a writing mode traits setter
      */
@@ -105,7 +103,7 @@ public final class WritingMode extends TraitEnum {
 
     /**
      * Determine if WM is horizontal or not.
-     * 
+     *
      * @return true if horizontal
      */
     public boolean isHorizontal() {
@@ -124,7 +122,7 @@ public final class WritingMode extends TraitEnum {
 
     /**
      * Determine if WM is vertical or not.
-     * 
+     *
      * @return true if vertical
      */
     public boolean isVertical() {
@@ -133,15 +131,15 @@ public final class WritingMode extends TraitEnum {
 
     /**
      * Returns the enumeration/singleton object based on its name.
-     * 
+     *
      * @param name
      *            the name of the enumeration value
      * @return the enumeration object
      */
     public static WritingMode valueOf(final String name) {
-        for (int i = 0; i < WRITING_MODES.length; i++) {
-            if (WRITING_MODES[i].getName().equalsIgnoreCase(name)) {
-                return WRITING_MODES[i];
+        for (final WritingMode element : WRITING_MODES) {
+            if (element.getName().equalsIgnoreCase(name)) {
+                return element;
             }
         }
         throw new IllegalArgumentException("Illegal writing mode: " + name);
@@ -149,21 +147,21 @@ public final class WritingMode extends TraitEnum {
 
     /**
      * Returns the enumeration/singleton object based on its name.
-     * 
+     *
      * @param enumValue
      *            the enumeration value
      * @return the enumeration object
      */
     public static WritingMode valueOf(final int enumValue) {
-        for (int i = 0; i < WRITING_MODES.length; i++) {
-            if (WRITING_MODES[i].getEnumValue() == enumValue) {
-                return WRITING_MODES[i];
+        for (final WritingMode element : WRITING_MODES) {
+            if (element.getEnumValue() == enumValue) {
+                return element;
             }
         }
         throw new IllegalArgumentException("Illegal writing mode: " + enumValue);
     }
 
-    private Object readResolve() throws ObjectStreamException {
+    private Object readResolve() {
         return valueOf(getName());
     }
 

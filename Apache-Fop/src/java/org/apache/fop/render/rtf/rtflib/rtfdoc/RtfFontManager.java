@@ -28,7 +28,7 @@ package org.apache.fop.render.rtf.rtflib.rtfdoc;
 
 import java.io.IOException;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * <p>
@@ -50,7 +50,7 @@ public final class RtfFontManager {
     /** Index table for the fonts */
     private Hashtable fontIndex = null;
     /** Used fonts to this vector */
-    private Vector fontTable = null;
+    private List fontTable = null;
 
     // ////////////////////////////////////////////////
     // @@ Construction
@@ -60,7 +60,7 @@ public final class RtfFontManager {
      * Constructor.
      */
     private RtfFontManager() {
-        this.fontTable = new Vector();
+        this.fontTable = new java.util.ArrayList();
         this.fontIndex = new Hashtable();
 
         init();
@@ -96,9 +96,9 @@ public final class RtfFontManager {
 
         /*
          * {\\f0\\fswiss Helv;}
-         *
+         * 
          * // f1 is used by RtfList and RtfListItem for bullets
-         *
+         * 
          * {\\f1\\froman\\fcharset2 Symbol;} {\\f2\\froman\\fprq2 Times New
          * Roman;} {\\f3\\froman Times New Roman;}
          */
@@ -156,7 +156,7 @@ public final class RtfFontManager {
             header.writeGroupMark(true);
             header.newLine();
             header.write("\\f" + i);
-            header.write(" " + (String) this.fontTable.elementAt(i));
+            header.write(" " + (String) this.fontTable.get(i));
             header.write(";");
             header.writeGroupMark(false);
         }
@@ -182,6 +182,6 @@ public final class RtfFontManager {
     private void addFont(final String family) {
         this.fontIndex.put(getFontKey(family),
                 new Integer(this.fontTable.size()));
-        this.fontTable.addElement(family);
+        this.fontTable.add(family);
     }
 }

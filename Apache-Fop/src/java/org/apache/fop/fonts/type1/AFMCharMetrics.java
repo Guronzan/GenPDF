@@ -174,7 +174,7 @@ public class AFMCharMetrics {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("AFM Char: ");
+        final StringBuilder sb = new StringBuilder("AFM Char: ");
         sb.append(getCharCode());
         sb.append(" (");
         if (getUnicodeSequence() != null) {

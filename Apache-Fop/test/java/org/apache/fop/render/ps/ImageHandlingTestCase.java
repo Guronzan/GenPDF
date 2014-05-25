@@ -158,7 +158,7 @@ public class ImageHandlingTestCase extends AbstractPostScriptTest {
 
     private String getResourceContent(final DSCParser parser)
             throws IOException, DSCException {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         while (parser.hasNext()) {
             final DSCEvent event = parser.nextEvent();
             if (event.isLine()) {

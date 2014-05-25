@@ -29,7 +29,7 @@ package org.apache.fop.render.rtf.rtflib.rtfdoc;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * <p>
@@ -78,7 +78,7 @@ public final class RtfStyleSheetTable {
     private Hashtable attrTable = null;
 
     /** Used, style names to this vector */
-    private Vector nameTable = null;
+    private List nameTable = null;
 
     /** Default style */
     private String defaultStyleName = STANDARD_STYLE;
@@ -93,7 +93,7 @@ public final class RtfStyleSheetTable {
     private RtfStyleSheetTable() {
         this.styles = new Hashtable();
         this.attrTable = new Hashtable();
-        this.nameTable = new Vector();
+        this.nameTable = new java.util.ArrayList();
     }
 
     /**
@@ -115,7 +115,7 @@ public final class RtfStyleSheetTable {
 
     /**
      * Sets the default style.
-     * 
+     *
      * @param styleName
      *            Name of the default style, defined in the stylesheet
      */
@@ -125,7 +125,7 @@ public final class RtfStyleSheetTable {
 
     /**
      * Gets the name of the default style.
-     * 
+     *
      * @return Default style name.
      */
     public String getDefaultStyleName() {
@@ -147,14 +147,14 @@ public final class RtfStyleSheetTable {
 
     /**
      * Adds a style to the table.
-     * 
+     *
      * @param name
      *            Name of style to add
      * @param attrs
      *            Rtf attributes which defines the style
      */
     public void addStyle(final String name, final RtfAttributes attrs) {
-        this.nameTable.addElement(name);
+        this.nameTable.add(name);
         if (attrs != null) {
             this.attrTable.put(name, attrs);
         }
@@ -164,7 +164,7 @@ public final class RtfStyleSheetTable {
 
     /**
      * Adds the style attributes to the given attributes.
-     * 
+     *
      * @param name
      *            Name of style, of which the attributes will copied to attr
      * @param attr
@@ -217,7 +217,7 @@ public final class RtfStyleSheetTable {
 
     /**
      * Writes the rtf style sheet table.
-     * 
+     *
      * @param header
      *            Rtf header is the parent
      * @throws IOException
@@ -232,7 +232,7 @@ public final class RtfStyleSheetTable {
 
         final int number = this.nameTable.size();
         for (int i = 0; i < number; i++) {
-            final String name = (String) this.nameTable.elementAt(i);
+            final String name = (String) this.nameTable.get(i);
             header.writeGroupMark(true);
             header.writeControlWord("*\\" + getRtfStyleReference(name));
 
@@ -250,7 +250,7 @@ public final class RtfStyleSheetTable {
 
     /**
      * Gets the rtf style reference from the table.
-     * 
+     *
      * @param name
      *            Name of Style
      * @return Rtf attribute of the style reference

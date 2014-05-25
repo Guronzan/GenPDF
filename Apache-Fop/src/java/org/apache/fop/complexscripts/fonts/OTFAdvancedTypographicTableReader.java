@@ -548,7 +548,7 @@ public final class OTFAdvancedTypographicTableReader {
         }
 
         public static String toString(final int flags) {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             boolean first = true;
             if ((flags & RIGHT_TO_LEFT) != 0) {
                 if (first) {
@@ -4417,7 +4417,7 @@ public final class OTFAdvancedTypographicTableReader {
 
     /** helper method for formatting an integer array for output */
     private String toString(final int[] ia) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         if (ia == null || ia.length == 0) {
             sb.append('-');
         } else {

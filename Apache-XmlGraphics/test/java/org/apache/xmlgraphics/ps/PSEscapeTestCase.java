@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 public class PSEscapeTestCase extends TestCase {
 
     public void testBasics() {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
 
         PSGenerator.escapeChar('a', sb);
         PSGenerator.escapeChar('b', sb);

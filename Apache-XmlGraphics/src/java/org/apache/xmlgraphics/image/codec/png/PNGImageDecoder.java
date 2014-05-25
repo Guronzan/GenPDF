@@ -1089,7 +1089,7 @@ class PNGImage extends SimpleRenderedImage implements PNGConstants {
     private void parse_tEXt_chunk(final PNGChunk chunk) {
 
         byte b;
-        final StringBuffer key = new StringBuffer();
+        final StringBuilder key = new StringBuilder();
         int textIndex = 0;
         while ((b = chunk.getByte(textIndex++)) != 0) {
             key.append((char) b);
@@ -1207,14 +1207,14 @@ class PNGImage extends SimpleRenderedImage implements PNGConstants {
     private void parse_zTXt_chunk(final PNGChunk chunk) {
 
         int textIndex = 0;
-        final StringBuffer key = new StringBuffer();
+        final StringBuilder key = new StringBuilder();
         byte b;
         while ((b = chunk.getByte(textIndex++)) != 0) {
             key.append((char) b);
         }
         /* int method = */chunk.getByte(textIndex++);
 
-        final StringBuffer value = new StringBuffer();
+        final StringBuilder value = new StringBuilder();
         try {
             final int length = chunk.getLength() - textIndex;
             final byte[] data = chunk.getData();

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-/* $Id: CharVector.java 1311120 2012-04-08 23:48:11Z gadams $ */
+/* $Id: CharList.java 1311120 2012-04-08 23:48:11Z gadams $ */
 
 package org.apache.fop.hyphenation;
 
@@ -31,7 +31,7 @@ import java.io.Serializable;
  * This work was authored by Carlos Villegas (cav@uniscope.co.jp).
  * </p>
  */
-public class CharVector implements Cloneable, Serializable {
+public class CharList implements Cloneable, Serializable {
 
     private static final long serialVersionUID = 4263472982169004048L;
 
@@ -54,7 +54,7 @@ public class CharVector implements Cloneable, Serializable {
     /**
      * Construct char vector instance with default block size.
      */
-    public CharVector() {
+    public CharList() {
         this(DEFAULT_BLOCK_SIZE);
     }
 
@@ -64,7 +64,7 @@ public class CharVector implements Cloneable, Serializable {
      * @param capacity
      *            initial block size
      */
-    public CharVector(final int capacity) {
+    public CharList(final int capacity) {
         if (capacity > 0) {
             this.blockSize = capacity;
         } else {
@@ -80,7 +80,7 @@ public class CharVector implements Cloneable, Serializable {
      * @param a
      *            char array to use
      */
-    public CharVector(final char[] a) {
+    public CharList(final char[] a) {
         this.blockSize = DEFAULT_BLOCK_SIZE;
         this.array = a;
         this.n = a.length;
@@ -94,7 +94,7 @@ public class CharVector implements Cloneable, Serializable {
      * @param capacity
      *            initial block size
      */
-    public CharVector(final char[] a, final int capacity) {
+    public CharList(final char[] a, final int capacity) {
         if (capacity > 0) {
             this.blockSize = capacity;
         } else {
@@ -114,7 +114,7 @@ public class CharVector implements Cloneable, Serializable {
     /** {@inheritDoc} */
     @Override
     public Object clone() throws CloneNotSupportedException {
-        final CharVector cv = (CharVector) super.clone();
+        final CharList cv = (CharList) super.clone();
         cv.array = this.array.clone();
         return cv;
     }

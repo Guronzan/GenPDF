@@ -464,7 +464,7 @@ public class FontInfo {
 
         // no matching font triplets found!
         if (matchedTriplets.size() == 0) {
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             for (int i = 0, c = families.length; i < c; i++) {
                 if (i > 0) {
                     sb.append(", ");
@@ -738,7 +738,7 @@ public class FontInfo {
             entries.add(triplet.toString() + " -> " + key + " -> "
                     + metrics.getFontName() + "\n");
         }
-        final StringBuffer stringBuffer = new StringBuffer();
+        final StringBuilder stringBuffer = new StringBuilder();
         for (final String str : entries) {
             stringBuffer.append(str);
         }

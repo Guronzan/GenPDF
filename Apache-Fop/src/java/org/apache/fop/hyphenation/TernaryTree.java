@@ -118,7 +118,7 @@ public class TernaryTree implements Cloneable, Serializable {
     /**
      * This vector holds the trailing of the keys when the branch is compressed.
      */
-    protected CharVector kv;
+    protected CharList kv;
 
     /** root */
     protected char root;
@@ -144,7 +144,7 @@ public class TernaryTree implements Cloneable, Serializable {
         this.hi = new char[BLOCK_SIZE];
         this.eq = new char[BLOCK_SIZE];
         this.sc = new char[BLOCK_SIZE];
-        this.kv = new CharVector();
+        this.kv = new CharList();
     }
 
     /**
@@ -453,7 +453,7 @@ public class TernaryTree implements Cloneable, Serializable {
         t.hi = this.hi.clone();
         t.eq = this.eq.clone();
         t.sc = this.sc.clone();
-        t.kv = (CharVector) this.kv.clone();
+        t.kv = (CharList) this.kv.clone();
 
         return t;
     }
@@ -529,7 +529,7 @@ public class TernaryTree implements Cloneable, Serializable {
         redimNodeArrays(this.freenode);
 
         // ok, compact kv array
-        final CharVector kx = new CharVector();
+        final CharList kx = new CharList();
         kx.alloc(1);
         final TernaryTree map = new TernaryTree();
         compact(kx, map, this.root);
@@ -537,7 +537,7 @@ public class TernaryTree implements Cloneable, Serializable {
         this.kv.trimToSize();
     }
 
-    private void compact(final CharVector kx, final TernaryTree map,
+    private void compact(final CharList kx, final TernaryTree map,
             final char p) {
         int k;
         if (p == 0) {
@@ -617,15 +617,15 @@ public class TernaryTree implements Cloneable, Serializable {
         Stack ns; // CSOK: VisibilityModifier
 
         /**
-         * key stack implemented with a StringBuffer
+         * key stack implemented with a StringBuilder
          */
-        StringBuffer ks; // CSOK: VisibilityModifier
+        StringBuilder ks; // CSOK: VisibilityModifier
 
         /** default constructor */
         public Iterator() {
             this.cur = -1;
             this.ns = new Stack();
-            this.ks = new StringBuffer();
+            this.ks = new StringBuilder();
             rewind();
         }
 
@@ -748,7 +748,7 @@ public class TernaryTree implements Cloneable, Serializable {
             }
             // The current node should be a data node and
             // the key should be in the key stack (at least partially)
-            final StringBuffer buf = new StringBuffer(this.ks.toString());
+            final StringBuilder buf = new StringBuilder(this.ks.toString());
             if (TernaryTree.this.sc[this.cur] == 0xFFFF) {
                 int p = TernaryTree.this.lo[this.cur];
                 while (TernaryTree.this.kv.get(p) != 0) {

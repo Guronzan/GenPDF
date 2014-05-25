@@ -70,7 +70,7 @@ public class IfFieldPart implements Part {
 
     /** {@inheritDoc} */
     @Override
-    public void write(final StringBuffer sb, final Map params) {
+    public void write(final StringBuilder sb, final Map params) {
         final boolean isTrue = isTrue(params);
         if (isTrue) {
             sb.append(this.ifValue);

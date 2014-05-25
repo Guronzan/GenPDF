@@ -54,7 +54,7 @@ public final class LayoutEngineTestUtils {
     }
 
     private static class FilenameHandler extends DefaultHandler {
-        private final StringBuffer buffer = new StringBuffer(128);
+        private final StringBuilder buffer = new StringBuilder(128);
         private boolean readingFilename = false;
         private final List<String> filenames;
 

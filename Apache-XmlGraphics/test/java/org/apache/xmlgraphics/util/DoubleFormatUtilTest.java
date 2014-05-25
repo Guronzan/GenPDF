@@ -259,7 +259,7 @@ public class DoubleFormatUtilTest extends TestCase {
     /**
      * The buffer used to format
      */
-    private final StringBuffer buf = new StringBuffer();
+    private final StringBuilder buf = new StringBuilder();
 
     /**
      * Formats using FormatUtil#formatDouble method

@@ -53,7 +53,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
     /**
      * value space: stores the interletter values
      */
-    protected ByteVector vspace;
+    protected ByteList vspace;
 
     /**
      * This map stores hyphenation exceptions
@@ -74,7 +74,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
     public HyphenationTree() {
         this.stoplist = new HashMap(23); // usually a small table
         this.classmap = new TernaryTree();
-        this.vspace = new ByteVector();
+        this.vspace = new ByteList();
         this.vspace.alloc(1); // this reserves index 0, which we don't use
     }
 
@@ -116,7 +116,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
      * @return a string
      */
     protected String unpackValues(int k) {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         byte v = this.vspace.get(k++);
         while (v != 0) {
             char c = (char) ((v >>> 4) - 1 + '0');
@@ -225,7 +225,7 @@ public class HyphenationTree extends TernaryTree implements PatternConsumer {
      * @return a byte array
      */
     protected byte[] getValues(int k) {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         byte v = this.vspace.get(k++);
         while (v != 0) {
             char c = (char) ((v >>> 4) - 1);

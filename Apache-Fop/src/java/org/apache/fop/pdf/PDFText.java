@@ -62,7 +62,7 @@ public class PDFText extends PDFObject {
             throw new IllegalArgumentException(
                     "The text of this PDFText must not be empty");
         }
-        final StringBuffer sb = new StringBuffer(64);
+        final StringBuilder sb = new StringBuilder(64);
         sb.append("(");
         sb.append(escapeText(getText()));
         sb.append(")");
@@ -115,7 +115,7 @@ public class PDFText extends PDFObject {
                 }
                 return toHex(uniBytes);
             } else {
-                final StringBuffer result = new StringBuffer(text.length() * 2);
+                final StringBuilder result = new StringBuilder(text.length() * 2);
                 result.append("(");
                 final int l = text.length();
 
@@ -160,7 +160,7 @@ public class PDFText extends PDFObject {
      * @return String the resulting string
      */
     public static final String toHex(final byte[] data, final boolean brackets) {
-        final StringBuffer sb = new StringBuffer(data.length * 2);
+        final StringBuilder sb = new StringBuilder(data.length * 2);
         if (brackets) {
             sb.append("<");
         }
@@ -208,7 +208,7 @@ public class PDFText extends PDFObject {
      * @return the encoded character
      */
     public static final String toUnicodeHex(final char c) {
-        final StringBuffer buf = new StringBuffer(4);
+        final StringBuilder buf = new StringBuilder(4);
         final byte[] uniBytes;
         try {
             final char[] a = { c };
@@ -235,7 +235,7 @@ public class PDFText extends PDFObject {
         if (s == null || s.length() == 0) {
             return "()";
         } else {
-            final StringBuffer sb = new StringBuffer(64);
+            final StringBuilder sb = new StringBuilder(64);
             sb.append("(");
             for (int i = 0; i < s.length(); i++) {
                 final char c = s.charAt(i);
@@ -253,10 +253,10 @@ public class PDFText extends PDFObject {
      * @param c
      *            character to escape
      * @param target
-     *            target StringBuffer to write the escaped character to
+     *            target StringBuilder to write the escaped character to
      */
     public static final void escapeStringChar(final char c,
-            final StringBuffer target) {
+            final StringBuilder target) {
         if (c > 127) {
             target.append("\\");
             target.append(Integer.toOctalString(c));
@@ -377,7 +377,7 @@ public class PDFText extends PDFObject {
      */
     public static String toPDFString(final CharSequence text,
             final char replacement) {
-        final StringBuffer sb = new StringBuffer();
+        final StringBuilder sb = new StringBuilder();
         for (int i = 0, c = text.length(); i < c; i++) {
             final char ch = text.charAt(i);
             if (ch > 127) {

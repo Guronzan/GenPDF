@@ -37,7 +37,7 @@ public class XMPHandler extends DefaultHandler {
 
     private Metadata meta;
 
-    private final StringBuffer content = new StringBuffer();
+    private final StringBuilder content = new StringBuilder();
     private final Stack attributesStack = new Stack();
     private final Stack nestingInfoStack = new Stack();
     private final Stack contextStack = new Stack();

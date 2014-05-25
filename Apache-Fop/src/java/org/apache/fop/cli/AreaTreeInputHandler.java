@@ -21,7 +21,7 @@ package org.apache.fop.cli;
 
 import java.io.File;
 import java.io.OutputStream;
-import java.util.Vector;
+import java.util.List;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.SAXResult;
@@ -47,11 +47,11 @@ public class AreaTreeInputHandler extends InputHandler {
      * @param xsltfile
      *            XSLT file
      * @param params
-     *            Vector of command-line parameters (name, value, name, value,
+     *            List of command-line parameters (name, value, name, value,
      *            ...) for XSL stylesheet, null if none
      */
     public AreaTreeInputHandler(final File xmlfile, final File xsltfile,
-            final Vector params) {
+            final List params) {
         super(xmlfile, xsltfile, params);
     }
 

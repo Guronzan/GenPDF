@@ -365,8 +365,8 @@ public class PSPainter extends AbstractIFPainter {
      * private static final String ZEROS = "0.00";
      *
      * private String formatMptAsPt1(int value) { String s =
-     * Integer.toString(value); int len = s.length(); StringBuffer sb = new
-     * StringBuffer(); if (len < 4) { sb.append(ZEROS.substring(0, 5 - len));
+     * Integer.toString(value); int len = s.length(); StringBuilder sb = new
+     * StringBuilder(); if (len < 4) { sb.append(ZEROS.substring(0, 5 - len));
      * sb.append(s); } else { int dec = len - 3; sb.append(s.substring(0, dec));
      * sb.append('.'); sb.append(s.substring(dec)); } return sb.toString(); }
      */
@@ -459,8 +459,8 @@ public class PSPainter extends AbstractIFPainter {
         boolean needTJ = false;
 
         int lineStart = 0;
-        final StringBuffer accText = new StringBuffer(initialSize);
-        final StringBuffer sb = new StringBuffer(initialSize);
+        final StringBuilder accText = new StringBuilder(initialSize);
+        final StringBuilder sb = new StringBuilder(initialSize);
         final int[] dx = IFUtil.convertDPToDX(dp);
         final int dxl = dx != null ? dx.length : 0;
         for (int i = start; i < end; i++) {
@@ -527,7 +527,7 @@ public class PSPainter extends AbstractIFPainter {
         } else {
             writePostScriptString(sb, accText, multiByte);
             if (hasLetterSpacing) {
-                final StringBuffer spb = new StringBuffer();
+                final StringBuilder spb = new StringBuilder();
                 spb.append(formatMptAsPt(generator, letterSpacing)).append(
                         " 0 ");
                 sb.insert(0, spb.toString());
@@ -539,13 +539,13 @@ public class PSPainter extends AbstractIFPainter {
         generator.writeln(sb.toString());
     }
 
-    private void writePostScriptString(final StringBuffer buffer,
-            final StringBuffer string, final boolean multiByte) {
+    private void writePostScriptString(final StringBuilder buffer,
+            final StringBuilder string, final boolean multiByte) {
         writePostScriptString(buffer, string, multiByte, 0);
     }
 
-    private int writePostScriptString(final StringBuffer buffer,
-            final StringBuffer string, final boolean multiByte, int lineStart) {
+    private int writePostScriptString(final StringBuilder buffer,
+            final StringBuilder string, final boolean multiByte, int lineStart) {
         buffer.append(multiByte ? '<' : '(');
         final int l = string.length();
         int index = 0;

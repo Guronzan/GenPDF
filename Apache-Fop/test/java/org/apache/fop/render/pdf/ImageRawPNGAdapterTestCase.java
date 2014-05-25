@@ -62,7 +62,7 @@ public class ImageRawPNGAdapterTestCase {
     }
 
     @Test
-    public void testSetupWithComponentColorModel() throws IOException {
+    public void testSetupWithComponentColorModel() {
         final ComponentColorModel cm = mock(ComponentColorModel.class);
         final ImageRawPNG irpng = mock(ImageRawPNG.class);
         final PDFDocument doc = mock(PDFDocument.class);
@@ -103,7 +103,7 @@ public class ImageRawPNGAdapterTestCase {
 
     private void testOutputContentsWithGRGBAPNG(final int gray, final int red,
             final int green, final int blue, final int alpha)
-            throws IOException {
+                    throws IOException {
         final int numColorComponents = gray > -1 ? 1 : 3;
         final int numComponents = numColorComponents + (alpha > -1 ? 1 : 0);
         final ComponentColorModel cm = mock(ComponentColorModel.class);

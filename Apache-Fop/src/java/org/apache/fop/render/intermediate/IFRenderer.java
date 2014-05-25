@@ -1254,7 +1254,7 @@ public class IFRenderer extends AbstractPathOrientedRenderer {
         private static final int INITIAL_BUFFER_SIZE = 16;
         private int[][] dp = new int[INITIAL_BUFFER_SIZE][4];
         // private int lastDPPos = 0; // TBD - not yet used
-        private final StringBuffer text = new StringBuffer();
+        private final StringBuilder text = new StringBuilder();
         private int startx;
         private int starty;
         private int tls;

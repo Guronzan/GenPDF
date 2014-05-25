@@ -62,12 +62,12 @@ public class SVGDOMContentHandlerFactory implements ContentHandlerFactory {
     }
 
     private static class Handler extends DelegatingContentHandler implements
-    ContentHandlerFactory.ObjectSource {
+            ContentHandlerFactory.ObjectSource {
 
         private Document doc;
         private ObjectBuiltListener obListener;
 
-        public Handler() throws SAXException {
+        public Handler() {
             super();
         }
 
@@ -109,7 +109,7 @@ public class SVGDOMContentHandlerFactory implements ContentHandlerFactory {
                             .forName("org.apache.batik.dom.svg12.SVG12DOMImplementation");
                     return (DOMImplementation) clazz.getMethod(
                             "getDOMImplementation", (Class[]) null).invoke(
-                            null, (Object[]) null);
+                                    null, (Object[]) null);
                 } catch (final Exception e) {
                     return SVGDOMImplementation.getDOMImplementation();
                 }
