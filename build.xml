@@ -20,7 +20,6 @@
 		<delete dir="${fop.dir}/target" />
 		<delete dir="${fop.dir}/liv" />
 		
-		
 		<artifact:mvn pom="${xmlCommonsGraphics.dir}/pom.xml" mavenHome="${env.MAVEN_HOME}" fork="true">
 			<arg value="dependency:copy-dependencies" />
 			<arg value="-DincludeScope=compile" />
